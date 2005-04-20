@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.6">
+<meta name="Forrest-skin-name" content="pelt">
+<title>OpenOffice Writer documents</title>
+<link type="text/css" href="../skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="../skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="../skin/print.css" rel="stylesheet">
+<link type="text/css" href="../skin/profile.css" rel="stylesheet">
+<script src="../skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="../skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="../skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="../">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<!--+
+    |breadtrail
+    +-->
+<div class="breadtrail">
+<a href="http://www.faktorzehn.de/">Faktor Zehn GmbH</a> &gt; <a href="http://faktorips.org/">FaktorIps</a><script src="../skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+</div>
+<!--+
+    |header
+    +-->
+<div class="header">
+<!--+
+    |start group logo
+    +-->
+<div class="grouplogo">
+<a href=""></a>
+</div>
+<!--+
+    |end group logo
+    +-->
+<!--+
+    |start Project Logo
+    +-->
+<div class="projectlogo">
+<a href="http://faktorips.org/"><img class="logoImage" alt="FaktorIps" src="../images/faktorzehn-logoklein.png" title="FaktorIps is a product definition system for insurance products"></a>
+</div>
+<!--+
+    |end Project Logo
+    +-->
+<!--+
+    |start Search
+    +-->
+<div class="searchbox">
+<form action="http://www.google.com/search" method="get" class="roundtopsmall">
+<input value="Faktor Zehn" name="sitesearch" type="hidden"><input onFocus="getBlank (this, 'Search the site with google:');" value="Search the site with google:" size="25" name="q" id="query" type="text">&nbsp; 
+                    <input name="Search" value="Search" type="submit">
+</form>
+</div>
+<!--+
+    |end search
+    +-->
+<!--+
+    |start Tabs
+    +-->
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">Home</a>
+</li>
+<li>
+<a class="base-not-selected" href="../dokumentation/index.html">Dokumentation</a>
+</li>
+<li class="current">
+<a class="base-selected" href="../howto/index.html">HowTo</a>
+</li>
+</ul>
+<!--+
+    |end Tabs
+    +-->
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<!--+
+    |start Subtabs
+    +-->
+<div id="level2tabs"></div>
+<!--+
+    |end Endtabs
+    +-->
+<script type="text/javascript" language="JavaScript"><!--
+              document.write("Published: " + document.lastModified);
+              //  --></script>
+</div>
+<!--+
+    |breadtrail
+    +-->
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<!--+
+    |start Menu, mainarea
+    +-->
+<!--+
+    |start Menu
+    +-->
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', '../skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('../skin/images/chapter_open.gif');">Howto</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menupage">
+<div class="menupagetitle">Using OOwriter</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="../skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<!--+
+  |alternative credits
+  +-->
+</div>
+<!--+
+    |end Menu
+    +-->
+<!--+
+    |start content
+    +-->
+<div id="content">
+<div id="skinconf-txtlink"></div>
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="oowriter.pdf"><img alt="PDF -icon" src="../skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>OpenOffice Writer documents</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#Creating+a+new+document">Creating a new document</a>
+</li>
+<li>
+<a href="#Headings">Headings</a>
+</li>
+<li>
+<a href="#Images">Images</a>
+</li>
+<li>
+<a href="#Links">Links</a>
+</li>
+<li>
+<a href="#Support+for+boxes">Support for boxes</a>
+</li>
+<li>
+<a href="#Support+for+inline+elements">Support for inline elements</a>
+</li>
+<li>
+<a href="#Tables">Tables</a>
+</li>
+<li>
+<a href="#Meta+information">Meta information</a>
+</li>
+</ul>
+</div>
+<a name="N10007"></a><a name="Creating+a+new+document"></a>
+<h2 class="boxed">Creating a new document</h2>
+<div class="section">
+<p>Apache Forrest supports <a target="_top" href="http://www.openoffice.org/">OpenOffice.org</a> 1.1 Writer documents as source documents. Generally every OpenOffice.org Writer document can be used as source file but if you want support for all elements the documentv12.dtd supports you have to use template names which are supported during the transformation process.</p>
+<p>If you create a fresh Forrest project (<span class="codefrag">forrest seed</span>) you can find a sample document which uses all possible templates.</p>
+</div>
+<a name="N10017"></a><a name="Headings"></a>
+<h2 class="boxed">Headings</h2>
+<div class="section">
+<p>Use the default templates for headings (support for level 1 &ndash; 5).</p>
+</div>
+<a name="N1001D"></a><a name="Images"></a>
+<h2 class="boxed">Images</h2>
+<div class="section">
+<p>Don't embed images into OpenOffice documents but link to external resources.</p>
+</div>
+<a name="N10023"></a><a name="Links"></a>
+<h2 class="boxed">Links</h2>
+<div class="section">
+<p>All links are transformed to usual <a href="../index.html#linking" title="">Forrest links</a>. Also opening a link in a new browser window is supported. In the link menu you have to use <a target="_blank" href="http://www.apache.org/">_blank</a> as Frame target.</p>
+</div>
+<a name="N10033"></a><a name="Support+for+boxes"></a>
+<h2 class="boxed">Support for boxes</h2>
+<div class="section">
+<p>Four different types of boxes are supported if you use the appropriate template names:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+<caption>Boxes</caption>
+<tr>
+<th>documentv12</th><th>Openoffice Writer template name</th>
+</tr>
+<tr>
+<td>source</td><td>Forrest: Source</td>
+</tr>
+<tr>
+<td>warning</td><td>Forrest: Warning</td>
+</tr>
+<tr>
+<td>note</td><td>Forrest: Note</td>
+</tr>
+<tr>
+<td>fixme</td><td>Forrest: Fixme</td>
+</tr>
+</table>
+</div>
+<a name="N10055"></a><a name="Support+for+inline+elements"></a>
+<h2 class="boxed">Support for inline elements</h2>
+<div class="section">
+<p>Following character templates are supported:</p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+<caption>InlineElements</caption>
+<tr>
+<th>documentv12</th><th>Openoffice Writer character template name</th>
+</tr>
+<tr>
+<td>strong</td><td>Strong emphasis</td>
+</tr>
+<tr>
+<td>sup</td><td>Forrest: Above</td>
+</tr>
+<tr>
+<td>sub</td><td>Forrest: Below</td>
+</tr>
+<tr>
+<td>code</td><td>Forrest: Code</td>
+</tr>
+</table>
+</div>
+<a name="N10077"></a><a name="Tables"></a>
+<h2 class="boxed">Tables</h2>
+<div class="section">
+<p>Simple tables are supported but because of the limitations of documentv12 nested tables won't work. If you need a heading row, activate the <em>repeating rows</em> checkbox in the table properties menu.</p>
+</div>
+<a name="N10080"></a><a name="Meta+information"></a>
+<h2 class="boxed">Meta information</h2>
+<div class="section">
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+<caption>Tabelle1</caption>
+<tr>
+<td>document title</td><td>the value of the title field in the document properties is used</td>
+</tr>
+<tr>
+<td>author</td><td>not supported yet</td>
+</tr>
+</table>
+<p></p>
+</div>
+</div>
+<!--+
+    |end content
+    +-->
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<!--+
+    |start bottomstrip
+    +-->
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("Last Published: " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+ Copyright &copy; 2005 Faktor Zehn GmbH</div>
+<div id="feedback">
+    Send feedback about the website to:
+  <a id="feedbackto" href="mailto:webmaster@foo.com?subject=Feedback%C2%A0howto/oowriter.html">webmaster@foo.com</a>
+</div>
+<!--+
+    |end bottomstrip
+    +-->
+</div>
+</body>
+</html>

@@ -1,0 +1,791 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="Apache Forrest" name="Generator">
+<meta name="Forrest-version" content="0.6">
+<meta name="Forrest-skin-name" content="pelt">
+<title>Codegenerierung</title>
+<link type="text/css" href="../skin/basic.css" rel="stylesheet">
+<link media="screen" type="text/css" href="../skin/screen.css" rel="stylesheet">
+<link media="print" type="text/css" href="../skin/print.css" rel="stylesheet">
+<link type="text/css" href="../skin/profile.css" rel="stylesheet">
+<script src="../skin/getBlank.js" language="javascript" type="text/javascript"></script><script src="../skin/getMenu.js" language="javascript" type="text/javascript"></script><script src="../skin/fontsize.js" language="javascript" type="text/javascript"></script>
+<link rel="shortcut icon" href="../">
+</head>
+<body onload="init()">
+<script type="text/javascript">ndeSetTextSize();</script>
+<div id="top">
+<!--+
+    |breadtrail
+    +-->
+<div class="breadtrail">
+<a href="http://www.faktorzehn.de/">Faktor Zehn GmbH</a> &gt; <a href="http://faktorips.org/">FaktorIps</a><script src="../skin/breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+</div>
+<!--+
+    |header
+    +-->
+<div class="header">
+<!--+
+    |start group logo
+    +-->
+<div class="grouplogo">
+<a href=""></a>
+</div>
+<!--+
+    |end group logo
+    +-->
+<!--+
+    |start Project Logo
+    +-->
+<div class="projectlogo">
+<a href="http://faktorips.org/"><img class="logoImage" alt="FaktorIps" src="../images/faktorzehn-logoklein.png" title="FaktorIps is a product definition system for insurance products"></a>
+</div>
+<!--+
+    |end Project Logo
+    +-->
+<!--+
+    |start Search
+    +-->
+<div class="searchbox">
+<form action="http://www.google.com/search" method="get" class="roundtopsmall">
+<input value="Faktor Zehn" name="sitesearch" type="hidden"><input onFocus="getBlank (this, 'Search the site with google:');" value="Search the site with google:" size="25" name="q" id="query" type="text">&nbsp; 
+                    <input name="Search" value="Search" type="submit">
+</form>
+</div>
+<!--+
+    |end search
+    +-->
+<!--+
+    |start Tabs
+    +-->
+<ul id="tabs">
+<li>
+<a class="base-not-selected" href="../index.html">Home</a>
+</li>
+<li class="current">
+<a class="base-selected" href="../dokumentation/index.html">Dokumentation</a>
+</li>
+<li>
+<a class="base-not-selected" href="../howto/index.html">HowTo</a>
+</li>
+</ul>
+<!--+
+    |end Tabs
+    +-->
+</div>
+</div>
+<div id="main">
+<div id="publishedStrip">
+<!--+
+    |start Subtabs
+    +-->
+<div id="level2tabs"></div>
+<!--+
+    |end Endtabs
+    +-->
+<script type="text/javascript" language="JavaScript"><!--
+              document.write("Published: " + document.lastModified);
+              //  --></script>
+</div>
+<!--+
+    |breadtrail
+    +-->
+<div class="breadtrail">
+             
+             &nbsp;
+           </div>
+<!--+
+    |start Menu, mainarea
+    +-->
+<!--+
+    |start Menu
+    +-->
+<div id="menu">
+<div onclick="SwitchMenu('menu_selected_1.1', '../skin/')" id="menu_selected_1.1Title" class="menutitle" style="background-image: url('../skin/images/chapter_open.gif');">Dokumentation</div>
+<div id="menu_selected_1.1" class="selectedmenuitemgroup" style="display: block;">
+<div class="menupage">
+<div class="menupagetitle">Codegenerierung</div>
+</div>
+</div>
+<div id="credit"></div>
+<div id="roundbottom">
+<img style="display: none" class="corner" height="15" width="15" alt="" src="../skin/images/rc-b-l-15-1body-2menu-3menu.png"></div>
+<!--+
+  |alternative credits
+  +-->
+</div>
+<!--+
+    |end Menu
+    +-->
+<!--+
+    |start content
+    +-->
+<div id="content">
+<div id="skinconf-txtlink"></div>
+<div title="Portable Document Format" class="pdflink">
+<a class="dida" href="Codegenerierung.pdf"><img alt="PDF -icon" src="../skin/images/pdfdoc.gif" class="skin"><br>
+        PDF</a>
+</div>
+<h1>Codegenerierung</h1>
+<div id="minitoc-area">
+<ul class="minitoc">
+<li>
+<a href="#"></a>
+</li>
+<li>
+<a href="#Rahmenbedingungen+">Rahmenbedingungen </a>
+</li>
+<li>
+<a href="#Vertragskomponentenklassen+und+Produktkomponenten+als+Grundlagen+der+Generierung">Vertragskomponentenklassen und Produktkomponenten als Grundlagen der Generierung</a>
+</li>
+<li>
+<a href="#Generierungsregeln">Generierungsregeln</a>
+<ul class="minitoc">
+<li>
+<a href="#Interfaces+und+Implementierungsklassen">Interfaces und Implementierungsklassen</a>
+</li>
+<li>
+<a href="#Attribute+und+Methoden">Attribute und Methoden</a>
+</li>
+<li>
+<a href="#Vererbung">Vererbung</a>
+</li>
+<li>
+<a href="#-N100DC"></a>
+</li>
+<li>
+<a href="#-N100DF"></a>
+</li>
+<li>
+<a href="#-N100E2"></a>
+</li>
+<li>
+<a href="#-N100E5"></a>
+</li>
+<li>
+<a href="#-N100E8"></a>
+</li>
+<li>
+<a href="#-N100EB"></a>
+</li>
+<li>
+<a href="#Erzeugen+von+Vertragskomponenten">Erzeugen von Vertragskomponenten</a>
+</li>
+<li>
+<a href="#Erzeugen+von+Produktkomponenten">Erzeugen von Produktkomponenten</a>
+</li>
+<li>
+<a href="#Wertebereiche">Wertebereiche</a>
+</li>
+<li>
+<a href="#Beziehungen">Beziehungen</a>
+</li>
+<li>
+<a href="#Spezialisierung+von+Beziehungen">Spezialisierung von Beziehungen</a>
+</li>
+<li>
+<a href="#-N101A5"></a>
+</li>
+<li>
+<a href="#-N101A8"></a>
+</li>
+<li>
+<a href="#-N101AB"></a>
+</li>
+<li>
+<a href="#-N101AE"></a>
+</li>
+<li>
+<a href="#-N101B1"></a>
+</li>
+<li>
+<a href="#-N101B4"></a>
+</li>
+<li>
+<a href="#-N101B7"></a>
+</li>
+<li>
+<a href="#-N101BA"></a>
+</li>
+<li>
+<a href="#Validierung">Validierung</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#Der+generierte+Code">Der generierte Code</a>
+</li>
+<li>
+<a href="#Die+Generatorklassen">Die Generatorklassen</a>
+</li>
+<li>
+<a href="#Offene+Punkte%3A">Offene Punkte:</a>
+<ul class="minitoc">
+<li>
+<a href="#Vererbung+zwischen+Produktkomponenten">Vererbung zwischen Produktkomponenten</a>
+</li>
+<li>
+<a href="#Generationen+und+Anpassungsstufen">Generationen und Anpassungsstufen</a>
+</li>
+<li>
+<a href="#Bestimmung+der+relevanten+Generation%3A">Bestimmung der relevanten Generation:</a>
+</li>
+<li>
+<a href="#Generierung+von+Generationen%3A">Generierung von Generationen:</a>
+</li>
+<li>
+<a href="#Wertebereiche+">Wertebereiche </a>
+</li>
+<li>
+<a href="#Einbindung+der+generierten+Klassen+in+eine+Anwendung">Einbindung der generierten Klassen in eine Anwendung</a>
+</li>
+<li>
+<a href="#Umbenennung">Umbenennung</a>
+</li>
+<li>
+<a href="#Customizingm%F6glichkeiten">Customizingm&ouml;glichkeiten</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>FaktorIPS: Codegenerierung</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<a name="N1000F"></a>
+<h2 class="boxed"></h2>
+<div class="section"></div>
+<a name="N10012"></a><a name="Rahmenbedingungen+"></a>
+<h2 class="boxed">Rahmenbedingungen </h2>
+<div class="section">
+<p>Das Dokument beschreibt welcher Java Sourcecode aus den Vertragskomponentenklassen und den Produktkomponenten generiert wird. An den generierten Sourcecode werden dabei zwei Anforderungen gestellt:</p>
+<ol>
+<li>Er sollte typsicher sein, damit Fehler insbesondere auch mit Sourcecode der die generierten Klassen verwendet, durch den Java Compiler gefunden werden.</li>
+<li>Er sollte leicht verst&auml;ndlich sein. Das bedeutet vor allem, dass das konzeptionelle Modell (manifestiert in den Vertragskomponenten) sehr einfach im Code wiederzufinden ist.</li>
+</ol>
+</div>
+<a name="N1001D"></a><a name="Vertragskomponentenklassen+und+Produktkomponenten+als+Grundlagen+der+Generierung"></a>
+<h2 class="boxed">Vertragskomponentenklassen und Produktkomponenten als Grundlagen der Generierung</h2>
+<div class="section">
+<p>&Uuml;ber das Eclipse-Plugin von FaktorIPS ist es m&ouml;glich, ein Modell zu erstellen, das die Basis f&uuml;r die Generierung des Java Sourcecodes ist. Dieses Modell besteht aus zwei Arten von Elementen, den Vertragskomponentenklassen und den Produktkomponenten. Jeder Vertragskomponenteklasse kann eine oder mehrere Produktkomponenten zugeordnet werden. Umgekehrt geh&ouml;rt zu einer Produktkomponente maximal eine Vertragskomponentenklasse.</p>
+<p></p>
+<p>
+<p>
+<img alt="Grafik3" src="#Pictures/100000000000024E000000BE9F98FEB7.jpg"></p>Zu jeder Vertragskomponentenklasse k&ouml;nnen Attribute, Beziehungen und Methoden definiert werden. Es gibt 3 Attributarten: Konstant, &auml;nderbar oder berechnet (constant, changeable, computed).</p>
+<p>Wenn konstante oder &auml;nderbare Attribute einer Vertragskomponentenklasse als produktrelevant gekennzeichnet sind, dann werden sie von FaktorIPS auch als Attribute der zugeordneten Produktkomponente(n) angelegt. Dort k&ouml;nnen f&uuml;r diese Attribute &uuml;ber den Modelleditor Werte eingegeben werden (Konstanter Wert oder Default-Wert). </p>
+<p>Wenn ein berechnetes Attribut &uuml;ber den Modelleditor erfasst wird, dann kann gleichzeitig eine Parameterliste f&uuml;r die zur Berechnung ben&ouml;tigte Methode spezifiziert werden. Die Formel zur Ausf&uuml;hrung der Berechnung muss in den zugeordneten Produktkomponenten definiert werden.</p>
+<p>Auch zwischen Produktkomponenten k&ouml;nnen Beziehungen modelliert werden. Die m&ouml;glichen Partnerproduktkomponenten f&uuml;r eine Beziehung sind aber durch die Beziehungen der zugeh&ouml;rigen Vertragskomponentenklasse eingeschr&auml;nkt, wie das folgende Bild zeigt. Zu jeder Beziehung zwischen Produktkomponenten gibt es eine entsprechende Beziehung zwischen den zugeordneten Vertragskomponentenklassen.</p>
+<p>Die Modellinformation auf Seite der Vertragskomponentenklassen beinhaltet die Information, dass zu einem Hausratvertrag je eine Leistungsvereinbarung f&uuml;r Wasserschaden oder Fahrraddiebstahl geh&ouml;ren kann. Die Beziehungen auf der Seite der Produktkomponenten zeigen, dass das Produkt HausratvertragBasis keine Leistungsvereinbarung f&uuml;r Fahrraddiebstahl enth&auml;lt, das ist dem Produkt HausratvertragPlus vorbehalten. Eine Anwendung k&ouml;nnte diese Information z.B. nutzen, um gesteuert &uuml;ber die Produktdaten anzuzeigen, welche Leistungsvereinbarungen das gew&auml;hlte Produkt bietet. </p>
+<p>
+<p>
+<img alt="Grafik4" src="#Pictures/100000000000034E000001C2AFE21931.jpg"></p>
+</p>
+<p></p>
+<p>Zwischen Vertragskomponentenklassen k&ouml;nnen Vererbungsbeziehungen bestehen. F&uuml;r Produktkomponenten gilt dies derzeit noch nicht. Bei produktrelevanten Attributen hat die Vererbung auf der Seite der Vertragskomponentenklassen aber auch Auswirkungen auf die zugeordneten Produktkomponenten, da die oben genannten &Uuml;bertragungsregeln f&uuml;r Attribute von Vertrags- auf Produktkomponenten auch f&uuml;r geerbete produktrelevante Attribute einer Vertragskomponenteklasse gelten.</p>
+<p>
+<p>
+<img alt="Grafik5" src="#Pictures/10000000000002D00000016899C7B06A.jpg"></p>
+</p>
+</div>
+<a name="N1003F"></a><a name="Generierungsregeln"></a>
+<h2 class="boxed">Generierungsregeln</h2>
+<div class="section">
+<a name="N10043"></a><a name="Interfaces+und+Implementierungsklassen"></a>
+<h3 class="boxed">Interfaces und Implementierungsklassen</h3>
+<p>Ein Beispiel</p>
+<p>Die Generierung wird am Beispiel einer Vertragskomponentenklasse Hausratvertrag mit folgenden Eigenschaften erl&auml;utert:</p>
+<ul>
+<li>konstantes Attribut Versicherungssteuersatz, produktrelevant, published</li>
+<li>&auml;nderbares Attribut Zahlweise, nicht produktrelevant, published</li>
+<li>berechnetes Attribut Bruttopr&auml;mie, produktrelevant, published </li>
+<li>Methode neuberechnung(), published</li>
+</ul>
+<p></p>
+<p>Der Vertragskomponentenklasse Hausratvertrag sind zwei Produktkomponenten HausratvertragPlus und HausratvertragBasis zugeordnet. </p>
+<p></p>
+<p>Nur Attribute und Methoden die published sind, sollen f&uuml;r einen Client sichtbar sein. Diese Forderung wird durch Generierung von Interfaces umgesetzt.</p>
+<p></p>
+<p>Das folgende UML Diagramm zeigt die generierten Interfaces und Klassen im &Uuml;berblick:</p>
+<p>
+<p>
+<img alt="Grafik1" src="#Pictures/10000000000003AC000002A887EC9E01.jpg"></p>
+</p>
+<p>Vertragsseite</p>
+<p>F&uuml;r jede Vertragskomponentenklasse wird ein Interface und eine Klasse generiert (Hausratvertrag und HausratvertagImpl), die Teile von konkreten Versicherungsvertr&auml;gen repr&auml;sentieren. Das Interface definiert die f&uuml;r Clients nutzbare Schnittstelle der Vertragskomponentenklasse (und wird deswegen auch published interface genannt). Die Klasse implementiert das Interface. Innerhalb des Modells kann auch die Klasse referenziert werden, es muss nicht notwendigerweise nur das Interface referenziert werden. Das Interface dient nur dazu, die Schnittstelle f&uuml;r Clients wie UI oder Batchprogramm zu definieren. Ziel des published Interfaces ist es nicht, verschiedene Implementierungen austauschen zu k&ouml;nnen. (Nat&uuml;rlich kann die Implementierung ge&auml;ndert werden, ohne dass sich das Interface &auml;ndert, aber es gibt immer genau eine Implementierung). Interface und Klasse liegen in unterschiedlichen Packages. Der Client sollte nur das Package (die Packages) mit den Interfaces referenzieren.</p>
+<p></p>
+<p>Produktseite</p>
+<p>F&uuml;r jede Vertragskomponentenklasse wird ein Interface und eine Implementierungsklasse generiert (HausratvertragPk und HausratvertragPkImpl). </p>
+<p></p>
+<p>Enth&auml;lt eine Vertragskomponentenklasse ein berechnetes, produktrelevantes Attribut (=&gt;Produktkomponenten enthalten dann also eine Formel), so ist die Klasse, die das Produktinterface implementiert, abstrakt und enth&auml;lt f&uuml;r jedes berechnete Attribut eine abstrakte Berechnungsmethode. In diesem Fall wird f&uuml;r jede in FaktorIPS definierte Produktkomponente, die der Vertragskomponentenklasse zugeordnet ist, eine eigene Javaklasse generiert, die von der abstrakten Implementierungsklasse abgeleitet ist (HausratvertragBasisPk und HausratvertragPlusPk). Enth&auml;lt eine Vertragskomponentenklasse kein berechnetes Attribut, so ist die Implementierungs&shy;klasse nicht abstrakt und f&uuml;r die einzelnen Produktkomponenten wird keine weitere Klasse generiert. </p>
+<p></p>
+<p>Clients k&ouml;nnen und m&uuml;ssen auch direkt auf Produktkomponenten zugreifen. Interfaces von Produktkomponenten werden deshalb in dasselbe Package generiert, wie die Interfaces f&uuml;r die entsprechenden Vertragskomponentenklassen. Analoges gilt f&uuml;r die Implementierungsklassen.</p>
+<p></p>
+<p>&Uuml;bersicht &uuml;ber die generierten Interfaces und Klassen</p>
+<p></p>
+<p>Interface f&uuml;r Vertragskomponentenklasse (Published Interface)<br>Enth&auml;lt alle als published markierten Methoden sowie Zugriffsmethoden (getter/setter) f&uuml;r die als published markierten Attribute. Enth&auml;lt Navigationsmethoden zu anderen Vertragsklasssen. <br>Standardname: Name der Vertragskomponentenklasse, also etwa Hausratvertrag<br>
+</p>
+<p>Implementierungklasse f&uuml;r Vertragskomponentenklasse (Impl-Klasse)<br>Implementiert das published interface. Enth&auml;lt Membervariablen f&uuml;r die Attribute und Beziehungen. Enth&auml;lt die Methodenimplementierung f&uuml;r die in der Vertragskomponentenklasse definierten Methoden sowie Zugriffsmethoden f&uuml;r die Attribute und Beziehungen.<br>Im Konstruktor wird eine Produktkomponente erwartet (s.u.) <br>Standardname: Name der Vertragsklasse + &ldquo;Impl&rdquo;, also etwa HausratvertragImpl</p>
+<p></p>
+<p>Interface f&uuml;r Produktkomponenten zu einer Vertragskomponentenklasse (Pk-Interface)<br>Enth&auml;lt alle Methoden f&uuml;r berechnete Attribute sowie Zugriffsmethoden (getter/setter) f&uuml;r die Member. Enth&auml;lt Navigationsmethoden zu anderen Produktkomponenten. <br>Standardname: Name der Vertragskomponentenklasse + &ldquo;Pk&rdquo;, also etwa HausratvertragPk<br>
+</p>
+<p>Implementierungklasse f&uuml;r Produktkomponenten zu einer Vertragskomponentenklasse (Pk-Klasse)<br>Enth&auml;lt die Vertragskomponentenklasse mindestens ein berechnetes Attribut, ist die Klasse abstrakt. <br>Standardname: Name der Vertragsklasse + &ldquo;PkImpl&rdquo;, also etwa HausratvertragPkImpl</p>
+<p></p>
+<p>Abgeleitete Klassen f&uuml;r Produktkomponenten mit berechneten Attributen (abgeleitete Pk-Klasse)</p>
+<p>Standardname: Name der Produktkomponente</p>
+<p></p>
+<p>(muss m.E. &uuml;berpr&uuml;ft werden, sobald Vererbung zwischen Produktkomponenten eingef&uuml;hrt ist)</p>
+<a name="N1009A"></a><a name="Attribute+und+Methoden"></a>
+<h3 class="boxed">Attribute und Methoden</h3>
+<p>Die Methoden f&uuml;r die berechneten Attribute werden in den abgeleiteten Pk-Klassen implementiert und enthalten die in Java &uuml;bersetzten Formeln. </p>
+<p></p>
+<p>Enth&auml;lt eine Vertragskomponentenklasse ein konstantes, produktrelevantes Attribut (=&gt;Produktkomponenten enth&auml;lt das gleiche Attribut), dann wird bei der Impl- und PkImpl-Klasse eine entsprechende Getter-Methode generiert. Nur die PkImpl-Klasse hat ein entsprechendes Member, die Getter-Methode der Impl-Klasse ruft die Getter-Methode der PkImpl-Klasse &uuml;ber das Pk-Interface. Die PkImpl-Klasse gibt ihr Member zur&uuml;ck. Der Wert des Members wird &uuml;ber einen entsprechenden Parameter im Konstruktor der PkImpl-Klasse gesetzt.</p>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+<caption>Tabelle1</caption>
+<tr>
+<th>Attributtyp</th><th>Nicht produktrelevant</th><th>produktrelevant</th>
+</tr>
+<tr>
+<td>Konstant</td><td>Impl-Klasse:</td><td>Impl-Klasse:PkImpl-Klasse:Wirklich im Konstruktor, wird wahrscheinlich etwas un&uuml;bersichtlich! Vielleicht besser &uuml;ber setter().</td>
+</tr>
+<tr>
+<td>Changeable</td><td>Impl-Klasse:</td><td>Impl-Klasse:PkImpl-Klasse:wie bei konstanten Attributen</td>
+</tr>
+<tr>
+<td>Computed</td><td>Impl-Klasse:Es muss weitere Methode geben, die Wert des Members setzt. Generator kennt diesen Zusammenhang aber nicht.</td><td>Impl-Klasse:Es muss weitere Methode geben, die Berechnungsmethode der PkImpl-Klasse aufruft. Generator kennt diesen Zusammenhang aber nicht.PkImpl-Klasse:</td>
+</tr>
+<tr>
+<td>Derived</td><td>Sp&auml;ter noch zu spezifizierenJeder Getter-Aufruf f&uuml;hrt zu Neuberechnung.</td><td></td>
+</tr>
+</table>
+<p></p>
+<a name="N100CA"></a><a name="Vererbung"></a>
+<h3 class="boxed">Vererbung</h3>
+<p>Es wurde bereits erw&auml;hnt, dass zwischen Vertragskomponentenklassen Vererbungsbeziehungen bestehen k&ouml;nnen. Wie das folgende Bild zeigt, finden sich diese Vererbungsbeziehungen analog in den generierten Interfaces und Pk-Interfaces, sowie in den Impl- und PkImpl-Klassen wieder.</p>
+<p></p>
+<p>Member f&uuml;r produktrelevante Attribute (im Bild &ldquo;a1&rdquo;) geh&ouml;ren zu der PkImpl-Klasse in der gleichen Hierarchieebene wie die Impl-Klasse mit der zugeh&ouml;rigen Getter-Methode auch wenn der Wert f&uuml;r dieses Attribut in einer Produktkomponente definiert wird, die einer abgeleiteten Vertrags&shy;komponentenklasse zugeordnet ist (siehe Kapitel &ldquo;Vertragskomponentenklassen und Produktkomponenten als Grundlagen der Generierung&rdquo;). Von der abgeleiteten Pk-Klasse wird der Wert &uuml;ber Konstruktorparameter zum Member transportiert.</p>
+<p></p>
+<p>Methoden f&uuml;r berechnete Attribute (im Bild &ldquo;a2&rdquo;) werden analog dazu bei dem Pk-Interface und der PkImpl-Klasse spezifiziert (abstrakt), das auf der gleichen Hierarchieebene wie die Impl-Klasse mit der rufenden Methode liegt. Kursive Namen deuten abstrakte Klassen bzw. Methoden an.</p>
+<p>
+<p>
+<img alt="Grafik2" src="#Pictures/100000000000030B000001CCC6B04321.jpg"></p>
+</p>
+<p></p>
+<a name="N100DC"></a><a name="-N100DC"></a>
+<h3 class="boxed"></h3>
+<a name="N100DF"></a><a name="-N100DF"></a>
+<h3 class="boxed"></h3>
+<a name="N100E2"></a><a name="-N100E2"></a>
+<h3 class="boxed"></h3>
+<a name="N100E5"></a><a name="-N100E5"></a>
+<h3 class="boxed"></h3>
+<a name="N100E8"></a><a name="-N100E8"></a>
+<h3 class="boxed"></h3>
+<a name="N100EB"></a><a name="-N100EB"></a>
+<h3 class="boxed"></h3>
+<p></p>
+<p>(muss m.E. &uuml;berpr&uuml;ft werden, sobald Vererbung zwischen Produktkomponenten eingef&uuml;hrt ist)</p>
+<a name="N100F1"></a><a name="Erzeugen+von+Vertragskomponenten"></a>
+<h3 class="boxed">Erzeugen von Vertragskomponenten</h3>
+<p>Jedes Pk-Interface und jede PkImpl-Klasse besitzt eine Factorymethode zur Erzeugung einer neuen Vertragskomponente (siehe UML-Diagramm zum Beispiel). Jede so erzeugte Instanz einer Vertragskomponentenklasse kennt die Produktkomponente, auf deren Basis sie erzeugt wurde. (Beipiel: Jan's Hausrat-Vertrag basiert auf HausratvertragPlus). </p>
+<p></p>
+<p>Die neu erzeugten Vertragskomponenten besitzen zun&auml;chst keine Beziehungen zu anderen Vertragskomponenten. Zur Erzeugung einer kompletten Vertragsstruktur kann der Modellentwickler zus&auml;tzlich eine Faktoryklasse schreiben, die z. B. eine Hausratvertrag-Instanz mit den obligatorischen Vertragsteilen und dem versicherten Objekt Hausrat erzeugt. Diese Klasse wird nicht generiert.</p>
+<p></p>
+<p>Offener Punkt: Vertragskomponenten ohne zugeordnete Produktkomponenten</p>
+<a name="N100FD"></a><a name="Erzeugen+von+Produktkomponenten"></a>
+<h3 class="boxed">Erzeugen von Produktkomponenten</h3>
+<p>Das Erzeugen von Produktkomponenten (zur Laufzeit: Instanzen von nicht abstrakten PkImpl-Klassen oder abgeleiteten Pk-Klassen) erfolgt f&uuml;r alle Typen &uuml;ber die ProductComponentRegistry. FaktorIPS definiert ein Interface f&uuml;r die ProductComponentRegistry und stellt eine Default-Implementierung zur Verf&uuml;gung. Von den Implementierungen des Interfaces wird folgendes Verhalten erwartet. </p>
+<p></p>
+<p>Die Registry wei&szlig;, wo sie die Informationen &uuml;ber die definierten Produktkomponenten und deren Beschreibungen findet (k&ouml;nnten z.B. auch in einer Datenbank abgelegt sein). Die Beschreibungen der Produktkomponenten speichert der IPS-Modelleditor ja schon persistent ab (XML). Der Generator holt zus&auml;tzlich aus den IPS-Modellklassen die Liste aller Produktkomponenten, erg&auml;nzt jedes Element um die qualifizierten Namen der Java-Klassen, die er f&uuml;r die jeweilige Produktkomponenten und ihre Vertragskomponentenklasse generiert, und speichert dies erg&auml;nzte Liste in einem XML-Format ab.</p>
+<p></p>
+<p>Jede Produktkomponente wird durch einen qualifizierten Namen eindeutig identifiziert. &Uuml;ber diesen Name kann von der Registry eine Produktkomponente angefordert werden: &ldquo;getProductComponent(String qn)&rdquo;. Die Registry erzeugt daraufhin ein neues Produktkomponentenobjekt oder gibt ein bereits vorhandenes Objekt zur&uuml;ck. </p>
+<p></p>
+<p>Zum Erzeugen neuer Objekte holt sich die Registry aus der oben genannten Liste der Produktkomponenten die Information &uuml;ber die ben&ouml;tigte Java-Klasse. Dann ruft die Registry zun&auml;chst per reflection den Konstruktor dieser Klasse auf und an der erzeugte Instanz die Methode zur Initialisierung, der als Parameter die Beschreibung der Produktkomponente mitgegeben wird.</p>
+<p></p>
+<p>Die Initialisierung erfolgt durch eine generierte Methode. Diese setzt die Attributwerte und die Verweise auf die referenzierten Produktkomponenten aus der &uuml;bergebenen Beschreibung (XML-Document).</p>
+<p></p>
+<p>Die referenzierten Produktkomponenten werden mit den qualifizierte Namen initialisiert und erst beim Zugriff mit Hilfe der Registry instanziert. Deshalb merkt sich jede Produktkomponente die im Konstruktor &uuml;bergeben Registry-Referenz als Member (der Oberklasse). </p>
+<p></p>
+<p>Zu beachten ist, dass FaktorIPS benutzerdefinierte Datentypen unterst&uuml;tzt z.B. Aufz&auml;hlungstypen wie &ldquo;Zahlungsweise&rdquo;. Damit der Generator die Konvertierung von der XML-Repr&auml;sentation der entsprechenden Werte in die Instanzen des benutzerdefinierten Datentyps erbringen kann, muss f&uuml;r jeden solchen Datentyp dem Generator eine Hilfsklasse zur Verf&uuml;gung gestellt werden, die das Interface DataTypeHelper implementiert. Dieses Interface sieht z.B. die Methode &ldquo;newInstance&rdquo; vor, die ein Codefragment f&uuml;r diese Typkonvertierung erstellt (derzeitige Version muss noch ge&auml;ndert werden).</p>
+<a name="N10115"></a><a name="Wertebereiche"></a>
+<h3 class="boxed">Wertebereiche</h3>
+<p>&Uuml;ber den IPS-Modelleditor k&ouml;nnen an Produkt&shy;komponenten nicht nur Konstanten und Default-Werte sondern auch zul&auml;ssige Wertebereiche f&uuml;r produktrelevante Attribute definiert werden. Die zul&auml;ssigen Zahlungsweisen sind z.B. h&auml;ufig vom gew&auml;hlten Produkttyp abh&auml;ngig. Clients ben&ouml;tigen die Festlegung der Wertebereiche, um Benutzereingaben zu validieren oder dem Benutzer nur die korrekten Werte zur Eingabe anzubieten z.B. &uuml;ber eine Select-Box mit den Bezeichnern f&uuml;r die zul&auml;ssigen Zahlungsweisen.</p>
+<p></p>
+<p>Zu kl&auml;ren: </p>
+<p></p>
+<p>Welche Methoden werden generiert? </p>
+<p>Vorschlag: je &auml;nderbarem, produktrelevantem Attribut:</p>
+<ul>
+<li>Pr&uuml;fmethoden </li>
+</ul>
+<ul>
+<li>f&uuml;r Datentypen bei denen das sinnvoll ist (endlicher Wertebereich ist notwendige Bedingung) Getter f&uuml;r zul&auml;ssiges ValueSet mit Bezeichnern zur Anzeige</li>
+<li>Methoden zur Abfrage von Min- und Max-Werten, falls definiert.</li>
+</ul>
+<p></p>
+<p>Ben&ouml;tigt Generator Unterst&uuml;tzung durch DataTypeHelper?</p>
+<p></p>
+<p>Wie sind Wertebereiche im IPS-Modell repr&auml;sentiert?</p>
+<p></p>
+<p>Werden die Methoden nur an den Produktkomponenten generiert oder auch an den Vertragskomponentenklassen?</p>
+<p>Vorschlag: an beiden, die Methoden an den Vertragskomponentenklassen rufen die Methoden an den Produktkomponenten auf, sind notwendig um bei Bedarf manuell nachbearbeitet werden zu k&ouml;nnen, um den Objektzustand zu ber&uuml;cksichtigen. Also z.B. nicht getErlaubteZahlungsweisen und getMoeglicheZahlungsweisen sondern </p>
+<ul>
+<li>vertragskomponente.getZahlungsweisen liefert die f&uuml;r dieses Objekte zul&auml;ssigen Zahlungsweisen</li>
+<li>produktkomponente.getZahlungsweisen liefert die f&uuml;r die Produktkomponte zul&auml;ssigen Zahlungsweisen</li>
+</ul>
+<p>Bei &auml;nderbaren Attributen mit einem entsprechenden Datentyp w&uuml;rde an der Vertragskomponentenklasse auch nur eine Getter-Methode f&uuml;r den zul&auml;ssigen Wertebereich generiert werden, das passt zu dem Vorschlag.</p>
+<p></p>
+<a name="N1013E"></a><a name="Beziehungen"></a>
+<h3 class="boxed">Beziehungen</h3>
+<p>Im Kapitel &ldquo;Vertragskomponentenklassen und Produktkomponenten als Grundlagen der Generierung&rdquo; ist ein UML-Diagramm enthalten, das den Zusammenhang von Beziehungen zwischen Vertrags- und Produktkomponenten zeigt. Die Regeln f&uuml;r die Generierung von entsprechenden Methoden bei den Impl-Klassen und ihren Interfaces sind in der folgenden Tabelle dargestellt. Wegen der Typsicherheit wird nicht Collection sondern Array verwendet.</p>
+<p></p>
+<table class="ForrestTable" cellspacing="1" cellpadding="4">
+<caption>Tabelle2</caption>
+<tr>
+<th></th><th>Zu-1-Beziehung</th><th>Zu-n-Beziehung</th>
+</tr>
+<tr>
+<td>Getter</td><td>Ergebnistyp: <br>Published Interface des Zieltyps</td><td>Ergebnistyp:<br>Array[Published Interface des Zieltyps]</td>
+</tr>
+<tr>
+<td>Setter</td><td>Parametertyp:<br>Published Interface des Zieltyps</td><td>-</td>
+</tr>
+<tr>
+<td>Add</td><td>-</td><td>Parametertyp:<br>Published Interface des Zieltyps</td>
+</tr>
+<tr>
+<td>Remove</td><td>-</td><td>Parametertyp:<br>Published Interface des Zieltyps</td>
+</tr>
+<tr>
+<td>GetAnzahl</td><td>-</td><td>Ergebnis: Anzahl der Elemente im Array</td>
+</tr>
+</table>
+<p></p>
+<p>Im folgenden UML-Diagramm wird dies f&uuml;r das genannte Beziehungsbeispiel umgesetzt.</p>
+<p></p>
+<p>
+<p>
+<img alt="Grafik8" src="#Pictures/1000000000000208000001A418931FCB.jpg"></p>
+</p>
+<p>Setter, Add- und Remove-Methoden aktualisieren auch die R&uuml;ckrichtung der Beziehungen.</p>
+<p></p>
+<p>Beziehungen zwischen Produktkomponenten sind immer Zu-1-Beziehungen. Da Produkt&shy;komponenten-Objekte des gleichen Typs immer den gleichen Zustand haben, machen Zu-n-Beziehungen keinen Sinn. Wegen der Invarianz des Objektzustandes gibt es auch keine Setter f&uuml;r Beziehungen. Alle referenzierten Objekte m&uuml;ssen im Konstruktor &uuml;bergeben werden!</p>
+<a name="N10189"></a><a name="Spezialisierung+von+Beziehungen"></a>
+<h3 class="boxed">Spezialisierung von Beziehungen</h3>
+<p>Betrachten wir noch einmal das obige Beziehungsbeispiel. Aufgrund des fachlichen Zusammenhangs sollte eine Leistungsvereinbarung, die mit der Methode setLvbWasserschaden oder setLvbFahrraddienstahl gesetzt wurde, in dem Array enthalten sein, das die Methode getLvbSachschaden liefert. Umgekehrt sollten die Methoden addLvbSachschaden und removeLvbSachschaden Auswirkungen auf die Ergebnisse der Methoden getLvbWasserschaden oder getLvbFahrraddienstahl haben, falls eine Leistungsvereinbarung vom Typ LvbWasserschaden bzw. LvbFahrraddienstahl hinzugef&uuml;gt oder entfernt wird.</p>
+<p>Um entsprechenden Code zu generieren, muss dieser fachliche Zusammenhang im IPS-Modell bekannt gemacht werden. Dies erfolgt dadurch, wie unten dargestellt, dass den Beziehungen zwischen den abgeleiteten Vertragskomponentenklassen die Beziehung zwischen den Super-Vertragskomponentenklassen als &ldquo;Super-Relation&rdquo; zugeordnet wird.</p>
+<p>
+<p>
+<img alt="Grafik7" src="#Pictures/10000000000002EA0000015EA4AD2779.jpg"></p>
+</p>
+<p>F&uuml;r die Umsetzung dieser Information im generierten Sourcecode gibt es z.B. Die beiden folgenden M&ouml;glichkeiten.</p>
+<p></p>
+<p>todo: F&auml;nde, es sch&ouml;n, wenn wir die akutelle Hausratdemo als Grundlage aller Beispiele nehmen.</p>
+<p></p>
+<p>Spezialisierung von Beziehungen mit abstrakter Oberklasse</p>
+<p></p>
+<p>
+<p>
+<img alt="Grafik9" src="#Pictures/1000000000000208000001E08016118F.jpg"></p>
+</p>
+<p></p>
+<a name="N101A5"></a><a name="-N101A5"></a>
+<h3 class="boxed"></h3>
+<a name="N101A8"></a><a name="-N101A8"></a>
+<h3 class="boxed"></h3>
+<a name="N101AB"></a><a name="-N101AB"></a>
+<h3 class="boxed"></h3>
+<a name="N101AE"></a><a name="-N101AE"></a>
+<h3 class="boxed"></h3>
+<a name="N101B1"></a><a name="-N101B1"></a>
+<h3 class="boxed"></h3>
+<a name="N101B4"></a><a name="-N101B4"></a>
+<h3 class="boxed"></h3>
+<a name="N101B7"></a><a name="-N101B7"></a>
+<h3 class="boxed"></h3>
+<a name="N101BA"></a><a name="-N101BA"></a>
+<h3 class="boxed"></h3>
+<p>public void addSachvertrag(Sachvertrag sachvertrag) {</p>
+<p>ArgumentCheck.notNull(sachvertrag);</p>
+<p>if (sachvertrag instanceof HausratvertragImpl) {</p>
+<p>setHausratvertrag((Hausratvertrag) sachvertrag);</p>
+<p>return;</p>
+<p>}</p>
+<p>if (sachvertrag instanceof GlasvertragImpl) {</p>
+<p>setGlasvertrag((Glasvertrag) sachvertrag);</p>
+<p>return;</p>
+<p>}</p>
+<p>throw new IllegalArgumentException(</p>
+<p>"Eine Hausratpolice kann keinen Vertrag der Klasse "</p>
+<p>+ sachvertrag.getClass() + " enthalten.");</p>
+<p>}</p>
+<p></p>
+<p>public void removeSachvertrag(Glasvertrag sachvertrag) {</p>
+<p>ArgumentCheck.notNull(sachvertrag);</p>
+<p>if (sachvertrag == hausratvertrag) {</p>
+<p>hausratvertrag.setSachpolice(null);</p>
+<p>hausratvertrag = null;</p>
+<p>return;</p>
+<p>}</p>
+<p>if (sachvertrag == glasvertrag) {</p>
+<p>glasvertrag.setSachpolice(null);</p>
+<p>glasvertrag = null;</p>
+<p>return;</p>
+<p>}</p>
+<p>}</p>
+<p></p>
+<p>public Sachvertrag[] getSachvertraege() {</p>
+<p>ArrayList vertraege = new ArrayList();</p>
+<p>if (glasvertrag != null) {</p>
+<p>vertraege.add(glasvertrag);</p>
+<p>}</p>
+<p>if (hausratvertrag != null) {</p>
+<p>vertraege.add(hausratvertrag);</p>
+<p>}</p>
+<p>return (SachvertragImpl[]) vertraege</p>
+<p>.toArray(new SachvertragImpl[vertraege.size()]);</p>
+<p>}</p>
+<p></p>
+<p>Spezialisierung von Beziehungen mit unver&auml;nderter Oberklasse</p>
+<p></p>
+<p>Bei der zweiten Alternative bleibt die Impl-Klasse der Super-Vertragskomponentenklasse unver&auml;ndert. Es werden nur die Methoden addLvbSachschaden und removeLvbSachschaden in der abgeleiteten Impl-Klasse &uuml;berschrieben, au&szlig;erdem werden die Methoden setLvbWasserschaden und setLvbFahrraddienstahl erweitert.</p>
+<p></p>
+<p>public void addSachvertrag(Sachvertrag sachvertrag) { ... wie in erster Alternative }</p>
+<p></p>
+<p>public void removeSachvertrag(Glasvertrag sachvertrag) {</p>
+<p>ArgumentCheck.notNull(sachvertrag);</p>
+<p>if (sachvertrag == hausratvertrag) {</p>
+<p>hausratvertrag.setSachpolice(null);</p>
+<p>hausratvertrag = null;</p>
+<p>super.removeSachvertrag(sachvertrag);</p>
+<p>return;</p>
+<p>}</p>
+<p>if (sachvertrag == glasvertrag) {</p>
+<p>glasvertrag.setSachpolice(null);</p>
+<p>glasvertrag = null;</p>
+<p>super.removeSachvertrag(sachvertrag);</p>
+<p>return;</p>
+<p>}</p>
+<p>}</p>
+<p></p>
+<p>public void setGlasvertrag(Glasvertrag glasvertrag) {</p>
+<p>this.glasvertrag = (GlasvertragImpl) glasvertrag;</p>
+<p>this.glasvertrag.setSachpolice(this);</p>
+<p>this.glasvertrag.setHausrat(hausrat);</p>
+<p>super.addSachvertrag(glasvertrag);</p>
+<p>}</p>
+<p></p>
+<p>Die zweite Alternative hat den Vorteil, dass durch das Einf&uuml;hren einer Super-Relation Klassen nicht zwingend abstrakt werden m&uuml;ssen. </p>
+<p></p>
+<p>Wie entscheiden wir Jan?</p>
+<p></p>
+<p></p>
+<a name="N10248"></a><a name="Validierung"></a>
+<h3 class="boxed">Validierung</h3>
+<p>Die Klasse PolicyComponentImpl, von der alle Impl-Klassen direkt oder indirekt abgeleitet sind, implementiert die Methoden validate, validateSelf und validateDependencies. Die Methode validate hat nur die Aufgabe validateSelf und validateDependencies aufzurufen. Die Methodenr&uuml;mpfe von validateSelf und validateDependencies sind leer und m&uuml;ssen von den Subklassen bei Bedarf &uuml;berschrieben werden. ValidateSelf soll den Zustand des Objektes selbst also die Attributwerte und die Existenz notwendiger Referenzen &uuml;berpr&uuml;fen, validateDependencies bei abh&auml;ngigen Objekten wiederum validate aufrufen. </p>
+<p></p>
+<p>Einziger Parameter ist bei allen Methoden eine MessageList, in die Fehlernachrichten f&uuml;r die Anzeige eingef&uuml;gt werden.</p>
+<p></p>
+<p>In der ersten Stufe wird der Generator bei den Vertragskomponentenklassen, die Methodenr&uuml;mpfe f&uuml;r validateSelf und validateDependencies und in validateDependencies die Weiterleitung des Aufrufs an abh&auml;ngige Objekte (Composition) erzeugen. </p>
+<p></p>
+<p>Sp&auml;ter dann auch Aufruf der im IPS-Modelleditor spezifizierten Validation Rules. Der dazugeh&ouml;rige Fehlertext wird auch im Modelleditor als Kommentar eingegeben.</p>
+<p>Generierung von Code f&uuml;r &Uuml;berpr&uuml;fung von Attributwerten und Existenz notwendiger Referenzen ist noch zu kl&auml;ren, manuell muss auf jeden Fall der Fehlertext erg&auml;nzt werden. </p>
+</div>
+<a name="N10259"></a><a name="Der+generierte+Code"></a>
+<h2 class="boxed">Der generierte Code</h2>
+<div class="section">
+<p>Nichtterminale und Ausdr&uuml;cke in spitzen Klammern, Terminale fett.</p>
+<p></p>
+<p>InterfacePolicyCmptType(PolicyCmptType pc) ::=</p>
+<p>&lt;InterfaceJavadoc(pc)&gt;</p>
+<p>&lt;InteracePackage(pc)&gt;</p>
+<p>&lt;InterfaceImports(pc)&gt;</p>
+<p>public interface &lt;pc.name&gt; extends &lt;pc.supertype&gt; {</p>
+<p>&lt;InterfaceGetterAndSetterAttribute(pc.attributes[i])&gt;*</p>
+<p>&lt;InterfaceGetterAndSetterRelation(pc.relations[i])&gt;*</p>
+<p>&lt;InterfacePublishedMethod(pc.methods[i])&gt;*</p>
+<p>}</p>
+<p></p>
+<p>ImplPolicyCmptType(PolicyCmptType pc) ::=</p>
+<p>&lt;ImplJavadoc(pc)&gt;</p>
+<p>&lt;ImplPackage(pc)&gt;</p>
+<p>&lt;ImplImports(pc)&gt;</p>
+<p>public class &lt;pc.name&gt;Impl extends &lt;pc.supertype&gt;Impl implements &lt;pc.interfacename&gt; {</p>
+<p>&lt;ImplAttributeMembers(pc.attributes[i])&gt;*</p>
+<p>&lt;ImplRelationMembers(pc.attributes[i])&gt;*</p>
+<p>&lt;ImplGetterAndSetterAttribute(pc.attributes[i])&gt;*</p>
+<p>&lt;ImplGetterAndSetterRelation(pc.relations[i])&gt;*</p>
+<p>&lt;ImplMethod(pc.methods[i])&gt;*</p>
+<p>}</p>
+<p></p>
+<p>InterfaceGetterAndSetterAttribute(Attribute a) ::=</p>
+<p>if(a.modifier == Modifier.PUBLISHED) {</p>
+<p>&lt;SignatureGetterAttribute(a)&gt;;</p>
+<p>if(a.attributeType == AttributeType.CHANGABLE) {</p>
+<p>&lt;SignatureSetterAttribute(a)&gt;;</p>
+<p>}</p>
+<p>}</p>
+<p></p>
+<p>SignatureGetterAttribute(Attribute a) ::=</p>
+<p>&lt;JavadocGetterAttribute(a)&gt;</p>
+<p>public &lt;a.datatype&gt; get&lt;Capitalise(a.name)&gt; ()</p>
+<p></p>
+<p>SignatureSetterAttribute(Attribute a) ::=</p>
+<p>&lt;JavadocSetterAttribute(a)&gt;</p>
+<p>public void set&lt;Capitalise(a.name)&gt; (&lt;a.datatype&gt; newValue)</p>
+<p></p>
+<p>InterfaceGetterAndSetterRelation(Relation r) ::=</p>
+<p>&lt;SignatureGetterRelation(r)&gt;;</p>
+<p>if(r.is1ToMany()) {</p>
+<p>&lt;SignatureAddRelation(r)&gt;;</p>
+<p>&lt;SignatureRemoveRelation(r);</p>
+<p>} else // 1 to 1 {</p>
+<p>&lt;SignatureSetterRelation(r)&gt;;</p>
+<p>}</p>
+<p>&lt;SignatureNumOfRelation(r)&gt;;</p>
+<p></p>
+<p>SignatureGetterRelation(Relation r) ::=</p>
+<p>&lt;JavadocGetterRelation(r)&gt;</p>
+<p>if(r.is1ToMany()) {</p>
+<p>&lt;r.modifier&gt; &lt;r.target.javatype&gt;[] getAll&lt;r.name&gt;( )</p>
+<p>} else // 1 to 1 {</p>
+<p>&lt;r.modifier&gt; &lt;r.target.javatype&gt; get&lt;r.name&gt;( )</p>
+<p>}</p>
+<p>SignatureSetterRelation(r) ::=</p>
+<p>&lt;JavadocSetterRelation(r)&gt;</p>
+<p>public void set&lt;r.name&gt;(&lt;r.target.javatype&gt; refObject) </p>
+<p></p>
+<p>SignatureAddRelation(r) ::=</p>
+<p>&lt;JavadocAddRelation(r)&gt;</p>
+<p>public void add&lt;r.name&gt;(&lt;r.target.javatype&gt; refObject) </p>
+<p></p>
+<p>SignatureRemoveRelation(r) ::=</p>
+<p>&lt;JavadocRemoveRelation(r)&gt;</p>
+<p>public void remove&lt;r.name&gt;(&lt;r.target.javatype&gt; refObject) </p>
+<p></p>
+<p>InterfacePublishedMethod(Method m) ::=</p>
+<p>if(m.modifier == Modifier.PUBLISHED) {</p>
+<p>&lt;SignatureMethod(m)&gt;;</p>
+<p>}</p>
+<p></p>
+<p>SignatureMethod(Method m) ::=</p>
+<p>&lt;JavadocPublishedMethod(m)&gt;</p>
+<p>&lt;m.modifier&gt; &lt;m.datatype&gt; &lt;m.name&gt; ( &lt;ParameterDecl(m.parameter[i])&gt;* )</p>
+<p></p>
+<p>ParameterDecl(Parameter p) ::=</p>
+<p>&lt;p.datatype&gt; &lt;p.name&gt;</p>
+<p></p>
+<p>ImplAttributeMembers ::=</p>
+<p></p>
+<p>ImplRelationMembers ::=</p>
+<p></p>
+<p>ImplGetterAndSetterAttribute ::=</p>
+<p></p>
+<p>ImplGetterAndSetterRelation ::=</p>
+<p></p>
+<p>ImplMethod ::=</p>
+<p></p>
+</div>
+<a name="N10301"></a><a name="Die+Generatorklassen"></a>
+<h2 class="boxed">Die Generatorklassen</h2>
+<div class="section">
+<p></p>
+<p>
+<p>
+<img alt="Grafik6" src="#Pictures/10000000000002EE0000029E77D7D677.jpg"></p>
+</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+</div>
+<a name="N10310"></a><a name="Offene+Punkte%3A"></a>
+<h2 class="boxed">Offene Punkte:</h2>
+<div class="section">
+<a name="N10314"></a><a name="Vererbung+zwischen+Produktkomponenten"></a>
+<h3 class="boxed">Vererbung zwischen Produktkomponenten</h3>
+<p>Idee war erst mal, dass man der Fachabteilung so etwas kompliziertes wie Vererbung nicht zumutet.</p>
+<p>Szenario: Einer Vertragskomponentenklasse sind 20 Produktkomponenten zugeordnet (Generationen noch gar nicht ber&uuml;cksichtigt). Die Vertragskomponentenklasse hat eine konstantes Attribut K und ein berechnetes B. K hat f&uuml;r jede Produktkomponenten einen anderen Wert, f&uuml;r B gibt es nur zwei unterschiedliche Formeln. </p>
+<p>Problem: Wenn Formel in jede abgeleitet Pk-Klasse kopiert wird, dann ist die Wartung der Formeln nicht gerade state of the art.</p>
+<p>Vorschlag: Produktkomponenten k&ouml;nnen Super-Produktkomponente haben, von der sie Attributdefinitionen und Formeln erben. &Uuml;berschreiben ist nat&uuml;rlich m&ouml;glich aber nicht zwingend n&ouml;tig.</p>
+<p>Regel: Super-Produktkomponente muss der gleichen Vertragskomponentenklasse oder einer Super-Vertragskomponentenklasse zugeordnet sein.</p>
+<p>Vorteil: Formeln und Attributdefinitionen m&uuml;ssen nur einmal bei der entsprechenden Supe-Produktkomponente definiert werden.</p>
+<p>Auswirkung auf generierten Code ist zu pr&uuml;fen. Bauchgef&uuml;hl: Pk-Interface bleibt, Pk-Impl fliegt raus. Einsparen von Pk-Klassen ohne unterschiedliches Verhalten (berechnete Attribute) kann analog durch die Pk-Klassen f&uuml;r die Super-Produktkomponenten geleistet werden.</p>
+<a name="N10326"></a><a name="Generationen+und+Anpassungsstufen"></a>
+<h3 class="boxed">Generationen und Anpassungsstufen</h3>
+<p>Im PM gibt es Generationen und Anpassungsstufen (Achtung begriffen werden verdreht gebraucht). Warum kommen wir nur mit Generationen aus?</p>
+<p>L&ouml;sung: neue Produktkomponenten anlegen, sp&auml;ter &uuml;ber IPS Modelleditor unterst&uuml;tzen</p>
+<a name="N1032E"></a><a name="Bestimmung+der+relevanten+Generation%3A"></a>
+<h3 class="boxed">Bestimmung der relevanten Generation:</h3>
+<p>Wenn ich zum Beispiel Jans Hausratvertrag erzeugt habe und den nach dem Versicherungssteuersatz frage, dann ben&ouml;tige ich ein Datum zu dem ich das tun will, da es in unterschiedlichen Generationen unterschiedliche Steuers&auml;tze geben k&ouml;nnte. Wie komme ich an dieses Datum? </p>
+<a name="N10334"></a><a name="Generierung+von+Generationen%3A"></a>
+<h3 class="boxed">Generierung von Generationen:</h3>
+<p>Die Produktkomponente gibt Zugriff auf ihre Generationen. Sie kann sowohl alle Generationen zur&uuml;ckliefern als auch die zu einem Stichtag g&uuml;ltige Generation. </p>
+<p>Produktkomponentenklasse</p>
+<p>Enth&auml;lt eine Methode, die f&uuml;r ein G&uuml;ltigkeitsdatum die passende Generation zur&uuml;ckgibt (s.u.).<br>Enth&auml;lt eine Methode, die alle Generationen der Komponente zur&uuml;ckgibt. </p>
+<p>Produktkomponentengenerationsklasse<br>Enth&auml;lt eine Membervariable, die den G&uuml;ltigkeitsbeginn enth&auml;lt. <br>Enth&auml;lt f&uuml;r jedes konstante Attribut eine Membervariable. <br>Enth&auml;lt f&uuml;r jede Membervariable eine getter Methode. <br>Hat einen Konstruktor, der alle Membervariable setzt. <br>Enth&auml;lt f&uuml;r jede Beziehung eine Methode, die die entsprechenden referenzierten Produktkomponenten zur&uuml;ckgibt. TODO: Wie kommt man an die Daten?<br>Enth&auml;lt die Vertragskomponentenklasse mindestens ein berechnetes Attribut, ist die Klasse abstrakt und enth&auml;lt f&uuml;r jedes berechnete Attribute eine abstrakte Berechnungsmethode.<br>Standardname: Name der Vertragsklasse + &ldquo;PkGen&rdquo;, also etwa HausratvertragPkGen</p>
+<a name="N10350"></a><a name="Wertebereiche+"></a>
+<h3 class="boxed">Wertebereiche </h3>
+<p>Wie kann bei produktrelevanten Attributen, der Wertebereich produktspezifisch gesetzt werden und wie wird das bei der Generierung umgesetzt? Wie erfolgt &Uuml;berpr&uuml;fung der Wertebereiche?</p>
+<p>&Uuml;berpr&uuml;fung kann zwar generiert werden, aber der fehlertext?? vorschlag: unterstuetzen, benutzer muss noch ran.</p>
+<a name="N10358"></a><a name="Einbindung+der+generierten+Klassen+in+eine+Anwendung"></a>
+<h3 class="boxed">Einbindung der generierten Klassen in eine Anwendung</h3>
+<p>Bevor es zur eigentlichen Codegenerierung geht, anbei noch einige Vorstellungen von mir zu dem Thema Modellobjekte.</p>
+<p></p>
+<p>Verwendung der Modellobjekte im Application Server</p>
+<p>Modellobjekte sind reine POJOs, und sind unabh&auml;ngig von einer konkreten Technologie wie z. B. EJBs. Die Modellobjekte sollten aber in einem Application Server inkl. Persistenz ablauff&auml;hig sein. Da k&ouml;nnte man sich einmal das Springframework ansehen, die bekommen das wohl ganz gut hin. (M&ouml;chte ein Kunde direkt z. B. Entitybeans generieren, kann das durch Anpassung des Generators erfolgen. Interessant w&auml;re hier auch noch was in EJB 3.0 kommt, mit den EntityBeans ist man ja nicht so recht gl&uuml;cklick.)</p>
+<p></p>
+<p>Persistenz der Modellobjekte</p>
+<p>Hier habe ich die Vorstellung, dass in den Vertragskomponentenklassen gleichzeitig notwendige Persistenzinformationen abgelegt werden. Da diese vom verwendeten Persistenzmechanismus abh&auml;ngt, sollte FaktorIPS an dieser Stelle entsprechende Customizingm&ouml;glichkeiten (in Form von eigenes ExtensionPoints) bereitstellen. Dazu sollte es nach M&ouml;glichkeit eine Implementierung geben, zum Beispiel f&uuml;r Hibernate.</p>
+<p></p>
+<p>Historisierung der Modellobjekte</p>
+<p>Noch nicht ber&uuml;cksichtigt.</p>
+<p></p>
+<p>Verwendung der Modellobjekte</p>
+<p>Es wird davon ausgegangen, dass die Modellobjekte &uuml;ber LPCs aufgerufen werden, nicht &uuml;ber RPCs. Ist es erforderlich die Modellobjekte remote aufzurufen, so muss die Remoteschnittstelle programmiert werden, sie wird nicht generiert.</p>
+<a name="N10372"></a><a name="Umbenennung"></a>
+<h3 class="boxed">Umbenennung</h3>
+<p>Wird derzeit nicht unterst&uuml;tzt. Vorschlag IPS-Modelleditor sollte Umbenennung oder &Auml;nderungen des Attributtyps vorerst nicht zulassen. Muss erstmal &uuml;ber L&ouml;schen und Neuanlegen gemacht werden.</p>
+<a name="N10378"></a><a name="Customizingm%F6glichkeiten"></a>
+<h3 class="boxed">Customizingm&ouml;glichkeiten</h3>
+<p>Meine Vorstellung ist, dass die Art&amp;Weise wie der Code generiert wird in einem Projekt durch Customizing ge&auml;ndert werden kann. Dabei sollten einmal folgende Varianten m&ouml;glich sein:</p>
+<ol>
+<li>Die generelle Struktur der generierten Klassen bleibt unver&auml;ndert, aber die Art&amp;Weise wie z.B. Getter oder Setter Methoden generiert werden wird angepasst. Das kann man wahrscheinlich gut &uuml;ber eine Art Templatemechanismus abbilden. Idee w&auml;re, den in Eclipse verwendeten Mechanismus zu benutzen.</li>
+<li>Es werden andere Klassen und Interfaces auf Basis der Vertragskomponentenklassen und Produktkomponenten erzeugt. In diesem Fall wird der komplette Generator ausgetauscht (wobei durchaus Teile des existierenden wiederverwendet werden k&ouml;nnen).</li>
+</ol>
+<p></p>
+<p></p>
+</div>
+</div>
+<!--+
+    |end content
+    +-->
+<div class="clearboth">&nbsp;</div>
+</div>
+<div id="footer">
+<!--+
+    |start bottomstrip
+    +-->
+<div class="lastmodified">
+<script type="text/javascript"><!--
+document.write("Last Published: " + document.lastModified);
+//  --></script>
+</div>
+<div class="copyright">
+ Copyright &copy; 2005 Faktor Zehn GmbH</div>
+<div id="feedback">
+    Send feedback about the website to:
+  <a id="feedbackto" href="mailto:webmaster@foo.com?subject=Feedback%C2%A0dokumentation/Codegenerierung.html">webmaster@foo.com</a>
+</div>
+<!--+
+    |end bottomstrip
+    +-->
+</div>
+</body>
+</html>

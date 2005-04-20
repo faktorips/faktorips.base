@@ -1,0 +1,14 @@
+WARN    (2005-04-20) 20:30.35:684   [org.apache.jcs.config.OptionConverter] (Unknown-URI) Unknown-thread/LogKitLogger: Could not find value for key jcs.default.elementattributes
+WARN    (2005-04-20) 20:30.35:684   [org.apache.jcs.engine.control.CompositeCacheConfigurator] (Unknown-URI) Unknown-thread/LogKitLogger: Could not instantiate eAttr named 'jcs.default.elementattributes', using defaults.
+WARN    (2005-04-20) 20:30.35:694   [org.apache.jcs.config.OptionConverter] (Unknown-URI) Unknown-thread/LogKitLogger: Could not find value for key jcs.system.groupIdCache.elementattributes
+WARN    (2005-04-20) 20:30.35:694   [org.apache.jcs.engine.control.CompositeCacheConfigurator] (Unknown-URI) Unknown-thread/LogKitLogger: Could not instantiate eAttr named 'jcs.system.groupIdCache.elementattributes', using defaults.
+WARN    (2005-04-20) 20:30.35:915   [org.apache.jcs.config.OptionConverter] (Unknown-URI) Unknown-thread/LogKitLogger: Could not find value for key jcs.region.main.elementattributes
+WARN    (2005-04-20) 20:30.35:915   [org.apache.jcs.engine.control.CompositeCacheConfigurator] (Unknown-URI) Unknown-thread/LogKitLogger: Could not instantiate eAttr named 'jcs.region.main.elementattributes', using defaults.
+WARN    (2005-04-20) 20:30.44:447   [org.apache.jcs.auxiliary.disk.indexed.IndexedDisk] (Unknown-URI) Unknown-thread/LogKitLogger: Resetting data file
+WARN    (2005-04-20) 20:30.44:447   [org.apache.jcs.auxiliary.disk.indexed.IndexedDisk] (Unknown-URI) Unknown-thread/LogKitLogger: Resetting data file
+WARN    (2005-04-20) 20:30.44:447   [org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCache] (Unknown-URI) Unknown-thread/LogKitLogger: Closing files, base filename: main
+WARN    (2005-04-20) 20:30.44:447   [org.apache.jcs.engine.control.CompositeCache] (Unknown-URI) Unknown-thread/LogKitLogger: Called close for main
+WARN    (2005-04-20) 20:30.44:457   [org.apache.jcs.auxiliary.disk.indexed.IndexedDisk] (Unknown-URI) Unknown-thread/LogKitLogger: Resetting data file
+WARN    (2005-04-20) 20:30.44:457   [org.apache.jcs.auxiliary.disk.indexed.IndexedDisk] (Unknown-URI) Unknown-thread/LogKitLogger: Resetting data file
+WARN    (2005-04-20) 20:30.44:467   [org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCache] (Unknown-URI) Unknown-thread/LogKitLogger: Closing files, base filename: groupIdCache
+WARN    (2005-04-20) 20:30.44:467   [org.apache.jcs.engine.control.CompositeCache] (Unknown-URI) Unknown-thread/LogKitLogger: Called close for groupIdCache
