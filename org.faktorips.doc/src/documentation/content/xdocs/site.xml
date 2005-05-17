@@ -30,15 +30,18 @@ See http://forrest.apache.org/docs/linking.html for more info
 -->
 
 <site label="FaktorIps"  xmlns="http://apache.org/forrest/linkmap/1.0" tab="" >
-  <about label="About">
-    <index label="Index" href="index.html" description="Welcome to faktorips"/>
-  </about>
-  <dokumentation label="Dokumentation" tab="dokumentation" href="dokumentation/">
-    <index href="index.html"/>
-		<codegen label="Codegenerierung" href="Codegenerierung.html"/>
-  </dokumentation>
-	<howto label="Howto" id="howto" href="howto/" tab ="howto" >
+	<faktorips label="FaktorIPS">
 		<index href="index.html"/>
-		<oowriter label="Using OOwriter" href="oowriter.html"/>
-	</howto>
+ 		<welcome label="Welcome" href="welcome.html" description="Welcome"/>
+ 		<lizenz label="Lizenz" href="lizenz.html" description="Lizenz"/>
+ 		<news label="News" href="news.html" description="News"/>
+  	</faktorips>
+  	<dokumentation label="Dokumentation" href="dokumentation/" tab="Dokumentation">
+		<index href="index.html"/>
+		<codegen label="Codegenerierung" href="Codegenerierung.html"/>
+		<howto label="Howtos" id="howtos" href="howtos/">
+			<index href="index.html"/>
+			<oowriter label="Using OOwriter" href="oowriter.html"/>
+		</howto>
+	</dokumentation>
 </site>

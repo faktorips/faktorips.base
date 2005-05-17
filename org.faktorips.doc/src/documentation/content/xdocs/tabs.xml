@@ -18,7 +18,7 @@
 
 <tabs software="FaktorIps"
   title="FaktorIps"
-  copyright="Foo"
+  copyright="FaktorZehn GmbH"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <!-- The rules for tabs are:
@@ -34,10 +34,5 @@
 
   <tab id="home" label="Home" dir="" indexfile="index.html"/>
   <tab id="dokumentation" label="Dokumentation" dir="dokumentation" indexfile="index.html"/>
-  <tab id="howto" label="HowTo" dir="howto" indexfile="index.html"/>
-  <!-- Add new tabs here, eg:
-  <tab label="How-Tos" dir="community/howto/"/>
-  <tab label="XML Site" dir="xml-site/"/>
-  -->
 
 </tabs>
