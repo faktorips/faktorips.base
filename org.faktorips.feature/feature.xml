@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.faktorips.feature"
+      label="org.faktorips.feature"
+      version="0.7.2"
+      provider-name="FaktorZehn">
+
+   <install-handler/>
+
+   <description url="[Enter Feature URL here.]">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="[Enter Copyright URL here.]">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="[Enter License URL here.]">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.core.boot"/>
+      <import plugin="org.eclipse.jdt.source"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.pde.ui"/>
+   </requires>
+
+   <plugin
+         id="org.faktorips.common"
+         download-size="0"
+         install-size="0"
+         version="0.7.2"/>
+
+   <plugin
+         id="org.faktorips.plugin"
+         download-size="0"
+         install-size="0"
+         version="0.7.2"/>
+
+   <plugin
+         id="org.faktorips.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.7.2"/>
+
+   <plugin
+         id="org.faktorips.pmimport"
+         download-size="0"
+         install-size="0"
+         version="0.7.2"/>
+
+</feature>
