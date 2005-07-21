@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="org.faktorips.feature"
-      version="0.7.2"
+      version="0.7.3"
       provider-name="FaktorZehn">
 
    <install-handler/>
@@ -41,24 +41,24 @@
          id="org.faktorips.common"
          download-size="0"
          install-size="0"
-         version="0.7.2"/>
+         version="0.7.3"/>
 
    <plugin
          id="org.faktorips.plugin"
          download-size="0"
          install-size="0"
-         version="0.7.2"/>
+         version="0.7.3"/>
 
    <plugin
          id="org.faktorips.runtime"
          download-size="0"
          install-size="0"
-         version="0.7.2"/>
+         version="0.7.3"/>
 
    <plugin
          id="org.faktorips.pmimport"
          download-size="0"
          install-size="0"
-         version="0.7.2"/>
+         version="0.7.3"/>
 
 </feature>
