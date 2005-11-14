@@ -138,17 +138,4 @@ public class StringUtil
         return System.getProperty("line.separator");
     }
     
-    private final static String shiftLeft(String line, int maxChars) {
-        if (maxChars==0) {
-            return line;
-        }
-        int i=0;
-        char[] chars = line.toCharArray();
-        while (Character.isWhitespace(chars[i]) && i<maxChars) {
-            i++;
-        }
-        return line.substring(i+1);
-    }
-    
-    
 }

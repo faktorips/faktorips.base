@@ -35,16 +35,6 @@ public class LocalizedStringsSet {
     private ClassLoader loader;
     
     /**
-     * Creates a new StringsSet with the indicated qualified name.
-     * 
-     * @throws IllegalArgumentException if the qualifiedName is null.
-     */
-    public LocalizedStringsSet(String qualifiedName) {
-        name = qualifiedName;
-        loader = this.getClass().getClassLoader();
-    }
-    
-    /**
      * Creates a new set that uses the indicated class' name as
      * qualified name.
      * 

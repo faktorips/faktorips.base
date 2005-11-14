@@ -220,6 +220,11 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
     private static class TestReadOnlyBinaryRangTree extends ReadOnlyBinaryRangeTree{
 
         /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		/**
          * @param values
          */
         public TestReadOnlyBinaryRangTree(Map map, int treeType) {

@@ -146,11 +146,9 @@ public class XmlUtil {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
-                Element element = (Element) nl.item(i);
                 return (Element) nl.item(i);
             }
         }
-
         return null;
     }
 

@@ -44,7 +44,7 @@ public class XmlUtilTest extends XmlTestCase {
 
     public void testNodeToString() throws TransformerException {
         Document doc = newDocument();
-        String s = XmlUtil.nodeToString(doc, "Cp1252");
+        XmlUtil.nodeToString(doc, "Cp1252");
     }
     
     public void testGetFirstElement() throws TransformerException, UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
