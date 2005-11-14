@@ -1,0 +1,69 @@
+package org.faktorips.fl.functions;
+
+import org.faktorips.codegen.ConversionCodeGenerator;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.fl.AnyDatatype;
+import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+
+
+/**
+ *
+ */
+public class If extends AbstractFlFunction {
+    
+    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF";
+    
+    public If(String name, String description) {
+        super(name, description, AnyDatatype.INSTANCE, new Datatype[] {Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE});
+    }
+
+    /** 
+     * Overridden method.
+     * @see org.faktorips.fl.FlFunction#compile(org.faktorips.codegen.JavaCodeFragment[])
+     */
+    public CompilationResult compile(CompilationResult[] argResults) {
+        ArgumentCheck.length(argResults, 3);
+        
+        ConversionCodeGenerator ccg = compiler.getConversionCodeGenerator();
+        Datatype datatype1 = argResults[1].getDatatype();
+        Datatype datatype2 = argResults[2].getDatatype();
+        
+        // check if the 2. and 3. argument have either the same datatype or can be converted 
+        if (!datatype1.equals(datatype2)) {
+            if (ccg.canConvert(datatype1, datatype2)) {
+                JavaCodeFragment converted = ccg.getConversionCode(datatype1, datatype2, argResults[1].getCodeFragment());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2);
+                newResult.addMessages(argResults[1].getMessages());
+                argResults[1] = newResult;
+            } else if (ccg.canConvert(datatype2, datatype1)) {
+                JavaCodeFragment converted = ccg.getConversionCode(datatype2, datatype1, argResults[2].getCodeFragment());
+                CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1);
+                newResult.addMessages(argResults[2].getMessages());
+                argResults[2] = newResult;
+            } else {
+                String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[]{datatype1, datatype2});
+                Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
+                return new CompilationResultImpl(msg);
+            }
+        }
+        
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append(argResults[0].getCodeFragment());
+        fragment.append('?');
+        fragment.append(argResults[1].getCodeFragment());
+        fragment.append(':');
+        fragment.append(argResults[2].getCodeFragment());
+        
+        CompilationResultImpl result = new CompilationResultImpl(fragment, argResults[1].getDatatype());
+        result.addMessages(argResults[0].getMessages());
+        result.addMessages(argResults[1].getMessages());
+        result.addMessages(argResults[2].getMessages());
+        return result;
+    }
+
+}

@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Util Plug-in
+Bundle-SymbolicName: org.faktorips.util
+Bundle-Version: 1.0.0
+Bundle-Vendor: Faktorzehn
+Bundle-Localization: plugin
+Bundle-ClassPath: lib/commons-lang-1.0.1.jar
+Export-Package: org.apache.commons.lang,
+ org.apache.commons.lang.builder,
+ org.apache.commons.lang.enum,
+ org.apache.commons.lang.exception,
+ org.faktorips.util
+Require-Bundle: org.junit
