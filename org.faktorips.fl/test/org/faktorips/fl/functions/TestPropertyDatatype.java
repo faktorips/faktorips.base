@@ -14,13 +14,11 @@ import org.faktorips.util.ArgumentCheck;
 public class TestPropertyDatatype extends AbstractDatatype implements PropertyDatatype {
 
     private String name;
-    private Datatype datatype;
     
     public TestPropertyDatatype(String name, Datatype datatype) {
         ArgumentCheck.notNull(name);
         ArgumentCheck.notNull(datatype);
         this.name = name;
-        this.datatype = datatype;
     }
     
     /**

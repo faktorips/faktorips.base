@@ -29,7 +29,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver {
      */
     public void register(String identifier, JavaCodeFragment fragment, Datatype datatype) {
         JavaCodeFragment defensiveCopy = new JavaCodeFragment(fragment); 
-        identifiers.put(identifier, new FragmentDatatypeWrapper(fragment, datatype));
+        identifiers.put(identifier, new FragmentDatatypeWrapper(defensiveCopy, datatype));
     }
 
     /**

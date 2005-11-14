@@ -1,15 +1,14 @@
 package org.faktorips.fl;
 
-import java.io.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -110,7 +109,6 @@ public class ExprEvaluator
 		String className = sourceFile.getName().substring(0, dotPos);
 		
 	    JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-	    JavaCodeFragment classSource = new JavaCodeFragment();
 	    builder.javaDoc("Generated class used for executing the formula");
 		builder.classBegin(Modifier.PUBLIC, className, Object.class, new Class[] {CompiledExpression.class});
 		builder.methodBegin(Modifier.PUBLIC, Object.class, "execute", null, null);
@@ -197,5 +195,4 @@ public class ExprEvaluator
 	
 	private final static String JAVAC_CLASS_NAME = "sun.tools.javac.Main";
 	
-	private ArrayList imports_ = new ArrayList();
 }

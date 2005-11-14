@@ -8,7 +8,7 @@ import org.faktorips.fl.FlFunction;
 /**
  *
  */
-public class AbstractFunctionTest extends AbstractCompilerTest {
+public abstract class AbstractFunctionTest extends AbstractCompilerTest {
 
     protected void registerFunction(FlFunction function) {
         DefaultFunctionResolver resolver = new DefaultFunctionResolver();
