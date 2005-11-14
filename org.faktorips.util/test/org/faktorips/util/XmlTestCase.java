@@ -13,7 +13,7 @@ import org.xml.sax.*;
  * A test case that makes it easier to write test cases that read data from
  * an xml file. 
  */
-public class XmlTestCase extends TestCase {
+public abstract class XmlTestCase extends TestCase {
 
     /**
      * 
