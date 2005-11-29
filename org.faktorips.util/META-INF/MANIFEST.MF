@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Util Plug-in
 Bundle-SymbolicName: org.faktorips.util
-Bundle-Version: 1.0.0
+Bundle-Version: 0.8
 Bundle-Vendor: Faktorzehn
 Bundle-Localization: plugin
 Bundle-ClassPath: lib/commons-lang-1.0.1.jar

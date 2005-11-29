@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Fl Plug-in
 Bundle-SymbolicName: org.faktorips.fl
-Bundle-Version: 1.0.0
+Bundle-Version: 0.8
 Bundle-Vendor: Faktorzehn
 Bundle-Localization: plugin
 Require-Bundle: org.faktorips.common,
