@@ -94,6 +94,13 @@ public class CompilationResultImpl implements CompilationResult {
     }
     
     /**
+     * Adds the code fragment to the result ones.
+     */
+    public void addCodeFragment(JavaCodeFragment code) {
+       codeFragment.append(code); 
+    }
+
+    /**
      * Sets the result's datatype.
      */
     public void setDatatype(Datatype newType) {

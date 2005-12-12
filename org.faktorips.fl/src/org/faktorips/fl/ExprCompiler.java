@@ -58,6 +58,7 @@ import org.faktorips.util.message.Message;
 
 import com.faktor10.openips.fl.parser.FlParser;
 import com.faktor10.openips.fl.parser.ParseException;
+import com.faktor10.openips.fl.parser.TokenMgrError;
 
 /**
  * A compiler to compile expressions.
@@ -83,6 +84,11 @@ public class ExprCompiler {
      * Example: 2 + + b does not conform to the grammar.
      */
     public final static String SYNTAX_ERROR = PREFIX + "SyntaxError"; //$NON-NLS-1$
+
+    /**
+     * The expression has a lexical error. 
+     */
+    public final static String LEXICAL_ERROR = PREFIX + "LexicalError"; //$NON-NLS-1$
 
     /**
      * The operation like +, *, - can't be done on the provided types.
@@ -421,8 +427,10 @@ public class ExprCompiler {
         } catch (Exception pe) {
             return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings
                     .getString(INTERNAL_ERROR, locale)));
+        } catch (TokenMgrError e) {
+            return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, localizedStrings
+                    .getString(LEXICAL_ERROR, locale)));
         }
-
         // parse ok, generate the sourcecode via the visitor visiting the parse tree
         CompilationResult result;
         try {

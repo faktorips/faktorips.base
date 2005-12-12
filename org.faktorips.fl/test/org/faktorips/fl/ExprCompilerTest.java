@@ -59,6 +59,18 @@ public class ExprCompilerTest extends AbstractCompilerTest {
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.SYNTAX_ERROR, result.getMessages().getMessage(0).getCode());
+        
+        // Tokens like , and " cause a TokenMgrError (Error not Exception!)
+        // Test if this is catched
+        result = compiler.compile("1, 2");
+        assertTrue(result.failed());
+        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(ExprCompiler.LEXICAL_ERROR, result.getMessages().getMessage(0).getCode());
+        
+        result = compiler.compile("1\" 2");
+        assertTrue(result.failed());
+        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(ExprCompiler.LEXICAL_ERROR, result.getMessages().getMessage(0).getCode());
     }
     
     public void testOpInvalidTypesError() {
