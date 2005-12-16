@@ -428,8 +428,8 @@ public class ExprCompiler {
             return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings
                     .getString(INTERNAL_ERROR, locale)));
         } catch (TokenMgrError e) {
-            return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, localizedStrings
-                    .getString(LEXICAL_ERROR, locale)));
+            String text = localizedStrings.getString(LEXICAL_ERROR, locale, new String[]{e.getMessage()});
+            return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
         }
         // parse ok, generate the sourcecode via the visitor visiting the parse tree
         CompilationResult result;
