@@ -1,0 +1,97 @@
+package org.faktorips.codegen;
+
+import java.util.*;
+
+import org.faktorips.codegen.conversion.*;
+import org.faktorips.datatype.ConversionMatrix;
+import org.faktorips.datatype.Datatype;
+
+
+/**
+ * The ConversionCodeGenerator extends the ConversionMatrix with the ability to
+ * generate the Java sourcecode needed to convert the value of a given datatype
+ * to another (if the conversion is possible).  
+ */
+public class ConversionCodeGenerator implements ConversionMatrix {
+    
+    /**
+     * Returns a default ConversionCodeGenerator that contains the following
+     * conversions.
+     * <p><ul>
+     * <li>Primitve boolean to Boolean</li>
+     * <li>Boolean to primitive boolean</li>
+     * <li>Primitive int to Integer</li>
+     * <li>Integer to primitive int</li>
+     * <li>Primitive int to Decimal</li>
+     * <li>Integer to Decimal</li>
+     * </ul>
+     */
+    public final static ConversionCodeGenerator getDefault() {
+        ConversionCodeGenerator ccg = new ConversionCodeGenerator();
+        ccg.add(new BooleanToPrimitiveBooleanCg());
+        ccg.add(new IntegerToDecimalCg());
+        ccg.add(new IntegerToPrimitiveIntCg());
+        ccg.add(new PrimitiveBooleanToBooleanCg());
+        ccg.add(new PrimitiveIntToDecimalCg());
+        ccg.add(new PrimitiveIntToIntegerCg());
+        return ccg;
+    }
+    
+    // List of single conversion code generators
+    private List conversions = new ArrayList();
+    
+    /**
+     * Creates a new instance.
+     */
+    public ConversionCodeGenerator() {
+    }
+    
+    public void add(SingleConversionCg conversion) {
+        conversions.add(conversion);
+    }
+
+    /** 
+     * Overridden method.
+     * @see org.faktorips.datatype.ConversionMatrix#canConvert(org.faktorips.datatype.Datatype, org.faktorips.datatype.Datatype)
+     */
+    public boolean canConvert(Datatype from, Datatype to) {
+        if (from.equals(to)) {
+            return true;
+        }
+        for (Iterator it=conversions.iterator(); it.hasNext(); ) {
+            SingleConversionCg cg = (SingleConversionCg)it.next();
+            if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the Java sourcecode that converts a value of Datatype <code>from</code>
+     * to a value of Datatype <code>to</code> if possible. Returns null if the conversion
+     * is not possible.
+     * 
+     * @param from		The datatype to convert from.
+     * @param to		The datatype to convert to.
+     * @param fromValue	A Java sourcecode fragment containing an expression that
+     * evaluates to a value of Datatype from.
+     */
+    public JavaCodeFragment getConversionCode(
+            Datatype from, 
+            Datatype to, 
+            JavaCodeFragment fromValue) {
+        
+        if (from.equals(to)) {
+            return fromValue;
+        }
+        for (Iterator it=conversions.iterator(); it.hasNext(); ) {
+            SingleConversionCg cg = (SingleConversionCg)it.next();
+            if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
+                return cg.getConversionCode(fromValue);
+            }
+        }
+        return null;
+    }
+
+}
