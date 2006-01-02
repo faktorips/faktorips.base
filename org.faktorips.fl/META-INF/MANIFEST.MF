@@ -5,9 +5,10 @@ Bundle-SymbolicName: org.faktorips.fl
 Bundle-Version: 0.8
 Bundle-Vendor: Faktorzehn
 Bundle-Localization: plugin
-Require-Bundle: org.faktorips.common,
- org.junit,
- org.faktorips.util
+Require-Bundle: org.faktorips.util,
+ org.faktorips.dtflcommon,
+ org.faktorips.valuetypes,
+ org.junit
 Export-Package: org.faktorips.fl,
  org.faktorips.fl.functions,
  org.faktorips.fl.operations,

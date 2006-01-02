@@ -10,5 +10,8 @@ Export-Package: org.apache.commons.lang,
  org.apache.commons.lang.builder,
  org.apache.commons.lang.enum,
  org.apache.commons.lang.exception,
- org.faktorips.util
+ org.faktorips.message,
+ org.faktorips.util,
+ org.faktorips.util.memento,
+ org.faktorips.util.message
 Require-Bundle: org.junit
