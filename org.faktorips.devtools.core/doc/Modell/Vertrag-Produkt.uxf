@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>500</x><y>40</y><w>160</w><h>107</h></coordinates><panel_attributes>lt=&gt;&gt;
+             
+enthält
+</panel_attributes><additional_attributes>90;20;120;20;120;70;20;70;20;30</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>40</x><y>30</y><w>150</w><h>100</h></coordinates><panel_attributes>lt=&gt;&gt;
+           enthält
+</panel_attributes><additional_attributes>70;20;40;20;40;80;130;80;130;40</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>117</x><y>40</y><w>140</w><h>30</h></coordinates><panel_attributes>PolicyComponent
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>437</x><y>40</y><w>150</w><h>30</h></coordinates><panel_attributes>ProductComponent
+</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>237</x><y>30</y><w>220</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=0..n
+r1=konfiguriert durch
+</panel_attributes><additional_attributes>200;20;20;20</additional_attributes></element></umlet_diagram>

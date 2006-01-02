@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<merge:options xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/options">
+		
+	<!--
+	    This dictionary pattern defines a regular expression in the "match" attribute and a location where
+	    to look for a string that matches in the "select" attribute. If a pull rule wants to use this dictionary 
+	    pattern it declars in the sourceMarkup or targetMarkup attribute the string that is in parentheses 
+	    surrounded by the characters ^$. 
+	 -->
+    <merge:dictionaryPattern name="generatedMember" select="Member/getComment" match="\s*@\s*(gen)erated\s*\n"/>
+    
+		
+    <!--
+    	This rule doesn't work. The interfaces are not added but overriden. A look in the source code
+    	suggests a false implementation.
+    -->
+    <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperInterfaces" targetPut="Type/addSuperInterface"/>
+
+    <!-- 
+        Pull rules for JMerge. The following configuration forces JMerge to look for the "generated" meta-attribute
+        in the generated content. If available JMerge looks for a Member with the same name in the target content.
+        If also available the target content gets overridden by the generated content. 
+     -->
+    <merge:pull sourceMarkup="^gen$" sourceGet="Method/getBody" targetPut="Method/setBody"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Member/getFlags" targetPut="Member/setFlags"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperclass" targetPut="Type/setSuperclass"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Field/getType" targetPut="Field/setType"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Method/getReturnType" targetPut="Method/setReturnType"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Method/getExceptions" targetPut="Method/addException"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Field/getInitializer" targetPut="Field/setInitializer"/>
+    <merge:pull sourceMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>
+        
+    <!--
+        The sweep rule looks in the target content if there exist Members that are indicated with the "generated"
+        meta-attribute that are not available in the source content. If so it deletes the member in the target
+        content.  
+     -->
+    <merge:sweep markup="^gen$" select="Member"/>
+    
+</merge:options>

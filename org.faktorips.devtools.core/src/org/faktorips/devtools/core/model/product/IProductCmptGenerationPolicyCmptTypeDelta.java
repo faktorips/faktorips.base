@@ -1,0 +1,59 @@
+package org.faktorips.devtools.core.model.product;
+
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+
+/**
+ * A product component generation /policy component type delta describes the difference
+ * between what a product component generation based on specific policy component type
+ * should contain and what it actually contains. 
+ */
+public interface IProductCmptGenerationPolicyCmptTypeDelta {
+    
+    /**
+     * Returns the product component generation this delta was computed for.
+     */
+    public IProductCmptGeneration getProductCmptGeneration();
+    
+    /**
+     * Returns the policy component type this delta was computed for.
+     */
+    public IPolicyCmptType getPolicyCmptType();
+    
+    /**
+     * Returns true if the delta is empty. The product component conforms to
+     * the policy component type it is based on. 
+     */
+    public boolean isEmpty();
+    
+    /**
+     * Returns the attributes defined in the policy component type that aren't
+     * defined in the product component.
+     */
+    public IAttribute[] getAttributesWithMissingConfigElements();
+    
+    /**
+     * Returns the elements where the type defined in the product component
+     * does not fit the one defined in the policy component type. 
+     */
+    public IConfigElement[] getTypeMismatchElements();
+    
+    /**
+     * Returns the config elements with value set type that differ form the value set's type 
+     * found in the corresponding policy component attribute. 
+     */
+    public IConfigElement[] getElementsWithValueSetMismatch();
+    
+    /**
+     * Returns the product component elements that don't have a counterpart
+     * in the policy component type.
+     */
+    public IConfigElement[] getConfigElementsWithMissingAttributes();
+    
+    /**
+     * Returns the product component generation's relations where the corresponding
+     * relation in the policy component type can't be found.
+     */
+    public IProductCmptRelation[] getRelationsWithMissingPcTypeRelations();
+    
+}

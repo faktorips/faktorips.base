@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for TableContentsGenerationImplTest.java
+-->
+<Generation id="0">
+	<Row c0="18" c1="0.5"/>
+	<Row c0="19" c2="0.6"/>
+</Generation>

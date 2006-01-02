@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestCases>
+	<ValueSet>
+		<Enum> 
+			<Value value="one"/>
+			<Value value="two"/>
+			<Value value="three"/>
+		</Enum>
+	</ValueSet>
+</TestCases>

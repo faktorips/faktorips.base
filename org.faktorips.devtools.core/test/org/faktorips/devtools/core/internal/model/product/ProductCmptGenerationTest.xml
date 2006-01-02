@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for ProductCmptGenerationImplTest.java
+-->
+<Generation validFrom="2005-01-01">
+    <ConfigElement type="ProductAttribute" pcTypeAttribute="rate" value="0.5"/>
+    <Relation pcTypeRelation="coverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
+</Generation>
