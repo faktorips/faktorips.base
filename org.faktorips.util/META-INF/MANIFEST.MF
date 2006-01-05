@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Util Plug-in
+Bundle-Name: FaktorIPS-Util
 Bundle-SymbolicName: org.faktorips.util
-Bundle-Version: 0.8
+Bundle-Version: 0.8.0
 Bundle-Vendor: Faktorzehn
 Bundle-Localization: plugin
-Bundle-ClassPath: lib/commons-lang-1.0.1.jar
 Export-Package: org.apache.commons.lang,
  org.apache.commons.lang.builder,
  org.apache.commons.lang.enum,
@@ -15,3 +14,5 @@ Export-Package: org.apache.commons.lang,
  org.faktorips.util.memento,
  org.faktorips.util.message
 Require-Bundle: org.junit
+Bundle-ClassPath: .,
+ lib/commons-lang-1.0.1.jar

@@ -56,8 +56,6 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.DECIMAL);
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());
-        
-        SumBeanArrayPropertyFct.sumDecimal(new Object[]{new SimpleBean(Decimal.valueOf(10, 0)), new SimpleBean(Decimal.valueOf(21, 0))}, "getValue");
         return result;
     }
     

@@ -1,64 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.faktorips.feature"
-      label="org.faktorips.feature"
-      version="0.7.6"
+      label="FaktorIPS"
+      version="0.8.0"
       provider-name="FaktorZehn">
-
    <install-handler/>
 
-   <description url="[Enter Feature URL here.]">
+   <description url="http://www.example.com/description">
       [Enter Feature Description here.]
    </description>
 
-   <copyright url="[Enter Copyright URL here.]">
+   <copyright url="http://www.example.com/copyright">
       [Enter Copyright Description here.]
    </copyright>
 
-   <license url="[Enter License URL here.]">
+   <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
 
    <requires>
-      <import plugin="org.junit"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.core.boot"/>
-      <import plugin="org.eclipse.jdt.source"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.pde.ui"/>
+      <import plugin="org.eclipse.text"/>
    </requires>
 
    <plugin
-         id="org.faktorips.common"
+         id="org.faktorips.devtools.core"
          download-size="0"
          install-size="0"
-         version="0.7.6"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
-         id="org.faktorips.plugin"
+         id="org.faktorips.devtools.stdbuilder"
          download-size="0"
          install-size="0"
-         version="0.7.6"/>
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.dtflcommon"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.fl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.faktorips.runtime"
          download-size="0"
          install-size="0"
-         version="0.7.6"/>
+         version="0.0.0"/>
 
    <plugin
-         id="org.faktorips.pmimport"
+         id="org.faktorips.util"
          download-size="0"
          install-size="0"
-         version="0.7.6"/>
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.valuetypes"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

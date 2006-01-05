@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FaktorIPS-Devtools-Core
 Bundle-SymbolicName: org.faktorips.devtools.core; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 0.8.0
 Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: FaktorZehn
 Bundle-Localization: plugin
@@ -27,6 +27,11 @@ Eclipse-AutoStart: true
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
  org.faktorips.devtools.core.internal.model,
+ org.faktorips.devtools.core.internal.model.businessfct,
+ org.faktorips.devtools.core.internal.model.pctype,
+ org.faktorips.devtools.core.internal.model.product,
+ org.faktorips.devtools.core.internal.model.tablecontents,
+ org.faktorips.devtools.core.internal.model.tablestructure,
  org.faktorips.devtools.core.model,
  org.faktorips.devtools.core.model.businessfct,
  org.faktorips.devtools.core.model.extproperties,
@@ -46,5 +51,10 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.ui.editors.tablecontents,
  org.faktorips.devtools.core.ui.editors.tablestructure,
  org.faktorips.devtools.core.ui.forms,
+ org.faktorips.devtools.core.ui.views.explorer,
  org.faktorips.devtools.core.ui.wizards,
+ org.faktorips.devtools.core.ui.wizards.pctype,
+ org.faktorips.devtools.core.ui.wizards.productcmpt,
+ org.faktorips.devtools.core.ui.wizards.tablecontents,
+ org.faktorips.devtools.core.ui.wizards.tablestructure,
  org.faktorips.devtools.core.util
