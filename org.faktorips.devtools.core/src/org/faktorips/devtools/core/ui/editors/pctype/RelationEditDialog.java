@@ -36,8 +36,8 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  */
 public class RelationEditDialog extends IpsPartEditDialog {
     
-    private final static String PROPERTY_PM_CLASSRELATION_ID = "com.bbv.faktorips.relation.pmClassRelationId";
-    private final static String PROPERTY_PM_TARGET_OBJECT_NAME = "com.bbv.faktorips.relation.pmTargetObjectName";
+    private final static String PROPERTY_PM_CLASSRELATION_ID = "de.bbv.faktorips.relation.pmClassRelationId";
+    private final static String PROPERTY_PM_TARGET_OBJECT_NAME = "de.bbv.faktorips.relation.pmTargetObjectName";
     
     private IRelation relation;
     

@@ -46,7 +46,7 @@ import org.faktorips.util.message.ObjectProperty;
 public class AttributeEditDialog extends IpsPartEditDialog implements ParameterListChangeListener,
         ValueSetChangeListener {
 
-    private final static String PROPERTY_PM_PROPERTY_NAME_ID = "com.bbv.faktorips.attribute.pmPropertyName";
+    private final static String PROPERTY_PM_PROPERTY_NAME_ID = "de.bbv.faktorips.attribute.pmPropertyName";
     	
     private IAttribute attribute;
 

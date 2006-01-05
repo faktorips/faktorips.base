@@ -27,7 +27,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GeneralInfoSection extends IpsSection {
     
-    private final static String PROPERTY_PM_OBJECT_NAME = "com.bbv.faktorips.pctype.pmObjectName";
+    private final static String PROPERTY_PM_OBJECT_NAME = "de.bbv.faktorips.pctype.pmObjectName";
     	
     private IPolicyCmptType pcType;
     private IpsObjectUIController uiController;
