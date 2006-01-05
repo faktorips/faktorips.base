@@ -1,0 +1,55 @@
+<%@ jet package="org.faktorips.devtools.stdbuilder.table" imports="org.faktorips.devtools.core.model.tablestructure.* org.apache.commons.lang.StringUtils" class="TableRowGenerator" skeleton="Skeleton.java" %>
+package <%=getJavaSourceFileBuilder().getPackage(ipsSrcFile)%>;
+<%ITableStructure tableStructure = (ITableStructure)ipsSrcFile.getIpsObject();%>
+ 
+<%markImportLocation(stringBuffer);
+
+	String CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
+	String GET_FIELD_JAVADOC = "TABLE_ROW_BUILDER_GET_FIELD_JAVADOC";
+	String CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
+%>
+
+/**
+ * <%=getLocalizedText(CLASS_JAVADOC)%>
+ */ 
+public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>{
+
+<%			IColumn[] columns = tableStructure.getColumns();
+        for (int i = 0; i < columns.length; i++) {
+            String columnName = columns[i].getName();
+            String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
+%>
+
+	private <%=appendClassName(qualifiedDatatypeName)%> <%=columnName%>;            
+			<%}%>
+
+	/**
+	 * <%=getLocalizedText(CONSTRUCTOR_JAVADOC)%>
+	 */
+	public <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>(<%
+    for (int i = 0; i < columns.length; i++) {
+	    String columnName = columns[i].getName();
+	    String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
+	    if(i > 0){%><%=", "%><%}%><%=appendClassName(qualifiedDatatypeName)%> <%=columnName%><%
+	   }%>){
+	  <%
+        for (int i = 0; i < columns.length; i++) {
+					String columnName = columns[i].getName();%>
+          this.<%=columnName%> = <%=columnName%>;   
+      <%}
+	  %>
+	}
+ 
+<%      for (int i = 0; i < columns.length; i++) {
+            String columnName = columns[i].getName();
+            String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
+%>
+	/**
+	 * <%=getLocalizedText(GET_FIELD_JAVADOC)%>
+	 */            
+	public <%=appendClassName(qualifiedDatatypeName)%> get<%=StringUtils.capitalise(columnName)%>(){
+		return <%=columnName%>;
+	}
+<%        }%>
+}
+<%addImports(stringBuffer);%>
