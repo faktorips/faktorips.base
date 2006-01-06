@@ -78,7 +78,7 @@ public class ValidationRuleDef extends IpsObjectPart implements IValidationRuleD
      * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IValidationRuleDef.gif");
+        return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif");
     }
 
     /** 

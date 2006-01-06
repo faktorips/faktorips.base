@@ -117,8 +117,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public Image getImage(String name) {
         Image image = getImageRegistry().get(name);
         if (image == null) {
-            String iconPath = "icons/";
-            URL url = getBundle().getEntry(iconPath + '/' + name);
+            URL url = getBundle().getEntry("icons/" + name);
             ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
             if (descriptor == null) {
                 descriptor = ImageDescriptor.getMissingImageDescriptor();
