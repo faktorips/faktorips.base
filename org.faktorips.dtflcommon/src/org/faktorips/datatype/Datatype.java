@@ -106,4 +106,5 @@ public interface Datatype extends Comparable {
      */
     public abstract String getJavaClassName();
     
+  
 }

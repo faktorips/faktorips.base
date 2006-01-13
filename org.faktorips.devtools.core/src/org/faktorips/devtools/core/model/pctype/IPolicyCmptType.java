@@ -139,6 +139,13 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      */
     public IType getJavaImplementationType() throws CoreException;
 
+    
+    /**
+     * Returns the qualified Java interface name that instances of this datatype correspond to. 
+     */
+    public abstract String getJavaInterfaceName();
+   
+    
     /**
      * Returns the type's attributes.
      */

@@ -842,6 +842,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             throw new RuntimeException(e);
         }
     }
+    
+    public String getJavaInterfaceName() {
+    	try  {
+    		return getJavaType(JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE).getFullyQualifiedName();
+    	} catch (CoreException e) {
+            throw new RuntimeException(e);
+    	}
+    }
+    
 
     /** 
      * Overridden method.

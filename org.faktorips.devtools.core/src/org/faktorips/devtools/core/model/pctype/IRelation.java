@@ -63,6 +63,12 @@ public interface IRelation extends IIpsObjectPart {
     public final static int JAVA_PRODUCTCMPT_NUMOF_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_NUMOF_METHOD;
     public final static int JAVA_PRODUCTCMPT_NUMOF_METHOD_INTERFACE = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_NUMOF_METHOD;
     
+    
+    
+    
+	public static final String CARDINALITY_ONE = "1";
+	public static final String CARDINALITY_MANY = "*";
+    
     /**
      * Returns the policy component type this relation belongs to.
      */
@@ -252,5 +258,6 @@ public interface IRelation extends IIpsObjectPart {
      * @throws CoreException if an error occurs while searching.
      */
     public IRelation findContainerRelationOfTypeReverseComposition() throws CoreException;
+
     
 }
