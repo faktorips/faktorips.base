@@ -8,6 +8,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 
@@ -87,7 +88,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
             IPolicyCmptType target) {
         String comment = getProductCmptImplBuilder().getLocalizedText(RELATION_FIELD_COMMENT,
             relation.getName());
-        memberVarsBuilder.javaDoc(comment, BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+        memberVarsBuilder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, String.class,
             getProductCmptRelation1To1FieldName(relation), new JavaCodeFragment("null"));
     }
@@ -104,7 +105,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
         } else {
             fieldName = getProductCmptRelation1To1FieldName(relation);
         }
-        memberVarsBuilder.javaDoc(comment, BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+        memberVarsBuilder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, String.class.getName() + "[]",
             fieldName, new JavaCodeFragment("new String[0]"));
     }
@@ -134,7 +135,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
 
         methodsBuilder.method(Modifier.PUBLIC, targetQualifiedName + "[]", methodName,
             new String[0], new String[0], body, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private JavaCodeFragment getRelationGetAllMethodBody(IRelation relation,
@@ -197,7 +198,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
             RELATION_IMPLEMENTATION_NUMOF_JAVADOC, relation.getTargetRoleSingular());
         methodsBuilder.method(Modifier.PUBLIC, Datatype.PRIMITIVE_INT.getJavaClassName(),
             methodName, new String[0], new String[0], body, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private void createRelationGetNumOfMethod1To1(JavaCodeFragmentBuilder methodsBuilder,
@@ -240,7 +241,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
         String javaDoc = getProductCmptImplBuilder().getLocalizedText(
             RELATION_IMPLEMENTATION_GETTER_JAVADOC, relation.getTargetRoleSingular());
         methodsBuilder.method(Modifier.PUBLIC, targetQualifiedName, methodName, new String[0],
-            new String[0], body, javaDoc, BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            new String[0], body, javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private String getProductCmptImplGetMethodName(IRelation relation) {
@@ -274,7 +275,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
             RELATION_IMPLEMENTATION_GETTER_JAVADOC, relation.getTargetRoleSingular());
         methodsBuilder.method(Modifier.PUBLIC, targetQualifiedName, methodName,
             new String[] { "productCmptName" }, new String[] { String.class.getName() }, body,
-            javaDoc, BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     protected void buildContainerRelation(JavaCodeFragmentBuilder memberVarsBuilder,

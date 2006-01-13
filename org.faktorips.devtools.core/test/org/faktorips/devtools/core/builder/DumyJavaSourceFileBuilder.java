@@ -16,7 +16,7 @@ class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
     protected String generate() throws CoreException {
         generateCalled = true;
-        return null;
+        return "";
     }
 
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {

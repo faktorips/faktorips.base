@@ -9,6 +9,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -17,12 +18,13 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.runtime.ProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
-public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
+public class ProductCmptInterfaceCuBuilder extends AbstractPcTypeBuilder {
 
     private final static String ATTRIBUTE_INTERFACE_GETTER_JAVADOC = "ATTRIBUTE_INTERFACE_GETTER_JAVADOC";
     private final static String ATTRIBUTE_INTERFACE_COMPUTE_JAVADOC = "ATTRIBUTE_INTERFACE_COMPUTE_JAVADOC";
@@ -32,26 +34,12 @@ public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
     private PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder;
 
     public ProductCmptInterfaceCuBuilder(IJavaPackageStructure packageStructure, String kindId) throws CoreException {
-        super(packageStructure, kindId,
-                new LocalizedStringsSet(ProductCmptInterfaceCuBuilder.class));
+        super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptInterfaceCuBuilder.class));
         setMergeEnabled(true);
     }
 
     public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder) {
         this.policyCmptTypeInterfaceBuilder = policyCmptTypeInterfaceBuilder;
-    }
-
-    private void checkIfDependentBuildersSet() {
-        String builderName = null;
-
-        if (policyCmptTypeInterfaceBuilder == null) {
-            builderName = PolicyCmptTypeInterfaceCuBuilder.class.getName();
-        }
-
-        if (builderName != null) {
-            throw new IllegalStateException(
-                    "One of the builders this builder depends on is not set: " + builderName);
-        }
     }
 
     /**
@@ -64,60 +52,6 @@ public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
     }
 
     /**
-     * Extends the visibility of the super class method.
-     * 
-     * @see org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder#getJavaCodeFragementBuilder()
-     */
-    public JavaCodeFragmentBuilder getJavaCodeFragementBuilder() {
-        return super.getJavaCodeFragementBuilder();
-    }
-
-    IPolicyCmptType getPolicyCmptType() {
-        return (IPolicyCmptType)getIpsObject();
-    }
-
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder#generateInternal()
-     */
-    protected void generateInternal() throws CoreException {
-        checkIfDependentBuildersSet();
-        getJavaCodeFragementBuilder().javaDoc(null, ANNOTATION_GENERATED);
-        getJavaCodeFragementBuilder().interfaceBegin(getUnqualifiedClassName(), getSupertypeName());
-        getJavaCodeFragementBuilder().appendln();
-
-        ProductCmptInterfaceRelationBuilder relationBuilder = new ProductCmptInterfaceRelationBuilder(
-                this);
-        if (!getPolicyCmptType().isAbstract()) {
-            buildCreateMethod();
-        }
-        buildAttributes(getPolicyCmptType().getAttributes());
-        relationBuilder.buildRelations();
-        /*
-         * Im alten code werden die container relations mit dieser Methode gebaut. Dies führt dazu
-         * dass unter bestimmten Umständen Methoden doppelt generiert werden. Ich habe nicht
-         * verstanden warum das im alten Code nicht der Fall ist. Jedenfalls wird mit dieser Methode
-         * im alten Code unnötige Methoden erzeugt die schon im Superinterface deklariert wurden.
-         * Sieht also so aus als benötigt man den Aufruf nicht.
-         */
-        // relationBuilder.buildContainerRelations();
-        getJavaCodeFragementBuilder().classEnd();
-    }
-
-    private String getSupertypeName() throws CoreException {
-        String javaSupertype = ProductComponent.class.getName();
-        if (StringUtils.isNotEmpty(getPolicyCmptType().getSupertype())) {
-            IPolicyCmptType supertype = getPolicyCmptType().getIpsProject().findPolicyCmptType(
-                getPolicyCmptType().getSupertype());
-            javaSupertype = supertype == null ? javaSupertype : getQualifiedClassName(supertype
-                    .getIpsSrcFile());
-        }
-        return javaSupertype;
-
-    }
-
-    /**
      * Overridden IMethod.
      * 
      * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
@@ -126,26 +60,8 @@ public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
-    protected void buildAttribute(IAttribute a) throws CoreException {
-        if (a.isProductRelevant()) {
-            Datatype datatype = getPolicyCmptType().getIpsProject().findDatatype(a.getDatatype());
-            DatatypeHelper helper = getPolicyCmptType().getIpsProject().getDatatypeHelper(datatype);
-            if (helper == null) {
-                throw new CoreException(new IpsStatus("Error building attribute " + a.getName()
-                        + " of " + getPolicyCmptType() + ". No datatype helper found for datatype "
-                        + datatype));
-            }
-            if (a.getAttributeType() == AttributeType.COMPUTED
-                    || a.getAttributeType() == AttributeType.DERIVED) {
-                createAttributeComputeDeclaration(a, datatype);
-            } else {
-                createAttributeGetterDeclaration(a, datatype);
-            }
-            buildAttributeValueSetDeclaration(a, datatype, helper);
-        }
-    }
-
-    private void buildAttributeValueSetDeclaration(IAttribute a,
+    private void buildAttributeValueSetDeclaration(JavaCodeFragmentBuilder methodsBuilder,
+            IAttribute a,
             Datatype datatype,
             DatatypeHelper helper) throws CoreException {
         if (a.getValueSet().isAllValues()) {
@@ -154,15 +70,15 @@ public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
 
         String javaDocMax = getLocalizedText(JAVA_GETTER_METHOD_MAX_VALUESET, a.getName());
         if (a.getValueSet().isRange()) {
-            getJavaCodeFragementBuilder().methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT,
-                helper.getRangeJavaClassName(), getProductInterfaceGetMaxValueSetMethodName(a),
-                new String[0], new String[0], javaDocMax, ANNOTATION_GENERATED);
+            methodsBuilder.methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT, helper.getRangeJavaClassName(),
+                    getProductInterfaceGetMaxValueSetMethodName(a), new String[0], new String[0], javaDocMax,
+                    ANNOTATION_GENERATED);
         } else {
-            getJavaCodeFragementBuilder().methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT,
-                datatype.getJavaClassName() + "[]", getProductInterfaceGetMaxValueSetMethodName(a),
-                new String[0], new String[0], javaDocMax, ANNOTATION_GENERATED);
+            methodsBuilder.methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT, datatype.getJavaClassName() + "[]",
+                    getProductInterfaceGetMaxValueSetMethodName(a), new String[0], new String[0], javaDocMax,
+                    ANNOTATION_GENERATED);
         }
-        getJavaCodeFragementBuilder().append(';');
+        methodsBuilder.append(';');
     }
 
     private String getProductInterfaceGetMaxValueSetMethodName(IAttribute a) {
@@ -175,27 +91,25 @@ public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
      * @throws CoreException
      * @throws JavaModelException
      */
-    private void createAttributeComputeDeclaration(IAttribute a, Datatype datatype)
-            throws JavaModelException, CoreException {
+    private void createAttributeComputeDeclaration(JavaCodeFragmentBuilder methodsBuilder, IAttribute a, Datatype datatype) throws JavaModelException,
+            CoreException {
         String methodName = "compute" + StringUtils.capitalise(a.getName());
 
         String javaDoc = getLocalizedText(ATTRIBUTE_INTERFACE_COMPUTE_JAVADOC, a.getName());
 
         Parameter[] parameters = a.getFormulaParameters();
-        getJavaCodeFragementBuilder().methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT,
-            datatype.getJavaClassName(), methodName,
-            BuilderHelper.extractParameterNames(parameters),
-            BuilderHelper.transformParameterTypesToJavaClassNames(a.getIpsProject(), parameters),
-            javaDoc, ANNOTATION_GENERATED);
-        getJavaCodeFragementBuilder().append(';');
+        methodsBuilder.methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT, datatype.getJavaClassName(),
+                methodName, BuilderHelper.extractParameterNames(parameters),
+                BuilderHelper.transformParameterTypesToJavaClassNames(a.getIpsProject(), parameters), javaDoc,
+                ANNOTATION_GENERATED);
+        methodsBuilder.append(';');
     }
 
     /**
      * @param a
      * @param datatype
      */
-    private void createAttributeGetterDeclaration(IAttribute a, Datatype datatype)
-            throws CoreException {
+    private void createAttributeGetterDeclaration(JavaCodeFragmentBuilder methodsBuilder, IAttribute a, Datatype datatype) throws CoreException {
         String methodName;
         if (a.getAttributeType() == AttributeType.CHANGEABLE) {
             methodName = getPcInterfaceGetDefaultValueMethodName(a);
@@ -204,21 +118,18 @@ public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
         }
         String javaDoc = getLocalizedText(ATTRIBUTE_INTERFACE_GETTER_JAVADOC, a.getName());
 
-        getJavaCodeFragementBuilder().methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT,
-            datatype.getJavaClassName(), methodName, new String[0], new String[0], javaDoc,
-            ANNOTATION_GENERATED);
-        getJavaCodeFragementBuilder().append(';');
+        methodsBuilder.methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT, datatype.getJavaClassName(),
+                methodName, new String[0], new String[0], javaDoc, ANNOTATION_GENERATED);
+        methodsBuilder.append(';');
     }
 
-    private void buildCreateMethod() throws CoreException {
+    private void buildCreateMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String javaDoc = getLocalizedText(JAVA_CREATE_POLICY_CMPT_METHOD);
-        getJavaCodeFragementBuilder().methodBegin(
-            Modifier.PUBLIC | Modifier.ABSTRACT,
-            policyCmptTypeInterfaceBuilder.getQualifiedClassName(getPolicyCmptType()
-                    .getIpsSrcFile()),
-            "create" + StringUtils.capitalise(getPolicyCmptType().getName()), new String[0],
-            new String[0], javaDoc, ANNOTATION_GENERATED);
-        getJavaCodeFragementBuilder().append(';');
+        methodsBuilder.methodBegin(Modifier.PUBLIC | Modifier.ABSTRACT,
+                policyCmptTypeInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile()),
+                "create" + StringUtils.capitalise(getPcType().getName()), new String[0], new String[0],
+                javaDoc, ANNOTATION_GENERATED);
+        methodsBuilder.append(';');
         return;
     }
 
@@ -230,5 +141,82 @@ public class ProductCmptInterfaceCuBuilder extends BaseJavaSourceFileBuilder {
     // duplicate in ProductCmptImplCuBuilder
     private String getPcInterfaceGetValueMethodName(IAttribute a) {
         return "get" + StringUtils.capitalise(a.getName());
+    }
+
+    protected void assertConditionsBeforeGenerating() {
+        String builderName = null;
+
+        if (policyCmptTypeInterfaceBuilder == null) {
+            builderName = PolicyCmptTypeInterfaceCuBuilder.class.getName();
+        }
+
+        if (builderName != null) {
+            throw new IllegalStateException("One of the builders this builder depends on is not set: " + builderName);
+        }
+    }
+
+    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
+        builder.javaDoc(null, ANNOTATION_GENERATED);
+    }
+
+    protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        if (!getPcType().isAbstract()) {
+            buildCreateMethod(memberVarsBuilder);
+        }
+    }
+
+    protected boolean generatesInterface() {
+        return true;
+    }
+
+    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
+        // TODO Auto-generated method stub
+
+    }
+
+    protected String getSuperclass() throws CoreException {
+        return null;
+    }
+
+    protected String[] getExtendedInterfaces() throws CoreException {
+        String javaSupertype = ProductComponent.class.getName();
+        if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
+            IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(getPcType().getSupertype());
+            javaSupertype = supertype == null ? javaSupertype : getQualifiedClassName(supertype.getIpsSrcFile());
+        }
+        return new String[] { javaSupertype };
+    }
+
+    protected void generateCodeForAttribute(IAttribute attribute,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        if (attribute.isProductRelevant()) {
+            Datatype datatype = getPcType().getIpsProject().findDatatype(attribute.getDatatype());
+            if (attribute.getAttributeType() == AttributeType.COMPUTED
+                    || attribute.getAttributeType() == AttributeType.DERIVED) {
+                createAttributeComputeDeclaration(methodsBuilder, attribute, datatype);
+            } else {
+                createAttributeGetterDeclaration(methodsBuilder, attribute, datatype);
+            }
+            buildAttributeValueSetDeclaration(methodsBuilder, attribute, datatype, datatypeHelper);
+        }
+    }
+
+    protected void generateCodeForRelation(IRelation relation,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        ProductCmptInterfaceRelationBuilder relationBuilder = new ProductCmptInterfaceRelationBuilder(this);
+        relationBuilder.buildRelation(methodsBuilder, relation);
+    }
+
+    /**
+     * Empty implementation.
+     */
+    protected void generateCodeForContainerRelations(IRelation containerRelation,
+            IRelation[] subRelations,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     }
 }

@@ -10,6 +10,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 
@@ -99,7 +100,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         String comment = getPolicyCmptTypeImplBuilder().getLocalizedText(RELATION_FIELD_COMMENT,
             relation.getName());
         methodsBuilder.javaDoc(comment,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+                JavaSourceFileBuilder.ANNOTATION_GENERATED);
         methodsBuilder.varDeclaration(
             Modifier.PRIVATE, javaClassname, getPolicyCmptImplFieldName(relation),
             initialValueExpression);
@@ -152,7 +153,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             new String[] { "refObject" },
             new String[] { getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()) }, body, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private void createRelationContainsMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
@@ -191,7 +192,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             new String[] { "refObject" },
             new String[] { getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()) }, body, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+                    JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private void createRelationGetAllMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
@@ -213,7 +214,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
 
         methodsBuilder.method(Modifier.PUBLIC, classname + "[]",
             methodName, new String[0], new String[0], code, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private void createRelationGetNumOfMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
@@ -243,7 +244,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
 
         methodsBuilder.method(Modifier.PUBLIC,
             Datatype.PRIMITIVE_INT.getJavaClassName(), methodName, new String[0], new String[0],
-            body, javaDoc, BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            body, javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private void createRelationGetterMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
@@ -271,7 +272,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
 
         methodsBuilder.method(Modifier.PUBLIC, classname, methodName,
             new String[0], new String[0], body, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private String getPolicyCmptImplRemoveMethodName(IRelation r) {
@@ -320,7 +321,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             new String[] { "refObject" },
             new String[] { getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()) }, body, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+                    JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private String getPolicyCmptImplSetMethodName(IRelation r) {
@@ -373,7 +374,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         methodsBuilder.method(Modifier.PUBLIC,
             Datatype.VOID.getJavaClassName(), methodName, new String[] { "refObject" },
             new String[] { classname }, body, javaDoc,
-            BaseJavaSourceFileBuilder.ANNOTATION_GENERATED);
+            JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     protected void buildRelation(JavaCodeFragmentBuilder memberVarsBuilder,

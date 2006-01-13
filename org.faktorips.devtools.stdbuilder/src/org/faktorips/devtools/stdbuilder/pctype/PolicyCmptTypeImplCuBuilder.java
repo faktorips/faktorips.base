@@ -220,7 +220,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * override
+     * overidden
      */
     protected void generateCodeForRelation(IRelation relation,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -244,7 +244,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * override
+     * overidden
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         createConstructor(builder, true);
@@ -252,14 +252,14 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * override
+     * overidden
      */
     protected boolean generatesInterface() {
         return false;
     }
 
     /**
-     * override
+     * overidden
      */
     protected String getSuperclass() throws CoreException {
         String javaSupertype = PolicyComponentImpl.class.getName();
