@@ -55,6 +55,8 @@ public interface IIpsObject extends IIpsElement, IExtensionPropertyAccess, Valid
      * @param kind A kind constant identifying the type of compilation unit.
      * @return The corresponding compilation unit. Note that the unit might not
      * exists!
+     * 
+     * @deprecated
      * @throws IllegalArgumentException if the kind constant is illegal.
      * @throws CoreException if an errors occurs while accessing the Java type.   
      */
@@ -63,6 +65,8 @@ public interface IIpsObject extends IIpsElement, IExtensionPropertyAccess, Valid
     /**
      * Returns all Java types that correspond to this IPS object. Note that
      * none of the returned Java types must exist.
+     * 
+     * @deprecated
      */
     public IType[] getAllJavaTypes() throws CoreException;
 }

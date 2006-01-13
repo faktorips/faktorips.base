@@ -38,28 +38,28 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * The Java type that contains the policy component extension implementation.
      * The extension implementation is the implementation where the developer using
      * FaktorIps places his own code.
-     * 
+     * @deprecated
      * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
      */
     public final static int JAVA_POLICY_CMPT_EXTENSTION_IMPLEMENTATION_TYPE = 1;
     
     /**
      * The Java type that contains the policy component's published interface.
-     * 
+     * @deprecated
      * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
      */
     public final static int JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE = 2;
     
     /**
      * The Java type that contains the product component implementation.
-     * 
+     * @deprecated
      * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
      */
     public final static int JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE = 3;
     
     /**
      * The Java type that contains the product component's published interface.
-     * 
+     * @deprecated
      * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
      */
     public final static int JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE = 4;
@@ -134,7 +134,7 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     /**
      * If an extension compilation unit is generated for this policy component type, the extension type (defined
      * in the compilation unit) is returned. Otherwise the base implementation type is returned.
-     *  
+     * @deprecated
      * @throws CoreException if an error occurs while accesing the Java type.
      */
     public IType getJavaImplementationType() throws CoreException;

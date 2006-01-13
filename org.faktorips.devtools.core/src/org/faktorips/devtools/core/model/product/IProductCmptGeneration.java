@@ -13,6 +13,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
 
     /**
      * The Java type that contains the implementation.
+     * @deprecated
      */
     public final static int JAVA_IMPLEMENTATION_TYPE = IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION;
     
@@ -97,13 +98,17 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * exists!
      * @throws IllegalArgumentException if the kind constant is illegal.
      * @throws CoreException if an error occurs while searching the IType. For example if this generation does not
-     * contain a formula and the corresponding policy component type can't be found, a CoreException is thrown.   
+     * contain a formula and the corresponding policy component type can't be found, a CoreException is thrown.
+     * 
+     * @deprecated
      */
     public IType getJavaType(int kind) throws CoreException;
     
     /**
      * Returns all Java types that correspond to this product component generation. Note that
      * none of the returned Java types must exist.
+     * 
+     * @deprecated
      */
     public IType[] getAllJavaTypes() throws CoreException;
     

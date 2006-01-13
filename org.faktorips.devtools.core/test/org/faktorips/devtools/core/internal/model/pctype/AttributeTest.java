@@ -1,17 +1,12 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.Signature;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.PluginTest;
 import org.faktorips.devtools.core.model.EnumValueSet;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.Range;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -195,87 +190,5 @@ public class AttributeTest extends PluginTest {
         assertEquals("a", vekt[0]);
         assertEquals("b", vekt[1]);
         assertEquals("x", vekt[2]);
-    }
-
-    public void testGetJavaMethod_GetterMethodPolicyImplementation() throws CoreException {
-        attribute.setName("premium");
-        attribute.setDatatype("Money");
-        // getter method implementation
-        IMethod method = attribute.getJavaMethod(IAttribute.JAVA_GETTER_METHOD_IMPLEMENATION);
-        assertNotNull(method);
-        assertEquals("getPremium", method.getElementName());
-        assertEquals(0, method.getNumberOfParameters());
-    }
-    
-    public void testGetJavaMethod_GetterMethodPolicyInterface() throws CoreException {
-        attribute.setName("premium");
-        attribute.setDatatype("Money");
-        IMethod method = attribute.getJavaMethod(IAttribute.JAVA_GETTER_METHOD_INTERFACE);
-        assertNotNull(method);
-        assertEquals("getPremium", method.getElementName());
-        assertEquals(0, method.getNumberOfParameters());
-    }
-    
-    public void testGetJavaMethod() throws CoreException {
-        attribute.setName("premium");
-        attribute.setDatatype("Money");
-
-        // setter method implementation
-        IMethod method = attribute.getJavaMethod(IAttribute.JAVA_SETTER_METHOD_IMPLEMENATION);
-        assertNotNull(method);
-        assertEquals("setPremium", method.getElementName());
-        assertEquals(1, method.getNumberOfParameters());
-        String paramSign = Signature.createTypeSignature(Datatype.MONEY.getJavaClassName(), false);
-        assertEquals(paramSign, method.getParameterTypes()[0]);
-        
-        // setter method interface
-        method = attribute.getJavaMethod(IAttribute.JAVA_SETTER_METHOD_INTERFACE);
-        assertNotNull(method);
-        assertEquals("setPremium", method.getElementName());
-        assertEquals(1, method.getNumberOfParameters());
-        paramSign = Signature.createTypeSignature(Datatype.MONEY.getJavaClassName(), false);
-        assertEquals(paramSign, method.getParameterTypes()[0]);
-
-        // computation method in product component interface. IAttribute type computed, no parameters
-        attribute.setAttributeType(AttributeType.COMPUTED);
-        attribute.setFormulaParameters(new Parameter[0]);
-        method = attribute.getJavaMethod(IAttribute.JAVA_COMPUTE_ATTRIBUTE_METHOD_PRODUCTCMPT_INTERFACE);
-        assertNotNull(method);
-        assertEquals("computePremium", method.getElementName());
-        assertEquals(0, method.getNumberOfParameters());
-        
-        // computation method in product component interface. IAttribute type derived, With parameters
-        attribute.setAttributeType(AttributeType.DERIVED);
-        Parameter[] params = new Parameter[] {
-                new Parameter(1, "p0", Datatype.MONEY.getQualifiedName()),
-                new Parameter(2, "p1", Datatype.DECIMAL.getQualifiedName()),
-        };
-        attribute.setFormulaParameters(params);
-        method = attribute.getJavaMethod(IAttribute.JAVA_COMPUTE_ATTRIBUTE_METHOD_PRODUCTCMPT_INTERFACE);
-        assertNotNull(method);
-        assertEquals("computePremium", method.getElementName());
-        assertEquals(2, method.getNumberOfParameters());
-        
-        // computation method in product component interface. IAttribute type constant => should return null
-        attribute.setAttributeType(AttributeType.CONSTANT);
-        method = attribute.getJavaMethod(IAttribute.JAVA_COMPUTE_ATTRIBUTE_METHOD_PRODUCTCMPT_INTERFACE);
-        assertNull(method);
-        
-        // 
-        
-        // unkown kind
-        try {
-            attribute.getJavaMethod(-1);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-    }
-
-    public void testGetJavaField() throws CoreException {
-        attribute.setName("premium");
-        attribute.setDatatype("Money");
-        IField field = attribute.getJavaField(IAttribute.JAVA_FIELD_VALUE_POLICY);
-        assertNotNull(field);
-        assertEquals("premium", field.getElementName());
     }
 }

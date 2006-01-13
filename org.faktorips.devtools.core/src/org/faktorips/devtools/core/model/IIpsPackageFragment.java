@@ -25,6 +25,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * implementation classes.
      *  
      * @see getJavaPackageFragment(int)
+     * @deprecated
      */
     public final static int JAVA_PACK_IMPLEMENTATION = 0;
     
@@ -33,6 +34,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * published interfaces.
      * 
      * @see getJavaPackageFragment(int)
+     * @deprecated
      */
     public final static int JAVA_PACK_PUBLISHED_INTERFACE = 128;
     
@@ -41,6 +43,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * extension classes.
      *  
      * @see getJavaPackageFragment(int)
+     * @deprecated
      */
     public final static int JAVA_PACK_EXTENSION = 256;
     
@@ -61,6 +64,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * @param kind A kind constant identifying the kind of package fragment.
      * @return The corresponding package fragment. Note that the package fragment might not
      * exists!
+     * @deprecated
      * @throws IllegalArgumentException if the kind is illegal.   
      */
     public IPackageFragment getJavaPackageFragment(int kind) throws CoreException;
@@ -68,6 +72,8 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Returns all Java package fragments that correspond to this IPS package.
      * Note that the Java packages might not exists.
+     * 
+     * @deprecated
      */
     public IPackageFragment[] getAllJavaPackageFragments() throws CoreException;
     

@@ -14,7 +14,7 @@ public interface ITableContents extends ITimedIpsObject {
     
     /**
      * The constant for the java <code>IType</code> that contains the table contents.
-     * 
+     * @deprecated
      * @see org.faktorips.devtools.core.model.IIpsObject#getJavaType(int)
      */
     public final static int JAVA_TABLECONTENTS_IMPLEMENTATION_TYPE = 0;

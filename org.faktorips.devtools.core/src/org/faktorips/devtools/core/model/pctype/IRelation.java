@@ -30,6 +30,8 @@ public interface IRelation extends IIpsObjectPart {
     
     // type constants for corresponding Java methods
     // 1. max cardinality is 1
+    
+    //Alle Konstanten mit dem Prefix JAVA_ sind deprecated!!!!!!!!!!!!!1
     public final static int JAVA_GETTER_METHOD = 1;
     public final static int JAVA_PCTYPE_GETTER_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_GETTER_METHOD;
     public final static int JAVA_PCTYPE_GETTER_METHOD_INTERFACE = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE << 8| JAVA_GETTER_METHOD;
@@ -226,6 +228,7 @@ public interface IRelation extends IIpsObjectPart {
      * @param type A type constant identifying the type of method.
      * @return The corresponding Java method. Note that the method might not
      * exists!
+     * @deprecated
      * @throws IllegalArgumentException if the type constant is illegal.   
      */
     public IMethod getJavaMethod(int type) throws CoreException;
@@ -237,6 +240,7 @@ public interface IRelation extends IIpsObjectPart {
      * @param type A type constant identifying the type of field.
      * @return The corresponding Java field. Note that the field might not
      * exists!
+     * @deprecated
      * @throws IllegalArgumentException if the type constant is illegal.
      */
     public IField getJavaField(int type) throws CoreException;

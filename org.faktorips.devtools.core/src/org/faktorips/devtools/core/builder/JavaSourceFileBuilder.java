@@ -79,9 +79,8 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	private boolean generationCanceled;
 
 	private MultiStatus buildStatus;
-	
-	private static JControlModel model;
 
+	private static JControlModel model;
 
 	/**
 	 * Implementations of this class must override this method to provide the
@@ -393,21 +392,39 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 		String formattedContent = format(content);
 		boolean newFileCreated = createFileIfNotThere(javaFile);
 
-		if (isMergeEnabled() && !newFileCreated) {
-			InputStream javaFileContents = null;
-			InputStream newContents = null;
+		if (!newFileCreated) {
+
+			String charset = ipsSrcFile.getIpsProject().getProject()
+					.getDefaultCharset();
+			if (isMergeEnabled()) {
+				InputStream javaFileContents = null;
+				InputStream newContents = null;
+				try {
+					javaFileContents = javaFile.getContents();
+					newContents = transform(ipsSrcFile, formattedContent);
+					merge(javaFile, javaFileContents, newContents, charset);
+					return;
+				} finally {
+					closeStream(javaFileContents);
+					closeStream(newContents);
+				}
+			}
+
+			// if merging is not activated and the content of the file is
+			// identical compared to the generated and formatted
+			// content then the new content is not written to the file
 			try {
-				javaFileContents = javaFile.getContents();
-				newContents = transform(ipsSrcFile, formattedContent);
-				String charset = ipsSrcFile.getIpsProject().getProject()
-						.getDefaultCharset();
-				merge(javaFile, javaFileContents, newContents, charset);
-				return;
-			} finally {
-				closeStream(javaFileContents);
-				closeStream(newContents);
+				if (formattedContent.equals(StringUtil.readFromInputStream(
+						javaFile.getContents(), charset))) {
+					return;
+				}
+			} catch (IOException e) {
+				throw new CoreException(new IpsStatus(
+						"An exception occured while trying to read the content of the file: "
+								+ javaFile.getName(), e));
 			}
 		}
+
 		javaFile.setContents(transform(ipsSrcFile, formattedContent), true,
 				false, null);
 	}
@@ -503,9 +520,9 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 		return folder.getFile(fileName + JAVA_EXTENSION);
 	}
 
-	private JControlModel getJControlModel(){
-		
-		if(model != null){
+	private JControlModel getJControlModel() {
+
+		if (model != null) {
 			return model;
 		}
 		InputStream is = null;
@@ -525,7 +542,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 			closeStream(is);
 		}
 	}
-	
+
 	private void merge(IFile javaFile, InputStream oldContent,
 			InputStream newContent, String charset) throws CoreException {
 
@@ -535,12 +552,14 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 				.createCompilationUnitForInputStream(newContent));
 		merger.setTargetCompilationUnit(merger
 				.createCompilationUnitForInputStream(oldContent));
-		String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
+		String targetContentsBeforeMerge = merger
+				.getTargetCompilationUnitContents();
 		merger.merge();
 		try {
 			String targetContents = merger.getTargetCompilationUnitContents();
 
-			if (targetContents == null|| targetContents.equals(targetContentsBeforeMerge)) {
+			if (targetContents == null
+					|| targetContents.equals(targetContentsBeforeMerge)) {
 				return;
 			}
 			javaFile.setContents(new ByteArrayInputStream(targetContents

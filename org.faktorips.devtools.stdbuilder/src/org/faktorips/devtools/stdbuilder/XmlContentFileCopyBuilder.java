@@ -1,7 +1,9 @@
 package org.faktorips.devtools.stdbuilder;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -75,6 +77,23 @@ public class XmlContentFileCopyBuilder implements IIpsArtefactBuilder {
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
     }
 
+    private String getContentAsString(InputStream is, String charSet) throws CoreException{
+        try {
+            return StringUtil.readFromInputStream(is, charSet);
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+    }
+    
+    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException{
+    
+        try {
+            return new ByteArrayInputStream(content.getBytes(charSet));
+        } catch (UnsupportedEncodingException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+    }
+    
     /**
      * Copies the xml content file of the provided IpsObject and changes the name of the extension
      * into .xml.
@@ -92,6 +111,13 @@ public class XmlContentFileCopyBuilder implements IIpsArtefactBuilder {
                 createFolder(folder);
             }
             if (copy.exists()) {
+                String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+                String newContent = getContentAsString(is, charSet);
+                String currentContent = getContentAsString(copy.getContents(), charSet);
+                if(newContent.equals(currentContent)){
+                    return;
+                }
+                is = convertContentAsStream(newContent, charSet);
                 copy.setContents(is, true, true, null);
             } else {
                 copy.create(is, true, null);

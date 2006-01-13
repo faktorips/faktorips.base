@@ -55,6 +55,7 @@ public interface IProductCmpt extends ITimedIpsObject {
      * the case if the generations contain at least one formula (that has to be compiled to
      * Java sourcecode). Returns false, if no Java sourcecode has to be generated for this
      * product component.
+     * @deprecated
      */
     public boolean javaTypeMustBeGenerated();
     

@@ -36,6 +36,8 @@ import org.w3c.dom.NodeList;
  */
 public class Attribute extends Member implements IAttribute {
 
+	//Konstanten die mit JAVA_ anfangen sind deprecated
+	
     private final static String[] JAVA_METHOD_PREFIX;
     private final static int[] JAVA_METHOD_OF_TYPE;
 
@@ -319,7 +321,7 @@ public class Attribute extends Member implements IAttribute {
 
     /**
      * Overridden method.
-     * 
+     * @deprecated
      * @see org.faktorips.devtools.core.model.pctype.IAttribute#getJavaMethod(int)
      */
     public IMethod getJavaMethod(int type) throws CoreException {
@@ -362,7 +364,7 @@ public class Attribute extends Member implements IAttribute {
 
     /**
      * Overridden method.
-     * 
+     * @deprecated
      * @see org.faktorips.devtools.core.model.pctype.IAttribute#getJavaField(int)
      */
     public IField getJavaField(int type) throws CoreException {

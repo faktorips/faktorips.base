@@ -18,11 +18,13 @@ public interface IMethod extends IMember {
     
     /**
      * The Java method that contains the implementation.
+     * @deprecated
      */
     public final static int JAVA_IMPLEMENTATION_METHOD = 0;
     
     /**
      * The Java method that is part of the published interface.
+     * @deprecated
      */
     public final static int JAVA_PUBLISHED_INTERFACE_METHOD = 1;
     

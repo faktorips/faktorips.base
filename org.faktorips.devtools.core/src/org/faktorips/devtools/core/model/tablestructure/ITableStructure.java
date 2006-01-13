@@ -11,11 +11,13 @@ public interface ITableStructure extends IIpsObject {
      * The constant for the java <code>IType</code> that contains the table implementation.
      * 
      * @see org.faktorips.devtools.core.model.IIpsObject#getJavaType(int)
+     * @deprecated
      */
     public final static int JAVA_TABLE_IMPLEMENTATION_TYPE = 0;
     
     /**
      * The constant for the java <code>IType</code> that contains the table row implementation.
+     * @deprecated
      */
     public final static int JAVA_TABLE_ROW_IMPL_TYPE = 1;
 

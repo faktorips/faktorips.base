@@ -24,6 +24,7 @@ public interface IAttribute extends IMember {
     public final static String PROPERTY_FORMULAPARAM_NAME = "param.name";
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype";
     
+    ////Konstanten die mit JAVA_ anfangen sind deprecated
     // type constants for corresponding Java methods
     public final static int JAVA_NUMOF_METHOD = 15;
     
@@ -158,6 +159,7 @@ public interface IAttribute extends IMember {
      * @param type A type constant identifying the type of method.
      * @return The corresponding Java method. Note that the method might not
      * exists!
+     * @deprecated
      * @throws IllegalArgumentException if the type constant is illegal.   
      */
     public IMethod getJavaMethod(int type) throws CoreException;
@@ -169,6 +171,7 @@ public interface IAttribute extends IMember {
      * @param type A type constant identifying the type of field.
      * @return The corresponding Java field. Note that the field might not
      * exists!
+     * @deprecated
      * @throws IllegalArgumentException if the type constant is illegal.
      */
     public IField getJavaField(int type) throws CoreException;

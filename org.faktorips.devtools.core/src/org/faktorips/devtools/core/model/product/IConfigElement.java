@@ -124,6 +124,7 @@ public interface IConfigElement extends IIpsObjectPart {
      * @throws IllegalArgumentException if the type constant is illegal.
      * @throws CoreException if the attribute this config element refers to does
      * not exists or an error occurs while accessing the Java method.   
+     * @deprecated
      */
     public IMethod getJavaMethod(int type) throws CoreException;
 

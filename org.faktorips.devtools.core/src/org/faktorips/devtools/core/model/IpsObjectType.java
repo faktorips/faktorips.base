@@ -85,6 +85,8 @@ public final class IpsObjectType {
     /**
      * Returns the IpsObjectType for the IpsObject that is contained within the provided IpsSrcFile or null
      * if the IpsObjectType cannot be identified.
+     * 
+     * @deprecated
      */
     public final static IpsObjectType getType(IIpsSrcFile file){
         return getTypeForExtension(file.getCorrespondingFile().getFileExtension());

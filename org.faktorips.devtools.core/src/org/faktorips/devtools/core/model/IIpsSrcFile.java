@@ -17,7 +17,9 @@ public interface IIpsSrcFile extends IIpsElement {
     
     /**
      * Returns all Java compilation units that correspond to this IPS source file.
-     * Note that any Java compilation unit might not exists. 
+     * Note that any Java compilation unit might not exists.
+     * 
+     * @deprecated 
      */
     public ICompilationUnit[] getAllJavaCompilationUnits() throws CoreException;
     

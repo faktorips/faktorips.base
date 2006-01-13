@@ -22,6 +22,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     /**
      * Constant that identifies the Java package fragment root containg the generated Java sourcecode.
      * The Java package root can be obtained via the method <code>getJavaPackageFragmentRoot(int)</code>.
+     * 
+     * @deprecated
      */
     public final static int JAVA_ROOT_GENERATED_CODE = 0;
     
@@ -29,6 +31,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * Constant that identifies the Java package fragment root containg the extension Java sourcecode
      * where te developer using FaktorIPS can add hs own code.
      * The Java package root can be obtained via the method <code>getJavaPackageFragmentRoot(int)</code>.
+     * 
+     * @deprecated
      */
     public final static int JAVA_ROOT_EXTENSION_CODE = 1;
     
@@ -57,8 +61,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * must be one of the constants <code>JAVA_ROOT_GENERATED_CODE</code> or 
      * <code>JAVA_ROOT_EXTENSION_CODE</code>.
      * 
+     * @deprecated
      * @param kind The kind of Java package fragment root.
-     * 
      * @throws IllegalArgumentException if the kind is not one of the constants described above. 
      */
     public IPackageFragmentRoot getJavaPackageFragmentRoot(int kind) throws CoreException;
@@ -117,6 +121,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * IPS package fragment's name. E.g. for an IPS package fragment <i>motor.coverages</i>
      * and a prefix <i>com.faktor10.model</i>,  we obtain for the published interfaces 
      * the following Java package name: <i>com.faktor10.model.motor.coverages</i>.
+     * 
+     * @deprecated
      */
     public String getJavaPackagePrefix(int kind) throws CoreException;
 
@@ -125,6 +131,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * the IPS objects stored in this IPS package fragment root.
      * 
      * @see getJavaPackagePrefix(int)
+     * @deprecated
      */
     public String[] getJavaPackagePrefixes() throws CoreException;
     
