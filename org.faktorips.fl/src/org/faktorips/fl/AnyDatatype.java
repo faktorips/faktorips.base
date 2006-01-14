@@ -1,6 +1,7 @@
 package org.faktorips.fl;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.util.message.MessageList;
 
 /**
  * 
@@ -12,6 +13,13 @@ public class AnyDatatype implements Datatype {
 
     private AnyDatatype() {
         super();
+    }
+
+    /**
+     * Overridden.
+     */
+    public MessageList validate() {
+        return new MessageList();
     }
 
     public String getName() {

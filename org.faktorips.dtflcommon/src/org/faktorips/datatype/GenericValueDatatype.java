@@ -1,0 +1,281 @@
+package org.faktorips.datatype;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
+
+/**
+ * The generic value datatype is used to make a Java class (representing a value)
+ * available as value datatype. Instead of writing a special class implementing the datatype 
+ * interface, an instance of this class (or more precisely of one of it's subclasses) is used.
+ * <p>
+ * This allows to defined a datatype based on a Java class by declaring it, instead of writing code.
+ * 
+ * @author Jan Ortmann
+ */
+public abstract class GenericValueDatatype implements ValueDatatype {
+    
+    private final static String MSGCODE_PREFIX = "GENERIC DATATYPE-";
+    public final static String MSGCODE_JAVACLASS_NOT_FOUND = MSGCODE_PREFIX + "Java class not found";
+    public final static String MSGCODE_GETVALUE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "getValue() Method not found";
+    public final static String MSGCODE_ISPARSABLE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "isParsable() Method not found";
+    public final static String MSGCODE_TOSTRING_METHOD_NOT_FOUND = MSGCODE_PREFIX + "toString() Method not found";
+    public final static String MSGCODE_SPECIALCASE_NULL_NOT_FOUND = MSGCODE_PREFIX + "Special case null not found";
+    public final static String MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL = MSGCODE_PREFIX + "Special case null is not null";
+    
+
+    private String qualifiedName;
+    private String valueOfMethodName = "valueOf";
+    private String isParsableMethodName = "isParsable";
+    private String toStringMethodName = "toString";
+    private String specialNullValue = null;
+    
+    protected Method valueOfMethod;
+    protected Method isParsableMethod;
+    protected Method toStringMethod;
+    
+    public GenericValueDatatype() {
+    }
+    
+    /**
+     * Returns the class represented by this datatype. If the class can't be found, 
+     * <code>null</code> is returned. In this case the <code>validate()</code> method
+     * returns a message list containing an error message.
+     */
+    public abstract Class getAdaptedClass();
+    
+    /**
+     * Returns the name of the class represented by this datatype.
+     * This method must return a value, even if the class itself can't be found.
+     */
+    public abstract String getAdaptedClassName();
+    
+    /**
+     * Overridden.
+     */
+    public MessageList validate() {
+        MessageList list = new MessageList();
+        if (getAdaptedClass()==null) {
+            String text = "The Java class represented by the datatype can't be found. (Classname: " + getAdaptedClassName() + ")";
+            list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
+            return list;
+        }
+        if (isParsableMethodName!=null) {
+            try {
+                getIsParsableMethod();
+            } catch (RuntimeException e) {
+                String text = "The Java class hasn't got a method " + getIsParsableMethodName() + "(String)";
+                list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
+            }
+        }
+        if (toStringMethodName!=null) {
+            try {
+                getToStringMethod();
+            } catch (RuntimeException e) {
+                String text = "The Java class hasn't got a method " + getToStringMethodName() + "(Object)";
+                list.add(Message.newError(MSGCODE_TOSTRING_METHOD_NOT_FOUND, text));
+            }
+        }
+        try {
+            getValueOfMethod();
+        } catch (RuntimeException e) {
+            String text = "The Java class hasn't got a method " + getValueOfMethodName() + "(String)";
+            list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
+            return list;
+        }
+        if (specialNullValue!=null) {
+            try {
+                Object value = getValue(specialNullValue);
+                if (value instanceof NullObject) {
+                    if (!((NullObject)value).isNull()) {
+                        String text = "The string " + specialNullValue + " does not represent the special null value.";
+                        list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL, text));
+                    }
+                }
+            } catch (RuntimeException e) {
+                String text = "The null value string " + specialNullValue + " is not a value defined by the datatype.";
+                list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_NOT_FOUND, text));
+            }
+        }
+        return list;
+    }
+    
+    public String getIsParsableMethodName() {
+        return isParsableMethodName;
+    }
+
+    public void setIsParsableMethodName(String isParsableMethodName) {
+        this.isParsableMethodName = isParsableMethodName;
+        isParsableMethod = null;
+    }
+
+    public String getSpecialNullValue() {
+        return specialNullValue;
+    }
+
+    public void setSpecialNullValue(String nullValueId) {
+        this.specialNullValue = nullValueId;
+    }
+
+    public String getValueOfMethodName() {
+        return valueOfMethodName;
+    }
+
+    public void setValueOfMethodName(String valueOfMethodName) {
+        this.valueOfMethodName = valueOfMethodName;
+        valueOfMethod = null;
+    }
+
+    public String getToStringMethodName() {
+        return toStringMethodName;
+    }
+
+    public void setToStringMethodName(String toStringMethodName) {
+        this.toStringMethodName = toStringMethodName;
+        toStringMethod = null;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
+
+    public Datatype getWrapperType() {
+        return null;
+    }
+
+    public boolean isParsable(String value) {
+        getIsParsableMethod();
+        if (isParsableMethod!=null) {
+            try {
+                Object o = isParsableMethod.invoke(null, new Object[]{value});
+                return ((Boolean)o).booleanValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Error executing method " + isParsableMethod);
+            }
+        }
+        try {
+            getValueOfMethod().invoke(null, new Object[]{value});
+            return true; // getValue() has executed without exception, the value can be parsed.
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error executing method " + valueOfMethod);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Error executing method " + valueOfMethod);
+        } catch (InvocationTargetException e) {
+            return false; // getValue() has thrown an exception, the value can't be parsed.
+        }
+    }
+    
+    protected Method getIsParsableMethod() {
+        if (isParsableMethod==null && isParsableMethodName!=null) {
+            try {
+                isParsableMethod = getAdaptedClass().getMethod(isParsableMethodName, new Class[]{String.class});
+                if (isParsableMethod==null) {
+                    throw new NullPointerException();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName() + ", Methodname: " + isParsableMethodName);
+            }
+        }
+        return isParsableMethod;
+    }
+
+    public Object getValue(String value) {
+        try {
+            return getValueOfMethod().invoke(null, new Object[]{value});
+        } catch (Exception e) {
+            throw new RuntimeException("Error invoking method " + valueOfMethod);
+        }
+    }
+    
+    protected Method getValueOfMethod() {
+        if (valueOfMethodName!=null && valueOfMethod==null) {
+            try {
+                valueOfMethod = getAdaptedClass().getMethod(valueOfMethodName, new Class[]{String.class});
+                if (valueOfMethod==null) {
+                    throw new NullPointerException();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Can't get valueOfMethod(String), Class: " + getAdaptedClass() + ", Methodname: " + valueOfMethodName);
+            }
+        }
+        return valueOfMethod;
+    }
+
+    public String valueToString(Object value) {
+        getToStringMethod();
+        if (toStringMethod==null) {
+            return value.toString();
+        }
+        try {
+            return (String)toStringMethod.invoke(value, new Object[0]);
+        } catch (Exception e) {
+            throw new RuntimeException("Error executing method " + toStringMethod);
+        }
+    }
+
+    protected Method getToStringMethod() {
+        if (toStringMethod==null && toStringMethodName!=null) {
+            try {
+                toStringMethod = getAdaptedClass().getMethod(toStringMethodName, new Class[0]);
+                if (toStringMethod==null) {
+                    throw new NullPointerException();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Can't get method toString(String), Class: " + getAdaptedClass() + ", Methodname: " + toStringMethodName);
+            }
+        }
+        return toStringMethod;
+    }
+
+    public boolean isNull(Object value) {
+        if (value==null) {
+            return true;
+        }
+        if (specialNullValue==null) {
+            return false;
+        }
+        return value.equals(getValue(specialNullValue));
+    }
+
+    public String getName() {
+        return StringUtil.unqualifiedName(qualifiedName);
+    }
+
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public boolean isVoid() {
+        return false;
+    }
+
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    public boolean isValueDatatype() {
+        return true;
+    }
+
+    public String getJavaClassName() {
+        return getAdaptedClass().getName();
+    }
+
+    public int compareTo(Object o) {
+        return 0;
+    }
+    
+    public String toString() {
+        return qualifiedName;
+    }
+    
+    protected void removeCachedData() {
+        isParsableMethod = null;
+        valueOfMethod = null;
+        toStringMethod = null;
+    }
+    
+}

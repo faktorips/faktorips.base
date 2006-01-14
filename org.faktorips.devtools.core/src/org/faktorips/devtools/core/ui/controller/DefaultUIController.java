@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  */
 public class DefaultUIController implements ValueChangeListener, UIController {
     
-    // list of mappings between edit assists and properties of model objects.
+    // list of mappings between edit fields and properties of model objects.
     protected List mappings = new ArrayList();
 
     /**
@@ -66,7 +66,7 @@ public class DefaultUIController implements ValueChangeListener, UIController {
     }
 
     /** 
-     * Overridden method.
+     * Overridden.
      */
     public void valueChanged(FieldValueChangedEvent e) {
         for (Iterator it=mappings.iterator(); it.hasNext();) {

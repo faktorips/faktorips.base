@@ -1,8 +1,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -25,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumType;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -36,11 +34,11 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -49,7 +47,6 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * 
@@ -72,18 +69,23 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IProject getProject() {
         return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
     }
+    
+    /**
+     * Returns the file that stores the project's properties. Note that the file need not exist.
+     */
+    public IFile getIpsProjectPropertiesFile() {
+    	return getProject().getFile(".ipsproject");
+    }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getJavaProject()
+     * Overridden.
      */
     public IJavaProject getJavaProject() {
         return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProject(getName());
     }
 
     /**
-     * Overridden
+     * Overridden.
      */
     public String getXmlFileCharset() {
         return "UTF-8";
@@ -93,61 +95,50 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden
      */
     public IIpsObjectPath getIpsObjectPath() throws CoreException {
-        return ((IpsModel)getIpsModel()).getIpsObjectPath(this);
+    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	return properties.getIpsObjectPath();
     }
 
-    private Document getIpsProjectDocument() throws CoreException{
-        IFile file = getIpsObjectPathFile();
-        if (file.exists()) {
-            InputStream contents = file.getContents();
-            try {
-                return IpsPlugin.getDefault().newDocumentBuilder().parse(contents);
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(
-                        "Error while reading the content of the ipsobjectpath.xml file", e));
-            }
-            finally{
-                try{
-                    contents.close();    
-                } catch(IOException e){
-                    IpsPlugin.log(new IpsStatus("Unable to free resource.", e));
-                }
-            }
-        } 
-    
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-        doc.appendChild(doc.createElement("IpsProject"));
-        return doc;
+    /**
+     * Overridden.
+     */
+    public void setCurrentArtefactBuilderSet(String id) throws CoreException {
+    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	properties.setBuilderSetId(id);
+    	saveProjectProperties(properties);
     }
     
-    private void setIpsProjectProperty(Element newValue, Document doc) throws CoreException {
-        // TODO pe 12-10-05: the ipsobjectpath file doesn't contain just the ipsobjectpath any
-        // longer. It now contains the
-        // setting for the ipsproject. This has to be cleaned up. The ipsProject probably needs to
-        // have
-        // toXml() and createFromXml() methods
-        Element ipsProjectEl = doc.getDocumentElement();
-        IFile file = getIpsObjectPathFile();
+    /**
+     * Overridden.
+     * @throws CoreException 
+     */
+    public void setValueDatatypes(String[] ids) throws CoreException {
+        IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+        properties.setPredefinedDatatypesUsed(ids);
+        saveProjectProperties(properties);
+    }
+
+    /**
+     * Saves the project properties to the .ipsproject file.
+     * 
+     * @throws CoreException if an error occurs while saving the data.
+     */
+    private void saveProjectProperties(IpsProjectProperties properties) throws CoreException {
+    	Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+    	Element propertiesEl = properties.toXml(doc);
+        IFile file = getIpsProjectPropertiesFile();
         String charset;
         if (file.exists()) {
             charset = file.getCharset();
         } else {
             charset = getProject().getDefaultCharset();
         }
-        
-        Node oldValue = XmlUtil.getFirstElement(ipsProjectEl, newValue.getTagName());
-        if (oldValue == null) {
-            ipsProjectEl.appendChild(newValue);
-        } else {
-            ipsProjectEl.replaceChild(newValue, oldValue);
-        }
-
         String contents;
         try {
-            contents = XmlUtil.nodeToString(ipsProjectEl, charset);
+            contents = XmlUtil.nodeToString(propertiesEl, charset);
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(
-                    "Error tranforming ips object path to xml string", e));
+                    "Error tranforming project data to xml string", e));
         }
         ByteArrayInputStream is;
         try {
@@ -161,137 +152,89 @@ public class IpsProject extends IpsElement implements IIpsProject {
             file.create(is, true, null);
         }
     }
-
+    
     /**
      * Overridden.
      */
-    public void setCurrentArtefactBuilderSet(String id) throws CoreException {
-        Document doc = getIpsProjectDocument();
-        Element artefactElement = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
-        artefactElement.setAttribute("id", id);
-        setIpsProjectProperty(artefactElement, doc);
-        ((IpsModel)getIpsModel()).invalidateCurrentArtefactBuilderSet(this);
-    }
-
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#setIpsObjectPath(org.faktorips.devtools.core.model.IIpsObjectPath)
-     */
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException {
-        Document doc = getIpsProjectDocument();
-        setIpsProjectProperty(((IpsObjectPath)newPath).toXml(doc), doc);
-        ((IpsModel)getIpsModel()).invalidateIpsObjectPath(this);
+    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	properties.setIpsObjectPath(newPath);
+    	saveProjectProperties(properties);
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getIpsObjectPathFile()
-     */
-    public IFile getIpsObjectPathFile() {
-        return getProject().getFile("ipsobjectpath.xml");
-    }
-
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getDatatypesDefinitionFile()
-     */
-    public IFile getDatatypesDefinitionFile() {
-        return getProject().getFile("ipsdatatypes.xml");
-    }
-
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getIpsPackageFragmentRoot(java.lang.String)
+     * Overridden.
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name) {
         return new IpsPackageFragmentRoot(this, name);
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.IIpsProject#getIpsPackageFragmentRoots()
+     * Overridden.
      */
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() throws CoreException {
         List roots = new ArrayList();
         IIpsObjectPathEntry[] entries = getIpsObjectPath().getEntries();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i] instanceof IIpsSrcFolderEntry) {
-                roots.add(((IIpsSrcFolderEntry)entries[i]).getIpsPackageFragmentRoot());
+                roots.add(((IIpsSrcFolderEntry)entries[i]).getIpsPackageFragmentRoot(this));
             }
         }
         return (IIpsPackageFragmentRoot[])roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#exists()
+     * Overridden.
      */
     public boolean exists() {
         return getCorrespondingResource().exists();
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getExpressionLanguageFunctionsLanguage()
+     * Overridden.
      */
     public Locale getExpressionLanguageFunctionsLanguage() {
         return Locale.GERMAN;
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getGeneratedJavaSourcecodeDocumentationLanguage()
+     * Overridden.
      */
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage() {
         return Locale.GERMAN;
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * Overridden.
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsProject.gif");
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+     * Overridden.
      */
     public IResource getCorrespondingResource() {
         return getProject();
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+     * Overridden.
      */
     public IIpsElement[] getChildren() throws CoreException {
         return getIpsPackageFragmentRoots();
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getIpsProject()
+     * Overridden.
      */
     public IIpsProject getIpsProject() {
         return this;
     }
 
     /**
+     * Overridden.
+     * 
      * @see org.eclipse.core.resources.IProjectNature#configure()
      */
     public void configure() throws CoreException {
@@ -306,12 +249,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
+     * Overridden.
+     * 
      * @see org.eclipse.core.resources.IProjectNature#deconfigure()
      */
     public void deconfigure() throws CoreException {
     }
 
     /**
+     * Overridden.
+     * 
      * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
      */
     public void setProject(IProject project) {
@@ -347,29 +294,21 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsProject#findIpsObject(org.faktorips.devtools.core.model.QualifiedNameType)
+     * Overridden.
      */
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPath()).findIpsObject(nameType);
+        return ((IpsObjectPath)getIpsObjectPath()).findIpsObject(this, nameType);
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getPdObject(org.faktorips.devtools.core.model.IpsObjectType,
-     *      java.lang.String)
+     * Overridden.
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPath()).findIpsObject(type, qualifiedName);
+        return ((IpsObjectPath)getIpsObjectPath()).findIpsObject(this, type, qualifiedName);
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getPdObject(org.faktorips.devtools.core.model.IpsObjectType,
-     *      java.lang.String)
+     * Overridden.
      */
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type,
             String prefix,
@@ -389,14 +328,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
             String prefix,
             boolean ignoreCase,
             List result) throws CoreException {
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjectsStartingWith(type, prefix,
+        ((IpsObjectPath)getIpsObjectPath()).findIpsObjectsStartingWith(this, type, prefix,
             ignoreCase, result);
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#findPolicyCmptType(java.lang.String)
+     * Overridden.
      */
     public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException {
         return (IPolicyCmptType)findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
@@ -405,12 +342,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     
 
     /**
-     * Overridden method.
+     * Overridden.
      * 
      * @see org.faktorips.devtools.core.model.IIpsProject#findIpsObjects(org.faktorips.devtools.core.model.IpsObjectType)
      */
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(type);
+        return ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, type);
     }
 
     /**
@@ -418,24 +355,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException
      */
     public void findAllIpsObjects(List result) throws CoreException{
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(IpsObjectType.PRODUCT_CMPT, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(IpsObjectType.TABLE_STRUCTURE, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(IpsObjectType.TABLE_CONTENTS, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(IpsObjectType.BUSINESS_FUNCTION, result);
+        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result);
+        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result);
+        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result);
+        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result);
+        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result);
     }
     
     /**
      * Finds all ips objects of the given type in the project and adds them to the result.
      */
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(type, result);
+        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, type, result);
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getValueDatatypes(boolean)
+     * Overridden.
      */
     public ValueDatatype[] getValueDatatypes(boolean includeVoid) {
         Set result = new HashSet();
@@ -459,9 +394,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#findDatatypes()
+     * Overridden.
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid)
             throws CoreException {
@@ -478,10 +411,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.IIpsProject#findDatatype(java.lang.String)
+     * Overridden.
      */
     public Datatype findDatatype(String qualifiedName) throws CoreException {
         Datatype[] datatypes = findDatatypes(false, true);
@@ -494,9 +424,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#findValueDatatype(java.lang.String)
+     * Overridden.
      */
     public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException {
         // TODO Jan. Testfall, noch mal prüfen.
@@ -504,9 +432,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getDatatypeHelper(org.faktorips.datatype.Datatype)
+     * Overridden.
      */
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         if (!(datatype instanceof ValueDatatype)) {
@@ -533,22 +459,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)
+     * Overridden.
      */
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException {
         ArgumentCheck.notNull(datatype);
-        if (datatype instanceof EnumType) {
+        if (datatype instanceof EnumDatatype) {
             return new ValueSetType[] { ValueSetType.ALL_VALUES, ValueSetType.ENUM };
         }
         return ValueSetType.getValueSetTypes();
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#findProductCmpts(org.faktorips.devtools.core.model.pctype.IPolicyCmptType)
+     * Overridden.
      */
     public IProductCmpt[] findProductCmpts(String qualifiedTypeName, boolean includeSubytpes)
             throws CoreException {
@@ -564,10 +486,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.IIpsProject#getSourceIpsPackageFragmentRoots()
+     * Overridden.
      */
     public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() throws CoreException {
         List result = new ArrayList();
@@ -587,9 +506,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#findIpsSrcFile(org.eclipse.jdt.core.ICompilationUnit)
+     * Overridden.
      */
     public IIpsSrcFile findIpsSrcFile(ICompilationUnit cu) throws CoreException {
         IPackageFragmentRoot javaRoot = (IPackageFragmentRoot)cu.getParent().getParent();
@@ -609,8 +526,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * restrict the set of builders available for this project
      * 
      * @throws CoreException
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getAvailableArtefactBuilders()
      */
     public IIpsArtefactBuilderSet getCurrentArtefactBuilderSet() throws CoreException {
         return ((IpsModel)getIpsModel()).getCurrentIpsArtefactBuilderSet(this);

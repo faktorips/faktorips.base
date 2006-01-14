@@ -74,23 +74,21 @@ public class EnumValueSet extends ValueSet {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.ValueSet#copys()
+     * Overridden.
      */
     public ValueSet copy() {
         return new EnumValueSet(this);
     }
 
     /**
-     * getElements returns an array of all Elements in the EnunValueSet
+     * Returns an array of all Elements in the EnunValueSet
      */
     public String[] getElements() {
         return (String[])elements.toArray(new String[elements.size()]);
     }
 
     /**
-     * sets the elements to the given elements of the String[]
+     * Sets the elements to the given elements of the String[]
      */
     public void setElements(String[] elements) {
         this.elements.clear();
@@ -124,7 +122,7 @@ public class EnumValueSet extends ValueSet {
     }
 
     /**
-     * Overridden IMethod.
+     * Overridden.
      */
     public Message containsValue(String value, ValueDatatype datatype) {
         if (!contains(value, datatype)) {
@@ -211,9 +209,7 @@ public class EnumValueSet extends ValueSet {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.ValueSet#validate(ValueDatatype, org.faktorips.util.message.MessageList)
+     * Overridden.
      */
     public void validate(ValueDatatype datatype, MessageList list) {
         int numOfValues = elements.size();
@@ -237,11 +233,6 @@ public class EnumValueSet extends ValueSet {
         }
     }
 
-    /**
-     * Overridden IMethod.
-     *
-     * @see java.lang.Object#toString()
-     */
     public String toString() {
         return elements.toString();
     }

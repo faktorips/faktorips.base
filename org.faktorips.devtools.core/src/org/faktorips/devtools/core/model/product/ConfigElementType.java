@@ -29,7 +29,7 @@ public class ConfigElementType extends DefaultEnumValue {
     }
     
     public final static ConfigElementType getConfigElementType(String id) {
-        return (ConfigElementType)enumType.getValue(id);
+        return (ConfigElementType)enumType.getEnumValue(id);
     }
     
     private ConfigElementType(DefaultEnumType type, String id, String name) {

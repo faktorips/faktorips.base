@@ -48,14 +48,14 @@ public class TableXmlFileBuilderTest extends PluginTest {
     public void testTocFile() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)ipsProject.getIpsObjectPath().getEntries()[0];
-        IFile tocFile = entry.getIpsPackageFragmentRoot().getTocFileInOutputFolder();
+        IFile tocFile = entry.getIpsPackageFragmentRoot(ipsProject).getTocFileInOutputFolder();
         assertTrue(tocFile.exists());
 
         IIpsArtefactBuilderSet builderSet = ipsProject.getCurrentArtefactBuilderSet();
         String tableQualifiedName = getTableImplBuilder(builderSet).getQualifiedClassName(
             tableStructure.getIpsSrcFile());
 
-        TocEntry tocEntry = entry.getIpsPackageFragmentRoot()
+        TocEntry tocEntry = entry.getIpsPackageFragmentRoot(ipsProject)
                 .getRuntimeRepositoryToc().getTableTocEntry(tableQualifiedName);
         assertNotNull(tocEntry);
 

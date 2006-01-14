@@ -7,7 +7,7 @@ public interface ValueDatatype extends Datatype {
 
     /**
      * If this datatype represents a primitive type, this method returns the
-     * datatype that represents the wrapper class. Returns null if this datatype
+     * datatype that represents the wrapper class. Returns <code>null</code> if this datatype
      * does not represent a primitive. 
      */
     public Datatype getWrapperType();

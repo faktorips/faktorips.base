@@ -75,7 +75,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * @param title
      */
     public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
-        super(attribute, parentShell, "Edit IAttribute", true);
+        super(attribute, parentShell, "Edit Attribute", true);
         this.attribute = attribute;
     }
     
@@ -130,7 +130,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiToolkit.createFormLabel(workArea, "Modifier:");
         Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
 
-        uiToolkit.createFormLabel(workArea, "IAttribute Type:");
+        uiToolkit.createFormLabel(workArea, "Attribute Type:");
         Combo typeCombo = uiToolkit.createCombo(workArea, AttributeType.getEnumType());
 
         uiToolkit.createFormLabel(workArea, "Product Relevant:");

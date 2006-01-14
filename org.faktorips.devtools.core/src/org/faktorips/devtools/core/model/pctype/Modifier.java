@@ -30,7 +30,7 @@ public class Modifier extends DefaultEnumValue {
     }
     
     public final static Modifier getModifier(String id) {
-        return (Modifier)enumType.getValue(id);
+        return (Modifier)enumType.getEnumValue(id);
     }
     
     // flags constant according to org.eclipse.jdt.core.Flags 

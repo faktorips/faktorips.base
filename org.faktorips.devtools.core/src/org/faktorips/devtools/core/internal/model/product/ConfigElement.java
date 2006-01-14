@@ -233,6 +233,15 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             } 
         } 
         ValueDatatype valueDatatype = (ValueDatatype)datatypeObject;
+        try {
+			if (valueDatatype.validate().containsErrorMsg()) {
+			    String text = "The value can't be parsed because the datatype is invalid!";
+			    list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE));
+			    return;
+			}
+		} catch (Exception e) {
+			throw new CoreException(new IpsStatus(e));
+		}
         if (StringUtils.isNotEmpty(value)) {
             if (!valueDatatype.isParsable(value)) {
                 String text = "The value " + value + " is not a " + valueDatatype.getName() + ".";

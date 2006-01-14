@@ -18,14 +18,14 @@ public class IpsProjectRefEntryTest extends PluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
-        path = new IpsObjectPath(ipsProject);
+        path = new IpsObjectPath();
     }
 
     
     public void testInitFromXml() {
         Document doc = getTestDocument();
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path);
-        entry.initFromXml(doc.getDocumentElement());
+        entry.initFromXml(doc.getDocumentElement(), ipsProject.getProject());
         assertEquals(IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject"), entry.getReferencedIpsProject());
     }
 
@@ -35,7 +35,7 @@ public class IpsProjectRefEntryTest extends PluginTest {
         Element element = entry.toXml(newDocument());
         
         entry = new IpsProjectRefEntry(path);
-        entry.initFromXml(element);
+        entry.initFromXml(element, ipsProject.getProject());
         assertEquals(refProject, entry.getReferencedIpsProject());
     }
 

@@ -9,18 +9,17 @@ import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of IpsObjectPath.
+ * Implementation of IIpsObjectPath.
  * 
  * @author Jan Ortmann
  */
@@ -29,9 +28,8 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * Xml element name for ips object path.
      */
-    final static String XML_ELEMENT = "IpsObjectPath";
+    final static String XML_TAG_NAME = "IpsObjectPath";
 
-    private IIpsProject ipsProject;
     private IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[0];
     private boolean outputDefinedPerSourceFolder = false;
     
@@ -43,23 +41,8 @@ public class IpsObjectPath implements IIpsObjectPath {
     private IFolder outputFolderExtension;
     private String basePackageExtension = "";
     
-    public IpsObjectPath(IIpsProject project) {
-        ArgumentCheck.notNull(project);
-        ipsProject = project;
-    }
-
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getIpsProject()
-     */
-    public IIpsProject getIpsProject() {
-        return ipsProject;
-    }
-    
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getProjectRefEntries()
+     * Overridden.
      */
     public IIpsProjectRefEntry[] getProjectRefEntries() {
         ArrayList projectRefEntries = new ArrayList();
@@ -72,9 +55,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getSourceFolderEntries()
+     * Overridden.
      */
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
         ArrayList projectRefEntries = new ArrayList();
@@ -87,8 +68,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getEntries()
+     * Overridden.
      */
     public IIpsObjectPathEntry[] getEntries() {
         IIpsObjectPathEntry[] copy = new IIpsObjectPathEntry[entries.length];
@@ -97,8 +77,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#setEntries(org.faktorips.devtools.core.model.IIpsObjectPathEntry)
+     * Overridden.
      */
     public void setEntries(IIpsObjectPathEntry[] newEntries) {
         entries = new IIpsObjectPathEntry[newEntries.length];
@@ -106,8 +85,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getReferencedIpsProjects()
+     * Overridden.
      */
     public IIpsProject[] getReferencedIpsProjects() {
         List projects = new ArrayList();
@@ -120,8 +98,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#newSourceFolderEntry()
+     * Overridden.
      */
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
        IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
@@ -133,8 +110,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#newIpsProjectRefEntry()
+     * Overridden.
      */
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject referencedIpsProject) {
         IIpsProjectRefEntry newEntry = new IpsProjectRefEntry(this, referencedIpsProject);
@@ -146,41 +122,35 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#isOutputDefinedPerSrcFolder()
+     * Overridden.
      */
     public boolean isOutputDefinedPerSrcFolder() {
         return outputDefinedPerSourceFolder;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#setOutputDefinedPerSrcFolder(boolean)
+     * Overridden.
      */
     public void setOutputDefinedPerSrcFolder(boolean newValue) {
         outputDefinedPerSourceFolder = newValue;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getOutputFolderForGeneratedJavaFiles()
+     * Overridden.
      */
     public IFolder getOutputFolderForGeneratedJavaFiles() {
         return outputFolderGenerated;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#setOutputFolderForGeneratedJavaFiles(org.eclipse.core.resources.IFolder)
+     * Overridden.
      */
     public void setOutputFolderForGeneratedJavaFiles(IFolder outputFolder) {
         this.outputFolderGenerated = outputFolder;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getOutputFolders()
+     * Overridden.
      */
     public IFolder[] getOutputFolders() {
         if (!outputDefinedPerSourceFolder) {
@@ -204,48 +174,42 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getBasePackageNameForGeneratedJavaClasses()
+     * Overridden.
      */
     public String getBasePackageNameForGeneratedJavaClasses() {
         return basePackageGenerated;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#setBasePackageNameForGeneratedJavaClasses(java.lang.String)
+     * Overridden.
      */
     public void setBasePackageNameForGeneratedJavaClasses(String name) {
         this.basePackageGenerated = name;
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getOutputFolderForExtensionJavaFiles()
+     * Overridden.
      */
     public IFolder getOutputFolderForExtensionJavaFiles() {
         return outputFolderExtension;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#setOutputFolderForExtensionJavaFiles(org.eclipse.core.resources.IFolder)
+     * Overridden.
      */
     public void setOutputFolderForExtensionJavaFiles(IFolder outputFolder) {
         outputFolderExtension = outputFolder;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#getBasePackageNameForExtensionJavaClasses()
+     * Overridden.
      */
     public String getBasePackageNameForExtensionJavaClasses() {
         return basePackageExtension;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPath#setBasePackageNameForExtensionJavaClasses(java.lang.String)
+     * Overridden.
      */
     public void setBasePackageNameForExtensionJavaClasses(String name) {
         basePackageExtension = name;
@@ -255,9 +219,9 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the first object with the indicated type and qualified name found
      * on the path. Returns <code>null</code> if no such object is found.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
+    public IIpsObject findIpsObject(IIpsProject project, IpsObjectType type, String qualifiedName) throws CoreException {
         for (int i=0; i<entries.length; i++) {
-            IIpsObject object = ((IpsObjectPathEntry)entries[i]).findIpsObject(type, qualifiedName);
+            IIpsObject object = ((IpsObjectPathEntry)entries[i]).findIpsObject(project, type, qualifiedName);
             if (object!=null) {
                 return object;
             }
@@ -269,9 +233,9 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the first object with the indicated qualified name tpye found
      * on the path. Returns <code>null</code> if no such object is found.
      */
-    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
+    public IIpsObject findIpsObject(IIpsProject project, QualifiedNameType nameType) throws CoreException {
         for (int i=0; i<entries.length; i++) {
-            IIpsObject object = ((IpsObjectPathEntry)entries[i]).findIpsObject(nameType);
+            IIpsObject object = ((IpsObjectPathEntry)entries[i]).findIpsObject(project, nameType);
             if (object!=null) {
                 return object;
             }
@@ -285,9 +249,9 @@ public class IpsObjectPath implements IIpsObjectPath {
      * 
      * @throws CoreException if an error occurs while searching for the objects. 
      */
-    void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
+    void findIpsObjectsStartingWith(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
         for (int i=0; i<entries.length; i++) {
-            ((IpsObjectPathEntry)entries[i]).findIpsObjectsStartingWith(type, prefix, ignoreCase, result);
+            ((IpsObjectPathEntry)entries[i]).findIpsObjectsStartingWith(project, type, prefix, ignoreCase, result);
         }
     }
     
@@ -295,18 +259,18 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns all objects of the given type found on the path. Returns an empty array if no
      * object is found. 
      */
-    public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException {
+    public IIpsObject[] findIpsObjects(IIpsProject project, IpsObjectType type) throws CoreException {
         List result = new ArrayList();
-        findIpsObjects(type, result);
+        findIpsObjects(project, type, result);
         return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
     }
     
     /**
      * Adds all objects of the given type found on the path to the result list.
      */
-    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+    public void findIpsObjects(IIpsProject project, IpsObjectType type, List result) throws CoreException {
         for (int i=0; i<entries.length; i++) {
-            ((IpsObjectPathEntry)entries[i]).findIpsObjects(type, result);
+            ((IpsObjectPathEntry)entries[i]).findIpsObjects(project, type, result);
         }
     }
     
@@ -316,7 +280,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * @param doc The xml document used to create new elements.
      */
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
+        Element element = doc.createElement(XML_TAG_NAME);
         element.setAttribute("outputDefinedPerSrcFolder", "" + outputDefinedPerSourceFolder);
         element.setAttribute("outputFolderGenerated", outputFolderGenerated==null?"":outputFolderGenerated.getProjectRelativePath().toString());
         element.setAttribute("basePackageGenerated", basePackageGenerated);
@@ -336,7 +300,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Creates the object path from the data stored in the xml element.
      */
     public final static IIpsObjectPath createFromXml(IIpsProject ipsProject, Element element) {
-        IpsObjectPath path = new IpsObjectPath(ipsProject);
+        IpsObjectPath path = new IpsObjectPath();
         path.setBasePackageNameForGeneratedJavaClasses(element.getAttribute("basePackageGenerated"));
         path.setBasePackageNameForExtensionJavaClasses(element.getAttribute("basePackageExtension"));
         String outputFolderPathGenerated = element.getAttribute("outputFolderGenerated");
@@ -358,7 +322,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[nl.getLength()];
         for (int i=0; i<nl.getLength(); i++) {
             Element entryElement = (Element)nl.item(i);
-            entries[i] = IpsObjectPathEntry.createFromXml(path, entryElement);
+            entries[i] = IpsObjectPathEntry.createFromXml(path, entryElement, ipsProject.getProject());
         }
         path.setEntries(entries);
         return path;

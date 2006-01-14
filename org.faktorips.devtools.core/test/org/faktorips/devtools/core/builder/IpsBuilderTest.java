@@ -46,7 +46,7 @@ public class IpsBuilderTest extends PluginTest {
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
-    public void testMarkerHandling() throws CoreException {
+    public void testMarkerHandling() throws Exception {
         IPolicyCmptType pcType = newPolicyCmptType(root, "TestPolicy");
         pcType.setSupertype("unknownSupertype");
         pcType.getIpsSrcFile().save(true, null);

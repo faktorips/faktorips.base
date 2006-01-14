@@ -33,7 +33,7 @@ public class RelationType extends DefaultEnumValue {
             // renamed aggregation to composition (inkl the id!)
             return COMPOSITION;
         }
-        return (RelationType)enumType.getValue(id);
+        return (RelationType)enumType.getEnumValue(id);
     }
     
     public boolean isComposition() {

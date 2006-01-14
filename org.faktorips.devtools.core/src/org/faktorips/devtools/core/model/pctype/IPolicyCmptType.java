@@ -68,7 +68,7 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * Validation message code to indicate that an abstract method exists in the type's supertype
      * hierarchy that must be overriden in the conrete type.
      */
-    public final static String VLDCODE_MUST_OVERRIDE_ABSTRACT_METHOD = "PCTYPE-MustOverrideAbstractMethod";
+    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = "PCTYPE-MustOverrideAbstractMethod";
     
     /**
      * Returns the qualified name of the type's supertype. Returns an empty

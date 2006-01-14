@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<IpsProject>
+	<IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset"/>	
+	<IpsObjectPath outputDefinedPerSrcFolder="true" outputFolder="" basePackage="">
+		<Entry type="src" sourceFolder="ips-src" 
+			outputFolderGenerated="java-gen" basePackageGenerated="org.faktorips.sample.model"
+			outputFolderExtension="java-ext" basePackageExtension="org.faktorips.sample.model"/>
+	</IpsObjectPath>
+	<Datatypes>
+		<UsedPredefinedDatatypes>
+			<Datatype id="Boolean"/>
+			<Datatype id="Integer"/>
+		</UsedPredefinedDatatypes>
+		<DatatypeDefinitions>
+			<Datatype id="PaymentMode" 
+				valueClass="org.faktorips.sample.model.PaymentMode" 
+		        valueOfMethod="getPaymentMode"
+		        isParsableMethod="isPaymentMode"
+		        valueToStringMethod="getId"
+		        specialNullValue="n"/>
+		</DatatypeDefinitions>
+	</Datatypes>
+</IpsProject>

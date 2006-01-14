@@ -45,7 +45,7 @@ public class ValueSetType extends DefaultEnumValue {
      * Returns <code>null</code> if the id does not identify a value set type.
      */
     public final static ValueSetType getValueSetType(String id) {
-        return (ValueSetType)enumType.getValue(id);
+        return (ValueSetType)enumType.getEnumValue(id);
     }
     
     /**

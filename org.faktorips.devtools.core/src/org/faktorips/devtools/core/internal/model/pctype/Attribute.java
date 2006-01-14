@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -27,6 +28,7 @@ import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -36,8 +38,6 @@ import org.w3c.dom.NodeList;
  */
 public class Attribute extends Member implements IAttribute {
 
-	//Konstanten die mit JAVA_ anfangen sind deprecated
-	
     private final static String[] JAVA_METHOD_PREFIX;
     private final static int[] JAVA_METHOD_OF_TYPE;
 
@@ -114,7 +114,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
+     * Overridden.
      */
     public void delete() {
         getPolicyCmptType().removeAttribute(this);
@@ -122,7 +122,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
+     * Overridden.
      */
     public String getDatatype() {
         return datatype;
@@ -145,7 +145,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
+     * Overridden.
      */
     public void setAttributeType(AttributeType newType) {
         AttributeType oldType = attributeType;
@@ -154,9 +154,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#getAttributeType()
+     * Overridden.
      */
     public AttributeType getAttributeType() {
         return attributeType;
@@ -170,23 +168,21 @@ public class Attribute extends Member implements IAttribute {
 	}
     
     /**
-     * Overridden IMethod.
+     * Overridden.
      */
 	public boolean isDerivedOrComputed() {
         return attributeType==AttributeType.DERIVED || attributeType==AttributeType.COMPUTED;
     }
 
     /**
-     * Overridden method.
+     * Overridden.
      */
     public Modifier getModifier() {
         return modifier;
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)
+     * Overridden.
      */
     public void setModifier(Modifier newModifier) {
         Modifier oldModifier = modifier;
@@ -195,18 +191,14 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#isProductRelevant()
+     * Overridden.
      */
     public boolean isProductRelevant() {
         return productRelevant;
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#setProductRelevant(boolean)
+     * Overridden.
      */
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
@@ -215,18 +207,14 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#getDefaultValue()
+     * Overridden.
      */
     public String getDefaultValue() {
         return defaultValue;
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#setDefaultValue(java.lang.String)
+     * Overridden.
      */
     public void setDefaultValue(String newValue) {
         String oldValue = defaultValue;
@@ -235,18 +223,14 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#getValueSet()
+     * Overridden.
      */
     public ValueSet getValueSet() {
         return valueSet;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#setValueSet(org.faktorips.devtools.core.model.ValueSet)
+     * Overridden.
      */
     public void setValueSet(ValueSet valueSet) {
         this.valueSet = valueSet;
@@ -254,9 +238,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#getConfigElementType()
+     * Overridden.
      */
     public ConfigElementType getConfigElementType() {
         if (!productRelevant) {
@@ -275,9 +257,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * Overridden.
      */
     public Image getImage() {
         if (modifier == Modifier.PRIVATE) {
@@ -289,9 +269,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getParameters()
+     * Overridden.
      */
     public Parameter[] getFormulaParameters() {
         Parameter[] copy = new Parameter[parameters.length];
@@ -300,18 +278,14 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getNumOfParameters()
+     * Overridden.
      */
     public int getNumOfFormulaParameters() {
         return parameters.length;
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#setParameters(org.faktorips.devtools.core.model.pctype.Parameter[])
+     * Overridden.
      */
     public void setFormulaParameters(Parameter[] params) {
         parameters = new Parameter[params.length];
@@ -320,9 +294,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * @deprecated
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#getJavaMethod(int)
+     * Overridden.
      */
     public IMethod getJavaMethod(int type) throws CoreException {
         if (type < 0 || type > JAVA_NUMOF_METHOD) {
@@ -363,9 +335,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * @deprecated
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#getJavaField(int)
+     * Overridden.
      */
     public IField getJavaField(int type) throws CoreException {
         if (type != JAVA_FIELD_VALUE_POLICY && type != JAVA_FIELD_VALUE_PRODUCT && type != JAVA_FIELD_VALUESET_POLICY
@@ -398,9 +368,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPart#validate(org.faktorips.util.message.MessageList)
+     * Overridden.
      */
     public void validate(MessageList result) throws CoreException {
     	super.validate(result);
@@ -476,23 +444,27 @@ public class Attribute extends Member implements IAttribute {
                         .add(new Message("", "The datatype " + param.getDatatype()
                                 + " does not exists on the object path!", Message.ERROR, param,
                                 PROPERTY_FORMULAPARAM_DATATYPE));
+            } else {
+                try {
+                    result.add(datatypeObject.validate(), new ObjectProperty(param, PROPERTY_FORMULAPARAM_DATATYPE), true);
+                } catch (CoreException e) {
+                    throw e;
+                } catch (Exception e) {
+                    throw new CoreException(new IpsStatus(e));
+                }
             }
         }
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * Overridden.
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void initPropertiesFromXml(Element element) {
         super.initPropertiesFromXml(element);
@@ -525,9 +497,7 @@ public class Attribute extends Member implements IAttribute {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
@@ -545,6 +515,5 @@ public class Attribute extends Member implements IAttribute {
             element.appendChild(newParamElement);
         }
     }
-    
    
 }

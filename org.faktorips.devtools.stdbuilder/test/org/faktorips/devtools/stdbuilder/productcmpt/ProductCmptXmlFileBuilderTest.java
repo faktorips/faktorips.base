@@ -62,7 +62,7 @@ public class ProductCmptXmlFileBuilderTest extends PluginTest {
         
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)ipsProject.getIpsObjectPath().getEntries()[0];
-        IFile tocFile = ((IpsPackageFragmentRoot)entry.getIpsPackageFragmentRoot()).getTocFileInOutputFolder();
+        IFile tocFile = ((IpsPackageFragmentRoot)entry.getIpsPackageFragmentRoot(ipsProject)).getTocFileInOutputFolder();
         assertTrue(tocFile.exists());
         
         // if the product component refers to a none existing policy component type, builder should not crash

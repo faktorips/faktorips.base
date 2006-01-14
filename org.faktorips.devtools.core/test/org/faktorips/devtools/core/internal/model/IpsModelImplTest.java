@@ -1,6 +1,5 @@
 package org.faktorips.devtools.core.internal.model;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -15,10 +14,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
-import org.faktorips.codegen.dthelpers.DefaultEnumTypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumType;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.PluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -62,46 +58,19 @@ public class IpsModelImplTest extends PluginTest {
     
     
     public void testGetValueDatatypes() throws CoreException, IOException {
-        updateDatatypesDefinition();
-        addFaktorIpsCommonJarToIpsProject();        
-        addPaymentModeClassToIpsProject();
+        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
         SortedSet datatypes = new TreeSet();
         model.getValueDatatypes(ipsProject, datatypes);
-        assertEquals(2, datatypes.size());
-
+        assertEquals(1, datatypes.size());
         Iterator it = datatypes.iterator();
         assertEquals(Datatype.DECIMAL, it.next());
-        EnumType paymentMode = (EnumType)it.next();
-        assertEquals("PaymentMode", paymentMode.getName());
     }
 
     public void testGetDatatypeHelpers() throws IOException, CoreException {
-        updateDatatypesDefinition();
-        addFaktorIpsCommonJarToIpsProject();        
-        addPaymentModeClassToIpsProject();
+        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
         DatatypeHelper helper = model.getDatatypeHelper(ipsProject, Datatype.DECIMAL);
         assertEquals(DecimalHelper.class, helper.getClass());
-        
-        ValueDatatype paymentMode = (ValueDatatype)ipsProject.findDatatype("PaymentMode");
-        assertNotNull(paymentMode);
-        helper = model.getDatatypeHelper(ipsProject, paymentMode);
-        assertEquals(DefaultEnumTypeHelper.class, helper.getClass());
-        
         assertNull(model.getDatatypeHelper(ipsProject, Datatype.MONEY));
-    }
-    
-    private void updateDatatypesDefinition() throws CoreException, IOException {
-	    IFile typeFile = ipsProject.getDatatypesDefinitionFile();
-	    String contents = 
-	        "<?xml version=\"1.0\"?>" + 
-	        "<DatatypesDefinition>" + 
-	        	"<Datatype id=\"Decimal\"/>" + 
-	        	"<Datatype class=\"org.PaymentMode\" helperClass=\"org.faktorips.codegen.dthelpers.DefaultEnumTypeHelper\"" +
-	    			" valueOfMethod=\"getPaymentMode\" getEnumTypeMethod=\"getEnumType\" />" + 	
-	        "</DatatypesDefinition>";
-	    ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes());
-	    typeFile.setContents(is, true, false, null);
-	    is.close();
     }
     
     /*

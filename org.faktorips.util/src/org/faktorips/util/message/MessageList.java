@@ -46,16 +46,43 @@ public class MessageList {
     }
 
     /**
-     * Adds the message in the given list to this list.
+     * Adds the messages in the given list to this list.
      * 
      * @throws IllegalArgumentException
      *             if msgList is null.
      */
     public void add(MessageList msgList) {
-        ArgumentCheck.notNull(msgList);
+        if (msgList==null) {
+            return;
+        }
         int max = msgList.getNoOfMessages();
         for (int i = 0; i < max; i++) {
             add(msgList.getMessage(i));
+        }
+    }
+
+    /**
+     * Copies the messages from the given list to this list and sets the message's
+     * invallid object properties.
+     * 
+     * @param msgList the list to coppy the messages from.
+     * @param invalidObjectProperty the object and it's property that the messages refer to.
+     * @param override <code>true</code> if the invalidObjectProperty should be set in all
+     * messages. <code>false</code> if the invalidObjectProperty is set only for messages
+     * that do not contain any invalid object property information.
+     */
+    public void add(MessageList msgList, ObjectProperty invalidObjectProperty, boolean override) {
+        if (msgList==null) {
+            return;
+        }
+        int max = msgList.getNoOfMessages();
+        for (int i = 0; i < max; i++) {
+            Message msg = msgList.getMessage(i);
+            if (override || msg.getInvalidObjectProperties().length==0) {
+                add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), invalidObjectProperty));
+            } else {
+                add(msg);
+            }
         }
     }
 

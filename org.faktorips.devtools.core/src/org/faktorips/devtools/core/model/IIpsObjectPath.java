@@ -10,11 +10,6 @@ import org.eclipse.core.resources.IFolder;
 public interface IIpsObjectPath {
 
     /**
-     * Returns the IPS project this is the object path for.
-     */
-    public IIpsProject getIpsProject();
-    
-    /**
      * Returns the path' entries.
      */
     public IIpsObjectPathEntry[] getEntries();

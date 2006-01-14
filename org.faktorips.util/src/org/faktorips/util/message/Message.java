@@ -13,7 +13,7 @@ import org.apache.commons.lang.SystemUtils;
  * code is UnresolvedSymbol independent of the concrete symbol and locale.
  * <p>
  * In addition a message can provides access to the objects and their properties
- * that message relates to. E.g. if a message reads that "the relation's minimum
+ * the message relates to. E.g. if a message reads that "the relation's minimum
  * cardinality can't be greater than the maximum cardinality" than the relation's minimum and
  * maximum cardinality are invalid. This information can be used for example
  * to mark controls in the UI that show these properties.  
@@ -31,6 +31,8 @@ public class Message {
     public final static int WARNING = 20;
     public final static int INFO = 10;
     public final static int NONE = 0;
+    
+    private final static ObjectProperty[] EMPTY_OBJECT_PROPERTIES = new ObjectProperty[0];
 
     //  one of the constants ERROR, WARNING, INFO
     private int severity = ERROR;
@@ -43,7 +45,7 @@ public class Message {
     
     // the object and their properties that are adresses in the message 
     // as having an error or that a warning or information relates to.
-    private ObjectProperty[] invalidOp = new ObjectProperty[0];
+    private ObjectProperty[] invalidOp = EMPTY_OBJECT_PROPERTIES;
 
     /**
      * Constructs a new information message.
@@ -99,6 +101,18 @@ public class Message {
             Object referencedObject,
             String referencedProperty) {
         this(code, text, severity, referencedObject, new String[]{referencedProperty});
+    }
+    
+    /**
+     * Creates a new message with the indicated code, text and severity.
+     * The message refers to the indicated object and it's property.
+     */
+    public Message(
+            String code, 
+            String text, 
+            int severity,
+            ObjectProperty invalidObjectProperty) {
+        this(code, text, severity, new ObjectProperty[]{invalidObjectProperty});
     }
     
     /**
@@ -170,7 +184,8 @@ public class Message {
     /**
      * Returns the list of object properties the message refers to. 
      * E.g. if a message reads "The driver's age must be greater than 18.", this
-     * method would probably return the driver object and the property name age.  
+     * method would probably return the driver object and the property name age.
+     * Returns an empty array if the list does not refer to any objects / properties.
      */
     public ObjectProperty[] getInvalidObjectProperties() {
         return invalidOp;

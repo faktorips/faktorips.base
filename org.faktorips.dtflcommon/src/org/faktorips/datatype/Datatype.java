@@ -3,6 +3,7 @@ package org.faktorips.datatype;
 import org.faktorips.datatype.classtypes.*;
 import org.faktorips.datatype.Decimal;
 import org.faktorips.datatype.Money;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The type of data similar to a Java class. In most cases a datatype corresponds
@@ -106,5 +107,16 @@ public interface Datatype extends Comparable {
      */
     public abstract String getJavaClassName();
     
-  
+    /**
+     * Validates the datatype and returns a message list containing appropriate error messages.
+     * If the datatype is valid and empty list is returned.
+     * <p>
+     * Datatypes like the predefined datatypes (defined by the constants in this class) are 
+     * always valid. However new datatypes can be defined as part of a model and these datatypes
+     * might be invalid.
+     * 
+     * @throws Exception if an error occurs while validating the datatype.
+     */
+    public MessageList validate() throws Exception;
+    
 }

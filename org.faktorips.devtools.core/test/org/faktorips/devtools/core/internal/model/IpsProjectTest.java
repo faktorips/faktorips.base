@@ -12,7 +12,9 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.Decimal;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.PluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -31,7 +33,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
  */
 public class IpsProjectTest extends PluginTest {
 
-    private IIpsProject ipsProject;
+    private IpsProject ipsProject;
     private IIpsPackageFragmentRoot root;
     
     /*
@@ -39,12 +41,12 @@ public class IpsProjectTest extends PluginTest {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
+        ipsProject = (IpsProject)this.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
     public void testGetValueDatatypes() throws CoreException {
-        setDatatypesForIpsProject();
+        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
 	    ValueDatatype[] types = ipsProject.getValueDatatypes(false);
 	    assertEquals(1, types.length);
 	    assertEquals(Datatype.DECIMAL, types[0]);
@@ -64,7 +66,7 @@ public class IpsProjectTest extends PluginTest {
     }
     
     public void testGetDatatypeHelper() throws CoreException {
-        setDatatypesForIpsProject();
+        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
         assertEquals(DecimalHelper.class, helper.getClass());
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
@@ -76,7 +78,7 @@ public class IpsProjectTest extends PluginTest {
     }
     
     public void testFindDatatypes() throws CoreException {
-        setDatatypesForIpsProject();
+        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
         IIpsPackageFragment pack = ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("");
         IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestObject1", true, null);
         IPolicyCmptType pcType1 = (IPolicyCmptType)file1.getIpsObject();
@@ -135,33 +137,12 @@ public class IpsProjectTest extends PluginTest {
 	    assertEquals(pcType2, types[4]);
     }
     
-    private void setDatatypesForIpsProject() throws CoreException {
-	    IFile typeFile = ipsProject.getDatatypesDefinitionFile();
-	    String contents = 
-	        "<?xml version=\"1.0\"?>" + 
-	        "<DatatypesDefinition>" + 
-	        	"<Datatype id=\"Decimal\"/>" + 
-	        "</DatatypesDefinition>";
-	    ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes());
-	    typeFile.setContents(is, true, false, null);
-    }
-    
     /*
      * Creates an ips project called RefProject that is referenced by the ips project and has two defined datatypes.
      */
     private IIpsProject createRefProject() throws CoreException {
         IIpsProject refProject = newIpsProject("RefProject");
-        // ... set Money and Decimal as the datatype for the referenced ips project
-	    IFile typeFile = refProject.getDatatypesDefinitionFile();
-	    String contents = 
-	        "<?xml version=\"1.0\"?>" + 
-	        "<DatatypesDefinition>" + 
-	        	"<Datatype id=\"Decimal\"/>" + 
-	        	"<Datatype id=\"Money\"/>" + 
-	        "</DatatypesDefinition>";
-	    ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes());
-	    typeFile.setContents(is, true, false, null);
-        
+        refProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.MONEY.getQualifiedName()});
         // set the reference from the ips project to the referenced project
 	    IIpsObjectPath path = ipsProject.getIpsObjectPath();
 	    path.newIpsProjectRefEntry(refProject);
@@ -276,18 +257,18 @@ public class IpsProjectTest extends PluginTest {
     }
     
     public void testSetIpsObjectPath() throws CoreException {
-        IFile objectPathFile = ipsProject.getIpsObjectPathFile();
-        long stamp = objectPathFile.getModificationStamp();
+        IFile projectFile = ipsProject.getIpsProjectPropertiesFile();
+        long stamp = projectFile.getModificationStamp();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.setOutputDefinedPerSrcFolder(false);
         path.setBasePackageNameForGeneratedJavaClasses("some.name");
         ipsProject.setIpsObjectPath(path);
-        assertTrue(stamp!=objectPathFile.getModificationStamp());
+        assertTrue(stamp!=projectFile.getModificationStamp());
         
         // following line will receive a new IpsProject instance (as it is only a proxy)
-        ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProject.getProject());
+        IIpsProject ipsProject2 = IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProject.getProject());
         // test if he changed object path is also available with the new instance
-        assertEquals("some.name", ipsProject.getIpsObjectPath().getBasePackageNameForGeneratedJavaClasses());
+        assertEquals("some.name", ipsProject2.getIpsObjectPath().getBasePackageNameForGeneratedJavaClasses());
     }
     
 }

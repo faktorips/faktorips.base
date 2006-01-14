@@ -59,14 +59,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException;
     
     /**
-     * Returns the file storing the ips object path.
+     * Set the value datatypes allowed in the project.
      */
-    public IFile getIpsObjectPathFile();
-    
-    /**
-     * Returns the file that stores the project's datatype definitions.
-     */
-    public IFile getDatatypesDefinitionFile();
+    public void setValueDatatypes(String[] ids) throws CoreException;
     
     /**
      * Returns the language in that the expression language's functions are used.

@@ -84,7 +84,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         for (int i=0; i<entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)entries[i];
-                if (entry.getIpsPackageFragmentRoot().equals(this)) {
+                if (entry.getIpsPackageFragmentRoot(getIpsProject()).equals(this)) {
                     return entry;
                 }
             }

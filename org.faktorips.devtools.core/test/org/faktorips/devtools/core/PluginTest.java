@@ -1,8 +1,5 @@
 package org.faktorips.devtools.core;
 
-import java.io.ByteArrayInputStream;
-
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -165,21 +162,11 @@ public abstract class PluginTest extends XmlTestCase {
 	    entry.setSpecificBasePackageNameForExtensionJavaClasses("org.faktorips.sample.model");
 	    entry.setSpecificOutputFolderForExtensionJavaFiles(project.getFolder("extension"));
 	    ipsProject.setIpsObjectPath(path);
-        //TODO: wichtig dies erzeugt eine Abhängigkeit vom StdBuilder Projekt. Dies muss dringend überarbeitet
+
+	    //TODO: wichtig dies erzeugt eine Abhängigkeit vom StdBuilder Projekt. Dies muss dringend überarbeitet
         //werden
         ipsProject.setCurrentArtefactBuilderSet("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
-	    
-	    IFile typeFile = ipsProject.getDatatypesDefinitionFile();
-	    String contents = 
-	        "<?xml version=\"1.0\"?>" + 
-	        "<DatatypesDefinition>" + 
-	        "<Datatype id=\"Decimal\"/>" + 
-            "<Datatype id=\"Money\"/>" + 
-            "<Datatype id=\"String\"/>" + 
-            "<Datatype id=\"Boolean\"/>" + 
-	        "</DatatypesDefinition>";
-	    ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes());
-	    typeFile.create(is, true, null);
+	    ipsProject.setValueDatatypes(new String[]{"Decimal", "Money", "String", "Boolean"});
 	}
 
 	private void addSystemLibraries(IJavaProject javaProject) throws JavaModelException 

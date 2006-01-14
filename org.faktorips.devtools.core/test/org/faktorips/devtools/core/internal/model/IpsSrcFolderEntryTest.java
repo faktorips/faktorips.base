@@ -21,7 +21,7 @@ public class IpsSrcFolderEntryTest extends PluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
-        path = new IpsObjectPath(ipsProject);
+        path = new IpsObjectPath();
     }
     
     public void testGetOutputFolderForGeneratedJavaFiles() {
@@ -86,14 +86,14 @@ public class IpsSrcFolderEntryTest extends PluginTest {
         Document doc = getTestDocument();
         NodeList nl = doc.getDocumentElement().getElementsByTagName("Entry");
         
-        entry.initFromXml((Element)nl.item(0));
+        entry.initFromXml((Element)nl.item(0), ipsProject.getProject());
         assertEquals(project.getFolder("ipssrc"), entry.getSourceFolder());
         assertEquals(project.getFolder("generated"), entry.getSpecificOutputFolderForGeneratedJavaFiles());
         assertEquals("org.sample.generated", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
         assertEquals(project.getFolder("extensions"), entry.getSpecificOutputFolderForExtensionJavaFiles());
         assertEquals("org.sample.extensions", entry.getSpecificBasePackageNameForExtensionJavaClasses());
 
-        entry.initFromXml((Element)nl.item(1));
+        entry.initFromXml((Element)nl.item(1), ipsProject.getProject());
         assertNull(entry.getSpecificOutputFolderForGeneratedJavaFiles());
         assertEquals("", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
         assertEquals("", entry.getSpecificBasePackageNameForExtensionJavaClasses());
@@ -106,7 +106,7 @@ public class IpsSrcFolderEntryTest extends PluginTest {
         entry.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model");
         Element element = entry.toXml(newDocument());
         entry = new IpsSrcFolderEntry(path);
-        entry.initFromXml(element);
+        entry.initFromXml(element, project);
         assertEquals(project.getFolder("ipssrc").getFolder("modelclasses"), entry.getSourceFolder());
         assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry.getSpecificOutputFolderForGeneratedJavaFiles());
         assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
@@ -116,7 +116,7 @@ public class IpsSrcFolderEntryTest extends PluginTest {
         entry.setSpecificBasePackageNameForGeneratedJavaClasses("");
         element = entry.toXml(newDocument());
         entry = new IpsSrcFolderEntry(path);
-        entry.initFromXml(element);
+        entry.initFromXml(element, project);
         assertNull(entry.getSpecificOutputFolderForGeneratedJavaFiles());
         assertEquals("", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
         

@@ -641,7 +641,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                 if (!isAbstractMethodImplemented(this, methods[i], hierarchy)) {
                     String text = "Must override the abstract method " + methods[i].getName() + " defined in " 
                 		+ methods[i].getPolicyCmptType().getQualifiedName();
-                    list.add(new Message(IPolicyCmptType.VLDCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
+                    list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
                 }
             }
         }
@@ -842,16 +842,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             throw new RuntimeException(e);
         }
     }
-    
+
     public String getJavaInterfaceName() {
-    	try  {
-    		return getJavaType(JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE).getFullyQualifiedName();
-    	} catch (CoreException e) {
+        try  {
+            return getJavaType(JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE).getFullyQualifiedName();
+        } catch (CoreException e) {
             throw new RuntimeException(e);
-    	}
+        }
     }
     
-
     /** 
      * Overridden method.
      * @see java.lang.Comparable#compareTo(java.lang.Object)

@@ -5,10 +5,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 
 /**
@@ -50,8 +52,10 @@ public class ValidationUtils {
     }
     
     /**
-     * Tests if the given name identifies a datatype.
+     * Checks if the given name identifies a datatype.
      * If not, it adds an error message to the given message list.
+     * If the datatype is found, it is validated and any messages generated
+     * by the datatype validation are added to the given message list.
      * 
      * @param datatypeName the datatype name to check.
      * @param mandatory Is the reference mandatory. If yes, it is checked that
@@ -75,8 +79,16 @@ public class ValidationUtils {
         Datatype datatype = part.getIpsProject().findDatatype(datatypeName);
         if (datatype==null) {
             String text = "Datatype " + datatypeName + " does not exists.";
-            list.add(new Message("", text, Message.ERROR, part, propertyName));
+            list.add(new Message("123", text, Message.ERROR, part, propertyName));
             return null;
+        }
+        try {
+            
+            list.add(datatype.validate(), new ObjectProperty(part, propertyName), true);
+        } catch (CoreException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(e));
         }
         if (datatype.isVoid() && !voidAllowed) {
             String text = "Datatype void is not allowed.";

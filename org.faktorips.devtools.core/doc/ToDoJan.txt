@@ -1,24 +1,13 @@
 Jan's ToDos
 ===========
-
-1.) Document WorkingCopy concept
-2.) Zusammenfassung IpsProject-Files in eins. Datatypes Definition in diesem File oder über den IpsObject-Mechanismus?
-	=> Muss man unterscheiden zwischen Value-Datatypes und anderen?
-	=> Fuer ValueDatatypes braucht man einen CodeGenHelper, der die Codegenerierung fuer Transformation aus Strings uebernimmt.
-	=> Wollen wir fuer Attribute ausschließlich ValueDatatypes zulassen?
+ - Validate im Datatype einbauen
 	
 3.) Russendemo lauffähig machen
 4.) Version-Info in die XML-Files aufnehmen. Core-Plugin und das jeweilige Plugin der Extension-Properties.
 5.) New Project Wizard (oder besser ein Add-IPS-Nature Menüpunkt?)
 
-6.) Package Structure, Plugin Structure, Namensgebung
-x.) DatatypeDefinition auch für Enums umstellen.
-
-Mit Peter besprechen:
-7.) Entfernen der PolicyClass aus dem TOC?
-8.) Was ist noch am Builder zu tun?
-	ANNOTATIONS	
-	TOC
+x.) DatatypeDefinition auch für Enums umstellen. Klären: Wie können bestehende Klassen, die einen Aufzählungstypen representieren
+integriert werden.
 
 Formelsprache:
 Fehler im Compiler: GANZZAHL(WENN(vp.geschlecht=1; vp.alter; vp.alter / 10))
@@ -29,17 +18,16 @@ Wizard für IpsProject oder Umwandlung von bestehendem Java-Projekt.
 Explizite Namensgebung für Produktseite.
 Codegenerierung für Anpassungsstufen
 (Produktkomponenteneditor-für Anpassungsstufen)
-Deployment als Feature testen.
 Validierung des IpsProjects und ausschalten des Builds, falls dort fehler enthalten sind.
 Cleanup-Code: Entfernen der Referenzen auf Java-Types aus den Modellklassen.
-Codegenerierung fuer Tabellen.
-Definition einer Nature fuer Erweiterungen.
+Codegenerierung fuer Tabellen
+Definition einer Nature fuer Erweiterungen?
 DefaultValue fuer Attribute: flag, ob es einen default value gibt oder nicht.
 
-Trennung von Vertragsklassen und Produktklassen
-===============================================
- - Semantische Klarheit. Insbesondere Beziehungen, Attribute
- - Strategiepattern vs. Vererbungshierachien / Implementationinheritance
- - Beispiel: Adresse, braucht nicht konfigurierbar sein.
- - Beziehungen zwischen Produktklassen. Eine Zuschlagdefinition bezieht sich auf mehrere Leistungsarten
- - Bisher nur konstanten auf Produktseite. 
+
+Peter besprechen
+ - Entfernen der PolicyClass aus dem TOC?
+ - Was ist noch am Builder zu tun?
+	ANNOTATIONS	
+	TOC
+ - Referenz auf DateDatytpe im generierten TableAccess code rauswerfen.

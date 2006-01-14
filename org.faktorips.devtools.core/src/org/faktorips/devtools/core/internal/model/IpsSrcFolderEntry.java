@@ -7,9 +7,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -66,18 +67,14 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getIpsPackageFragmentRoot()
+     * Overridden.
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return getIpsObjectPath().getIpsProject().getIpsPackageFragmentRoot(sourceFolder.getName());
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject ipsProject) {
+        return ipsProject.getIpsPackageFragmentRoot(sourceFolder.getName());
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getOutputFolderForGeneratedJavaFiles()
+     * Overridden.
      */
     public IFolder getOutputFolderForGeneratedJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -87,27 +84,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getSpecificOutputFolderForGeneratedJavaFiles()
+     * Overridden.
      */
     public IFolder getSpecificOutputFolderForGeneratedJavaFiles() {
         return outputFolderGenerated;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#setSpecificOutputFolderForGeneratedJavaFiles(org.eclipse.core.resources.IFolder)
+     * Overridden.
      */
     public void setSpecificOutputFolderForGeneratedJavaFiles(IFolder outputFolder) {
         this.outputFolderGenerated = outputFolder;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getBasePackageNameForGeneratedJavaClasses()
+     * Overridden.
      */
     public String getBasePackageNameForGeneratedJavaClasses() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -117,27 +108,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getSpecificBasePackageNameForGeneratedJavaClasses()
+     * Overridden.
      */
     public String getSpecificBasePackageNameForGeneratedJavaClasses() {
         return basePackageGenerated;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#setSpecificBasePackageNameForGeneratedJavaClasses(java.lang.String)
+     * Overridden.
      */
     public void setSpecificBasePackageNameForGeneratedJavaClasses(String name) {
         this.basePackageGenerated = name;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getOutputFolderForExtensionJavaFiles()
+     * Overridden.
      */
     public IFolder getOutputFolderForExtensionJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -147,27 +132,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getSpecificOutputFolderForExtensionJavaFiles()
+     * Overridden.
      */
     public IFolder getSpecificOutputFolderForExtensionJavaFiles() {
         return outputFolderExtension;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#setSpecificOutputFolderForExtensionJavaFiles(org.eclipse.core.resources.IFolder)
+     * Overridden.
      */
     public void setSpecificOutputFolderForExtensionJavaFiles(IFolder outputFolder) {
         outputFolderExtension = outputFolder;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getBasePackageNameForExtensionJavaClasses()
+     * Overridden.
      */
     public String getBasePackageNameForExtensionJavaClasses() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -177,71 +156,53 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getSpecificBasePackageNameForExtensionJavaClasses()
+     * Overridden.
      */
     public String getSpecificBasePackageNameForExtensionJavaClasses() {
         return basePackageExtension;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#setSpecificBasePackageNameForExtensionJavaClasses(java.lang.String)
+     * Overridden.
      */
     public void setSpecificBasePackageNameForExtensionJavaClasses(String name) {
         basePackageExtension = name;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPathEntry#findIpsObject(org.faktorips.devtools.core.model.IpsObjectType,
-     *      java.lang.String)
+     * Overridden.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        return getIpsPackageFragmentRoot().getIpsObject(type, qualifiedName);
+    public IIpsObject findIpsObject(IIpsProject ipsProject, IpsObjectType type, String qualifiedName) throws CoreException {
+        return getIpsPackageFragmentRoot(ipsProject).getIpsObject(type, qualifiedName);
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPathEntry#findIpsObject(org.faktorips.devtools.core.model.QualifiedNameType)
+     * Overridden.
      */
-    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
-        return getIpsPackageFragmentRoot().getIpsObject(nameType);
+    public IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException {
+        return getIpsPackageFragmentRoot(ipsProject).getIpsObject(nameType);
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPathEntry#findIpsObjects(org.faktorips.devtools.core.model.IpsObjectType,
-     *      java.util.List)
+     * Overridden.
      */
-    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsObjects(type, result);
+    public void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result) throws CoreException {
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(type, result);
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPathEntry#findIpsObjectsStartingWith(org.faktorips.devtools.core.model.IpsObjectType,
-     *      java.lang.String, boolean, java.util.List)
+     * Overridden.
      */
-    protected void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result)
+    protected void findIpsObjectsStartingWith(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result)
             throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsObjectsStartingWith(type, prefix, ignoreCase,
+        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjectsStartingWith(type, prefix, ignoreCase,
                 result);
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPathEntry#initFromXml(org.w3c.dom.Element)
+     * Overridden.
      */
-    public void initFromXml(Element element) {
-        IProject project = getIpsObjectPath().getIpsProject().getProject();
+    public void initFromXml(Element element, IProject project) {
         String sourceFolderPath = element.getAttribute("sourceFolder");
         sourceFolder = project.getFolder(new Path(sourceFolderPath));
         String outputFolderPathGenerated = element.getAttribute("outputFolderGenerated");
@@ -255,9 +216,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPathEntry#toXml(org.w3c.dom.Document)
+     * Overridden.
      */
     public Element toXml(Document doc) {
         Element element = doc.createElement(IpsObjectPathEntry.XML_ELEMENT);

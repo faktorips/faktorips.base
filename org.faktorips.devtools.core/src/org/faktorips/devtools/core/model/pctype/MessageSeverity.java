@@ -41,7 +41,7 @@ public class MessageSeverity extends DefaultEnumValue {
     }
     
     public final static MessageSeverity getMessageSeverity(String id) {
-        return (MessageSeverity)enumType.getValue(id);
+        return (MessageSeverity)enumType.getEnumValue(id);
     }
     
     // the Java sourcecode fragment that identifies the message severity

@@ -484,7 +484,7 @@ public class PolicyCmptTypeTest extends PluginTest implements ContentsChangeList
         list = pcType.validate();
         assertEquals(1, list.getNoOfMessages());
         Message msg = list.getMessage(0);
-        assertEquals(IPolicyCmptType.VLDCODE_MUST_OVERRIDE_ABSTRACT_METHOD, msg.getCode());
+        assertEquals(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, msg.getCode());
         assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
 
         // "implement" the method in pcType => error should no be reported anymore
@@ -502,7 +502,7 @@ public class PolicyCmptTypeTest extends PluginTest implements ContentsChangeList
         list = pcType.validate();
         assertEquals(1, list.getNoOfMessages());
         msg = list.getMessage(0);
-        assertEquals(IPolicyCmptType.VLDCODE_MUST_OVERRIDE_ABSTRACT_METHOD, msg.getCode());
+        assertEquals(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, msg.getCode());
         assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
         
         // "implement" the method in the supertype => error should no be reported anymore

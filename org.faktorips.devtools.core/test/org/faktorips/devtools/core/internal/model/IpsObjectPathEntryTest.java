@@ -19,15 +19,15 @@ public class IpsObjectPathEntryTest extends PluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
-        path = new IpsObjectPath(ipsProject);
+        path = new IpsObjectPath();
     }
 
     public void testCreateFromXml() {
         Document doc = getTestDocument();
         NodeList nl = doc.getDocumentElement().getElementsByTagName(IpsObjectPathEntry.XML_ELEMENT);
-        IIpsObjectPathEntry entry = IpsObjectPathEntry.createFromXml(path, (Element)nl.item(0));
+        IIpsObjectPathEntry entry = IpsObjectPathEntry.createFromXml(path, (Element)nl.item(0), ipsProject.getProject());
         assertEquals(IIpsObjectPathEntry.TYPE_SRC_FOLDER, entry.getType());
-        entry = IpsObjectPathEntry.createFromXml(path, (Element)nl.item(1));
+        entry = IpsObjectPathEntry.createFromXml(path, (Element)nl.item(1), ipsProject.getProject());
         assertEquals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE, entry.getType());
     }
 

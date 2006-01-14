@@ -30,9 +30,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 	}
 
 	/**
-	 * Overridden Method.
-	 * 
-	 * @see org.faktorips.codegen.DatatypeHelper#getDatatype()
+	 * Overridden.
 	 */
 	public Datatype getDatatype() {
 		return datatype;
@@ -57,10 +55,8 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 	 */
 	protected abstract JavaCodeFragment valueOfExpression(String expression);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.faktorips.codegen.DatatypeHelper#newInstanceFromExpression(java.lang.String)
+	/**
+     * Overridden.
 	 */
 	public JavaCodeFragment newInstanceFromExpression(String expression) {
 		if (StringUtils.isEmpty(expression)) {

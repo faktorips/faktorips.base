@@ -1,32 +1,37 @@
 package org.faktorips.datatype;
 
+import org.faktorips.util.message.MessageList;
+
 /**
  * Abstract super class for Datatype implementations.
  *   
  * @author Jan Ortmann
  */
 public abstract class AbstractDatatype implements Datatype {
-	
+    
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#isVoid()
+     * Overridden.
+     */
+    public MessageList validate() {
+        return new MessageList();
+    }
+
+    /**
+     * Overridden.
      */
 	public boolean isVoid() {
 		return false;
 	}
 
 	/**
-	 * Overridden Method.
-	 * @see java.lang.Object#hashCode()
+	 * Overridden.
 	 */
 	public int hashCode() {
 	    return getName().hashCode();
 	}
 	
 	/**
-	 * Overridden method.
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * Overridden.
 	 */
 	public boolean equals(Object o) {
 		if (this==o) {
@@ -40,8 +45,6 @@ public abstract class AbstractDatatype implements Datatype {
 
 	/**
 	 * Returns the type's name. 
-	 * Overridden method.
-	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
 		return getQualifiedName();
@@ -49,8 +52,6 @@ public abstract class AbstractDatatype implements Datatype {
 	
 	/**
 	 * Compares the two type's alphabetically by their name.
-	 * Overridden method.
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	public int compareTo(Object o) {
 		Datatype type = (Datatype)o;

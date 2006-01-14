@@ -62,7 +62,7 @@ public class AttributeType extends DefaultEnumValue {
         if (id.equals("changable")) {
             return CHANGEABLE; // migration of old files
         }
-        return (AttributeType)enumType.getValue(id);
+        return (AttributeType)enumType.getEnumValue(id);
     }
     
     private AttributeType(DefaultEnumType type, String id) {

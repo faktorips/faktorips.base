@@ -4,7 +4,7 @@ import org.faktorips.util.StringUtil;
 import org.faktorips.datatype.NullObject;
 
 /**
- * A datatype that represents a Java class that represents a value.
+ * A datatype that represents a Java class representing a value, for example java.lang.String.
  * 
  * @author Jan Ortmann
  */
@@ -23,40 +23,35 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	}
 
 	/**
-	 * Overridden method.
-	 * @see org.faktorips.datatype.Datatype#getName()
+	 * Overridden.
 	 */
 	public String getName() {
 		return name;
 	}
 	
 	/**
-	 * Overridden method.
-	 * @see org.faktorips.datatype.Datatype#getQualifiedName()
+	 * Overridden.
 	 */
     public String getQualifiedName() {
         return name;
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isPrimitive()
+     * Overridden.
      */
     public boolean isPrimitive() {
         return false;
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isValueDatatype()
+     * Overridden.
      */
     public boolean isValueDatatype() {
         return true;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getWrapperType()
+     * Overridden.
      */
     public Datatype getWrapperType() {
         return null;
@@ -67,27 +62,21 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	}
 
 	/**
-	 * Overridden Method.
-	 *
-	 * @see org.faktorips.datatype.Datatype#getJavaClassName()
+	 * Overridden.
 	 */
 	public String getJavaClassName() {
 		return clazz.getName();
 	}
 
 	/**
-	 * Overridden Method.
-	 *
-	 * @see org.faktorips.datatype.ValueDatatype#valueToString(java.lang.Object)
+	 * Overridden.
 	 */
 	public String valueToString(Object value) {
 		return value.toString();
 	}
 	
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#isNull(java.lang.Object)
+     * Overridden.
      */
     public boolean isNull(Object value) {
         if (value==null) {
@@ -100,9 +89,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     }
     
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#isParsable(java.lang.String)
+     * Overridden.
      */
     public boolean isParsable(String value) {
         try {

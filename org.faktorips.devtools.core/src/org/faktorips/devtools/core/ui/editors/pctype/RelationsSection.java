@@ -24,7 +24,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
             IPolicyCmptType pcType, 
             Composite parent,
             UIToolkit toolkit) {
-        super(pcType, parent, "IRelation", toolkit);
+        super(pcType, parent, "Relation", toolkit);
     }
     
     public IPolicyCmptType getPcType() {
@@ -32,8 +32,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
+     * Overridden.
      */
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new RelationsComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);

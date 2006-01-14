@@ -167,8 +167,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#validate()
+     * Overridden.
      */
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();

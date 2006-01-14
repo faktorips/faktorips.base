@@ -7,15 +7,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
-
 import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.contentassist.AbstractControlContentAssistSubjectAdapter;
 import org.eclipse.jface.contentassist.ComboContentAssistSubjectAdapter;
@@ -23,7 +14,13 @@ import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.contentassist.TextContentAssistSubjectAdapter;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -44,191 +41,192 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
  */
 // TODO is there a way to avoid copying the class?
 public class ContentAssistHandler {
-	/**
-	 * The target control.
-	 */
-	private Control fControl;
-	/**
-	 * The content assist subject adapter.
-	 */
-	private AbstractControlContentAssistSubjectAdapter fContentAssistSubjectAdapter;
-	/**
-	 * The content assistant.
-	 */
-	private SubjectControlContentAssistant fContentAssistant;
-	/**
-	 * The currently installed FocusListener, or <code>null</code> iff none installed.
-	 * This is also used as flag to tell whether content assist is enabled
-	 */
-	private FocusListener fFocusListener;
-	/**
-	 * The currently installed IHandlerActivation, or <code>null</code> iff none installed.
-	 */
-	private IHandlerActivation fHandlerActivation;
 
-	/**
-	 * Creates a new {@link ContentAssistHandler} for the given {@link Combo}.
-	 * Only a single {@link ContentAssistHandler} may be installed on a {@link Combo} instance.
-	 * Content Assist is enabled by default.
-	 *
-	 * @param combo target combo
-	 * @param contentAssistant a configured content assistant
-	 * @return a new {@link ContentAssistHandler}
-	 */
-	public static ContentAssistHandler createHandlerForCombo(Combo combo, SubjectControlContentAssistant contentAssistant) {
-		return new ContentAssistHandler(combo, new ComboContentAssistSubjectAdapter(combo), contentAssistant);
-	}
+    /**
+     * The target control.
+     */
+    private Control fControl;
+    /**
+     * The content assist subject adapter.
+     */
+    private AbstractControlContentAssistSubjectAdapter fContentAssistSubjectAdapter;
+    /**
+     * The content assistant.
+     */
+    private SubjectControlContentAssistant fContentAssistant;
+    /**
+     * The currently installed FocusListener, or <code>null</code> iff none installed.
+     * This is also used as flag to tell whether content assist is enabled
+     */
+    private FocusListener fFocusListener;
+    /**
+     * The currently installed IHandlerActivation, or <code>null</code> iff none installed.
+     */
+    private IHandlerActivation fHandlerActivation;
 
-	/**
-	 * Creates a new {@link ContentAssistHandler} for the given {@link Text}.
-	 * Only a single {@link ContentAssistHandler} may be installed on a {@link Text} instance.
-	 * Content Assist is enabled by default.
-	 *
-	 * @param text target text
-	 * @param contentAssistant a configured content assistant
-	 * @return a new {@link ContentAssistHandler}
-	 */
-	public static ContentAssistHandler createHandlerForText(Text text, SubjectControlContentAssistant contentAssistant) {
-		return new ContentAssistHandler(text, new TextContentAssistSubjectAdapter(text), contentAssistant);
-	}
+    /**
+     * Creates a new {@link ContentAssistHandler} for the given {@link Combo}.
+     * Only a single {@link ContentAssistHandler} may be installed on a {@link Combo} instance.
+     * Content Assist is enabled by default.
+     *
+     * @param combo target combo
+     * @param contentAssistant a configured content assistant
+     * @return a new {@link ContentAssistHandler}
+     */
+    public static ContentAssistHandler createHandlerForCombo(Combo combo, SubjectControlContentAssistant contentAssistant) {
+        return new ContentAssistHandler(combo, new ComboContentAssistSubjectAdapter(combo), contentAssistant);
+    }
 
-	/**
-	 * Internal constructor.
-	 *
-	 * @param control target control
-	 * @param subjectAdapter content assist subject adapter
-	 * @param contentAssistant content assistant
-	 */
-	private ContentAssistHandler(
-			Control control,
-			AbstractControlContentAssistSubjectAdapter subjectAdapter,
-			SubjectControlContentAssistant contentAssistant) {
-		fControl= control;
-		fContentAssistant= contentAssistant;
-		fContentAssistSubjectAdapter= subjectAdapter;
-		setEnabled(true);
-		fControl.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				setEnabled(false);
-			}
-		});
-	}
+    /**
+     * Creates a new {@link ContentAssistHandler} for the given {@link Text}.
+     * Only a single {@link ContentAssistHandler} may be installed on a {@link Text} instance.
+     * Content Assist is enabled by default.
+     *
+     * @param text target text
+     * @param contentAssistant a configured content assistant
+     * @return a new {@link ContentAssistHandler}
+     */
+    public static ContentAssistHandler createHandlerForText(Text text, SubjectControlContentAssistant contentAssistant) {
+        return new ContentAssistHandler(text, new TextContentAssistSubjectAdapter(text), contentAssistant);
+    }
 
-	/**
-	 * @return <code>true</code> iff content assist is enabled
-	 */
-	public boolean isEnabled() {
-		return fFocusListener != null;
-	}
+    /**
+     * Internal constructor.
+     *
+     * @param control target control
+     * @param subjectAdapter content assist subject adapter
+     * @param contentAssistant content assistant
+     */
+    private ContentAssistHandler(
+            Control control,
+            AbstractControlContentAssistSubjectAdapter subjectAdapter,
+            SubjectControlContentAssistant contentAssistant) {
+        fControl= control;
+        fContentAssistant= contentAssistant;
+        fContentAssistSubjectAdapter= subjectAdapter;
+        setEnabled(true);
+        fControl.addDisposeListener(new DisposeListener() {
+            public void widgetDisposed(DisposeEvent e) {
+                setEnabled(false);
+            }
+        });
+    }
 
-	/**
-	 * Controls enablement of content assist.
-	 * When enabled, a cue is shown next to the focused field
-	 * and the affordance hover shows the shortcut.
-	 *
-	 * @param enable enable content assist iff true
-	 */
-	public void setEnabled(boolean enable) {
-		if (enable == isEnabled())
-			return;
+    /**
+     * @return <code>true</code> iff content assist is enabled
+     */
+    public boolean isEnabled() {
+        return fFocusListener != null;
+    }
 
-		if (enable)
-			enable();
-		else
-			disable();
-	}
+    /**
+     * Controls enablement of content assist.
+     * When enabled, a cue is shown next to the focused field
+     * and the affordance hover shows the shortcut.
+     *
+     * @param enable enable content assist iff true
+     */
+    public void setEnabled(boolean enable) {
+        if (enable == isEnabled())
+            return;
 
-	/**
-	 * Enable content assist.
-	 */
-	private void enable() {
-		if (! fControl.isDisposed()) {
-			fContentAssistant.install(fContentAssistSubjectAdapter);
-			installCueLabelProvider();
-			installFocusListener();
-			if (fControl.isFocusControl())
-				activateHandler();
-		}
-	}
+        if (enable)
+            enable();
+        else
+            disable();
+    }
 
-	/**
-	 * Disable content assist.
-	 */
-	private void disable() {
-		if (! fControl.isDisposed()) {
-			fContentAssistant.uninstall();
-			fContentAssistSubjectAdapter.setContentAssistCueProvider(null);
-			fControl.removeFocusListener(fFocusListener);
-			fFocusListener= null;
-			if (fHandlerActivation != null)
-				deactivateHandler();
-		}
-	}
+    /**
+     * Enable content assist.
+     */
+    private void enable() {
+        if (! fControl.isDisposed()) {
+            fContentAssistant.install(fContentAssistSubjectAdapter);
+            installCueLabelProvider();
+            installFocusListener();
+            if (fControl.isFocusControl())
+                activateHandler();
+        }
+    }
 
-	/**
-	 * Create and install the {@link LabelProvider} for fContentAssistSubjectAdapter.
-	 */
-	private void installCueLabelProvider() {
-		ILabelProvider labelProvider= new LabelProvider() {
-			/*
-			 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-			 */
-			public String getText(Object element) {
-				IBindingService bindingService= (IBindingService) PlatformUI.getWorkbench().getAdapter(IBindingService.class);
-				TriggerSequence[] activeBindings= bindingService.getActiveBindingsFor(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-				if (activeBindings.length == 0)
-					return ContentAssistMessages.ContentAssistHandler_contentAssistAvailable;
-				Object[] args= { activeBindings[0].format() };
-				return MessageFormat.format(ContentAssistMessages.ContentAssistHandler_contentAssistAvailableWithKeyBinding, args);
-			}
-		};
-		fContentAssistSubjectAdapter.setContentAssistCueProvider(labelProvider);
-	}
-	
-	/**
-	 * Create fFocusListener and install it on fControl.
-	 */
-	private void installFocusListener() {
-		fFocusListener= new FocusListener() {
-			public void focusGained(final FocusEvent e) {
-				if (fHandlerActivation == null)
-					activateHandler();
-			}
-			public void focusLost(FocusEvent e) {
-				if (fHandlerActivation != null)
-					deactivateHandler();
-			}
-		};
-		fControl.addFocusListener(fFocusListener);
-	}
+    /**
+     * Disable content assist.
+     */
+    private void disable() {
+        if (! fControl.isDisposed()) {
+            fContentAssistant.uninstall();
+            fContentAssistSubjectAdapter.setContentAssistCueProvider(null);
+            fControl.removeFocusListener(fFocusListener);
+            fFocusListener= null;
+            if (fHandlerActivation != null)
+                deactivateHandler();
+        }
+    }
 
-	/**
-	 * Create and register fHandlerSubmission.
-	 */
-	private void activateHandler() {
-		IHandlerService handlerService= (IHandlerService)PlatformUI.getWorkbench().getAdapter(IHandlerService.class);
-		if (handlerService == null)
-			return;
-		
-		IHandler handler= new AbstractHandler() {
-			public Object execute(ExecutionEvent event) throws ExecutionException {
-				if (ContentAssistHandler.this.isEnabled()) // don't call AbstractHandler#isEnabled()!
-					fContentAssistant.showPossibleCompletions();
-				return null;
-			}
-		};
-		fHandlerActivation= handlerService.activateHandler(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS, handler);
-	}
+    /**
+     * Create and install the {@link LabelProvider} for fContentAssistSubjectAdapter.
+     */
+    private void installCueLabelProvider() {
+        ILabelProvider labelProvider= new LabelProvider() {
+            /*
+             * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+             */
+            public String getText(Object element) {
+                IBindingService bindingService= (IBindingService) PlatformUI.getWorkbench().getAdapter(IBindingService.class);
+                TriggerSequence[] activeBindings= bindingService.getActiveBindingsFor(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+                if (activeBindings.length == 0)
+                    return ContentAssistMessages.ContentAssistHandler_contentAssistAvailable;
+                Object[] args= { activeBindings[0].format() };
+                return MessageFormat.format(ContentAssistMessages.ContentAssistHandler_contentAssistAvailableWithKeyBinding, args);
+            }
+        };
+        fContentAssistSubjectAdapter.setContentAssistCueProvider(labelProvider);
+    }
 
-	/**
-	 * Unregister the {@link IHandlerActivation} from the shell.
-	 */
-	private void deactivateHandler() {
-		IHandlerService handlerService= (IHandlerService)PlatformUI.getWorkbench().getAdapter(IHandlerService.class);
-		if (handlerService != null)
-			handlerService.deactivateHandler(fHandlerActivation);
-		fHandlerActivation= null;
-	}
+    /**
+     * Create fFocusListener and install it on fControl.
+     */
+    private void installFocusListener() {
+        fFocusListener= new FocusListener() {
+            public void focusGained(final FocusEvent e) {
+                if (fHandlerActivation == null)
+                    activateHandler();
+            }
+            public void focusLost(FocusEvent e) {
+                if (fHandlerActivation != null)
+                    deactivateHandler();
+            }
+        };
+        fControl.addFocusListener(fFocusListener);
+    }
+
+    /**
+     * Create and register fHandlerSubmission.
+     */
+    private void activateHandler() {
+        IHandlerService handlerService= (IHandlerService)PlatformUI.getWorkbench().getAdapter(IHandlerService.class);
+        if (handlerService == null)
+            return;
+        
+        IHandler handler= new AbstractHandler() {
+            public Object execute(ExecutionEvent event) throws ExecutionException {
+                if (ContentAssistHandler.this.isEnabled()) // don't call AbstractHandler#isEnabled()!
+                    fContentAssistant.showPossibleCompletions();
+                return null;
+            }
+        };
+        fHandlerActivation= handlerService.activateHandler(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS, handler);
+    }
+
+    /**
+     * Unregister the {@link IHandlerActivation} from the shell.
+     */
+    private void deactivateHandler() {
+        IHandlerService handlerService= (IHandlerService)PlatformUI.getWorkbench().getAdapter(IHandlerService.class);
+        if (handlerService != null)
+            handlerService.deactivateHandler(fHandlerActivation);
+        fHandlerActivation= null;
+    }
 
 	public void setCueLabelProvider(Object object) {
 		fContentAssistSubjectAdapter.setContentAssistCueProvider(null);

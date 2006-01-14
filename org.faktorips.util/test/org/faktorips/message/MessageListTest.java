@@ -39,8 +39,57 @@ public class MessageListTest extends TestCase {
         assertTrue(msg1==list1.getMessage(0));
         assertTrue(msg2==list1.getMessage(1));
         assertTrue(msg3==list1.getMessage(2));
+        
+        MessageList nullList = null;
+        list1.add(nullList); // should not throw an exception
+        assertEquals(3, list1.getNoOfMessages());
     }
     
+    public void testAddMessageListObjectProperty_OverrideTrue() {
+        MessageList list1 = new MessageList();
+        Message msg1 = Message.newError("1", "blabla");
+        list1.add(msg1);
+        
+        MessageList list2 = new MessageList();
+        Message msg2 = Message.newInfo("2", "blabla");
+        list2.add(msg2);
+        ObjectProperty objProp1 = new ObjectProperty(this, "property1");
+        Message msg3 = new Message("", "msg2", Message.ERROR, objProp1);
+        list2.add(msg3);
+        
+        ObjectProperty objProp2 = new ObjectProperty(this, "property2");
+        list1.add(list2, objProp2, true);
+        assertEquals(3, list1.getNoOfMessages());
+        assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().length);
+        assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties()[0]);
+        assertEquals(objProp2, list1.getMessage(2).getInvalidObjectProperties()[0]);
+        
+        assertEquals(msg3.getCode(), list1.getMessage(2).getCode());
+        assertEquals(msg3.getText(), list1.getMessage(2).getText());
+        assertEquals(msg3.getSeverity(), list1.getMessage(2).getSeverity());
+    }
+        
+    public void testAddMessageListObjectProperty_OverrideFalse() {
+        MessageList list1 = new MessageList();
+        Message msg1 = Message.newError("1", "blabla");
+        list1.add(msg1);
+        
+        MessageList list2 = new MessageList();
+        Message msg2 = Message.newError("2", "blabla");
+        list2.add(msg2);
+        ObjectProperty objProp1 = new ObjectProperty(this, "property1");
+        Message msg3 = new Message("", "msg2", Message.ERROR, objProp1);
+        list2.add(msg3);
+        
+        ObjectProperty objProp2 = new ObjectProperty(this, "property2");
+        list1.add(list2, objProp2, false);
+        assertEquals(3, list1.getNoOfMessages());
+        assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().length);
+        assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties()[0]);
+        // message 3 should remain untouched, as the invalid object properties were set!
+        assertEquals(objProp1, list1.getMessage(2).getInvalidObjectProperties()[0]);
+    }
+        
     public void testGetNoOfMessages() {
         MessageList list = new MessageList();
         assertEquals(0, list.getNoOfMessages());

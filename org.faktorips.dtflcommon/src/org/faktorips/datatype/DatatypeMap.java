@@ -21,10 +21,4 @@ public interface DatatypeMap {
      */
     public abstract Datatype[] getDatatypes();
 
-    /**
-     * Returns the EnumType with the given name, if the registry contains a type with the given name.
-     * 
-     * @throws IllegalArgumentException if the name does not identifiy an EnumType.
-     */
-    public abstract EnumType getEnumType(String name) throws IllegalArgumentException;
 }

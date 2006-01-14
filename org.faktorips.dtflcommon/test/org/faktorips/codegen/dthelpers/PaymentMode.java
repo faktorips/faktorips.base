@@ -21,7 +21,7 @@ public class PaymentMode extends DefaultEnumValue {
     }
 
     public final static PaymentMode getPaymentMode(String id) {
-        return (PaymentMode) enumType.getValue(id);
+        return (PaymentMode) enumType.getEnumValue(id);
     }
     
     public final static EnumType getEnumType() {

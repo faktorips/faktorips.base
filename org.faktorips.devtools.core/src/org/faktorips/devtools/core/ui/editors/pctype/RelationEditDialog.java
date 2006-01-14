@@ -61,7 +61,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
      * @param title
      */
     public RelationEditDialog(IRelation relation, Shell parentShell) {
-        super(relation, parentShell, "Edit IRelation", true);
+        super(relation, parentShell, "Edit Relation", true);
         this.relation = relation;
     }
 
@@ -124,13 +124,13 @@ public class RelationEditDialog extends IpsPartEditDialog {
         uiToolkit.createFormLabel(workArea, "Product Relevant:");
         Checkbox productRelevantCheckbox = uiToolkit.createCheckbox(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Reverse IRelation:");
+        uiToolkit.createFormLabel(workArea, "Reverse Relation:");
         Text reverseRelationText = uiToolkit.createText(workArea);
         ReverseRelationCompletionProcessor reverseRelationCompletionProcessor = new ReverseRelationCompletionProcessor(relation);
         reverseRelationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(reverseRelationText, CompletionUtil.createContentAssistant(reverseRelationCompletionProcessor));
 
-        uiToolkit.createFormLabel(workArea, "Container IRelation:");
+        uiToolkit.createFormLabel(workArea, "Container Relation:");
         Text containerRelationText = uiToolkit.createText(workArea);
         ContainerRelationCompletionProcessor completionProcessor = new ContainerRelationCompletionProcessor(relation);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
