@@ -3,9 +3,6 @@ package org.faktorips.fl;
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.DefaultFunctionResolver;
-import org.faktorips.fl.FlFunction;
 import org.faktorips.fl.functions.AbstractFlFunction;
 
 

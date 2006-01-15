@@ -1,9 +1,9 @@
 package org.faktorips.datatype;
 
 import org.faktorips.datatype.classtypes.*;
-import org.faktorips.datatype.Decimal;
-import org.faktorips.datatype.Money;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 
 /**
  * The type of data similar to a Java class. In most cases a datatype corresponds

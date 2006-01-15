@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.NullObject;
 
 /**
  * The generic value datatype is used to make a Java class (representing a value)

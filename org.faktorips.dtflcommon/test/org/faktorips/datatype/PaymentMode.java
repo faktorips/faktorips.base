@@ -1,5 +1,7 @@
 package org.faktorips.datatype;
 
+import org.faktorips.values.NullObject;
+
 public class PaymentMode implements NullObject {
 
     final static PaymentMode ANNUAL = new PaymentMode("annual");

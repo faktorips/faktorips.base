@@ -2,8 +2,8 @@ package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Money;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
+import org.faktorips.values.Money;
 import org.faktorips.valueset.MoneyRange;
 
 

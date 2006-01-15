@@ -1,7 +1,7 @@
 package org.faktorips.datatype.classtypes;
 
 import org.faktorips.datatype.ValueClassDatatype;
-import org.faktorips.datatype.Money;
+import org.faktorips.values.Money;
 
 /**
  * Datatype for <code>Money</code>.

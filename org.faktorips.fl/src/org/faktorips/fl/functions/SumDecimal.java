@@ -3,10 +3,10 @@ package org.faktorips.fl.functions;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ArrayDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.Decimal;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.values.Decimal;
 
 
 /**

@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ArrayDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.Decimal;
 import org.faktorips.fl.AnyDatatype;
 import org.faktorips.fl.BeanDatatype;
 import org.faktorips.fl.CompilationResult;
@@ -14,6 +13,7 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.PropertyDatatype;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
+import org.faktorips.values.Decimal;
 
 /**
  * A function that given an array of objects from the same class or interface allows to sum up one of the properties.

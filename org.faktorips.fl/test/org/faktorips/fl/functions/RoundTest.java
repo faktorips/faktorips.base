@@ -3,7 +3,7 @@ package org.faktorips.fl.functions;
 import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.Decimal;
+import org.faktorips.values.Decimal;
 
 /**
  *

@@ -2,9 +2,7 @@ package org.faktorips.fl;
 
 import junit.framework.TestCase;
 
-import org.faktorips.datatype.Decimal;
-import org.faktorips.fl.ExprCompiler;
-import org.faktorips.fl.ExprEvaluator;
+import org.faktorips.values.Decimal;
 
 
 /**

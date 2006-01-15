@@ -25,7 +25,7 @@ import org.faktorips.util.StringUtil;
  * is created via <code>java.io.File#createTempFile(String)</code> and starts with
  * "Expression". The Java sourcefile is then compiled via javac. To compile successfully
  * <code>tools.jar</code> has to be in the classpath along with all classes referenced
- * in the expression, e.g. <code>{@link org.faktorips.datatype.Decimal}</code>.
+ * in the expression, e.g. <code>{@link org.faktorips.values.Decimal}</code>.
  * Then the new class is loaded via an <code>URLClassloader</code> that is a child of this 
  * class' classloader. Finally an instance of the class is created and 
  * it's <code>execute()</code> method called.

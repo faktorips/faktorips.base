@@ -3,7 +3,6 @@ package org.faktorips.fl;
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.FunctionSignatureImpl;
 
 /**
  *

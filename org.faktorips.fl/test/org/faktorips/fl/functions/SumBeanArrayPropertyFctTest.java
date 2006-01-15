@@ -5,10 +5,10 @@ import java.util.Locale;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ArrayDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.Decimal;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.values.Decimal;
 
 /**
  * 

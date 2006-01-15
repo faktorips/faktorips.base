@@ -1,7 +1,7 @@
 package org.faktorips.datatype;
 
-import org.faktorips.datatype.DefaultEnumType;
-import org.faktorips.datatype.DefaultEnumValue;
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
 
 import junit.framework.TestCase;
 

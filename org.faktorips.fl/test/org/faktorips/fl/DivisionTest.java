@@ -2,8 +2,9 @@ package org.faktorips.fl;
 
 import java.util.Locale;
 
-import org.faktorips.datatype.*;
-import org.faktorips.fl.ExcelFunctionsResolver;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 
 
 /**

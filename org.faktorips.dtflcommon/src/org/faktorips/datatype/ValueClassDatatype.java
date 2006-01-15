@@ -1,7 +1,7 @@
 package org.faktorips.datatype;
 
 import org.faktorips.util.StringUtil;
-import org.faktorips.datatype.NullObject;
+import org.faktorips.values.NullObject;
 
 /**
  * A datatype that represents a Java class representing a value, for example java.lang.String.

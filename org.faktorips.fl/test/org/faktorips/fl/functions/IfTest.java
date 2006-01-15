@@ -1,8 +1,8 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.Decimal;
-import org.faktorips.datatype.Money;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 
 /**
  *

@@ -2,20 +2,18 @@ package org.faktorips.fl;
 
 import java.util.Locale;
 
-import org.faktorips.codegen.*;
+import org.faktorips.codegen.ConversionCodeGenerator;
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.conversion.PrimitiveIntToDecimalCg;
 import org.faktorips.codegen.conversion.PrimitiveIntToIntegerCg;
-import org.faktorips.datatype.*;
-import org.faktorips.fl.BinaryOperation;
-import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.DefaultIdentifierResolver;
-import org.faktorips.fl.ExcelFunctionsResolver;
-import org.faktorips.fl.ExprCompiler;
-import org.faktorips.fl.UnaryOperation;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.functions.If;
 import org.faktorips.fl.operations.AddDecimalDecimal;
 import org.faktorips.fl.operations.PlusInteger;
 import org.faktorips.util.message.Message;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 
 
 /**

@@ -2,8 +2,8 @@ package org.faktorips.codegen.dthelpers;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.Decimal;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
+import org.faktorips.values.Decimal;
 import org.faktorips.valueset.DecimalRange;
 
 /**

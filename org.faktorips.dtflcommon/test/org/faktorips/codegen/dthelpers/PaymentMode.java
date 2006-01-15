@@ -1,8 +1,8 @@
 package org.faktorips.codegen.dthelpers;
 
-import org.faktorips.datatype.DefaultEnumType;
-import org.faktorips.datatype.DefaultEnumValue;
-import org.faktorips.datatype.EnumType;
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.values.EnumType;
 
 /**
  * Test enum type, to test DefaultEnumTypeHelper.

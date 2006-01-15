@@ -1,7 +1,7 @@
 package org.faktorips.datatype.classtypes;
 
 import org.faktorips.datatype.ValueClassDatatype;
-import org.faktorips.datatype.Decimal;
+import org.faktorips.values.Decimal;
 
 /**
  * Datatype for <code>Decimal</code>.
