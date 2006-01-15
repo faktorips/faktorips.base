@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragment;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 
-public class ProductCmptXmlFileBuilderTest extends PluginTest {
+public class ProductCmptXmlFileBuilderTest extends IpsPluginTest {
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot root;

@@ -1,9 +1,9 @@
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.datatype.DefaultEnumType;
-import org.faktorips.datatype.DefaultEnumValue;
-import org.faktorips.datatype.EnumType;
-import org.faktorips.datatype.EnumValue;
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.values.EnumType;
+import org.faktorips.values.EnumValue;
 
 /**
  * The kind of value set.

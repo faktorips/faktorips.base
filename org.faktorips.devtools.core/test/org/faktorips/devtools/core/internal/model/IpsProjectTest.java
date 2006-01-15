@@ -12,11 +12,10 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.Decimal;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -26,12 +25,13 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.values.Decimal;
 
 
 /**
  *
  */
-public class IpsProjectTest extends PluginTest {
+public class IpsProjectTest extends IpsPluginTest {
 
     private IpsProject ipsProject;
     private IIpsPackageFragmentRoot root;

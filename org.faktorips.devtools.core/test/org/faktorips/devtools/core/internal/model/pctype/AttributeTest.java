@@ -1,6 +1,6 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
 /**
  *
  */
-public class AttributeTest extends PluginTest {
+public class AttributeTest extends IpsPluginTest {
     
     private IIpsPackageFragmentRoot pdRootFolder;
     private IIpsPackageFragment pdFolder;

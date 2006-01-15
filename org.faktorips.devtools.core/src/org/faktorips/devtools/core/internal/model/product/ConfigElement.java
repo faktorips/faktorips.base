@@ -2,9 +2,6 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.Signature;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -25,7 +22,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -253,32 +249,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                         + " is no member of the specified valueSet!", Message.ERROR, this, PROPERTY_VALUE));
             }
         }
-    }
-
-    /**
-     * Overridden.
-     */
-    public IMethod getJavaMethod(int type) throws CoreException {
-        if (type != JAVA_METHOD_COMPUTE) {
-            throw new IllegalArgumentException("Unknown type");
-        }
-        if (getType() != ConfigElementType.FORMULA) {
-            return null;
-        }
-        IAttribute attribute = findPcTypeAttribute();
-        if (attribute == null) {
-            throw new CoreException(new IpsStatus("IAttribute for config element " + this + " can't be found."));
-        }
-        String methodname = "compute" + StringUtils.capitalise(attribute.getName());
-        IType javaType = getProductCmptGeneration().getJavaType(IProductCmptGeneration.JAVA_IMPLEMENTATION_TYPE);
-        Parameter[] params = attribute.getFormulaParameters();
-        String[] typeSignatures = new String[params.length];
-        for (int i = 0; i < params.length; i++) {
-            Datatype datatype = getIpsProject().findDatatype(params[i].getDatatype());
-            String datatypeClassname = StringUtil.unqualifiedName(datatype.getJavaClassName());
-            typeSignatures[i] = Signature.createTypeSignature(datatypeClassname, false);
-        }
-        return javaType.getMethod(methodname, typeSignatures);
     }
 
     /**

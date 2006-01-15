@@ -11,7 +11,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -31,7 +31,7 @@ import org.faktorips.util.StringUtil;
 /**
  *
  */
-public class IpsModelTest extends PluginTest implements ContentsChangeListener {
+public class IpsModelTest extends IpsPluginTest implements ContentsChangeListener {
     
     private IpsModel model;
     private ContentChangeEvent lastEvent;

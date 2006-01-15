@@ -1,11 +1,11 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.DefaultEnumType;
-import org.faktorips.datatype.DefaultEnumValue;
-import org.faktorips.datatype.EnumType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.values.EnumType;
 
 /**
  * 

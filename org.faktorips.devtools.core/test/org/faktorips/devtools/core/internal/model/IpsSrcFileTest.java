@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -22,7 +22,7 @@ import org.faktorips.util.StringUtil;
 /**
  *
  */
-public class IpsSrcFileTest extends PluginTest implements ContentsChangeListener {
+public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListener {
     
     private IIpsProject pdProject;
     private IIpsPackageFragmentRoot pdRootFolder;

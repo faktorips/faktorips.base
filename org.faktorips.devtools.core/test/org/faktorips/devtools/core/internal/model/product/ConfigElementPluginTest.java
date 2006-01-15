@@ -1,14 +1,13 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IMethod;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.PluginTest;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -24,7 +23,7 @@ import org.faktorips.util.message.MessageList;
 /**
  *
  */
-public class ConfigElementPluginTest extends PluginTest {
+public class ConfigElementPluginTest extends IpsPluginTest {
 
     private ProductCmpt productCmpt;
     private IProductCmptGeneration generation;
@@ -67,40 +66,6 @@ public class ConfigElementPluginTest extends PluginTest {
         assertEquals(a2, ce.findPcTypeAttribute());
         ce.setPcTypeAttribute("unkown");
         assertNull(ce.findPcTypeAttribute());
-    }
-    
-    public void testGetJavaMethod() throws CoreException {
-        // config element based on computed attribute with no parameters
-        IAttribute a = pcType.newAttribute();
-        a.setAttributeType(AttributeType.COMPUTED);
-        a.setName("premium");
-        a.setDatatype(Datatype.MONEY.getQualifiedName());
-        a.setFormulaParameters(new Parameter[0]);
-        IConfigElement ce = generation.newConfigElement();
-        ce.setType(ConfigElementType.FORMULA);
-        ce.setPcTypeAttribute("premium");
-        IMethod method = ce.getJavaMethod(IConfigElement.JAVA_METHOD_COMPUTE);
-        assertNotNull(method);
-        assertEquals("computePremium", method.getElementName());
-        assertEquals(0, method.getParameterTypes().length);
-        
-        // same with parameters
-        Parameter[] params = new Parameter[]{
-                new Parameter(0, "p1", Datatype.MONEY.getQualifiedName()),
-                new Parameter(0, "p2", Datatype.DECIMAL.getQualifiedName())};
-        a.setFormulaParameters(params);
-        method = ce.getJavaMethod(IConfigElement.JAVA_METHOD_COMPUTE);
-        assertNotNull(method);
-        assertEquals("computePremium", method.getElementName());
-        assertEquals(2, method.getParameterTypes().length);
-        
-        // config element is not a formula => should return null
-        ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        assertNull(ce.getJavaMethod(IConfigElement.JAVA_METHOD_COMPUTE));
-        
-        // attribute does not exists = > should return null
-        ce.setPcTypeAttribute("noneExistingAttribute");
-        assertNull(ce.getJavaMethod(IConfigElement.JAVA_METHOD_COMPUTE));
     }
     
     public void testValidate_Formula() throws CoreException {

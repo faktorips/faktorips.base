@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaConventions;
@@ -332,39 +331,6 @@ public class Attribute extends Member implements IAttribute {
             typeSignatures[i] = Signature.createTypeSignature(datatypeClassname, false);
         }
         return javaType.getMethod(methodname, typeSignatures);
-    }
-
-    /**
-     * Overridden.
-     */
-    public IField getJavaField(int type) throws CoreException {
-        if (type != JAVA_FIELD_VALUE_POLICY && type != JAVA_FIELD_VALUE_PRODUCT && type != JAVA_FIELD_VALUESET_POLICY
-                && type != JAVA_FIELD_VALUESET_PRODUCT) {
-            throw new IllegalArgumentException("Unkown type " + type);
-        }
-        String name = getName();
-        if (type == JAVA_FIELD_VALUESET_POLICY || type == JAVA_FIELD_VALUESET_PRODUCT) {
-            name = "maxWertebereich" + StringUtils.capitalise(name);
-        }
-
-        IType javaType;
-        if (type == JAVA_FIELD_VALUE_POLICY) {
-            if (getModifier() == Modifier.PUBLISHED && getAttributeType() == AttributeType.CONSTANT
-                    && !isProductRelevant()) {
-                javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE);
-            } else {
-                javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE);
-            }
-        } else if (type == JAVA_FIELD_VALUESET_POLICY) {
-            if (getModifier() == Modifier.PUBLISHED && !isProductRelevant()) {
-                javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE);
-            } else {
-                javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE);
-            }
-        } else {
-            javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE);
-        }
-        return javaType.getField(name);
     }
 
     /**

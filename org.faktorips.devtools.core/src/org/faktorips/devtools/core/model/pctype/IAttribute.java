@@ -1,7 +1,6 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ValueSet;
@@ -164,18 +163,6 @@ public interface IAttribute extends IMember {
      */
     public IMethod getJavaMethod(int type) throws CoreException;
     
-    /**
-     * Returns the Java field that corresponds to the attribute and is of
-     * the indicated type.
-     * 
-     * @param type A type constant identifying the type of field.
-     * @return The corresponding Java field. Note that the field might not
-     * exists!
-     * @deprecated
-     * @throws IllegalArgumentException if the type constant is illegal.
-     */
-    public IField getJavaField(int type) throws CoreException;
-
     /**
      * Returns the set of allowed values.
      */

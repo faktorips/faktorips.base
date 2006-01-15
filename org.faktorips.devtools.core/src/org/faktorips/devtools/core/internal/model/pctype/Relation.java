@@ -2,10 +2,6 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.Signature;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
@@ -27,19 +23,6 @@ import org.w3c.dom.Element;
 public class Relation extends IpsObjectPart implements IRelation {
 
     final static String TAG_NAME = "Relation";
-    
-    private final static String[] JAVA_METHOD_NAMES;
-    
-    static {
-        JAVA_METHOD_NAMES = new String[IRelation.JAVA_NUMOF_METHOD+1];
-        // 0 remains empty
-        JAVA_METHOD_NAMES[IRelation.JAVA_GETTER_METHOD] = "get";
-        JAVA_METHOD_NAMES[IRelation.JAVA_SETTER_METHOD] = "set";
-        JAVA_METHOD_NAMES[IRelation.JAVA_ADD_METHOD] = "add";
-        JAVA_METHOD_NAMES[IRelation.JAVA_REMOVE_METHOD] = "remove";
-        JAVA_METHOD_NAMES[IRelation.JAVA_GETALL_METHOD] = "get";
-        JAVA_METHOD_NAMES[IRelation.JAVA_NUMOF_METHOD] = "getAnzahl";
-    }
 
     private RelationType type = RelationType.ASSOZIATION;
     private String target = "";
@@ -63,25 +46,21 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getPolicyCmptType()
+     * Overridden.
      */
     public IPolicyCmptType getPolicyCmptType() {
         return (PolicyCmptType)getIpsObject();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
+     * Overridden.
      */
     public String getName() {
         return targetRoleSingular;
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
+     * Overridden.
      */
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeRelation(this);
@@ -89,16 +68,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getRelationType()
+     * Overridden.
      */
     public RelationType getRelationType() {
         return type;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setRelationType(int)
+     * Overridden.
      */
     public void setRelationType(RelationType newType) {
         RelationType oldType = type;
@@ -107,18 +84,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#isReadOnlyContainer()
+     * Overridden.
      */
     public boolean isReadOnlyContainer() {
         return readOnlyContainer;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setReadOnlyContainer(boolean)
+     * Overridden.
      */
     public void setReadOnlyContainer(boolean flag) {
         boolean oldValue = readOnlyContainer;
@@ -127,17 +100,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getTarget()
+     * Overridden.
      */
     public String getTarget() {
         return target;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#findTarget()
+     * Overridden.
      */
     public IPolicyCmptType findTarget() throws CoreException {
         if (StringUtils.isEmpty(target)) {
@@ -147,8 +117,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setTarget(java.lang.String)
+     * Overridden.
      */
     public void setTarget(String newTarget) {
         String oldTarget = target;
@@ -157,16 +126,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getTargetRoleSingular()
+     * Overridden.
      */
     public String getTargetRoleSingular() {
         return targetRoleSingular;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setTargetRoleSingular(java.lang.String)
+     * Overridden.
      */
     public void setTargetRoleSingular(String newRole) {
         String oldRole = targetRoleSingular;
@@ -176,16 +143,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getTargetRolePlural()
+     * Overridden.
      */
     public String getTargetRolePlural() {
         return targetRolePlural;
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setTargetRolePlural(java.lang.String)
+     * Overridden.
      */
     public void setTargetRolePlural(String newRole) {
         String oldRole = targetRolePlural;
@@ -194,16 +159,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getMinCardinality()
+     * Overridden.
      */
     public int getMinCardinality() {
         return minCardinality;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setMinCardinality(int)
+     * Overridden.
      */
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
@@ -213,8 +176,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getMaxCardinality()
+     * Overridden.
      */
     public String getMaxCardinality() {
         return maxCardinality;
@@ -238,8 +200,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#is1ToMany()
+     * Overridden.
      */
     public boolean is1ToMany() {
         if (maxCardinality.equals("*")) {
@@ -254,8 +215,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setMaxCardinality(java.lang.String)
+     * Overridden.
      */ 
     public void setMaxCardinality(String newValue) {
         String oldValue = maxCardinality;
@@ -264,16 +224,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#isProductRelevant()
+     * Overridden.
      */
     public boolean isProductRelevant() {
         return productRelevant;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setProductRelevant(boolean)
+     * Overridden.
      */
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
@@ -282,8 +240,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getContainerRelation()
+     * Overridden.
      */
     public String getContainerRelation() {
         return containerRelation;
@@ -291,18 +248,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#hasContainerRelation()
+     * Overridden.
      */
     public boolean hasContainerRelation() {
         return !StringUtils.isEmpty(containerRelation);
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#findContainerRelation()
+     * Overridden.
      */
     public IRelation findContainerRelation() throws CoreException {
         IPolicyCmptType type = (IPolicyCmptType)getIpsObject();
@@ -319,8 +272,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setContainerRelation(java.lang.String)
+     * Overridden.
      */
     public void setContainerRelation(String newRelation) {
         String oldValue = containerRelation;
@@ -329,18 +281,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getReverseRelation()
+     * Overridden.
      */
     public String getReverseRelation() {
         return reverseRelation;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setReverseRelation(java.lang.String)
+     * Overridden.
      */
     public void setReverseRelation(String newRelation) {
         String oldValue = this.reverseRelation;
@@ -349,9 +297,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#findReverseRelation()
+     * Overridden.
      */
     public IRelation findReverseRelation() throws CoreException {
         if (StringUtils.isEmpty(reverseRelation)) {
@@ -371,8 +317,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * Overridden.
      */
     public Image getImage() {
         if (this.type==RelationType.COMPOSITION) {
@@ -382,9 +327,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden method.
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPart#validate(org.faktorips.util.message.MessageList)
+     * Overridden.
      */
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
@@ -498,76 +441,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getJavaMethod(int)
-     */
-    public IMethod getJavaMethod(int type) throws CoreException {
-        int methodType = type & 255;
-        int javaType = type >> 8;
-        if (methodType<0 || methodType>=(JAVA_METHOD_NAMES.length)) {
-            throw new IllegalArgumentException("Unkown type " + type);
-        }
-        String methodName;
-        if (methodType==IRelation.JAVA_GETALL_METHOD || methodType==IRelation.JAVA_NUMOF_METHOD) {
-            methodName = JAVA_METHOD_NAMES[methodType] + StringUtils.capitalise(targetRolePlural);
-        } else {
-            methodName = JAVA_METHOD_NAMES[methodType] + StringUtils.capitalise(targetRoleSingular);
-        }
-        if (javaType==IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE 
-                || javaType==IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE) {
-            methodName = methodName + "Pk";
-        }            
-        String[] paramTypeSignature;
-        if (methodType==JAVA_GETTER_METHOD 
-            || methodType==JAVA_GETALL_METHOD 
-            || methodType==JAVA_NUMOF_METHOD) {
-            paramTypeSignature = new String[0];
-            if (is1ToMany() && (type==JAVA_PRODUCTCMPT_GETTER_METHOD_IMPLEMENTATION || type==JAVA_PRODUCTCMPT_GETTER_METHOD_INTERFACE)) {
-                String param = Signature.createTypeSignature(String.class.getName(), false);
-                paramTypeSignature = new String[] {param};
-            } else {}
-        } else {
-            IPolicyCmptType targetType = getIpsProject().findPolicyCmptType(target);
-            String paramTypeName = targetType.getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE).getElementName();
-            String param = Signature.createTypeSignature(paramTypeName, false);
-            paramTypeSignature = new String[] {param};
-        }
-        IType javaTypeObj = getPolicyCmptType().getJavaType(javaType);
-        return javaTypeObj.getMethod(methodName, paramTypeSignature);        
-    }
-    
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getJavaField(int)
-     */
-    public IField getJavaField(int type) throws CoreException {
-        IType javaType;
-        if (type==JAVA_PCTYPE_FIELD) {
-            javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE);
-        } else if (type==JAVA_PRODUCTCMPT_FIELD) {
-            javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE);
-        } else {
-            throw new IllegalArgumentException("Unkown type " + type);
-        }
-        String name;
-        if (is1ToMany()) {
-            name = StringUtils.uncapitalise(targetRolePlural);
-            if (type==JAVA_PRODUCTCMPT_FIELD) {
-                name = name = name + "Pks";
-            } else {}
-        } else {
-            name = StringUtils.uncapitalise(targetRoleSingular);
-            if (type==JAVA_PRODUCTCMPT_FIELD) {
-                name = name = name + "Pk";
-            } else {}            
-        }
-        return javaType.getField(name);        
-    }
-
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#findContainerRelationOfTypeReverseComposition()
+     * Overridden.
      */
     public IRelation findContainerRelationOfTypeReverseComposition() throws CoreException {
         IRelation reverseRel = findReverseRelation();
@@ -585,18 +459,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * Overridden.
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void initPropertiesFromXml(Element element) {
         super.initPropertiesFromXml(element);
@@ -613,9 +483,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);

@@ -1,8 +1,6 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IMethod;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 
@@ -30,41 +28,6 @@ public interface IRelation extends IIpsObjectPart {
     
     // type constants for corresponding Java methods
     // 1. max cardinality is 1
-    
-    //Alle Konstanten mit dem Prefix JAVA_ sind deprecated!!!!!!!!!!!!!1
-    public final static int JAVA_GETTER_METHOD = 1;
-    public final static int JAVA_PCTYPE_GETTER_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_GETTER_METHOD;
-    public final static int JAVA_PCTYPE_GETTER_METHOD_INTERFACE = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE << 8| JAVA_GETTER_METHOD;
-    public final static int JAVA_PRODUCTCMPT_GETTER_METHOD_IMPLEMENTATION = IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE << 8| JAVA_GETTER_METHOD;
-    public final static int JAVA_PRODUCTCMPT_GETTER_METHOD_INTERFACE = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE << 8| JAVA_GETTER_METHOD;
-
-    public final static int JAVA_SETTER_METHOD = 2;
-    public final static int JAVA_PCTYPE_SETTER_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_SETTER_METHOD;
-    public final static int JAVA_PCTYPE_SETTER_METHOD_INTERFACE = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_SETTER_METHOD;
-    
-    // 2. max cardinality is greater than 1
-    public final static int JAVA_ADD_METHOD = 3;
-    public final static int JAVA_PCTYPE_ADD_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_ADD_METHOD;
-    public final static int JAVA_PCTYPE_ADD_METHOD_INTERFACE = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_ADD_METHOD;
-
-    public final static int JAVA_REMOVE_METHOD = 4;
-    public final static int JAVA_PCTYPE_REMOVE_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_REMOVE_METHOD;
-    public final static int JAVA_PCTYPE_REMOVE_METHOD_INTERFACE = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_REMOVE_METHOD;
-    
-    public final static int JAVA_GETALL_METHOD = 5;
-    public final static int JAVA_PCTYPE_GETALL_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_GETALL_METHOD;
-    public final static int JAVA_PCTYPE_GETALL_METHOD_INTERFACE = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_GETALL_METHOD;    
-    public final static int JAVA_PRODUCTCMPT_GETALL_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_GETALL_METHOD;
-    public final static int JAVA_PRODUCTCMPT_GETALL_METHOD_INTERFACE = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_GETALL_METHOD;    
-    
-    public final static int JAVA_NUMOF_METHOD = 6;
-    public final static int JAVA_PCTYPE_NUMOF_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_NUMOF_METHOD;
-    public final static int JAVA_PCTYPE_NUMOF_METHOD_INTERFACE = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_NUMOF_METHOD;
-    public final static int JAVA_PRODUCTCMPT_NUMOF_METHOD_IMPLEMENATION = IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE << 8 | JAVA_NUMOF_METHOD;
-    public final static int JAVA_PRODUCTCMPT_NUMOF_METHOD_INTERFACE = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE << 8 | JAVA_NUMOF_METHOD;
-    
-    
-    
     
 	public static final String CARDINALITY_ONE = "1";
 	public static final String CARDINALITY_MANY = "*";
@@ -227,30 +190,6 @@ public interface IRelation extends IIpsObjectPart {
      */
     public IRelation findReverseRelation() throws CoreException;
     
-    /**
-     * Returns the Java method that corresponds to the relation and is of
-     * the indicated type.
-     * 
-     * @param type A type constant identifying the type of method.
-     * @return The corresponding Java method. Note that the method might not
-     * exists!
-     * @deprecated
-     * @throws IllegalArgumentException if the type constant is illegal.   
-     */
-    public IMethod getJavaMethod(int type) throws CoreException;
-
-    /**
-     * Returns the Java field that corresponds to the relation and is of
-     * the indicated type.
-     * 
-     * @param type A type constant identifying the type of field.
-     * @return The corresponding Java field. Note that the field might not
-     * exists!
-     * @deprecated
-     * @throws IllegalArgumentException if the type constant is illegal.
-     */
-    public IField getJavaField(int type) throws CoreException;
-
     /**
      * Searches the reverse relation and returns its container relation, if it exists and is of type reverse composition. 
      * Returns <code>null</code> otherwise.

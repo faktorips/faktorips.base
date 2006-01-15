@@ -1,11 +1,11 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.DefaultEnumType;
-import org.faktorips.datatype.DefaultEnumValue;
 import org.faktorips.util.XmlTestCase;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

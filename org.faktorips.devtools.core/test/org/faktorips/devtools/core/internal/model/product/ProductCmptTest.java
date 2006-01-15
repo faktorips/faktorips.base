@@ -3,7 +3,7 @@ package org.faktorips.devtools.core.internal.model.product;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ProductCmptTest extends PluginTest {
+public class ProductCmptTest extends IpsPluginTest {
     
     private ProductCmpt productCmpt;
     private IIpsPackageFragmentRoot root;

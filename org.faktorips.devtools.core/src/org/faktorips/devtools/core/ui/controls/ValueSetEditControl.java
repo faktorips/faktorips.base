@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.faktorips.datatype.DefaultEnumType;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.Range;
@@ -18,6 +17,7 @@ import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.values.DefaultEnumType;
 
 /**
  * A control to define the type of value set and edit a value set. 

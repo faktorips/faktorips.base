@@ -15,7 +15,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
 
@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public class IpsModelImplTest extends PluginTest {
+public class IpsModelImplTest extends IpsPluginTest {
 
     private IIpsProject ipsProject;
     private IpsModel model;

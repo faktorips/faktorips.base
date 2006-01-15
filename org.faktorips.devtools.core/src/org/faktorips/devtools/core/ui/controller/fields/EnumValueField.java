@@ -1,9 +1,9 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.datatype.EnumType;
-import org.faktorips.datatype.EnumValue;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.values.EnumType;
+import org.faktorips.values.EnumValue;
 
 
 /**

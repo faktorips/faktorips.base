@@ -3,14 +3,14 @@ package org.faktorips.devtools.core.builder;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.util.CollectionUtil;
 
-public class DependencyGraphTest extends PluginTest {
+public class DependencyGraphTest extends IpsPluginTest {
 
     private IIpsPackageFragmentRoot root;
     private IIpsProject pdProject;

@@ -3,14 +3,14 @@ package org.faktorips.devtools.core.builder;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class JetJavaContentGeneratorTest extends PluginTest {
+public class JetJavaContentGeneratorTest extends IpsPluginTest {
     
     private DumyJavaSourceFileBuilder  builder;
     private TestJetJavaContentGenerator generator;

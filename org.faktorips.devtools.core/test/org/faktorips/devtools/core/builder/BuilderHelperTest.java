@@ -1,7 +1,7 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -11,7 +11,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
  * 
  * @author Peter Erzberger
  */
-public class BuilderHelperTest extends PluginTest {
+public class BuilderHelperTest extends IpsPluginTest {
 
     private IIpsProject ipsProject;
     

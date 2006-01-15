@@ -1,7 +1,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.util.XmlUtil;
@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class IpsObjectPartContainerTest extends PluginTest {
+public class IpsObjectPartContainerTest extends IpsPluginTest {
 
     private TestIpsObjectPartContainer container;
     private IpsModel model;

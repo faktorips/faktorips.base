@@ -1,11 +1,11 @@
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.w3c.dom.Element;
 
-public class IpsProjectPropertiesTest extends PluginTest {
+public class IpsProjectPropertiesTest extends IpsPluginTest {
 
 	private IIpsProject ipsProject;
 	

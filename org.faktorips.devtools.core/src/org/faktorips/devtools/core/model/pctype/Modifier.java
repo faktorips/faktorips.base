@@ -1,9 +1,9 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.jdt.core.Flags;
-import org.faktorips.datatype.DefaultEnumType;
-import org.faktorips.datatype.DefaultEnumValue;
-import org.faktorips.datatype.EnumType;
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.values.EnumType;
 
 /**
  * The kind of modifiers. 

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.faktorips.datatype.EnumType;
-import org.faktorips.datatype.EnumValue;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.EnumType;
+import org.faktorips.values.EnumValue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

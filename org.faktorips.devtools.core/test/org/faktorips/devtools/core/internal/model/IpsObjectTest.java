@@ -2,7 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -18,7 +18,7 @@ import org.faktorips.util.memento.Memento;
 /**
  *
  */
-public class IpsObjectTest extends PluginTest implements ContentsChangeListener {
+public class IpsObjectTest extends IpsPluginTest implements ContentsChangeListener {
 
     private IIpsProject pdProject;
     private IIpsPackageFragmentRoot rootFolder;

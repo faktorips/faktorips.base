@@ -40,19 +40,19 @@ import org.faktorips.util.XmlTestCase;
  * 
  * @author Jan Ortmann
  */
-public abstract class PluginTest extends XmlTestCase {
+public abstract class IpsPluginTest extends XmlTestCase {
 
     /**
      * 
      */
-    public PluginTest() {
+    public IpsPluginTest() {
         super();
     }
 
     /**
      * @param name
      */
-    public PluginTest(String name) {
+    public IpsPluginTest(String name) {
         super(name);
     }
     

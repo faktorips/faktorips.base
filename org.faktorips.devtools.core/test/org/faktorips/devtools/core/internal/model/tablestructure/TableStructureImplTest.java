@@ -1,7 +1,7 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class TableStructureImplTest extends PluginTest {
+public class TableStructureImplTest extends IpsPluginTest {
     
     private TableStructure table;
     

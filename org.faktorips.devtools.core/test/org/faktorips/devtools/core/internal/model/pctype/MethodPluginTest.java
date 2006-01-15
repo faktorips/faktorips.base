@@ -3,7 +3,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.Signature;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -17,7 +17,7 @@ import org.faktorips.util.StringUtil;
 /**
 *
 */
-public class MethodPluginTest extends PluginTest {
+public class MethodPluginTest extends IpsPluginTest {
    
    private IIpsProject ipsProject;
    private IIpsPackageFragmentRoot ipsRoot;

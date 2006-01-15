@@ -1,7 +1,6 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IMethod;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -111,22 +110,5 @@ public interface IConfigElement extends IIpsObjectPart {
      * @throws CoreException if an exception occurs while searching the policy component type. 
      */
     public IAttribute findPcTypeAttribute() throws CoreException;
-    
-    /**
-     * Returns the Java method that corresponds to the config element and is of
-     * the indicated type. Returns <code>null</code> if the kind is valid, but
-     * no Java method is needed for this config element, e.g. if this config element
-     * is not a formula, no corresponding Java method is needed for the element.
-     * 
-     * @param type A type constant identifying the type of method.
-     * @return The corresponding Java method or <code>null</code>. 
-     * Note that the method might not exists!
-     * @throws IllegalArgumentException if the type constant is illegal.
-     * @throws CoreException if the attribute this config element refers to does
-     * not exists or an error occurs while accessing the Java method.   
-     * @deprecated
-     */
-    public IMethod getJavaMethod(int type) throws CoreException;
-
     
 }

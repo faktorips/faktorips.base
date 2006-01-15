@@ -2,7 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.w3c.dom.Document;
@@ -13,7 +13,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Jan Ortmann
  */
-public class IpsSrcFolderEntryTest extends PluginTest {
+public class IpsSrcFolderEntryTest extends IpsPluginTest {
 
     private IIpsProject ipsProject;
     private IpsObjectPath path;

@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -20,7 +20,7 @@ import org.faktorips.fl.ExprCompiler;
 /**
  *
  */
-public class ParameterIdentifierResolverTest extends PluginTest {
+public class ParameterIdentifierResolverTest extends IpsPluginTest {
 
     private IIpsPackageFragmentRoot pdRootFolder;
     private IIpsPackageFragment pdFolder;

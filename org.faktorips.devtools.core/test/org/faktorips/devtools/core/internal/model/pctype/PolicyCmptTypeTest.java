@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.PluginTest;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class PolicyCmptTypeTest extends PluginTest implements ContentsChangeListener {
+public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeListener {
     
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;
