@@ -126,7 +126,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsProject[] pdProjects = new IIpsProject[projects.length];
         int counter = 0;
         for (int i = 0; i < projects.length; i++) {
-            if (projects[i].hasNature(IIpsProject.NATURE_ID)) {
+        	// TODO handle closed projects (hidden at the moment!)
+            if (projects[i].isOpen() && projects[i].hasNature(IIpsProject.NATURE_ID)) {
                 pdProjects[i] = getIpsProject(projects[i].getName());
                 counter++;
             }
