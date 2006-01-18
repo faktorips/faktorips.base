@@ -269,6 +269,9 @@
       <datatypeDefinition 
 		        datatypeClass="org.faktorips.datatype.PrimitiveIntegerDatatype"
       			helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
+      <datatypeDefinition
+      			datatypeClass="org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype" 
+      			helperClass="org.faktorips.codegen.dthelpers.GregorianCalendarAsDateHelper" />
    </extension>
   
 

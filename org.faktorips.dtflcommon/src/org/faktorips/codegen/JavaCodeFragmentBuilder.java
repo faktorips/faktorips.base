@@ -397,6 +397,31 @@ public class JavaCodeFragmentBuilder {
             String methodName,
             String[] argName,
             String[] argClass) {
+        signature(modifier,returnType,methodName,argName,argClass);
+        if (!Modifier.isAbstract(modifier)) {
+            openBracket();
+        }
+    }
+    
+    
+    
+    /**
+     * Creates the Java source code for a method signature. 
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returns an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param methodName
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     * @param javaDoc the java documentation for this method signature
+     * @param javaDocAnnotations annotations of the java documentation
+     */
+    public void signature(int modifier,
+            String returnType,
+            String methodName,
+            String[] argName,
+            String[] argClass) {
         if (argName != null && argName.length != argClass.length) {
             throw new RuntimeException("Named and Class array must have the same length. Names:"
                     + argName + " Classes:" + argClass);
@@ -428,9 +453,33 @@ public class JavaCodeFragmentBuilder {
             }
         }
         append(')');
-        if (!Modifier.isAbstract(modifier)) {
-            openBracket();
-        }
+       
+    }
+    
+    /**
+     * Creates the Java source code for a method signature. If the method is non abstract the
+     * generated code ends with an opening bracket '{'. If the method is abstract the code ends with
+     * the argument list's closing bracket ')'.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returns an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param methodName
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     * @param javaDoc the java documentation for this method signature
+     * @param javaDocAnnotations annotations of the java documentation
+     */
+    public void signature(int modifier,
+            String returnType,
+            String methodName,
+            String[] argName,
+            String[] argClass,
+            String javaDoc,
+            String[] javaDocAnnotations) {
+
+        javaDoc(javaDoc, javaDocAnnotations);
+        signature(modifier, returnType, methodName, argName, argClass);
     }
 
     /**
