@@ -48,6 +48,17 @@ public interface IIpsPackageFragment extends IIpsElement {
     public final static int JAVA_PACK_EXTENSION = 256;
     
     /**
+     * Returns the packagefragment which contains this one.
+     */
+    public IIpsPackageFragment getIpsParentPackageFragment();
+    
+    /**
+     * Returns all packagfragments which are contained in this one.
+     * @throws CoreException 
+     */
+    public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException;
+    
+    /**
      * Returns the package fragment root this package fragment belongs to.
      */
     public IIpsPackageFragmentRoot getRoot();

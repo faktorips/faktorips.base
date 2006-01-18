@@ -15,21 +15,25 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 	}
 
 	public void testToXml() {
-		IpsProjectProperties projectData = new IpsProjectProperties();
-		projectData.setBuilderSetId("myBuilder");
+		IpsProjectProperties props = new IpsProjectProperties();
+		props.setModelProject(true);
+		props.setProductDefinitionProject(true);
+		props.setBuilderSetId("myBuilder");
 		IIpsObjectPath path = new IpsObjectPath();
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
-		projectData.setIpsObjectPath(path);
-		projectData.setPredefinedDatatypesUsed(new String[]{"Integer", "Boolean"});
-		Element projectEl = projectData.toXml(newDocument());
+		props.setIpsObjectPath(path);
+		props.setPredefinedDatatypesUsed(new String[]{"Integer", "Boolean"});
+		Element projectEl = props.toXml(newDocument());
 
-		projectData = new IpsProjectProperties();
-		projectData.initFromXml(ipsProject, projectEl);
-		assertEquals("myBuilder", projectData.getBuilderSetId());
-		path = projectData.getIpsObjectPath();
+		props = new IpsProjectProperties();
+		props.initFromXml(ipsProject, projectEl);
+		assertTrue(props.isModelProject());
+		assertTrue(props.isProductDefinitionProject());
+		assertEquals("myBuilder", props.getBuilderSetId());
+		path = props.getIpsObjectPath();
 		assertNotNull(path);
 		assertEquals(1, path.getEntries().length);
-		String[] datatypes = projectData.getPredefinedDatatypesUsed();
+		String[] datatypes = props.getPredefinedDatatypesUsed();
 		assertNotNull(datatypes);
 		assertEquals(2, datatypes.length);
 		assertEquals("Integer", datatypes[0]);
@@ -41,6 +45,8 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		Element docEl = this.getTestDocument().getDocumentElement();
 		IpsProjectProperties props = new IpsProjectProperties();
 		props.initFromXml(ipsProject, docEl);
+		assertTrue(props.isModelProject());
+		assertTrue(props.isProductDefinitionProject());
 		assertEquals("org.faktorips.devtools.stdbuilder.ipsstdbuilderset", props.getBuilderSetId());
 		IIpsObjectPath path = props.getIpsObjectPath();
 		assertNotNull(path);

@@ -59,6 +59,29 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
     
     /**
+     * Overridden
+     * @throws CoreException 
+     */
+    public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException {
+    	IFolder folder = (IFolder)getCorrespondingResource();
+    	IResource[] content = folder.members(IFolder.FOLDER);
+    	IpsPackageFragment[] result = new IpsPackageFragment[content.length];
+    	for (int i = 0; i < content.length; i++) {
+    		String packageName = this.getName().equals("")?content[i].getName():this.getName() + "." + content[i].getName();
+    		result[i] = new IpsPackageFragment(this.getParent(), packageName);
+    	}
+    	return result;
+	}
+
+    /**
+     * Overridden
+     */
+	public IIpsPackageFragment getIpsParentPackageFragment() {
+		IFolder folder = (IFolder)getCorrespondingResource();
+		return new IpsPackageFragment(this.getParent(), folder.getParent().getName());
+	}
+
+	/**
      * Overridden method.
      * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
      */

@@ -267,5 +267,11 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
         } catch (NullPointerException e) {
         }
     }
+    
+    public void testGetIpsDefaultPackageFragment() {
+    	IIpsPackageFragment def = this.ipsRoot.getIpsDefaultPackageFragment();
+    	assertEquals(def.getName(), "");
+    }
+    
 
 }

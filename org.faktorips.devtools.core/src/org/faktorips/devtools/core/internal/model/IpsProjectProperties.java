@@ -19,6 +19,8 @@ public class IpsProjectProperties {
 	
 	final static String TAG_NAME = "IpsProject"; 
 		
+	private boolean modelProject;
+	private boolean productDefinitionProject;
 	private String builderSetId = "";
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -35,6 +37,22 @@ public class IpsProjectProperties {
 	
 	public IIpsObjectPath getIpsObjectPath() {
 		return path;
+	}
+	
+	public boolean isModelProject() {
+		return modelProject;
+	}
+
+	public void setModelProject(boolean modelProject) {
+		this.modelProject = modelProject;
+	}
+
+	public boolean isProductDefinitionProject() {
+		return productDefinitionProject;
+	}
+
+	public void setProductDefinitionProject(boolean productDefinitionProject) {
+		this.productDefinitionProject = productDefinitionProject;
 	}
 
 	public void setIpsObjectPath(IIpsObjectPath path) {
@@ -64,6 +82,8 @@ public class IpsProjectProperties {
 
 	public Element toXml(Document doc) {
 		Element projectEl = doc.createElement(TAG_NAME);
+		projectEl.setAttribute("modelProject", "" + modelProject);
+		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject);
 		Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
 		projectEl.appendChild(builderSetEl);
 		builderSetEl.setAttribute("id", builderSetId);
@@ -85,6 +105,8 @@ public class IpsProjectProperties {
 	
 	public void initFromXml(IIpsProject ipsProject, Element element) {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
+        modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue();
+        productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue();
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id");
         } else {

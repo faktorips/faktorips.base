@@ -262,7 +262,14 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         return new IpsPackageFragment(this, name);
     }
     
-    /** 
+    /**
+     * Overridden
+     */
+    public IIpsPackageFragment getIpsDefaultPackageFragment() {
+		return this.getIpsPackageFragment("");
+	}
+
+	/** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#createPackageFragment(java.lang.String, boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -400,7 +407,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         if (!entry.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
             throw new CoreException(new IpsStatus("Can't get Java package prefix for " + this));
         }
-        // TODO: falsch, exension berücksichtigen.
+        // TODO: falsch, exension ber?cksichtigen.
         String basePackage = ((IIpsSrcFolderEntry)entry).getBasePackageNameForGeneratedJavaClasses();
         switch (kind) {
         	case IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION:

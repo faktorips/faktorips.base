@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<IpsProject>
+<IpsProject modelProject="true" productDefinitionProject="true">
 	<IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset"/>	
 	<IpsObjectPath outputDefinedPerSrcFolder="true" outputFolder="" basePackage="">
 		<Entry type="src" sourceFolder="ips-src" 

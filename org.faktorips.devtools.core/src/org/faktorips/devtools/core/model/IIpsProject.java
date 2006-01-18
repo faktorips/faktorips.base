@@ -3,7 +3,6 @@ package org.faktorips.devtools.core.model;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
@@ -75,6 +74,30 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage();
     
+    /**
+     * Returns <code>true</code> if this project contains a model defininition,
+     * otherwise <code>false</code>.
+     */
+    public boolean isModelProject();
+
+    /**
+     * Sets if this is project contains a model defininition,
+     * @throws CoreException 
+     */
+    public void setModelProject(boolean flag) throws CoreException;
+
+    /**
+     * Returns <code>true</code> if this project contains a product defininition
+     * (that means it contains product components), otherwise <code>false</code>.
+     */
+    public boolean isProductDefinitionProject();
+    
+    /**
+     * Sets if this is project contains a product defininition,
+     * @throws CoreException 
+     */
+    public void setProductDefinitionProject(boolean flag) throws CoreException;
+
     /**
      * Returns the root folder with the indicated name.
      */

@@ -218,4 +218,22 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
         }
     }
 
+    public void testGetIpsParentPackageFragment() {
+    	assertEquals(this.pack.getIpsParentPackageFragment().getName(), "products");
+    }
+    
+    public void testGetIpsChildPackageFragments() throws CoreException {
+    	this.rootPackage.createPackageFragment("products.test1", true, null);
+    	this.rootPackage.createPackageFragment("products.test2", true, null);
+    	
+    	IIpsPackageFragment[] children = this.rootPackage.getIpsDefaultPackageFragment().getIpsChildPackageFragments();
+    	assertEquals(children.length, 1);
+    	children = children[0].getIpsChildPackageFragments();
+    	assertEquals(children.length, 3);
+    	assertEquals(children[0].getName(), "products.folder");
+    	assertEquals(children[1].getName(), "products.test1");
+    	assertEquals(children[2].getName(), "products.test2");
+    	
+    }
+    
 }

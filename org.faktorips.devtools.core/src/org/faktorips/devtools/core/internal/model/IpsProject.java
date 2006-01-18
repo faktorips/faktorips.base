@@ -90,20 +90,52 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public String getXmlFileCharset() {
         return "UTF-8";
     }
+    
+    /**
+     * Overridden.
+     */
+    public boolean isModelProject() {
+		return getProperties().isModelProject();
+	}
+
+    /**
+     * Overridden
+     * @throws CoreException 
+     */
+	public void setModelProject(boolean flag) throws CoreException {
+    	IpsProjectProperties properties = getProperties();
+    	properties.setModelProject(flag);
+    	saveProjectProperties(properties);
+	}
 
     /**
      * Overridden
      */
+	public boolean isProductDefinitionProject() {
+		return getProperties().isProductDefinitionProject();
+	}
+
+	/**
+	 * Overridden
+	 */
+	public void setProductDefinitionProject(boolean flag) throws CoreException {
+    	IpsProjectProperties properties = getProperties();
+    	properties.setProductDefinitionProject(flag);
+    	saveProjectProperties(properties);
+	}
+
+	/**
+     * Overridden
+     */
     public IIpsObjectPath getIpsObjectPath() throws CoreException {
-    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
-    	return properties.getIpsObjectPath();
+    	return getProperties().getIpsObjectPath();
     }
 
     /**
      * Overridden.
      */
     public void setCurrentArtefactBuilderSet(String id) throws CoreException {
-    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	IpsProjectProperties properties = getProperties();
     	properties.setBuilderSetId(id);
     	saveProjectProperties(properties);
     }
@@ -113,7 +145,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException 
      */
     public void setValueDatatypes(String[] ids) throws CoreException {
-        IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+        IpsProjectProperties properties = getProperties();
         properties.setPredefinedDatatypesUsed(ids);
         saveProjectProperties(properties);
     }
@@ -427,7 +459,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException {
-        // TODO Jan. Testfall, noch mal prüfen.
+        // TODO Jan. Testfall, noch mal pr?fen.
         return (ValueDatatype)findDatatype(qualifiedName);
     }
 
@@ -538,7 +570,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return new JavaCodeFragment("null"); // TODO must read from ipsproject file.
     }
     
-    
+    private IpsProjectProperties getProperties() {
+    	return ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    }
     
     
 }

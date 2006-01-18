@@ -79,6 +79,11 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsPackageFragment getIpsPackageFragment(String name);
     
     /**
+     * Returns the default-package.
+     */
+    public IIpsPackageFragment getIpsDefaultPackageFragment();
+    
+    /**
      * Creates the IPS package fragment with the indicated name. Note that if the name
      * contains one or more dots (.), one folder in the filesystem is
      * created for each token between the dots.
