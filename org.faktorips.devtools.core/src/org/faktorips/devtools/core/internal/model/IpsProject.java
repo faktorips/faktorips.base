@@ -26,6 +26,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -43,6 +44,8 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
@@ -573,6 +576,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private IpsProjectProperties getProperties() {
     	return ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
     }
+
+    /**
+     * Overridden
+     */
+	public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException {
+		ArrayList result = new ArrayList();
+		IIpsObject[] allProductCmpts = this.findIpsObjects(IpsObjectType.PRODUCT_CMPT);
+		
+		for (int i = 0; i < allProductCmpts.length; i++) {
+			IProductCmptGeneration generation = (IProductCmptGeneration)((IProductCmpt)allProductCmpts[i]).findGenerationEffectiveOn(IpsPreferences.getWorkingDate());
+			IProductCmptRelation[] relations = generation.getRelations();
+			for (int j = 0; j < relations.length; j++) {
+				if (relations[j].getTarget().equals(qualifiedProductCmptName)) {
+					result.add(generation);
+					break;
+				}
+			}
+		}
+		IProductCmptGeneration[] resultArray = new IProductCmptGeneration[result.size()];
+		result.toArray(resultArray);
+		return resultArray;
+	}
     
     
 }

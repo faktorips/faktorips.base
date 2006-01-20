@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
+import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.values.Decimal;
 
 
@@ -269,6 +271,30 @@ public class IpsProjectTest extends IpsPluginTest {
         IIpsProject ipsProject2 = IpsPlugin.getDefault().getIpsModel().getIpsProject(ipsProject.getProject());
         // test if he changed object path is also available with the new instance
         assertEquals("some.name", ipsProject2.getIpsObjectPath().getBasePackageNameForGeneratedJavaClasses());
+    }
+
+    public void testFindReferencingProductCmptGenerations() throws CoreException {
+    	IIpsPackageFragmentRoot[] roots = this.ipsProject.getIpsPackageFragmentRoots();
+    	assertEquals(roots.length, 1);
+    	
+    	IIpsPackageFragment pack = roots[0].getIpsPackageFragment("");
+    	IProductCmpt tobereferenced = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "tobereferenced");
+    	IProductCmpt noref = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "noref");
+    	IProductCmpt ref1 = (IProductCmpt)this.newIpsObject(pack, IpsObjectType.PRODUCT_CMPT, "ref1");
+    	
+    	IProductCmptGeneration gen1 = (IProductCmptGeneration)ref1.newGeneration();
+    	IProductCmptGeneration genNoref = (IProductCmptGeneration)noref.newGeneration();
+    	IProductCmptGeneration genTobereferenced = (IProductCmptGeneration)tobereferenced.newGeneration();
+    	
+    	GregorianCalendar cal = new GregorianCalendar(2005, 1, 1);
+    	gen1.setValidFrom(cal);
+    	genNoref.setValidFrom(cal);
+    	genTobereferenced.setValidFrom(cal);
+    	gen1.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
+    	
+    	IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
+    	assertEquals(result.length, 1);
+    	assertEquals(result[0], gen1);
     }
     
 }

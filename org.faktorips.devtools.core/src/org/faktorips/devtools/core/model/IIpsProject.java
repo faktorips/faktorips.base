@@ -15,6 +15,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 
 
 
@@ -133,10 +134,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException;
     
-    
-    
-    
-    
     /**
      * Returns all objects of the given type found on the classpath. 
      */
@@ -164,6 +161,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * on the given type are returned.
      */
     public IProductCmpt[] findProductCmpts(String qualifiedPcTypeName, boolean includeSubtypes) throws CoreException;
+    
+    /**
+     * Returns all product component generation that refer to the product component identified by the
+     * given qualified name. Returns an empty array if none is found.
+     * 
+     * @throws CoreException if an exception occurs while searching.
+     */
+    public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException;
     
     /**
      * Returns the datatypes representing values. If this project depends on other ips projects

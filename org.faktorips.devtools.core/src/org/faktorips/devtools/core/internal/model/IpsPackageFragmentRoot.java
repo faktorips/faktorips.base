@@ -229,8 +229,8 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         List list = new ArrayList();
-        list.add(new IpsPackageFragment(this, "")); // add the default folder
-        getPdFolders(folder, "", list);
+        list.add(new IpsPackageFragment(this, "")); // add the default package
+        getIpsPackageFragments(folder, "", list);
         IIpsPackageFragment[] pdFolders = new IIpsPackageFragment[list.size()];  
         list.toArray(pdFolders);
         return pdFolders;
@@ -241,15 +241,15 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      * and adds them to the list.
      * This is an application of the collecting parameter pattern. 
      */
-    private void getPdFolders(IFolder folder, String namePrefix, List pdFolders) throws CoreException {
+    private void getIpsPackageFragments(IFolder folder, String namePrefix, List packs) throws CoreException {
         IResource[] resources = folder.members();
         for (int i=0; i<resources.length; i++) {
             if (resources[i].getType()==IResource.FOLDER) {
                 String name = namePrefix + resources[i].getName();
-                // pdfolder's name is not the platform folder name, but the concatenation
+                // package name is not the platform folder name, but the concatenation
                 // of platform folder names starting at the root folder separated by dots
-                pdFolders.add(new IpsPackageFragment(this, name));
-                getPdFolders((IFolder)resources[i], name + ".", pdFolders);
+                packs.add(new IpsPackageFragment(this, name));
+                getIpsPackageFragments((IFolder)resources[i], name + ".", packs);
             }
         }
     }

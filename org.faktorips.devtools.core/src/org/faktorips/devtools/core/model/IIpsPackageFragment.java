@@ -151,4 +151,9 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * </ul>
      */
     public IIpsSrcFile createIpsFile(IpsObjectType type, String pdObjectName, boolean force, IProgressMonitor monitor) throws CoreException;
+
+    /**
+     * Returns the (unqualified) name of the corresponding folder in the file system.
+     */
+	public String getFolderName();
 }

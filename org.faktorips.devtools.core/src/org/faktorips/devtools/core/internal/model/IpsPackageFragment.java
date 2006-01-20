@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.TransformerException;
@@ -64,13 +65,20 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      */
     public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException {
     	IFolder folder = (IFolder)getCorrespondingResource();
-    	IResource[] content = folder.members(IFolder.FOLDER);
-    	IpsPackageFragment[] result = new IpsPackageFragment[content.length];
+    	IResource[] content = folder.members();
+    	IIpsPackageFragment[] result = new IIpsPackageFragment[content.length];
+    	int count = 0;
     	for (int i = 0; i < content.length; i++) {
-    		String packageName = this.getName().equals("")?content[i].getName():this.getName() + "." + content[i].getName();
-    		result[i] = new IpsPackageFragment(this.getParent(), packageName);
+    		if (content[i].getType() == IFolder.FOLDER) {
+        		String packageName = this.getName().equals("")?content[i].getName():this.getName() + "." + content[i].getName();
+        		result[count] = new IpsPackageFragment(this.getParent(), packageName);  
+        		count++;
+    		}
     	}
-    	return result;
+    	
+    	IIpsPackageFragment[] shrink = new IIpsPackageFragment[count];
+    	System.arraycopy(result, 0, shrink, 0, count);
+    	return shrink;
 	}
 
     /**
@@ -254,4 +262,13 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         javaPacks[2] = getJavaPackageFragment(JAVA_PACK_EXTENSION);
         return javaPacks;
     }
+
+    /**
+     * Overridden
+     */
+	public String getFolderName() {
+		return this.getCorrespondingResource().getName();
+	}
+    
+    
 }

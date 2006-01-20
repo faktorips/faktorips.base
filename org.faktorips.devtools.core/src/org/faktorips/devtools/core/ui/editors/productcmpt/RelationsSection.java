@@ -4,6 +4,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -57,6 +63,7 @@ public class RelationsSection extends IpsSection {
         } else {
             setText(pcTypeRelationName);    
         }
+        
     }
     
     private IRelation getPcTypeRelation() {
@@ -67,6 +74,14 @@ public class RelationsSection extends IpsSection {
             return null;
         }
     }
+    
+    /*
+     * fuer drop target
+     */
+    private void newRelation(String target) {
+    	IProductCmptRelation relation = ((IProductCmptGeneration)editor.getProductCmpt().getGenerations()[0]).newRelation(this.pcTypeRelationName);
+    	relation.setTarget(target);
+    }
 
     /** 
      * Overridden method.
@@ -74,6 +89,10 @@ public class RelationsSection extends IpsSection {
      */
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         composite = new RelationsComposite(client, toolkit);
+        DropTarget target = new DropTarget(composite, DND.DROP_LINK);
+        target.setTransfer(new Transfer[] {TextTransfer.getInstance()});
+        target.addDropListener(new DropListener());
+        
     }
 
     /** 
@@ -172,4 +191,34 @@ public class RelationsSection extends IpsSection {
         }
         
     } // class RelationsComposite
+
+    private class DropListener implements DropTargetListener {
+
+		public void dragEnter(DropTargetEvent event) {
+			event.detail = DND.DROP_LINK;
+		}
+
+		public void dragLeave(DropTargetEvent event) {
+			// nothing to do
+		}
+
+		public void dragOperationChanged(DropTargetEvent event) {
+			// nothing to do
+		}
+
+		public void dragOver(DropTargetEvent event) {
+			// nothing to do
+		}
+
+		public void drop(DropTargetEvent event) {
+			newRelation((String)event.data);
+		}
+
+		public void dropAccept(DropTargetEvent event) {
+			event.detail = DND.DROP_LINK;
+			
+		}
+		
+    }
 }
+
