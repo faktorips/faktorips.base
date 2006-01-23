@@ -19,6 +19,26 @@ public class ImageDescriptorRegistry {
 	private Display display;
 	
 	/**
+	 * Creates a new image descriptor registry for the current or default display,
+	 * respectively.
+	 */
+	public ImageDescriptorRegistry() {
+		this(getDisplay());
+	}
+
+	/**
+	 * Helper-Method to get the current or default display
+	 * @return The current display or the default display when no current display is available.
+	 */
+	private static Display getDisplay() {
+		Display display = Display.getCurrent();
+		if (display == null) {
+			display = Display.getDefault();
+		}
+		return display;
+	}
+	
+	/**
 	 * Creates a new image descriptor registry for the given display. All images
 	 * managed by this registry will be disposed when the display gets disposed.
 	 * 
