@@ -3,6 +3,8 @@ package org.faktorips.devtools.core;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.internal.model.PMChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.util.XmlUtil;
 
 /**
@@ -13,12 +15,7 @@ public class IpsPreferences {
     /**
      * Constant identifiying the working date preference
      */
-    public final static String WORKING_DATE = "org.openips.workingdate";
-    
-    /**
-     * Constant identifiying the working date preference
-     */
-    public final static String GENERATED_JAVA_SOURCECODE_LANGUAGE = "org.openips.generated_javasourcecode_language";
+    public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate";
     
     /**
      * Returns the working date preference.
@@ -35,6 +32,13 @@ public class IpsPreferences {
         }
     }
 
+    /**
+     * Returns the naming convention used for product changes over time. 
+     */
+    public final static IChangesInTimeNamingConvention getChangesInTimeNamingConvention() {
+    	return PMChangesInTimeNamingConvention.getInstance();
+    }
+    
     private IpsPreferences() {
     }
 

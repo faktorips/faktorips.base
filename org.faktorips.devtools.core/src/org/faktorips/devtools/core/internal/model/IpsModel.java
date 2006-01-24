@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.codegen.DatatypeHelper;
@@ -38,6 +40,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
@@ -120,23 +123,36 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Overridden.
      */
+    public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException {
+		if (javaProject.getProject().getNature(IIpsProject.NATURE_ID)!=null) {
+			return getIpsProject(javaProject.getProject());
+		}
+		IIpsProject ipsProject = getIpsProject(javaProject.getProject());
+		Util.addNature(javaProject.getProject(), IIpsProject.NATURE_ID);
+		ipsProject.setCurrentArtefactBuilderSet(getAvailableArtefactBuilderSets()[0].getId());
+		ipsProject.setValueDatatypes(new String[0]);
+		return ipsProject;
+	}
+
+	/**
+     * Overridden.
+     */
     public IIpsProject[] getIpsProjects() throws CoreException {
 
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        IIpsProject[] pdProjects = new IIpsProject[projects.length];
+        IIpsProject[] ipsProjects = new IIpsProject[projects.length];
         int counter = 0;
         for (int i = 0; i < projects.length; i++) {
-        	// TODO handle closed projects (hidden at the moment!)
             if (projects[i].isOpen() && projects[i].hasNature(IIpsProject.NATURE_ID)) {
-                pdProjects[i] = getIpsProject(projects[i].getName());
+                ipsProjects[counter] = getIpsProject(projects[i].getName());
                 counter++;
             }
         }
-        if (counter == pdProjects.length) {
-            return pdProjects;
+        if (counter == ipsProjects.length) {
+            return ipsProjects;
         }
         IIpsProject[] shrinked = new IIpsProject[counter];
-        System.arraycopy(pdProjects, 0, shrinked, 0, shrinked.length);
+        System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
         return shrinked;
     }
 
@@ -428,10 +444,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (datatypes==null) {
         	initDatatypeDefintionsFromConfiguration();
         }
-        Set types = new HashSet();
-        Map helperMap = new HashMap();
-        projectDatatypesMap.put(project.getName(), types);
-        projectDatatypeHelpersMap.put(project.getName(), helperMap);
+        Set projectTypes = new LinkedHashSet();
+        Map projectHelperMap = new HashMap();
+        projectDatatypesMap.put(project.getName(), projectTypes);
+        projectDatatypeHelpersMap.put(project.getName(), projectHelperMap);
 
         IpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
         String[] datatypeIds = props.getPredefinedDatatypesUsed();
@@ -440,16 +456,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             if (datatype==null) {
                 return;
             }
-            types.add(datatype);
+            projectTypes.add(datatype);
             DatatypeHelper helper = (DatatypeHelper)datatypeHelpersMap.get(datatype);
             if (helper!=null) {
-                helperMap.put(datatype, helper);
+                projectHelperMap.put(datatype, helper);
             }
         }
         DynamicValueDatatype[] dynamicTypes = props.getDefinedDatatypes();
         for (int i = 0; i < dynamicTypes.length; i++) {
-            types.add(dynamicTypes[i]);
-            helperMap.put(dynamicTypes[i], new GenericValueDatatypeHelper(dynamicTypes[i]));
+            projectTypes.add(dynamicTypes[i]);
+            projectHelperMap.put(dynamicTypes[i], new GenericValueDatatypeHelper(dynamicTypes[i]));
         }
     }
 
@@ -801,7 +817,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         datatypeHelpersMap.put(helper.getDatatype(), helper);
     }
     
-    /*
+    /**
+     * Overridden.
+     */
+    public ValueDatatype[] getPredefinedValueDatatypes() {
+    	if (datatypes==null) {
+        	this.initDatatypeDefintionsFromConfiguration();
+    	}
+    	Collection c = datatypes.values();
+    	return (ValueDatatype[])c.toArray(new ValueDatatype[c.size()]);
+	}
+
+	/*
      * Wrapper around IConfigurationElement.createExecutableExtension(propertyName) with 
      * detaied logging. If the exectuable extension couldn't be created, the reason is logged,
      * no exception is thrown. The returned object is of the expected type. 
