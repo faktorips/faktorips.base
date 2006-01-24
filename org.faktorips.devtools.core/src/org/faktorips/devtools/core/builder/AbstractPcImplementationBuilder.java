@@ -44,7 +44,7 @@ public abstract class AbstractPcImplementationBuilder extends
 			/* get */
 	
 			policyInterfaceBuilder.generateCodeForRelationGetOneSignature(relation,memberVarsBuilder,methodsBuilder);
-			generateRelationGetOneBody(targetType, relation, methodsBuilder);
+			generateRelationGetToOneBody(targetType, relation, methodsBuilder);
 			/* set */
 			policyInterfaceBuilder.generateCodeForRelationSetSignature(relation,memberVarsBuilder,methodsBuilder);
 			generateRelationSetBody(targetType,relation, methodsBuilder);
@@ -52,7 +52,7 @@ public abstract class AbstractPcImplementationBuilder extends
 		} else {
 			/* get */
 			policyInterfaceBuilder.generateCodeForRelationGetManySignature(relation,memberVarsBuilder,methodsBuilder);
-			generateRelationGetManyBody(targetType, relation, methodsBuilder);
+			generateRelationGetToManyBody(targetType, relation, methodsBuilder);
 			/* add */
 			policyInterfaceBuilder.generateCodeForRelationAddSignature(relation,memberVarsBuilder,methodsBuilder);
 			generateRelationAddBody(targetType, relation, methodsBuilder);
@@ -62,8 +62,8 @@ public abstract class AbstractPcImplementationBuilder extends
 	
 		}
 	}	
-	abstract protected void generateRelationGetOneBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
-	abstract protected void generateRelationGetManyBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
+	abstract protected void generateRelationGetToOneBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;	
+	abstract protected void generateRelationGetToManyBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
 	abstract protected void generateRelationSetBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
 	abstract protected void generateRelationAddBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
 	abstract protected void generateRelationRemoveBody(IPolicyCmptType targetType, IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException ;
