@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core.model.product;
 
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 import org.faktorips.values.EnumType;
@@ -35,5 +37,20 @@ public class ConfigElementType extends DefaultEnumValue {
     private ConfigElementType(DefaultEnumType type, String id, String name) {
         super(type, id, name);
     }
+
+	public Image getImage() {
+		if (this.equals(PRODUCT_ATTRIBUTE)) {
+			return IpsPlugin.getDefault().getImage("ProductAttribute.gif");
+		}
+		else if (this.equals(POLICY_ATTRIBUTE)) {
+			return IpsPlugin.getDefault().getImage("PolicyAttribute.gif");
+		}
+		else if (this.equals(FORMULA)) {
+			return IpsPlugin.getDefault().getImage("Formula.gif");
+		}
+		else {
+			return IpsPlugin.getDefault().getImage("<undefined>");
+		}
+	}
     
 }
