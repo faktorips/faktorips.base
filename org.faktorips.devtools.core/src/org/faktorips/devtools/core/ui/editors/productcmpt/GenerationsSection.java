@@ -1,10 +1,13 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.Locale;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -19,15 +22,15 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class GenerationsSection extends SimpleIpsPartsSection {
 
     public GenerationsSection(
-            ITimedIpsObject pdObject, 
+            ITimedIpsObject ipsObject, 
             Composite parent,
             UIToolkit toolkit) {
-        super(pdObject, parent, Section.TITLE_BAR | Section.DESCRIPTION, "Generations", toolkit);
+        super(ipsObject, parent, Section.TITLE_BAR | Section.DESCRIPTION, 
+        	IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()), toolkit);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection#createIpsPartsComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
+     * Overridden.
      */
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
         return new GenerationsComposite((ITimedIpsObject)getIpsObject(), parent, toolkit);

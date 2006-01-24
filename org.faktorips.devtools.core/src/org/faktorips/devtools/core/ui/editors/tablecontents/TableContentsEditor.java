@@ -5,13 +5,13 @@ import java.text.DateFormat;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
-import org.faktorips.devtools.core.ui.editors.TimedPdoEditor;
+import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 
 
 /**
  *
  */
-public class TableContentsEditor extends TimedPdoEditor {
+public class TableContentsEditor extends TimedIpsObjectEditor {
 
     /**
      * 

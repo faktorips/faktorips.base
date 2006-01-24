@@ -1,9 +1,12 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.Locale;
+
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.DescriptionSection;
@@ -19,7 +22,7 @@ public class GenerationsPage extends IpsObjectEditorPage {
     final static String PAGE_ID = "Generations";
 
     public GenerationsPage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, "Generations");
+        super(editor, PAGE_ID, IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()));
     }
 
     ProductCmptEditor getProductCmptEditor() {
@@ -31,8 +34,7 @@ public class GenerationsPage extends IpsObjectEditorPage {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage#createPageContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     * Overridden.
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		GridLayout layout = new GridLayout(2, true);
@@ -51,8 +53,7 @@ public class GenerationsPage extends IpsObjectEditorPage {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage#refresh()
+     * Overridden.
      */
     protected void refresh() {
         super.refresh();

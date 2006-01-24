@@ -36,7 +36,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
      * @param title
      */
     public RelationEditDialog(IProductCmptRelation relation, Shell parentShell) {
-        super(relation, parentShell, "Edit IRelation", true);
+        super(relation, parentShell, "Edit Relation", true);
         this.relation = relation;
     }
 

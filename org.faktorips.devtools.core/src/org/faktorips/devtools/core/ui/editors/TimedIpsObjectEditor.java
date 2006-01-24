@@ -10,12 +10,12 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
 /**
  * An abstract editor for timed objects.
  */
-public abstract class TimedPdoEditor extends IpsObjectEditor {
+public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
 
     /**
      * 
      */
-    public TimedPdoEditor() {
+    public TimedIpsObjectEditor() {
         super();
     }
     

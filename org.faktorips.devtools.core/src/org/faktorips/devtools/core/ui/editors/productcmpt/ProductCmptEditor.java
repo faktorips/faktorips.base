@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.text.DateFormat;
+import java.util.Locale;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -10,6 +11,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -18,13 +20,13 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
-import org.faktorips.devtools.core.ui.editors.TimedPdoEditor;
+import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 
 
 /**
  *
  */
-public class ProductCmptEditor extends TimedPdoEditor {
+public class ProductCmptEditor extends TimedIpsObjectEditor {
     
     private boolean dontCreateNewConfigElements = false;
 
@@ -47,8 +49,7 @@ public class ProductCmptEditor extends TimedPdoEditor {
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
+     * Overridden.
      */
     public void init(IEditorSite site, IEditorInput input)
             throws PartInitException {
@@ -65,8 +66,7 @@ public class ProductCmptEditor extends TimedPdoEditor {
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
+     * Overridden.
      */
     public void partActivated(IWorkbenchPart part) {
         if (part!=this) {
@@ -182,17 +182,17 @@ public class ProductCmptEditor extends TimedPdoEditor {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditor#getUniformPageTitle()
+     * Overridden.
      */
     protected String getUniformPageTitle() {
-        IProductCmptGeneration generation = (IProductCmptGeneration)getActiveGeneration();
         String title = "Product Component: " + getProductCmpt().getName();
+        IProductCmptGeneration generation = (IProductCmptGeneration)getActiveGeneration();
         if (generation==null) {
             return title;
         }
         DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT);
-        return title + ", Generation " + format.format(generation.getValidFrom().getTime());
+        String generationConceptName = IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
+        return title + ", " +  generationConceptName + " " + format.format(generation.getValidFrom().getTime());
     }
         
 }

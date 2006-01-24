@@ -73,8 +73,7 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.part.MultiPageEditorPart#setActivePage(int)
+     * Overridden.
      */
     protected void setActivePage(int pageIndex) {
         super.setActivePage(pageIndex);
@@ -82,8 +81,7 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.part.MultiPageEditorPart#pageChange(int)
+     * Overridden.
      */
     protected void pageChange(int newPageIndex) {
         super.pageChange(newPageIndex);
@@ -130,8 +128,7 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+     * Overridden.
      */
     public void doSave(IProgressMonitor monitor) {
         try {
