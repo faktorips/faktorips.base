@@ -1,0 +1,33 @@
+<project name="org.faktorips.util" default="buildjar">
+
+		<!-- set global properties for this build -->
+	  	<property name="src" location="src"/>
+	  	<property name="classes" location="classes"/>
+		<property name="log" location="logs" />
+		<property name="libs" location="lib" />
+	
+		<path path="${libs}" id="util_cp" />
+	
+
+        <target name="clean">
+        	<delete dir="${build}" />
+        	<echo>${build}</echo>
+        </target>
+
+	
+		<!--Compile - Target -->
+        <target name="compile">
+			<javac srcdir="${src}" destdir="${classes}" classpathref="util_cp">
+			</javac>
+        </target>
+
+	
+	
+	
+        <target name="test">
+        </target>
+
+        <target name="buildjar" depends="compile">
+        </target>
+
+</project>
