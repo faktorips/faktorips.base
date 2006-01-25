@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.internal.registry.ConfigurationElementHandle;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -736,11 +737,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             extProperty.setSortOrder(Integer.parseInt(element.getAttribute("sortOrder")));
         }
         String extType = element.getAttribute("extendedType");
+        IConfigurationElement[] handles= element.getChildren();
+        String [] names= element.getAttributeNames();
+      
         try {
             extProperty.setExtendedType(extProperty.getClass().getClassLoader().loadClass(extType));
         } catch (ClassNotFoundException e) {
             IpsPlugin.log(new IpsStatus("Extended type " + extType + " not found for extension property " + extProperty.getPropertyId(), e));
             return null;
+        
         }
         return extProperty;
     }

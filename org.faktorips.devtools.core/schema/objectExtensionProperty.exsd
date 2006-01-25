@@ -41,6 +41,9 @@
 
    <element name="property">
       <complexType>
+         <sequence>
+            <element ref="editorExtension"/>
+         </sequence>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
@@ -73,6 +76,25 @@
             </annotation>
          </attribute>
          <attribute name="sortOrder" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="editorExtension">
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="page" type="string">
             <annotation>
                <documentation>
                   

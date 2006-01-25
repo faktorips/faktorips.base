@@ -53,6 +53,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private TextField containerRelationField;
     private TextField reverseRelationField;
     
+    private EditField[] extensionEditFields;
+    
     private EditField pmRelationIdField; // TODO remove from core
     private EditField pmTargetObjectName; // TODO remove from core
 
@@ -148,7 +150,16 @@ public class RelationEditDialog extends IpsPartEditDialog {
         containerRelationField = new TextField(containerRelationText);
         reverseRelationField = new TextField(reverseRelationText);
         
+        
+        
+        
+        //IExtensionPropertyDefinition
         // TODO pm extension, remove from core
+        IExtensionPropertyDefinition[] extProps = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinitions(IRelation.class,true);
+        for(int i=0; i< extProps.length; i++)
+        {
+        	//extProps[i];
+        }
         IExtensionPropertyDefinition extProp = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinition(IRelation.class, PROPERTY_PM_CLASSRELATION_ID, true);
         if (extProp!=null) {
             uiToolkit.createFormLabel(workArea, extProp.getDisplayName() + ":");
