@@ -86,7 +86,7 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
             return super.getUnqualifiedClassName(ipsSrcFile);
         }
         IProductCmpt lProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        if (!lProductCmpt.javaTypeMustBeGenerated()) {
+        if (!lProductCmpt.containsFormula()) {
             IPolicyCmptType pcType = lProductCmpt.findPolicyCmptType();
             if (pcType == null) {
                 return super.getUnqualifiedClassName(ipsSrcFile);
@@ -99,7 +99,7 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
 
     protected void generateInternal() throws CoreException {
         checkIfDependentBuildersSet();
-        if (!getProductCmpt().javaTypeMustBeGenerated()) {
+        if (!getProductCmpt().containsFormula()) {
             cancelGeneration();
             return;
         }
