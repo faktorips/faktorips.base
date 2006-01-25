@@ -36,7 +36,7 @@ public class PolicyAttributesSection extends IpsSection {
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         initControls();
-        setText("Policy Attributes");
+        setText(Messages.PolicyAttributesSection_policyAttributes);
     }
 
     /**
@@ -114,7 +114,7 @@ public class PolicyAttributesSection extends IpsSection {
 	            if (StringUtils.isEmpty(ce.getValue())) {
 	                return ce.getName();
 	            }
-	            return ce.getName() + "(default=" + ce.getValue()+")";
+	            return ce.getName() + Messages.PolicyAttributesSection_defaultLabelPrefix + ce.getValue()+Messages.PolicyAttributesSection_defaultLabelPostfix;
 	        }
 		}
     

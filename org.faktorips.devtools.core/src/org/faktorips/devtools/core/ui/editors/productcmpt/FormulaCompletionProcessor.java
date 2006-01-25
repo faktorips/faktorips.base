@@ -83,7 +83,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     
     private void addParamToResult(List result, Parameter param, int replacementOffset, int replacementLength) {
         String name = param.getName();
-        String displayText = name + " - " + param.getDatatype();
+        String displayText = name + " - " + param.getDatatype(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
                 name, replacementOffset, replacementLength, replacementOffset + name.length(),  
                 new DefaultLabelProvider().getImage(param), displayText, null, null);
@@ -115,16 +115,16 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         Datatype[] argTypes = function.getArgTypes();
         for (int i=0; i<argTypes.length; i++) {
             if (i>0) {
-                displayText.append(", ");
+                displayText.append(", "); //$NON-NLS-1$
             }
             displayText.append(argTypes[i].getName());
         }
         displayText.append(')');
-        displayText.append(" - ");
+        displayText.append(" - "); //$NON-NLS-1$
         displayText.append(function.getType().getName());
         String description = function.getDescription();
-        description = description.replaceAll("\r\n", "<br>");
-        description = description.replaceAll("\n", "<br>");
+        description = description.replaceAll("\r\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
+        description = description.replaceAll("\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
         CompletionProposal proposal = new CompletionProposal(
                 name, replacementOffset, replacementLength, replacementOffset + name.length(),  
                 new DefaultLabelProvider().getImage(function), displayText.toString(), null, description);
@@ -165,7 +165,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             int replacementOffset,
             int replacementLength) {
         String name = attribute.getName();
-        String displayText = name + " - " + attribute.getDatatype();
+        String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
                 name, replacementOffset, replacementLength, replacementOffset + name.length(),  
                 attribute.getImage(), displayText, null, attribute.getDescription());
@@ -184,7 +184,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private String getLastIdentifier(String s) {
         if (StringUtils.isEmpty(s)) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         int i=s.length()-1;
         while (i>=0) {

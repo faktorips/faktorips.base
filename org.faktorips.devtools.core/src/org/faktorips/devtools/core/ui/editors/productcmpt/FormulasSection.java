@@ -37,7 +37,7 @@ public class FormulasSection extends IpsSection {
         
         this.generation = generation;
         initControls();
-        setText("Calculation Formulas");
+        setText(Messages.FormulasSection_calculationFormulas);
     }
 
     /**

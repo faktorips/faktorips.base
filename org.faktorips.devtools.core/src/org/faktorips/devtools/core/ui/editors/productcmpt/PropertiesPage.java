@@ -25,10 +25,10 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  */
 public class PropertiesPage extends IpsObjectEditorPage {
     
-    final static String PAGE_ID = "Properties";
+    final static String PAGE_ID = "Properties"; //$NON-NLS-1$
 
     public PropertiesPage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, "Properties");
+        super(editor, PAGE_ID, Messages.PropertiesPage_properties);
     }
 
     ProductCmptEditor getProductCmptEditor() {
@@ -58,11 +58,11 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		Composite right = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
 	    Section relationsSection = toolkit.getFormToolkit().createSection(right, Section.TITLE_BAR | Section.DESCRIPTION);
 	    relationsSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	    relationsSection.setText("Relations");
+	    relationsSection.setText(Messages.PropertiesPage_relations);
 	    
 		String[] pcTypeRelations = getPcTypeRelations(generation);
 		if (pcTypeRelations.length==0) {
-		    Label label = toolkit.createLabel(relationsSection, "No relations defined.");		    
+		    Label label = toolkit.createLabel(relationsSection, Messages.PropertiesPage_noRelationsDefined);		    
 		    relationsSection.setClient(label);
 		} else {
 			for (int i=0; i<pcTypeRelations.length; i++) {

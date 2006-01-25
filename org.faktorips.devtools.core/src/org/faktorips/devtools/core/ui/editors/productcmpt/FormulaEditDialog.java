@@ -46,7 +46,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     private TextField formulaField;
 
     public FormulaEditDialog(IConfigElement configElement, Shell parentShell) throws CoreException {
-        super(configElement, parentShell, "Edit Formula", true);
+        super(configElement, parentShell, Messages.FormulaEditDialog_editFormula, true);
         ArgumentCheck.notNull(configElement);
         this.configElement = configElement;
         attribute = configElement.findPcTypeAttribute();
@@ -60,7 +60,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         TabFolder folder = (TabFolder)parent;
         
         TabItem firstPage = new TabItem(folder, SWT.NONE);
-        firstPage.setText("Formula");
+        firstPage.setText(Messages.FormulaEditDialog_Formula);
         firstPage.setControl(createFirstPage(folder));
         
         createDescriptionTabItem(folder);
@@ -72,7 +72,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         GridLayout layout = (GridLayout)c.getLayout();
         layout.verticalSpacing = 20;
 
-        parametersControl = new ChangeParametersControl(c, SWT.NONE, "Available Parameters", configElement.getIpsProject()) {
+        parametersControl = new ChangeParametersControl(c, SWT.NONE, Messages.FormulaEditDialog_availableParameters, configElement.getIpsProject()) {
 
             public MessageList validate(int paramIndex) throws CoreException {
                 MessageList result = new MessageList();

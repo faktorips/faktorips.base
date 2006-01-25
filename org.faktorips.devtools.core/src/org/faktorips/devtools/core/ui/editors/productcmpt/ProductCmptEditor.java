@@ -99,10 +99,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
             StringBuffer msg = new StringBuffer();
 	        IAttribute[] newAttributes = delta.getAttributesWithMissingConfigElements();
 	        if (newAttributes.length > 0) {
-	        	msg.append("The product component does not contain the following attributes/formulas:");
+	        	msg.append(Messages.ProductCmptEditor_msgNotContainingAttributes);
 	            msg.append(SystemUtils.LINE_SEPARATOR);
 	            for (int i=0; i<newAttributes.length; i++) {
-	                msg.append(" - ");
+	                msg.append(" - "); //$NON-NLS-1$
 	                msg.append(newAttributes[i].getName());
 	                msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
@@ -112,10 +112,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	            if (msg.toString().length()>0) {
 		            msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
-	        	msg.append("The following attributes/formulas can't be found in the template:");
+	        	msg.append(Messages.ProductCmptEditor_msgAttributesNotFound);
 	            msg.append(SystemUtils.LINE_SEPARATOR);
 	            for (int i=0; i<elements.length; i++) {
-	                msg.append(" - ");
+	                msg.append(" - "); //$NON-NLS-1$
 	                msg.append(elements[i].getName());
 	                msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
@@ -125,10 +125,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	            if (msg.toString().length()>0) {
 		            msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
-	        	msg.append("There is a type mismatch in the following attributes/formulas:");
+	        	msg.append(Messages.ProductCmptEditor_msgTypeMismatch);
 	            msg.append(SystemUtils.LINE_SEPARATOR);
 	            for (int i=0; i<elements.length; i++) {
-	                msg.append(" - ");
+	                msg.append(" - "); //$NON-NLS-1$
 	                msg.append(elements[i].getName());
 	                msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
@@ -138,10 +138,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	            if (msg.toString().length()>0) {
 		            msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
-	        	msg.append("There is a mismatch between the value sets of the following attributes:");
+	        	msg.append(Messages.ProductCmptEditor_msgValueAttributeMismatch);
 	            msg.append(SystemUtils.LINE_SEPARATOR);
 	            for (int i=0; i<elements.length; i++) {
-	                msg.append(" - ");
+	                msg.append(" - "); //$NON-NLS-1$
 	                msg.append(elements[i].getName());
 	                msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
@@ -151,17 +151,17 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	            if (msg.toString().length()>0) {
 		            msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
-	        	msg.append("For the following relations no corresponding relation can be found in the template:");
+	        	msg.append(Messages.ProductCmptEditor_msgNoRelationDefined);
 	            msg.append(SystemUtils.LINE_SEPARATOR);
 	            for (int i=0; i<relations.length; i++) {
-	                msg.append(" - ");
+	                msg.append(" - "); //$NON-NLS-1$
 	                msg.append(relations[i].getName());
 	                msg.append(SystemUtils.LINE_SEPARATOR);
 	            }
 	        }
 	        
             msg.append(SystemUtils.LINE_SEPARATOR);
-            msg.append("Do you wan't to fix the differences?");
+            msg.append(Messages.ProductCmptEditor_msgFixIt);
             boolean fix = MessageDialog.openConfirm(getContainer().getShell(), getPartName(), msg.toString());
             if (fix) {
                 IIpsModel model = getProductCmpt().getIpsModel();
@@ -185,14 +185,14 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * Overridden.
      */
     protected String getUniformPageTitle() {
-        String title = "Product Component: " + getProductCmpt().getName();
+        String title = Messages.ProductCmptEditor_productComponent + getProductCmpt().getName();
         IProductCmptGeneration generation = (IProductCmptGeneration)getActiveGeneration();
         if (generation==null) {
             return title;
         }
         DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT);
         String generationConceptName = IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
-        return title + ", " +  generationConceptName + " " + format.format(generation.getValidFrom().getTime());
+        return title + ", " +  generationConceptName + " " + format.format(generation.getValidFrom().getTime()); //$NON-NLS-1$ //$NON-NLS-2$
     }
         
 }

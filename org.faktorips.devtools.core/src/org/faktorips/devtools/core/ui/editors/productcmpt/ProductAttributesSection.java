@@ -51,7 +51,7 @@ public class ProductAttributesSection extends IpsSection {
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.generation = generation;
         initControls();
-        setText("Product Attributes");
+        setText(Messages.ProductAttributesSection_productAttributes);
     }
 
     /**
@@ -76,7 +76,7 @@ public class ProductAttributesSection extends IpsSection {
         toolkit.getFormToolkit().paintBordersFor(workArea);
         // create label and text control for the policy component type
         // this product component is based on.
-        toolkit.createLabel(workArea, "Template:");
+        toolkit.createLabel(workArea, Messages.ProductAttributesSection_template);
         pcTypeText = toolkit.createText(workArea);
         pcTypeText.setEnabled(false);
     }
@@ -120,7 +120,7 @@ public class ProductAttributesSection extends IpsSection {
         IConfigElement[] elements = generation.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE); 
         for (int i=0; i<elements.length; i++) {
             if (i<labels.size()) {
-                ((Label)labels.get(i)).setText(elements[i].getPcTypeAttribute() + ":");
+                ((Label)labels.get(i)).setText(elements[i].getPcTypeAttribute() + ":"); //$NON-NLS-1$
             } else {
                 Label label = toolkit.createLabel(workArea, getLabelText(elements[i].getPcTypeAttribute()));
                 labels.add(label);
@@ -141,7 +141,7 @@ public class ProductAttributesSection extends IpsSection {
     }
     
     private String getLabelText(String attributeName) {
-        return StringUtils.capitalise(attributeName) + ":";
+        return StringUtils.capitalise(attributeName) + ":"; //$NON-NLS-1$
     }
 
 }

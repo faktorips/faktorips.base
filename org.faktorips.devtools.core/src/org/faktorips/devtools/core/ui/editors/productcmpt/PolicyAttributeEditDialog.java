@@ -38,7 +38,7 @@ public class PolicyAttributeEditDialog extends IpsPartEditDialog implements Valu
      * @param title
      */
     public PolicyAttributeEditDialog(IConfigElement configElement, Shell parentShell) {
-        super(configElement, parentShell, "Edit Default Value & Value Set", true);
+        super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.configElement = configElement;
     }
 
@@ -50,7 +50,7 @@ public class PolicyAttributeEditDialog extends IpsPartEditDialog implements Valu
         TabFolder folder = (TabFolder)parent;
 
         TabItem firstPage = new TabItem(folder, SWT.NONE);
-        firstPage.setText("Properties");
+        firstPage.setText(Messages.PolicyAttributeEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
 
         createDescriptionTabItem(folder);
@@ -62,7 +62,7 @@ public class PolicyAttributeEditDialog extends IpsPartEditDialog implements Valu
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        uiToolkit.createFormLabel(workArea, "Default Value:");
+        uiToolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
         Text defaultValueText = uiToolkit.createText(workArea);
 
         defaultValueField = new TextField(defaultValueText);

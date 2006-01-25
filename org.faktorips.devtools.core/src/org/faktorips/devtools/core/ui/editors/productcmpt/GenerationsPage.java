@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  */
 public class GenerationsPage extends IpsObjectEditorPage {
     
-    final static String PAGE_ID = "Generations";
+    final static String PAGE_ID = "Generations"; //$NON-NLS-1$
 
     public GenerationsPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()));

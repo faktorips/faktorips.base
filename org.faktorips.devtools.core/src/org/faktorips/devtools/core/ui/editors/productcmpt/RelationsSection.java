@@ -57,7 +57,7 @@ public class RelationsSection extends IpsSection {
         IRelation pcTypeRelation = getPcTypeRelation();
         if (pcTypeRelation!=null) {
             setText(new RelationLabelProvider().getText(pcTypeRelation));
-            if (pcTypeRelation.getMaxCardinality().equals("1")) {
+            if (pcTypeRelation.getMaxCardinality().equals("1")) { //$NON-NLS-1$
                 setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             }
         } else {
@@ -159,8 +159,8 @@ public class RelationsSection extends IpsSection {
             public String getText(Object element) {
 	            IProductCmptRelation relation = (IProductCmptRelation)element;
 	            return relation.getName() 
-	            + " [" + relation.getMinCardinality() +
-	            	".." + relation.getMaxCardinality() + "]";
+	            + " [" + relation.getMinCardinality() + //$NON-NLS-1$
+	            	".." + relation.getMaxCardinality() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         

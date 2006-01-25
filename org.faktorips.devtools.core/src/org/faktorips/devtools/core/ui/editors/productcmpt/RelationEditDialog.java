@@ -36,7 +36,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
      * @param title
      */
     public RelationEditDialog(IProductCmptRelation relation, Shell parentShell) {
-        super(relation, parentShell, "Edit Relation", true);
+        super(relation, parentShell, Messages.RelationEditDialog_editRelation, true);
         this.relation = relation;
     }
 
@@ -47,7 +47,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
-        firstPage.setText("Properties");
+        firstPage.setText(Messages.RelationEditDialog_properties);
         firstPage.setControl(createFirstPage(folder));
         createDescriptionTabItem(folder);
         return folder;
@@ -59,7 +59,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        uiToolkit.createFormLabel(workArea, "Target:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_target);
         ProductCmptRefControl targetControl = new ProductCmptRefControl(relation.getIpsProject(), workArea, uiToolkit);
         try {
             IRelation pcTypeRelation = relation.findPcTypeRelation();
@@ -68,10 +68,10 @@ public class RelationEditDialog extends IpsPartEditDialog {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         
-        uiToolkit.createFormLabel(workArea, "Minimum Cardinality:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMin);
         Text minCardinalityText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Maximum Cardinality:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMax);
         Text maxCardinalityText = uiToolkit.createText(workArea);
         
         // create fields
