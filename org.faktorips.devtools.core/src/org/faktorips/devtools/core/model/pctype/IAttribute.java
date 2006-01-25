@@ -97,7 +97,7 @@ public interface IAttribute extends IMember {
     
     /**
      * Returns the type of the product configuration element this attribute
-     * defines. Returns <code>null</code> if this attrihute is not product
+     * defines. Returns <code>null</code> if this attribute is not product
      * relevant.
      */
     public ConfigElementType getConfigElementType();

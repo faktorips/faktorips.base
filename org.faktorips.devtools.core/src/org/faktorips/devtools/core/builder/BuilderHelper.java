@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -28,11 +29,13 @@ import org.faktorips.devtools.core.model.pctype.Parameter;
  */
 public class BuilderHelper {
     
-    public final static String[] transformParameterTypesToJavaClassNames(IIpsProject ipsProject, Parameter[] params) throws CoreException {
+    public final static String[] transformParameterTypesToJavaClassNames(
+    		IIpsProject ipsProject, 
+    		Parameter[] params) throws CoreException {
 	    String[] javaClasses = new String[params.length];
 	    for (int i=0; i<params.length; i++) {
 	        Datatype paramDataype = ipsProject.findDatatype(params[i].getDatatype());
-	        javaClasses[i] = paramDataype.getJavaClassName();
+		    javaClasses[i] = paramDataype.getJavaClassName();
 	    }
         return javaClasses;
     }
@@ -113,33 +116,6 @@ public class BuilderHelper {
                     "No datatype found for attribute " + a.getName() + "and datatype " + a.getDatatype()));                       
         }
         return datatype;
-    }
-
-    /**
-     * find the datatype helper for the attribute in the project configuration
-     */
-    public final static DatatypeHelper findAttributeDatatypeHelper(IAttribute a, Datatype datatype) 
-    throws CoreException {
-        DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
-        if (helper == null) {
-            throw new CoreException(new IpsStatus(
-            "No datatype helper found for attribute " + a.getName() + "and datatype " + datatype));            
-        }
-        return helper;
-    }
-    
-    /**
-     * Finds the datatype helper for the given datatype.
-     * 
-     * @throws CoreException if no helper is found.
-     */
-    public final static DatatypeHelper findDatatypeHelper(IIpsProject project, Datatype datatype) 
-    throws CoreException {
-        DatatypeHelper helper = project.getDatatypeHelper(datatype);
-        if (helper == null) {
-            throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
-        }
-        return helper;
     }
     
     /**

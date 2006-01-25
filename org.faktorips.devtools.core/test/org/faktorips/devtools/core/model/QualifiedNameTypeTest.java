@@ -57,7 +57,7 @@ public class QualifiedNameTypeTest extends TestCase {
      */
     public void testToString() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
-        assertEquals(type1.toString(), "IPolicyCmptType: test");
+        assertEquals(type1.toString(), "PolicyCmptType: test");
     }
 
 }

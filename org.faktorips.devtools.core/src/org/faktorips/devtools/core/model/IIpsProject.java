@@ -16,6 +16,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
 
@@ -64,8 +65,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void setValueDatatypes(String[] ids) throws CoreException;
     
     /**
+     * Set the value datatypes allowed in the project.
+     */
+    public void setValueDatatypes(ValueDatatype[] types) throws CoreException;
+
+    /**
      * Returns the language in that the expression language's functions are used.
-     * E.g. he if function is called IF in english, but WENN in german.
+     * E.g. the <code>if</code> function is called IF in english, but WENN in german.
      */
     public Locale getExpressionLanguageFunctionsLanguage();
     
@@ -134,6 +140,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException;
     
+    /**
+     * Returns the first policy component type the qualified name found
+     * on the path. 
+     */
+    public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException;
+
     /**
      * Returns all objects of the given type found on the classpath. 
      */

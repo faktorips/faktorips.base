@@ -135,7 +135,7 @@ public class IpsObjectPathTest extends IpsPluginTest {
         assertNull(path.getOutputFolderForExtensionJavaFiles());
         assertEquals(2, path.getEntries().length);
         
-        // test case 1: output folder and package defined via the path for all entries 
+        // test case 2: output folder and package defined via the path for all entries 
         path.setOutputDefinedPerSrcFolder(false);
         path.setOutputFolderForGeneratedJavaFiles(project.getFolder("generated"));
         path.setBasePackageNameForGeneratedJavaClasses("org.sample.generated");

@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
 /**
@@ -39,6 +40,16 @@ public interface IProductCmpt extends ITimedIpsObject {
     public IPolicyCmptType findPolicyCmptType() throws CoreException;
     
     /**
+     * Searches the product component type this product component is based on.
+     *  
+     * @return The product component type this product component is based on 
+     * or <code>null</code> if the product component type can't be found.
+     *  
+     * @throws CoreException if an exception occurs while searching for the type.
+     */
+    public IProductCmptType findProductCmptType() throws CoreException;
+
+    /**
      * Searches the relation with the given name in the policy component type 
      * this product component is based on.
      *  
@@ -51,13 +62,10 @@ public interface IProductCmpt extends ITimedIpsObject {
     public IRelation findPcTypeRelation(String relationName) throws CoreException;
     
     /**
-     * Returns true if a Java type must be generated for this product component. This is
-     * the case if the generations contain at least one formula (that has to be compiled to
-     * Java sourcecode). Returns false, if no Java sourcecode has to be generated for this
-     * product component.
-     * @deprecated
+     * Returns <code>true</code> if any of the generations contain at least one formula.
+     * Returns <code>false</code> otherwise.
      */
-    public boolean javaTypeMustBeGenerated();
+    public boolean containsFormula();
     
 
     

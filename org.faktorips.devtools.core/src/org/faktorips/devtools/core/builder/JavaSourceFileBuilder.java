@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Modifier;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -83,24 +85,6 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	private static JControlModel model;
 
 	/**
-	 * Implementations of this class must override this method to provide the
-	 * content of the java source file.
-	 * 
-	 * @param monitor
-	 *            implementations can report the progress of the generation
-	 *            process to this monitor
-	 * @return the source file content
-	 * @throws CoreException
-	 *             implementations can wrap rising checked exceptions into a
-	 *             CoreException. If an exception is thrown by this method the
-	 *             current build of this builder is interrupted. Alternatively
-	 *             the exception can be reported to the buildStatus to avoid
-	 *             interrupting the build process of this builder.
-	 * 
-	 */
-	protected abstract String generate() throws CoreException;
-
-	/**
 	 * Creates a new JavaSourceFileBuilder.
 	 * 
 	 * @param packageStructure
@@ -122,6 +106,39 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 		this.kindId = kindId;
 		this.localizedStringsSet = localizedStringsSet;
 	}
+
+	/**
+	 * Returns the language in that variables, methods are named and and Java docs are 
+	 * written in.
+	 */
+    public Locale getLanguageUsedInGeneratedSourceCode() {
+    	return Locale.getDefault();
+    }
+	
+	/**
+	 * Returns the Java naming convention to be used.
+	 */
+	public JavaNamingConvention getJavaNamingConvention() throws CoreException {
+		return JavaNamingConvention.ECLIPSE_STANDARD;
+	}
+	
+	/**
+	 * Implementations of this class must override this method to provide the
+	 * content of the java source file.
+	 * 
+	 * @param monitor
+	 *            implementations can report the progress of the generation
+	 *            process to this monitor
+	 * @return the source file content
+	 * @throws CoreException
+	 *             implementations can wrap rising checked exceptions into a
+	 *             CoreException. If an exception is thrown by this method the
+	 *             current build of this builder is interrupted. Alternatively
+	 *             the exception can be reported to the buildStatus to avoid
+	 *             interrupting the build process of this builder.
+	 * 
+	 */
+	protected abstract String generate() throws CoreException;
 
 	/**
 	 * Returns the IpsObject provided to this builder. It returns the IpsObject
@@ -344,8 +361,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 		}
 		return getLocalizedStringSet().getString(
 				key,
-				getIpsObject().getIpsProject()
-						.getGeneratedJavaSourcecodeDocumentationLanguage());
+				getLanguageUsedInGeneratedSourceCode());
 	}
 
 	/**
@@ -368,15 +384,45 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 		}
 		return getLocalizedStringSet().getString(
 				key,
-				getIpsObject().getIpsProject()
-						.getGeneratedJavaSourcecodeDocumentationLanguage(),
+				getLanguageUsedInGeneratedSourceCode(),
 				replacement);
+	}
+	
+	/**
+	 * Returns the localized text for the provided key. Calling this method is
+	 * only allowed during the build cycle. If it is called outside the build
+	 * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet
+	 * has been set to this builder a RuntimeException is thrown.
+	 * 
+	 * @param key
+	 *            the key that identifies the requested text
+	 * @param replacements
+	 *            indicated regions within the text are replaced by the string
+	 *            representations of these values.
+	 * @return the requested text
+	 */
+	public String getLocalizedText(String key, Object[] replacements) {
+		if (localizedStringsSet == null) {
+			throw new RuntimeException(
+					"A LocalizedStringSet has to be set to this builder to be able to call this method.");
+		}
+		return getLocalizedStringSet().getString(
+				key,
+				getLanguageUsedInGeneratedSourceCode(),
+				replacements);
+	}
+	
+	/**
+	 * Returns the modifier used to defined a method in an interface.
+	 *
+	 * @see java.lang.reflect.Modifier
+	 */
+	public int getModifierForInterfaceMethod() {
+		return Modifier.PUBLIC + Modifier.ABSTRACT;
 	}
 
 	/**
 	 * Implementation of the build procedure of this builder.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#build(org.faktorips.devtools.core.model.IIpsSrcFile)
 	 */
 	public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
 
@@ -459,6 +505,10 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 				}
 			}
 		}
+	}
+	
+	protected String getJavaDocCommentForOverriddenMethod() {
+		return "Overridden.";
 	}
 
 	/**

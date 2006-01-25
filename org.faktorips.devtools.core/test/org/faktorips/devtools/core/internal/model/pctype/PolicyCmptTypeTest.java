@@ -8,11 +8,11 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
@@ -246,6 +246,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     public void testInitFromXml() {
         Element element = getTestDocument().getDocumentElement();
         pcType.initFromXml(element);
+        assertEquals("Product", pcType.getUnqualifiedProductCmptType());
         assertEquals("SuperType", pcType.getSupertype());
         assertTrue(pcType.isAbstract());
         assertEquals("blabla", pcType.getDescription());
@@ -276,6 +277,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     }
     
     public void testToXml() {
+    	pcType.setUnqualifiedProductCmptType("Product");
         pcType.setDescription("blabla");
         pcType.setAbstract(true);
         pcType.setSupertype("NewSuperType");
@@ -300,6 +302,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         
         PolicyCmptType copy = new PolicyCmptType();
         copy.initFromXml(element);
+        assertEquals("Product", copy.getUnqualifiedProductCmptType());
         assertEquals("NewSuperType", copy.getSupertype());
         assertTrue(copy.isAbstract());
         assertEquals("blabla", copy.getDescription());
@@ -512,9 +515,13 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         
     }
     
+    public void testGetProductCmptType() {
+    	pcType.setUnqualifiedProductCmptType("MotorProduct");
+    	assertEquals(pack.getName() + '.' + "MotorProduct", pcType.getProductCmptType());
+    }
+    
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)
+     * Overridden.
      */
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;

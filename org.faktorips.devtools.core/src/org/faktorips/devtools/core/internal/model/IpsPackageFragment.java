@@ -115,24 +115,21 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * Overridden.
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsPackageFragment.gif");
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#getIpsSrcFile(java.lang.String)
+     * Overridden.
      */
     public IIpsSrcFile getIpsSrcFile(String name) {
         return new IpsSrcFile(this, name);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#createPdFile(java.lang.String, boolean, org.eclipse.core.runtime.IProgressMonitor)
+     * Overridden.
      */
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();

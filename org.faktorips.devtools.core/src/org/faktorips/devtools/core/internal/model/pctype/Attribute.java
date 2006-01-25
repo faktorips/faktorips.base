@@ -411,13 +411,15 @@ public class Attribute extends Member implements IAttribute {
                                 + " does not exists on the object path!", Message.ERROR, param,
                                 PROPERTY_FORMULAPARAM_DATATYPE));
             } else {
-                try {
-                    result.add(datatypeObject.validate(), new ObjectProperty(param, PROPERTY_FORMULAPARAM_DATATYPE), true);
-                } catch (CoreException e) {
-                    throw e;
-                } catch (Exception e) {
-                    throw new CoreException(new IpsStatus(e));
-                }
+            	if (datatypeObject instanceof ValueDatatype) {
+                    try {
+                        result.add(datatypeObject.validate(), new ObjectProperty(param, PROPERTY_FORMULAPARAM_DATATYPE), true);
+                    } catch (CoreException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        throw new CoreException(new IpsStatus(e));
+                    }
+            	}
             }
         }
     }

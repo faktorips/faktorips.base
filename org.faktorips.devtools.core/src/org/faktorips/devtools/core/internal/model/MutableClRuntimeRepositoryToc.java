@@ -24,8 +24,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.runtime.ReadonlyTableOfContents#internalAddEntry(int, org.faktorips.runtime.TocEntry)
+     * Overridden.
      */
     protected void internalAddEntry(TocEntry entry) {
         super.internalAddEntry(entry);

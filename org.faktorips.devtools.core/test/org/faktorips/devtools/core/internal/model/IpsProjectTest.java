@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.values.Decimal;
 
 
@@ -45,6 +46,16 @@ public class IpsProjectTest extends IpsPluginTest {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
+    }
+    
+    public void testFindProductCmptType() throws CoreException {
+    	IPolicyCmptType policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
+    	policyCmptType.setUnqualifiedProductCmptType("MotorProduct");
+    	policyCmptType.getIpsSrcFile().save(true, null);
+    	IProductCmptType productCmptType = ipsProject.findProductCmptType("motor.MotorProduct");
+    	assertNotNull(productCmptType);
+    	assertEquals("motor.MotorProduct", productCmptType.getQualifiedName());
+    	assertEquals(policyCmptType, productCmptType.findPolicyCmptyType());
     }
 
     public void testGetValueDatatypes() throws CoreException {
@@ -295,6 +306,28 @@ public class IpsProjectTest extends IpsPluginTest {
     	IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
     	assertEquals(result.length, 1);
     	assertEquals(result[0], gen1);
+    }
+    
+    public void testSetValueDatatypes() throws CoreException {
+    	ipsProject.setValueDatatypes(new ValueDatatype[]{Datatype.BOOLEAN, Datatype.STRING});
+    	ValueDatatype[] valueDatatypes = ipsProject.getValueDatatypes(false);
+    	assertEquals(2, valueDatatypes.length);
+    	assertEquals(Datatype.BOOLEAN, valueDatatypes[0]);
+    	assertEquals(Datatype.STRING, valueDatatypes[1]);
+    }
+    
+    public void testSetValueDatatypes_String() throws CoreException {
+    	ipsProject.setValueDatatypes(new String[]{Datatype.BOOLEAN.getQualifiedName(), Datatype.STRING.getQualifiedName()});
+    	ValueDatatype[] valueDatatypes = ipsProject.getValueDatatypes(false);
+    	assertEquals(2, valueDatatypes.length);
+    	assertEquals(Datatype.BOOLEAN, valueDatatypes[0]);
+    	assertEquals(Datatype.STRING, valueDatatypes[1]);
+    	
+    	// test if unknown datatypes are ignored.
+    	ipsProject.setValueDatatypes(new String[]{Datatype.BOOLEAN.getQualifiedName(), "UnknownType"});
+    	valueDatatypes = ipsProject.getValueDatatypes(false);
+    	assertEquals(1, valueDatatypes.length);
+    	assertEquals(Datatype.BOOLEAN, valueDatatypes[0]);
     }
     
 }

@@ -33,17 +33,12 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     
-    /**
-     * @param parent
-     * @param name
-     */
     IpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getIpsPackageFragment()
+     * Overridden.
      */
     public IIpsPackageFragment getIpsPackageFragment() {
         return (IIpsPackageFragment)getParent();
@@ -58,8 +53,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getAllJavaCompilationUnits()
+     * Overridden.
      */
     public ICompilationUnit[] getAllJavaCompilationUnits() throws CoreException {
         String objectName = StringUtil.getFilenameWithoutExtension(getName());
@@ -67,25 +61,21 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getIpsObjectType()
+     * Overridden.
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.getTypeForExtension(getCorrespondingFile().getFileExtension());
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+     * Overridden.
      */
     public IResource getCorrespondingResource() {
         return getCorrespondingFile();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+     * Overridden.
      */
     public IFile getCorrespondingFile() {
         IFolder folder = (IFolder)getParent().getCorrespondingResource();
@@ -93,8 +83,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+     * Overridden.
      */
     public IIpsElement[] getChildren() throws CoreException {
         if (isContentParsable()) {
@@ -104,16 +93,14 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * Overridden.
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsSrcFile.gif");
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#isDirty()
+     * Overridden.
      */
     public boolean isDirty() {
         IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
@@ -124,8 +111,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#markAsClean()
+     * Overridden.
      */ 
     public void markAsClean() {
         IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
@@ -135,16 +121,14 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#discardChanges()
+     * Overridden.
      */
     public void discardChanges() {
         IpsPlugin.getDefault().getManager().removeSrcFileContents(this);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#save()
+     * Overridden.
      */
     public void save(boolean force, IProgressMonitor monitor) throws CoreException {
         if (!isDirty()) {
@@ -162,16 +146,14 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getContents()
+     * Overridden.
      */
     public String getContents() throws CoreException {
         return getContentObject().getSourceText();
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#setContents(java.lang.String)
+     * Overridden.
      */ 
     public void setContents(String newContents) throws CoreException {
         getContentObject().setSourceText(newContents, true);
@@ -186,16 +168,14 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#isContentParsable()
+     * Overridden.
      */
     public boolean isContentParsable() throws CoreException {
         return getContentObject().contentIsParsable();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getIpsObject()
+     * Overridden.
      */
     public IIpsObject getIpsObject() throws CoreException {
         return getContentObject().getIpsObject();
@@ -218,16 +198,14 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#newMemento()
+     * Overridden.
      */
     public IIpsSrcFileMemento newMemento() throws CoreException {
         return new IIpsSrcFileMemento(this, getContents(), isDirty());
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#setMemento(org.faktorips.devtools.core.model.IIpsSrcFileMemento)
+     * Overridden.
      */
     public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
         getContentObject().updateStateFromMemento(memento);
@@ -238,9 +216,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getQualifiedNameType()
+     * Overridden.
      */
     public QualifiedNameType getQualifiedNameType() {
         StringBuffer buf = new StringBuffer();

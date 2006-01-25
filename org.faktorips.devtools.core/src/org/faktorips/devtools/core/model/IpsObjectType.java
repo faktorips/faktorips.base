@@ -44,7 +44,13 @@ public final class IpsObjectType {
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
-        new IpsObjectType("IPolicyCmptType", "Policy Class", "ipspct", "IPolicyCmptType.gif");
+        new IpsObjectType("PolicyCmptType", "Policy Class", "ipspct", "PolicyCmptType.gif");
+
+    /**
+     * Type for product component type.
+     */
+    public final static IpsObjectType PRODUCT_CMPT_TYPE = 
+        new IpsObjectType("ProductCmptType", "Product Class", "ipsproductcmpttype", "PolicyCmptType.gif");
 
     /**
      * Type for table structures.

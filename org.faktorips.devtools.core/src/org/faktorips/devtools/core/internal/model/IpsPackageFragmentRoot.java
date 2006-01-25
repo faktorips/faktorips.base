@@ -70,11 +70,8 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         return entry.getOutputFolderForGeneratedJavaFiles();
     }
 
-
-
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getIpsObjectPathEntry()
+     * Overridden.
      */
     public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
         if (!exists()) {

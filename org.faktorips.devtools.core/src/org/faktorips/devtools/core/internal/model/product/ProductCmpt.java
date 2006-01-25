@@ -10,13 +10,14 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -65,6 +66,24 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /** 
      * Overridden.
      */
+    public IPolicyCmptType findPolicyCmptType() throws CoreException {
+        return getIpsProject().findPolicyCmptType(pcType);
+    }
+
+    /**
+	 * Overridden.
+	 */
+	public IProductCmptType findProductCmptType() throws CoreException {
+		IPolicyCmptType policyCmptType = findPolicyCmptType();
+		if (policyCmptType==null) {
+			return null;
+		}
+		return policyCmptType.findProductCmptType();
+	}
+
+	/** 
+     * Overridden.
+     */
     protected IpsObjectGeneration createNewGeneration(int id) {
         return new ProductCmptGeneration(this, id);
     }
@@ -77,14 +96,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
     }
     
-    /** 
-     * Overridden.
-     */
-    public IPolicyCmptType findPolicyCmptType() throws CoreException {
-        return getIpsProject().findPolicyCmptType(pcType);
-    }
-    
-
     /** 
      * Overridden.
      */
@@ -124,7 +135,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * Overridden.
      */
-    public boolean javaTypeMustBeGenerated() {
+    public boolean containsFormula() {
         IIpsObjectGeneration[] generations = getGenerations();
         for (int i=0; i<generations.length; i++) {
             if (((ProductCmptGeneration)generations[i]).containsFormula()) {

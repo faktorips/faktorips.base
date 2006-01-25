@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 
 /**
  * A value set that desribes a range with a lower and an upper bound, e.g. 100-200. Lower and upper bound
- * are part of the range. If lower bound or upper bound contain an empty string, the range has unbounded.
+ * are part of the range. If lower bound or upper bound contain an empty string, the range is unbounded.
  * The range has an optional step attribute to define that only the values where <code>((value-lower) mod step)== 0</code>
  * holds true. E.g. 100-200 with step 10 defines the values 100, 110, 120, ... 200.
  *
@@ -95,7 +95,7 @@ public class Range extends ValueSet {
     }
 
     /**
-     * Sets the upper bound. An empty string means that the range is unbouned.
+     * Sets the upper bound. An empty string means that the range is unbounded.
      * 
      * @throws NullPointerException  if upperBound is <code>null</code>.
      */
@@ -126,8 +126,7 @@ public class Range extends ValueSet {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.ValueSet#contains(java.lang.String)
+     * Overridden
      */
     public boolean contains(String value, ValueDatatype datatype) {
         try {
@@ -146,7 +145,7 @@ public class Range extends ValueSet {
     }
 
     /**
-     * Overridden IMethod.
+     * Overridden.
      */
     public Message containsValue(String value, ValueDatatype datatype) {
         if (!contains(value, datatype)) {
@@ -160,9 +159,7 @@ public class Range extends ValueSet {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.ValueSet#createSubclassElement(org.w3c.dom.Document)
+     * Overridden.
      */
     protected Element createSubclassElement(Document doc) {
         Element tagElement = doc.createElement(XML_TAG);
@@ -173,17 +170,14 @@ public class Range extends ValueSet {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.ValueSet#copys()
+     * Overridden.
      */
     public ValueSet copy() {
         return new Range(this);
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.ValueSet#validate(ValueDatatype, org.faktorips.util.message.MessageList)
+     * Overridden.
      */
     public void validate(ValueDatatype datatype, MessageList list) {
         if (datatype==null) {
@@ -220,16 +214,14 @@ public class Range extends ValueSet {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.ValueSet#getValueSetType()
+     * Overridden.
      */
     public ValueSetType getValueSetType() {
         return ValueSetType.RANGE;
     }
 
     /**
-     * Overridden IMethod.
-     * @see java.lang.Object#toString()
+     * Overridden.
      */
     public String toString() {
         if (StringUtils.isNotEmpty(step)) {

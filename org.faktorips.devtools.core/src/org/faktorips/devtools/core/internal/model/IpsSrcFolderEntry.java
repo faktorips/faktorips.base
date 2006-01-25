@@ -30,13 +30,13 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private IFolder outputFolderGenerated;
 
     // the name of the base package containing the generated Java files.
-    private String basePackageGenerated;
+    private String basePackageGenerated = "";
 
     // the output folder containing the Java files where the developer adds it's own code.
     private IFolder outputFolderExtension;
 
     // the name of the base package containing the Java files where the developer adds it's own code.
-    private String basePackageExtension;
+    private String basePackageExtension = "";
 
     IpsSrcFolderEntry(IpsObjectPath path) {
         super(path);
@@ -49,18 +49,14 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsObjectPathEntry#getType()
+     * Overridden.
      */
     public String getType() {
         return TYPE_SRC_FOLDER;
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFolderEntry#getSourceFolder()
+     * Overridden.
      */
     public IFolder getSourceFolder() {
         return sourceFolder;
@@ -224,10 +220,10 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         element.setAttribute("sourceFolder", sourceFolder.getProjectRelativePath().toString());
         element.setAttribute("outputFolderGenerated", outputFolderGenerated == null ? "" : outputFolderGenerated
                 .getProjectRelativePath().toString());
-        element.setAttribute("basePackageGenerated", basePackageGenerated);
+        element.setAttribute("basePackageGenerated", basePackageGenerated==null ? "" : basePackageGenerated);
         element.setAttribute("outputFolderExtension", outputFolderExtension == null ? "" : outputFolderExtension
                 .getProjectRelativePath().toString());
-        element.setAttribute("basePackageExtension", basePackageExtension);
+        element.setAttribute("basePackageExtension", basePackageExtension==null ? "" : basePackageExtension);
         return element;
     }
 

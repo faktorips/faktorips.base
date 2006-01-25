@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
 
@@ -12,6 +13,11 @@ import org.faktorips.devtools.core.model.IIpsObject;
  */
 public interface IPolicyCmptType extends IIpsObject, Datatype {
     
+    /**
+     * The name of the product component type property.
+     */
+    public final static String PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE = "unqualifiedProductCmptType";
+
     /**
      * The name of the supertype property.
      */
@@ -69,6 +75,32 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * hierarchy that must be overriden in the conrete type.
      */
     public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = "PCTYPE-MustOverrideAbstractMethod";
+    
+    /**
+     * Returns the qualified name of the product component type. Returns an empty string if this policy
+     * component type has no corresponding product component type.
+     */
+    public String getProductCmptType();
+    
+    /**
+     * Returns the product component type this type refers to. 
+     * Returns <code>null</code> if either this type does not refer to product component type
+     * or the product component type can't be found on the project's ips object path. 
+     *
+     * @throws CoreException if an error occurs while searching for the type.
+     */
+    public IProductCmptType findProductCmptType() throws CoreException;
+
+    /**
+     * Returns the unqualified name of the product component type. Returns an empty
+     * string if no product component type is specified.
+     */
+    public String getUnqualifiedProductCmptType();
+
+    /**
+     * Sets the unqualified name of the product component type.
+     */
+    public void setUnqualifiedProductCmptType(String unqualifiedName);
     
     /**
      * Returns the qualified name of the type's supertype. Returns an empty
@@ -139,13 +171,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      */
     public IType getJavaImplementationType() throws CoreException;
 
-    
-    /**
-     * Returns the qualified Java interface name that instances of this datatype correspond to. 
-     */
-    public abstract String getJavaInterfaceName();
-   
-    
     /**
      * Returns the type's attributes.
      */

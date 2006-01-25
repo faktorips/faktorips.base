@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsModelManager;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -35,6 +36,17 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     public final static String PLUGIN_ID = "org.faktorips.devtools.core";
 
+    /**
+     * Returns the full extension id. This is the plugin's id plus the plugin
+     * relative extension id separated by a dot.
+     * 
+     * @throws NullPointerException if pluginRelativeEnxtensionId is <code>null</code>.
+     */
+    public final static String getFullExtensionId(String pluginRelativeEnxtensionId) {
+    	ArgumentCheck.notNull(pluginRelativeEnxtensionId);
+		return PLUGIN_ID + '.' + pluginRelativeEnxtensionId;
+	}
+	
     // The shared instance.
     private static IpsPlugin plugin;
 

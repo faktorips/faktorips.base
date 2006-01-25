@@ -10,12 +10,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -50,21 +53,36 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
     protected void tearDown() throws Exception {
         super.tearDown();
     }
+    
+    public void testCreateIpsProject() throws CoreException {
+    	IProject project = newPlatformProject("TestProject");
+    	IJavaProject javaProject = addJavaCapabilities(project);
+    	IIpsProject ipsProject = model.createIpsProject(javaProject);
+    	assertNotNull(ipsProject);
+    	assertNotNull(ipsProject.getCurrentArtefactBuilderSet());
+    	assertEquals(0, ipsProject.getValueDatatypes(false).length);
+    	IIpsObjectPath path = ipsProject.getIpsObjectPath();
+    	assertNotNull(path);
+    	assertEquals(0, path.getEntries().length);
+    }
 
     public void testGetIpsProjects() throws CoreException {
         super.newPlatformProject("TestProject");
-        IIpsProject[] pdProjects = model.getIpsProjects();
-        assertEquals(0, pdProjects.length);
+        IIpsProject[] ipsProjects = model.getIpsProjects();
+        assertEquals(0, ipsProjects.length);
         
-        super.newIpsProject("TestPdProject");
-        pdProjects = model.getIpsProjects();
-        assertEquals(1, pdProjects.length);
-        assertEquals("TestPdProject", pdProjects[0].getName());
+        IIpsProject project = super.newIpsProject("TestPdProject");
+        ipsProjects = model.getIpsProjects();
+        assertEquals(1, ipsProjects.length);
+        assertEquals("TestPdProject", ipsProjects[0].getName());
+        
+        project.getProject().close(null);
+        IIpsProject project2 = super.newIpsProject("TestProject2");
+        ipsProjects = model.getIpsProjects();
+        assertEquals(1, ipsProjects.length);
+        assertEquals("TestProject2", ipsProjects[0].getName());
     }
 
-    public void testGetIpsProject() {
-    }
-    
     public void testGetIpsElement() {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         assertEquals(model, model.getIpsElement(root));
@@ -201,8 +219,12 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
         
         assertNull(model.getExtensionPropertyDefinition(getClass(), "unknownProp", true));
         assertNull(model.getExtensionPropertyDefinition(String.class, "prop2", false));
-        
     }    
+    
+    public void testGetPredefinedValueDatatypes() {
+    	ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
+    	assertTrue(datatypes.length > 0);
+    }
 
     /** 
      * Overridden method.

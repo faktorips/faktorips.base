@@ -120,7 +120,7 @@ public abstract class IpsPluginTest extends XmlTestCase {
 	/**
 	 * Creates a new Java Project for the given platform project. 
 	 */
-	private IJavaProject addJavaCapabilities(IProject project) throws CoreException {
+	protected IJavaProject addJavaCapabilities(IProject project) throws CoreException {
 		IJavaProject javaProject = JavaCore.create(project);
 		// add Java nature
 		Util.addNature(project, JavaCore.NATURE_ID);

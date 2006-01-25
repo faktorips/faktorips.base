@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.MultiStatus;
  */
 public interface IIpsArtefactBuilder {
 
-    /**
+	/**
      * Is called on every registered IpsArtefactBuilder before a full build starts.
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. Throwing a

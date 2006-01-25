@@ -26,10 +26,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     
     private String description = "";
 
-    /**
-     * @param parent
-     * @param name
-     */
     protected IpsObject(IIpsSrcFile file) {
         super(file, "");
     }
@@ -41,25 +37,21 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getIpsPackageFragment()
+     * Overridden.
      */
     public IIpsPackageFragment getIpsPackageFragment() {
         return getIpsSrcFile().getIpsPackageFragment();
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObject#getQualifiedNameType()
+     * Overridden.
      */
     public QualifiedNameType getQualifiedNameType() {
         return new QualifiedNameType(getQualifiedName(), getIpsObjectType());
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getQualifiedName()
+     * Overridden.
      */
     public String getQualifiedName() {
         String folderName = getParent().getParent().getName();
@@ -70,29 +62,26 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
+     * Overridden.
      */
     public String getName() {
         String filename = getParent().getName();
         int index = filename.indexOf('.');
         if (index==-1) {
-            throw new RuntimeException("Not . found in filename!");
+            throw new RuntimeException("filename has no extension: " + filename);
         }
         return filename.substring(0, index);
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+     * Overridden.
      */
     public IResource getCorrespondingResource() {
         return null;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getIpsSrcFile()
+     * Overridden.
      */
     public IIpsSrcFile getIpsSrcFile() {
         if (getParent() instanceof IIpsSrcFile) {
@@ -102,16 +91,14 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * Overridden.
      */
     public Image getImage() {
         return getIpsObjectType().getImage();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.Described#setDescription(java.lang.String)
+     * Overridden.
      */
     public void setDescription(String newDescription) {
         description = newDescription;
@@ -119,8 +106,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.Described#getDescription()
+     * Overridden.
      */
     public String getDescription() {
         return description;
@@ -147,8 +133,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.util.memento.MementoSupport#newMemento()
+     * Overridden.
      */
     public Memento newMemento() {
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
@@ -156,8 +141,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.util.memento.MementoSupport#setState(org.faktorips.util.memento.Memento)
+     * Overridden.
      */
     public void setState(Memento memento) {
         if (!memento.getOriginator().equals(this)) {
@@ -222,37 +206,28 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     
     
     /**
-     * Overridden IMethod.
-     * @throws CoreException 
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObject#dependsOn()
+     * Overridden.
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         return new QualifiedNameType[0];
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * Overridden.
      */
     protected final Element createElement(Document doc) {
         return doc.createElement(getIpsObjectType().getXmlElementName());
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void propertiesToXml(Element element) {
         DescriptionHelper.setDescription(element, description);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void initPropertiesFromXml(Element element) {
         description = DescriptionHelper.getDescription(element);

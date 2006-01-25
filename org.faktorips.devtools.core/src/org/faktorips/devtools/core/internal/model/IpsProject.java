@@ -2,7 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -29,12 +29,16 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -46,7 +50,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -145,15 +151,25 @@ public class IpsProject extends IpsElement implements IIpsProject {
     
     /**
      * Overridden.
-     * @throws CoreException 
      */
     public void setValueDatatypes(String[] ids) throws CoreException {
         IpsProjectProperties properties = getProperties();
         properties.setPredefinedDatatypesUsed(ids);
         saveProjectProperties(properties);
     }
-
+    
     /**
+     * Overridden.
+     */
+    public void setValueDatatypes(ValueDatatype[] types) throws CoreException {
+    	String[] ids = new String[types.length];
+    	for (int i = 0; i < types.length; i++) {
+			ids[i] = types[i].getQualifiedName();
+		}
+		setValueDatatypes(ids);
+	}
+    
+	/**
      * Saves the project properties to the .ipsproject file.
      * 
      * @throws CoreException if an error occurs while saving the data.
@@ -374,9 +390,30 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return (IPolicyCmptType)findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
     }
     
-    
-
     /**
+	 * Overridden.
+	 */
+	public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException {
+		String packName = StringUtil.getPackageName(qualifiedName);
+		String name = StringUtil.unqualifiedName(qualifiedName);
+		IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
+		for (int i = 0; i < roots.length; i++) {
+			IpsPackageFragment pack = (IpsPackageFragment)roots[i].getIpsPackageFragment(packName);
+			if (pack.exists()) {
+				List result = new ArrayList();
+				pack.findPdObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
+				for (Iterator it = result.iterator(); it.hasNext();) {
+					PolicyCmptType policyCmptType = (PolicyCmptType) it.next();
+					if (policyCmptType.getUnqualifiedProductCmptType().equals(name)) {
+						return new ProductCmptType(policyCmptType);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
      * Overridden.
      * 
      * @see org.faktorips.devtools.core.model.IIpsProject#findIpsObjects(org.faktorips.devtools.core.model.IpsObjectType)
@@ -408,7 +445,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public ValueDatatype[] getValueDatatypes(boolean includeVoid) {
-        Set result = new HashSet();
+        Set result = new LinkedHashSet();
         getValueDatatypes(includeVoid, result);
         return (ValueDatatype[])result.toArray(new ValueDatatype[result.size()]);
     }

@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -190,5 +192,21 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("a", vekt[0]);
         assertEquals("b", vekt[1]);
         assertEquals("x", vekt[2]);
+    }
+    
+    /**
+     * Tests if an calculates attribute that has a paramater that refers to the type
+     * the attribute is defined in produces not a stack overflow.
+     * @throws CoreException 
+     */
+    public void testValidate_ParamOfCalculatedAttributeRefersToTheTypeItIsDefinedIn() throws CoreException {
+    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+    	attribute.setName("premium");
+    	Parameter[] params = new Parameter[]{new Parameter(0, "police", pcType.getQualifiedName())};
+    	attribute.setFormulaParameters(params);
+    	
+    	attribute.validate(); // once this produced a stack overflow!
+    	
     }
 }

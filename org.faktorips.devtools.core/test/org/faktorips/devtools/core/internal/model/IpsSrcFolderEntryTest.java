@@ -111,14 +111,15 @@ public class IpsSrcFolderEntryTest extends IpsPluginTest {
         assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry.getSpecificOutputFolderForGeneratedJavaFiles());
         assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
         
-        // output folder = null
-        entry.setSpecificOutputFolderForGeneratedJavaFiles(null);
-        entry.setSpecificBasePackageNameForGeneratedJavaClasses("");
+        // null, default values for new entries
+        entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
         element = entry.toXml(newDocument());
         entry = new IpsSrcFolderEntry(path);
         entry.initFromXml(element, project);
         assertNull(entry.getSpecificOutputFolderForGeneratedJavaFiles());
+        assertNull(entry.getSpecificOutputFolderForExtensionJavaFiles());
         assertEquals("", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
+        assertEquals("", entry.getSpecificBasePackageNameForExtensionJavaClasses());
         
         
     }

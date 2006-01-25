@@ -84,15 +84,15 @@ public class ProductCmptTest extends IpsPluginTest {
         assertEquals("0.15", genCopy.getConfigElements()[0].getValue());
     }
     
-    public void testJavaTypeMustBeGenerated() {
+    public void testContainsFormula() {
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
         IConfigElement ce1 = gen1.newConfigElement();
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        assertFalse(productCmpt.javaTypeMustBeGenerated());
+        assertFalse(productCmpt.containsFormula());
 
         IConfigElement ce2 = gen1.newConfigElement();
         ce2.setType(ConfigElementType.FORMULA);
-        assertTrue(productCmpt.javaTypeMustBeGenerated());
+        assertTrue(productCmpt.containsFormula());
     }
     
     public void testDependsOn() throws Exception{

@@ -21,7 +21,13 @@ public interface IIpsObject extends IIpsElement, IExtensionPropertyAccess, Valid
     public IIpsSrcFile getIpsSrcFile();
     
     /**
-     * Returns the object's qualified name.
+     * Returns the object's qualified name. The qualified name is the name of the ips package fragment's
+     * name followed by a dot followed by the object's unqualified name. So this is basically the
+     * same concept as the qualified name of Java classes. 
+     * <p>
+     * <b>Example:</b><br>
+     * The qualified name of an ips object called 'MotorCoverage' in the package fragment 
+     * 'mycompany.motor' has the qualified name 'mycompany.motor.MotorCoverage'.
      */
     public String getQualifiedName();
     

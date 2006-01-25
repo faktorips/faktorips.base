@@ -87,6 +87,12 @@
          </view>
       </perspectiveExtension>
    </extension>
+   <extension point="org.eclipse.ui.popupMenus">
+    	<objectContribution id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
+	    	<action id="addIpsNatureAction" class="org.faktorips.devtools.core.ui.AddIpsNatureAction" menubarPath="additions" label="Add IPS-Nature" enablesFor="*" />
+      		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
+    	</objectContribution>
+  </extension>
    
 <!-- 
     Nature and Builders

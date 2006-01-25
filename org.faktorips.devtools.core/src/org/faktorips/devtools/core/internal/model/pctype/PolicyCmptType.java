@@ -10,11 +10,12 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObject;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -24,8 +25,10 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -34,10 +37,11 @@ import org.w3c.dom.Element;
 /**
  * Implementation of IPolicyCmptType.
  * 
- * @author Ortmann
+ * @author Jan Ortmann
  */
 public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     
+	private String unqalifiedProductCmptType = "";
     private String supertype = "";
     private boolean abstractFlag = false;
     private boolean forceExtensionCompilationUnitGeneration = false;
@@ -56,9 +60,37 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     PolicyCmptType() {
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getJavaType(int)
+    /**
+     * Overridden.
+     */
+    public String getProductCmptType() {
+		return getIpsPackageFragment().getName() + '.' + unqalifiedProductCmptType;
+	}
+    
+	/**
+	 * Overridden.
+	 */
+	public IProductCmptType findProductCmptType() throws CoreException {
+		return new ProductCmptType(this);
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public String getUnqualifiedProductCmptType() {
+		return unqalifiedProductCmptType;
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public void setUnqualifiedProductCmptType(String unqualifiedName) {
+		ArgumentCheck.notNull(unqualifiedName);
+		unqalifiedProductCmptType = unqualifiedName;
+	}
+
+	/** 
+     * Overridden.
      */
     public IType getJavaType(int kind) throws CoreException {
         return getJavaType(getIpsPackageFragment(), getName(), kind); 
@@ -109,9 +141,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.IIpsObject#getAllJavaTypes()
+     * Overridden.
      */
     public IType[] getAllJavaTypes() throws CoreException {
         return getAllJavaTypes(getIpsPackageFragment(), getName());
@@ -137,17 +167,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getSupertype()
+     * Overridden.
      */
     public String getSupertype() {
         return supertype;
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#findSupertype()
+     * Overridden.
      */
     public IPolicyCmptType findSupertype() throws CoreException {
         if (StringUtils.isEmpty(supertype)) {
@@ -157,8 +184,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#setSupertype(java.lang.String)
+     * Overridden.
      */
     public void setSupertype(String newSupertype) {
         String oldSupertype = supertype;
@@ -167,16 +193,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#isForceExtensionCompilationUnitGeneration()
+     * Overridden.
      */
     public boolean isForceExtensionCompilationUnitGeneration() {
         return forceExtensionCompilationUnitGeneration;
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#setForceExtensionCompilationUnitGeneration(boolean)
+     * Overridden.
      */
     public void setForceExtensionCompilationUnitGeneration(boolean flag) {
         boolean oldValue = forceExtensionCompilationUnitGeneration;
@@ -185,9 +209,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Overridden IMethod.
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#isExtensionCompilationUnitGenerated()
+     * Overridden.
      */
     public boolean isExtensionCompilationUnitGenerated() {
         if (forceExtensionCompilationUnitGeneration) {
@@ -216,9 +238,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getJavaImplementationType()
+     * Overridden.
      */
     public IType getJavaImplementationType() throws CoreException {
         if (isExtensionCompilationUnitGenerated()) {
@@ -228,9 +248,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+     * Overridden.
      */
     public IIpsElement[] getChildren() {
         int numOfChildren = getNumOfAttributes()
@@ -248,8 +266,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getAttributes()
+     * Overridden.
      */
     public IAttribute[] getAttributes() {
         IAttribute[] a = new IAttribute[attributes.size()];
@@ -258,8 +275,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getAttribute(java.lang.String)
+     * Overridden.
      */
     public IAttribute getAttribute(String name) {
         for (Iterator it=attributes.iterator(); it.hasNext();) {
@@ -272,16 +288,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getNumOfAttributes()
+     * Overridden.
      */
     public int getNumOfAttributes() {
         return attributes.size();
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#newAttribute()
+     * Overridden.
      */
     public IAttribute newAttribute() {
         Attribute a = newAttributeInternal(getNextPartId());
@@ -290,8 +304,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#moveAttributes(int[], boolean)
+     * Overridden.
      */
     public int[] moveAttributes(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(attributes);
@@ -358,16 +371,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getNumOfMethods()
+     * Overridden.
      */
     public int getNumOfMethods() {
         return methods.size();
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#moveMethods(int[], boolean)
+     * Overridden.
      */
     public int[] moveMethods(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(methods);
@@ -382,8 +393,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getAttributes()
+     * Overridden.
      */
     public IRelation[] getRelations() {
         IRelation[] r = new IRelation[relations.size()];
@@ -392,8 +402,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getRelation(java.lang.String)
+     * Overridden.
      */
     public IRelation getRelation(String name) {
         ArgumentCheck.notNull(name);
@@ -407,9 +416,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getProductRelevantRelations()
+     * Overridden.
      */
     //TODO test case
     public IRelation[] getProductRelevantRelations(){
@@ -521,29 +528,25 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getIpsObjectType()
+     * Overridden.
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.POLICY_CMPT_TYPE;
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void initPropertiesFromXml(Element element) {
         super.initPropertiesFromXml(element);
+        unqalifiedProductCmptType = element.getAttribute("productCmptType");
         supertype = element.getAttribute(PROPERTY_SUPERTYPE);
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
         forceExtensionCompilationUnitGeneration = Boolean.valueOf(element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#reinitPartCollections()
+     * Overridden.
      */
     protected void reinitPartCollections() {
         attributes.clear();
@@ -553,9 +556,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#reAddPart(org.faktorips.devtools.core.model.IIpsObjectPart)
+     * Overridden.
      */
     protected void reAddPart(IIpsObjectPart part) {
         if (part instanceof IAttribute) {
@@ -593,21 +594,18 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#propertiesToXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
+        newElement.setAttribute("productCmptType", unqalifiedProductCmptType);
         newElement.setAttribute(PROPERTY_SUPERTYPE, supertype);
         newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag);
         newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration);
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#validateThis(org.faktorips.util.message.MessageList)
+     * Overridden.
      */
     protected void validateThis(MessageList list) throws CoreException {
         IPolicyCmptType supertypeObj = null;
@@ -667,16 +665,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#isAbstract()
+     * Overridden.
      */
     public boolean isAbstract() {
         return abstractFlag;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#setAbstract(boolean)
+     * Overridden.
      */
     public void setAbstract(boolean newValue) {
         boolean oldValue = abstractFlag;
@@ -685,25 +681,21 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getSupertypeHierarchy()
+     * Overridden.
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
         return TypeHierarchy.getSupertypeHierarchy(this);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getSubtypeHierarchy()
+     * Overridden.
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
         return TypeHierarchy.getSubtypeHierarchie(this);
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getOverrideCandidates()
+     * Overridden.
      */
     public IMethod[] findOverrideCandidates(boolean onlyAbstractMethods) throws CoreException {
         List candidates = new ArrayList();
@@ -716,9 +708,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObject#dependsOn()
+     * Overridden.
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         ArrayList qualifiedNameTypes = new ArrayList();
@@ -767,17 +757,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#hasSameMethod(org.faktorips.devtools.core.model.pctype.IMethod)
+     * Overridden.
      */
     public boolean hasSameMethod(IMethod method) {
         return getMatchingMethod(method)!=null;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getMatchingMethod(org.faktorips.devtools.core.model.pctype.IMethod)
+     * Overridden.
      */
     public IMethod getMatchingMethod(IMethod method) {
         for (Iterator it=this.methods.iterator(); it.hasNext(); ) {
@@ -790,8 +777,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#override(org.faktorips.devtools.core.model.pctype.IMethod[])
+     * Overridden.
      */
     public IMethod[] override(IMethod[] methods) {
         IMethod[] newMethods = new IMethod[methods.length];
@@ -808,52 +794,40 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isVoid()
+     * Overridden.
      */
     public boolean isVoid() {
         return false;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isPrimitive()
+     * Overridden.
      */
     public boolean isPrimitive() {
         return false;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isValueDatatype()
+     * Overridden.
      */
     public boolean isValueDatatype() {
         return false;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getJavaClassName()
+     * Overridden.
      */
     public String getJavaClassName() {
         try {
-            return getJavaType(JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE).getFullyQualifiedName();
+        	String qName = getJavaType(JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE).getFullyQualifiedName();
+            return StringUtil.getPackageName(qName).toLowerCase() + '.' + StringUtil.unqualifiedName(qName);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String getJavaInterfaceName() {
-        try  {
-            return getJavaType(JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE).getFullyQualifiedName();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
     /** 
-     * Overridden method.
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * Overridden.
      */
     public int compareTo(Object o) {
         return 0;

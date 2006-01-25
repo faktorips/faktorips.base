@@ -2,14 +2,14 @@ package org.faktorips.devtools.core.builder;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 
 /**
- * A default implementation that extends the AbstractBuilderSet implements the IJavaPackageStructure
+ * A default implementation that extends the AbstractBuilderSet and implements the IJavaPackageStructure
  * interface. The getPackage() method provides package names for the kind constants defined in this
  * DefaultBuilderSet. This implementation uses the base package name for generated java classes as
  * the root of the package structure. The base package name can be configure for an ips project
@@ -28,9 +28,10 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     // however the constants are public for use in test cases
     public final static String KIND_PRODUCT_CMPT_INTERFACE = "productcmptinterface";
     public final static String KIND_PRODUCT_CMPT_IMPL = "productcmptimplementation";
+    public final static String KIND_PRODUCT_CMPT_GENERATION_INTERFACE = "productCmptGenerationInterface";
+    public final static String KIND_PRODUCT_CMPT_GENERATION_IMPL = "productCmptGenerationImpl";
     public final static String KIND_PRODUCT_CMPT_CONTENT = "productcmptcontent";
     public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry";
-    public final static String KIND_PRODUCT_CMPT_GENERATION_IMPL = "productcmptgenerationimpl";
     public final static String KIND_POLICY_CMPT_INTERFACE = "policycmptinterface";
     public final static String KIND_POLICY_CMPT_IMPL = "policycmptimpl";
     public final static String KIND_TABLE_IMPL = "tableimpl";
@@ -65,8 +66,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         if (!StringUtils.isEmpty(packageFragName)) {
             buf.append('.').append(packageFragName);
         }
-
-        return buf.toString();
+        return buf.toString().toLowerCase();
     }
 
     /**
@@ -86,14 +86,11 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             buf.append('.').append(packageFragName);
         }
 
-        return buf.toString();
+        return buf.toString().toLowerCase();
     }
 
     /**
      * Implements the org.faktorips.plugin.builder.IJavaPackageStructure interface.
-     * 
-     * @see org.faktorips.devtools.core.builder.IJavaPackageStructure#getPackage(java.lang.String,
-     *      org.faktorips.devtools.core.model.IpsObject)
      */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
 
@@ -115,6 +112,12 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             }
 
             if (KIND_PRODUCT_CMPT_IMPL.equals(kind)) {
+                return getInternalPackageName(ipsSrcFile);
+            }
+            if (KIND_PRODUCT_CMPT_GENERATION_INTERFACE.equals(kind)) {
+                return getPackageName(ipsSrcFile);
+            }
+            if (KIND_PRODUCT_CMPT_GENERATION_IMPL.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
             }
         }

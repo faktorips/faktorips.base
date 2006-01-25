@@ -49,9 +49,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.core.model.IIpsSrcFile)
+     * Overridden.
      */
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         super.afterBuild(ipsSrcFile);
@@ -120,9 +118,14 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
      * 
      * @param builder The builder to use to generate the Javadoc via it's javadoc method.
      */
-    protected abstract void generateTypeJavadoc(JavaCodeFragmentBuilder builder);
+    protected abstract void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException;
 
-    protected abstract void generateOther(JavaCodeFragmentBuilder memberVarsBuilder,
+    /**
+     * A hook to generate code that is not based on attributes, relations, rules and
+     * methods.
+     */
+    protected abstract void generateOther(
+    		JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     /**
@@ -153,8 +156,10 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
             if (!a.validate().containsErrorMsg()) {
                 try {
                     Datatype datatype = a.getIpsProject().findDatatype(a.getDatatype());
-                    DatatypeHelper helper = BuilderHelper.findDatatypeHelper(a.getIpsProject(),
-                        datatype);
+                    DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
+                    if (helper == null) {
+                        throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
+                    }
                     generateCodeForAttribute(a, helper, memberVarsBuilder, methodsBuilder);
                 } catch (Exception e) {
 

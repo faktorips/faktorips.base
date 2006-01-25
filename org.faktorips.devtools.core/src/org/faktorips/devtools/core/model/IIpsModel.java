@@ -5,6 +5,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 
 /**
@@ -18,6 +20,15 @@ public interface IIpsModel extends IIpsElement {
      * Returns the workspace.
      */
     public IWorkspace getWorkspace();
+    
+    /**
+     * Creates an IpsProject for the given Java project by adding the IPS nature and
+     * creating (an empty) the .ipsproject file.
+     * 
+     * @throws NullPointerException if javaProjecct is <code>null</code>.
+     * @throws CoreException if an error occurs while creating the ips project.
+     */
+    public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException;
 
     /**
      * Returns all IPS projects opened in the workspace or an empty array if none.
@@ -109,5 +120,10 @@ public interface IIpsModel extends IIpsElement {
             String propertyId, 
             boolean includeSupertypesAndInterfaces);
     
+    
+    /**
+     * Returns the predefines value datatypes like String, Integer etc. 
+     */
+    public ValueDatatype[] getPredefinedValueDatatypes();
     
 }
