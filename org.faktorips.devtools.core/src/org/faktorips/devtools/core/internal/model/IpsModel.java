@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -778,7 +777,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,"datatypeDefinition");
         IExtension[] extensions = point.getExtensions();
         for (int i = 0; i < extensions.length; i++) {
-            createDatatypeDefinition(extensions[i]);
+        	if(extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)){
+        		createDatatypeDefinition(extensions[i]);
+        	}
+        }
+        for (int i = 0; i < extensions.length; i++) {
+        	if(!extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)){
+        		createDatatypeDefinition(extensions[i]);
+        	}
         }
     }
     

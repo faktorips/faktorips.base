@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.ui.wizards.buildpaths.newsourcepage.ClasspathModifierQueries.IInclusionExclusionQuery;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.w3c.dom.Element;
@@ -49,7 +48,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 
     private IIpsProject ipsProject;
     private Class adaptedClass;
-    private Class backup;
     private String className;
     private IPath classContainerFile;
     private IResourceChangeListener changeListener;

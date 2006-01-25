@@ -116,7 +116,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
     
     private Control createAttributesPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder,1, false);
-        uiToolkit.createFormLabel(workArea, "Definition of the attributes this rule validates goes here.");
+        new ValidatedAttributesControl((IValidationRuleDef)super.getIpsPart(), workArea);
         return workArea;
     }
 

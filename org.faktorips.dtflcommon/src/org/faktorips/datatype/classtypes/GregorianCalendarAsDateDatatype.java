@@ -1,5 +1,6 @@
 package org.faktorips.datatype.classtypes;
 
+
 /**
  * A datatype using the GregorianCalendar class to represent dates without any information about the time.
  * 
@@ -11,7 +12,7 @@ public class GregorianCalendarAsDateDatatype extends GregorianCalendarDatatype {
      * Constructs a new instance with the name "date".
      */
     public GregorianCalendarAsDateDatatype() {
-        this("Date");
+        this("GregorianCalendar");
     }
     
     /**

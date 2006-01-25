@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -31,6 +32,7 @@ public class ValidationRuleDef extends IpsObjectPart implements IValidationRuleD
 
     private String msgText = "";
     private String msgCode = "";
+    private List validatedAttributes = new ArrayList();
     private MessageSeverity msgSeverity = MessageSeverity.ERROR;
     
     // the qualified name of the business functions this rule is used in 
@@ -298,5 +300,51 @@ public class ValidationRuleDef extends IpsObjectPart implements IValidationRuleD
             newElement.appendChild(fctElement);
         }
     }
-    
+
+    /**
+     * Overridden Method.
+     *
+     * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#addValidatedAttribute(java.lang.String)
+     */
+	public String addValidatedAttribute(String attributeName) {
+		ArgumentCheck.notNull(this, attributeName);
+		validatedAttributes.add(attributeName);
+		return attributeName;
+	}
+
+	/**
+	 * Overridden Method.
+	 *
+	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getValidatedAttributes()
+	 */
+	public String[] getValidatedAttributes() {
+		return (String[])validatedAttributes.toArray(new String[validatedAttributes.size()]);
+	}
+
+	/**
+	 * Overridden Method.
+	 *
+	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#removeValidatedAttribute(int)
+	 */
+	public void removeValidatedAttribute(int index) {
+		validatedAttributes.remove(index);
+	}
+
+	/**
+	 * Overridden Method.
+	 *
+	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getValidatedAttributeAt(int)
+	 */
+	public String getValidatedAttributeAt(int index) {
+		return (String)validatedAttributes.get(index);
+	}
+
+	/**
+	 * Overridden Method.
+	 *
+	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setValidatedAttributeAt(int, java.lang.String)
+	 */
+	public void setValidatedAttributeAt(int index, String attributeName) {
+		validatedAttributes.set(index, attributeName);
+	}
 }
