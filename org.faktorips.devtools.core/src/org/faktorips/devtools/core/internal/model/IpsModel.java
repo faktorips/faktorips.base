@@ -732,6 +732,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         extProperty.setPropertyId(extension.getUniqueIdentifier());
         extProperty.setDisplayName(extension.getLabel());
         extProperty.setDefaultValue(element.getAttribute("defaultValue"));
+        extProperty.setEditedInStandardExtensionArea(element.getAttribute("editedInStandardExtensionArea"));
         if (StringUtils.isNotEmpty(element.getAttribute("sortOrder"))) {
             extProperty.setSortOrder(Integer.parseInt(element.getAttribute("sortOrder")));
         }

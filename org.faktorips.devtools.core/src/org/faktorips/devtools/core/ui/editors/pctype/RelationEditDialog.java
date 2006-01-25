@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -36,9 +37,6 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  */
 public class RelationEditDialog extends IpsPartEditDialog {
     
-    private final static String PROPERTY_PM_CLASSRELATION_ID = "de.bbv.faktorips.relation.pmClassRelationId";
-    private final static String PROPERTY_PM_TARGET_OBJECT_NAME = "de.bbv.faktorips.relation.pmTargetObjectName";
-    
     private IRelation relation;
     
     // edit fields
@@ -54,9 +52,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private TextField reverseRelationField;
     
     private EditField[] extensionEditFields;
+	private ExtensionPropertyDefinition[] extProps;
     
-    private EditField pmRelationIdField; // TODO remove from core
-    private EditField pmTargetObjectName; // TODO remove from core
 
     /**
      * @param parentShell
@@ -83,11 +80,15 @@ public class RelationEditDialog extends IpsPartEditDialog {
     }
     
     private Control createFirstPage(TabFolder folder) {
-        Composite c = createTabItemComposite(folder, 1, false);
+        getExtensionProperties();
+
+    	Composite c = createTabItemComposite(folder, 1, false);
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
+        createExtensionPropertyFields(workArea, "top");
+       
         uiToolkit.createFormLabel(workArea, "Type:");
         Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
         typeCombo.setFocus();
@@ -156,24 +157,32 @@ public class RelationEditDialog extends IpsPartEditDialog {
         //IExtensionPropertyDefinition
         // TODO pm extension, remove from core
         IExtensionPropertyDefinition[] extProps = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinitions(IRelation.class,true);
-        for(int i=0; i< extProps.length; i++)
-        {
-        	//extProps[i];
-        }
-        IExtensionPropertyDefinition extProp = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinition(IRelation.class, PROPERTY_PM_CLASSRELATION_ID, true);
-        if (extProp!=null) {
-            uiToolkit.createFormLabel(workArea, extProp.getDisplayName() + ":");
-        	pmRelationIdField = extProp.newEditField((IpsObjectPartContainer)relation, workArea, uiToolkit);
-        }
-        extProp = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinition(IRelation.class, PROPERTY_PM_TARGET_OBJECT_NAME, true);
-        if (extProp!=null) {
-            uiToolkit.createFormLabel(workArea, extProp.getDisplayName() + ":");
-            pmTargetObjectName = extProp.newEditField((IpsObjectPartContainer)relation, workArea, uiToolkit);
-        }
-        return c;
+        extensionEditFields = new EditField[extProps.length];
+        
+        createExtensionPropertyFields(workArea, "true");
+         return c;
     }
     
-    /** 
+    
+    
+    private void createExtensionPropertyFields(Composite workArea, String where) {
+		for(int i=0; i< extProps.length; i++)
+        {
+        	if(extProps[i].getEditedInStandardTextArea().equals(where))
+        	{
+                uiToolkit.createFormLabel(workArea, extProps[i].getDisplayName() + ":");
+                extensionEditFields[i]= extProps[i].newEditField((IpsObjectPartContainer)relation, workArea, uiToolkit);    		
+        	}
+        }
+		
+	}
+
+	private void getExtensionProperties() {
+        extProps = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinitions(IRelation.class,true);
+	
+	}
+
+	/** 
      * Overridden method.
      * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
      */
@@ -190,13 +199,16 @@ public class RelationEditDialog extends IpsPartEditDialog {
         uiController.add(reverseRelationField, IRelation.PROPERTY_REVERSE_RELATION);
         uiController.add(productRelevantField, IRelation.PROPERTY_PRODUCT_RELEVANT);
         
+        
         // TODO remove from core
-        if (pmRelationIdField!=null) {
-            uiController.add(pmRelationIdField, PROPERTY_PM_CLASSRELATION_ID);
-        }
-        if (pmTargetObjectName!=null) {
-            uiController.add(pmTargetObjectName, PROPERTY_PM_TARGET_OBJECT_NAME);
+        for(int i=0; i<extensionEditFields.length; i++)
+        {
+        	if(extensionEditFields[i]!=null)
+        	{
+        		uiController.add(extensionEditFields[i],extProps[i].getPropertyId());
+        	}
         }
     }
-    
+
+ 
 }

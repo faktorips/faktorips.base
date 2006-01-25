@@ -30,7 +30,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     private String propertyId;
     protected Object defaultValue; // protected because setter has to be implemented in subclasses.
     private String displayName;
-    private boolean editedInStandardExtensionArea;
+    private String editedInStandardExtensionArea;
     private int sortOrder = DEFAULT_SORT_ORDER;
     
     /**
@@ -92,13 +92,13 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#isEditedInStandardExtensionArea()
      */
     public boolean isEditedInStandardExtensionArea() {
-        return editedInStandardExtensionArea;
+        return !editedInStandardExtensionArea.equals("false");
     }
 
     /**
      * @param editedInStandardExtensionArea The editedInStandardExtensionArea to set.
      */
-    public void setEditedInStandardExtensionArea(boolean editedInStandardExtensionArea) {
+    public void setEditedInStandardExtensionArea(String editedInStandardExtensionArea) {
         this.editedInStandardExtensionArea = editedInStandardExtensionArea;
     }
     
@@ -194,4 +194,9 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     public String toString() {
         return "ExtendedType:" + extendedType.getName() + ", PropertyId: " + propertyId;
     }
+
+	public String getEditedInStandardTextArea() {
+		// TODO Auto-generated method stub
+		return editedInStandardExtensionArea;
+	}
 }
