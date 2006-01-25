@@ -31,24 +31,21 @@ public abstract class IpsElement implements IIpsElement {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
+     * Overridden.
      */
     public String getName() {
         return name;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getParent()
+     * Overridden.
      */
     public final IIpsElement getParent() {
         return parent;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#exists()
+     * Overridden.
      */
     public boolean exists() {
         if (!getParent().exists()) {
@@ -61,8 +58,7 @@ public abstract class IpsElement implements IIpsElement {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getEnclosingResource()
+     * Overridden.
      */
     public IResource getEnclosingResource() {
         IResource resource = getCorrespondingResource();
@@ -73,16 +69,14 @@ public abstract class IpsElement implements IIpsElement {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsProject#getIpsModel()
+     * Overridden.
      */
     public IIpsModel getIpsModel() {
         return IpsPlugin.getDefault().getIpsModel();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getIpsProject()
+     * Overridden.
      */
     public IIpsProject getIpsProject() {
         if (getParent()==null) {
@@ -92,16 +86,14 @@ public abstract class IpsElement implements IIpsElement {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+     * Overridden.
      */
     public IIpsElement[] getChildren() throws CoreException {
         return NO_CHILDREN;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#hasChildren()
+     * Overridden.
      */
     public boolean hasChildren() throws CoreException {
         return getChildren().length>0;

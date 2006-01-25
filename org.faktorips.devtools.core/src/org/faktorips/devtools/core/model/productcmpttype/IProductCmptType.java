@@ -25,4 +25,10 @@ public interface IProductCmptType extends IIpsObject {
 	 * @throws CoreException if an erros occurs while searching for the type.
 	 */
 	public IPolicyCmptType findPolicyCmptyType() throws CoreException;
+	
+	/**
+	 * Returns the relations defined for this type or an empty array is no relation
+	 * is defined.
+	 */
+	public IProductCmptTypeRelation[] getRelations();
 }

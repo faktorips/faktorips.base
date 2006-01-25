@@ -12,6 +12,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -29,7 +30,8 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * 
 	 */
 	public ProductCmptTypeRelation(Relation relation) {
-		super();
+		ArgumentCheck.notNull(relation);
+		this.relation = relation;
 	}
 
 	/**
@@ -50,182 +52,160 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public String getTarget() {
-		return null;
+		return relation.getTarget() + "Pk";
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IProductCmptType findTarget() throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		return getIpsProject().findProductCmptType(getTarget());
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setTarget(String newTarget) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public String getTargetRoleSingular() {
-		// TODO Auto-generated method stub
-		return null;
+		return relation.getTargetRoleSingular() + "Pk";
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setTargetRoleSingular(String newRole) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public String getTargetRolePlural() {
-		// TODO Auto-generated method stub
-		return null;
+		return relation.getTargetRolePlural();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setTargetRolePlural(String newRole) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public boolean isAbstractContainer() {
-		// TODO Auto-generated method stub
-		return false;
+		return relation.isReadOnlyContainer();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public int getMinCardinality() {
-		// TODO Auto-generated method stub
-		return 0;
+		return relation.getMinCardinality();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setMinCardinality(int newValue) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public String getMaxCardinality() {
-		// TODO Auto-generated method stub
-		return null;
+		return "*";
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public boolean is1ToMany() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setMaxCardinality(String newValue) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IIpsObject getIpsObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ProductCmptType((PolicyCmptType)relation.getPolicyCmptType());
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public int getId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return relation.getId();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void delete() {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return relation.getDescription();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setDescription(String newDescription) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return getTargetRoleSingular();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IIpsModel getIpsModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return relation.getIpsModel();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IIpsProject getIpsProject() {
-		// TODO Auto-generated method stub
-		return null;
+		return relation.getIpsProject();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public boolean exists() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IResource getCorrespondingResource() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -233,31 +213,27 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public IResource getEnclosingResource() {
-		// TODO Auto-generated method stub
-		return null;
+		return relation.getEnclosingResource();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IIpsElement getParent() {
-		// TODO Auto-generated method stub
-		return null;
+		return getIpsObject();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IIpsElement[] getChildren() throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		return new IIpsElement[0];
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public boolean hasChildren() throws CoreException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -265,64 +241,56 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public Image getImage() {
-		// TODO Auto-generated method stub
-		return null;
+		return relation.getImage();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public MessageList validate() throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		return new MessageList();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public Element toXml(Document doc) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void initFromXml(Element element) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public Memento newMemento() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setState(Memento memento) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public Object getExtPropertyValue(String propertyId) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setExtPropertyValue(String propertyId, Object value) {
-		// TODO Auto-generated method stub
-
+		throw new RuntimeException("Not implemented yet!");
 	}
 
 }

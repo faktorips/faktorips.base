@@ -1,11 +1,15 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -14,7 +18,9 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.memento.Memento;
@@ -43,6 +49,20 @@ public class ProductCmptType implements IProductCmptType {
 	 */
 	public IPolicyCmptType findPolicyCmptyType() throws CoreException {
 		return policyCmptType;
+	}
+	
+	/**
+	 * Overridden.
+	 */
+	public IProductCmptTypeRelation[] getRelations() {
+		IRelation[] relations = policyCmptType.getRelations();
+		List result = new ArrayList(relations.length);
+		for (int i = 0; i < relations.length; i++) {
+			if (relations[i].isProductRelevant()) {
+				result.add(new ProductCmptTypeRelation((Relation)relations[i]));
+			}
+		}
+		return (IProductCmptTypeRelation[])result.toArray(new IProductCmptTypeRelation[result.size()]);
 	}
 
 	/**
@@ -166,8 +186,7 @@ public class ProductCmptType implements IProductCmptType {
 	 * Overridden.
 	 */
 	public IIpsElement[] getChildren() throws CoreException {
-		// TODO implement
-		throw new RuntimeException("Not implemented yet!");
+		return getRelations();
 	}
 
 	/**
