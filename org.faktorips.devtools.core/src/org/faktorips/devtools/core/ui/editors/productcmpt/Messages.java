@@ -66,4 +66,16 @@ public class Messages extends NLS {
 	public static String FormulaEditDialog_availableParameters;
 
 	public static String FormulasSection_calculationFormulas;
+
+	public static String PolicyAttributesSection_defaultsAndRanges;
+
+	public static String PolicyAttributesSection_values;
+
+	public static String PolicyAttributesSection_minimum;
+
+	public static String PolicyAttributesSection_maximum;
+
+	public static String PolicyAttributesSection_step;
+
+	public static String ProductAttributesSection_attribute;
 }

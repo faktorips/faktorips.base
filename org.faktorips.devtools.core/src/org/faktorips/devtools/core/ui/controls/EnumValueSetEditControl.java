@@ -40,16 +40,25 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
 
     private TableElementValidator tableElementValidator;
 
+    
     /**
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the value set is of the
      * wrong type, a new EnumValueEnumSet is created
      */
-    public EnumValueSetEditControl(EnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator) {
-        super(valueSet, parent, SWT.NONE, "Values");
+    public EnumValueSetEditControl(EnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator, String label) {
+        super(valueSet, parent, SWT.NONE, label);
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
         this.tableElementValidator = tableElementValidator;
         new MessageService(getTableViewer());
+    }
+    
+    /**
+     * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the value set is of the
+     * wrong type, a new EnumValueEnumSet is created. Labels the control with default-text ("Values") in english.
+     */
+    public EnumValueSetEditControl(EnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator) {
+    	this(valueSet, parent, tableElementValidator, "Values");
     }
 
     protected void initModelObject(Object modelObject) {

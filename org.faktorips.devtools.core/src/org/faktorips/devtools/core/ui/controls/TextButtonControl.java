@@ -24,14 +24,23 @@ public abstract class TextButtonControl extends ControlComposite{
     protected Text text;
     private Button button;
     
+    
     /**
-     * @param parent
-     * @param style
+     * Creates a textfield and a button. The given buttonHeightHint is used to set the heightHint for the layout-data 
+     * for the button.
+     *
+     * @param parent The parent composite.
+     * @param toolkit The UIToolkit to use for the creation of the controlls.
+     * @param buttonText The label for the button.
+     * @param smallMargins <code>true</code> to get as smallest margins as possible.
+     * @param buttonHeightHint The preferred height or -1.
      */
     public TextButtonControl(
             Composite parent, 
             UIToolkit toolkit,
-            String buttonText) {
+            String buttonText,
+            boolean smallMargins,
+            int buttonHeightHint) {
         super(parent, SWT.NONE);
         setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout(2, false);
@@ -43,8 +52,14 @@ public abstract class TextButtonControl extends ControlComposite{
         } else {
             Composite c = toolkit.getFormToolkit().createComposite(this);
             GridLayout layout2 = new GridLayout(2, false);
-            layout2.marginHeight = 3;
-            layout2.marginWidth = 1;
+            if (smallMargins) {
+	            layout2.marginHeight = 2;
+	            layout2.marginWidth = 1;
+            }
+            else {
+                layout2.marginHeight = 3;
+                layout2.marginWidth = 1;            	
+            }
             c.setLayout(layout2);
             c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
             toolkit.getFormToolkit().paintBordersFor(c);
@@ -53,12 +68,31 @@ public abstract class TextButtonControl extends ControlComposite{
         }
         text.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         button = toolkit.createButton(this, buttonText);
-        button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END));
+        GridData d = new GridData(GridData.VERTICAL_ALIGN_END);
+        if (buttonHeightHint > -1) {
+        	d.heightHint = buttonHeightHint;
+        }
+        button.setLayoutData(d);
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 buttonClicked();
             }
         });
+    }
+    
+
+    /**
+     * Creates a textfield and a button. The height of the button is not modified, margins are not minimized.
+     * 
+     * @param parent The parent composite.
+     * @param toolkit The UIToolkit to use for the creation of the controlls.
+     * @param buttonText The label for the button.
+     */
+    public TextButtonControl(
+            Composite parent, 
+            UIToolkit toolkit,
+            String buttonText) {
+    	this(parent, toolkit, buttonText, false, -1);
     }
     
     protected abstract void buttonClicked();

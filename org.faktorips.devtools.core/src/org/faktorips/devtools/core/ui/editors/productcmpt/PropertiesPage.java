@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -52,11 +53,12 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		IProductCmptGeneration generation = (IProductCmptGeneration)getProductCmptEditor().getActiveGeneration();
 		Composite left = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
 		new ProductAttributesSection(generation, left, toolkit);
-		new PolicyAttributesSection(generation, left, toolkit);
 		new FormulasSection(generation, left, toolkit);
 		
 		Composite right = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
-	    Section relationsSection = toolkit.getFormToolkit().createSection(right, Section.TITLE_BAR | Section.DESCRIPTION);
+		new PolicyAttributesSection(generation, right, toolkit);
+
+		Section relationsSection = toolkit.getFormToolkit().createSection(right, Section.TITLE_BAR | Section.DESCRIPTION);
 	    relationsSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	    relationsSection.setText(Messages.PropertiesPage_relations);
 	    
@@ -65,6 +67,37 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		    Label label = toolkit.createLabel(relationsSection, Messages.PropertiesPage_noRelationsDefined);		    
 		    relationsSection.setClient(label);
 		} else {
+//			Tree tree = new Tree(relationsSection, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
+//			tree.setHeaderVisible(true);
+//
+//			TreeColumn col = new TreeColumn(tree, SWT.LEAD);
+//			col.setText("Beziehung");
+//			col.setWidth(100);
+//			col.setResizable(true);
+//			col = new TreeColumn(tree, SWT.LEAD);
+//			col.setText("min. Kard.");
+//			col.setWidth(100);
+//			col.setResizable(true);
+//			col = new TreeColumn(tree, SWT.LEAD);
+//			col.setText("max. Kard.");
+//			col.setWidth(100);
+//			col.setResizable(true);
+//			
+//			CellEditor[] editors = new CellEditor[3];
+//			editors[0] = null;
+//			editors[1] = new TextCellEditor(tree);
+//			editors[2] = new TextCellEditor(tree);
+//			
+//			TreeViewer treeViewer = new TreeViewer(tree);
+//			treeViewer.setContentProvider(new RelationsContentProvider());
+//			treeViewer.setLabelProvider(new RelationsLabelProvider());
+//			treeViewer.setInput(generation);
+//			relationsSection.setClient(tree);
+//
+//			treeViewer.setColumnProperties(new String[] {"0", "1", "2"});
+//			treeViewer.setCellEditors(editors);
+//			treeViewer.setCellModifier(new RelationTreeModifier());
+			
 			for (int i=0; i<pcTypeRelations.length; i++) {
 			    IRelation relation = findPcTypeRelation((pcTypeRelations[i]));
 			    if (relation!=null && relation.isProductRelevant()) {
@@ -83,10 +116,6 @@ public class PropertiesPage extends IpsObjectEditorPage {
         }
     }
 
-    private void createRelationSections(Composite parent) {
-        
-    }
-    
     /**
      * Returns all PcType relations that are defined either in the generation
      * or in the PcType the generation is based on.
@@ -122,5 +151,23 @@ public class PropertiesPage extends IpsObjectEditorPage {
     }
     
     
+    private class RelationTreeModifier implements ICellModifier {
+
+		public boolean canModify(Object element, String property) {
+			int colCount = Integer.parseInt(property);
+			return colCount > 0;
+		}
+
+		public Object getValue(Object element, String property) {
+			int colCount = Integer.parseInt(property);
+			return "" + colCount; //$NON-NLS-1$
+		}
+
+		public void modify(Object element, String property, Object value) {
+			// TODO Auto-generated method stub
+			
+		}
+    	
+    }
 
 }

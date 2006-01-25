@@ -108,6 +108,48 @@ public class UIToolkit {
         return newComposite;
     }
     
+    
+    /**
+     * Creates a new composite with a three column grid layout. First column for 
+     * structure-label, second column for input-label, third column for the input 
+     * control. 
+     */
+    public Composite createStructuredLabelEditColumnComposite(Composite parent) {
+        Composite newComposite;
+        GridLayout layout = new GridLayout(3, false);
+        layout.horizontalSpacing = 12;
+        if (formToolkit!=null) {
+            newComposite = formToolkit.createComposite(parent);
+            formToolkit.paintBordersFor(newComposite);
+            layout.marginHeight = 2;
+            layout.marginWidth = 2;
+        } else {
+            newComposite = new Composite(parent, SWT.NONE); 
+            newComposite.setBackground(parent.getBackground());
+            layout.marginHeight = 0;
+            layout.marginWidth = 0;
+        }
+        newComposite.setLayout(layout);
+        if (parent.getLayout() instanceof GridLayout) {
+            newComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        }
+        return newComposite;
+    }
+
+    /**
+     * Creates a new label with the given text.
+     * 
+     * @param parent The parent composite.
+     * @param text The text to display.
+     * @param grab <code>true</code> to let the label grab more space then initial preferred, if available.
+     */
+    public Label createLabel(Composite parent, String text, boolean grab) {
+    	Label label = createLabel(parent, text);
+		((GridData)label.getLayoutData()).grabExcessHorizontalSpace = grab;
+		((GridData)label.getLayoutData()).grabExcessVerticalSpace = grab;
+		return label;
+    }
+
     /**
      * Creates a new label.
      */
@@ -143,6 +185,27 @@ public class UIToolkit {
         return newLabel;
     }
     
+    
+    /**
+     * Creates a spacer-control.
+     * 
+     * @param parent The parent composite.
+     * @param height The preferred height.
+     * @param grab <code>true</code> to let the spacer grab available space (horizontal and vertical) to  
+     *             become bigger then the preferred size.
+     */
+    public Control createVerticalSpacer(Composite parent, int height, boolean grab) {
+    	if (grab) {
+    		return createVerticalSpacer(parent, height);
+    	}
+    	else {
+    		Control c = createVerticalSpacer(parent, height);
+    		((GridData)c.getLayoutData()).grabExcessHorizontalSpace = false;
+    		((GridData)c.getLayoutData()).grabExcessVerticalSpace = false;
+    		return c;
+    	}
+    }
+    
     public Control createVerticalSpacer(Composite parent, int height) {
 	    Composite spacer = new Composite(parent, SWT.NONE);
 	    spacer.setLayout(new GridLayout());
@@ -152,7 +215,7 @@ public class UIToolkit {
 	    spacer.setLayoutData(data);
         return spacer;
     }
-    
+
     /**
      * Creates a new form label with margin.
      */
