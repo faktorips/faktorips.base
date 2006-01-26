@@ -78,7 +78,7 @@ public class PolicyAttributesSection extends IpsSection {
     	IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
     	
     	if (elements.length == 0) {
-    		toolkit.createLabel(workArea, "No Defaults and Ranges defined.");
+    		toolkit.createLabel(workArea, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
     	}
     	
     	for (int i = 0; i < elements.length; i++) {

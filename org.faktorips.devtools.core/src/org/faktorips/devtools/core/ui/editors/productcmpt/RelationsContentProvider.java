@@ -8,39 +8,53 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
+/**
+ * Provides the content for a generation-based relations-tree.
+ * 
+ * @author Thorsten Guenther
+ */
 public class RelationsContentProvider implements ITreeContentProvider {
 
 	private IProductCmptGeneration generation;
 	
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+     * Overridden.
      */
     public Object[] getElements(Object inputElement) {
 
     	if (inputElement instanceof IProductCmptGeneration) {
     		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
-    		IProductCmptTypeRelation[] result = getPcTypeRelations(generation); 
-            return result;
+    		
+    		try {
+				IRelation[] relations = generation.getProductCmpt().findPolicyCmptType().getRelations();
+				List result = new ArrayList(relations.length);
+				for (int i = 0; i < relations.length; i++) {
+					if (relations[i].isProductRelevant()) {
+						result.add(relations[i]);
+					}
+				}
+				return (IRelation[])result.toArray(new IRelation[result.size()]);
+				
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
     	}
     	
         return new Object[0];
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+     * Overridden.
      */
     public void dispose() {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+     * Overridden.
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     	if (newInput instanceof IProductCmptGeneration) {
@@ -52,42 +66,21 @@ public class RelationsContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Returns all PcType relations that are defined either in the generation
-     * or in the PcType the generation is based on.
+     * Overridden.
      */
-    private IProductCmptTypeRelation[] getPcTypeRelations(IProductCmptGeneration generation) {
-        List result = new ArrayList();
-
-        try {
-        	IProductCmptType productType = generation.getProductCmpt().findProductCmptType();
-
-        	if (productType != null) {
-            	IProductCmptTypeRelation[] relations = productType.getRelations();
-        		for (int i=0; i<relations.length; i++) {
-        			result.add(relations[i]);
-        		}
-        	}
-        	
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-
-        return (IProductCmptTypeRelation[])result.toArray(new IProductCmptTypeRelation[result.size()]);
-    }
-
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof IProductCmptTypeRelation && generation != null) {
-			IProductCmptTypeRelation relation = (IProductCmptTypeRelation)parentElement;
-			try {
-				return generation.getRelations(relation.findPolicyCmptTypeRelation().getName());
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
+		if (parentElement instanceof IRelation && generation != null) {
+			
+			IRelation relation = (IRelation)parentElement;
+			return generation.getRelations(relation.getName());
 		}
 
 		return null;
 	}
 
+	/**
+	 * Overridden.
+	 */
 	public Object getParent(Object element) {
 		if (element instanceof IProductCmptTypeRelation) {
 			return ((ProductCmptTypeRelation)element).getParent();
@@ -95,14 +88,13 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
+	/**
+	 * Overridden.
+	 */
 	public boolean hasChildren(Object element) {
-		if (element instanceof IProductCmptTypeRelation && generation != null) {
-			IProductCmptTypeRelation relation = (IProductCmptTypeRelation)element;
-			try {
-				return generation.getRelations(relation.findPolicyCmptTypeRelation().getName()).length > 0;
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
+		if (element instanceof IRelation && generation != null) {
+			IRelation relation = (IRelation)element;
+			return generation.getRelations(relation.getName()).length > 0;
 		}
 		return false;
 	}

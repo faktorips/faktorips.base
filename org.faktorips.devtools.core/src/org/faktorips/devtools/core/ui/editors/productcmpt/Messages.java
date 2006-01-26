@@ -78,4 +78,10 @@ public class Messages extends NLS {
 	public static String PolicyAttributesSection_step;
 
 	public static String ProductAttributesSection_attribute;
+
+	public static String RelationsSection_cardinality;
+
+	public static String PolicyAttributesSection_noDefaultsAndRangesDefined;
+
+	public static String RelationsLabelProvider_undefined;
 }
