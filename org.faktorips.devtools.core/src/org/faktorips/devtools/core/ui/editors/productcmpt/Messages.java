@@ -84,4 +84,6 @@ public class Messages extends NLS {
 	public static String PolicyAttributesSection_noDefaultsAndRangesDefined;
 
 	public static String RelationsLabelProvider_undefined;
+
+	public static String FormulasSection_noFormulasDefined;
 }

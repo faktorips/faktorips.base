@@ -58,7 +58,7 @@ public class RelationsSection extends IpsSection {
 	 * @param toolkit The ui-toolkit to support drawing.
 	 */
 	public RelationsSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
-		super(parent, Section.TITLE_BAR | Section.DESCRIPTION, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
+		super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
 		ArgumentCheck.notNull(generation);
 		this.generation = generation;
 		
@@ -124,9 +124,12 @@ public class RelationsSection extends IpsSection {
 	/**
 	 * Overridden.
 	 */
-	protected void performRefresh() {		
-		treeViewer.refresh();
-		treeViewer.expandAll();
+	protected void performRefresh() {	
+		if (treeViewer != null) {
+			treeViewer.refresh();
+			treeViewer.expandAll();
+
+		}
 	}
     
     /**
