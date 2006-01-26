@@ -1,48 +1,62 @@
 package org.faktorips.devtools.core.internal.model.product;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.w3c.dom.Element;
 
 
 /**
  *
  */
-public class ProductCmptRelationTest extends IpsObjectTestCase {
+public class ProductCmptRelationTest extends IpsPluginTest {
 
+	private IIpsSrcFile ipsSrcFile;
     private ProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IProductCmptRelation relation;
-
+    private IPolicyCmptType policyCmptType;
+    
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.PRODUCT_CMPT);
+    	super.setUp();
+    	IIpsProject ipsProject = newIpsProject("TestProject");
+    	policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
+    	productCmpt = (ProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "TestProduct");
+    	productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
+    	generation = (IProductCmptGeneration)productCmpt.newGeneration();
+    	relation = generation.newRelation("coverage");
+    	ipsSrcFile = productCmpt.getIpsSrcFile();
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectTestCase#createObjectAndPart()
-     */
-    protected void createObjectAndPart() {
-        productCmpt = new ProductCmpt(pdSrcFile);
-        generation = (IProductCmptGeneration)productCmpt.newGeneration();
-        relation = generation.newRelation("coverage");
+    public void testGetProductCmptTypeRelation() throws CoreException {
+    	assertNull(relation.getProductCmptTypeRelation());
+    	IRelation policyCmptTypeRelation = policyCmptType.newRelation();
+    	policyCmptTypeRelation.setTargetRoleSingular("coverage");
+    	
+    	IProductCmptTypeRelation productCmptTypeRelation = policyCmptType.findProductCmptType().getRelations()[0];
+    	assertEquals(productCmptTypeRelation.getName(), relation.getProductCmptTypeRelation());
     }
 
     public void testRemove() {
         relation.delete();
         assertEquals(0, generation.getNumOfRelations());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testSetTarget() {
         relation.setTarget("newTarget");
         assertEquals("newTarget", relation.getTarget());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testToXml() {

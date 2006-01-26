@@ -67,10 +67,10 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IProductCmptRelation[] getRelations();
     
     /**
-     * Returns the relations that belong to the given type relation or
+     * Returns the relations that belong to the given policy component type relation or
      * an empty array if no such relations are found.
      * 
-     * @param typeRelation The target role of a type relation.
+     * @param typeRelation The target role of a policy component type relation.
      * @throws IllegalArgumentException if type relation is null. 
      */
     public IProductCmptRelation[] getRelations(String typeRelation);

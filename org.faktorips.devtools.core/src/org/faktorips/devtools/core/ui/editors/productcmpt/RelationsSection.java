@@ -1,29 +1,31 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.pctype.Relation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
-import org.faktorips.devtools.core.ui.editors.pctype.RelationLabelProvider;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -33,192 +35,141 @@ import org.faktorips.util.ArgumentCheck;
  * same policy component type relation. 
  */
 public class RelationsSection extends IpsSection {
-    
-    // the name of the policy component type relation
-    private String pcTypeRelationName;
-    
-    // the editor this section is part of
-    private ProductCmptEditor editor;
-    
-    // the composite showing the relations
-    private RelationsComposite composite;
+	
+	private IProductCmptGeneration generation;
+	private Text kardMin;
+	private Text kardMax;
+	private IntegerField kardMinField;
+	private TextField kardMaxField;
+	private TreeViewer treeViewer;
 
-    public RelationsSection(
-            ProductCmptEditor editor,
-            String pcTypeRelationName, 
-            Composite parent, 
-            UIToolkit toolkit) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
-        ArgumentCheck.notNull(editor);
-        ArgumentCheck.notNull(pcTypeRelationName);
-        this.editor = editor;
-        this.pcTypeRelationName = pcTypeRelationName;
-        initControls();
-        IRelation pcTypeRelation = getPcTypeRelation();
-        if (pcTypeRelation!=null) {
-            setText(new RelationLabelProvider().getText(pcTypeRelation));
-            if (pcTypeRelation.getMaxCardinality().equals("1")) { //$NON-NLS-1$
-                setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            }
-        } else {
-            setText(pcTypeRelationName);    
-        }
-        
-    }
+	public RelationsSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
+		super(parent, Section.TITLE_BAR | Section.DESCRIPTION, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
+		ArgumentCheck.notNull(generation);
+		this.generation = generation;
+		
+		initControls();
+		
+		setText(Messages.PropertiesPage_relations);
+	}
+	
+	protected void initClientComposite(Composite client, UIToolkit toolkit) {
+		String[] pcTypeRelations = getPcTypeRelations(generation);
+		if (pcTypeRelations.length==0) {
+		    toolkit.createLabel(client, Messages.PropertiesPage_noRelationsDefined);		    
+		} else {
+			Composite relationRootPane = toolkit.createComposite(client);
+			relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			GridLayout layout = new GridLayout(2, false);
+			relationRootPane.setLayout(layout);
+
+			Tree tree = toolkit.getFormToolkit().createTree(relationRootPane, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
+			GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+			tree.setLayoutData(layoutData);
+
+			treeViewer = new TreeViewer(tree);
+			treeViewer.setContentProvider(new RelationsContentProvider());
+			treeViewer.setLabelProvider(new RelationsLabelProvider());
+			treeViewer.setInput(generation);
+			treeViewer.addSelectionChangedListener(new SelectionChangedListener());
+
+			Composite kardinalityRootPane = toolkit.createComposite(relationRootPane);
+			layout = new GridLayout(1, false);
+			layout.marginHeight = 1;
+			kardinalityRootPane.setLayout(layout);
+			layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
+			kardinalityRootPane.setLayoutData(layoutData);
+			
+			Composite kardinalityPane = toolkit.createLabelEditColumnComposite(kardinalityRootPane);
+			layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
+			layoutData.verticalAlignment = SWT.TOP;
+			kardinalityPane.setLayoutData(layoutData);
+			layoutData = ((GridData)toolkit.createLabel(kardinalityPane, "Kardinality").getLayoutData());
+			layoutData.horizontalSpan = 2;
+			layoutData.horizontalAlignment = SWT.CENTER;
+			toolkit.createFormLabel(kardinalityPane, Messages.PolicyAttributesSection_minimum);
+			kardMin = toolkit.createText(kardinalityPane);
+			toolkit.createFormLabel(kardinalityPane, Messages.PolicyAttributesSection_maximum);
+			kardMax = toolkit.createText(kardinalityPane);
+			toolkit.createVerticalSpacer(kardinalityPane, 3).setBackground(kardinalityPane.getBackground());
+			
+			toolkit.getFormToolkit().paintBordersFor(relationRootPane);
+
+			kardinalityPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+			toolkit.getFormToolkit().paintBordersFor(kardinalityRootPane);
+
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void performRefresh() {
+		treeViewer.refresh();
+	}
     
-    private IRelation getPcTypeRelation() {
+    /**
+     * Returns all PcType relations that are defined either in the generation
+     * or in the PcType the generation is based on.
+     */
+    private String[] getPcTypeRelations(IProductCmptGeneration generation) {
+        List result = new ArrayList();
         try {
-            return editor.getProductCmpt().findPcTypeRelation(pcTypeRelationName);
+            IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
+            if (pcType!=null) {
+                IRelation[] pcTypeRelations = pcType.getRelations();
+                for (int i=0; i<pcTypeRelations.length; i++) {
+                    result.add(pcTypeRelations[i].getName());
+                }
+            }
         } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
+            IpsPlugin.logAndShowErrorDialog(e);
         }
+		IProductCmptRelation[] relations = generation.getRelations();
+        for (int i=0; i<relations.length; i++) {
+            if (!result.contains(relations[i].getPcTypeRelation())) {
+                result.add(relations[i].getPcTypeRelation());
+            }
+        }
+        return (String[])result.toArray(new String[result.size()]);
     }
     
-    /*
-     * fuer drop target
+    /**
+     * Listener for updating the kardinality triggerd by the selection of another relation.
+     * 
+     * @author Thorsten Guenther
      */
-    private void newRelation(String target) {
-    	IProductCmptRelation relation = ((IProductCmptGeneration)editor.getProductCmpt().getGenerations()[0]).newRelation(this.pcTypeRelationName);
-    	relation.setTarget(target);
-    }
+    private class SelectionChangedListener implements ISelectionChangedListener {
+    	IpsPartUIController uiController;
+    	
+		public void selectionChanged(SelectionChangedEvent event) {
+			Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
+			if (selected instanceof IProductCmptRelation) {
+				IProductCmptRelation rel = (IProductCmptRelation) selected;
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#initClientComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
-     */
-    protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        composite = new RelationsComposite(client, toolkit);
-        DropTarget target = new DropTarget(composite, DND.DROP_LINK);
-        target.setTransfer(new Transfer[] {TextTransfer.getInstance()});
-        target.addDropListener(new DropListener());
-        
-    }
+				if (uiController == null) {
+		    		uiController = new IpsPartUIController(rel);
+				}
+				
+				kardMin.setEnabled(true);
+				kardMax.setEnabled(true);
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#performRefresh()
-     */
-    protected void performRefresh() {
-        composite.refresh();
-    }
+	    		uiController.remove(kardMinField);
+	    		uiController.remove(kardMaxField);
 
-    private class RelationsComposite extends IpsPartsComposite {
-
-        public RelationsComposite(Composite parent, UIToolkit toolkit) {
-            super(editor.getIpsObject(), parent, toolkit);
-        }
-        
-        /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
-         */
-        protected IStructuredContentProvider createContentProvider() {
-            return new ContentProvider();
-        }
-
-        /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createLabelProvider()
-         */
-        protected ILabelProvider createLabelProvider() {
-            return new LabelProvider();
-        }
-        
-        /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
-         */
-        protected IIpsObjectPart newIpsPart() {
-            IProductCmptGeneration generation = (IProductCmptGeneration)editor.getActiveGeneration();
-            return generation.newRelation(pcTypeRelationName);
-        }
-
-        /** 
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
-         */
-        protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new RelationEditDialog((IProductCmptRelation)part, getShell());
-        }
-        
-        /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.ViewerButtonComposite#updateButtonEnabledStates()
-         */
-        protected void updateButtonEnabledStates() {
-            super.updateButtonEnabledStates();
-            if (getPcTypeRelation()==null) {
-                newButton.setEnabled(false);
-                return;
-            }
-        }
-        
-        class LabelProvider extends DefaultLabelProvider {
-
-            public String getText(Object element) {
-	            IProductCmptRelation relation = (IProductCmptRelation)element;
-	            return relation.getName() 
-	            + " [" + relation.getMinCardinality() + //$NON-NLS-1$
-	            	".." + relation.getMaxCardinality() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-        
-        class ContentProvider implements IStructuredContentProvider {
-
-            /** 
-             * Overridden method.
-             * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-             */
-            public Object[] getElements(Object inputElement) {
-                IProductCmptGeneration generation = (IProductCmptGeneration)editor.getActiveGeneration();
-                return generation.getRelations(pcTypeRelationName);
-            }
-
-            /** 
-             * Overridden method.
-             * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-             */
-            public void dispose() {
-            }
-
-            /** 
-             * Overridden method.
-             * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-             */
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            }
-        }
-        
-    } // class RelationsComposite
-
-    private class DropListener implements DropTargetListener {
-
-		public void dragEnter(DropTargetEvent event) {
-			event.detail = DND.DROP_LINK;
-		}
-
-		public void dragLeave(DropTargetEvent event) {
-			// nothing to do
-		}
-
-		public void dragOperationChanged(DropTargetEvent event) {
-			// nothing to do
-		}
-
-		public void dragOver(DropTargetEvent event) {
-			// nothing to do
-		}
-
-		public void drop(DropTargetEvent event) {
-			newRelation((String)event.data);
-		}
-
-		public void dropAccept(DropTargetEvent event) {
-			event.detail = DND.DROP_LINK;
+	    		kardMinField = new IntegerField(kardMin);
+	    		kardMaxField = new TextField(kardMax);
+	    		
+				uiController.add(kardMinField, rel, Relation.PROPERTY_MIN_CARDINALITY);
+				uiController.add(kardMaxField, rel, Relation.PROPERTY_MAX_CARDINALITY);
+				uiController.updateUI();
+			}
+			else {
+				kardMin.setEnabled(false);
+				kardMax.setEnabled(false);
+			}
 			
 		}
-		
     }
 }
 

@@ -9,6 +9,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
@@ -39,6 +40,13 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 */
 	public IProductCmptType getProductCmptType() {
 		return new ProductCmptType((PolicyCmptType)relation.getPolicyCmptType());
+	}
+	
+	/**
+	 * Overridden.
+	 */
+	public IRelation findPolicyCmptTypeRelation() throws CoreException {
+		return relation;
 	}
 
 	/**

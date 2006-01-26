@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 
 /**
@@ -15,6 +16,14 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
      * Returns the product component type this relation belongs to.
      */
     public IProductCmptType getProductCmptType();
+    
+    /**
+     * Returns the corresponding policy component type relation or <code>null</code> if no
+     * such relation is found.
+     * 
+     * @throws CoreException if an error occurs while searching for the relation.
+     */
+    public IRelation findPolicyCmptTypeRelation() throws CoreException;
     
     /**
      * Returns the relation's type indication if it's an association or

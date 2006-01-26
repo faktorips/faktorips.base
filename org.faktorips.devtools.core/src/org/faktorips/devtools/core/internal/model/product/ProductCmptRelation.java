@@ -5,6 +5,8 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.pctype.Relation;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeRelation;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -82,7 +84,23 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
         return pcTypeRelation;
     }
     
-    void setPcTypeRelation(String newRelation) {
+    /**
+     * {@inheritDoc}
+     */
+    public String getProductCmptTypeRelation() {
+		try {
+			IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType();
+			IRelation relation = policyCmptType.getRelation(pcTypeRelation);
+			if (relation==null) {
+				return null;
+			}
+			return (new ProductCmptTypeRelation((Relation)relation)).getName();
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	void setPcTypeRelation(String newRelation) {
         pcTypeRelation = newRelation;
     }
 

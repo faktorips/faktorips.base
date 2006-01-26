@@ -32,6 +32,12 @@ public interface IProductCmptRelation extends IIpsObjectPart {
     public String getPcTypeRelation();
     
     /**
+     * Returns the name of the product component type relation this
+     * relation is based on.
+     */
+    public String getProductCmptTypeRelation();
+    
+    /**
      * Returns the target product component.
      */
     public String getTarget();
