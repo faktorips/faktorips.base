@@ -31,14 +31,12 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -415,8 +413,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
 	/**
      * Overridden.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#findIpsObjects(org.faktorips.devtools.core.model.IpsObjectType)
      */
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException {
         return ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, type);
