@@ -1,9 +1,9 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -36,8 +36,7 @@ public abstract class AbstractPcImplementationBuilder extends
 		IPolicyCmptType targetType = relation.findTarget();
 		if (targetType == null) {
 			// !TODO richtige Exception werfen
-			throw new CoreException(new Status(Status.ERROR, "de.bbv.", 5, "",
-					null));
+			throw new CoreException(new IpsStatus("FEEEEEEHHHLER"));
 		}
 	
 		if (relation.getMaxCardinality().equals(IRelation.CARDINALITY_ONE)) {

@@ -68,7 +68,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="editedInStandardExtensionArea" type="boolean" use="required">
+         <attribute name="editedInStandardExtensionArea" type="string" use="required">
             <annotation>
                <documentation>
                   

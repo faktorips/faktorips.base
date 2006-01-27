@@ -12,6 +12,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -27,14 +28,14 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class GeneralInfoSection extends IpsSection {
     
-    private final static String PROPERTY_PM_OBJECT_NAME = "de.bbv.faktorips.pctype.pmObjectName";
-    	
     private IPolicyCmptType pcType;
     private IpsObjectUIController uiController;
     
     // edit fields
     private PdObjectField supertypeField;
     private CheckboxField abstractField;
+    
+    private ExtensionPropertyControlFactory extFactory;
 
     /**
      * @param parent
@@ -48,6 +49,9 @@ public class GeneralInfoSection extends IpsSection {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(pcType);
         this.pcType = pcType;
+        
+        extFactory = new ExtensionPropertyControlFactory(pcType.getClass());
+        
         initControls();
         setText("General information");
     }
@@ -92,13 +96,10 @@ public class GeneralInfoSection extends IpsSection {
         uiController.add(supertypeField, IPolicyCmptType.PROPERTY_SUPERTYPE);
         uiController.add(abstractField, IPolicyCmptType.PROPERTY_ABSTRACT);
         
-        // TODO: remove pm extension from core
-        IExtensionPropertyDefinition extProp = pcType.getIpsModel().getExtensionPropertyDefinition(IPolicyCmptType.class, PROPERTY_PM_OBJECT_NAME, true);
-        if (extProp!=null) {
-            toolkit.createFormLabel(c2, extProp.getDisplayName() + ":");
-            uiController.add(extProp.newEditField((IpsObjectPartContainer)pcType, c2, toolkit), PROPERTY_PM_OBJECT_NAME);
+        extFactory.createControls(c2,toolkit,(IpsObjectPartContainer)pcType);
+        extFactory.connectToModel(uiController);
         }
-    }
+    
 
     /*
      * Sets the focus explicitly to the supertype control. Otherwise the

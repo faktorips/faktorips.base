@@ -13,7 +13,7 @@ import org.faktorips.util.message.MessageList;
 /**
  *
  */
-public class IpsObjectUIController extends DefaultUIController {
+public class IpsObjectUIController extends IpsObjectPartContainerUIController {
 
     private IIpsObject object;
     

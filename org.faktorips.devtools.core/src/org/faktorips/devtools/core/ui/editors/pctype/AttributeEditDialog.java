@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ExtensionFactory;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
@@ -46,7 +48,7 @@ import org.faktorips.util.message.ObjectProperty;
 public class AttributeEditDialog extends IpsPartEditDialog implements ParameterListChangeListener,
         ValueSetChangeListener {
 
-    private final static String PROPERTY_PM_PROPERTY_NAME_ID = "de.bbv.faktorips.attribute.pmPropertyName";
+    //private final static String PROPERTY_PM_PROPERTY_NAME_ID = "de.bbv.faktorips.attribute.pmPropertyName";
     	
     private IAttribute attribute;
 
@@ -68,7 +70,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     // control to edit the formula parameters
     private ChangeParametersControl parametersControl;
     
-    private EditField pmPropertyNameField; // TODO remove from core
+    private ExtensionPropertyControlFactory extFactory;
     
     /**
      * @param parentShell
@@ -77,6 +79,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, "Edit Attribute", true);
         this.attribute = attribute;
+        extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
     
     /**
@@ -106,12 +109,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         
-        // TODO: remove pm extension from core
-        IExtensionPropertyDefinition extProp = attribute.getIpsModel().getExtensionPropertyDefinition(IAttribute.class, PROPERTY_PM_PROPERTY_NAME_ID, true);
-        if (extProp!=null) {
-            uiToolkit.createFormLabel(workArea, extProp.getDisplayName() + ":");
-            pmPropertyNameField = extProp.newEditField((IpsObjectPartContainer)attribute, workArea, uiToolkit);
-        }
+        extFactory.createControls(workArea,uiToolkit,(IpsObjectPartContainer)attribute);
 
         uiToolkit.createFormLabel(workArea, "Name:");
         Text nameText = uiToolkit.createText(workArea);
@@ -220,9 +218,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiController.add(attributeTypeField, IAttribute.PROPERTY_ATTRIBUTE_TYPE);
         uiController.add(defaultValueField, IAttribute.PROPERTY_DEFAULT_VALUE);
         uiController.add(productRelevantField, IAttribute.PROPERTY_PRODUCT_RELEVANT);
-        if (pmPropertyNameField!=null) {
-            uiController.add(pmPropertyNameField, PROPERTY_PM_PROPERTY_NAME_ID);
-        }
+        extFactory.connectToModel(uiController);
         List infos = ParameterInfo.createInfosAsList(attribute.getFormulaParameters());
         parametersControl.setInput(infos);
         parametersControl.setParameterListChangeListener(this);
