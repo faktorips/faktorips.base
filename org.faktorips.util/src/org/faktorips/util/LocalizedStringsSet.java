@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
  * If a localized String contains sections that have to be replaced with 
  * locale dependant replacements before the String is presented to a user, you can 
  * use one of the methods taking replacement objects as a parameter. 
- * The mechanism used here is the one of {@link java.test.MessageFormat}.
+ * The mechanism used here is the one of {@link java.text.MessageFormat}.
  * <p>
  * Example:
  * <p>
@@ -46,6 +46,7 @@ public class LocalizedStringsSet {
     
     /**
      * Creates a new StringsSet with the indicated qualified name.
+     * The property files are loaded with the indicated classloader.
      * 
      * @throws IllegalArgumentException if the qualifiedName is null.
      */

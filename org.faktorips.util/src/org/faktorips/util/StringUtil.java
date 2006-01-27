@@ -84,6 +84,21 @@ public class StringUtil
     }
     
     /**
+     * Returns the qualified name for the given package name and unqualified name.
+     * If packageName is <code>null</code> or the empty String the unqualified name
+     * is returned.
+     * 
+     * @throws NullPointerException if unqualifiedName is <code>null</code>.
+     */
+    public final static String qualifiedName(String packageName, String unqualifiedName) {
+        ArgumentCheck.notNull(unqualifiedName);
+        if (packageName==null || packageName.equals("")) {
+            return unqualifiedName;
+        }
+        return packageName + '.' + unqualifiedName;
+    }
+    
+    /**
      * Returns the package name for a given class name. Returns an empty String
      * if the class name does not contain a package name.
      * 
