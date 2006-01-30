@@ -86,10 +86,16 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 	public IIpsPackageFragment getIpsParentPackageFragment() {
 		IFolder folder = (IFolder)getCorrespondingResource();
 		
-		IFolder parent = (IFolder)this.getParent().getCorrespondingResource();
+		// if the default-package is asked for its parent, null is returned
 		IFolder defaultPackage = (IFolder)this.getRoot().getIpsDefaultPackageFragment().getCorrespondingResource();
-		if (parent.equals(defaultPackage)) {
+		if (folder.equals(defaultPackage)) {
 			return null;
+		}
+		
+		// if the parent of this one is the default-package, return it :-)
+		IFolder parent = (IFolder)folder.getParent();
+		if (parent.equals(defaultPackage)) {
+			return this.getRoot().getIpsDefaultPackageFragment();
 		}
 		
 		return new IpsPackageFragment(this.getParent(), folder.getParent().getName());
