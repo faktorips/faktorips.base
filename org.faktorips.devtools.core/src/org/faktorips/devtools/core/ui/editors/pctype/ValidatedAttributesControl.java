@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
@@ -39,7 +39,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 	private static String[] columnProperties = new String[] {
 			MESSAGE_COLUMN_PROPERTY, ATTRIBUTENAME_COLUMN_PROPERTY };
 
-	private IValidationRuleDef rule;
+	private IValidationRule rule;
 
 	public ValidatedAttributesControl(Object modelObject, Composite parent) {
 		super(modelObject, parent, SWT.NONE,
@@ -48,7 +48,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 	}
 
 	protected void initModelObject(Object modelObject) {
-		rule = (IValidationRuleDef) modelObject;
+		rule = (IValidationRule) modelObject;
 	}
 
 	protected UnfocusableTextCellEditor[] createCellEditors() {
@@ -121,7 +121,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 		try {
 			IndexedValidatedAttributeWrapper wrapper = (IndexedValidatedAttributeWrapper) element;
 			return rule.validate().getMessagesFor(rule,
-					IValidationRuleDef.PROPERTY_VALIDATED_ATTRIBUTES,
+					IValidationRule.PROPERTY_VALIDATED_ATTRIBUTES,
 					wrapper.index);
 		} catch (CoreException e) {
 			IpsPlugin.log(e);

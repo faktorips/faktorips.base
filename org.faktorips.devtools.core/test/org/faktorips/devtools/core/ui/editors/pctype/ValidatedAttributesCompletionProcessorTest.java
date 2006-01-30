@@ -8,7 +8,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 public class ValidatedAttributesCompletionProcessorTest extends IpsPluginTest {
 
@@ -36,7 +36,7 @@ public class ValidatedAttributesCompletionProcessorTest extends IpsPluginTest {
 		attr = pcType.newAttribute();
 		attr.setName("Berta");
 		
-		IValidationRuleDef rule = pcType.newRule();
+		IValidationRule rule = pcType.newRule();
 		ValidatedAttributesCompletionProcessor processor = new ValidatedAttributesCompletionProcessor(rule);
 		List proposals = new ArrayList();
 		processor.doComputeCompletionProposals("", 0, proposals);

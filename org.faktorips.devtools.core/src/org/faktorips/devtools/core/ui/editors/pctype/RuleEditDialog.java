@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  */
 public class RuleEditDialog extends IpsPartEditDialog {
     
-    private IValidationRuleDef rule;
+    private IValidationRule rule;
     
     // edit fields
     private TextField nameField;
@@ -39,12 +39,13 @@ public class RuleEditDialog extends IpsPartEditDialog {
     private TextField msgTextField;
     private CheckboxField appliedToAllField;
     private RuleFunctionsControl rfControl;
+    private CheckboxField specifiedInSrcField;
 
     /**
      * @param parentShell
      * @param title
      */
-    public RuleEditDialog(IValidationRuleDef rule, Shell parentShell) {
+    public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, "Edit Validation Rule", true);
         this.rule = rule;
     }
@@ -108,7 +109,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
         Composite workArea = createTabItemComposite(folder,1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
         Checkbox appliedToAllCheckbox = uiToolkit.createCheckbox(workArea, "Applied in all business functions");
-        rfControl = new RuleFunctionsControl((IValidationRuleDef)super.getIpsPart(), workArea);
+        rfControl = new RuleFunctionsControl((IValidationRule)super.getIpsPart(), workArea);
         
         appliedToAllField = new CheckboxField(appliedToAllCheckbox);
         return workArea;
@@ -116,7 +117,11 @@ public class RuleEditDialog extends IpsPartEditDialog {
     
     private Control createAttributesPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder,1, false);
-        new ValidatedAttributesControl((IValidationRuleDef)super.getIpsPart(), workArea);
+        ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
+        Checkbox specifiedInSrc = uiToolkit.createCheckbox(workArea, "Specified in the source code");
+        specifiedInSrcField = new CheckboxField(specifiedInSrc);
+        
+        new ValidatedAttributesControl((IValidationRule)super.getIpsPart(), workArea);
         return workArea;
     }
 
@@ -134,11 +139,12 @@ public class RuleEditDialog extends IpsPartEditDialog {
      */
     protected void connectToModel() {
         super.connectToModel();
-        uiController.add(nameField, rule, IValidationRuleDef.PROPERTY_NAME);
-        uiController.add(msgCodeField, rule, IValidationRuleDef.PROPERTY_MESSAGE_CODE);
-        uiController.add(msgSeverityField, rule, IValidationRuleDef.PROPERTY_MESSAGE_SEVERITY);
-        uiController.add(msgTextField, rule, IValidationRuleDef.PROPERTY_MESSAGE_TEXT);
-        uiController.add(appliedToAllField, rule, IValidationRuleDef.PROPERTY_APPLIED_IN_ALL_FUNCTIONS);
+        uiController.add(nameField, rule, IValidationRule.PROPERTY_NAME);
+        uiController.add(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
+        uiController.add(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+        uiController.add(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
+        uiController.add(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_IN_ALL_FUNCTIONS);
+        uiController.add(specifiedInSrcField, rule, IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
     }
     
 	protected Point getInitialSize() {

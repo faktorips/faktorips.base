@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -18,9 +18,9 @@ public class ValidatedAttributesCompletionProcessor extends
 
 	private IPolicyCmptType pcType;
 
-	private IValidationRuleDef rule;
+	private IValidationRule rule;
 
-	public ValidatedAttributesCompletionProcessor(IValidationRuleDef rule) {
+	public ValidatedAttributesCompletionProcessor(IValidationRule rule) {
 		ArgumentCheck.notNull(rule);
 		this.rule = rule;
 		this.pcType = (IPolicyCmptType) rule.getIpsObject();

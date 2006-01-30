@@ -14,7 +14,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -25,10 +25,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * 
+ * @inheritDoc
  */
-public class ValidationRuleDef extends IpsObjectPart implements
-		IValidationRuleDef {
+public class ValidationRule extends IpsObjectPart implements IValidationRule {
 
 	final static String TAG_NAME = "ValidationRuleDef";
 
@@ -45,6 +44,8 @@ public class ValidationRuleDef extends IpsObjectPart implements
 
 	private boolean applyInAll;
 
+	private boolean validatedAttrSpecifiedInSrc = false;
+
 	/**
 	 * Creates a new validation rule definition.
 	 * 
@@ -53,20 +54,18 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	 * @param id
 	 *            The rule's unique id within the type.
 	 */
-	public ValidationRuleDef(IPolicyCmptType pcType, int id) {
+	public ValidationRule(IPolicyCmptType pcType, int id) {
 		super(pcType, id);
 	}
 
 	/**
 	 * Constructor for testing purposes.
 	 */
-	public ValidationRuleDef() {
+	public ValidationRule() {
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
+	 * @inheritDoc
 	 */
 	public void delete() {
 		((PolicyCmptType) getIpsObject()).removeRule(this);
@@ -74,9 +73,7 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setName(java.lang.String)
+	 * @inheritDoc
 	 */
 	public void setName(String newName) {
 		String oldName = name;
@@ -85,27 +82,21 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+	 * @inheritDoc
 	 */
 	public Image getImage() {
 		return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif");
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getBusinessFunctions()
+	 * @inheritDoc
 	 */
 	public String[] getBusinessFunctions() {
 		return (String[]) functions.toArray(new String[functions.size()]);
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setBusinessFunctions(java.lang.String[])
+	 * @inheritDoc
 	 */
 	public void setBusinessFunctions(String[] functionNames) {
 		functions.clear();
@@ -116,18 +107,14 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getNumOfBusinessFunctions()
+	 * @inheritDoc
 	 */
 	public int getNumOfBusinessFunctions() {
 		return functions.size();
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#addBusinessFunction(java.lang.String)
+	 * @inheritDoc
 	 */
 	public void addBusinessFunction(String functionName) {
 		ArgumentCheck.notNull(functionName);
@@ -136,9 +123,7 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#removeBusinessFunctions(int[])
+	 * @inheritDoc
 	 */
 	public void removeBusinessFunction(int index) {
 		functions.remove(index);
@@ -146,19 +131,14 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getBusinessFunction(int)
+	 * @inheritDoc
 	 */
 	public String getBusinessFunction(int index) {
 		return (String) functions.get(index);
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setBusinessFunctions(int,
-	 *      java.lang.String)
+	 * @inheritDoc
 	 */
 	public void setBusinessFunctions(int index, String functionName) {
 		ArgumentCheck.notNull(functionName);
@@ -168,18 +148,14 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#isAppliedInAllBusinessFunctions()
+	 * @inheritDoc
 	 */
 	public boolean isAppliedInAllBusinessFunctions() {
 		return applyInAll;
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setAppliedInAllBusinessFunctions(boolean)
+	 * @inheritDoc
 	 */
 	public void setAppliedInAllBusinessFunctions(boolean newValue) {
 		boolean oldValue = applyInAll;
@@ -188,9 +164,7 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.internal.model.IpsObjectPart#validate(org.faktorips.util.message.MessageList)
+	 * @inheritDoc
 	 */
 	protected void validate(MessageList list) throws CoreException {
 		super.validate(list);
@@ -257,18 +231,14 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getMessageText()
+	 * @inheritDoc
 	 */
 	public String getMessageText() {
 		return msgText;
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setMessageText(java.lang.String)
+	 * @inheritDoc
 	 */
 	public void setMessageText(String newText) {
 		String oldText = msgText;
@@ -277,18 +247,14 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getMessageCode()
+	 * @inheritDoc
 	 */
 	public String getMessageCode() {
 		return msgCode;
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setMessageCode(java.lang.String)
+	 * @inheritDoc
 	 */
 	public void setMessageCode(String newCode) {
 		String oldCode = msgCode;
@@ -297,18 +263,14 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getMessageSeverity()
+	 * @inheritDoc
 	 */
 	public MessageSeverity getMessageSeverity() {
 		return msgSeverity;
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setMessageSeverity(org.faktorips.devtools.core.model.pctype.MessageSeverity)
+	 * @inheritDoc
 	 */
 	public void setMessageSeverity(MessageSeverity newSeverity) {
 		MessageSeverity oldSeverity = msgSeverity;
@@ -317,18 +279,14 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden IMethod.
-	 * 
-	 * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+	 * @inheritDoc
 	 */
 	protected Element createElement(Document doc) {
 		return doc.createElement(TAG_NAME);
 	}
 
 	/**
-	 * Overridden IMethod.
-	 * 
-	 * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+	 * @inheritDoc
 	 */
 	protected void initPropertiesFromXml(Element element) {
 		super.initPropertiesFromXml(element);
@@ -340,6 +298,9 @@ public class ValidationRuleDef extends IpsObjectPart implements
 		msgText = element.getAttribute(PROPERTY_MESSAGE_TEXT);
 		msgSeverity = MessageSeverity.getMessageSeverity(element
 				.getAttribute(PROPERTY_MESSAGE_SEVERITY));
+		validatedAttrSpecifiedInSrc = Boolean.valueOf(
+				element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
+				.booleanValue();
 
 		NodeList nl = element.getChildNodes();
 		functions.clear();
@@ -359,18 +320,18 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden IMethod.
-	 * 
-	 * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+	 * @inheritDoc
 	 */
 	protected void propertiesToXml(Element newElement) {
 		super.propertiesToXml(newElement);
 		newElement.setAttribute(PROPERTY_NAME, name);
-		newElement.setAttribute(PROPERTY_APPLIED_IN_ALL_FUNCTIONS, ""
-				+ applyInAll);
+		newElement.setAttribute(PROPERTY_APPLIED_IN_ALL_FUNCTIONS, String
+				.valueOf(applyInAll));
 		newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
 		newElement.setAttribute(PROPERTY_MESSAGE_TEXT, msgText);
 		newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
+		newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC,
+				String.valueOf(validatedAttrSpecifiedInSrc));
 		Document doc = newElement.getOwnerDocument();
 		for (int i = 0; i < functions.size(); i++) {
 			Element fctElement = doc.createElement("BusinessFunction");
@@ -386,9 +347,7 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden Method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#addValidatedAttribute(java.lang.String)
+	 * @inheritDoc
 	 */
 	public String addValidatedAttribute(String attributeName) {
 		ArgumentCheck.notNull(this, attributeName);
@@ -398,9 +357,7 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden Method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getValidatedAttributes()
+	 * @inheritDoc
 	 */
 	public String[] getValidatedAttributes() {
 		return (String[]) validatedAttributes
@@ -408,9 +365,7 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden Method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#removeValidatedAttribute(int)
+	 * @inheritDoc
 	 */
 	public void removeValidatedAttribute(int index) {
 		validatedAttributes.remove(index);
@@ -418,23 +373,35 @@ public class ValidationRuleDef extends IpsObjectPart implements
 	}
 
 	/**
-	 * Overridden Method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#getValidatedAttributeAt(int)
+	 * @inheritDoc
 	 */
 	public String getValidatedAttributeAt(int index) {
 		return (String) validatedAttributes.get(index);
 	}
 
 	/**
-	 * Overridden Method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.pctype.IValidationRuleDef#setValidatedAttributeAt(int,
-	 *      java.lang.String)
+	 * @inheritDoc
 	 */
 	public void setValidatedAttributeAt(int index, String attributeName) {
 		String oldValue = getValidatedAttributeAt(index);
 		validatedAttributes.set(index, attributeName);
 		valueChanged(oldValue, attributeName);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public boolean isValidatedAttrSpecifiedInSrc() {
+		return validatedAttrSpecifiedInSrc;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void setValidatedAttrSpecifiedInSrc(
+			boolean validatedAttrSpecifiedInSrc) {
+		boolean oldValue = this.validatedAttrSpecifiedInSrc;
+		this.validatedAttrSpecifiedInSrc = validatedAttrSpecifiedInSrc;
+		valueChanged(oldValue, validatedAttrSpecifiedInSrc);
 	}
 }

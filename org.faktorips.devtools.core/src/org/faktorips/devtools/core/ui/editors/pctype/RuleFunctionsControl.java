@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
@@ -37,20 +37,20 @@ import org.faktorips.util.message.MessageList;
  */
 public class RuleFunctionsControl extends EditTableControl {
     
-    private IValidationRuleDef rule;
+    private IValidationRule rule;
 
     public RuleFunctionsControl(
-            IValidationRuleDef rule,
+            IValidationRule rule,
             Composite parent) {
         super(rule, parent, SWT.NONE, "Applied in the following business functions:");
         new MessageService(getTableViewer());
     }
     
     protected void initModelObject(Object modelObject) {
-        rule = (IValidationRuleDef)modelObject;
+        rule = (IValidationRule)modelObject;
     }
         
-    public IValidationRuleDef getRule() {
+    public IValidationRule getRule() {
         return rule;
     }
     

@@ -3,9 +3,12 @@ package org.faktorips.devtools.core.model.pctype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 /**
- * 
+ * Represents a validation rule. Instances of this interface just say that a
+ * rule with a specified name, message e.g. exist. The actual rule condition is
+ * part of the concept of this interface. It has to be implemented within the
+ * generated source code.
  */
-public interface IValidationRuleDef extends IIpsObjectPart {
+public interface IValidationRule extends IIpsObjectPart {
 
 	public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions";
 
@@ -16,8 +19,10 @@ public interface IValidationRuleDef extends IIpsObjectPart {
 	public final static String PROPERTY_MESSAGE_CODE = "messageCode";
 
 	public final static String PROPERTY_MESSAGE_SEVERITY = "messageSeverity";
-	
+
 	public final static String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes";
+
+	public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc";
 
 	/**
 	 * Sets the rules name.
@@ -153,5 +158,20 @@ public interface IValidationRuleDef extends IIpsObjectPart {
 	 * @return the validated attribute name
 	 */
 	public String getValidatedAttributeAt(int index);
+
+	/**
+	 * Returns if the validated attributes are specified in the source code
+	 * instead of this rule.
+	 */
+	public boolean isValidatedAttrSpecifiedInSrc();
+
+	/**
+	 * Sets the specifiedInSourceCode flag that indicates if the validated
+	 * attributes are specified in the source code instead of this rule.
+	 * 
+	 * @param specifiedInSourceCode
+	 */
+	public void setValidatedAttrSpecifiedInSrc(
+			boolean validatedAttrSpecifiedInSrc);
 
 }

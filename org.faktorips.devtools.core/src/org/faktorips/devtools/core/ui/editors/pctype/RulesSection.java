@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -67,7 +67,7 @@ public class RulesSection extends SimpleIpsPartsSection {
          * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return new RuleEditDialog((IValidationRuleDef)part, shell);
+            return new RuleEditDialog((IValidationRule)part, shell);
         }
         
         /**

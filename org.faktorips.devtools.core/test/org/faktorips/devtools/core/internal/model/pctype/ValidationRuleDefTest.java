@@ -4,7 +4,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 public class ValidationRuleDefTest extends IpsObjectTestCase {
     
     private PolicyCmptType pcType;
-    private IValidationRuleDef rule;
+    private IValidationRule rule;
     
     protected void setUp() throws Exception {
         super.setUp(IpsObjectType.POLICY_CMPT_TYPE);
@@ -77,6 +77,13 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
     	assertEquals("b", rule.getValidatedAttributeAt(0));
     }
     
+    public void testValidatedAttrSpecifiedInSrc(){
+    	assertFalse(pdSrcFile.isDirty());
+    	rule.setValidatedAttrSpecifiedInSrc(true);
+    	assertTrue(pdSrcFile.isDirty());
+    	assertEquals(true, rule.isValidatedAttrSpecifiedInSrc());
+    }
+    
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         rule.setAppliedInAllBusinessFunctions(true);
@@ -113,7 +120,7 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
         
         Element element = rule.toXml(this.newDocument());
         
-        ValidationRuleDef copy = new ValidationRuleDef();
+        ValidationRule copy = new ValidationRule();
         copy.initFromXml(element);
         assertEquals(1, copy.getId());
         assertEquals("checkAge", copy.getName());
