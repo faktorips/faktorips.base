@@ -85,6 +85,13 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      */
 	public IIpsPackageFragment getIpsParentPackageFragment() {
 		IFolder folder = (IFolder)getCorrespondingResource();
+		
+		IFolder parent = (IFolder)this.getParent().getCorrespondingResource();
+		IFolder defaultPackage = (IFolder)this.getRoot().getIpsDefaultPackageFragment().getCorrespondingResource();
+		if (parent.equals(defaultPackage)) {
+			return null;
+		}
+		
 		return new IpsPackageFragment(this.getParent(), folder.getParent().getName());
 	}
 
@@ -264,6 +271,10 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      */
 	public String getFolderName() {
 		return this.getCorrespondingResource().getName();
+	}
+
+	public boolean isDefaultPacakge() {
+		return this.name.equals("");
 	}
     
     

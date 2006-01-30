@@ -94,7 +94,7 @@ public class PolicyAttributesSection extends IpsSection {
     				valueSet = attribute.getValueSet().copy();
     			}
     		}
-    		toolkit.createFormLabel(workArea, getLabelText(elements[i].getName()));
+    		toolkit.createFormLabel(workArea, StringUtils.capitalise(elements[i].getName()));
     		toolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
     		Text text = toolkit.createText(workArea);
     		TextField field = new TextField(text);
@@ -141,11 +141,4 @@ public class PolicyAttributesSection extends IpsSection {
     	createEditControls();
     	uiController.updateUI();
     }
-    
-
-	private String getLabelText(String attributeName) {
-		return StringUtils.capitalise(attributeName);
-	}
-
-
 }

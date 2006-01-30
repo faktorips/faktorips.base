@@ -82,7 +82,7 @@ public class FormulasSection extends IpsSection {
     	}
     	
     	for (int i = 0; i < elements.length; i++) {
-    		toolkit.createFormLabel(workArea, getLabelText(elements[i].getName()));
+    		toolkit.createFormLabel(workArea, StringUtils.capitalise(elements[i].getName()));
     		FormulaEditControl evc = new FormulaEditControl(workArea, toolkit, elements[i], this.getShell());
     		evc.setText(elements[i].getValue());
     		ctrl.add(evc.getTextControl(), elements[i], ConfigElement.PROPERTY_VALUE);
@@ -95,8 +95,4 @@ public class FormulasSection extends IpsSection {
     		
     	}
     }
-
-    private String getLabelText(String attributeName) {
-		return StringUtils.capitalise(attributeName);
-	}
 }

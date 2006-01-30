@@ -120,7 +120,7 @@ public class ProductAttributesSection extends IpsSection {
 		for (int i = 0; i < elements.length; i++) {
 			Label label = (Label) labels.get(i);
 			if (!label.getText().equals(
-					getLabelText(elements[i].getPcTypeAttribute()))) {
+					StringUtils.capitalise(elements[i].getPcTypeAttribute()))) {
 				return true;
 			}
 		}
@@ -138,8 +138,8 @@ public class ProductAttributesSection extends IpsSection {
 				((Label) labels.get(i)).setText(elements[i]
 						.getPcTypeAttribute());
 			} else {
-				Label label = toolkit.createLabel(workArea,
-						getLabelText(elements[i].getPcTypeAttribute()));
+				Label label = toolkit.createLabel(workArea, StringUtils
+						.capitalise(elements[i].getPcTypeAttribute()));
 				labels.add(label);
 				toolkit.createLabel(workArea, ""); //$NON-NLS-1$
 				Text text = toolkit.createText(workArea);
@@ -150,9 +150,12 @@ public class ProductAttributesSection extends IpsSection {
 				controller.add(field, elements[i],
 						IConfigElement.PROPERTY_VALUE);
 				uiController.add(controller);
-				toolkit.createVerticalSpacer(workArea, 3).setBackground(workArea.getBackground());
-				toolkit.createVerticalSpacer(workArea, 3).setBackground(workArea.getBackground());
-				toolkit.createVerticalSpacer(workArea, 3).setBackground(workArea.getBackground());
+				toolkit.createVerticalSpacer(workArea, 3).setBackground(
+						workArea.getBackground());
+				toolkit.createVerticalSpacer(workArea, 3).setBackground(
+						workArea.getBackground());
+				toolkit.createVerticalSpacer(workArea, 3).setBackground(
+						workArea.getBackground());
 			}
 		}
 
@@ -162,9 +165,5 @@ public class ProductAttributesSection extends IpsSection {
 		}
 		workArea.layout(true);
 		workArea.redraw();
-	}
-
-	private String getLabelText(String attributeName) {
-		return StringUtils.capitalise(attributeName);
 	}
 }

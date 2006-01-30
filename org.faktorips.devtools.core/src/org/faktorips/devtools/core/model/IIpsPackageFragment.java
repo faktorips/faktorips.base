@@ -48,7 +48,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     public final static int JAVA_PACK_EXTENSION = 256;
     
     /**
-     * Returns the packagefragment which contains this one.
+     * Returns the packagefragment which contains this one or null if this one is the default-package.
      */
     public IIpsPackageFragment getIpsParentPackageFragment();
     
@@ -156,4 +156,10 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Returns the (unqualified) name of the corresponding folder in the file system.
      */
 	public String getFolderName();
+	
+	/**
+	 * Returns <code>true</code> if this IIpsPackageFragement is the default-package. 
+	 * The default-package is the one with an empty String as name ("").
+	 */
+	public boolean isDefaultPacakge();
 }
