@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.ui.util.TableLayoutComposite;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -8,6 +9,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -15,31 +17,50 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleDef;
+import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.ui.CompletionUtil;
+import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
+import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.util.message.MessageList;
 
+/**
+ * A gui control to edit the validationAttributes property of a IValidationRuleDef object. 
+ */
 public class ValidatedAttributesControl extends EditTableControl {
 
 	private static String MESSAGE_COLUMN_PROPERTY = "message";
+
 	private static String ATTRIBUTENAME_COLUMN_PROPERTY = "attributeName";
-	
-	private static String[] columnProperties = new String[]{MESSAGE_COLUMN_PROPERTY, ATTRIBUTENAME_COLUMN_PROPERTY};
+
+	private static String[] columnProperties = new String[] {
+			MESSAGE_COLUMN_PROPERTY, ATTRIBUTENAME_COLUMN_PROPERTY };
 
 	private IValidationRuleDef rule;
-	 
+
 	public ValidatedAttributesControl(Object modelObject, Composite parent) {
-		super(modelObject, parent, SWT.NONE, "Specify the attributes that are validated within this rule:");
+		super(modelObject, parent, SWT.NONE,
+				"Specify the attributes that are validated within this rule:");
+		new MessageService(getTableViewer());
 	}
 
 	protected void initModelObject(Object modelObject) {
-		 rule = (IValidationRuleDef)modelObject;
+		rule = (IValidationRuleDef) modelObject;
 	}
 
 	protected UnfocusableTextCellEditor[] createCellEditors() {
-        UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
-        editors[0] = null; // no editor for the message image column
-        editors[1] = new UnfocusableTextCellEditor(getTable());
+		UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
+		editors[0] = null; // no editor for the message image column
+		editors[1] = new UnfocusableTextCellEditor(getTable());
+		ValidatedAttributesCompletionProcessor completionProcessor = new ValidatedAttributesCompletionProcessor(
+				rule);
+		completionProcessor.setComputeProposalForEmptyPrefix(true);
+		ContentAssistHandler.createHandlerForText((Text) editors[1]
+				.getControl(), CompletionUtil
+				.createContentAssistant(completionProcessor));
 		return editors;
 	}
 
@@ -86,47 +107,64 @@ public class ValidatedAttributesControl extends EditTableControl {
 
 	}
 
-	private class ContentProvider implements IStructuredContentProvider{
+	private IndexedValidatedAttributeWrapper[] getWrappersForAttributes() {
+		String[] validatedAttributes = rule.getValidatedAttributes();
+		IndexedValidatedAttributeWrapper[] indexedWrappers = new IndexedValidatedAttributeWrapper[validatedAttributes.length];
+		for (int i = 0; i < validatedAttributes.length; i++) {
+			indexedWrappers[i] = new IndexedValidatedAttributeWrapper(i);
+		}
+		return indexedWrappers;
+
+	}
+
+	private MessageList validate(Object element) {
+		try {
+			IndexedValidatedAttributeWrapper wrapper = (IndexedValidatedAttributeWrapper) element;
+			return rule.validate().getMessagesFor(rule,
+					IValidationRuleDef.PROPERTY_VALIDATED_ATTRIBUTES,
+					wrapper.index);
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+			return new MessageList();
+		}
+	}
+
+	private class ContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(Object inputElement) {
-			ValidationRuleDef rule = (ValidationRuleDef)inputElement;
-			String[] validatedAttributes = rule.getValidatedAttributes();
-			IndexedValidatedAttributeWrapper[] indexedWrappers = new IndexedValidatedAttributeWrapper[validatedAttributes.length];
-			for (int i = 0; i < validatedAttributes.length; i++) {
-				indexedWrappers[i] = new IndexedValidatedAttributeWrapper(i);
-			}
-			return indexedWrappers;
+			return getWrappersForAttributes();
 		}
 
 		public void dispose() {
-			// TODO Auto-generated method stub
-			
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// TODO Auto-generated method stub
-			
 		}
 	}
-	
-	private static class TableLabelProvider extends LabelProvider implements ITableLabelProvider{
+
+	private class TableLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
 
 		public Image getColumnImage(Object element, int columnIndex) {
-			// TODO Auto-generated method stub
-			return null;
+			if (columnIndex != 0) {
+				return null;
+			}
+			MessageList list = validate(element);
+			return ValidationUtils.getSeverityImage(list.getSeverity());
 		}
 
 		public String getColumnText(Object element, int columnIndex) {
-			
-			if(columnIndex == 1){
-				return ((IndexedValidatedAttributeWrapper)element).getAttributeName();
+
+			if (columnIndex == 1) {
+				return ((IndexedValidatedAttributeWrapper) element)
+						.getAttributeName();
 			}
 			return "";
 		}
 	}
-	
-	private class IndexedValidatedAttributeWrapper{
-		
+
+	private class IndexedValidatedAttributeWrapper {
+
 		private int index;
 
 		public IndexedValidatedAttributeWrapper(int index) {
@@ -134,8 +172,8 @@ public class ValidatedAttributesControl extends EditTableControl {
 		}
 
 		public boolean equals(Object obj) {
-			if(obj instanceof IndexedValidatedAttributeWrapper){
-				return ((IndexedValidatedAttributeWrapper)obj).index == index;
+			if (obj instanceof IndexedValidatedAttributeWrapper) {
+				return ((IndexedValidatedAttributeWrapper) obj).index == index;
 			}
 			return false;
 		}
@@ -152,27 +190,40 @@ public class ValidatedAttributesControl extends EditTableControl {
 			rule.setValidatedAttributeAt(index, attributeName);
 		}
 	}
-	
-	private class CellModifier implements ICellModifier{
+
+	private class CellModifier implements ICellModifier {
 
 		public boolean canModify(Object element, String property) {
-			if(ATTRIBUTENAME_COLUMN_PROPERTY.equals(property)){
+			if (ATTRIBUTENAME_COLUMN_PROPERTY.equals(property)) {
 				return true;
 			}
 			return false;
 		}
 
 		public Object getValue(Object element, String property) {
-			return ((IndexedValidatedAttributeWrapper)element).getAttributeName();
+			return ((IndexedValidatedAttributeWrapper) element)
+					.getAttributeName();
 		}
 
 		public void modify(Object element, String property, Object value) {
 			if (element instanceof Item) {
-                element = ((Item) element).getData();   
-            }
-			IndexedValidatedAttributeWrapper validatedAttribute = (IndexedValidatedAttributeWrapper)element;
-			validatedAttribute.setAttributeName((String)value);
-			getTableViewer().update(element, null);
+				element = ((Item) element).getData();
+			}
+			IndexedValidatedAttributeWrapper validatedAttribute = (IndexedValidatedAttributeWrapper) element;
+			validatedAttribute.setAttributeName((String) value);
+			getTableViewer().update(getWrappersForAttributes(), null);
+		}
+	}
+
+	private class MessageService extends TableMessageHoverService {
+
+		public MessageService(TableViewer viewer) {
+			super(viewer);
+		}
+
+		protected MessageList getMessagesFor(Object element)
+				throws CoreException {
+			return validate(element);
 		}
 	}
 }

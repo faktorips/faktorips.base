@@ -1,4 +1,4 @@
-package org.faktorips.message;
+package org.faktorips.util.message;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.util.XmlTestCase;

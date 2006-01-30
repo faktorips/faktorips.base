@@ -186,25 +186,37 @@ public class MessageList {
         return getMessagesFor(object, null);
     }
 
-    /**
-     * Returns a new list witht the messages in this list that belong to the given object and
-     * property. Returns an empty list if no such message is found.
-     */
-    public MessageList getMessagesFor(Object object, String property) {
+    //TODO comment, test
+    public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
         for (int i = 0; i < getNoOfMessages(); i++) {
             Message msg = getMessage(i);
             ObjectProperty[] op = msg.getInvalidObjectProperties();
             for (int j = 0; j < op.length; j++) {
-                if (op[j].getObject()==object
-                        && (property == null || property.equals(op[j]
-                                .getProperty()))) {
-                    result.add(msg);
-                    break;
+                if (op[j].getObject().equals(object)){
+                    if(property == null){
+                        result.add(msg);
+                        break;
+                    }
+                    if(property.equals(op[j].getProperty())){
+                        if(index < 0 || op[j].getIndex() == index){
+                            result.add(msg);
+                            break;
+                        }
+                    }
                 }
             }
         }
         return result;
+    
+    }
+    
+    /**
+     * Returns a new list witht the messages in this list that belong to the given object and
+     * property. Returns an empty list if no such message is found.
+     */
+    public MessageList getMessagesFor(Object object, String property) {
+        return getMessagesFor(object, property, -1);
     }
 
     /**

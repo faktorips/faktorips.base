@@ -16,6 +16,8 @@ public interface IValidationRuleDef extends IIpsObjectPart {
 	public final static String PROPERTY_MESSAGE_CODE = "messageCode";
 
 	public final static String PROPERTY_MESSAGE_SEVERITY = "messageSeverity";
+	
+	public final static String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes";
 
 	/**
 	 * Sets the rules name.

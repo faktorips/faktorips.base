@@ -1,8 +1,6 @@
-package org.faktorips.message;
+package org.faktorips.util.message;
 
 import junit.framework.TestCase;
-
-import org.faktorips.util.message.*;
 
 /**
  *

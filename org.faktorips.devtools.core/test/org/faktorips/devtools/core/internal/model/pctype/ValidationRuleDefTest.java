@@ -2,8 +2,11 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -43,6 +46,37 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
         assertTrue(pdSrcFile.isDirty());
     }
     
+    public void testAddValidatedAttribute(){
+    	rule.addValidatedAttribute("a");
+    	rule.addValidatedAttribute("b");
+    	assertEquals("a", rule.getValidatedAttributes()[0]);
+    	assertEquals("b", rule.getValidatedAttributes()[1]);
+    	assertTrue(pdSrcFile.isDirty());
+    }
+    
+    public void testSetValidatedAttributeAt(){
+    	rule.addValidatedAttribute("a");
+    	rule.addValidatedAttribute("b");
+    	rule.setValidatedAttributeAt(1, "c");
+    	assertEquals("c", rule.getValidatedAttributes()[1]);
+    	assertTrue(pdSrcFile.isDirty());
+    }
+    
+    public void testGetValidatedAttributeAt(){
+    	rule.addValidatedAttribute("a");
+    	rule.addValidatedAttribute("b");
+    	assertEquals("a", rule.getValidatedAttributeAt(0));
+    	assertEquals("b", rule.getValidatedAttributeAt(1));
+
+    }
+    
+    public void testRemoveValidatedAttribute(){
+    	rule.addValidatedAttribute("a");
+    	rule.addValidatedAttribute("b");
+    	rule.removeValidatedAttribute(0);
+    	assertEquals("b", rule.getValidatedAttributeAt(0));
+    }
+    
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         rule.setAppliedInAllBusinessFunctions(true);
@@ -58,6 +92,9 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
         assertEquals(2, functions.length);
         assertEquals("NewOffer", functions[0]);
         assertEquals("Renewal", functions[1]);
+        String[] validatedAttributes = rule.getValidatedAttributes();
+        assertEquals("a", validatedAttributes[0]);
+        assertEquals("b", validatedAttributes[1]);
     }
 
     /*
@@ -72,6 +109,7 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
         rule.setMessageText("messageText");
         rule.setMessageSeverity(MessageSeverity.WARNING);
         rule.setBusinessFunctions(new String[]{"NewOffer", "Renewal"});
+        rule.addValidatedAttribute("a");
         
         Element element = rule.toXml(this.newDocument());
         
@@ -88,6 +126,8 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
         assertEquals(2, functions.length);
         assertEquals("NewOffer", functions[0]);
         assertEquals("Renewal", functions[1]);
+        String[] validationAttributes = copy.getValidatedAttributes();
+        assertEquals("a", validationAttributes[0]);
     }
     
     public void testAddBusinessFunction() {
@@ -119,5 +159,27 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
         assertEquals(2, rule.getNumOfBusinessFunctions());
         assertEquals("f1", rule.getBusinessFunction(0));
         assertEquals("f3", rule.getBusinessFunction(1));
+    }
+    
+    public void testValidate() throws Exception{
+    	rule.addValidatedAttribute("a");
+    	
+    	//validation is expected to fail because the specified attribute doesn't exist for the PolicyCmptType
+    	MessageList messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
+    	assertEquals(1, messageList.getNoOfMessages());
+    	
+    	IAttribute attr = pcType.newAttribute();
+    	attr.setName("a");
+    	attr.setAttributeType(AttributeType.CHANGEABLE);
+    	attr.setDatatype("String");
+    	
+    	messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
+    	assertEquals(0, messageList.getNoOfMessages());
+    	
+    	//validation is expected to fail because of duplicate attribute entries
+    	rule.addValidatedAttribute("a");
+    	messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
+    	assertEquals(1, messageList.getNoOfMessages());
+
     }
 }
