@@ -219,7 +219,9 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
     }
 
     public void testGetIpsParentPackageFragment() {
-    	assertEquals(this.pack.getIpsParentPackageFragment().getName(), "products");
+    	// test for default-package
+    	assertNull(this.pack.getIpsParentPackageFragment());
+//    	assertEquals(this.pack.getIpsParentPackageFragment().getName(), "products");
     }
     
     public void testGetIpsChildPackageFragments() throws CoreException {
