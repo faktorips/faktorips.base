@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.RelationType;
@@ -373,9 +373,9 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         body.append("super.");
         body.append(methodName);
         body.append("(ml);");
-        IValidationRuleDef[] rules = getPcType().getRules();
+        IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
-            IValidationRuleDef r = rules[i];
+            IValidationRule r = rules[i];
             body.append("execRule");
             body.append(StringUtils.capitalise(r.getName()));
             body.append("(ml);");
@@ -395,10 +395,10 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         // replacements[1] = p1;
         // MessageFormat mf = new MessageFormat("Die Postleitzahl muss eingegeben werden.");
         // return new Message("HRP01", mf.format(replacements), Message.ERROR); }
-        IValidationRuleDef[] rules = getPcType().getRules();
+        IValidationRule[] rules = getPcType().getRules();
 
         for (int i = 0; i < rules.length; i++) {
-            IValidationRuleDef r = rules[i];
+            IValidationRule r = rules[i];
             String[] paramNameList = BuilderHelper.extractMessageParameters(r.getMessageText());
             String[] paramTypeList = new String[paramNameList.length];
             JavaCodeFragment body = new JavaCodeFragment();
@@ -692,9 +692,9 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         // private void execRulePlzVorhanden(MessageList ml) {
         // if (false) {
         // ml.add(createMessageForRulePlzVorhanden()); } }
-        IValidationRuleDef[] rules = getPcType().getRules();
+        IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
-            IValidationRuleDef r = rules[i];
+            IValidationRule r = rules[i];
             String javaDoc = getLocalizedText(EXECMESSAGE_POLICY_JAVADOC, r.getName());
             JavaCodeFragment body = new JavaCodeFragment();
             body.append("if(false) ");

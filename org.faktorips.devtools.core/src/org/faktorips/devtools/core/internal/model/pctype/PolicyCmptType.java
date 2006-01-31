@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
-import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
@@ -498,8 +498,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IValidationRuleDef[] getRules() {
-        IValidationRuleDef[] r = new IValidationRuleDef[rules.size()];
+    public IValidationRule[] getRules() {
+        IValidationRule[] r = new IValidationRule[rules.size()];
         rules.toArray(r);
         return r;
     }
@@ -507,8 +507,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public IValidationRuleDef newRule() {
-        IValidationRuleDef r = newRuleInternal(getNextPartId());
+    public IValidationRule newRule() {
+        IValidationRule r = newRuleInternal(getNextPartId());
         updateSrcFile();
         return r;
     }
@@ -516,8 +516,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /*
      * Creates a new rule without updating the src file.
      */
-    private IValidationRuleDef newRuleInternal(int id) {
-        ValidationRuleDef r = new ValidationRuleDef(this, id);
+    private IValidationRule newRuleInternal(int id) {
+        ValidationRule r = new ValidationRule(this, id);
         rules.add(r);
         return r;
     }
@@ -540,7 +540,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * Removes the method from the type. 
      */
-    void removeRule(ValidationRuleDef rule) {
+    void removeRule(ValidationRule rule) {
         rules.remove(rule);
     }
     
@@ -586,7 +586,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (part instanceof IRelation) {
             relations.add(part);
             return;
-        } else if (part instanceof IValidationRuleDef) {
+        } else if (part instanceof IValidationRule) {
             rules.add(part);
             return;
         }
@@ -603,7 +603,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return newRelationInternal(id);
         } else if (xmlTagName.equals(Method.TAG_NAME)) {
             return newMethodInternal(id);
-        } else if (xmlTagName.equals(ValidationRuleDef.TAG_NAME)) {
+        } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName);

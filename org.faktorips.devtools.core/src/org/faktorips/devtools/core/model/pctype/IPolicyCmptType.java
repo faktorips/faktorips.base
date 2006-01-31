@@ -297,12 +297,12 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     /**
      * Returns the type's vallidation rules.
      */
-    public IValidationRuleDef[] getRules();
+    public IValidationRule[] getRules();
 
     /**
      * Creates a new validation rule and returns it.
      */
-    public IValidationRuleDef newRule();
+    public IValidationRule newRule();
 
     /**
      * Returns the number of rules.
