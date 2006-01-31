@@ -20,23 +20,25 @@ import org.eclipse.core.runtime.MultiStatus;
 public interface IIpsArtefactBuilder {
 
 	/**
-     * Is called on every registered IpsArtefactBuilder before a full build starts.
+     * Is called on every registered IpsArtefactBuilder before a build process starts.
+	 * @param buildKind TODO
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. Throwing a
      *             CoreException or RuntimeException will stop the current build cycle of this
      *             builder.
      */
-    public void beforeFullBuild() throws CoreException;
+    public void beforeBuildProcess(int buildKind) throws CoreException;
 
     /**
-     * Is called on every registered IpsArtefactBuilder after a full has finished.
+     * Is called on every registered IpsArtefactBuilder after a build process has finished.
+     * @param buildKind TODO
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions.
      */
-    public void afterFullBuild() throws CoreException;
+    public void afterBuildProcess(int buildKind) throws CoreException;
 
     /**
-     * Is called before the build starts if the isBuilderFor method has returned true for the
+     * Is called directly before the build method is called if the isBuilderFor method has returned true for the
      * provided IpsSrcFile. This method is supposed to be used to set the builder in a defined state
      * before the actual build process starts.
      * 
@@ -55,7 +57,7 @@ public interface IIpsArtefactBuilder {
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException;
 
     /**
-     * Is called after the build method has finished only if the isBuilderFor method has returned
+     * Is called directly after the build method has finished only if the isBuilderFor method has returned
      * true for the provided IpsSrcFile. This method is supposed to be used for clean up after the
      * build has finished.
      * 

@@ -172,10 +172,10 @@ public class IpsBuilderTest extends IpsPluginTest {
         private boolean buildCalled = false;
         private boolean deleteCalled = false;
 
-        public void beforeFullBuild() throws CoreException {
+        public void beforeBuildProcess(int buildKind) throws CoreException {
         }
 
-        public void afterFullBuild() throws CoreException {
+        public void afterBuildProcess(int buildKind) throws CoreException {
         }
 
         public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
@@ -209,10 +209,10 @@ public class IpsBuilderTest extends IpsPluginTest {
             builtIpsObjects.clear();
         }
 
-        public void beforeFullBuild() throws CoreException {
+        public void beforeBuildProcess(int buildKind) throws CoreException {
         }
 
-        public void afterFullBuild() throws CoreException {
+        public void afterBuildProcess(int buildKind) throws CoreException {
         }
 
         public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {

@@ -280,7 +280,6 @@
       <datatypeDefinition 
 		        datatypeClass="org.faktorips.datatype.classtypes.DateDatatype"
       			helperClass="org.faktorips.codegen.dthelpers.DateHelper"/>
- 
       <datatypeDefinition 
 		        datatypeClass="org.faktorips.datatype.classtypes.DecimalDatatype"
       			helperClass="org.faktorips.codegen.dthelpers.DecimalHelper"/>

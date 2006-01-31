@@ -48,10 +48,10 @@ public abstract class AbstractTocFileUpdateBuilder implements IIpsArtefactBuilde
         return packageStructure;
     }
 
-    public void beforeFullBuild() throws CoreException {
+    public void beforeBuildProcess(int buildKind) throws CoreException {
     }
 
-    public void afterFullBuild() throws CoreException {
+    public void afterBuildProcess(int buildKind) throws CoreException {
     }
 
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {

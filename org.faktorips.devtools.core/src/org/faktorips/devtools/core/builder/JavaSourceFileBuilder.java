@@ -288,17 +288,17 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	/**
 	 * Empty implementation of the super class method.
 	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#beforeFullBuild()
+	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#beforeBuildProcess(int)
 	 */
-	public void beforeFullBuild() throws CoreException {
+	public void beforeBuildProcess(int buildKind) throws CoreException {
 	}
 
 	/**
 	 * Empty implementation of the super class method.
 	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#afterFullBuild()
+	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#afterBuildProcess(int)
 	 */
-	public void afterFullBuild() throws CoreException {
+	public void afterBuildProcess(int buildKind) throws CoreException {
 	}
 
 	/**

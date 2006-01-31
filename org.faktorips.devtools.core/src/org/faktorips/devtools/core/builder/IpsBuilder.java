@@ -104,15 +104,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return null;
         }
         rememberTocModificationStamps();
+        buildStatus = applyBuildCommand(buildStatus, new BeforeBuildProcessCommand(kind));
         if (kind == IncrementalProjectBuilder.FULL_BUILD
                 || kind == IncrementalProjectBuilder.CLEAN_BUILD || getDelta(getProject()) == null) {
             // delta not available
-            buildStatus = applyBuildCommand(buildStatus, new BeforeFullBuildCommand());
             buildStatus = fullBuild(monitor);
-            buildStatus = applyBuildCommand(buildStatus, new AfterFullBuildCommand());
         } else {
             buildStatus = incrementalBuild(monitor);
         }
+        buildStatus = applyBuildCommand(buildStatus, new AfterBuildProcessCommand(kind));
+
         saveTocs();
         if (buildStatus.getSeverity() == IStatus.OK) {
             return null;
@@ -476,17 +477,29 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException;
     }
 
-    private static class BeforeFullBuildCommand implements BuildCommand {
+    private static class BeforeBuildProcessCommand implements BuildCommand {
 
+    	private int buildKind;
+    	
+    	public BeforeBuildProcessCommand(int buildKind){
+    		this.buildKind = buildKind;
+    	}
+    	
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            builder.beforeFullBuild();
+            builder.beforeBuildProcess(buildKind);
         }
     }
 
-    private static class AfterFullBuildCommand implements BuildCommand {
+    private static class AfterBuildProcessCommand implements BuildCommand {
 
+    	private int buildKind;
+    	
+    	public AfterBuildProcessCommand(int buildKind){
+    		this.buildKind = buildKind;
+    	}
+    	
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            builder.afterFullBuild();
+            builder.afterBuildProcess(buildKind);
         }
     }
 
