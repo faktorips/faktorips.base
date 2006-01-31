@@ -139,4 +139,15 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     protected void reinitPartCollections() {
         rows.clear();
     }
+
+    /**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		if (partType.equals(IRow.class)) {
+            return newRowInternal(this.getNextPartId());
+		}
+		
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

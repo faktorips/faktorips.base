@@ -523,4 +523,19 @@ public class TableStructure extends IpsObject implements ITableStructure {
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName);
     }
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+        if (partType.equals(IColumn.class)) {
+            return newColumnInternal(this.getNextPartId());
+        } else if (partType.equals(IColumnRange.class)) {
+            return newColumnRangeInternal(this.getNextPartId());
+        } else if (partType.equals(IUniqueKey.class)) {
+            return newUniqueKeyInternal(this.getNextPartId());
+        } else if (partType.equals(IForeignKey.class)) {
+            return newForeignKeyInternal(this.getNextPartId());
+        }
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

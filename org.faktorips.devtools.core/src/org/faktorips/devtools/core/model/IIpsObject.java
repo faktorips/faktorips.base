@@ -2,13 +2,12 @@ package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.util.memento.MementoSupport;
 
 
 /**
  *
  */
-public interface IIpsObject extends IIpsElement, IExtensionPropertyAccess, Validatable, XmlSupport, MementoSupport, Described {
+public interface IIpsObject extends IIpsObjectPartContainer {
     
     /**
      * Returns the object's type.
@@ -75,4 +74,5 @@ public interface IIpsObject extends IIpsElement, IExtensionPropertyAccess, Valid
      * @deprecated
      */
     public IType[] getAllJavaTypes() throws CoreException;
+    
 }

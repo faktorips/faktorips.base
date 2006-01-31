@@ -237,4 +237,15 @@ public class ProductCmptTypeTest extends IpsPluginTest {
 		assertTrue(productCmptType.hasChildren());
 	}
 
+    /**
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			productCmptType.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

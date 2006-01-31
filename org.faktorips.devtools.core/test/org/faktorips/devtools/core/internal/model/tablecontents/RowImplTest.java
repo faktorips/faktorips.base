@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.w3c.dom.Element;
@@ -76,4 +77,15 @@ public class RowImplTest extends IpsObjectTestCase {
         assertNull(row.getValue(2));
     }
 
+    /**
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			row.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

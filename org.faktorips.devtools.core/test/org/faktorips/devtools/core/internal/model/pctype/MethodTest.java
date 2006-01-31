@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -147,4 +148,15 @@ public class MethodTest extends IpsObjectTestCase {
         
     }
 
+    /**
+     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			method.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

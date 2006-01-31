@@ -5,6 +5,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -125,5 +126,11 @@ public class Column extends IpsObjectPart implements IColumn {
         return new IColumn[]{this};
     }
     
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
     
 }

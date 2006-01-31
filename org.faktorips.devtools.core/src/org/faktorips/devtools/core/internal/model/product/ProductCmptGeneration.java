@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -236,6 +237,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         updateSrcFile();
         return newRelation;
     }
+    
+    public IProductCmptRelation newRelation() {
+    	return newRelationInternal(getNextPartId());
+    }
 
     private ProductCmptRelation newRelationInternal(int id) {
         ProductCmptRelation newRelation = new ProductCmptRelation(this, id);
@@ -344,5 +349,18 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+	public IIpsObjectPart newPart(Class partType) {
+		if (partType.equals(IConfigElement.class)) {
+			return newConfigElement();
+		}
+		else if (partType.equals(IRelation.class)) {
+			return newRelation();
+		}
+			
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
     
 }

@@ -11,6 +11,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -207,5 +208,17 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         msgList = aProductGen.validate();
         assertNotNull(msgList.getMessageByCode(ExprCompiler.UNDEFINED_IDENTIFIER));
         
+    }
+
+    public void testNewPart() {
+    	try {
+    		assertTrue(productCmpt.newPart(IConfigElement.class) instanceof IConfigElement);
+    		assertTrue(productCmpt.newPart(IRelation.class) instanceof IRelation);
+    		
+    		productCmpt.newPart(Object.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
     }
 }

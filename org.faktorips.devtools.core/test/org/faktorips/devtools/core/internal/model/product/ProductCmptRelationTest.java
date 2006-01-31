@@ -5,6 +5,7 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -91,4 +92,15 @@ public class ProductCmptRelationTest extends IpsPluginTest {
         assertEquals("3", relation.getMaxCardinality());
     }
 
+    /**
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			relation.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

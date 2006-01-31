@@ -15,6 +15,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -402,6 +403,8 @@ public class Method extends Member implements IMethod {
         }
     }
 
-    
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}    
     
 }

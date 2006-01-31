@@ -544,5 +544,17 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         lastEvent = event;
     }
 
+    public void testNewPart() {
+    	try {
+    		assertTrue(pcType.newPart(IAttribute.class) instanceof IAttribute);
+    		assertTrue(pcType.newPart(IMethod.class) instanceof IMethod);
+    		assertTrue(pcType.newPart(IRelation.class) instanceof IRelation);
+    		assertTrue(pcType.newPart(IValidationRule.class) instanceof IValidationRule);
+    		
+    		pcType.newPart(Object.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }
-;

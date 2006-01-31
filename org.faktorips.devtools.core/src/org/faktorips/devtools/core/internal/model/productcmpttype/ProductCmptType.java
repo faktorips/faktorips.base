@@ -12,6 +12,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -318,5 +319,12 @@ public class ProductCmptType implements IProductCmptType {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
 	}
 }

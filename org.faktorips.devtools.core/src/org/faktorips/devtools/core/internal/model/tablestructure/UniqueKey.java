@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
@@ -149,4 +150,11 @@ public class UniqueKey extends Key implements IUniqueKey {
         super.propertiesToXml(element);
         // nothing else to do
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ValidationRuleDefTest extends IpsObjectTestCase {
+public class ValidationRuleTest extends IpsObjectTestCase {
     
     private PolicyCmptType pcType;
     private IValidationRule rule;
@@ -188,5 +188,17 @@ public class ValidationRuleDefTest extends IpsObjectTestCase {
     	messageList = rule.validate().getMessagesFor(rule, "validatedAttributes");
     	assertEquals(1, messageList.getNoOfMessages());
 
+    }
+    
+    /**
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			rule.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
     }
 }

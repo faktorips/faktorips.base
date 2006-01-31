@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -218,4 +219,10 @@ public class Row extends IpsObjectPart implements IRow {
         }
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

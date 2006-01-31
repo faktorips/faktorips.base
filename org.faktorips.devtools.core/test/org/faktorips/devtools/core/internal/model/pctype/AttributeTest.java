@@ -209,4 +209,16 @@ public class AttributeTest extends IpsPluginTest {
     	attribute.validate(); // once this produced a stack overflow!
     	
     }
+
+    /**
+     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			attribute.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

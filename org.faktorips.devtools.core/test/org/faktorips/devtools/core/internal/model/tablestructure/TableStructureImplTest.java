@@ -5,6 +5,7 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -196,5 +197,18 @@ public class TableStructureImplTest extends IpsPluginTest {
         
     }
 
+    public void testNewPart() {
+    	try {
+    		assertTrue(table.newPart(IColumn.class) instanceof IColumn);
+    		assertTrue(table.newPart(IColumnRange.class) instanceof IColumnRange);
+    		assertTrue(table.newPart(IUniqueKey.class) instanceof IUniqueKey);
+    		assertTrue(table.newPart(IForeignKey.class) instanceof IForeignKey);
+    		
+    		table.newPart(Object.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 
 }

@@ -108,4 +108,10 @@ public class BusinessFunctionImpl extends IpsObject implements
         throw new RuntimeException("newPart() not supported.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

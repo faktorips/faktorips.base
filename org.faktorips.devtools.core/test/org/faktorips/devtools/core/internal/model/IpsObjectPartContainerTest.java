@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.util.XmlUtil;
@@ -230,6 +231,13 @@ public class IpsObjectPartContainerTest extends IpsPluginTest {
         public Image getImage() {
             return null;
         }
+
+    	/**
+    	 * {@inheritDoc}
+    	 */
+    	public IIpsObjectPart newPart(Class partType) {
+    		throw new IllegalArgumentException("Unknown part type" + partType);
+    	}
         
     }
     

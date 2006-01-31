@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -114,4 +115,15 @@ public class UniqueKeyImplTest extends IpsObjectTestCase {
         assertEquals("gender", key.getKeyItemNames()[1]);
     }
 
+    /**
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			key.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

@@ -9,6 +9,7 @@ import org.faktorips.devtools.core.model.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -21,7 +22,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Jan Ortmann
  */
-public abstract class IpsObjectPartContainer extends IpsElement implements IExtensionPropertyAccess {
+public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer, IExtensionPropertyAccess {
 
     /**
      * Name of the xml element the containing the elements for the extension property values.

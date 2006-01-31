@@ -7,6 +7,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -207,5 +208,11 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
         element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality);
         element.setAttribute(PROPERTY_MAX_CARDINALITY, maxCardinality);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

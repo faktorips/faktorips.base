@@ -1,13 +1,12 @@
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.util.memento.MementoSupport;
 
 
 
 /**
  *
  */
-public interface IIpsObjectPart extends IIpsElement, Validatable, XmlSupport, MementoSupport, Described, IExtensionPropertyAccess {
+public interface IIpsObjectPart extends IIpsObjectPartContainer {
     
     public final static String PROPERTY_DESCRIPTION = "description";
     public final static String PROPERTY_ID = "id";
@@ -26,18 +25,5 @@ public interface IIpsObjectPart extends IIpsElement, Validatable, XmlSupport, Me
      * Deletes the part. 
      */
     public void delete();
-    
-    /**
-     * Returns the description.
-     */
-    public String getDescription();
-    
-    /**
-     * Sets the new description. 
-     * 
-     * @throws IllegalArgumentException if description is null.
-     */
-    public void setDescription(String newDescription);
-    
     
 }

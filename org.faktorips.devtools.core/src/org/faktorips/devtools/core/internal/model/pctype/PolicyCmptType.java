@@ -113,6 +113,25 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         unqalifiedProductCmptType = newUnqualifiedName;
         valueChanged(oldName, newUnqualifiedName);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		if (partType.equals(IAttribute.class)) {
+			return newAttribute();
+		}
+		else if (partType.equals(IMethod.class)) {
+			return newMethod();
+		}
+		else if (partType.equals(IRelation.class)) {
+			return newRelation();
+		}
+		else if (partType.equals(IValidationRule.class)) {
+			return newRule();
+		}
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 
 	/** 
      * Overridden.

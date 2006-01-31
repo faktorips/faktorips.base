@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.w3c.dom.Document;
@@ -103,4 +104,15 @@ public class RelationTest extends IpsObjectTestCase {
         assertEquals("5", copy.getMaxCardinalityProductSide());        
     }
     
+    /**
+     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			relation.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

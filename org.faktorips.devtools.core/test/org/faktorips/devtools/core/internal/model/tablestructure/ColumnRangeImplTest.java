@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -115,5 +116,17 @@ public class ColumnRangeImplTest extends IpsObjectTestCase {
         range.setToColumn("unknownColumn");
         columns = range.getColumns();
         assertEquals(0, columns.length);
+    }
+
+    /**
+     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     */
+    public void testNewPart() {
+    	try {
+			range.newPart(IAttribute.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
     }
 }

@@ -9,6 +9,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -301,4 +302,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         element.setAttribute(PROPERTY_VALUE, value);
         element.appendChild(valueSet.toXml(element.getOwnerDocument()));
     }
+
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

@@ -3,6 +3,8 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.w3c.dom.Element;
@@ -103,4 +105,14 @@ public class TableContentsGenerationImplTest extends IpsObjectTestCase {
         assertEquals(2, generation.getNumOfRows());
     }
 
+    public void testNewPart() {
+    	try {
+    		assertTrue(generation.newPart(IRow.class) instanceof IRow);
+    		
+    		generation.newPart(Object.class);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//nothing to do :-)
+		}
+    }
 }

@@ -8,6 +8,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -241,4 +242,10 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         return (IColumn[])columns.toArray(new IColumn[columns.size()]);
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

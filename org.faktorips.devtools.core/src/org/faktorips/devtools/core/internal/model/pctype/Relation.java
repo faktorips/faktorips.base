@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -583,4 +584,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, maxCardinalityProductSide);
     }
     
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }

@@ -6,6 +6,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -174,4 +175,11 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         structure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
         numOfColumns = Integer.parseInt(element.getAttribute("numOfColumns"));
     }
+
+    /**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
 }
