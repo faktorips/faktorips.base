@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
  */
 public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     
+	private boolean configurableByProductCmptType = true;
 	private String unqalifiedProductCmptType = "";
     private String supertype = "";
     private boolean abstractFlag = false;
@@ -70,7 +71,29 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	/**
 	 * Overridden.
 	 */
+	public boolean isConfigurableByProductCmptType() {
+		return configurableByProductCmptType;
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public void setConfigurableByProductCmptType(boolean newValue) {
+		boolean oldValue = configurableByProductCmptType;
+		configurableByProductCmptType = newValue;
+		valueChanged(oldValue, newValue);
+	}
+
+	/**
+	 * Overridden.
+	 */
 	public IProductCmptType findProductCmptType() throws CoreException {
+		if (!configurableByProductCmptType) {
+			return null;
+		}
+		if (StringUtils.isEmpty(unqalifiedProductCmptType)) {
+			return null;
+		}
 		return new ProductCmptType(this);
 	}
 
@@ -84,9 +107,11 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	/**
 	 * Overridden.
 	 */
-	public void setUnqualifiedProductCmptType(String unqualifiedName) {
-		ArgumentCheck.notNull(unqualifiedName);
-		unqalifiedProductCmptType = unqualifiedName;
+	public void setUnqualifiedProductCmptType(String newUnqualifiedName) {
+		ArgumentCheck.notNull(newUnqualifiedName);
+        String oldName = unqalifiedProductCmptType;
+        unqalifiedProductCmptType = newUnqualifiedName;
+        valueChanged(oldName, newUnqualifiedName);
 	}
 
 	/** 
@@ -167,14 +192,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getSupertype() {
         return supertype;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IPolicyCmptType findSupertype() throws CoreException {
         if (StringUtils.isEmpty(supertype)) {
@@ -431,16 +456,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getNumOfAttributes()
+     * {@inheritDoc}
      */
     public int getNumOfRelations() {
         return relations.size();
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#moveRelations(int[], boolean)
+     * {@inheritDoc}
      */
     public int[] moveRelations(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(relations);
@@ -448,8 +471,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#newAttribute()
+     * {@inheritDoc}
      */
     public IRelation newRelation() {
         Relation r = newRelationInternal(getNextPartId());
@@ -474,21 +496,19 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getRules()
-     */ 
-    public IValidationRule[] getRules() {
-        IValidationRule[] r = new IValidationRule[rules.size()];
+     * {@inheritDoc}
+     */
+    public IValidationRuleDef[] getRules() {
+        IValidationRuleDef[] r = new IValidationRuleDef[rules.size()];
         rules.toArray(r);
         return r;
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#newRule()
-     */ 
-    public IValidationRule newRule() {
-        IValidationRule r = newRuleInternal(getNextPartId());
+     * {@inheritDoc}
+     */
+    public IValidationRuleDef newRule() {
+        IValidationRuleDef r = newRuleInternal(getNextPartId());
         updateSrcFile();
         return r;
     }
@@ -496,24 +516,21 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /*
      * Creates a new rule without updating the src file.
      */
-    private IValidationRule newRuleInternal(int id) {
-        ValidationRule r = new ValidationRule(this, id);
+    private IValidationRuleDef newRuleInternal(int id) {
+        ValidationRuleDef r = new ValidationRuleDef(this, id);
         rules.add(r);
         return r;
     }
     
     /** 
-     * Overridden method.
-     * 
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getNumOfMethods()
+     * {@inheritDoc}
      */
     public int getNumOfRules() {
         return rules.size();
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#moveRules(int[], boolean)
+     * {@inheritDoc}
      */
     public int[] moveRules(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(rules);
@@ -523,7 +540,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * Removes the method from the type. 
      */
-    void removeRule(ValidationRule rule) {
+    void removeRule(ValidationRuleDef rule) {
         rules.remove(rule);
     }
     
@@ -539,7 +556,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     protected void initPropertiesFromXml(Element element) {
         super.initPropertiesFromXml(element);
-        unqalifiedProductCmptType = element.getAttribute("productCmptType");
+        configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE)).booleanValue();
+        unqalifiedProductCmptType = element.getAttribute(PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
         supertype = element.getAttribute(PROPERTY_SUPERTYPE);
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
         forceExtensionCompilationUnitGeneration = Boolean.valueOf(element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
@@ -568,7 +586,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (part instanceof IRelation) {
             relations.add(part);
             return;
-        } else if (part instanceof IValidationRule) {
+        } else if (part instanceof IValidationRuleDef) {
             rules.add(part);
             return;
         }
@@ -576,9 +594,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#newPart(java.lang.String, int)
+     * {@inheritDoc}
      */
     protected IIpsObjectPart newPart(String xmlTagName, int id) {
         if (xmlTagName.equals(Attribute.TAG_NAME)) {
@@ -587,7 +603,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return newRelationInternal(id);
         } else if (xmlTagName.equals(Method.TAG_NAME)) {
             return newMethodInternal(id);
-        } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
+        } else if (xmlTagName.equals(ValidationRuleDef.TAG_NAME)) {
             return newRuleInternal(id);
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName);
@@ -598,7 +614,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute("productCmptType", unqalifiedProductCmptType);
+        newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType);
+        newElement.setAttribute(PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE, unqalifiedProductCmptType);
         newElement.setAttribute(PROPERTY_SUPERTYPE, supertype);
         newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag);
         newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration);

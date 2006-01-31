@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlTestCase;
 
@@ -229,7 +230,11 @@ public abstract class IpsPluginTest extends XmlTestCase {
 	        pack = root.createPackageFragment(packName, true, null);
 	    }
 	    IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
-	    return file.getIpsObject();
+	    IIpsObject ipsObject = file.getIpsObject();
+	    if (ipsObject instanceof IPolicyCmptType) {
+	    	((IPolicyCmptType)ipsObject).setUnqualifiedProductCmptType(unqualifiedName + "ProductCmpt");
+	    }
+	    return ipsObject;
 	}
 	
 	/**

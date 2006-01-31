@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     
-    private String pcType = "";
+    private String policyCmptType = "";
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
@@ -51,23 +51,23 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * Overridden.
      */
     public String getPolicyCmptType() {
-        return pcType;
+        return policyCmptType;
     }
 
     /** 
      * Overridden.
      */
     public void setPolicyCmptType(String newPcType) {
-        String oldType = pcType;
-        pcType = newPcType;
-        valueChanged(oldType, pcType);
+        String oldType = policyCmptType;
+        policyCmptType = newPcType;
+        valueChanged(oldType, policyCmptType);
     }
 
     /** 
      * Overridden.
      */
     public IPolicyCmptType findPolicyCmptType() throws CoreException {
-        return getIpsProject().findPolicyCmptType(pcType);
+        return getIpsProject().findPolicyCmptType(policyCmptType);
     }
 
     /**
@@ -91,7 +91,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if (findPolicyCmptType()==null) {
-            String text = "The template " + this.pcType + " does not exists";
+            String text = "The template " + this.policyCmptType + " does not exists";
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
         }
     }
@@ -150,10 +150,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         
-        if(StringUtils.isEmpty(pcType)){
+        if(StringUtils.isEmpty(policyCmptType)){
             return new QualifiedNameType[0];
         }
-        return new QualifiedNameType[]{new QualifiedNameType(pcType, IpsObjectType.POLICY_CMPT_TYPE)};
+        return new QualifiedNameType[]{new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE)};
     }
 
     /**
@@ -161,7 +161,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, pcType);
+        element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
     }
 
     /**
@@ -169,6 +169,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     protected void initPropertiesFromXml(Element element) {
         super.initPropertiesFromXml(element);
-        pcType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
+        policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
     }
 }

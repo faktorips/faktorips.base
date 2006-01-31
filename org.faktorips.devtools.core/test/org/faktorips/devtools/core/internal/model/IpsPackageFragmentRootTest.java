@@ -44,13 +44,13 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
     }
     
     public void testGetProductCmptRegistryToc() throws CoreException {
-        IIpsPackageFragment pack = ipsRoot.createPackageFragment("motor", true, null);
-        pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy", true, null);
-        IIpsSrcFile productCmptFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "MotorProduct2005", true, null);
-        IProductCmpt productCmpt = (IProductCmpt)productCmptFile.getIpsObject();
+        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
+        type.setUnqualifiedProductCmptType("MotorProduct");
+        type.getIpsSrcFile().save(true, null);
+        IProductCmpt productCmpt = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct2005");
         productCmpt.setPolicyCmptType("motor.MotorPolicy");
         productCmpt.newGeneration();
-        productCmptFile.save(true, null);
+        productCmpt.getIpsSrcFile() .save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         MutableClRuntimeRepositoryToc toc = ipsRoot.getRuntimeRepositoryToc();
         TocEntry[] entries = toc.getProductCmptTocEntries();

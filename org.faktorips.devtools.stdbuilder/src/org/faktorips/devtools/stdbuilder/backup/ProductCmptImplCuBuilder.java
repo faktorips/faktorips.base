@@ -1,4 +1,4 @@
-package org.faktorips.devtools.stdbuilder.pctype;
+package org.faktorips.devtools.stdbuilder.backup;
 
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -14,7 +14,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -22,8 +21,13 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.stdbuilder.Util;
+import org.faktorips.devtools.stdbuilder.pctype.PolicyCmptTypeImplCuBuilder;
+import org.faktorips.devtools.stdbuilder.pctype.PolicyCmptTypeInterfaceCuBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplCuBuilder;
 import org.faktorips.runtime.RuntimeRepository;
-import org.faktorips.runtime.internal.ProductComponentImpl;
+import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.ProductComponentGeneration;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
@@ -42,7 +46,9 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
     private PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder;
     private PolicyCmptTypeImplCuBuilder policyCmptTypeImplBuilder;
     private ProductCmptInterfaceCuBuilder productCmptInterfaceBuilder;
+    private ProductCmptGenImplCuBuilder productCmptGenImplBuilder;
 
+    
     public ProductCmptImplCuBuilder(IJavaPackageStructure packageStructure, String kindId) {
         super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptImplCuBuilder.class));
         setMergeEnabled(true);
@@ -59,6 +65,11 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
     public void setProductCmptInterfaceBuilder(ProductCmptInterfaceCuBuilder productCmptInterfaceBuilder) {
         this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
     }
+    
+    public void setProductCmptGenImplBuilder(ProductCmptGenImplCuBuilder builder) {
+        ArgumentCheck.notNull(builder);
+        productCmptGenImplBuilder = builder;
+    }
 
     ProductCmptInterfaceCuBuilder getProductCmptInterfaceBuilder() {
         return productCmptInterfaceBuilder;
@@ -69,17 +80,16 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * Open up visibility. Might get removed after refactoring the relation builder. Overridden
-     * IMethod.
+     * Open up visibility. Might get removed after refactoring the relation builder. 
      * 
-     * @see org.faktorips.devtools.core.builder.AbstractPcTypeBuilder#isContainerRelation(org.faktorips.devtools.core.model.pctype.IRelation)
+     * Overridden.
      */
     public boolean isContainerRelation(IRelation relation) {
         return super.isContainerRelation(relation);
     }
 
     protected String getSuperclass() throws CoreException {
-        String javaSupertype = ProductComponentImpl.class.getName();
+        String javaSupertype = ProductComponent.class.getName();
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(
                 getPcType().getSupertype());
@@ -96,6 +106,8 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
     protected String[] getExtendedInterfaces() throws CoreException {
         return new String[] { productCmptInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()) };
     }
+    
+    
 
     protected void assertConditionsBeforeGenerating() {
         String builderName = null;
@@ -122,7 +134,7 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // TODO Auto-generated method stub
+
         if (attribute.isProductRelevant()) {
             Datatype datatype = getPcType().getIpsProject().findDatatype(attribute.getDatatype());
 
@@ -180,19 +192,37 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
 
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
         if (!getPcType().isAbstract()) {
             buildCreateMethod(methodsBuilder);
+            if ((getClassModifier() & Modifier.ABSTRACT) == 0) {
+                buildCreateGenerationMethod(methodsBuilder);
+            }
         }
-        buildInitFromXml(methodsBuilder);
-
     }
 
+    private void buildCreateGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.methodBegin(Modifier.PUBLIC, ProductComponentGeneration.class, "createGeneration", null, null);
+        methodsBuilder.append("return new ");
+        String generationQClassName = productCmptGenImplBuilder.getQualifiedClassName(getIpsSrcFile());
+        methodsBuilder.appendClassName(generationQClassName);
+        methodsBuilder.appendln("(this);");
+        methodsBuilder.methodEnd();
+        return;
+    }
+
+    /**
+     * Overridden.
+     */
     protected int getClassModifier() throws CoreException {
+        int modifier = super.getClassModifier();
+        if ((modifier & Modifier.ABSTRACT)>0) {
+            return modifier;
+        }
         IAttribute[] attributes = getPcType().getSupertypeHierarchy().getAllAttributes(getPcType());
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
-            if (a.isProductRelevant()
-                    && (a.getAttributeType() == AttributeType.COMPUTED || a.getAttributeType() == AttributeType.DERIVED)) {
+            if (a.isProductRelevant() && a.isDerivedOrComputed()) {
                 return Modifier.PUBLIC | Modifier.ABSTRACT;
             }
         }
@@ -520,6 +550,7 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
     private void createAttributeField(JavaCodeFragmentBuilder memberVarsBuilder,
             IAttribute a,
             Datatype datatype) throws CoreException {
+
         DatatypeHelper helper = getPcType().getIpsProject().getDatatypeHelper(datatype);
         JavaCodeFragment initialValueExpression = helper.newInstance(a.getDefaultValue());
         String comment = getLocalizedText(ATTRIBUTE_FIELD_COMMENT, a.getName());
@@ -595,9 +626,7 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
+     * Overridden.
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());

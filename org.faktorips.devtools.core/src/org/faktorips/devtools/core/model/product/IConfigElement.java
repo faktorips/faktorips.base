@@ -8,9 +8,7 @@ import org.faktorips.fl.ExprCompiler;
 
 
 /**
- * A product attribute is a product component's attribute that
- * is based upon a constant, product relevant attribute of the policy component type
- * this product component is based on. 
+ * A configuration element is based on an product component type's attribute.
  * <p>
  * For example a policy component could have a constant attribute interestRate.
  * All product components based on that policy component have a matching
@@ -61,16 +59,16 @@ public interface IConfigElement extends IIpsObjectPart {
     public void setType(ConfigElementType newType);
     
     /**
-     * Returns the name of the policy component type's attribute
-     * this attribute is based on.
+     * Returns the name of the product component type's attribute
+     * this element is based on.
      */
     public String getPcTypeAttribute();
     
     /**
-     * Sets the name of the policy component type's attribute
+     * Sets the name of the product component type's attribute
      * this attribute is based on.
      * 
-     * @throws IllegalArgumentException if name is <code>null</code>.
+     * @throws NullPointerException if name is <code>null</code>.
      */
     public void setPcTypeAttribute(String name);
     
@@ -101,13 +99,13 @@ public interface IConfigElement extends IIpsObjectPart {
     public ExprCompiler getExprCompiler() throws CoreException;
     
     /**
-     * Finds the corresponding attribute in the policy component type this
-     * product component is based on.
+     * Finds the corresponding attribute in the product component type this
+     * product component is an instance of.
      * 
      * @return the corresponding attribute or <code>null</code> if no such
      * attribute exists.
      * 
-     * @throws CoreException if an exception occurs while searching the policy component type. 
+     * @throws CoreException if an exception occurs while searching for the attribute. 
      */
     public IAttribute findPcTypeAttribute() throws CoreException;
     

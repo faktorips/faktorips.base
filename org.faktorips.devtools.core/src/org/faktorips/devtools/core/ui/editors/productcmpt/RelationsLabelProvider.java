@@ -10,8 +10,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
  * Provides labels for relations. IProductCmptRelations are displayed as the target object.
@@ -47,8 +47,8 @@ public class RelationsLabelProvider implements ILabelProvider{
 	 * Overridden.
 	 */
 	public Image getImage(Object element) {
-		if (element instanceof IRelation) {
-			return ((IRelation)element).getImage();
+		if (element instanceof IProductCmptTypeRelation) {
+			return ((IProductCmptTypeRelation)element).getImage();
 		}
 		else if (element instanceof IProductCmptRelation) {
 			IProductCmptRelation rel = ((IProductCmptRelation)element);

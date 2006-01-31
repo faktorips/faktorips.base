@@ -1,4 +1,4 @@
-package org.faktorips.devtools.stdbuilder.pctype;
+package org.faktorips.devtools.stdbuilder.backup;
 
 import java.lang.reflect.Modifier;
 
@@ -8,7 +8,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
@@ -20,7 +19,8 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.runtime.ProductComponent;
+import org.faktorips.devtools.stdbuilder.pctype.PolicyCmptTypeInterfaceCuBuilder;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -43,18 +43,14 @@ public class ProductCmptInterfaceCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#getUnqualifiedClassName(org.faktorips.devtools.core.model.IIpsObject)
+     * Overridden.
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
         return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Pk";
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
+     * Overridden.
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
@@ -137,7 +133,7 @@ public class ProductCmptInterfaceCuBuilder extends AbstractPcTypeBuilder {
     private String getPcInterfaceGetDefaultValueMethodName(IAttribute a) {
         return "getVorgabewert" + StringUtils.capitalise(a.getName());
     }
-
+    
     // duplicate in ProductCmptImplCuBuilder
     private String getPcInterfaceGetValueMethodName(IAttribute a) {
         return "get" + StringUtils.capitalise(a.getName());
@@ -180,7 +176,7 @@ public class ProductCmptInterfaceCuBuilder extends AbstractPcTypeBuilder {
     }
 
     protected String[] getExtendedInterfaces() throws CoreException {
-        String javaSupertype = ProductComponent.class.getName();
+        String javaSupertype = IProductComponent.class.getName();
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(getPcType().getSupertype());
             javaSupertype = supertype == null ? javaSupertype : getQualifiedClassName(supertype.getIpsSrcFile());

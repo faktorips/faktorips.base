@@ -21,6 +21,11 @@ public interface IRelation extends IIpsObjectPart {
     public final static String PROPERTY_CONTAINER_RELATION = "containerRelation";
     public final static String PROPERTY_REVERSE_RELATION = "reverseRelation";
     public final static String PROPERTY_READONLY_CONTAINER = "readOnlyContainer";
+
+    public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide";
+    public final static String PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE = "targetRolePluralProductSide";
+    public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide";
+    public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide";
     
     // type constant for the Java field in the java policy component type impl and the product component type impl.
     public final static int JAVA_PCTYPE_FIELD = 0;
@@ -138,7 +143,7 @@ public interface IRelation extends IIpsObjectPart {
     public void setProductRelevant(boolean newValue);
     
     /**
-     * Returns the qualified name of the read-only container relation.
+     * Returns the qualified name of the container relation.
      * <p>
      * Example:
      * <br>
@@ -148,7 +153,7 @@ public interface IRelation extends IIpsObjectPart {
      * <code>MotorPolicy</code> and <code>MotorCollisionPart</code>.
      * To express that the a motor policy instance returns the collision part
      * when all it's parts (PolicyPartRelation) are requested, the policy part relation
-     * has to be defined as superrelation of the 0-1 relation between the motor policy
+     * has to be defined as container relation of the 0-1 relation between the motor policy
      * and the motor collision part.
      */
     public String getContainerRelation();     
@@ -197,6 +202,71 @@ public interface IRelation extends IIpsObjectPart {
      * @throws CoreException if an error occurs while searching.
      */
     public IRelation findContainerRelationOfTypeReverseComposition() throws CoreException;
-
+    
+    /**
+     * Returns the role of the target in this relation on the product side.
+     */
+    public String getTargetRoleSingularProductSide();
+    
+    /**
+     * Sets the role of the target in this relation on the product side. The role is specified in singular form, 
+     * e.g. policy and not policies. The distinction is more relevant in other languages than English, where you can't derive the 
+     * plural from the singular form.
+     */
+    public void setTargetRoleSingularProductSide(String newRole);
+    
+    /**
+     * Returns the role of the target in this relation on the product side. The role is specified in plural form.
+     */
+    public String getTargetRolePluralProductSide();
+    
+    /**
+     * Sets the new role in plural form of the target in this relation on the product sided.
+     */
+    public void setTargetRolePluralProductSide(String newRole);
+    
+    /**
+     * Returns the minmum number of product components required in this relation
+     * on the product side.
+     * <p>
+     * Note that the minimum cardinality on the product side needn't be the same as the
+     * one on the policy side. If the min cardinality on the policy side is 0, the
+     * min cardinality on the product side can be 1. It might be optional to include
+     * a coverage in a policy, but if it should be possible for all products than
+     * the minimum cardinality on the product side is 1.
+     */
+    public int getMinCardinalityProductSide();
+    
+    /**
+     * Sets the minmum number of product components in this relation.   
+     */
+    public void setMinCardinalityProductSide(int newValue);
+    
+    /**
+     * Returns the maxmium number of product components allowed in this relation.
+     * If the number is not limited an asterix ('*') is returned. 
+     * <p>
+     * Note that the maximum cardinality on the product side needn't be the same as the
+     * one on the policy side. If the max cardinality on the policy side is 1, the
+     * max cardinality on the product side can be *. In this case the meaning is a kind 
+     * of multi-choice. One of the product components can be used when creating a policy (but only one).
+     * <p>
+     * Example:<p>
+     * A home policy has exactly one glas coverage. However on the product side a basic and a premium
+     * glas coverage type is defined. A concrete home police can either contain a coverage based on the
+     * basic or the premium coverage type. 
+     * <p>
+     * Also the opposite is possible. On the policy side multiple coverages of the same type might by
+     * included but they must all be based on the same coverage type. In this case the max
+     * cardinality on the policy side is * but 1 on the product side.
+     */
+    public String getMaxCardinalityProductSide();
+    
+    /**
+     * Sets the maxmium number of target instances allowed in this relation.
+     * An unlimited number is represented by an asterix ('*'). 
+     */
+    public void setMaxCardinalityProductSide(String newValue);
+    
     
 }

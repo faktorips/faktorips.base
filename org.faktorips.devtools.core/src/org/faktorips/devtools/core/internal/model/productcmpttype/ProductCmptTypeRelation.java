@@ -9,6 +9,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -55,19 +56,23 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	public RelationType getRelationType() {
 		return relation.getRelationType();
 	}
-
+	
 	/**
 	 * Overridden.
 	 */
-	public String getTarget() {
-		return relation.getTarget() + "Pk";
+	public boolean isAbstract() {
+		return relation.isReadOnlyContainer();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public IProductCmptType findTarget() throws CoreException {
-		return getIpsProject().findProductCmptType(getTarget());
+		IPolicyCmptType type = relation.findTarget();
+		if (type==null) {
+			return null;
+		}
+		return new ProductCmptType((PolicyCmptType)type);
 	}
 
 	/**
@@ -81,14 +86,14 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public String getTargetRoleSingular() {
-		return relation.getTargetRoleSingular() + "Pk";
+		return relation.getTargetRoleSingularProductSide();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setTargetRoleSingular(String newRole) {
-		throw new RuntimeException("Not implemented yet!");
+		relation.setTargetRoleSingularProductSide(newRole);
 	}
 
 	/**
@@ -102,7 +107,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public void setTargetRolePlural(String newRole) {
-		throw new RuntimeException("Not implemented yet!");
+		relation.setTargetRolePluralProductSide(newRole);
 	}
 
 	/**
@@ -115,36 +120,59 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	/**
 	 * Overridden.
 	 */
+	public boolean hasContainerRelation() {
+		return relation.hasContainerRelation();
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public String getContainerRelation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public IProductCmptTypeRelation findContainerRelation() throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Overridden.
+	 */
 	public int getMinCardinality() {
-		return relation.getMinCardinality();
+		return relation.getMinCardinalityProductSide();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setMinCardinality(int newValue) {
-		throw new RuntimeException("Not implemented yet!");
+		relation.setMinCardinalityProductSide(newValue);
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public String getMaxCardinality() {
-		return "*";
+		return relation.getMaxCardinalityProductSide();
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public boolean is1ToMany() {
-		return true;
+		return "*".equals(getMaxCardinality());
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setMaxCardinality(String newValue) {
-		throw new RuntimeException("Not implemented yet!");
+		relation.setMaxCardinalityProductSide(newValue);
 	}
 
 	/**
@@ -256,7 +284,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public MessageList validate() throws CoreException {
-		return new MessageList();
+		return relation.validate();
 	}
 
 	/**
@@ -301,4 +329,11 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 		throw new RuntimeException("Not implemented yet!");
 	}
 
+	public boolean equals(Object o) {
+		if (!(o instanceof ProductCmptTypeRelation)) {
+			return false;
+		}
+		ProductCmptTypeRelation other = (ProductCmptTypeRelation)o;
+		return relation.equals(other.relation);
+	}
 }

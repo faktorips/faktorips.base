@@ -1,10 +1,17 @@
 package org.faktorips.devtools.core.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -14,6 +21,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
+import org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPath;
@@ -69,6 +77,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 					break;
 				}
 			}
+			addIpsRuntimeLibraries(javaProject);
 			IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
 			ipsProject.setValueDatatypes(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
 			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model");
@@ -87,6 +96,17 @@ public class AddIpsNatureAction extends ActionDelegate {
 			ErrorDialog.openError(getShell(), "Error creating IPS project.", null, status);
 			IpsPlugin.log(e);
 		}
+	}
+	
+	private void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
+		IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
+		String[] ipsVariables = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES;
+		IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + ipsVariables.length];
+		System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
+		for (int i = 0; i < ipsVariables.length; i++) {
+			entries[oldEntries.length+i] = JavaCore.newVariableEntry(new Path(ipsVariables[i]), null, null);
+		}
+		javaProject.setRawClasspath(entries, null);
 	}
 
 	/**

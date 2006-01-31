@@ -44,6 +44,9 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
         return (IPolicyCmptType)getIpsObject();
     }
 
+    /**
+     * Overridden.
+     */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
     }
@@ -57,10 +60,10 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     }
 
     /**
+     * Overridden.
+     * 
      * Calls the generateInternal() method and addes the package and import declarations to the
      * content.
-     * 
-     * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#generate()
      */
     public String generate() throws CoreException {
         assertConditionsBeforeGenerating();

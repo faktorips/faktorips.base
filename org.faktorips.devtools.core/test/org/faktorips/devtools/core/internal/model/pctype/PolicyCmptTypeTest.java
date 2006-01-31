@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.util.CollectionUtil;
@@ -59,7 +59,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         // validation rule
         pcType.setForceExtensionCompilationUnitGeneration(false);
         assertFalse(pcType.isExtensionCompilationUnitGenerated());
-        IValidationRule rule = pcType.newRule();
+        IValidationRuleDef rule = pcType.newRule();
         assertTrue(pcType.isExtensionCompilationUnitGenerated());
         
         // method
@@ -91,7 +91,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         IAttribute a1 = pcType.newAttribute();
         IMethod m1 = pcType.newMethod();
         IRelation r1 = pcType.newRelation();
-        IValidationRule rule1 = pcType.newRule();
+        IValidationRuleDef rule1 = pcType.newRule();
         
         IIpsElement[] elements = pcType.getChildren();
         assertEquals(4, elements.length);
@@ -169,21 +169,21 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
 
     public void testNewRule() {
         sourceFile.getIpsModel().addChangeListener(this);
-        IValidationRule r = pcType.newRule();
+        IValidationRuleDef r = pcType.newRule();
         assertEquals(0, r.getId());    
         assertSame(pcType, r.getIpsObject());
         assertEquals(1, pcType.getNumOfRules());
         assertTrue(sourceFile.isDirty());
         assertEquals(sourceFile, lastEvent.getPdSrcFile());
         
-        IValidationRule r2 = pcType.newRule();
+        IValidationRuleDef r2 = pcType.newRule();
         assertEquals(1, r2.getId());    
     }
 
     public void testGetRules() {
         assertEquals(0, pcType.getRules().length);
-        IValidationRule r1 = pcType.newRule();
-        IValidationRule r2 = pcType.newRule();
+        IValidationRuleDef r1 = pcType.newRule();
+        IValidationRuleDef r2 = pcType.newRule();
         assertSame(r1, pcType.getRules()[0]);
         assertSame(r2, pcType.getRules()[1]);
         
@@ -245,7 +245,9 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
 
     public void testInitFromXml() {
         Element element = getTestDocument().getDocumentElement();
+        pcType.setConfigurableByProductCmptType(false);
         pcType.initFromXml(element);
+        assertTrue(pcType.isConfigurableByProductCmptType());
         assertEquals("Product", pcType.getUnqualifiedProductCmptType());
         assertEquals("SuperType", pcType.getSupertype());
         assertTrue(pcType.isAbstract());
@@ -257,7 +259,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         IMethod[] m = pcType.getMethods();
         assertEquals(1, m.length);
         
-        IValidationRule[] rules = pcType.getRules();
+        IValidationRuleDef[] rules = pcType.getRules();
         assertEquals(1, rules.length);
         
         IRelation[] r = pcType.getRelations();
@@ -276,7 +278,8 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertSame(rules[0], pcType.getRules()[0]);
     }
     
-    public void testToXml() {
+    public void testToXml() throws CoreException {
+    	pcType.setConfigurableByProductCmptType(true);
     	pcType.setUnqualifiedProductCmptType("Product");
         pcType.setDescription("blabla");
         pcType.setAbstract(true);
@@ -289,9 +292,9 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         m1.setName("m1");
         IMethod m2 = pcType.newMethod();
         m2.setName("m2");
-        IValidationRule rule1 = pcType.newRule();
+        IValidationRuleDef rule1 = pcType.newRule();
         rule1.setName("rule1");
-        IValidationRule rule2 = pcType.newRule();
+        IValidationRuleDef rule2 = pcType.newRule();
         rule2.setName("rule2");
         IRelation r1 = pcType.newRelation();
         r1.setTarget("t1");
@@ -300,8 +303,10 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         
         Element element = pcType.toXml(this.newDocument());
         
-        PolicyCmptType copy = new PolicyCmptType();
+        PolicyCmptType copy = (PolicyCmptType)newIpsObject(pdProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
+        copy.setConfigurableByProductCmptType(false);
         copy.initFromXml(element);
+        assertTrue(copy.isConfigurableByProductCmptType());
         assertEquals("Product", copy.getUnqualifiedProductCmptType());
         assertEquals("NewSuperType", copy.getSupertype());
         assertTrue(copy.isAbstract());
@@ -313,7 +318,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         IMethod[] methods = copy.getMethods();
         assertEquals("m1", methods[0].getName());
         assertEquals("m2", methods[1].getName());
-        IValidationRule[] rules= copy.getRules();
+        IValidationRuleDef[] rules= copy.getRules();
         assertEquals("rule1", rules[0].getName());
         assertEquals("rule2", rules[1].getName());
         IRelation[] relations = copy.getRelations();
@@ -518,6 +523,18 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     public void testGetProductCmptType() {
     	pcType.setUnqualifiedProductCmptType("MotorProduct");
     	assertEquals(pack.getName() + '.' + "MotorProduct", pcType.getProductCmptType());
+    }
+    
+    public void testFindProductCmptType() throws CoreException {
+    	pcType.setUnqualifiedProductCmptType("MotorProduct");
+    	pcType.setConfigurableByProductCmptType(false);
+    	assertNull(pcType.findProductCmptType());
+    	
+    	pcType.setConfigurableByProductCmptType(true);
+    	assertNotNull(pcType.findProductCmptType());
+    	
+    	pcType.setUnqualifiedProductCmptType("");
+    	assertNull(pcType.findProductCmptType());
     }
     
     /** 

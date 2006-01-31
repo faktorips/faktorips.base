@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.stdbuilder.pctype.ProductCmptImplCuBuilder;
+import org.faktorips.devtools.stdbuilder.backup.ProductCmptImplCuBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.RuntimeRepository;

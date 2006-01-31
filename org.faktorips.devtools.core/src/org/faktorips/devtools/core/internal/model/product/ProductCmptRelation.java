@@ -13,6 +13,8 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -26,7 +28,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
 
     final static String TAG_NAME = "Relation";
     
-    private String pcTypeRelation = "";
+    private String productCmptTypeRelation = "";
     private String target = "";
     private int minCardinality = 0;
     private String maxCardinality = "1";
@@ -40,24 +42,22 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IConfigElement#getProductCmpt()
+     * Overridden.
      */
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent().getParent();
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IConfigElement#getProductCmptGeneration()
+     * Overridden.
      */
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
+     * Overridden.
+
      */
     public void delete() {
         ((ProductCmptGeneration)getParent()).removeRelation(this);
@@ -69,52 +69,43 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * Overridden.
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("ProductCmptRelation.gif");
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptRelation#getPcTypeRelation()
-     */
-    public String getPcTypeRelation() {
-        return pcTypeRelation;
-    }
-    
     /**
      * {@inheritDoc}
      */
     public String getProductCmptTypeRelation() {
-		try {
-			IPolicyCmptType policyCmptType = getProductCmpt().findPolicyCmptType();
-			IRelation relation = policyCmptType.getRelation(pcTypeRelation);
-			if (relation==null) {
-				return null;
-			}
-			return (new ProductCmptTypeRelation((Relation)relation)).getName();
-		} catch (CoreException e) {
-			throw new RuntimeException(e);
+    	return productCmptTypeRelation;
+	}
+    
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptTypeRelation findProductCmptTypeRelation() throws CoreException {
+		IProductCmptType productCmptType = getProductCmpt().findProductCmptType();
+		if (productCmptType==null) {
+			return null;
 		}
+		return productCmptType.getRelation(productCmptTypeRelation);
 	}
 
-	void setPcTypeRelation(String newRelation) {
-        pcTypeRelation = newRelation;
+	void setProductCmptTypeRelation(String newRelation) {
+        productCmptTypeRelation = newRelation;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptRelation#getTarget()
+     * Overridden.
      */
     public String getTarget() {
         return target;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptRelation#setTarget(java.lang.String)
+     * Overridden.
      */
     public void setTarget(String newTarget) {
         String oldTarget = target;
@@ -123,16 +114,14 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getMinCardinality()
+     * Overridden.
      */
     public int getMinCardinality() {
         return minCardinality;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setMinCardinality(int)
+     * Overridden.
      */
     public void setMinCardinality(int newValue) {
         int oldValue = minCardinality;
@@ -142,16 +131,14 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#getMaxCardinality()
+     * Overridden.
      */
     public String getMaxCardinality() {
         return maxCardinality;
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IRelation#setMaxCardinality(java.lang.String)
+     * Overridden.
      */ 
     public void setMaxCardinality(String newValue) {
         String oldValue = maxCardinality;
@@ -159,23 +146,11 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
         valueChanged(oldValue, newValue);
     }
 
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.product.IProductCmptRelation#findPcTypeRelation()
-     */
-    public IRelation findPcTypeRelation() throws CoreException {
-        IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType();
-        if (pcType==null) {
-            return null;
-        }
-        return pcType.getRelation(this.pcTypeRelation);
-    }
-    
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
-        IRelation relation = findPcTypeRelation();
+        IProductCmptTypeRelation relation = findProductCmptTypeRelation();
         if (relation==null) {
-            String text = "There is no relation " + pcTypeRelation + " defined in " + getProductCmpt().getPolicyCmptType() + ".";
+            String text = "There is no relation " + productCmptTypeRelation + " defined in " + getProductCmpt().getPolicyCmptType() + ".";
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_PCTYPE_RELATION));
         }
         ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT, true, "target", this, PROPERTY_TARGET, list);
@@ -204,9 +179,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * Overridden.
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
@@ -214,26 +187,22 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
 
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void initPropertiesFromXml(Element element) {
         super.initPropertiesFromXml(element);
-        pcTypeRelation = element.getAttribute(PROPERTY_PCTYPE_RELATION);
+        productCmptTypeRelation = element.getAttribute(PROPERTY_PCTYPE_RELATION);
         target = element.getAttribute(PROPERTY_TARGET);
         minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));
         maxCardinality = element.getAttribute(PROPERTY_MAX_CARDINALITY);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * Overridden.
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_PCTYPE_RELATION, pcTypeRelation);
+        element.setAttribute(PROPERTY_PCTYPE_RELATION, productCmptTypeRelation);
         element.setAttribute(PROPERTY_TARGET, target);
         element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality);
         element.setAttribute(PROPERTY_MAX_CARDINALITY, maxCardinality);

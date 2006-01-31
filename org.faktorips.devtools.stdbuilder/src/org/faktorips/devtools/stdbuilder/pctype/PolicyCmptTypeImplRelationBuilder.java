@@ -132,8 +132,9 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         String methodName = getPolicyCmptInterfaceAddPolicyCmptTypeMethod(relation);
         JavaCodeFragment body = new JavaCodeFragment();
         body.append("if(refObject == null) {");
-        body
-                .append("throw new IllegalArgumentException(\"Can't add null to SimpleHomeCoverageRole\"); }");
+        body.append("throw new ");
+        body.appendClassName(NullPointerException.class);
+        body.append("(\"Can't add null to \" + this); }");
         body.append("if(");
         body.append(fieldname);
         body.append(".contains(refObject)) { return; }");

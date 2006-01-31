@@ -12,6 +12,8 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 
 /**
  * A workbench window action delegate to open a new wizard dialog. 
@@ -53,7 +55,12 @@ public abstract class OpenNewWizardAction implements IWorkbenchWindowActionDeleg
 	public void run(IAction action)
 	{
 		INewWizard wizard = createWizard();
-		wizard.init(window.getWorkbench(), getCurrentSelection());
+		IStructuredSelection selection = getCurrentSelection();
+		if (selection==null) {
+			IpsPlugin.log(new IpsStatus("No selection available, can't open wizard!"));
+			return;
+		}
+		wizard.init(window.getWorkbench(), selection);
 		WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
 		dialog.open();
 	}

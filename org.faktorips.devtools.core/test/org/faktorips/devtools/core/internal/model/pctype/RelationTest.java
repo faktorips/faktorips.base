@@ -53,6 +53,10 @@ public class RelationTest extends IpsObjectTestCase {
         assertFalse(relation.isProductRelevant());
         assertEquals("Policy.Parts", relation.getContainerRelation());
         assertEquals("Part.Policy", relation.getReverseRelation());
+        assertEquals("PolicyPartType", relation.getTargetRoleSingularProductSide());
+        assertEquals("PolicyPartTypes", relation.getTargetRolePluralProductSide());
+        assertEquals(2, relation.getMinCardinalityProductSide());
+        assertEquals("3", relation.getMaxCardinalityProductSide());
     }
 
     /*
@@ -71,6 +75,10 @@ public class RelationTest extends IpsObjectTestCase {
         relation.setMinCardinality(2);
         relation.setMaxCardinality("3");
         relation.setDescription("blabla");
+        relation.setTargetRoleSingularProductSide("targetRoleSingularProductSide");
+        relation.setTargetRolePluralProductSide("targetRolePluralProductSide");
+        relation.setMinCardinalityProductSide(4);
+        relation.setMaxCardinalityProductSide("5");
         
         Element element = relation.toXml(this.newDocument());
         
@@ -88,6 +96,11 @@ public class RelationTest extends IpsObjectTestCase {
         assertEquals("3", copy.getMaxCardinality());
         assertFalse(copy.isProductRelevant());
         assertEquals("blabla", copy.getDescription());
+        
+        assertEquals("targetRoleSingularProductSide", copy.getTargetRoleSingularProductSide());
+        assertEquals("targetRolePluralProductSide", copy.getTargetRolePluralProductSide());
+        assertEquals(4, copy.getMinCardinalityProductSide());
+        assertEquals("5", copy.getMaxCardinalityProductSide());        
     }
     
 }

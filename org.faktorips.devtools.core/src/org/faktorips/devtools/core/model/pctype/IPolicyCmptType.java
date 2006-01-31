@@ -13,7 +13,13 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  */
 public interface IPolicyCmptType extends IIpsObject, Datatype {
     
+	
     /**
+     * The name of the product component type property.
+     */
+    public final static String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType";
+
+	/**
      * The name of the product component type property.
      */
     public final static String PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE = "unqualifiedProductCmptType";
@@ -77,15 +83,28 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = "PCTYPE-MustOverrideAbstractMethod";
     
     /**
+     * Returns <code>true</code> if this class has a corresponding product component type,
+     * otherwise <code>false</code>.
+     */
+    public boolean isConfigurableByProductCmptType();
+    
+    /**
+     * Sets if this policy component type has a corresponding product component type or not.
+     */
+    public void setConfigurableByProductCmptType(boolean newValue);
+    
+    /**
      * Returns the qualified name of the product component type. Returns an empty string if this policy
      * component type has no corresponding product component type.
      */
     public String getProductCmptType();
     
     /**
-     * Returns the product component type this type refers to. 
-     * Returns <code>null</code> if either this type does not refer to product component type
-     * or the product component type can't be found on the project's ips object path. 
+     * Returns the product component type this type refers to.  
+     * Returns <code>null</code> if either this type does not refer to a product component type
+     * or the product component type can't be found on the project's ips object path.
+     * This policy component type does not refer to a product component type if the  
+     * <code>ConfigurableByProductCmptType</code> property is <code>true</code>.
      *
      * @throws CoreException if an error occurs while searching for the type.
      */
@@ -278,12 +297,12 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     /**
      * Returns the type's vallidation rules.
      */
-    public IValidationRule[] getRules();
+    public IValidationRuleDef[] getRules();
 
     /**
      * Creates a new validation rule and returns it.
      */
-    public IValidationRule newRule();
+    public IValidationRuleDef newRule();
 
     /**
      * Returns the number of rules.
@@ -325,7 +344,7 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * Note that a relation's name is equal to it's target role, so you
      * can also use the target role as parameter.
      * 
-     * @throws IllegalArgumentException if name is null.
+     * @throws IllegalArgumentException if name is <code>null</code>.
      */
     public IRelation getRelation(String name);
 

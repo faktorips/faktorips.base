@@ -243,9 +243,8 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends IpsPluginTest 
         assertEquals(r1, relations[0]);
         assertEquals(r2, relations[1]);
         
-        pcType.newRelation().setTargetRoleSingular("typeRelation1");
-        supertype.newRelation().setTargetRoleSingular("typeRelation2");
-        IRelation relation = r1.findPcTypeRelation();
+        pcType.newRelation().setTargetRoleSingularProductSide("typeRelation1");
+        supertype.newRelation().setTargetRoleSingularProductSide("typeRelation2");
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         relations = delta.getRelationsWithMissingPcTypeRelations();
         assertEquals(0, relations.length);

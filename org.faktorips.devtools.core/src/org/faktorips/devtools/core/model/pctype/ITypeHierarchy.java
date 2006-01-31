@@ -1,5 +1,8 @@
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+
 /**
  *
  */
@@ -68,5 +71,17 @@ public interface ITypeHierarchy {
      */
     public IRelation findRelation(IPolicyCmptType type, String targetRole);
     
+    /**
+     * Returns the relation with the given relation name if either the type or one of
+     * it's supertypes contains a relation with that target role. Returns <code>null</code>
+     * if no relation with the given name is found.  
+     */
+    public IProductCmptTypeRelation findRelationOnProductSide(IPolicyCmptType type, String relationName);
+
+    /**
+     * Returns the direct subtypes for the given policy component type.
+     * Returns an empty array if either type is <code>null</code> or the hierarchy
+     * does not contain any subtypes for the type.
+     */
     public IPolicyCmptType[] getSubtypes(IPolicyCmptType type);
 }

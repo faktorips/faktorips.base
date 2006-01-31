@@ -23,10 +23,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
@@ -71,7 +70,7 @@ public class RelationsSection extends IpsSection {
 	 * Overridden.
 	 */
 	protected void initClientComposite(Composite client, UIToolkit toolkit) {
-		String[] pcTypeRelations = getPcTypeRelations(generation);
+		String[] pcTypeRelations = getTypeRelations(generation);
 		if (pcTypeRelations.length==0) {
 		    toolkit.createLabel(client, Messages.PropertiesPage_noRelationsDefined);		    
 		} else {
@@ -132,18 +131,18 @@ public class RelationsSection extends IpsSection {
 		}
 	}
     
-    /**
-     * Returns all PcType relations that are defined either in the generation
-     * or in the PcType the generation is based on.
+    /*
+     * Returns all product component type relations that are defined either in the generation
+     * or in the type the generation is based on.
      */
-    private String[] getPcTypeRelations(IProductCmptGeneration generation) {
+    private String[] getTypeRelations(IProductCmptGeneration generation) {
         List result = new ArrayList();
         try {
-            IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
-            if (pcType!=null) {
-                IRelation[] pcTypeRelations = pcType.getRelations();
-                for (int i=0; i<pcTypeRelations.length; i++) {
-                    result.add(pcTypeRelations[i].getName());
+            IProductCmptType type = generation.getProductCmpt().findProductCmptType();
+            if (type!=null) {
+                IProductCmptTypeRelation[] typeRelations = type.getRelations();
+                for (int i=0; i<typeRelations.length; i++) {
+                    result.add(typeRelations[i].getName());
                 }
             }
         } catch (CoreException e) {
@@ -151,8 +150,8 @@ public class RelationsSection extends IpsSection {
         }
 		IProductCmptRelation[] relations = generation.getRelations();
         for (int i=0; i<relations.length; i++) {
-            if (!result.contains(relations[i].getPcTypeRelation())) {
-                result.add(relations[i].getPcTypeRelation());
+            if (!result.contains(relations[i].getProductCmptTypeRelation())) {
+                result.add(relations[i].getProductCmptTypeRelation());
             }
         }
         return (String[])result.toArray(new String[result.size()]);
@@ -164,15 +163,13 @@ public class RelationsSection extends IpsSection {
      * @param target The target for the new relation.
      * @param relation The type of the new relation.
      */
-    private void newRelation(String target, IRelation relation) {
+    private void newRelation(String target, IProductCmptTypeRelation relation) {
     	generation.newRelation(relation.getName()).setTarget(target);
     }
 
     
     /**
      * Listener for updating the kardinality triggerd by the selection of another relation.
-     * 
-     * @author Thorsten Guenther
      */
     private class SelectionChangedListener implements ISelectionChangedListener {
     	IpsPartUIController uiController;
@@ -238,10 +235,10 @@ public class RelationsSection extends IpsSection {
 				
 				try {
 					if (dropAt instanceof IProductCmptTypeRelation) {
-						newRelation((String)event.data, ((IProductCmptTypeRelation)dropAt).findPolicyCmptTypeRelation());
+						newRelation((String)event.data, ((IProductCmptTypeRelation)dropAt));
 					}
 					else if (dropAt instanceof IProductCmptRelation) {
-						newRelation((String)event.data, ((IProductCmptRelation)dropAt).findPcTypeRelation());
+						newRelation((String)event.data, ((IProductCmptRelation)dropAt).findProductCmptTypeRelation());
 					}
 				} catch (CoreException e) {
 					IpsPlugin.log(e);

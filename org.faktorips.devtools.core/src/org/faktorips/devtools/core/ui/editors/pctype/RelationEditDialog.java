@@ -47,6 +47,11 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private CheckboxField productRelevantField;
     private TextField containerRelationField;
     private TextField reverseRelationField;
+
+    private TextField targetRoleSingularProductSideField;
+    private TextField targetRolePluralProductSideField;
+    private IntegerField minCardinalityProductSideField;
+    private TextField maxCardinalityProductSideField;
     
     private ExtensionPropertyControlFactory extFactory;
     
@@ -62,8 +67,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * Overridden.
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -71,6 +75,10 @@ public class RelationEditDialog extends IpsPartEditDialog {
         TabItem firstPage = new TabItem(folder, SWT.NONE);
         firstPage.setText("Properties");
         firstPage.setControl(createFirstPage(folder));
+        
+        TabItem productSidePage = new TabItem(folder, SWT.NONE);
+        productSidePage.setText("Product Side");
+        productSidePage.setControl(createProductSidePage(folder));
         
         createDescriptionTabItem(folder);
         return folder;
@@ -84,7 +92,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
     	Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)relation,"top");
+        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)relation, "top");
                 
         uiToolkit.createFormLabel(workArea, "Type:");
         Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
@@ -152,14 +160,41 @@ public class RelationEditDialog extends IpsPartEditDialog {
         return c;
     }
     
+    private Control createProductSidePage(TabFolder folder) {
+        Composite c = createTabItemComposite(folder, 1, false);
+
+        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
+        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
+        uiToolkit.createFormLabel(workArea, "Target Role (Singular):");
+        Text targetRoleSingularText = uiToolkit.createText(workArea);
+        
+        uiToolkit.createFormLabel(workArea, "Target Role (Plural):");
+        Text targetRolePluralText = uiToolkit.createText(workArea);
+        
+        uiToolkit.createFormLabel(workArea, "Minimum Cardinality:");
+        Text minCardinalityText = uiToolkit.createText(workArea);
+        
+        uiToolkit.createFormLabel(workArea, "Maximum Cardinality:");
+        Text maxCardinalityText = uiToolkit.createText(workArea);
+        
+        // create fields
+        targetRoleSingularProductSideField = new TextField(targetRoleSingularText);
+        targetRolePluralProductSideField = new TextField(targetRolePluralText);
+        minCardinalityProductSideField = new IntegerField(minCardinalityText);
+        maxCardinalityProductSideField = new TextField(maxCardinalityText);
+        
+        return c;
+    }
     
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
+     * Overridden.
      */
     protected void connectToModel() {
         super.connectToModel();
+        
+        // first page
         uiController.add(targetField, IRelation.PROPERTY_TARGET);
         uiController.add(abstractContainerField, IRelation.PROPERTY_READONLY_CONTAINER);
         uiController.add(targetRoleSingularField, IRelation.PROPERTY_TARGET_ROLE_SINGULAR);
@@ -172,7 +207,12 @@ public class RelationEditDialog extends IpsPartEditDialog {
         uiController.add(productRelevantField, IRelation.PROPERTY_PRODUCT_RELEVANT);
         
         extFactory.connectToModel(uiController);
-   }
-
- 
+        
+        // product side page
+        uiController.add(targetRoleSingularProductSideField, IRelation.PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
+        uiController.add(targetRolePluralProductSideField, IRelation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
+        uiController.add(minCardinalityProductSideField, IRelation.PROPERTY_MIN_CARDINALITY_PRODUCTSIDE);
+        uiController.add(maxCardinalityProductSideField, IRelation.PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
+    }
+    
 }

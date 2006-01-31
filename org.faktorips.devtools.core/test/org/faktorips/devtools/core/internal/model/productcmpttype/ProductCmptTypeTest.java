@@ -9,6 +9,8 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -40,6 +42,19 @@ public class ProductCmptTypeTest extends IpsPluginTest {
 		assertEquals(policyCmptType, productCmptType.findPolicyCmptyType());
 	}
 
+	public void testFindSupertype() throws CoreException {
+		assertNull(productCmptType.findSupertype());
+		policyCmptType.setSupertype("unknownSupertype");
+		assertNull(productCmptType.findSupertype());
+		
+		IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Policy");
+		superPolicyCmptType.setUnqualifiedProductCmptType("Product");
+		policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+		policyCmptType.setUnqualifiedProductCmptType("Product");
+		assertEquals(superPolicyCmptType.findProductCmptType(), productCmptType.findSupertype());
+		
+	}
+	
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType.getRelations()'
 	 */
@@ -54,9 +69,10 @@ public class ProductCmptTypeTest extends IpsPluginTest {
 		
 		r0.setProductRelevant(true);
 		r0.setTargetRoleSingular("Coverage");
+		r0.setTargetRoleSingularProductSide("CoverageType");
 		relations = productCmptType.getRelations();
 		assertEquals(1, relations.length);
-		assertEquals("CoveragePk", relations[0].getTargetRoleSingular());
+		assertEquals("CoverageType", relations[0].getTargetRoleSingular());
 		
 		IRelation r1 = policyCmptType.newRelation();
 		r1.setProductRelevant(false);
@@ -65,10 +81,51 @@ public class ProductCmptTypeTest extends IpsPluginTest {
 		
 		r1.setProductRelevant(true);
 		r1.setTargetRoleSingular("Benefit");
+		r1.setTargetRoleSingularProductSide("BenefitType");
 		relations = productCmptType.getRelations();
 		assertEquals(2, relations.length);
-		assertEquals("CoveragePk", relations[0].getTargetRoleSingular());
-		assertEquals("BenefitPk", relations[1].getTargetRoleSingular());
+		assertEquals("CoverageType", relations[0].getTargetRoleSingular());
+		assertEquals("BenefitType", relations[1].getTargetRoleSingular());
+	}
+	
+	public void testGetAttributes() {
+		IAttribute[] attributes = productCmptType.getAttributes();
+		assertEquals(0, attributes.length);
+		
+		IAttribute a0 = policyCmptType.newAttribute();
+		a0.setProductRelevant(false);
+		attributes = productCmptType.getAttributes();
+		assertEquals(0, attributes.length);
+
+		a0.setProductRelevant(true);
+		a0.setAttributeType(AttributeType.COMPUTED);
+		attributes = productCmptType.getAttributes();
+		assertEquals(0, attributes.length);
+		
+		a0.setAttributeType(AttributeType.DERIVED);
+		attributes = productCmptType.getAttributes();
+		assertEquals(0, attributes.length);
+		
+		a0.setAttributeType(AttributeType.CHANGEABLE);
+		attributes = productCmptType.getAttributes();
+		assertEquals(1, attributes.length);
+		assertEquals(a0, attributes[0]);
+
+		a0.setAttributeType(AttributeType.CONSTANT);
+		attributes = productCmptType.getAttributes();
+		assertEquals(1, attributes.length);
+		assertEquals(a0, attributes[0]);
+
+		IAttribute a1 = policyCmptType.newAttribute();
+		a1.setProductRelevant(false);
+		attributes = productCmptType.getAttributes();
+		assertEquals(1, attributes.length);
+		
+		a1.setProductRelevant(true);
+		attributes = productCmptType.getAttributes();
+		assertEquals(2, attributes.length);
+		assertEquals(a0, attributes[0]);
+		assertEquals(a1, attributes[1]);
 	}
 
 	/*

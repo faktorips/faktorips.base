@@ -23,12 +23,14 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.pctype.IValidationRuleDef;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.stdbuilder.Util;
-import org.faktorips.runtime.internal.PolicyComponentImpl;
+import org.faktorips.devtools.stdbuilder.backup.ProductCmptImplCuBuilder;
+import org.faktorips.devtools.stdbuilder.backup.ProductCmptInterfaceCuBuilder;
+import org.faktorips.runtime.internal.DefaultPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -125,21 +127,21 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * override
+     * Overriden.
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
         builder.javaDoc(null, ANNOTATION_GENERATED);
     }
 
     /**
-     * override
+     * Overriden.
      */
     protected String[] getExtendedInterfaces() throws CoreException {
         return new String[] { getInterfaceName() };
     }
 
     /**
-     * override
+     * Overriden.
      */
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -153,7 +155,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * override
+     * Overriden.
      */
     protected void generateCodeForAttribute(IAttribute a,
             DatatypeHelper datatypeHelper,
@@ -220,7 +222,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * overidden
+     * Overriden.
      */
     protected void generateCodeForRelation(IRelation relation,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -244,7 +246,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * overidden
+     * Overriden.
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         createConstructor(builder, true);
@@ -252,17 +254,17 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     }
 
     /**
-     * overidden
+     * Overriden.
      */
     protected boolean generatesInterface() {
         return false;
     }
 
     /**
-     * overidden
+     * Overriden.
      */
     protected String getSuperclass() throws CoreException {
-        String javaSupertype = PolicyComponentImpl.class.getName();
+        String javaSupertype = DefaultPolicyComponent.class.getName();
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(
                 getPcType().getSupertype());
@@ -371,9 +373,9 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         body.append("super.");
         body.append(methodName);
         body.append("(ml);");
-        IValidationRule[] rules = getPcType().getRules();
+        IValidationRuleDef[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
-            IValidationRule r = rules[i];
+            IValidationRuleDef r = rules[i];
             body.append("execRule");
             body.append(StringUtils.capitalise(r.getName()));
             body.append("(ml);");
@@ -393,10 +395,10 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         // replacements[1] = p1;
         // MessageFormat mf = new MessageFormat("Die Postleitzahl muss eingegeben werden.");
         // return new Message("HRP01", mf.format(replacements), Message.ERROR); }
-        IValidationRule[] rules = getPcType().getRules();
+        IValidationRuleDef[] rules = getPcType().getRules();
 
         for (int i = 0; i < rules.length; i++) {
-            IValidationRule r = rules[i];
+            IValidationRuleDef r = rules[i];
             String[] paramNameList = BuilderHelper.extractMessageParameters(r.getMessageText());
             String[] paramTypeList = new String[paramNameList.length];
             JavaCodeFragment body = new JavaCodeFragment();
@@ -690,9 +692,9 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         // private void execRulePlzVorhanden(MessageList ml) {
         // if (false) {
         // ml.add(createMessageForRulePlzVorhanden()); } }
-        IValidationRule[] rules = getPcType().getRules();
+        IValidationRuleDef[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
-            IValidationRule r = rules[i];
+            IValidationRuleDef r = rules[i];
             String javaDoc = getLocalizedText(EXECMESSAGE_POLICY_JAVADOC, r.getName());
             JavaCodeFragment body = new JavaCodeFragment();
             body.append("if(false) ");

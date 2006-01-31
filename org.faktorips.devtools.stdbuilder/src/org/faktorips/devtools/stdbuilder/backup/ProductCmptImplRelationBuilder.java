@@ -1,4 +1,4 @@
-package org.faktorips.devtools.stdbuilder.pctype;
+package org.faktorips.devtools.stdbuilder.backup;
 
 import java.lang.reflect.Modifier;
 
@@ -11,6 +11,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.stdbuilder.pctype.RelationImplBuilder;
 
 /**
  * helper class for ProductCmptImplCuBuilder, responsible for code related to relation handling

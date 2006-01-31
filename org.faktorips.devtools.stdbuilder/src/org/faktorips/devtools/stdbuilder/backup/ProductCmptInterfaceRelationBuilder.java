@@ -1,4 +1,4 @@
-package org.faktorips.devtools.stdbuilder.pctype;
+package org.faktorips.devtools.stdbuilder.backup;
 
 import java.lang.reflect.Modifier;
 

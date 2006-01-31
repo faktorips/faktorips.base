@@ -42,9 +42,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
     }
 
     /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getProductCmpt()
+     * Overridden.
      */
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent();
@@ -211,7 +209,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         List result = new ArrayList();
         for (Iterator it = relations.iterator(); it.hasNext();) {
             IProductCmptRelation relation = (IProductCmptRelation)it.next();
-            if (relation.getPcTypeRelation().equals(typeRelation)) {
+            if (relation.getProductCmptTypeRelation().equals(typeRelation)) {
                 result.add(relation);
             }
         }
@@ -234,7 +232,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
      */
     public IProductCmptRelation newRelation(String pcTypeRelation) {
         ProductCmptRelation newRelation = newRelationInternal(getNextPartId());
-        newRelation.setPcTypeRelation(pcTypeRelation);
+        newRelation.setProductCmptTypeRelation(pcTypeRelation);
         updateSrcFile();
         return newRelation;
     }

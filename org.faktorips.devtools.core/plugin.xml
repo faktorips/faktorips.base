@@ -13,6 +13,7 @@
     Product Definition Perspective
   -->
    <extension
+   
          point="org.eclipse.ui.perspectives">
       <perspective
             name="%Product Definition Perspective%"
@@ -93,6 +94,25 @@
       		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
     	</objectContribution>
   </extension>
+  
+   <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
+       <classpathVariableInitializer                                          
+          variable="FAKTORIPS_UTIL"                                                        
+          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
+       <classpathVariableInitializer                                          
+          variable="FAKTORIPS_VALUETYPES"                                                        
+          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
+       <classpathVariableInitializer                                          
+          variable="FAKTORIPS_RUNTIME"                                                        
+          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
+       <classpathVariableInitializer                                          
+          variable="FAKTORIPS_DTFLCOMMON"                                                        
+          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
+   </extension>
+
+
+
+  
    
 <!-- 
     Nature and Builders
@@ -206,7 +226,7 @@
         point = "org.eclipse.ui.preferencePages">
         <page id="FaktorIpsPage"
         	  name="FaktorIPS"
-        	  class="org.faktorips.plugin.ui.FaktorIpsPreferencePage">
+        	  class="org.faktorips.devtools.core.ui.FaktorIpsPreferencePage">
         </page>
     </extension>
     

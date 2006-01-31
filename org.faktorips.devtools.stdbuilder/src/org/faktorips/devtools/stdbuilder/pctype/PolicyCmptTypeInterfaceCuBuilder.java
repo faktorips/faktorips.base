@@ -22,7 +22,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.stdbuilder.Util;
-import org.faktorips.runtime.PolicyComponent;
+import org.faktorips.devtools.stdbuilder.backup.ProductCmptInterfaceCuBuilder;
+import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -316,7 +317,7 @@ public class PolicyCmptTypeInterfaceCuBuilder extends AbstractPcTypeBuilder {
     }
 
     protected String[] getExtendedInterfaces() throws CoreException {
-        String javaSupertype = PolicyComponent.class.getName();
+        String javaSupertype = IPolicyComponent.class.getName();
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(getPcType().getSupertype());
             javaSupertype = supertype == null ? javaSupertype : getQualifiedClassName(supertype.getIpsSrcFile());

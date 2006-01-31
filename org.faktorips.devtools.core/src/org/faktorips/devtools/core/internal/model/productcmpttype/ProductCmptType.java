@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -39,9 +40,16 @@ public class ProductCmptType implements IProductCmptType {
 	/**
 	 * 
 	 */
-	public ProductCmptType(PolicyCmptType policyCmptType) {
+	public ProductCmptType(IPolicyCmptType policyCmptType) {
 		ArgumentCheck.notNull(policyCmptType);
-		this.policyCmptType = policyCmptType;
+		this.policyCmptType = (PolicyCmptType)policyCmptType;
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public boolean isAbstract() {
+		return policyCmptType.isAbstract();
 	}
 
 	/**
@@ -54,6 +62,17 @@ public class ProductCmptType implements IProductCmptType {
 	/**
 	 * Overridden.
 	 */
+	public IProductCmptType findSupertype() throws CoreException {
+		IPolicyCmptType superPolicyCmptType = policyCmptType.findSupertype();
+		if (superPolicyCmptType==null) {
+			return null;
+		}
+		return new ProductCmptType((PolicyCmptType)superPolicyCmptType);
+	}
+
+	/**
+	 * Overridden.
+	 */
 	public IProductCmptTypeRelation[] getRelations() {
 		IRelation[] relations = policyCmptType.getRelations();
 		List result = new ArrayList(relations.length);
@@ -63,6 +82,20 @@ public class ProductCmptType implements IProductCmptType {
 			}
 		}
 		return (IProductCmptTypeRelation[])result.toArray(new IProductCmptTypeRelation[result.size()]);
+	}
+	
+	/**
+	 * Overridden.
+	 */
+	public IAttribute[] getAttributes() {
+		IAttribute[] attributes = policyCmptType.getAttributes();
+		List result = new ArrayList(attributes.length);
+		for (int i = 0; i < attributes.length; i++) {
+			if (attributes[i].isProductRelevant() && !attributes[i].isDerivedOrComputed()) {
+				result.add(attributes[i]);
+			}
+		}
+		return (IAttribute[])result.toArray(new IAttribute[result.size()]);
 	}
 
 	/**
@@ -271,5 +304,19 @@ public class ProductCmptType implements IProductCmptType {
 			return false;
 		}
 		return ((ProductCmptType)o).policyCmptType.equals(policyCmptType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptTypeRelation getRelation(String relationName) {
+		ArgumentCheck.notNull(relationName);
+		IProductCmptTypeRelation[] relations = getRelations();
+		for (int i = 0; i < relations.length; i++) {
+			if (relations[i].getName().equals(relationName)) {
+				return relations[i];
+			}
+		}
+		return null;
 	}
 }

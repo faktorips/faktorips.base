@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 
 /**
@@ -24,12 +25,6 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      * Returns the product component generation this config element belongs to.
      */
     public IProductCmptGeneration getProductCmptGeneration();
-    
-    /**
-     * Returns the name of the policy component type relation this
-     * relation is based on.
-     */
-    public String getPcTypeRelation();
     
     /**
      * Returns the name of the product component type relation this
@@ -70,13 +65,16 @@ public interface IProductCmptRelation extends IIpsObjectPart {
     public void setMaxCardinality(String newValue);
     
     /**
-     * Finds the corresponding relation in the policy component type this
-     * product component is based on.
+     * Finds the corresponding relation in the product component type this
+     * product component is based on. Note the method searches not only the direct
+     * product component type this product component is based on, but also it's 
+     * super type hierarchy hierarchy.
      * 
      * @return the corresponding relation or <code>null</code> if no such
      * relation exists.
      * 
-     * @throws CoreException if an exception occurs while searching the policy component type. 
+     * @throws CoreException if an exception occurs while searching the relation. 
      */
-    public IRelation findPcTypeRelation() throws CoreException;
+    public IProductCmptTypeRelation findProductCmptTypeRelation() throws CoreException;
+    
 }

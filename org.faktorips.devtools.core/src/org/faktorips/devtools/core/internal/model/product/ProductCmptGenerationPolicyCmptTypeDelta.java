@@ -92,7 +92,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         List result = new ArrayList();
         IProductCmptRelation[] relations = generation.getRelations();
         for (int i=0; i<relations.length; i++) {
-            if (hierarchy.findRelation(pcType, relations[i].getPcTypeRelation())==null) {
+            if (hierarchy.findRelationOnProductSide(pcType, relations[i].getProductCmptTypeRelation())==null) {
                 result.add(relations[i]);
             }
         }

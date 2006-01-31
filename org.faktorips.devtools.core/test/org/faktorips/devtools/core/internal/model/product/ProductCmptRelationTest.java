@@ -34,17 +34,24 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     	productCmpt = (ProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "TestProduct");
     	productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
     	generation = (IProductCmptGeneration)productCmpt.newGeneration();
-    	relation = generation.newRelation("coverage");
+    	relation = generation.newRelation("CoverageType");
     	ipsSrcFile = productCmpt.getIpsSrcFile();
     }
     
     public void testGetProductCmptTypeRelation() throws CoreException {
-    	assertNull(relation.getProductCmptTypeRelation());
+    	assertEquals("CoverageType", relation.getProductCmptTypeRelation());
+    }
+
+    public void testFindProductCmptTypeRelation() throws CoreException {
     	IRelation policyCmptTypeRelation = policyCmptType.newRelation();
-    	policyCmptTypeRelation.setTargetRoleSingular("coverage");
+    	policyCmptTypeRelation.setTargetRoleSingular("Coverage");
+    	policyCmptTypeRelation.setTargetRoleSingularProductSide("CoverageType");
     	
     	IProductCmptTypeRelation productCmptTypeRelation = policyCmptType.findProductCmptType().getRelations()[0];
-    	assertEquals(productCmptTypeRelation.getName(), relation.getProductCmptTypeRelation());
+    	assertEquals(productCmptTypeRelation, relation.findProductCmptTypeRelation());
+    	
+    	policyCmptTypeRelation.setTargetRoleSingularProductSide("blabla");
+    	assertNull(relation.findProductCmptTypeRelation());
     }
 
     public void testRemove() {
@@ -70,7 +77,7 @@ public class ProductCmptRelationTest extends IpsPluginTest {
         copy.initFromXml(element);
         assertEquals(1, copy.getId());
         assertEquals("newTarget", copy.getTarget());
-        assertEquals("coverage", copy.getPcTypeRelation());
+        assertEquals("coverage", copy.getProductCmptTypeRelation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals("3", copy.getMaxCardinality());
     }
@@ -78,7 +85,7 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     public void testInitFromXml() {
         relation.initFromXml(getTestDocument().getDocumentElement());
         assertEquals(42, relation.getId());
-        assertEquals("FullCoverage", relation.getPcTypeRelation());
+        assertEquals("FullCoverage", relation.getProductCmptTypeRelation());
         assertEquals("FullCoveragePlus", relation.getTarget());
         assertEquals(2, relation.getMinCardinality());
         assertEquals("3", relation.getMaxCardinality());

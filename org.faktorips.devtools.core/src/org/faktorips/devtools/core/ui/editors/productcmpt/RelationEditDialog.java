@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -62,8 +63,9 @@ public class RelationEditDialog extends IpsPartEditDialog {
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_target);
         ProductCmptRefControl targetControl = new ProductCmptRefControl(relation.getIpsProject(), workArea, uiToolkit);
         try {
-            IRelation pcTypeRelation = relation.findPcTypeRelation();
-            targetControl.setPolicyCmptType(pcTypeRelation.getTarget(), true);
+            IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation();
+            String targetPolicyCmptType = typeRelation.findTarget().findPolicyCmptyType().getQualifiedName();
+            targetControl.setPolicyCmptType(targetPolicyCmptType, true);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -83,8 +85,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
+     * Overridden.
      */
     protected void connectToModel() {
         super.connectToModel();

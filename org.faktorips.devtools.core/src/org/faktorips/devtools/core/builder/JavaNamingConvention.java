@@ -55,7 +55,14 @@ public class JavaNamingConvention {
      * Returns the name of the member variable for a property.
      */
     public String getMemberVarName(String propertyName) {
-    	return propertyName;
+    	return StringUtils.uncapitalise(propertyName);
+    }
+    
+    /**
+     * Returns the name of the member variable for a multi value property.
+     */
+    public String getMultiValueMemberVarName(String propertyNamePlural) {
+    	return StringUtils.uncapitalise(propertyNamePlural);
     }
     
     /**
@@ -66,6 +73,13 @@ public class JavaNamingConvention {
     		return "is" + StringUtils.capitalise(propertyName);
     	}
 		return "get" + StringUtils.capitalise(propertyName);
+    }
+    
+    /**
+     * Returns the method name for the method with that a multie value property is read. 
+     */
+    public String getMultiValueGetterMethodName(String propertyNamePlural) {
+		return "get" + StringUtils.capitalise(propertyNamePlural);
     }
     
     /**

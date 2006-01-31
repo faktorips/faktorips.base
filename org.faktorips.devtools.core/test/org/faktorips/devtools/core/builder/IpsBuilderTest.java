@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.message.MessageList;
 
 /**
- * A common base class for CuBuilder tests.
+ * A common base class for builder tests.
  * 
  * @author Jan Ortmann
  */

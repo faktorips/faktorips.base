@@ -26,15 +26,17 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
     public IRelation findPolicyCmptTypeRelation() throws CoreException;
     
     /**
+     * Returns true if the relation type is abstract, otherwise <code>false</code>.
+     * If the relation type is abstract no relation is allowed between product components
+     * based on this relation type.
+     */
+    public boolean isAbstract() throws CoreException;
+    
+    /**
      * Returns the relation's type indication if it's an association or
      * aggregation. 
      */
     public RelationType getRelationType();
-    
-    /**
-     * Returns the qualified name of the target product component type.
-     */
-    public String getTarget();
     
     /**
      * Returns the target product component type or <code>null</code> if either this relation hasn't got a target

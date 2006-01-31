@@ -3,13 +3,13 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
-import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.PdObjectField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -34,7 +35,8 @@ public class GeneralInfoSection extends IpsSection {
     // edit fields
     private PdObjectField supertypeField;
     private CheckboxField abstractField;
-    
+    private TextField productCmptTypeNameField;
+    private CheckboxField configuratedField;    
     private ExtensionPropertyControlFactory extFactory;
 
     /**
@@ -57,8 +59,7 @@ public class GeneralInfoSection extends IpsSection {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#initClientComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.controls.UIToolkit)
+     * Overridden.
      */ 
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         client.setLayout(new GridLayout(1, false));
@@ -86,35 +87,39 @@ public class GeneralInfoSection extends IpsSection {
         Composite c2 = toolkit.createLabelEditColumnComposite(client);
         toolkit.createFormLabel(c2, "Abstract class:");
         Checkbox abstractCheckbox = toolkit.createCheckbox(c2);
+        toolkit.createFormLabel(c2, "Configurable by Product:");
+        Checkbox configuratedCheckbox = toolkit.createCheckbox(c2);
+        toolkit.createFormLabel(c2, "Product Component Type:");
+        Text productCmptTypeNameText = toolkit.createText(c2);
 
         // create fields
         supertypeField = new PdObjectField(control);
         abstractField = new CheckboxField(abstractCheckbox);
+        productCmptTypeNameField = new TextField(productCmptTypeNameText);
+        configuratedField = new CheckboxField(configuratedCheckbox);
         
         // connect fields to model properties
         uiController = new IpsObjectUIController(pcType);
         uiController.add(supertypeField, IPolicyCmptType.PROPERTY_SUPERTYPE);
         uiController.add(abstractField, IPolicyCmptType.PROPERTY_ABSTRACT);
+        uiController.add(productCmptTypeNameField, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
+        uiController.add(configuratedField, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
         
         extFactory.createControls(c2,toolkit,(IpsObjectPartContainer)pcType);
         extFactory.connectToModel(uiController);
-        }
+    }
     
 
     /*
      * Sets the focus explicitly to the supertype control. Otherwise the
      * hyperlink receives focus.
-     *   
-     * Overridden method.
-     * @see org.eclipse.swt.widgets.Control#setFocus()
      */
     public boolean setFocus() {
         return supertypeField.getControl().setFocus();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#performRefresh()
+     * Overridden.
      */
     protected void performRefresh() {
         uiController.updateUI();

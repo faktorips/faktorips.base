@@ -34,6 +34,10 @@ public class Relation extends IpsObjectPart implements IRelation {
     private String containerRelation = "";
     private String reverseRelation = "";
     private boolean readOnlyContainer = false;
+    private String targetRoleSingularProductSide = "";
+    private String targetRolePluralProductSide = "";
+    private int minCardinalityProductSide = 0;
+    private String maxCardinalityProductSide = "1";
 
     public Relation(IPolicyCmptType pcType, int id) {
         super(pcType, id);
@@ -238,14 +242,78 @@ public class Relation extends IpsObjectPart implements IRelation {
         productRelevant = newValue;
         valueChanged(oldValue, newValue);
     }
+    
+	/**
+	 * Overridden.
+	 */
+	public String getTargetRoleSingularProductSide() {
+		return targetRoleSingularProductSide;
+	}
 
-    /** 
+	/**
+	 * Overridden.
+	 */
+	public void setTargetRoleSingularProductSide(String newRole) {
+        String oldRole = targetRoleSingularProductSide;
+        targetRoleSingularProductSide = newRole;
+        valueChanged(oldRole, newRole);
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public void setTargetRolePluralProductSide(String newRole) {
+        String oldRole = targetRolePluralProductSide;
+        targetRolePluralProductSide = newRole;
+        valueChanged(oldRole, newRole);
+	}
+
+    /**
+	 * Overridden.
+	 */
+	public String getTargetRolePluralProductSide() {
+		return targetRolePluralProductSide;
+	}
+
+
+	/**
+	 * Overridden.
+	 */
+	public int getMinCardinalityProductSide() {
+		return minCardinalityProductSide;
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public void setMinCardinalityProductSide(int newMin) {
+		int oldMin = minCardinalityProductSide;
+		minCardinalityProductSide = newMin;
+		valueChanged(oldMin, newMin);
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public String getMaxCardinalityProductSide() {
+		return maxCardinalityProductSide;
+	}
+
+	/**
+	 * Overridden.
+	 */
+	public void setMaxCardinalityProductSide(String newMax) {
+		String oldMax = maxCardinalityProductSide;
+		maxCardinalityProductSide = newMax;
+		valueChanged(oldMax, newMax);
+	}
+
+	/** 
      * Overridden.
      */
     public String getContainerRelation() {
         return containerRelation;
     }
-    
     
     /**
      * Overridden.
@@ -475,11 +543,23 @@ public class Relation extends IpsObjectPart implements IRelation {
         target = element.getAttribute(PROPERTY_TARGET);
         targetRoleSingular = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR);
         targetRolePlural = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL);
-        minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));
+        try {
+            minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));
+        } catch (NumberFormatException e) {
+        	minCardinality = 0;
+        }
         maxCardinality = element.getAttribute(PROPERTY_MAX_CARDINALITY);
         containerRelation = element.getAttribute(PROPERTY_CONTAINER_RELATION);
         reverseRelation = element.getAttribute(PROPERTY_REVERSE_RELATION);
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
+        targetRoleSingularProductSide = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
+        targetRolePluralProductSide = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
+        try {
+            minCardinalityProductSide = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY_PRODUCTSIDE));
+        } catch (NumberFormatException e) {
+        	minCardinalityProductSide = 0;
+        }
+        maxCardinalityProductSide = element.getAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
     }
     
     /**
@@ -497,6 +577,10 @@ public class Relation extends IpsObjectPart implements IRelation {
         newElement.setAttribute(PROPERTY_CONTAINER_RELATION, containerRelation);
         newElement.setAttribute(PROPERTY_REVERSE_RELATION, reverseRelation);
         newElement.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant);
+        newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE, targetRoleSingularProductSide);
+        newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE, targetRolePluralProductSide);
+        newElement.setAttribute(PROPERTY_MIN_CARDINALITY_PRODUCTSIDE, "" + minCardinalityProductSide);
+        newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, maxCardinalityProductSide);
     }
     
 }
