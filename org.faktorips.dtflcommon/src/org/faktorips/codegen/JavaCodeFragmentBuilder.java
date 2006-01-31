@@ -162,9 +162,10 @@ public class JavaCodeFragmentBuilder {
     /**
      * Creates the Java source code for a method signature.
      * 
-     * @param modifier Access modifier according to java.lang.reflect.Modifier.
-     * @param returnType the className that the methods returns an instance of or null to indicate
-     *            no return type in case of a constructor.
+     * @param modifier      Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType    The className that the methods returns an instance of 
+     *                      or <code>null</code> to indicate no return type in case of a constructor.
+     *                      The return type <code>void</code> is indictaed by <code>java.lang.Void.class</code>: 
      * @param methodName
      * @param argName Argument names.
      * @param argClass Argument classes.
@@ -695,7 +696,7 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Creates a new variable declaration.
+     * Appends a new assignment.
      * 
      * <code>
      * varName = value;

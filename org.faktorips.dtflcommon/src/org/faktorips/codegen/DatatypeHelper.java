@@ -106,6 +106,11 @@ public interface DatatypeHelper {
 	public JavaCodeFragment newInstanceFromExpression(String expression);
 	
     /**
+     * Returns the qualified Java class name the datatype represents.
+     */
+    public String getJavaClassName();
+    
+    /**
      * Returns the qualified Java class name of the range class of the datatype this is a helper for. 
      */
     public abstract String getRangeJavaClassName();    	

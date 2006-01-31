@@ -37,9 +37,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 	}
 	
 	/**
-	 * Overridden Method.
-	 * 
-	 * @see org.faktorips.codegen.DatatypeHelper#setDatatype(org.faktorips.datatype.Datatype)
+	 * Overridden.
 	 */
 	public void setDatatype(Datatype datatype) {
 		this.datatype = datatype;
@@ -76,6 +74,12 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 		return fragment;
 	}
 	
+    /**
+     * Overridden.
+     */
+    public String getJavaClassName() {
+        return datatype.getJavaClassName();
+    }
 
     /* (non-Javadoc)
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
