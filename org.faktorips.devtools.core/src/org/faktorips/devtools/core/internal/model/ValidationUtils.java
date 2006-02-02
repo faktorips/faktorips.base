@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -79,12 +80,13 @@ public class ValidationUtils {
         Datatype datatype = part.getIpsProject().findDatatype(datatypeName);
         if (datatype==null) {
             String text = "Datatype " + datatypeName + " does not exists.";
-            list.add(new Message("123", text, Message.ERROR, part, propertyName));
+            list.add(new Message("", text, Message.ERROR, part, propertyName));
             return null;
         }
         try {
-            
-            list.add(datatype.validate(), new ObjectProperty(part, propertyName), true);
+            if (datatype instanceof ValueDatatype) {
+                list.add(datatype.validate(), new ObjectProperty(part, propertyName), true);
+            }
         } catch (CoreException e) {
             throw e;
         } catch (Exception e) {
