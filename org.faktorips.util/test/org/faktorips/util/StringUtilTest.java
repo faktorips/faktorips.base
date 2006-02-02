@@ -35,8 +35,9 @@ public class StringUtilTest extends TestCase {
 	    
 	    text = "blabla" + lineSeparator
 	    	 + "2.line";
+        
 	    assertEquals("blabla", StringUtil.getLine(text, 0, lineSeparator));
-	    assertEquals("2.line", StringUtil.getLine(text, 8, lineSeparator));
+	    assertEquals("2.line", StringUtil.getLine(text, 6 + SystemUtils.LINE_SEPARATOR.getBytes().length, lineSeparator));
 	}
 	
 	public void testGetLines() {
