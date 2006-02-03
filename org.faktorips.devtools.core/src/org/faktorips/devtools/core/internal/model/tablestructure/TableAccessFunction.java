@@ -76,7 +76,18 @@ public class TableAccessFunction extends IpsObjectPart implements ITableAccessFu
     }
 
     public void delete() {
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     public Image getImage() {
         return null;

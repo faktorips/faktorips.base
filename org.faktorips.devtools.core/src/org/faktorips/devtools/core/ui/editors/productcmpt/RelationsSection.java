@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -17,8 +19,12 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -28,6 +34,10 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
+import org.faktorips.devtools.core.ui.actions.IpsCutAction;
+import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
+import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -48,6 +58,8 @@ public class RelationsSection extends IpsSection {
 	private IntegerField kardMinField;
 	private TextField kardMaxField;
 	private TreeViewer treeViewer;
+	private IEditorSite site;
+	private boolean fGenerationDirty;
 
 	/**
 	 * Creates a new RelationsSection which displays relations for the given generation.
@@ -56,10 +68,12 @@ public class RelationsSection extends IpsSection {
 	 * @param parent The composite whicht is the ui-parent for this section.
 	 * @param toolkit The ui-toolkit to support drawing.
 	 */
-	public RelationsSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
+	public RelationsSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit, IEditorSite site) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
 		ArgumentCheck.notNull(generation);
 		this.generation = generation;
+		this.site = site;
+		fGenerationDirty = true;
 		
 		initControls();
 		
@@ -92,6 +106,8 @@ public class RelationsSection extends IpsSection {
 			treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
 			treeViewer.expandAll();
 
+	        buildContextMenu();
+	
 			Composite kardinalityRootPane = toolkit.createComposite(relationRootPane);
 			layout = new GridLayout(1, false);
 			layout.marginHeight = 1;
@@ -119,13 +135,40 @@ public class RelationsSection extends IpsSection {
 
 		}
 	}
+
+	private void buildContextMenu() {
+		MenuManager menumanager = new MenuManager();
+		menumanager.setRemoveAllWhenShown(false);
+
+		site.getActionBars().setGlobalActionHandler(ActionFactory.CUT.getId(), new IpsCutAction(treeViewer, site.getShell()));
+		site.getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), new IpsCopyAction(treeViewer, site.getShell()));
+		site.getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(), new IpsPasteAction(treeViewer, site.getShell()));
+		site.getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), new IpsDeleteAction(treeViewer));
+
+        menumanager.add(ActionFactory.CUT.create(site.getWorkbenchWindow()));
+        menumanager.add(ActionFactory.COPY.create(site.getWorkbenchWindow()));
+        menumanager.add(ActionFactory.PASTE.create(site.getWorkbenchWindow()));
+        menumanager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
+
+        menumanager.add(new Separator());
+        menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
+        menumanager.add(new Separator());
+		
+		Menu menu = menumanager.createContextMenu(treeViewer.getControl());
+
+		treeViewer.getControl().setMenu(menu);
+
+		site.registerContextMenu("productCmptEditor.relations", menumanager, treeViewer);
+	}
 	
 	/**
 	 * Overridden.
 	 */
 	protected void performRefresh() {	
-		if (treeViewer != null) {
-			treeViewer.refresh();
+		if (fGenerationDirty && treeViewer != null) {
+			treeViewer.setInput(generation);
+//			treeViewer.refresh();
 			treeViewer.expandAll();
 
 		}
@@ -179,7 +222,11 @@ public class RelationsSection extends IpsSection {
 			if (selected instanceof IProductCmptRelation) {
 				IProductCmptRelation rel = (IProductCmptRelation) selected;
 
-				if (uiController == null) {
+				if (rel.isDeleted()) {
+					return;
+				}
+				
+				if (uiController == null || !uiController.getIpsObjectPart().equals(rel)) {
 		    		uiController = new IpsPartUIController(rel);
 				}
 				
@@ -188,12 +235,14 @@ public class RelationsSection extends IpsSection {
 
 	    		uiController.remove(kardMinField);
 	    		uiController.remove(kardMaxField);
+	    		
 
 	    		kardMinField = new IntegerField(kardMin);
 	    		kardMaxField = new TextField(kardMax);
 	    		
 				uiController.add(kardMinField, rel, Relation.PROPERTY_MIN_CARDINALITY);
 				uiController.add(kardMaxField, rel, Relation.PROPERTY_MAX_CARDINALITY);
+				System.out.println("update: " + rel);
 				uiController.updateUI();
 			}
 			else {
@@ -252,5 +301,18 @@ public class RelationsSection extends IpsSection {
 			
 		}    	
     }
+
+	public void setActiveGeneration(IProductCmptGeneration generation) {
+		if (this.generation.equals(generation)) {
+			return;
+		}
+		
+		if (generation instanceof IProductCmptGeneration) {
+			this.generation = (IProductCmptGeneration)generation;
+			fGenerationDirty = true;
+			performRefresh();
+		}
+	}
+
 }
 

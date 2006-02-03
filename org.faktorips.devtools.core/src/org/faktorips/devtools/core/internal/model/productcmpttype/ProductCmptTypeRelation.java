@@ -195,7 +195,17 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 */
 	public void delete() {
 		throw new RuntimeException("Not implemented yet!");
-	}
+    }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
 	/**
 	 * Overridden.

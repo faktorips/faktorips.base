@@ -98,7 +98,18 @@ public class ForeignKey extends Key implements IForeignKey {
      */
     public void delete() {
         ((TableStructure)getTableStructure()).removeForeignKey(this);
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);

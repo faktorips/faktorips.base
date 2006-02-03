@@ -221,7 +221,18 @@ public class IpsObjectPartContainerTest extends IpsPluginTest {
          * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
          */
         public void delete() {
+            deleted = true;
         }
+
+        private boolean deleted = false;
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean isDeleted() {
+        	return deleted;
+        }
+
 
         /**
          * Overridden IMethod.

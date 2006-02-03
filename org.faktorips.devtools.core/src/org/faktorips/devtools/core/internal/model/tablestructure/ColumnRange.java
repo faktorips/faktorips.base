@@ -106,7 +106,18 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
      */
     public void delete() {
         getTableStructureImpl().removeRange(this);
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     /** 
      * Overridden method.

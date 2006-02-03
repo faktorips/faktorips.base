@@ -26,4 +26,9 @@ public interface IIpsObjectPart extends IIpsObjectPartContainer {
      */
     public void delete();
     
+    /**
+     * Returns whether the part was deleted (<code>true</code>) or not. 
+     */
+    public boolean isDeleted();
+    
 }

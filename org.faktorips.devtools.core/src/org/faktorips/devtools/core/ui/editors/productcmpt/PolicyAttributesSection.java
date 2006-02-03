@@ -34,6 +34,7 @@ public class PolicyAttributesSection extends IpsSection {
     private Composite workArea;
     private CompositeUIController uiController;
     private UIToolkit toolkit;
+	private boolean fGenerationDirty;
     
     public PolicyAttributesSection(
             IProductCmptGeneration generation,
@@ -42,6 +43,7 @@ public class PolicyAttributesSection extends IpsSection {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
+		fGenerationDirty = true;
         initControls();
         setText(Messages.PolicyAttributesSection_defaultsAndRanges);
     }
@@ -138,7 +140,21 @@ public class PolicyAttributesSection extends IpsSection {
      * @see org.faktorips.devtools.core.ui.forms.IpsSection#performRefresh()
      */
     protected void performRefresh() {
-    	createEditControls();
-    	uiController.updateUI();
+		if (fGenerationDirty) {
+	    	createEditControls();
+	    	uiController.updateUI();
+		}
     }
+
+	public void setActiveGeneration(IProductCmptGeneration generation) {
+		if (this.generation.equals(generation)) {
+			return;
+		}
+		
+		if (generation instanceof IProductCmptGeneration) {
+			this.generation = (IProductCmptGeneration)generation;
+			fGenerationDirty = true;
+			performRefresh();
+		}
+	}
 }

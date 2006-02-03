@@ -62,8 +62,20 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
      */
     public void delete() {
         ((ProductCmptGeneration)getParent()).removeRelation(this);
+        System.out.println("Relation: " + this);
         parent = null;
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     public String getName() {
         return target;

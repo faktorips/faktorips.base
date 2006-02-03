@@ -69,6 +69,16 @@ public class Method extends Member implements IMethod {
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeMethod(this);
         updateSrcFile();
+        deleted = true;
+    }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
     }
     
     /** 

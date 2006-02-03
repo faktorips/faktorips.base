@@ -71,7 +71,18 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	public void delete() {
 		((PolicyCmptType) getIpsObject()).removeRule(this);
 		updateSrcFile();
-	}
+        deleted = true;
+    }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
 	/**
 	 * @inheritDoc

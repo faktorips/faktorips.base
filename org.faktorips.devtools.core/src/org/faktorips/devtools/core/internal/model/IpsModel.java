@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -860,5 +861,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     	return object;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public void delete(IIpsElement toDelete) {
+		if (toDelete instanceof IIpsObjectPart) {
+			((IIpsObjectPart)toDelete).delete();
+		}
+	}
     
 }

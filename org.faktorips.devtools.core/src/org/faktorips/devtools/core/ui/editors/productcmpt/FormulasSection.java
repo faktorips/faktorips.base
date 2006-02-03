@@ -30,12 +30,14 @@ public class FormulasSection extends IpsSection {
 	private Composite workArea;
 	private UIToolkit toolkit;
 	private CompositeUIController uiController;
+	private boolean fGenerationDirty;
 	
 	public FormulasSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 		ArgumentCheck.notNull(generation);
 		
 		this.generation = generation;
+		fGenerationDirty = true;
 		initControls();
 		setText(Messages.FormulasSection_calculationFormulas);
 	}
@@ -67,7 +69,9 @@ public class FormulasSection extends IpsSection {
 	 * Overridden method.
 	 */
 	protected void performRefresh() {
-		createEditControls();
+		if (fGenerationDirty) {
+			createEditControls();
+		}
 	}
 	
     private void createEditControls() {
@@ -95,4 +99,16 @@ public class FormulasSection extends IpsSection {
     		
     	}
     }
+
+    public void setActiveGeneration(IProductCmptGeneration generation) {
+		if (this.generation.equals(generation)) {
+			return;
+		}
+		
+		if (generation instanceof IProductCmptGeneration) {
+			this.generation = (IProductCmptGeneration)generation;
+			fGenerationDirty = true;
+			performRefresh();
+		}
+	}
 }

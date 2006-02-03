@@ -125,5 +125,10 @@ public interface IIpsModel extends IIpsElement {
      * Returns the predefines value datatypes like String, Integer etc. 
      */
     public ValueDatatype[] getPredefinedValueDatatypes();
+
+    /**
+     * Removes the given object from the model.
+     */
+	public void delete(IIpsElement toDelete);
     
 }

@@ -117,6 +117,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     
     void removeGeneration(IIpsObjectGeneration generation) {
         generations.remove(generation);
+        updateSrcFile();
     }
     
     /**

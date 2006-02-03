@@ -52,7 +52,18 @@ public class Row extends IpsObjectPart implements IRow {
      */
     public void delete() {
         ((TableContentsGeneration)getParent()).removeRow(this);
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     /**
      * Overridden method.

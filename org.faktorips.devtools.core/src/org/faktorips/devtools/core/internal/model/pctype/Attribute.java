@@ -119,8 +119,18 @@ public class Attribute extends Member implements IAttribute {
     public void delete() {
         getPolicyCmptType().removeAttribute(this);
         updateSrcFile();
+        deleted = true;
     }
 
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+    
     /**
      * Overridden.
      */

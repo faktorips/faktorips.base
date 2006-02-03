@@ -70,7 +70,18 @@ public class Relation extends IpsObjectPart implements IRelation {
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeRelation(this);
         updateSrcFile();
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     /** 
      * Overridden.

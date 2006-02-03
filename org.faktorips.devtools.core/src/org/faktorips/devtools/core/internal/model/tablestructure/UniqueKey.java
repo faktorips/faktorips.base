@@ -48,7 +48,18 @@ public class UniqueKey extends Key implements IUniqueKey {
      */
     public void delete() {
         ((TableStructure)getTableStructure()).removeUniqueKey(this);
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
     
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);

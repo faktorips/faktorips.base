@@ -118,7 +118,18 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
      */
     public void delete() {
         ((ProductCmptGeneration)getParent()).removeConfigElement(this);
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     /**
      * Overridden.

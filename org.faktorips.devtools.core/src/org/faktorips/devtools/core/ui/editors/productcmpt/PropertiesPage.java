@@ -16,6 +16,11 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 public class PropertiesPage extends IpsObjectEditorPage {
     
     final static String PAGE_ID = "Properties"; //$NON-NLS-1$
+
+    private ProductAttributesSection productAttributesSection;
+	private FormulasSection formulasSection;
+	private PolicyAttributesSection policyAttributesSection;
+	private RelationsSection relationsSection;
     
     public PropertiesPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, Messages.PropertiesPage_properties);
@@ -41,13 +46,12 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		
 		IProductCmptGeneration generation = (IProductCmptGeneration)getProductCmptEditor().getActiveGeneration();
 		Composite left = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
-		new ProductAttributesSection(generation, left, toolkit);
-		new FormulasSection(generation, left, toolkit);
+		productAttributesSection = new ProductAttributesSection(generation, left, toolkit);
+		formulasSection = new FormulasSection(generation, left, toolkit);
 		
 		Composite right = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
-		new PolicyAttributesSection(generation, right, toolkit);
-		new RelationsSection(generation, right, toolkit);
-
+		policyAttributesSection = new PolicyAttributesSection(generation, right, toolkit);
+		relationsSection = new RelationsSection(generation, right, toolkit, getEditorSite());
     }
     
     /** 
@@ -56,5 +60,19 @@ public class PropertiesPage extends IpsObjectEditorPage {
      */
     protected void refresh() {
         super.refresh();
+    }
+    
+    protected void setActiveGeneration(IProductCmptGeneration generation) {
+		productAttributesSection.setActiveGeneration(generation);
+		formulasSection.setActiveGeneration(generation);
+		policyAttributesSection.setActiveGeneration(generation);
+		relationsSection.setActiveGeneration(generation);
+    }
+    
+    protected void setEnabled(boolean enabled) {
+		productAttributesSection.setEnabled(enabled);
+		formulasSection.setEnabled(enabled);
+		policyAttributesSection.setEnabled(enabled);
+		relationsSection.setEnabled(enabled);
     }
 }

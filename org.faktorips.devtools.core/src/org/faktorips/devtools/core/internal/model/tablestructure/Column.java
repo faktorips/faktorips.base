@@ -74,7 +74,18 @@ public class Column extends IpsObjectPart implements IColumn {
      */
     public void delete() {
         getTable().removeColumn(this);
+        deleted = true;
     }
+
+    private boolean deleted = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDeleted() {
+    	return deleted;
+    }
+
 
     /** 
      * Overridden method.

@@ -23,14 +23,14 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * 
  */
-public class ProductAttributesSection extends IpsSection {
+public class ProductAttributesSection extends TimedIpsSection {
 
 	private IProductCmptGeneration generation;
+	private boolean fGenerationDirty;
 
 	private UIToolkit toolkit;
 
@@ -51,6 +51,7 @@ public class ProductAttributesSection extends IpsSection {
 			Composite parent, UIToolkit toolkit) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 		this.generation = generation;
+		fGenerationDirty = true;
 		initControls();
 		setText(Messages.ProductAttributesSection_attribute);
 	}
@@ -112,6 +113,11 @@ public class ProductAttributesSection extends IpsSection {
 			// the controls are created.
 			return true;
 		}
+		
+		if (fGenerationDirty) {
+			return true;
+		}
+		
 		IConfigElement[] elements = generation
 				.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE);
 		if (labels.size() != elements.length) {
@@ -165,5 +171,18 @@ public class ProductAttributesSection extends IpsSection {
 		}
 		workArea.layout(true);
 		workArea.redraw();
+		fGenerationDirty = false;
+	}
+
+	public void setActiveGeneration(IProductCmptGeneration generation) {
+		if (this.generation.equals(generation)) {
+			return;
+		}
+		
+		if (generation instanceof IProductCmptGeneration) {
+			this.generation = (IProductCmptGeneration)generation;
+			fGenerationDirty = true;
+			performRefresh();
+		}
 	}
 }

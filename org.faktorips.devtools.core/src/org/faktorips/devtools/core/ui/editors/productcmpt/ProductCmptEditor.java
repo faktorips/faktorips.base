@@ -6,6 +6,8 @@ import java.util.Locale;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
@@ -29,9 +31,14 @@ import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 public class ProductCmptEditor extends TimedIpsObjectEditor {
     
     private boolean dontCreateNewConfigElements = false;
+    
+    private PropertiesPage propertiesPage;
+    private GenerationsPage generationsPage;
+    private DescriptionPage descriptionPage;
 
     public ProductCmptEditor() {
         super();
+        IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new MyPropertyChangeListener());
     }
 
     /** 
@@ -40,9 +47,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      */
     protected void addPages() {
         try {
-            addPage(new PropertiesPage(this));
-            addPage(new GenerationsPage(this));
-            addPage(new DescriptionPage(this));
+        	propertiesPage = new PropertiesPage(this);
+        	generationsPage = new GenerationsPage(this);
+        	descriptionPage = new DescriptionPage(this);
+            addPage(propertiesPage);
+            addPage(generationsPage);
+            addPage(descriptionPage);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -72,6 +82,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         if (part!=this) {
             return;
         }
+        checkGeneration();
         if (dontCreateNewConfigElements) {
             return;
         }
@@ -194,5 +205,53 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         String generationConceptName = IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
         return title + ", " +  generationConceptName + " " + format.format(generation.getValidFrom().getTime()); //$NON-NLS-1$ //$NON-NLS-2$
     }
-        
+    
+    private void checkGeneration() {
+		IProductCmpt prod = getProductCmpt();
+		IProductCmptGeneration generation  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
+
+		if (generation == null) {
+			// no generation for the _exact_ current working date.
+			boolean ok = MessageDialog.openConfirm(getContainer().getShell(), "Generation missmatch on " + getProductCmpt().getName()
+					, "No generation available for the current set working date (" + IpsPreferences.getWorkingDate().getTime().toLocaleString() + ")." +
+							"Create the missing generation?");
+		
+			if (ok) {
+				// create a new generation and set it active
+				getContainer().setEnabled(true);
+				IProductCmptGeneration newGen = (IProductCmptGeneration)prod.newGeneration();
+				newGen.setValidFrom(IpsPreferences.getWorkingDate());
+				propertiesPage.setActiveGeneration(newGen);
+			}
+			else {
+				// no new generation - disable editing
+				propertiesPage.setEnabled(false);
+			}
+		}
+		else if (!generation.equals(getActiveGeneration())) {
+			propertiesPage.setEnabled(true);
+			propertiesPage.setActiveGeneration(generation);
+		}
+		else {
+			propertiesPage.setEnabled(true);
+		}
+		
+    }
+            
+    private class MyPropertyChangeListener implements IPropertyChangeListener {
+
+		public void propertyChange(PropertyChangeEvent event) {
+			// if the this editor is the active on, check for correct generation immediatly
+
+
+			IProductCmptGeneration generation  = (IProductCmptGeneration)getProductCmpt().getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
+			if (!propertiesPage.getPartControl().isDisposed()) {
+				propertiesPage.setEnabled(!(generation == null));
+			}
+			else {
+				IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+			}
+		}
+    	
+    }
 }

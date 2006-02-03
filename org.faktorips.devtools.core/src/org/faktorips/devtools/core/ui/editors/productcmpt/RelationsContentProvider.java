@@ -10,8 +10,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.ProductCmptRelation;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
@@ -32,7 +34,14 @@ public class RelationsContentProvider implements ITreeContentProvider {
     		IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
     		
     		try {
-				IProductCmptTypeRelation[] relations = generation.getProductCmpt().findProductCmptType().getRelations();
+    			IProductCmpt pc = generation.getProductCmpt();
+    			IProductCmptType pcType = pc.findProductCmptType();
+    			
+    			if (pcType == null) {
+    				return new Object[0];
+    			}
+    			
+				IProductCmptTypeRelation[] relations = pcType.getRelations();
 				List result = new ArrayList(relations.length);
 				for (int i = 0; i < relations.length; i++) {
 					if (!relations[i].isAbstract()) {
