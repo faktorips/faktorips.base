@@ -11,7 +11,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.stdbuilder.pctype.RelationImplBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.RelationImplBuilder;
 
 /**
  * helper class for ProductCmptImplCuBuilder, responsible for code related to relation handling
@@ -66,7 +66,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
             return;
         }
         build1ToManyRelation(memberVarsBuilder, methodsBuilder, relation, null);
-        // folgende Zeilen auskommentiert bis genauer Umgang mit relationen geklärt ist. Jan
+        // folgende Zeilen auskommentiert bis genauer Umgang mit relationen geklï¿½rt ist. Jan
         // if (relation.is1ToMany()) {
         // build1ToManyRelation(relation);
         // } else {

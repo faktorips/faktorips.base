@@ -1,7 +1,6 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +16,8 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
-import org.faktorips.devtools.stdbuilder.backup.ProductCmptImplCuBuilder;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -30,26 +30,31 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptGenImplCuBuilder extends AbstractProductCmptTypeBuilder{
+public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuilder{
 
-    private ProductCmptGenInterfaceCuBuilder interfaceBuilder;
-    private ProductCmptImplCuBuilder productCmptTypeImplCuBuilder;
+    private ProductCmptGenInterfaceBuilder interfaceBuilder;
+    private ProductCmptImplClassBuilder productCmptTypeImplCuBuilder;
+    private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
     
-    public ProductCmptGenImplCuBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptGenImplCuBuilder.class));
+    public ProductCmptGenImplClassBuilder(IJavaPackageStructure packageStructure, String kindId) {
+        super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
     }
     
-    public void setInterfaceBuilder(ProductCmptGenInterfaceCuBuilder builder) {
+    public void setInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
         ArgumentCheck.notNull(builder);
         this.interfaceBuilder = builder;
     }
     
-    public void setProductCmptTypeImplBuilder(ProductCmptImplCuBuilder builder) {
+    public void setProductCmptTypeImplBuilder(ProductCmptImplClassBuilder builder) {
         ArgumentCheck.notNull(builder);
         productCmptTypeImplCuBuilder = builder;
     }
     
+    public void setPolicyCmptTypeImplBuilder(PolicyCmptImplClassBuilder builder) {
+        this.policyCmptTypeImplBuilder = builder;
+    }
+
     /**
      * If a policy component type contains an derived or computed attribute, the product component
      * generation class must be abstract, as the computation formulas are defined per generation. 
@@ -75,7 +80,8 @@ public class ProductCmptGenImplCuBuilder extends AbstractProductCmptTypeBuilder{
      * Overridden.
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getImplementationClassName(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "PkGen");
+        String generationAbb = getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode());
+        return getJavaNamingConvention().getImplementationClassName(getProductCmptType(ipsSrcFile).getName() + generationAbb);
     }
 
     /**
@@ -241,19 +247,19 @@ public class ProductCmptGenImplCuBuilder extends AbstractProductCmptTypeBuilder{
         // generate the abstract computation method
         String javaDoc = getLocalizedText("JAVADOC_COMPUTE_METHOD", a.getName());
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureForComputationMethod(a, datatypeHelper, Modifier.PUBLIC | Modifier.ABSTRACT, methodsBuilder);
-        methodsBuilder.append(';');
+        generateMethodComputeValue(a, datatypeHelper, Modifier.PUBLIC | Modifier.ABSTRACT, methodsBuilder);
+        methodsBuilder.appendln(";");
     }
     
-    void generateSignatureForComputationMethod(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateMethodComputeValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         Parameter[] parameters = a.getFormulaParameters();
-        String methodName = getComputationMethodName(a);
+        String methodName = getMethodNameComputeValue(a);
         methodsBuilder.methodBegin(modifier, datatypeHelper.getJavaClassName(),
                 methodName, BuilderHelper.extractParameterNames(parameters),
-                BuilderHelper.transformParameterTypesToJavaClassNames(a.getIpsProject(), parameters));
+                StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, a.getIpsProject(), policyCmptTypeImplBuilder));
     }
     
-    String getComputationMethodName(IAttribute a) {
+    public String getMethodNameComputeValue(IAttribute a) {
         return getLocalizedText("COMPUTE_METHODNAME", StringUtils.capitalise(a.getName()));
     }
 

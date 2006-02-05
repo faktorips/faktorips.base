@@ -9,7 +9,7 @@ import org.faktorips.devtools.core.internal.model.MutableClRuntimeRepositoryToc;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.runtime.TocEntry;
+import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -27,7 +27,7 @@ public abstract class AbstractTocFileUpdateBuilder implements IIpsArtefactBuilde
     /**
      * Subclasses need to provide the funtionality to return a TocEntry for the provided IpsObject.
      */
-    protected abstract TocEntry createTocEntry(IIpsObject object) throws CoreException;
+    protected abstract TocEntryObject createTocEntry(IIpsObject object) throws CoreException;
 
     /**
      * @param logger cannot be null
@@ -72,7 +72,7 @@ public abstract class AbstractTocFileUpdateBuilder implements IIpsArtefactBuilde
         IIpsObject object = null;
         try {
             object = ipsSrcFile.getIpsObject();
-            TocEntry entry = createTocEntry(object);
+            TocEntryObject entry = createTocEntry(object);
             if (entry == null) {
                 return;
             }

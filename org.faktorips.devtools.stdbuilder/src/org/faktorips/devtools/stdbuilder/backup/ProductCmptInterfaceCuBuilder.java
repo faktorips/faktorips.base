@@ -11,7 +11,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -19,7 +18,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.stdbuilder.pctype.PolicyCmptTypeInterfaceCuBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -31,14 +30,14 @@ public class ProductCmptInterfaceCuBuilder extends AbstractPcTypeBuilder {
     private final static String JAVA_GETTER_METHOD_MAX_VALUESET = "JAVA_GETTER_METHOD_MAX_VALUESET";
     private final static String JAVA_CREATE_POLICY_CMPT_METHOD = "JAVA_CREATE_POLICY_CMPT_METHOD";
 
-    private PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder;
+    private PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder;
 
     public ProductCmptInterfaceCuBuilder(IJavaPackageStructure packageStructure, String kindId) throws CoreException {
         super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptInterfaceCuBuilder.class));
         setMergeEnabled(true);
     }
 
-    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder) {
+    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
         this.policyCmptTypeInterfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
 
@@ -143,7 +142,7 @@ public class ProductCmptInterfaceCuBuilder extends AbstractPcTypeBuilder {
         String builderName = null;
 
         if (policyCmptTypeInterfaceBuilder == null) {
-            builderName = PolicyCmptTypeInterfaceCuBuilder.class.getName();
+            builderName = PolicyCmptInterfaceBuilder.class.getName();
         }
 
         if (builderName != null) {

@@ -44,15 +44,29 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * Overridden.
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
+        if (!ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
+            return false;
+        }
+        IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
+        return type.isConfigurableByProductCmptType();
     }
 
     /**
      * Returns the product component type this builder builds an artefact for.
-     * @throws CoreException 
      */
     public IProductCmptType getProductCmptType() throws CoreException {
         return ((IPolicyCmptType)getIpsObject()).findProductCmptType();
+    }
+
+    /**
+     * Returns the product component type this builder builds an artefact for.
+     */
+    public IProductCmptType getProductCmptType(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
+        if (!type.isConfigurableByProductCmptType()) {
+            return null;
+        }
+        return type.findProductCmptType();
     }
 
     /**
@@ -148,11 +162,18 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      */
     protected abstract String[] getExtendedInterfaces() throws CoreException;
 
-    protected final void generateCodeForAttributes(JavaCodeFragmentBuilder memberVarsBuilder,
+    /*
+     * Loops over the attributes and generates code for an attribute if it is valid.
+     * Takes care of proper exception handling.
+     */
+    private void generateCodeForAttributes(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IAttribute[] attributes = getProductCmptType().getAttributes();
+        IAttribute[] attributes = getProductCmptType().findPolicyCmptyType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
+            if (!a.isProductRelevant()) {
+                continue;
+            }
             if (!a.validate().containsErrorMsg()) {
                 try {
                     Datatype datatype = a.getIpsProject().findDatatype(a.getDatatype());
@@ -162,7 +183,6 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
                     }
                     generateCodeForAttribute(a, helper, memberVarsBuilder, methodsBuilder);
                 } catch (Exception e) {
-
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "Error building attribute " + attributes[i].getName() + " of "
                                     + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
@@ -187,13 +207,12 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        if (!attribute.isProductRelevant()) {
-            return;
-        }
         if (attribute.isChangeable()) {
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else if (attribute.getAttributeType()==AttributeType.CONSTANT) {
             generateCodeForConstantAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+        } else if (attribute.isDerivedOrComputed()) {
+            generateCodeForComputedAndDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
         } else {
             throw new RuntimeException("Attribute " + attribute +" has an unknown type " + attribute.getAttributeType());
         }
@@ -211,8 +230,15 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
     
+    protected abstract void generateCodeForComputedAndDerivedAttribute(
+            IAttribute a, 
+            DatatypeHelper datatypeHelper, 
+            JavaCodeFragmentBuilder memberVarsBuilder, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+
     /*
-     * Generates the code for all valid relations.
+     * Loops over the relations and generates code for a relation if it is valid.
+     * Takes care of proper exception handling.
      */
     private void generateCodeForRelations(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {

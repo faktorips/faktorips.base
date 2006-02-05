@@ -6,13 +6,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -23,12 +22,13 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptGenInterfaceCuBuilder extends AbstractProductCmptTypeBuilder {
+public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuilder {
 
-    private ProductCmptGenImplCuBuilder implementationBuilder;
+    private ProductCmptGenImplClassBuilder implementationBuilder;
+    private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
     
-    public ProductCmptGenInterfaceCuBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceCuBuilder.class));
+    public ProductCmptGenInterfaceBuilder(IJavaPackageStructure packageStructure, String kindId) {
+        super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
     }
     
@@ -38,19 +38,28 @@ public class ProductCmptGenInterfaceCuBuilder extends AbstractProductCmptTypeBui
      * default values. This can't be done in the interface builder, as only published attributes 
      * are generated in the published interface.
      */
-    public void setImplementationBuilder(ProductCmptGenImplCuBuilder implementationBuilder) {
+    public void setImplementationBuilder(ProductCmptGenImplClassBuilder implementationBuilder) {
         this.implementationBuilder = implementationBuilder;
+    }
+
+    public void setPolicyCmptTypeImplBuilder(PolicyCmptImplClassBuilder builder) {
+        this.policyCmptTypeImplBuilder = builder;
     }
 
     /**
      * Overridden.
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getPublishedInterfaceName(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "PkGen");
+        return getJavaNamingConvention().getPublishedInterfaceName(getConceptName(ipsSrcFile));
+    }
+    
+    public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
+        String generationAbb = getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode());
+        return getProductCmptType(ipsSrcFile).getName() + generationAbb;
     }
 
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String generationConceptName = IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNameSingular(
+        String generationConceptName = getChangesInTimeNamingConvention().getGenerationConceptNameSingular(
                 getLanguageUsedInGeneratedSourceCode());
         String javaDoc = getLocalizedText("JAVADOC_INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()});
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
@@ -97,8 +106,8 @@ public class ProductCmptGenInterfaceCuBuilder extends AbstractProductCmptTypeBui
         methodsBuilder.append(';');
     }
 
-    protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) {
-        // nothing to do in the interface
+    protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // nothing to do, computation methods are not published.
     }
     
     void generateSignatureGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder builder) throws CoreException {
@@ -108,9 +117,13 @@ public class ProductCmptGenInterfaceCuBuilder extends AbstractProductCmptTypeBui
     }
     
     void generateSignatureGetValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getJavaNamingConvention().getGetterMethodName(implementationBuilder.getValuePropertyName(a), datatypeHelper.getDatatype());
+        String methodName = getMethodNameGetValue(a, datatypeHelper);
         builder.methodBegin(modifier, datatypeHelper.getJavaClassName(),
                 methodName, new String[0], new String[0]);
+    }
+    
+    public String getMethodNameGetValue(IAttribute a, DatatypeHelper datatypeHelper) throws CoreException {
+        return getJavaNamingConvention().getGetterMethodName(implementationBuilder.getValuePropertyName(a), datatypeHelper.getDatatype());
     }
 
     /**

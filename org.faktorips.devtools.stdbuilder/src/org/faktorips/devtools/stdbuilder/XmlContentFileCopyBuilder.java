@@ -178,4 +178,11 @@ public class XmlContentFileCopyBuilder implements IIpsArtefactBuilder {
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return ipsObjectType.equals(ipsSrcFile.getIpsObjectType());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return "XmlContentFileCopyBuilder";
+    }
 }

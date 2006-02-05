@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+The standard builders. 
+
+<h2>Naming conventions for builders</h2>
+Builders are named according to the artefact they build / generate. If a builder generates a Java sourcefile
+containing a published interface the builder is named XYZInterfaceBuilder, e.g. PolicyCmptInterfaceBuilder.
+If the builder generates a Java sourcefile containing an implementation class the builder is named XYZImplClassBuilder.
+
+<h2>Naming conventions for builder methods</h2>
+getMethodNameXYZ		Returns the name of the generated method XYZ.
+getMemberVarNameXYZ		Returns the name of the member var XYZ.
+getConceptNameXYZ       You model concepts like policies, coverages, insured objects, etc. Depedending on the Java naming
+						convention used, the concept coverage is represented as ICoverage in the published interface.
+						However in methodnames we want to get for example <code>getCoverage</code> and not <code>getICoverage</code>.
+						So we use getConceptNameXYZ methods to get the real concept names instead of getUnqualifiedName().
+generateMethodZYX		Generates the sourcecode for the method XYZ
+generateSignatureXYZ	Generates the signature of the method XYZ without a trailing ;
+generateCodeForABC		Generates all sourcecode related to the object ABC
+generateMemberVarXYZ	Generates the sourcecde for the member variable XYZ
+
+<h2>Builder reference</h2>
+implementationBuilder	In a builder that builds a published interface, this is the corresponding builder that builds the implementation.
+interfaceBuilder		In a builder that builds an implementation class, this is the corresponding builder that builds the published interface.
+
+
+
+<h2>API-Usage</h2>
+Use the following naming convention classes:
+JavaNamingConvention is available via getJavaNamingConvention()
+
+
+</body>
+</html>

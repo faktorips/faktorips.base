@@ -12,7 +12,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
-import org.faktorips.runtime.TocEntry;
+import org.faktorips.runtime.TocEntryObject;
 
 public class TableXmlFileBuilderTest extends IpsPluginTest {
 
@@ -55,7 +55,7 @@ public class TableXmlFileBuilderTest extends IpsPluginTest {
         String tableQualifiedName = getTableImplBuilder(builderSet).getQualifiedClassName(
             tableStructure.getIpsSrcFile());
 
-        TocEntry tocEntry = entry.getIpsPackageFragmentRoot(ipsProject)
+        TocEntryObject tocEntry = entry.getIpsPackageFragmentRoot(ipsProject)
                 .getRuntimeRepositoryToc().getTableTocEntry(tableQualifiedName);
         assertNotNull(tocEntry);
 

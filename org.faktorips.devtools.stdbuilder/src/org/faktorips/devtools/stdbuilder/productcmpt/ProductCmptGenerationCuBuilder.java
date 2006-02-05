@@ -5,25 +5,24 @@ import java.lang.reflect.Modifier;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.ConversionCodeGenerator;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.stdbuilder.backup.ProductCmptImplCuBuilder;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.runtime.RuntimeRepository;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
@@ -43,90 +42,67 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
     // property key for the compute method Javadoc.
     private final static String COMPUTE_METHOD_JAVADOC = "COMPUTE_METHOD_JAVADOC";
 
-    // private final static String KIND_PC_IMPL = "pcimplementation";
-
-    private ProductCmptImplCuBuilder productCmptImplBuilder;
-
     // the product component generation sourcecode is generated for.
     private IProductCmptGeneration generation;
 
+    // builders needed
+    private ProductCmptImplClassBuilder productCmptImplBuilder;
+    private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
+    
     /**
      * Constructs a new builder.
      */
-    public ProductCmptGenerationCuBuilder(IJavaPackageStructure packageStructure, String kindId)
+    public ProductCmptGenerationCuBuilder(
+            IProductCmptGeneration generation,
+            IJavaPackageStructure packageStructure, 
+            String kindId)
             throws CoreException {
         super(packageStructure, kindId, new LocalizedStringsSet(
                 ProductCmptGenerationCuBuilder.class));
+        this.generation = generation;
     }
 
-    public void setProductCmptImplBuilder(ProductCmptImplCuBuilder productCmptImplBuilder) {
-        this.productCmptImplBuilder = productCmptImplBuilder;
+    public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {
+        this.productCmptImplBuilder = builder;
     }
 
-    private void checkIfDependentBuildersSet() {
-        String builderName = null;
-
-        if (productCmptImplBuilder == null) {
-            builderName = ProductCmptImplCuBuilder.class.getName();
-        }
-
-        if (builderName != null) {
-            throw new IllegalStateException(
-                    "One of the builders this builder depends on is not set: " + builderName);
-        }
+    public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
+        this.productCmptGenImplBuilder = builder;
     }
-
-    private IProductCmpt getProductCmpt() {
-        return (IProductCmpt)getIpsObject();
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return true;
     }
-
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-
-        if (!ipsSrcFile.exists() || !ipsSrcFile.isContentParsable()) {
-            return super.getUnqualifiedClassName(ipsSrcFile);
-        }
-        IProductCmpt lProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        if (!lProductCmpt.containsFormula()) {
-            IPolicyCmptType pcType = lProductCmpt.findPolicyCmptType();
-            if (pcType == null) {
-                return super.getUnqualifiedClassName(ipsSrcFile);
-            }
-            return productCmptImplBuilder.getUnqualifiedClassName(lProductCmpt.findPolicyCmptType()
-                    .getIpsSrcFile());
-        }
-        return super.getUnqualifiedClassName(ipsSrcFile);
+    
+    public IProductCmptType getProductCmptType() throws CoreException {
+        return generation.getProductCmpt().findProductCmptType();
     }
 
     protected void generateInternal() throws CoreException {
-        checkIfDependentBuildersSet();
-        if (!getProductCmpt().containsFormula()) {
-            cancelGeneration();
-            return;
-        }
-
-        IIpsObjectGeneration[] generations = getProductCmpt().getGenerations();
-        if (generations.length == 0) {
-            return;
-        }
-        generation = (IProductCmptGeneration)generations[0];
         if (generation.validate().containsErrorMsg()) {
             return;
         }
-        IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType();
+        IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
         if (pcType == null) {
             return;
         }
-
         getJavaCodeFragementBuilder().classBegin(Modifier.PUBLIC, getUnqualifiedClassName(),
-            productCmptImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), new String[0]);
+            productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), new String[0]);
         buildConstructor();
         IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
         for (int i = 0; i < elements.length; i++) {
-            buildComputationMethod(elements[i]);
+            try {
+                generateMethodComputeValue(elements[i]);
+            } catch (Exception e) {
+                addToBuildStatus(new IpsStatus("Error generating code for " + elements[i], e));
+            }
         }
         getJavaCodeFragementBuilder().classEnd();
     }
-
+    
     /*
      * Generates the constructor. <p> Example: <p><pre> public MotorPolicyPk0(RuntimeRepository
      * repository, String qName, Class policyComponentType) { super(registry, qName,
@@ -135,46 +111,33 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
     private void buildConstructor() throws CoreException {
         String className = getUnqualifiedClassName();
         String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
-        String[] argNames = new String[] { "repository", "qName", "policyComponentType" };
-        String[] argClassNames = new String[] { RuntimeRepository.class.getName(),
-                String.class.getName(), Class.class.getName() };
+        String[] argNames = new String[] { "productCmpt" };
+        String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findProductCmptType()) };
         JavaCodeFragment body = new JavaCodeFragment(
-                "super(repository, qName, policyComponentType);");
+                "super(productCmpt);");
         getJavaCodeFragementBuilder().method(Modifier.PUBLIC, null, className, argNames,
             argClassNames, body, javaDoc);
-    }
-
-    // Duplicate method in PoicyCmptTypeImplCuBuilder
-    private String getPolicyCmptImplComputeMethodName(IAttribute a) {
-        return "compute" + StringUtils.capitalise(a.getName());
     }
 
     /*
      * Generates the method to compute a value as specified by a formula configuration element and
      */
-    private void buildComputationMethod(IConfigElement formulaElement) {
-        try {
-            IAttribute attribute = formulaElement.findPcTypeAttribute();
-            Datatype datatype = attribute.getIpsProject().findDatatype(attribute.getDatatype());
-            String methodName = getPolicyCmptImplComputeMethodName(attribute);
-            String javaDoc = getLocalizedText(COMPUTE_METHOD_JAVADOC, StringUtils
-                    .capitalise(attribute.getName()));
-            JavaCodeFragment body = new JavaCodeFragment();
-            body.append("return ");
-            body.append(compileFormulaToJava(formulaElement, attribute));
-            body.append(';');
-            getJavaCodeFragementBuilder().method(
-                Modifier.PUBLIC,
-                datatype.getJavaClassName(),
-                methodName,
-                BuilderHelper.extractParameterNames(attribute.getFormulaParameters()),
-                BuilderHelper.transformParameterTypesToJavaClassNames(attribute.getIpsProject(),
-                    attribute.getFormulaParameters()), body, javaDoc);
-        } catch (CoreException e) {
-            addToBuildStatus(new IpsStatus("Error building compute method for " + formulaElement, e));
-        }
-    }
+    private void generateMethodComputeValue(IConfigElement formulaElement) throws CoreException {
+        JavaCodeFragmentBuilder builder = getJavaCodeFragementBuilder();
+        IAttribute attribute = formulaElement.findPcTypeAttribute();
+        Datatype datatype = attribute.getIpsProject().findDatatype(attribute.getDatatype());
+        DatatypeHelper datatypeHelper = attribute.getIpsProject().getDatatypeHelper(datatype);
 
+        String javaDoc = getLocalizedText(COMPUTE_METHOD_JAVADOC, StringUtils
+                .capitalise(attribute.getName()));
+        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        productCmptGenImplBuilder.generateMethodComputeValue(attribute, datatypeHelper, Modifier.PUBLIC, builder);
+        builder.append("return ");
+        builder.append(compileFormulaToJava(formulaElement, attribute));
+        builder.appendln(";");
+        builder.closeBracket();
+    }
+    
     private JavaCodeFragment compileFormulaToJava(IConfigElement formulaElement, IAttribute attribute) {
         String formula = formulaElement.getValue();
         if (StringUtils.isEmpty(formula)) {
@@ -217,13 +180,6 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
             fragment.append("// See the error log for details.");
             return fragment;
         }
-    }
-
-    /**
-     * Overridden.
-     */
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
-        return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
 
 }

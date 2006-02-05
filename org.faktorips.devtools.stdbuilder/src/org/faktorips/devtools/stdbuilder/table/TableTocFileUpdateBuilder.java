@@ -8,7 +8,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractTocFileUpdateBuilder;
-import org.faktorips.runtime.TocEntry;
+import org.faktorips.runtime.TocEntryObject;
 
 public class TableTocFileUpdateBuilder extends AbstractTocFileUpdateBuilder {
 
@@ -39,7 +39,7 @@ public class TableTocFileUpdateBuilder extends AbstractTocFileUpdateBuilder {
         }
     }
 
-    protected TocEntry createTocEntry(IIpsObject object) throws CoreException {
+    protected TocEntryObject createTocEntry(IIpsObject object) throws CoreException {
         ITableContents tableContents = (ITableContents)object;
         ITableStructure tableStructure = tableContents.findTableStructure();
         if (tableStructure == null) {
@@ -51,12 +51,20 @@ public class TableTocFileUpdateBuilder extends AbstractTocFileUpdateBuilder {
                 .getIpsSrcFile());
         String xmlResourceName = packageInternal.replace('.', '/') + '/' + tableContents.getName()
                 + ".xml";
-        TocEntry entry = TocEntry.createTableTocEntry(tableStructure.getQualifiedName(),
-            xmlResourceName, tableStructureName, null);
+        TocEntryObject entry = TocEntryObject.createTableTocEntry(tableStructure.getQualifiedName(),
+            xmlResourceName, tableStructureName);
         return entry;
     }
 
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return "TOC-File-Builder";
+    }
+    
 }

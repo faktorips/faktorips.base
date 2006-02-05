@@ -21,9 +21,9 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.stdbuilder.Util;
-import org.faktorips.devtools.stdbuilder.pctype.PolicyCmptTypeImplCuBuilder;
-import org.faktorips.devtools.stdbuilder.pctype.PolicyCmptTypeInterfaceCuBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplCuBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.RuntimeRepository;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -43,10 +43,10 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
     private final static String JAVA_GETTER_METHOD_MAX_VALUESET_JAVADOC = "JAVA_GETTER_METHOD_MAX_VALUESET";
     private final static String JAVA_CREATE_POLICY_CMPT_METHOD_JAVADOC = "JAVA_CREATE_POLICY_CMPT_METHOD";
 
-    private PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder;
-    private PolicyCmptTypeImplCuBuilder policyCmptTypeImplBuilder;
+    private PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder;
+    private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
     private ProductCmptInterfaceCuBuilder productCmptInterfaceBuilder;
-    private ProductCmptGenImplCuBuilder productCmptGenImplBuilder;
+    private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
     
     public ProductCmptImplCuBuilder(IJavaPackageStructure packageStructure, String kindId) {
@@ -54,11 +54,11 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
         setMergeEnabled(true);
     }
 
-    public void setPolicyCmptTypeImplBuilder(PolicyCmptTypeImplCuBuilder policyCmptTypeImplBuilder) {
+    public void setPolicyCmptTypeImplBuilder(PolicyCmptImplClassBuilder policyCmptTypeImplBuilder) {
         this.policyCmptTypeImplBuilder = policyCmptTypeImplBuilder;
     }
 
-    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder) {
+    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
         this.policyCmptTypeInterfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
 
@@ -66,7 +66,7 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
         this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
     }
     
-    public void setProductCmptGenImplBuilder(ProductCmptGenImplCuBuilder builder) {
+    public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
         ArgumentCheck.notNull(builder);
         productCmptGenImplBuilder = builder;
     }
@@ -113,11 +113,11 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
         String builderName = null;
 
         if (policyCmptTypeInterfaceBuilder == null) {
-            builderName = PolicyCmptTypeInterfaceCuBuilder.class.getName();
+            builderName = PolicyCmptInterfaceBuilder.class.getName();
         }
 
         if (policyCmptTypeImplBuilder == null) {
-            builderName = PolicyCmptTypeImplCuBuilder.class.getName();
+            builderName = PolicyCmptImplClassBuilder.class.getName();
         }
 
         if (productCmptInterfaceBuilder == null) {
@@ -456,7 +456,7 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
                 frag.append("if (relationElements != null) {");
                 String fieldName = r.is1ToMany() ? getProductCmptRelation1ToManyFieldName(r)
                         : getProductCmptRelation1To1FieldName(r);
-                // if (r.is1ToMany()) { auskommentiert bis genauer Umgang mit relationen geklärt
+                // if (r.is1ToMany()) { auskommentiert bis genauer Umgang mit relationen geklï¿½rt
                 // ist. Jan
                 frag.append(fieldName);
                 frag.appendln(" = new ");
@@ -468,7 +468,7 @@ public class ProductCmptImplCuBuilder extends AbstractPcTypeBuilder {
                 frag.appendClassName(Element.class);
                 frag.append(")relationElements.get(i)).getAttribute(\"target\");");
                 frag.appendln('}');
-                // folgende Zeilen auskommentiert bis genauer Umgang mit relationen geklärt ist. Jan
+                // folgende Zeilen auskommentiert bis genauer Umgang mit relationen geklï¿½rt ist. Jan
                 // } else {
                 // frag.append(r.getJavaField(IRelation.JAVA_PRODUCTCMPT_FIELD).getElementName());
                 // frag.append(" = ((Element)relationElements.get(0)).getAttribute(\"target\");");

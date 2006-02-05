@@ -3,19 +3,25 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.AbstractTocFileUpdateBuilder;
-import org.faktorips.devtools.stdbuilder.pctype.PolicyCmptTypeInterfaceCuBuilder;
-import org.faktorips.runtime.TocEntry;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.runtime.TocEntryGeneration;
+import org.faktorips.runtime.TocEntryObject;
+import org.faktorips.runtime.internal.DateTime;
 
 public class ProductCmptTocFileUpdateBuilder extends AbstractTocFileUpdateBuilder {
 
-    private PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder;
-    private ProductCmptGenerationCuBuilder productCmptGenerationBuilder;
-
+    private PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder;
+    private ProductCmptImplClassBuilder productCmptTypeImplBuilder;
+    private ProductCmptBuilder productCmptBuilder;
+    
     /**
      * @param structure
      */
@@ -23,23 +29,23 @@ public class ProductCmptTocFileUpdateBuilder extends AbstractTocFileUpdateBuilde
         super(structure, kind);
     }
 
-    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder) {
+    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
         this.policyCmptTypeInterfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
 
-    public void setProductCmptGenerationBuilder(ProductCmptGenerationCuBuilder productCmptGenerationBuilder) {
-        this.productCmptGenerationBuilder = productCmptGenerationBuilder;
+    public void setProductCmptTypeBuilder(ProductCmptImplClassBuilder builder) {
+        this.productCmptTypeImplBuilder = builder;
+    }
+    
+    public void setProductCmptBuilder(ProductCmptBuilder builder) {
+        productCmptBuilder = builder;
     }
 
     protected void checkIfDependOnBuildersSet() throws IllegalStateException {
         String builderName = null;
 
         if (policyCmptTypeInterfaceBuilder == null) {
-            builderName = PolicyCmptTypeInterfaceCuBuilder.class.getName();
-        }
-
-        if(productCmptGenerationBuilder == null) {
-            builderName = ProductCmptGenerationCuBuilder.class.getName();
+            builderName = PolicyCmptInterfaceBuilder.class.getName();
         }
 
         if (builderName != null) {
@@ -53,7 +59,7 @@ public class ProductCmptTocFileUpdateBuilder extends AbstractTocFileUpdateBuilde
      * 
      * @see org.faktorips.devtools.stdbuilder.AbstractTocFileUpdateBuilder#createTocEntry(org.faktorips.devtools.core.model.IIpsObject)
      */
-    protected TocEntry createTocEntry(IIpsObject ipsObject) throws CoreException {
+    protected TocEntryObject createTocEntry(IIpsObject ipsObject) throws CoreException {
 
         IProductCmpt productCmpt = (IProductCmpt)ipsObject;
         if (productCmpt.getNumOfGenerations() == 0) {
@@ -66,14 +72,29 @@ public class ProductCmptTocFileUpdateBuilder extends AbstractTocFileUpdateBuilde
         
         String packageString = getPackageStructure().getPackage(kind, productCmpt.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml";
-        TocEntry entry = TocEntry.createProductCmptTocEntry(productCmpt.getQualifiedName(),
-            xmlResourceName, productCmptGenerationBuilder.getQualifiedClassName(productCmpt
-                    .getIpsSrcFile()), policyCmptTypeInterfaceBuilder.getQualifiedClassName(pcType
-                    .getIpsSrcFile()), null);
+        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(productCmpt.getQualifiedName(),
+            xmlResourceName, 
+            productCmptTypeImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), 
+            policyCmptTypeInterfaceBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
+        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
+        for (int i = 0; i < generations.length; i++) {
+            DateTime validFrom = DateTime.createDateOnly(generations[i].getValidFrom());
+            String generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generations[i]);
+            genEntries[i] = new TocEntryGeneration(entry, validFrom, generationClassName, xmlResourceName); 
+        }
+        entry.setGenerationEntries(genEntries);
         return entry;
     }
 
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return "TOC-File-Builder";
     }
 }

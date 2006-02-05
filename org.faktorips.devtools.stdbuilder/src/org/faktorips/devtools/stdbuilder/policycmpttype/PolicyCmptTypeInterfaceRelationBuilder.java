@@ -1,4 +1,4 @@
-package org.faktorips.devtools.stdbuilder.pctype;
+package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.lang.reflect.Modifier;
 
@@ -24,13 +24,13 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
     private final static String RELATION_INTERFACE_REMOVE_JAVADOC = "RELATION_INTERFACE_REMOVE_JAVADOC";
     private final static String RELATION_INTERFACE_SETTER_JAVADOC = "RELATION_INTERFACE_SETTER_JAVADOC";
 
-    private PolicyCmptTypeInterfaceCuBuilder cuBuilder;
+    private PolicyCmptInterfaceBuilder cuBuilder;
     
-    public PolicyCmptTypeInterfaceRelationBuilder(PolicyCmptTypeInterfaceCuBuilder cuBuilder) {
+    public PolicyCmptTypeInterfaceRelationBuilder(PolicyCmptInterfaceBuilder cuBuilder) {
         this.cuBuilder = cuBuilder;
     }
 
-    private PolicyCmptTypeInterfaceCuBuilder getPolicyCmptTypeInterfaceBuilder() {
+    private PolicyCmptInterfaceBuilder getPolicyCmptTypeInterfaceBuilder() {
         return cuBuilder;
     }
 

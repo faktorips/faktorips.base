@@ -1,6 +1,7 @@
-package org.faktorips.devtools.stdbuilder.pctype;
+package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.text.MessageFormat;
+import java.util.Calendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -11,7 +12,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.EnumValueSet;
@@ -24,19 +24,21 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.Util;
-import org.faktorips.devtools.stdbuilder.backup.ProductCmptImplCuBuilder;
-import org.faktorips.devtools.stdbuilder.backup.ProductCmptInterfaceCuBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.internal.DefaultPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
-public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
+public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     private final static String ATTRIBUTE_FIELD_COMMENT = "ATTRIBUTE_FIELD_COMMENT";
 
@@ -65,59 +67,56 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
 
     private final static String ATTRIBUTE_DERIVED_GETTER_JAVADOC = "ATTRIBUTE_DERIVED_GETTER_JAVADOC";
 
-    private PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder;
-    private PolicyCmptTypeImplCuBuilder policyCmptTypeImplBuilder;
-    private ProductCmptInterfaceCuBuilder productCmptInterfaceBuilder;
-    private ProductCmptImplCuBuilder productCmptImplBuilder;
+    private PolicyCmptInterfaceBuilder interfaceBuilder;
+    private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
+    private ProductCmptImplClassBuilder productCmptImplBuilder;
+    private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
+    private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
     private static final String INITIALIZE_JAVADOC = "INITIALIZE_JAVADOC";
 
-    public PolicyCmptTypeImplCuBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(PolicyCmptTypeImplCuBuilder.class));
+    public PolicyCmptImplClassBuilder(IJavaPackageStructure packageStructure, String kindId) {
+        super(packageStructure, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
         setMergeEnabled(true);
     }
 
-    public void setPolicyCmptTypeImplBuilder(PolicyCmptTypeImplCuBuilder policyCmptTypeImplCuBuilder) {
-        this.policyCmptTypeImplBuilder = policyCmptTypeImplCuBuilder;
+    public void setInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
+        this.interfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
 
-    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptTypeInterfaceCuBuilder policyCmptTypeInterfaceBuilder) {
-        this.policyCmptTypeInterfaceBuilder = policyCmptTypeInterfaceBuilder;
+    PolicyCmptInterfaceBuilder getInterfaceBuilder() {
+        return interfaceBuilder;
     }
 
-    PolicyCmptTypeImplCuBuilder getPolicyCmptTypeImplBuilder() {
-        return policyCmptTypeImplBuilder;
-    }
-
-    PolicyCmptTypeInterfaceCuBuilder getPolicyCmptTypeInterfaceBuilder() {
-        return policyCmptTypeInterfaceBuilder;
-    }
-
-    public void setProductCmptImplBuilder(ProductCmptImplCuBuilder productCmptImplBuilder) {
+    public void setProductCmptImplBuilder(ProductCmptImplClassBuilder productCmptImplBuilder) {
         this.productCmptImplBuilder = productCmptImplBuilder;
     }
 
-    public void setProductCmptInterfaceBuilder(ProductCmptInterfaceCuBuilder productCmptInterfaceBuilder) {
+    public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
         this.productCmptInterfaceBuilder = productCmptInterfaceBuilder;
+    }
+    
+    public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
+        this.productCmptGenInterfaceBuilder = builder;
+    }
+    
+    public void setProductCmptGenImplBuilder(ProductCmptGenImplClassBuilder builder) {
+        this.productCmptGenImplBuilder = builder;
     }
 
     protected void assertConditionsBeforeGenerating() {
         String builderName = null;
 
-        if (policyCmptTypeInterfaceBuilder == null) {
-            builderName = PolicyCmptTypeInterfaceCuBuilder.class.getName();
-        }
-
-        if (policyCmptTypeImplBuilder == null) {
-            builderName = PolicyCmptTypeImplCuBuilder.class.getName();
+        if (interfaceBuilder == null) {
+            builderName = PolicyCmptInterfaceBuilder.class.getName();
         }
 
         if (productCmptInterfaceBuilder == null) {
-            builderName = ProductCmptInterfaceCuBuilder.class.getName();
+            builderName = ProductCmptInterfaceBuilder.class.getName();
         }
 
         if (productCmptImplBuilder == null) {
-            builderName = ProductCmptImplCuBuilder.class.getName();
+            builderName = ProductCmptImplClassBuilder.class.getName();
         }
 
         if (builderName != null) {
@@ -146,69 +145,182 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         createInitMethod(methodsBuilder);
-        createPkGetter(methodsBuilder);
-        createPkSetter(methodsBuilder);
-        createPkImplGetter(methodsBuilder);
+        generateMethodGetProductCmpt(methodsBuilder);
+        generateMethodGetProductCmptGeneration(methodsBuilder);
+        generateMethodSetProductCmpt(methodsBuilder);
         buildValidation(methodsBuilder);
         buildAbstractMethods(methodsBuilder);
         buildMethods(methodsBuilder);
     }
 
     /**
-     * Overriden.
+     * {@inheritDoc}
      */
-    protected void generateCodeForAttribute(IAttribute a,
+    protected void generateCodeForConstantAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        Datatype datatype = BuilderHelper.findAttributeDatatype(a);
-
-        String fieldName = null;
-        if (!a.isProductRelevant()
-                && (a.getAttributeType() == AttributeType.CHANGEABLE
-                        || a.getAttributeType() == AttributeType.COMPUTED || (a.getAttributeType() == AttributeType.CONSTANT && a
-                        .getModifier() != Modifier.PUBLISHED))) {
-            fieldName = createAttributeField(memberVarsBuilder, a, datatype, datatypeHelper);
+     
+        if (attribute.isProductRelevant()) {
+            generateMethodAttributeGetterFromProductCmpt(attribute, datatypeHelper, methodsBuilder);
         } else {
-            if (a.isProductRelevant()
-                    && (a.getAttributeType() == AttributeType.CHANGEABLE || a.getAttributeType() == AttributeType.COMPUTED)) {
-                fieldName = createAttributeField(memberVarsBuilder, a, datatype, datatypeHelper);
+            if (attribute.getModifier() == org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED) {
+                return;
             }
+            interfaceBuilder.generateStaticAttributeVariable(attribute, datatypeHelper, memberVarsBuilder);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForChangeableAttribute(IAttribute attribute,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        generateMemberVarForAttribute(attribute, datatypeHelper, memberVarsBuilder);
+        generateMethodAttributeGetterFromMemberVar(attribute, datatypeHelper, methodsBuilder);
+        generateMethodAttributeSetter(attribute, datatypeHelper, methodsBuilder);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForDerivedAttribute(IAttribute attribute,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        generateMethodAttributeDerivedGetter(attribute, datatypeHelper, methodsBuilder);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForComputedAttribute(IAttribute attribute,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        generateMemberVarForAttribute(attribute, datatypeHelper, memberVarsBuilder);
+        generateMethodAttributeGetterFromMemberVar(attribute, datatypeHelper, methodsBuilder);
+    }
+    
+    void generateMethodAttributeGetterFromProductCmpt(
+            IAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String javaDoc = null; // getLocalizedText(null, a.getName()); // TODO
+        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureAttributeGetter(a, datatypeHelper, methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return ");
+        methodsBuilder.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getIpsSrcFile()));
+        methodsBuilder.append("().");
+        methodsBuilder.append(this.productCmptGenInterfaceBuilder.getMethodNameGetValue(a, datatypeHelper));
+        methodsBuilder.append("();");
+        methodsBuilder.closeBracket();
+    }
+    
+    private void generateMemberVarForAttribute(            
+            IAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder memberVarsBuilders) throws CoreException {
+        
+        JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
+        String comment = getLocalizedText(ATTRIBUTE_FIELD_COMMENT, a.getName());
+        String fieldName = getMemberVarNameForAttribute(a);
+
+        memberVarsBuilders.javaDoc(comment, ANNOTATION_GENERATED);
+        memberVarsBuilders.varDeclaration(java.lang.reflect.Modifier.PRIVATE, datatypeHelper.getJavaClassName(), fieldName,
+            initialValueExpression);
+    }
+    
+    private void generateMethodAttributeDerivedGetter(
+            IAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder builder) throws CoreException {
+        
+        Parameter[] parameters = a.getFormulaParameters();
+        String[] paramNames = BuilderHelper.extractParameterNames(parameters);
+        String[] paramTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(
+                parameters, a.getIpsProject(), this);
+        JavaCodeFragment paramFragment = new JavaCodeFragment();
+        JavaCodeFragment variableFragement = new JavaCodeFragment();
+
+        paramFragment.append('(');
+        for (int i = 0; i < paramNames.length; i++) {
+            variableFragement.appendClassName(paramTypes[i]);
+            variableFragement.append(' ');
+            variableFragement.append(paramNames[i]);
+            variableFragement.append(" = ");
+            Datatype paramDataype = a.getIpsProject().findDatatype(parameters[i].getDatatype());
+            DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(paramDataype);
+            if (helper != null) {
+                JavaCodeFragment nullExpressionFragment = helper.nullExpression();
+                variableFragement.append(nullExpressionFragment);
+            } else {
+                variableFragement.append("null");
+            }
+            variableFragement.appendln(';');
+            if (i > 0) {
+                paramFragment.append(", ");
+            }
+            paramFragment.append(paramNames[i]);
+        }
+        paramFragment.append(")");
+
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendln("// TODO Belegung der Berechnungsparameter implementieren");
+        body.append(variableFragement);
+        if (a.isProductRelevant()) {
+            body.append(" return ((");
+            body.appendClassName(productCmptGenImplBuilder.getQualifiedClassName(getIpsSrcFile()));
+            body.append(')');
+            body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getIpsSrcFile()));
+            body.append("()).");
+            body.append(productCmptGenImplBuilder.getMethodNameComputeValue(a));
+            body.append(paramFragment);
+            body.append(";");
         }
 
-        if (a.getAttributeType() != AttributeType.DERIVED) {
-            // Derived IAttribute werden in Extension Klasse behandelt
-            createAttributeGetterMethod(methodsBuilder, a, datatype, fieldName);
-        }
+        String javaDoc = getLocalizedText(ATTRIBUTE_DERIVED_GETTER_JAVADOC, a.getName());
+        builder.method(Util.getJavaModifier(a.getModifier()), datatypeHelper.getJavaClassName(),
+            getPcInterfaceGetValueMethodName(a), new String[0], new String[0], body, javaDoc,
+            ANNOTATION_MODIFIABLE);
+    }
 
-        if (a.getAttributeType() == AttributeType.CHANGEABLE) {
-            createAttributeSetterMethod(methodsBuilder, a, datatype, fieldName);
-        }
-
-        if (!a.isProductRelevant()) {
-            if (!a.getValueSet().isAllValues()) {
-                if (a.getModifier() != Modifier.PUBLISHED) {
-                    createAttributeValueSetField(memberVarsBuilder, a, datatype, datatypeHelper);
-                }
-                String valueSetFieldName = getPolicyValueSetFieldName(a);
-                createAttributeValueSetMethods(methodsBuilder, a, datatype, datatypeHelper,
-                    valueSetFieldName);
-            }
-        } else { // a.isProductRelevant()
-            if (!a.getValueSet().isAllValues()) {
-                createAttributeValueSetMethods(methodsBuilder, a, datatype, datatypeHelper);
-            }
-        }
-
-        // -- from ext
-        if (a.getAttributeType() == AttributeType.DERIVED) {
-            createAttributeDerivedGetterMethod(methodsBuilder, a, datatype);
-            if (!a.isProductRelevant()) {
-                createAttributeComputeMethod(methodsBuilder, a, datatype);
-            }
-        } else if (a.getAttributeType() == AttributeType.COMPUTED && !a.isProductRelevant()) {
-            createAttributeComputeMethod(methodsBuilder, a, datatype);
-        }
+    public String getMemberVarNameForAttribute(IAttribute a) throws CoreException {
+        return getJavaNamingConvention().getMemberVarName(a.getName());
+    }
+    
+    private void generateMethodAttributeGetterFromMemberVar(
+            IAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureAttributeGetter(a, datatypeHelper, methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return ");
+        methodsBuilder.append(getMemberVarNameForAttribute(a));
+        methodsBuilder.append(";");
+        methodsBuilder.closeBracket();
+    }
+    
+    private void generateMethodAttributeSetter(
+            IAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureAttributeSetter(a, datatypeHelper, methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.append(getMemberVarNameForAttribute(a));
+        methodsBuilder.append(" = newValue;");
+        methodsBuilder.closeBracket();
     }
 
     /**
@@ -269,8 +381,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
             IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(
                 getPcType().getSupertype());
             if (supertype != null) {
-                javaSupertype = policyCmptTypeImplBuilder.getQualifiedClassName(supertype
-                        .getIpsSrcFile());
+                javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
             }
         }
         return javaSupertype;
@@ -280,9 +391,9 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
-        return StringUtils.capitalise(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()))
-                + "Impl";
+    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+        String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
+        return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalise(name));
     }
 
     private void buildValidation(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -332,7 +443,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
                         body.append("if(");
                         body.append(getPolicyCmptImplGetNumOfMethodName(r));
                         body.append("() > 0) { ");
-                        body.appendClassName(policyCmptTypeInterfaceBuilder
+                        body.appendClassName(interfaceBuilder
                                 .getQualifiedClassName(target.getIpsSrcFile()));
                         body.append("[] rels = ");
                         body.append(getPolicyCmptImplGetAllMethodName(r));
@@ -451,7 +562,7 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
      * @throws CoreException
      */
     private String getInterfaceName() throws CoreException {
-        return policyCmptTypeInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile());
+        return interfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile());
     }
 
     private void createConstructor(JavaCodeFragmentBuilder builder, boolean isParamListEmpty)
@@ -464,11 +575,11 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         JavaCodeFragment fragment = new JavaCodeFragment();
         String[] paramTypes, paramNames;
         if (!isParamListEmpty) {
-            paramTypes = new String[] { productCmptInterfaceBuilder
-                    .getQualifiedClassName(getPcType().getIpsSrcFile()) };
-            paramNames = new String[] { "pc" };
-            fragment.append("super();");
-            fragment.append("setProductCmpt(pc);");
+            paramTypes = new String[] { 
+                    productCmptInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile()),
+                    Calendar.class.getName()};
+            paramNames = new String[] { "productCmpt", "effectiveDate"};
+            fragment.append("super(productCmpt, effectiveDate);");
             fragment.append("initialize();");
         } else {
             fragment.append("super();");
@@ -503,63 +614,47 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
             "initialize", new String[0], new String[0], fragment, javaDoc, ANNOTATION_GENERATED);
     }
 
-    private void createPkGetter(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText(PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC);
-        String productCmptInterfaceQualifiedName = productCmptInterfaceBuilder
-                .getQualifiedClassName(getPcType().getIpsSrcFile());
-        String productCmptInterfaceUnqualifiedName = productCmptInterfaceBuilder
-                .getUnqualifiedClassName(getPcType().getIpsSrcFile());
-
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append("return (");
-        body.appendClassName(productCmptInterfaceQualifiedName);
-        body.append(") getProductComponent();");
-
-        builder.method(java.lang.reflect.Modifier.PUBLIC, productCmptInterfaceQualifiedName, "get"
-                + StringUtils.capitalise(productCmptInterfaceUnqualifiedName), new String[0],
-            new String[0], body, javaDoc, ANNOTATION_GENERATED);
+    private void generateMethodGetProductCmpt(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetProductCmpt(getIpsSrcFile(), builder);
+        builder.openBracket();
+        String productCmptInterfaceQualifiedName = productCmptInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile());
+        builder.append("return (");
+        builder.appendClassName(productCmptInterfaceQualifiedName);
+        builder.append(")getProductComponent();"); // don't use getMethodNameGetProductComponent() as this results in a recursive call
+        // we have to call the generic superclass method here
+        builder.closeBracket();
     }
 
-    private void createPkSetter(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText(PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC);
-        String productCmptInterfaceQualifiedName = productCmptInterfaceBuilder
-                .getQualifiedClassName(getPcType().getIpsSrcFile());
-        String productCmptInterfaceUnqualifiedName = productCmptInterfaceBuilder
-                .getUnqualifiedClassName(getPcType().getIpsSrcFile());
-
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append("setProductCmpt(pc);");
-        body.append("if(isInitMode) { initialize(); }");
-        String[] paramTypes = new String[] { productCmptInterfaceQualifiedName,
-                Datatype.PRIMITIVE_BOOLEAN.getJavaClassName() };
-        String[] paramNames = new String[] { "pc", "isInitMode" };
-
-        builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), "set"
-                + StringUtils.capitalise(productCmptInterfaceUnqualifiedName), paramNames,
-            paramTypes, body, javaDoc, ANNOTATION_GENERATED);
+    private void generateMethodGetProductCmptGeneration(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetProductCmptGeneration(getIpsSrcFile(), builder);
+        builder.openBracket();
+        builder.append("return (");
+        builder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
+        builder.append(")");
+        builder.append(getMethodNameGetProductComponent());
+        builder.append("().getGeneration(");
+        builder.append(getEffectiveDateMethodName());
+        builder.appendln("());");
+        builder.closeBracket();
+    }
+    
+    private String getMethodNameGetProductComponent() throws CoreException {
+        return interfaceBuilder.getMethodNameGetProductCmpt(getIpsSrcFile());
     }
 
-    private void createPkImplGetter(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText(PRODUCT_CMPT_IMPLEMENTATION_GETTER_JAVADOC);
-        String productCmptImplQualifiedName = productCmptImplBuilder
-                .getQualifiedClassName(getPcType().getIpsSrcFile());
-        String productCmptImplUnqualifiedName = productCmptImplBuilder
-                .getUnqualifiedClassName(getPcType().getIpsSrcFile());
-
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append(" return (");
-        body.appendClassName(productCmptImplQualifiedName);
-        body.append(") getProductComponent();");
-
-        builder.method(java.lang.reflect.Modifier.PUBLIC, productCmptImplQualifiedName, "get"
-                + StringUtils.capitalise(productCmptImplUnqualifiedName), new String[0],
-            new String[0], body, javaDoc, ANNOTATION_GENERATED);
+    private void generateMethodSetProductCmpt(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureSetProductCmpt(getIpsSrcFile(), builder);
+        builder.openBracket();
+        builder.appendln("setProductCmpt(pc);");
+        builder.appendln("if(isInitMode) { initialize(); }");
+        builder.closeBracket();
     }
 
     private String getPkGetter() throws CoreException {
-        return "get"
-                + StringUtils.capitalise(productCmptInterfaceBuilder
-                        .getUnqualifiedClassName(getPcType().getIpsSrcFile())) + "()";
+        return "get" + StringUtils.capitalise(productCmptInterfaceBuilder.getConceptName(getIpsSrcFile()))+ "()";
     }
 
     // duplicate in ProductCmptImplCuBuilder and ProductCmptInterfaceCuBuilder
@@ -584,23 +679,12 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         } else {
             methodName = getPcInterfaceGetValueMethodName(a);
         }
-        return getPkGetter() + '.' + methodName + "()";
+        return interfaceBuilder.getMethodNameGetProductCmptGeneration(getIpsSrcFile()) + "()." + methodName + "()";
     }
 
     // Duplicate is also in ProductCmptGenerationBuilder
     private String getPolicyCmptImplComputeMethodName(IAttribute a) {
         return "compute" + StringUtils.capitalise(a.getName());
-    }
-
-    // -- from ext
-    private void createAttributeComputeMethod(JavaCodeFragmentBuilder builder,
-            IAttribute a,
-            Datatype datatype) throws CoreException {
-        Parameter[] parameters = a.getFormulaParameters();
-        builder.method(Util.getJavaModifier(a.getModifier()), datatype.getJavaClassName(),
-            getPolicyCmptImplComputeMethodName(a), BuilderHelper.extractParameterNames(parameters),
-            BuilderHelper.transformParameterTypesToJavaClassNames(a.getIpsProject(), parameters),
-            getMethodBodyReturningDefaultOrNull(a, datatype), null, ANNOTATION_MODIFIABLE);
     }
 
     // -- from ext
@@ -620,58 +704,6 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
             body.append("null;");
         }
         return body;
-    }
-
-    // -- from ext
-    private void createAttributeDerivedGetterMethod(JavaCodeFragmentBuilder builder,
-            IAttribute a,
-            Datatype datatype) throws CoreException {
-        Parameter[] parameters = a.getFormulaParameters();
-        String[] paramNames = BuilderHelper.extractParameterNames(parameters);
-        String[] paramTypes = BuilderHelper.transformParameterTypesToJavaClassNames(a
-                .getIpsProject(), parameters);
-        JavaCodeFragment paramFragment = new JavaCodeFragment();
-        JavaCodeFragment variableFragement = new JavaCodeFragment();
-
-        paramFragment.append('(');
-        for (int i = 0; i < paramNames.length; i++) {
-            variableFragement.appendClassName(paramTypes[i]);
-            variableFragement.append(' ');
-            variableFragement.append(paramNames[i]);
-            variableFragement.append(" = ");
-            Datatype paramDataype = a.getIpsProject().findDatatype(parameters[i].getDatatype());
-            DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(paramDataype);
-            if (helper != null) {
-                JavaCodeFragment nullExpressionFragment = helper.nullExpression();
-                variableFragement.append(nullExpressionFragment);
-            } else {
-                variableFragement.append("null");
-            }
-            variableFragement.append(';');
-            if (i > 0) {
-                paramFragment.append(", ");
-            }
-            paramFragment.append(paramNames[i]);
-        }
-        paramFragment.append(")");
-
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.appendln("// TODO Belegung der Berechnungsparameter implementieren");
-        body.append(variableFragement);
-        body.append(" return ");
-        if (a.isProductRelevant()) {
-            body.append(getPkGetter());
-            body.append('.');
-        }
-        body.append("compute" + StringUtils.capitalise(a.getName()));
-        body.append(paramFragment);
-        body.append(";");
-
-        String javaDoc = getLocalizedText(ATTRIBUTE_DERIVED_GETTER_JAVADOC, a.getName());
-
-        builder.method(Util.getJavaModifier(a.getModifier()), datatype.getJavaClassName(),
-            getPcInterfaceGetValueMethodName(a), new String[0], new String[0], body, javaDoc,
-            ANNOTATION_MODIFIABLE);
     }
 
     // --from ext
@@ -730,90 +762,8 @@ public class PolicyCmptTypeImplCuBuilder extends AbstractPcTypeBuilder {
         return "set" + StringUtils.capitalise(a.getName());
     }
 
-    /**
-     * @param a
-     * @param datatype
-     * @param field
-     * @throws CoreException
-     */
-    private void createAttributeSetterMethod(JavaCodeFragmentBuilder builder,
-            IAttribute a,
-            Datatype datatype,
-            String fieldName) throws CoreException {
-        String methodName = getPolicySetMethodName(a);
-        String javaDoc = getLocalizedText(ATTRIBUTE_IMPLEMENTATION_SETTER_JAVADOC, a.getName());
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append(fieldName);
-        body.append(" = newValue;");
-        builder.method(Util.getJavaModifier(a.getModifier()), Datatype.VOID.getJavaClassName(),
-            methodName, new String[] { "newValue" }, new String[] { datatype.getJavaClassName() },
-            body, javaDoc, ANNOTATION_GENERATED);
-    }
-
-    private void createAttributeGetterMethod(JavaCodeFragmentBuilder builder,
-            IAttribute a,
-            Datatype datatype,
-            String fieldName) throws CoreException {
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append("return ");
-        if (fieldName == null) {
-            if (a.getAttributeType() == AttributeType.CONSTANT) {
-                if (a.isProductRelevant()) {
-                    body.append(getAttributeValueFromPk(a));
-                } else {
-                    body.append(a.getName());
-                }
-            }
-        } else {
-            body.append(fieldName);
-        }
-        body.append(";");
-
-        String javaDoc = getLocalizedText(ATTRIBUTE_IMPLEMENTATION_GETTER_JAVADOC, a.getName());
-
-        builder.method(Util.getJavaModifier(a.getModifier()), datatype.getJavaClassName(),
-            getPolicyGetMethodName(a), new String[0], new String[0], body, javaDoc,
-            ANNOTATION_GENERATED);
-    }
-
     private String getPolicyGetMethodName(IAttribute a) {
         return "get" + StringUtils.capitalise(a.getName());
-    }
-
-    /**
-     * Methode wird nur aufgerufen, falls ein Field erzeugt werden soll Also kein Aufruf fuer
-     * konstante, produktrelevante IAttribute
-     * 
-     * @param a
-     * @param datatype
-     * @return
-     */
-    private String createAttributeField(JavaCodeFragmentBuilder builder,
-            IAttribute a,
-            Datatype datatype,
-            DatatypeHelper helper) throws CoreException {
-        if (a.getAttributeType() == AttributeType.CONSTANT && a.getModifier() == Modifier.PUBLISHED) {
-            return null; // field wird im Interface definiert
-        }
-        int flags;
-        if (getPcType().isExtensionCompilationUnitGenerated()) {
-            flags = java.lang.reflect.Modifier.PROTECTED;
-            ;
-        } else {
-            flags = a.getAttributeType() == AttributeType.COMPUTED ? java.lang.reflect.Modifier.PROTECTED
-                    : java.lang.reflect.Modifier.PRIVATE;
-        }
-        if (a.getAttributeType() == AttributeType.CONSTANT) {
-            flags = flags | java.lang.reflect.Modifier.FINAL | java.lang.reflect.Modifier.STATIC;
-        }
-        JavaCodeFragment initialValueExpression = helper.newInstance(a.getDefaultValue());
-        String comment = getLocalizedText(ATTRIBUTE_FIELD_COMMENT, a.getName());
-        String fieldName = getPolicyFieldValueName(a);
-
-        builder.javaDoc(comment, ANNOTATION_GENERATED);
-        builder.varDeclaration(flags, datatype.getJavaClassName(), fieldName,
-            initialValueExpression);
-        return fieldName;
     }
 
     private String getPolicyFieldValueName(IAttribute a) {

@@ -1,4 +1,4 @@
-package org.faktorips.devtools.stdbuilder.pctype;
+package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
     private final static String RELATION_IMPLEMENTATION_REMOVE_JAVADOC = "RELATION_IMPLEMENTATION_REMOVE_JAVADOC";
     private final static String RELATION_IMPLEMENTATION_SETTER_JAVADOC = "RELATION_IMPLEMENTATION_SETTER_JAVADOC";
 
-    private PolicyCmptTypeImplCuBuilder policyCmptTypeImplCuBuilder;
+    private PolicyCmptImplClassBuilder policyCmptTypeImplCuBuilder;
 
-    public PolicyCmptTypeImplRelationBuilder(PolicyCmptTypeImplCuBuilder cuBuilder) {
+    public PolicyCmptTypeImplRelationBuilder(PolicyCmptImplClassBuilder cuBuilder) {
         super(cuBuilder.getPcType());
         policyCmptTypeImplCuBuilder = cuBuilder;
     }
@@ -49,7 +49,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         }
     }
 
-    private PolicyCmptTypeImplCuBuilder getPolicyCmptTypeImplBuilder() {
+    private PolicyCmptImplClassBuilder getPolicyCmptTypeImplBuilder() {
         return policyCmptTypeImplCuBuilder;
     }
 
@@ -87,8 +87,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             IRelation relation,
             IPolicyCmptType target) throws CoreException {
         String javaClassname = relation.is1ToMany() ? List.class.getName()
-                : getPolicyCmptTypeImplBuilder().getPolicyCmptTypeImplBuilder()
-                        .getQualifiedClassName(target.getIpsSrcFile());
+                : getPolicyCmptTypeImplBuilder().getQualifiedClassName(target.getIpsSrcFile());
         JavaCodeFragment initialValueExpression = new JavaCodeFragment();
         if (relation.is1ToMany()) {
             initialValueExpression.append("new ");
@@ -152,7 +151,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             Datatype.VOID.getJavaClassName(),
             methodName,
             new String[] { "refObject" },
-            new String[] { getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
+            new String[] { getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()) }, body, javaDoc,
             JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
@@ -169,7 +168,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
 
         if (relation.isReadOnlyContainer()) {
-            body.appendClassName(getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
+            body.appendClassName(getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()));
             body.append("[] targets = ");
             body.append(getGetAllMethod(relation));
@@ -191,7 +190,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
             methodname,
             new String[] { "refObject" },
-            new String[] { getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
+            new String[] { getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()) }, body, javaDoc,
                     JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
@@ -201,7 +200,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             IPolicyCmptType target,
             IRelation[] subRelations) throws CoreException {
         String methodName = getGetAllMethod(relation);
-        String classname = getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
+        String classname = getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                 .getQualifiedClassName(target.getIpsSrcFile());
         String fieldname = getField(relation);
         JavaCodeFragment code;
@@ -253,7 +252,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             IPolicyCmptType target,
             IRelation[] subRelations) throws CoreException {
         String methodName = getGetterMethod(relation);
-        String classname = getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
+        String classname = getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                 .getQualifiedClassName(target.getIpsSrcFile());
         JavaCodeFragment body;
         if (subRelations == null) {
@@ -320,7 +319,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             Datatype.VOID.getJavaClassName(),
             methodName,
             new String[] { "refObject" },
-            new String[] { getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
+            new String[] { getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()) }, body, javaDoc,
                     JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
@@ -334,10 +333,9 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             IPolicyCmptType target) throws CoreException {
 
         String methodName = getPolicyCmptImplSetMethodName(relation);
-        String targetImplClass = getPolicyCmptTypeImplBuilder().getPolicyCmptTypeImplBuilder()
-                .getQualifiedClassName(target.getIpsSrcFile());
+        String targetImplClass = getPolicyCmptTypeImplBuilder().getQualifiedClassName(target.getIpsSrcFile());
         String fieldname = getField(relation);
-        String classname = getPolicyCmptTypeImplBuilder().getPolicyCmptTypeInterfaceBuilder()
+        String classname = getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                 .getQualifiedClassName(target.getIpsSrcFile());
         IRelation reverseRelation = null;
         if (StringUtils.isNotEmpty(relation.getReverseRelation())) {
