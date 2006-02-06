@@ -1,7 +1,7 @@
 package org.faktorips.util.message;
 
 import org.apache.commons.lang.SystemUtils;
-import org.faktorips.util.XmlTestCase;
+import org.faktorips.util.XmlAbstractTestCase;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.ObjectProperty;
 
@@ -10,7 +10,7 @@ import org.faktorips.util.message.ObjectProperty;
 /**
  *
  */
-public class MessageTest extends XmlTestCase {
+public class MessageTest extends XmlAbstractTestCase {
     
     public void testMessage_StringStringint() {
         Message msg = new Message("code", "text", Message.INFO);

@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
 /**
  *
  */
-public class XmlUtilTest extends XmlTestCase {
+public class XmlUtilTest extends XmlAbstractTestCase {
 
     /*
      * @see TestCase#setUp()
