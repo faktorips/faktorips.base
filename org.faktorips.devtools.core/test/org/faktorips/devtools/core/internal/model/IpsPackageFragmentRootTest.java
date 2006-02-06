@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -22,7 +23,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.runtime.TocEntry;
+import org.faktorips.runtime.TocEntryObject;
 
 
 /**
@@ -49,11 +50,11 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
         type.getIpsSrcFile().save(true, null);
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct2005");
         productCmpt.setPolicyCmptType("motor.MotorPolicy");
-        productCmpt.newGeneration();
+        productCmpt.newGeneration().setValidFrom(new GregorianCalendar(2005, 0, 1));
         productCmpt.getIpsSrcFile() .save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         MutableClRuntimeRepositoryToc toc = ipsRoot.getRuntimeRepositoryToc();
-        TocEntry[] entries = toc.getProductCmptTocEntries();
+        TocEntryObject[] entries = toc.getProductCmptTocEntries();
         assertEquals(1, entries.length);
         
         // following line forces a resource changed event
@@ -180,7 +181,7 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
     
     public void testSaveProductCmptRegistryToc() throws Exception {
         MutableClRuntimeRepositoryToc toc = ipsRoot.getRuntimeRepositoryToc();
-        TocEntry entry = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", getClass().getClassLoader());
+        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
         toc.addOrReplaceTocEntry(entry);
         ipsRoot.saveProductCmptRegistryToc();
         

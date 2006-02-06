@@ -398,15 +398,12 @@ public class JavaCodeFragmentBuilder {
             String methodName,
             String[] argName,
             String[] argClass) {
-        signature(modifier,returnType,methodName,argName,argClass);
+        signature(modifier, returnType, methodName, argName, argClass);
         if (!Modifier.isAbstract(modifier)) {
             openBracket();
         }
     }
-    
-    
-    
-    /**
+        /**
      * Creates the Java source code for a method signature. 
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.

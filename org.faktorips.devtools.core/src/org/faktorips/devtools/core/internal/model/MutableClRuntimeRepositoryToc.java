@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
-import org.faktorips.runtime.TocEntry;
+import org.faktorips.runtime.TocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,7 +26,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
     /**
      * Overridden.
      */
-    protected void internalAddEntry(TocEntry entry) {
+    protected void internalAddEntry(TocEntryObject entry) {
         super.internalAddEntry(entry);
         ++modificationStamp;
     }
@@ -60,13 +60,13 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	 * or the entry has replcaed an existing entry with a differnt contents. Returns <code>false</code> if the operation
 	 * hasn't changed the table of contents.
 	 */
-	public boolean addOrReplaceTocEntry(TocEntry entry) {
+	public boolean addOrReplaceTocEntry(TocEntryObject entry) {
         if (entry==null) {
             return false;
         }
         
         if(entry.isProductCmptTypeTocEntry()){
-            TocEntry currentEntry = (TocEntry)pcNameTocEntryMap.get(entry.getIpsObjectName());
+            TocEntryObject currentEntry = (TocEntryObject)pcNameTocEntryMap.get(entry.getIpsObjectName());
             
             if(entry.equals(currentEntry)){
                 return false;
@@ -78,7 +78,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
         }
 
         if(entry.isTableTocEntry()){
-            TocEntry currentEntry = (TocEntry)tableImplClassTocEntryMap.get(entry.getImplementationClassName());
+            TocEntryObject currentEntry = (TocEntryObject)tableImplClassTocEntryMap.get(entry.getImplementationClassName());
 
             if(entry.equals(currentEntry)){
                 return false;
@@ -98,7 +98,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	 * 
 	 * @param productCmptName The fully qualified product component name.
 	 */
-	public void removeEntry(TocEntry entry) {
+	public void removeEntry(TocEntryObject entry) {
 	    
 	    Object oldValue = null;
 	    if(entry.isProductCmptTypeTocEntry()){
@@ -127,7 +127,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	    allEntries.addAll(pcNameTocEntryMap.values());
 	    allEntries.addAll(tableImplClassTocEntryMap.values());
         for (Iterator it=allEntries.iterator(); it.hasNext(); ) {
-            TocEntry entry = (TocEntry)it.next();
+            TocEntryObject entry = (TocEntryObject)it.next();
             element.appendChild(entry.toXml(doc));
         }
 	    return element;

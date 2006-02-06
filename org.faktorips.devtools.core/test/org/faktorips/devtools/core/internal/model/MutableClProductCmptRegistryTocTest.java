@@ -2,7 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
-import org.faktorips.runtime.TocEntry;
+import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.util.XmlAbstractTestCase;
 import org.w3c.dom.Element;
 
@@ -13,7 +13,6 @@ import org.w3c.dom.Element;
 public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
 
     private MutableClRuntimeRepositoryToc toc;
-    private ClassLoader cl = MutableClProductCmptRegistryTocTest.class.getClassLoader();
     
     /*
      * @see TestCase#setUp()
@@ -25,8 +24,8 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
     public void testGetTocEntry() {
         assertNull(toc.getProductCmptTocEntry("Unkown"));
         
-        TocEntry entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", cl);
-        TocEntry entry1 = TocEntry.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy", cl);
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
 
@@ -37,11 +36,11 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
 
     public void testGetProductCmptTocEntries() {
         assertEquals(0, toc.getProductCmptTocEntries().length);
-        TocEntry entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", cl);
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
         toc.addOrReplaceTocEntry(entry0);
         assertEquals(entry0, toc.getProductCmptTocEntries()[0]);
 
-        TocEntry entry1 = TocEntry.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy", cl);
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy");
         toc.addOrReplaceTocEntry(entry1);
         assertEquals(entry0, toc.getProductCmptTocEntries()[0]);
         assertEquals(entry1, toc.getProductCmptTocEntries()[1]);
@@ -49,7 +48,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
 
     public void testAddOrReplaceTocEntry() {
         long modStamp = toc.getModificationStamp(); 
-        TocEntry entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", cl);
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
         boolean changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -57,7 +56,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         assertEquals(entry0, toc.getProductCmptTocEntries()[0]);
 
         modStamp = toc.getModificationStamp(); 
-        TocEntry entry1 = TocEntry.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy", cl);
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy");
         assertTrue(changed);
         changed = toc.addOrReplaceTocEntry(entry1);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -67,7 +66,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         
         // replace Motor with product component class name changed
         modStamp = toc.getModificationStamp(); 
-        entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "MotorPolicy", cl);
+        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "MotorPolicy");
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -77,7 +76,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         
         // replace Motor with policy component class name changed
         modStamp = toc.getModificationStamp(); 
-        entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicy", cl);
+        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicy");
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -87,7 +86,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         
         // replace Motor with xml resource name changed
         modStamp = toc.getModificationStamp(); 
-        entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicy", cl);
+        entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicy");
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
         assertTrue(modStamp!=toc.getModificationStamp());
@@ -97,7 +96,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         
         // replace but without changing
         modStamp = toc.getModificationStamp(); 
-        TocEntry.createProductCmptTocEntry("MotorPolicy", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicy", cl);
+        TocEntryObject.createProductCmptTocEntry("MotorPolicy", "org/sample/MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicy");
         changed = toc.addOrReplaceTocEntry(entry0);
         assertFalse(changed);
         assertEquals(modStamp, toc.getModificationStamp());
@@ -108,41 +107,41 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
 
     public void testRemoveEntry() {
         long modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", cl));
+        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy"));
         assertEquals(modStamp, toc.getModificationStamp());
 
         
-        TocEntry entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", cl);
-        TocEntry entry1 = TocEntry.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy", cl);
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
 
         modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntry.createProductCmptTocEntry("Unknown", "Unknown.ipsproduct", "Unknown", "Unknown", cl));
+        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("Unknown", "Unknown.ipsproduct", "Unknown", "Unknown"));
         assertEquals(modStamp, toc.getModificationStamp());
         
         modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntry.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy", cl));
+        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy"));
         assertTrue(modStamp!=toc.getModificationStamp());
         assertEquals(1, toc.getProductCmptTocEntries().length);
         assertEquals(entry0, toc.getProductCmptTocEntry("MotorPolicy"));
         
         modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", cl));
+        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy"));
         assertTrue(modStamp!=toc.getModificationStamp());
         assertEquals(0, toc.getProductCmptTocEntries().length);
     }
     
     public void testToXml() {
-        TocEntry entry0 = TocEntry.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy", cl);
-        TocEntry entry1 = TocEntry.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy", cl);
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
         Element tocElement = toc.toXml(newDocument());
         assertNotNull(tocElement);
         ReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContentsImpl();
-        readOnlyToc.initFromXml(tocElement, cl);
-        TocEntry[] entries = readOnlyToc.getProductCmptTocEntries();
+        readOnlyToc.initFromXml(tocElement);
+        TocEntryObject[] entries = readOnlyToc.getProductCmptTocEntries();
         assertEquals(2, entries.length);
     }
 

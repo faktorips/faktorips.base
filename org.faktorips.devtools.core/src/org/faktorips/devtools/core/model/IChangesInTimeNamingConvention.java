@@ -57,6 +57,14 @@ public interface IChangesInTimeNamingConvention {
 	public String getGenerationConceptNamePlural(Locale locale);
 
 	/**
+	 * Returns the abbreviation for the generation concept (singular).
+	 * 
+	 * @param locale The locale that determines the language in which
+	 * the abbreivation should be returned.
+	 */
+	public String getGenerationConceptNameAbbreviation(Locale locale);
+
+	/**
 	 * Returns the name for the version concept in singular.
 	 * 
 	 * @param locale The locale that determines the language in which
@@ -72,5 +80,12 @@ public interface IChangesInTimeNamingConvention {
 	 */
 	public String getVersionConceptNamePlural(Locale locale);
 
+	/**
+	 * Returns the abbreviation for the version concept (singular).
+	 * 
+	 * @param locale The locale that determines the language in which
+	 * the abbreivation should be returned.
+	 */
+	public String getVersionConceptNameAbbreviation(Locale locale);
 
 }

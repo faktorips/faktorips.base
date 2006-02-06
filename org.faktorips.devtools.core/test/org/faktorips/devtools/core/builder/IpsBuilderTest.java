@@ -172,6 +172,13 @@ public class IpsBuilderTest extends IpsPluginTest {
         private boolean buildCalled = false;
         private boolean deleteCalled = false;
 
+        /**
+         * {@inheritDoc}
+         */
+        public String getName() {
+            return "TestRemoveIpsArtefactBuilder";
+        }
+        
         public void beforeBuildProcess(int buildKind) throws CoreException {
         }
 
@@ -232,6 +239,13 @@ public class IpsBuilderTest extends IpsPluginTest {
 
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         }
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String getName() {
+			return "TestDependencyIpsArtefactBuilder";
+		}
     }
 
 }

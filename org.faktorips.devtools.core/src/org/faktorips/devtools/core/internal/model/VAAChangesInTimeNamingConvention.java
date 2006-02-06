@@ -54,4 +54,18 @@ public class VAAChangesInTimeNamingConvention implements
 		return "Versionen";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getGenerationConceptNameAbbreviation(Locale locale) {
+		return "Gen";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getVersionConceptNameAbbreviation(Locale locale) {
+		return "Version";
+	}
+
 }

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
+import org.faktorips.devtools.core.internal.model.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -72,18 +73,19 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             try {
                 command.build(artefactBuilders[i], buildStatus);
             } catch (Exception e) {
-                return addIpsStatus(buildStatus, e);
+                return addIpsStatus(artefactBuilders[i], command, buildStatus, e);
             }
         }
         return buildStatus;
     }
 
-    private MultiStatus addIpsStatus(MultiStatus buildStatus, Exception e) {
+    private MultiStatus addIpsStatus(IIpsArtefactBuilder builder, BuildCommand command, MultiStatus buildStatus, Exception e) {
         MultiStatus returnStatus = null;
         if (buildStatus == null) {
             returnStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, "Build Results", null);
         }
-        buildStatus.add(new IpsStatus(e));
+        String text = builder.getName() + ": Error during: " + command + ".";
+        buildStatus.add(new IpsStatus(text, e));
         return returnStatus;
     }
 
@@ -488,6 +490,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             builder.beforeBuildProcess(buildKind);
         }
+        
+        public String toString() {
+        	return "BeforeBuildProcessCmd[kind=" + buildKind + "]";
+        }
+        
     }
 
     private static class AfterBuildProcessCommand implements BuildCommand {
@@ -500,6 +507,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     	
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             builder.afterBuildProcess(buildKind);
+        }
+        
+        public String toString() {
+        	return "AfterBuildProcessCmd[kind=" + buildKind + "]";
         }
     }
 
@@ -521,6 +532,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 }
             }
         }
+        
+        public String toString() {
+        	return "Build file " + ipsSrcFile; 
+        }
     }
 
     private static class DeleteArtefactBuildCommand implements BuildCommand {
@@ -536,5 +551,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 builder.delete(toDelete);
             }
         }
+        
+        public String toString() {
+        	return "Delete file " + toDelete; 
+        }
+        
     }
 }

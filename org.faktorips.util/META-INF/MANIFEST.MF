@@ -12,6 +12,6 @@ Export-Package: org.apache.commons.lang,
  org.faktorips.util,
  org.faktorips.util.memento,
  org.faktorips.util.message
-Require-Bundle: org.junit
 Bundle-ClassPath: .,
  lib/commons-lang-1.0.1.jar
+Require-Bundle: org.junit

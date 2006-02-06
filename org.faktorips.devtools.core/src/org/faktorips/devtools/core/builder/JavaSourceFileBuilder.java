@@ -24,7 +24,9 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -107,6 +109,20 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 		this.localizedStringsSet = localizedStringsSet;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getName() {
+		return StringUtil.unqualifiedName(getClass().getName());
+	}
+
+	/**
+	 * Returns the naming convention for product changes over time. 
+	 */
+	public IChangesInTimeNamingConvention getChangesInTimeNamingConvention() {
+		return IpsPreferences.getChangesInTimeNamingConvention();
+	}
+	
 	/**
 	 * Returns the language in that variables, methods are named and and Java docs are 
 	 * written in.
@@ -281,7 +297,11 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 			throws CoreException {
 		this.ipsSrcFile = ipsSrcFile;
 		this.buildStatus = status;
-		ipsObject = ipsSrcFile.getIpsObject();
+		if (ipsSrcFile.isContentParsable()) {
+			ipsObject = ipsSrcFile.getIpsObject();
+		} else {
+			ipsObject = null;
+		}
 		generationCanceled = false;
 	}
 
@@ -519,7 +539,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	}
 	
 	protected String getJavaDocCommentForOverriddenMethod() {
-		return "Overridden.";
+		return "{@inheritDoc}";
 	}
 
 	/**

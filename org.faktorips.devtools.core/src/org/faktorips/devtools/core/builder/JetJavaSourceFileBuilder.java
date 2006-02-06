@@ -51,8 +51,15 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
         this.classNameSuffix = classNameSuffix;
         setMergeEnabled(enableMerge);
     }
-
+    
     /**
+	 * {@inheritDoc}
+	 */
+	public String getName() {
+		return "JET-Builder";
+	}
+
+	/**
      * Instantiates a content generator, assigns this builder and a <code>LocalizedStringSet</code>
      * to it and calls the generate method of it.
      * 

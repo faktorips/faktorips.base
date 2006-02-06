@@ -20,6 +20,11 @@ import org.eclipse.core.runtime.MultiStatus;
 public interface IIpsArtefactBuilder {
 
 	/**
+	 * Returns the builder's name.
+	 */
+	public String getName();
+	
+	/**
      * Is called on every registered IpsArtefactBuilder before a build process starts.
 	 * @param buildKind TODO
      * 

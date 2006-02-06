@@ -171,6 +171,9 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      * Overridden.
      */
     public boolean isContentParsable() throws CoreException {
+    	if (!exists()) {
+    		return false;
+    	}
         return getContentObject().contentIsParsable();
     }
 

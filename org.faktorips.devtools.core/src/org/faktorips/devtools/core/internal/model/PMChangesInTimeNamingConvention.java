@@ -50,14 +50,28 @@ public class PMChangesInTimeNamingConvention implements
 	 * Overridden.
 	 */
 	public String getVersionConceptNameSingular(Locale locale) {
-		return "Version";
+		return "Generation";
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public String getVersionConceptNamePlural(Locale locale) {
-		return "Versionen";
+		return "Generationen";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getGenerationConceptNameAbbreviation(Locale locale) {
+		return "AnpStufe";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getVersionConceptNameAbbreviation(Locale locale) {
+		return "Gen";
 	}
 
 }

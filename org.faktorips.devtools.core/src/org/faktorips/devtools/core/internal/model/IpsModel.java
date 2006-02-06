@@ -181,7 +181,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
                 try {
                     Document doc = builder.parse(is);
-                    toc.initFromXml(doc.getDocumentElement(), getClass().getClassLoader());
+                    toc.initFromXml(doc.getDocumentElement());
                 } catch (Exception e) {
                     throw new CoreException(new IpsStatus("Error parsing toc contents.", e));
                 }
