@@ -3,14 +3,14 @@ package org.faktorips.devtools.core.internal.model;
 import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
 import org.faktorips.runtime.TocEntry;
-import org.faktorips.util.XmlTestCase;
+import org.faktorips.util.XmlAbstractTestCase;
 import org.w3c.dom.Element;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class MutableClProductCmptRegistryTocTest extends XmlTestCase {
+public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
 
     private MutableClRuntimeRepositoryToc toc;
     private ClassLoader cl = MutableClProductCmptRegistryTocTest.class.getClassLoader();

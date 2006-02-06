@@ -2,13 +2,13 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.util.XmlTestCase;
+import org.faktorips.util.XmlAbstractTestCase;
 
 
 /**
  * Abstract test case for ips objects and parts.
  */
-public abstract class IpsObjectTestCase extends XmlTestCase {
+public abstract class IpsObjectTestCase extends XmlAbstractTestCase {
     
     protected IpsSrcFile pdSrcFile;
 

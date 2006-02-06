@@ -1,7 +1,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.XmlTestCase;
+import org.faktorips.util.XmlAbstractTestCase;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DefaultEnumType;
@@ -10,9 +10,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * @author Andy Rösch
+ * @author Andy Rï¿½sch
  */
-public class EnumValueSetTest extends XmlTestCase {
+public class EnumValueSetTest extends XmlAbstractTestCase {
     
     private DefaultEnumType gender;
     private DefaultEnumValue male;

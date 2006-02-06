@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.XmlTestCase;
+import org.faktorips.util.XmlAbstractTestCase;
 
 
 
@@ -41,7 +41,7 @@ import org.faktorips.util.XmlTestCase;
  * 
  * @author Jan Ortmann
  */
-public abstract class IpsPluginTest extends XmlTestCase {
+public abstract class IpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * 
@@ -164,7 +164,7 @@ public abstract class IpsPluginTest extends XmlTestCase {
 	    entry.setSpecificOutputFolderForExtensionJavaFiles(project.getFolder("extension"));
 	    ipsProject.setIpsObjectPath(path);
 
-	    //TODO: wichtig dies erzeugt eine Abhängigkeit vom StdBuilder Projekt. Dies muss dringend überarbeitet
+	    //TODO: wichtig dies erzeugt eine Abhï¿½ngigkeit vom StdBuilder Projekt. Dies muss dringend ï¿½berarbeitet
         //werden
         ipsProject.setCurrentArtefactBuilderSet("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
 	    ipsProject.setValueDatatypes(new String[]{"Decimal", "Money", "String", "Boolean"});

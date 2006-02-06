@@ -2,13 +2,13 @@ package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.XmlTestCase;
+import org.faktorips.util.XmlAbstractTestCase;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class RangeTest extends XmlTestCase {
+public class RangeTest extends XmlAbstractTestCase {
 
 	public void testCreateFromXml() throws CoreException {
 		Document doc = getTestDocument();
