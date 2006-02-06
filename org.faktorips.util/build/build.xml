@@ -1,33 +1,119 @@
 <project name="org.faktorips.util" default="buildjar">
-
+	
 		<!-- set global properties for this build -->
-	  	<property name="src" location="src"/>
-	  	<property name="classes" location="classes"/>
-		<property name="log" location="logs" />
-		<property name="libs" location="lib" />
+		
+			<!-- src -->
+			<property name="src" location="../src"/>
+			<property name="test_src" location="../test" />
+		
+			<!-- classes -->
+		  	<property name="classes" location="classes"/>
+		
+			<!-- jars -->
+			<property name="temp_jarfile" location="results/temp_util.jar" />
+		    <property name="jarfile" location="results/util.jar" />
 	
-		<path path="${libs}" id="util_cp" />
+			<!-- classpath -->
 	
+			<property name="junit" location="/var/lib/junit.jar"/>
+			<property name="libs" location="../lib/commons-lang-1.0.1.jar" />
+	
+			<!-- logdir -->
+			<property name="log" location="logs" />
 
-        <target name="clean">
-        	<delete dir="${build}" />
-        	<echo>${build}</echo>
+
+
+	    <!-- wipes out -->
+		<target name="clean">
+			<delete includeemptydirs="true" >
+				<fileset dir="${classes}">
+					<exclude name=".keep"/>
+					<include name="**/*" />
+				</fileset>
+			</delete>
+			
+			<delete file="${jarfile}" />
+			<delete file="${test_jarfile}" />
+			<delete file="${temp_jarfile}" />
+			
+			
+			<delete includeemptydirs="true" >
+				<fileset dir="${log}">
+					<exclude name=".keep"/>
+					<include name="**/*" />
+				</fileset>
+			</delete>
         </target>
 
 	
-		<!--Compile - Target -->
-        <target name="compile">
-			<javac srcdir="${src}" destdir="${classes}" classpathref="util_cp">
-			</javac>
+		<!-- init directories -->
+	    <target name="init" >
+
+	    </target>
+	    	
+	
+	
+	
+	<!--Compile -->
+        <target name="compile" depends="init">
+        	<echo>"--> source compile</echo>
+			<javac  srcdir="${src}" destdir="${classes}" classpath="${libs}"/> 
+        	
+        	<copy todir="${classes}">
+        	    <fileset dir="${test_src}">
+        	      <include name="**/*.properties" />
+        	      <include name="**/*.xml" />
+        	    </fileset>
+        	</copy>
+        	
+        	<echo>"--> test compile </echo>
+        	<javac srcdir="${test_src}" destdir="${classes}" classpath="${libs}" />
         </target>
 
 	
 	
 	
-        <target name="test">
+	
+	<!-- perform Junit Tests -->
+	    <target name="test" depends="compile">
+		
+	    	<junit fork="yes" haltonerror="yes" filtertrace="off" timeout="3600" printsummary="withOutAndErr"  showoutput="yes">
+	    		<formatter type="plain" usefile="false"/>
+	    		<classpath>
+	    		    <pathelement location="${classes}"/>
+	    			<pathelement location="${libs}" />
+	    		    <pathelement path="${java.class.path}"/> 
+	    		</classpath>
+	    		
+				<batchtest filtertrace="off" > 
+					<fileset dir="${classes}">
+						<patternset id="test.sources">
+						    <exclude name="**/*.java"/>
+							<exclude name="**/*AbstractTest*"/>
+						    <include name="**/*Test*"/>
+						</patternset>
+					</fileset>
+				</batchtest>
+			</junit>
+
+	    </target>
+
+	
+	
+	
+	
+		<!-- build jarfile -->
+        <target name="buildjar" depends="compile, test">
+        	
+			<!-- create a temp-jarfile and move it after successful creation to right place -->
+        	
+        	<jar destfile="${temp_jarfile}" basedir="${classes}"/>
+        		
+        	<delete file="${jarfile}" />
+        	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
+        	<delete file="${temp_jarfile}"/>
+        	
         </target>
 
-        <target name="buildjar" depends="compile">
-        </target>
-
+	
 </project>
