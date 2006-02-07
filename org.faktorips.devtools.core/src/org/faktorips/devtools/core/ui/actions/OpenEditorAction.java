@@ -1,18 +1,14 @@
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.views.productdefinitionexplorer.ProductExplorer;
 
 /**
  * Open selected product component in editor.

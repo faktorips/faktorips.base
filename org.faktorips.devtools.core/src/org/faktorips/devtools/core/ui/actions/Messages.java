@@ -21,4 +21,5 @@ public class Messages extends NLS {
     public static String OpenEditorAction_name;
     public static String OpenEditorAction_description;
     public static String OpenEditorAction_tooltip;
+	public static String IpsAction_msgUnsupportedSelection;
 }

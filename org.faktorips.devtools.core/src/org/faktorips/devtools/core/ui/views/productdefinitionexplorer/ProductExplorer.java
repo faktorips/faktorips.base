@@ -109,7 +109,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         menumanager.add(new Separator());
         
         menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
+        menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
         menumanager.add(new Separator());
 
         Menu menu = menumanager.createContextMenu(tree.getControl());

@@ -40,7 +40,7 @@ public abstract class IpsAction extends Action {
             run((IStructuredSelection)selection);
         }
         else {
-            throw new RuntimeException("Can not handle selections of type " + selection.getClass().getName());
+            throw new RuntimeException(Messages.IpsAction_msgUnsupportedSelection + selection.getClass().getName());
         }
     }
     

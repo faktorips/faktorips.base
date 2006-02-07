@@ -56,6 +56,10 @@ public class AttributesTable extends ViewPart {
 	}
     
     protected void show(IPolicyCmptType type) {
+    	if (type == null) {
+    		return;
+    	}
+    	
         IAttribute[] attributes = type.getAttributes();
         
         Table table = (Table)tableViewer.getTable();
