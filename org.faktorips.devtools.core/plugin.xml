@@ -16,9 +16,10 @@
    
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="%Product Definition Perspective%"
-            class="org.faktorips.devtools.core.IpsPerspectiveFactory"
-            id="org.faktorips.devtools.core.ProductDefinitionPerspective">
+            class="org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory"
+            fixed="false"
+            id="org.faktorips.devtools.core.productDefinitionPerspective"
+            name="%org.faktorips.devtools.core.productDefinitionPerspective">
       </perspective>
    </extension>
 
@@ -297,5 +298,126 @@
       			helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
    </extension>
   
+<!-- 
+  Product-Definition-Extensions
+-->
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.ProductExplorer"
+            id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+            name="%org.faktorips.devtools.core.ui.views.productDefinitionExplorer"/>
+      <view
+            allowMultiple="true"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer"
+            id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+            name="%org.faktorips.devtools.core.ui.views.productStructureExplorer"/>
+      <category
+            id="org.faktorips.devtools.productDefinitionCategory"
+            name="%org.faktorips.devtools.productDefinitionCategory"/>
+      <view
+            allowMultiple="true"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.attrtable.AttributesTable"
+            id="org.faktorips.devtools.core.ui.views.attributesTable"
+            name="%org.faktorips.devtools.core.ui.views.attributesTable"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.faktorips.devtools.core.productDefinitionPerspective">
+         <view
+               closeable="false"
+               id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               moveable="true"
+               relationship="left"
+               relative="org.eclipse.ui.Editor"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               moveable="true"
+               relationship="bottom"
+               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.attributesTable"
+               moveable="true"
+               relationship="right"
+               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false"/>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.faktorips.devtools.core.departmentPerspective">
+         <showInPart id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"/>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.faktorips.devtools.department.productActionSet"
+            label="%org.faktorips.devtools.department.productActionSet"
+            visible="false">
+         <action
+               class="org.faktorips.devtools.core.ui.views.productstructureexplorer.OpenInStructureExplorerActionDelegate"
+               id="org.faktorips.devtools.department.showStructure"
+               label="%org.faktorips.devtools.department.showStructure"
+               style="push"
+               tooltip="%org.faktorips.devtools.department.showStructure.tooltip"/>
+         <action
+               class="org.faktorips.devtools.core.ui.views.attrtable.ShowAttributesActionDelegate"
+               id="org.faktorips.devtools.department.showAttributes"
+               label="%org.faktorips.devtools.department.showAttributes"
+               style="push"
+               tooltip="%org.faktorips.devtools.department.showAttributes.tooltip"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="org.faktorips.devtools.core.ui.search.ReferencesToProductSearchResultPage"
+            id="org.faktorips.devtools.core.ui.search.ReferencesToProductSearchResult"
+            searchResultClass="org.faktorips.devtools.core.ui.search.ReferencesToProductSearchResult"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu"
+            targetID="org.faktorips.devtools.core.ui.views.productExplorer">
+         <menu
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team">
+            <separator name="team"/>
+         </menu>
+         <action
+               class="org.faktorips.devtools.core.team.CommitActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.commit"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.commit"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
+         <action
+               class="org.faktorips.devtools.core.team.CompareActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.compare"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.compare"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
+         <action
+               class="org.faktorips.devtools.core.team.ReplaceActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.replace"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.replace"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
+         <action
+               class="org.faktorips.devtools.core.team.UpdateActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.update"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.update"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
+      </viewerContribution>
+   </extension>
 
 </plugin>

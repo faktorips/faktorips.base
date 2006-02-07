@@ -42,9 +42,8 @@ public class IpsCopyAction extends IpsAction {
             }
             else if (selected instanceof IIpsElement) {
             	
-            	IResource resource = ((IIpsElement)selected).getCorrespondingResource();
+            	IResource resource = ((IIpsElement)selected).getEnclosingResource();
             	if (resource != null) {
-            		System.out.println("about to copy " + resource);
             		copiedResources.add(resource);
             	}
             }
