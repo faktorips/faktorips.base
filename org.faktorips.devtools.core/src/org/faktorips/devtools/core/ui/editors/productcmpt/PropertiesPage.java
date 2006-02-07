@@ -19,7 +19,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 
     private ProductAttributesSection productAttributesSection;
 	private FormulasSection formulasSection;
-	private PolicyAttributesSection policyAttributesSection;
+	private DefaultsAndRangesSection policyAttributesSection;
 	private RelationsSection relationsSection;
     
     public PropertiesPage(IpsObjectEditor editor) {
@@ -50,7 +50,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		formulasSection = new FormulasSection(generation, left, toolkit);
 		
 		Composite right = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
-		policyAttributesSection = new PolicyAttributesSection(generation, right, toolkit);
+		policyAttributesSection = new DefaultsAndRangesSection(generation, right, toolkit);
 		relationsSection = new RelationsSection(generation, right, toolkit, getEditorSite());
     }
     

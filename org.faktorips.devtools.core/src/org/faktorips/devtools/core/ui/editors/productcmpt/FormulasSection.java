@@ -1,10 +1,13 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.ArrayList;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -31,6 +34,8 @@ public class FormulasSection extends IpsSection {
 	private UIToolkit toolkit;
 	private CompositeUIController uiController;
 	private boolean fGenerationDirty;
+	private Label noFormulasLabel;
+	private ArrayList labels;
 	
 	public FormulasSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
@@ -69,34 +74,55 @@ public class FormulasSection extends IpsSection {
 	 * Overridden method.
 	 */
 	protected void performRefresh() {
-		if (fGenerationDirty) {
+		if (fGenerationDirty || structureChanged()) {
 			createEditControls();
 		}
 	}
 	
+	/**
+	 * Determines whether the structure of the underlying data has changed
+	 */
+	private boolean structureChanged() {
+		return true;
+	}
+	
     private void createEditControls() {
+    	if (labels == null) {
+    		labels = new ArrayList();
+    	}
+    	
     	uiController = new CompositeUIController();
     	IpsObjectUIController ctrl = new IpsObjectUIController(generation.getIpsObject());
     	uiController.add(ctrl);
     	
     	IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
     	
-    	if (elements.length == 0) {
-    		toolkit.createLabel(workArea, Messages.FormulasSection_noFormulasDefined);
+    	if (elements.length == 0 && noFormulasLabel == null) {
+    		noFormulasLabel = toolkit.createLabel(workArea, Messages.FormulasSection_noFormulasDefined);
     	}
-    	
+    	else if (elements.length > 0 && noFormulasLabel != null) {
+			noFormulasLabel.dispose();
+			noFormulasLabel = null;
+    	}
+    		    	
     	for (int i = 0; i < elements.length; i++) {
-    		toolkit.createFormLabel(workArea, StringUtils.capitalise(elements[i].getName()));
-    		FormulaEditControl evc = new FormulaEditControl(workArea, toolkit, elements[i], this.getShell());
-    		evc.setText(elements[i].getValue());
-    		ctrl.add(evc.getTextControl(), elements[i], ConfigElement.PROPERTY_VALUE);
-    		try {
-    			FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(elements[i].getIpsProject(), elements[i].getExprCompiler());
-    			ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil.createContentAssistant(completionProcessor));
-    		} catch (CoreException e) {
-    			IpsPlugin.logAndShowErrorDialog(e);
-    		}
     		
+    		if (i < labels.size()) {
+    			((Label)labels.get(i)).setText(StringUtils.capitalise(elements[i].getName()));
+    		}
+    		else {
+    			Label label = toolkit.createFormLabel(workArea, StringUtils.capitalise(elements[i].getName()));
+    			labels.add(label);
+    			FormulaEditControl evc = new FormulaEditControl(workArea, toolkit, elements[i], this.getShell());
+    			evc.setText(elements[i].getValue());
+    			ctrl.add(evc.getTextControl(), elements[i], ConfigElement.PROPERTY_VALUE);
+    			try {
+    				FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(elements[i].getIpsProject(), elements[i].getExprCompiler());
+    				ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil.createContentAssistant(completionProcessor));
+    			} catch (CoreException e) {
+    				IpsPlugin.logAndShowErrorDialog(e);
+    			}
+    		}    		
     	}
     }
 

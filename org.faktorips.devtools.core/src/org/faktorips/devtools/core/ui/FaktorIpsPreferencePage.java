@@ -26,6 +26,11 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                 IpsPreferences.WORKING_DATE, 
                 "Product Changes Effective Date (YYYY-MM-DD):", getFieldEditorParent());
         addField(workingDateField);
+
+        StringFieldEditor nullRepresentation = new StringFieldEditor(
+                IpsPreferences.NULL_REPRESENTATION_STRING, 
+                "String-Representation for NULL-Values:", getFieldEditorParent());
+        addField(nullRepresentation);
     }
 
     /** 

@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.productcmpt.PolicyAttributeEditDialog;
+import org.faktorips.devtools.core.ui.editors.productcmpt.DefaultsAndRangesEditDialog;
 
 /**
  * Control to edit the values of an enum. A textfeld followed by a button is provided.
@@ -24,7 +24,7 @@ public class EnumValuesControl extends TextButtonControl {
 	}
 	
 	protected void buttonClicked() {
-		new PolicyAttributeEditDialog(configElement, shell).open();
+		new DefaultsAndRangesEditDialog(configElement, shell).open();
 	}
 
 }

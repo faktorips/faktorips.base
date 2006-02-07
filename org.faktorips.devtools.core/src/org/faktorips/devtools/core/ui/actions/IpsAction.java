@@ -74,7 +74,8 @@ public abstract class IpsAction extends Action {
     protected Object[] getDataArray(List stringItems, List resourceItems) {
     	List result = new ArrayList();
     	if (resourceItems.size() > 0) {
-    		result.add(resourceItems.toArray());
+    		IResource[] res = new IResource[resourceItems.size()];
+    		result.add((IResource[])resourceItems.toArray(res));
     	}
     	result.addAll(stringItems);
     	return  result.toArray();

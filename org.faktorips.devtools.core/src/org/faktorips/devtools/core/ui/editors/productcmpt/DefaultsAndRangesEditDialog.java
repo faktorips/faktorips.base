@@ -26,7 +26,7 @@ import org.faktorips.util.message.MessageList;
 /**
  *
  */
-public class PolicyAttributeEditDialog extends IpsPartEditDialog implements ValueSetChangeListener {
+public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements ValueSetChangeListener {
 
     private IConfigElement configElement;
 
@@ -37,7 +37,7 @@ public class PolicyAttributeEditDialog extends IpsPartEditDialog implements Valu
      * @param parentShell
      * @param title
      */
-    public PolicyAttributeEditDialog(IConfigElement configElement, Shell parentShell) {
+    public DefaultsAndRangesEditDialog(IConfigElement configElement, Shell parentShell) {
         super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.configElement = configElement;
     }

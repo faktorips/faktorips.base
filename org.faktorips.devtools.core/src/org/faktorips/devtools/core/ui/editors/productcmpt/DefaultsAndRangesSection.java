@@ -28,7 +28,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  *
  */
-public class PolicyAttributesSection extends IpsSection {
+public class DefaultsAndRangesSection extends IpsSection {
 
     private IProductCmptGeneration generation;
     private Composite workArea;
@@ -36,7 +36,7 @@ public class PolicyAttributesSection extends IpsSection {
     private UIToolkit toolkit;
 	private boolean fGenerationDirty;
     
-    public PolicyAttributesSection(
+    public DefaultsAndRangesSection(
             IProductCmptGeneration generation,
             Composite parent,
             UIToolkit toolkit) {

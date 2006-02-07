@@ -234,4 +234,12 @@ public class IpsPlugin extends AbstractUIPlugin {
     public final IpsModelManager getManager() {
         return manager;
     }
+    
+    private IpsPreferences preferences;
+    public IpsPreferences getIpsPreferences() {
+    	if (preferences == null) {
+    		preferences = new IpsPreferences();
+    	}
+    	return preferences;
+    }
 }

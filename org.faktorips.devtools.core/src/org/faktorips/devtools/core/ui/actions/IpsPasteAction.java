@@ -1,10 +1,10 @@
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -38,8 +38,17 @@ public class IpsPasteAction extends IpsAction {
         }
         else if (selected instanceof IIpsPackageFragmentRoot || selected instanceof IIpsPackageFragment) {
         	Object stored = clipboard.getContents(ResourceTransfer.getInstance());
-        	Object s2 = clipboard.getContents(TextTransfer.getInstance());
-        	System.out.println(stored + " / " + s2);
+        	if (stored instanceof IResource[]) {
+				IResource[] res = (IResource[]) stored;
+				for (int i = 0; i < res.length; i++) {
+//					try {
+//						 TODO copy resources
+//						res[i].copy(((IIpsElement)selected).getCorrespondingResource().getPath(), true, null);
+//					} catch (CoreException e) {
+//						IpsPlugin.log(e);
+//					}
+				}
+			}
         }
     }
 }
