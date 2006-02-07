@@ -39,6 +39,19 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
     public RelationType getRelationType();
     
     /**
+     * Returns <code>true</code> if this relation implements a container relation, otherwise <code>false</code>.
+     */
+    public boolean implementsContainerRelation() throws CoreException;
+    
+    /**
+     * Returns the container relation if this relation implements one or an empty string if
+     * this relation does not implement a container relation.
+     * 
+     * @throws CoreException if an error occurs while searching for the container relation.
+     */
+	public IProductCmptTypeRelation findContainerRelation() throws CoreException;
+    
+    /**
      * Returns the target product component type or <code>null</code> if either this relation hasn't got a target
      * or the target does not exists.
      * 

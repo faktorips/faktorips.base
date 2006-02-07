@@ -18,8 +18,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -549,11 +549,11 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                     fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); 
                 }
                 if (range.getColumnRangeType().isOneColumnFrom()) {
-                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); // TODO möglicherweise über
+                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); // TODO mï¿½glicherweise ï¿½ber
                     // reflection
                 }
                 if (range.getColumnRangeType().isOneColumnTo()) {
-                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL"); // TODO möglicherweise über
+                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL"); // TODO mï¿½glicherweise ï¿½ber
                     // reflection
                 }
             }

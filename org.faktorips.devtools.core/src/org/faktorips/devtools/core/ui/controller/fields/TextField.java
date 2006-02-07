@@ -15,10 +15,6 @@ public class TextField extends DefaultEditField {
 
     private Text text;
     
-    /**
-     * bla
-     * @param text
-     */
     public TextField(Text text) {
         super();
         ArgumentCheck.notNull(text);

@@ -43,17 +43,17 @@ public interface IProductCmptType extends IIpsObject {
 	
 	/**
 	 * Returns the relations defined for this type or an empty array is no relation
-	 * is defined.
-	 */
-	public IProductCmptTypeRelation[] getRelations();
-	
-	/**
-	 * Returns the relations defined for this type or an empty array is no relation
 	 * is defined. Note that computed or derived attributes are not returned as these 
 	 * correspond to methods on the product side.
 	 */
 	public IAttribute[] getAttributes();
 
+	/**
+	 * Returns the relations defined for this type or an empty array is no relation
+	 * is defined.
+	 */
+	public IProductCmptTypeRelation[] getRelations();
+	
     /**
      * Returns the first relation with the indicated name or <code>null</code> if
      * no such relation exists.

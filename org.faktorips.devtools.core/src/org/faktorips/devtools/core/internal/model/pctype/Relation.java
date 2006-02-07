@@ -338,6 +338,9 @@ public class Relation extends IpsObjectPart implements IRelation {
      * Overridden.
      */
     public IRelation findContainerRelation() throws CoreException {
+    	if (StringUtils.isEmpty(containerRelation)) {
+    		return null;
+    	}
         IPolicyCmptType type = (IPolicyCmptType)getIpsObject();
         IPolicyCmptType[] supertypes = type.getSupertypeHierarchy().getAllSupertypesInclSelf(type);
         for (int i=0; i<supertypes.length; i++) {

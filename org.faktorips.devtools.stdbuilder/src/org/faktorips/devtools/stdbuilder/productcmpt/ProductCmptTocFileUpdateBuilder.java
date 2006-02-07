@@ -11,7 +11,10 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.AbstractTocFileUpdateBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.TocEntryGeneration;
 import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.runtime.internal.DateTime;
@@ -19,7 +22,8 @@ import org.faktorips.runtime.internal.DateTime;
 public class ProductCmptTocFileUpdateBuilder extends AbstractTocFileUpdateBuilder {
 
     private PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder;
-    private ProductCmptImplClassBuilder productCmptTypeImplBuilder;
+    private ProductCmptImplClassBuilder productCmptTypeImplClassBuilder;
+    private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
     private ProductCmptBuilder productCmptBuilder;
     
     /**
@@ -33,10 +37,14 @@ public class ProductCmptTocFileUpdateBuilder extends AbstractTocFileUpdateBuilde
         this.policyCmptTypeInterfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
 
-    public void setProductCmptTypeBuilder(ProductCmptImplClassBuilder builder) {
-        this.productCmptTypeImplBuilder = builder;
+    public void setProductCmptTypeImplClassBuilder(ProductCmptImplClassBuilder builder) {
+        this.productCmptTypeImplClassBuilder = builder;
     }
     
+    public void setProductCmptGenImplClassBuilder(ProductCmptGenImplClassBuilder builder) {
+        this.productCmptGenImplClassBuilder = builder;
+    }
+
     public void setProductCmptBuilder(ProductCmptBuilder builder) {
         productCmptBuilder = builder;
     }
@@ -74,13 +82,19 @@ public class ProductCmptTocFileUpdateBuilder extends AbstractTocFileUpdateBuilde
         String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml";
         TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(productCmpt.getQualifiedName(),
             xmlResourceName, 
-            productCmptTypeImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), 
+            productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), 
             policyCmptTypeInterfaceBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
         IIpsObjectGeneration[] generations = productCmpt.getGenerations();
         TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
         for (int i = 0; i < generations.length; i++) {
             DateTime validFrom = DateTime.createDateOnly(generations[i].getValidFrom());
-            String generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generations[i]);
+            IProductCmptGeneration gen = (IProductCmptGeneration)generations[i];
+            String generationClassName;
+            if (gen.getProductCmpt().containsFormula()) {
+                generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generations[i]);
+            } else {
+                generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(gen.getProductCmpt().findProductCmptType());
+            }
             genEntries[i] = new TocEntryGeneration(entry, validFrom, generationClassName, xmlResourceName); 
         }
         entry.setGenerationEntries(genEntries);

@@ -120,24 +120,28 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         policyCmptImplClassBuilder.setProductCmptInterfaceBuilder(productCmptInterfaceBuilder);
         
         // product component type builders
-        productCmptImplClassBuilder.setInterfaceBuilder(productCmptInterfaceBuilder);
         productCmptInterfaceBuilder.setPolicyCmptTypeInterfaceBuilder(policyCmptInterfaceBuilder);
         productCmptInterfaceBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
+
+        productCmptImplClassBuilder.setInterfaceBuilder(productCmptInterfaceBuilder);
         productCmptImplClassBuilder.setProductCmptGenInterfaceBuilder(productCmptGenInterfaceBuilder);
         productCmptImplClassBuilder.setPolicyCmptImplClassBuilder(policyCmptImplClassBuilder);
         
+        productCmptGenInterfaceBuilder.setImplementationBuilder(productCmptGenImplClassBuilder);
+        productCmptGenInterfaceBuilder.setProductCmptTypeInterfaceBuilder(productCmptInterfaceBuilder);
+
         productCmptGenImplClassBuilder.setInterfaceBuilder(productCmptGenInterfaceBuilder);
         productCmptGenImplClassBuilder.setProductCmptTypeImplBuilder(productCmptImplClassBuilder);
+        productCmptGenImplClassBuilder.setProductCmptTypeInterfaceBuilder(productCmptInterfaceBuilder);
         productCmptGenImplClassBuilder.setPolicyCmptTypeImplBuilder(policyCmptImplClassBuilder);
-        productCmptGenInterfaceBuilder.setImplementationBuilder(productCmptGenImplClassBuilder);
-        productCmptGenInterfaceBuilder.setPolicyCmptTypeImplBuilder(policyCmptImplClassBuilder);
         
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
         productCmptTocUpdateBuilder.setPolicyCmptTypeInterfaceBuilder(policyCmptInterfaceBuilder);
-        productCmptTocUpdateBuilder.setProductCmptTypeBuilder(productCmptImplClassBuilder);
+        productCmptTocUpdateBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
         productCmptTocUpdateBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
+        productCmptTocUpdateBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
         
         // table builders
         tableContentTocUpdateBuilder.setTableImplBuilder(tableImplBuilder);

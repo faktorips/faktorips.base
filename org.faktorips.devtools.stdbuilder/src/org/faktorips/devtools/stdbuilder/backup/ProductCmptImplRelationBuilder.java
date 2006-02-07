@@ -66,7 +66,7 @@ public class ProductCmptImplRelationBuilder extends RelationImplBuilder {
             return;
         }
         build1ToManyRelation(memberVarsBuilder, methodsBuilder, relation, null);
-        // folgende Zeilen auskommentiert bis genauer Umgang mit relationen gekl�rt ist. Jan
+        // folgende Zeilen auskommentiert bis genauer Umgang mit relationen geklaert ist. Jan
         // if (relation.is1ToMany()) {
         // build1ToManyRelation(relation);
         // } else {

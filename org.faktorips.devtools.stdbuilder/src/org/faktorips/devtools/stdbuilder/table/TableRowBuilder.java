@@ -3,8 +3,8 @@ package org.faktorips.devtools.stdbuilder.table;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 

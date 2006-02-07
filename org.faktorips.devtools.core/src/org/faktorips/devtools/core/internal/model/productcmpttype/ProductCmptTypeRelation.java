@@ -32,9 +32,9 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	/**
 	 * 
 	 */
-	public ProductCmptTypeRelation(Relation relation) {
+	public ProductCmptTypeRelation(IRelation relation) {
 		ArgumentCheck.notNull(relation);
-		this.relation = relation;
+		this.relation = (Relation)relation;
 	}
 
 	/**
@@ -63,6 +63,13 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 */
 	public boolean isAbstract() {
 		return relation.isReadOnlyContainer();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean implementsContainerRelation() throws CoreException {
+		return findContainerRelation()!=null;
 	}
 
 	/**
@@ -101,7 +108,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public String getTargetRolePlural() {
-		return relation.getTargetRolePlural();
+		return relation.getTargetRolePluralProductSide();
 	}
 
 	/**
@@ -126,19 +133,14 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	}
 
 	/**
-	 * Overridden.
-	 */
-	public String getContainerRelation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IProductCmptTypeRelation findContainerRelation() throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		IRelation containerRelation = relation.findContainerRelation();
+		if (containerRelation==null) {
+			return null;
+		}
+		return new ProductCmptTypeRelation(containerRelation);
 	}
 
 	/**

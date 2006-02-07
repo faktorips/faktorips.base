@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core.builder;
 
+import java.lang.reflect.Modifier;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 
@@ -87,5 +89,12 @@ public class JavaNamingConvention {
      */
     public String getSetterMethodName(String propertyName, Datatype datatype) {
 		return "set" + StringUtils.capitalise(propertyName);
+    }
+    
+    /**
+     * Returns the modifier used for public interface methods. 
+     */
+    public int getModifierForPublicInterfaceMethod() {
+    	return Modifier.PUBLIC;
     }
 }

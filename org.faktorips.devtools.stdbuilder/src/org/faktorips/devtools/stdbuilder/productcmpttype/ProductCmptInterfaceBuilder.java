@@ -2,6 +2,7 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
 import java.util.Calendar;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -164,6 +165,14 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
         
         // TODO Auto-generated method stub
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -1,8 +1,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
-import java.lang.reflect.Modifier;
+import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -11,7 +10,6 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -25,7 +23,7 @@ import org.faktorips.util.StringUtil;
 public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuilder {
 
     private ProductCmptGenImplClassBuilder implementationBuilder;
-    private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
+    private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     
     public ProductCmptGenInterfaceBuilder(IJavaPackageStructure packageStructure, String kindId) {
         super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
@@ -42,8 +40,11 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         this.implementationBuilder = implementationBuilder;
     }
 
-    public void setPolicyCmptTypeImplBuilder(PolicyCmptImplClassBuilder builder) {
-        this.policyCmptTypeImplBuilder = builder;
+    /**
+     * @param productCmptTypeInterfaceBuilder The productCmptTypeInterfaceBuilder to set.
+     */
+    public void setProductCmptTypeInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
+        this.productCmptTypeInterfaceBuilder = builder;
     }
 
     /**
@@ -130,30 +131,29 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * Overridden.
      */
     protected void generateCodeForRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        int modifier = Modifier.ABSTRACT + Modifier.PUBLIC;
+        generateMethodRelationGetMany(relation, methodsBuilder);
+    }
+    
+    private void generateMethodRelationGetMany(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String javaDoc = getLocalizedText("JAVADOC_GET_MANY_RELATED_OBJECTS", relation.getTargetRolePlural());
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureGetManyRelated(relation, modifier, methodsBuilder);        
-        methodsBuilder.methodEnd();
+        generateSignatureRelationGetMany(relation, methodsBuilder);        
+        methodsBuilder.appendln(";");
     }
 
-    void generateSignatureGetManyRelated(IProductCmptTypeRelation relation, int modifier, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getJavaNamingConvention().getMultiValueGetterMethodName(implementationBuilder.getMemberVarNameManyRelation(relation));
+    void generateSignatureRelationGetMany(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getJavaNamingConvention().getMultiValueGetterMethodName(implementationBuilder.getPropertyNameRelation(relation));
         IProductCmptType target = relation.findTarget();
-        builder.methodBegin(modifier, getQualifiedClassName(target)+"[]", 
-                methodName, new String[0], new String[0]);
+        builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
+                productCmptTypeInterfaceBuilder.getQualifiedClassName(target)+"[]", methodName, new String[0], new String[0]);
     }
 
-    private String getProductCmptGetAllMethodName(IProductCmptTypeRelation relation) {
-        return "get" + StringUtils.capitalise(relation.getTargetRolePlural());
-    }
-
-    private String getProductCmptNumOfMethodName(IProductCmptTypeRelation relation) {
-        return "getAnzahl" + StringUtils.capitalise(relation.getTargetRolePlural());
-    }
-
-    private String getProductCmptInterfaceGetMethodName(IProductCmptTypeRelation relation) {
-        return "get" + StringUtils.capitalise(relation.getTargetRoleSingular());
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        // TODO Auto-generated method stub
+        
     }
 
 

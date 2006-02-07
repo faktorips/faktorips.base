@@ -103,4 +103,5 @@ public class ProductCmptRelationTest extends IpsPluginTest {
 			//nothing to do :-)
 		}
     }
+    
 }

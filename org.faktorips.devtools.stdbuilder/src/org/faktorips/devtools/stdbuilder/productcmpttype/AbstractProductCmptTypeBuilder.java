@@ -1,6 +1,9 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -27,8 +30,6 @@ import org.faktorips.util.StringUtil;
  * @author Jan Ortmann
  */
 public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuilder {
-
-    private Map containerRelationToSubRelationMap;
 
     /**
      * @param packageStructure
@@ -243,20 +244,42 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
     private void generateCodeForRelations(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
+        HashMap containerRelations = new HashMap();
         IProductCmptTypeRelation[] relations = getProductCmptType().getRelations();
         for (int i = 0; i < relations.length; i++) {
-            if (!relations[i].validate().containsErrorMsg()) {
-                try {
-                    generateCodeForRelation(relations[i], memberVarsBuilder, methodsBuilder);
-                } catch (Exception e) {
-                    throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation "
-                            + relations[i].getName() + " of "
-                            + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+            try {
+                if (relations[i].isAbstractContainer() || relations[i].validate().containsErrorMsg()) {
+                    continue;
                 }
+                generateCodeForRelation(relations[i], memberVarsBuilder, methodsBuilder);                
+                if (relations[i].implementsContainerRelation()) {
+                    IProductCmptTypeRelation containerRel = relations[i].findContainerRelation();
+                    List implementationRelations = (List)containerRelations.get(containerRel);
+                    if (implementationRelations==null) {
+                        implementationRelations = new ArrayList();
+                        containerRelations.put(containerRel, implementationRelations);
+                    }
+                    implementationRelations.add(relations[i]);
+                }
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation "
+                        + relations[i].getName() + " of "
+                        + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+            }
+        }
+        for (Iterator it=containerRelations.values().iterator(); it.hasNext(); ) {
+            IProductCmptTypeRelation containerRel = (IProductCmptTypeRelation)it.next();
+            try {
+                List implementationRels = (List)containerRelations.get(containerRel);
+                generateCodeForContainerRelation(containerRel, implementationRels, memberVarsBuilder, methodsBuilder);
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building container relation "
+                        + containerRel + " of "
+                        + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
     }
-
+    
     /**
      * Subclasses may provide an implementation generating methods and attributes based on the
      * provided relation. This method is called for every valid relation instance assigned to the
@@ -274,6 +297,22 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
     protected abstract void generateCodeForRelation(IProductCmptTypeRelation relation,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception;
+
+
+    /**
+     * Generates the code for a container relation. The method is called for every valid container
+     * relation.
+     * 
+     * @param containerRelation the container relation source code should be generated for.
+     * @param implementationRelations the relation implementing the container relation.
+     * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
+     * @param memberVarsBuilder the code fragment builder to build the method section.
+     */
+    protected abstract void generateCodeForContainerRelation(
+            IProductCmptTypeRelation containerRelation,
+            List implementationRelations, 
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 

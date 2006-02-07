@@ -403,7 +403,8 @@ public class JavaCodeFragmentBuilder {
             openBracket();
         }
     }
-        /**
+    
+    /**
      * Creates the Java source code for a method signature. 
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
