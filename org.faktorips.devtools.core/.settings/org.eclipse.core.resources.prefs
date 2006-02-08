@@ -1,4 +1,9 @@
-#Thu Feb 02 14:36:30 CET 2006
+#Tue Feb 07 09:31:47 CET 2006
 eclipse.preferences.version=1
+encoding//src/org/faktorips/devtools/core/ui/actions/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/editors/productcmpt/messages.properties=8859_1
+encoding//src/org/faktorips/devtools/core/ui/search/messages.properties=8859_1
+encoding//src/org/faktorips/devtools/core/ui/views/attrtable/messages.properties=8859_1
+encoding//src/org/faktorips/devtools/core/ui/views/productdefinitionexplorer/messages.properties=8859_1
+encoding//src/org/faktorips/devtools/core/ui/views/productstructureexplorer/messages.properties=8859_1
 encoding/<project>=UTF-8

@@ -445,8 +445,8 @@ public class Attribute extends Member implements IAttribute {
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));

@@ -61,8 +61,10 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 	 * @param object The Object to link with.
 	 * @param propertyName The name of the property to link with.
 	 */
-	public void add(Text text, Object object, String propertyName) {
-		add(new TextField(text), object, propertyName);
+	public TextField add(Text text, Object object, String propertyName) {
+		TextField field = new TextField(text);
+		add(field, object, propertyName);
+		return field;
 	}
 
 	protected void addMapping(FieldPropertyMapping mapping) {

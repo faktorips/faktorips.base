@@ -1,5 +1,9 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
@@ -26,16 +30,40 @@ import org.faktorips.util.ArgumentCheck;
 
 
 /**
- *
+ * Section to display and edit defaults and ranges of a product
+ * 
+ * @author Thorsten Guenther
  */
 public class DefaultsAndRangesSection extends IpsSection {
 
+	/**
+	 * Generation which holds the informations to display
+	 */
     private IProductCmptGeneration generation;
-    private Composite workArea;
-    private CompositeUIController uiController;
+
+	/**
+	 * Pane which serves as parent for all controlls created inside this section.
+	 */
+    private Composite rootPane;
+
+	/**
+	 * List of controls displaying data (needed to enable/disable).
+	 */
+	private List editControls = new ArrayList();
+
+	/**
+	 * Controller to handle update of ui and model automatically.
+	 */
+    private CompositeUIController uiMasterController;
+	
+	/**
+	 * Toolkit to handle common ui-operations
+	 */
     private UIToolkit toolkit;
-	private boolean fGenerationDirty;
     
+    /**
+     * Creates a new section to edit ranges and default-values.
+     */
     public DefaultsAndRangesSection(
             IProductCmptGeneration generation,
             Composite parent,
@@ -43,23 +71,21 @@ public class DefaultsAndRangesSection extends IpsSection {
         super(parent, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
-		fGenerationDirty = true;
         initControls();
         setText(Messages.PolicyAttributesSection_defaultsAndRanges);
     }
 
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#initClientComposite(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
     	GridLayout layout = new GridLayout(1, true);
     	layout.marginHeight = 2;
     	layout.marginWidth = 1;
     	client.setLayout(layout);
-    	workArea = toolkit.createStructuredLabelEditColumnComposite(client);
-    	workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-    	GridLayout workAreaLayout = (GridLayout) workArea.getLayout();
+    	rootPane = toolkit.createStructuredLabelEditColumnComposite(client);
+    	rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
+    	GridLayout workAreaLayout = (GridLayout) rootPane.getLayout();
     	workAreaLayout.marginHeight = 5;
     	workAreaLayout.marginWidth = 5;
     	this.toolkit = toolkit;
@@ -68,19 +94,24 @@ public class DefaultsAndRangesSection extends IpsSection {
     	// around
     	// the text control. Can only be understood by looking at the
     	// FormToolkit.PaintBorder class.
-    	workArea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-    	toolkit.getFormToolkit().paintBordersFor(workArea);
+    	rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+    	toolkit.getFormToolkit().paintBordersFor(rootPane);
+
+    	createEditControls();
     }
     
+    /**
+     * Create the controls...
+     */
     private void createEditControls() {
-    	uiController = new CompositeUIController();
+    	uiMasterController = new CompositeUIController();
     	IpsObjectUIController ctrl = new IpsObjectUIController(generation.getIpsObject());
-    	uiController.add(ctrl);
+    	uiMasterController.add(ctrl);
     	
     	IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
     	
     	if (elements.length == 0) {
-    		toolkit.createLabel(workArea, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
+    		toolkit.createLabel(rootPane, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
     	}
     	
     	for (int i = 0; i < elements.length; i++) {
@@ -96,65 +127,73 @@ public class DefaultsAndRangesSection extends IpsSection {
     				valueSet = attribute.getValueSet().copy();
     			}
     		}
-    		toolkit.createFormLabel(workArea, StringUtils.capitalise(elements[i].getName()));
-    		toolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
-    		Text text = toolkit.createText(workArea);
+    		toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
+    		toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
+    		Text text = toolkit.createText(rootPane);
+			this.editControls.add(text);
     		TextField field = new TextField(text);
     		IpsPartUIController controller = new IpsPartUIController(elements[i]);
     		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
-    		uiController.add(controller);
+    		uiMasterController.add(controller);
     		
     		if (valueSet.isEnum()) {
-    			toolkit.createFormLabel(workArea, ""); //$NON-NLS-1$
-    			toolkit.createFormLabel(workArea, Messages.PolicyAttributesSection_values);
-    			EnumValuesControl evc = new EnumValuesControl(workArea, toolkit, elements[i], this.getShell());
+    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
+    			EnumValuesControl evc = new EnumValuesControl(rootPane, toolkit, elements[i], this.getShell());
     			evc.setText(valueSet.toString());
+    			this.editControls.add(evc.getTextControl());
     		} else if (valueSet.isRange()) {
-    			toolkit.createFormLabel(workArea, ""); //$NON-NLS-1$
-    			toolkit.createFormLabel(workArea, Messages.PolicyAttributesSection_minimum);
-    			text = toolkit.createText(workArea);
+    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
+    			text = toolkit.createText(rootPane);
+    			this.editControls.add(text);
     			field = new TextField(text);
     			controller.add(field, (Range) valueSet, Range.PROPERTY_LOWERBOUND);
     			
-    			toolkit.createFormLabel(workArea, ""); //$NON-NLS-1$
-    			toolkit.createFormLabel(workArea, Messages.PolicyAttributesSection_maximum);
-    			text = toolkit.createText(workArea);
+    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_maximum);
+    			text = toolkit.createText(rootPane);
     			field = new TextField(text);
+    			this.editControls.add(text);
     			controller.add(field, (Range) valueSet, Range.PROPERTY_UPPERBOUND);
     			
-    			toolkit.createFormLabel(workArea, ""); //$NON-NLS-1$
-    			toolkit.createFormLabel(workArea, Messages.PolicyAttributesSection_step);
-    			text = toolkit.createText(workArea);
+    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
+    			text = toolkit.createText(rootPane);
     			field = new TextField(text);
+    			this.editControls.add(text);
     			controller.add(field, (Range) valueSet, Range.PROPERTY_STEP);
     		}
-    		toolkit.createVerticalSpacer(workArea, 3).setBackground(workArea.getBackground());
-    		toolkit.createVerticalSpacer(workArea, 3).setBackground(workArea.getBackground());
-    		toolkit.createVerticalSpacer(workArea, 3).setBackground(workArea.getBackground());
+    		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
+    		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
+    		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
     	}
     	    	
+		rootPane.layout(true);
+		rootPane.redraw();
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.forms.IpsSection#performRefresh()
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     protected void performRefresh() {
-		if (fGenerationDirty) {
-	    	createEditControls();
-	    	uiController.updateUI();
-		}
+    	uiMasterController.updateUI();
     }
 
-	public void setActiveGeneration(IProductCmptGeneration generation) {
-		if (this.generation.equals(generation)) {
-			return;
-		}
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
 		
-		if (generation instanceof IProductCmptGeneration) {
-			this.generation = (IProductCmptGeneration)generation;
-			fGenerationDirty = true;
-			performRefresh();
+		// to get the disabled look, we have to disable all the input-fields manually :-(
+		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
+			Text element = (Text) iter.next();
+			element.setEnabled(enabled);
+			
 		}
+		rootPane.layout(true);
+		rootPane.redraw();
 	}
+
 }

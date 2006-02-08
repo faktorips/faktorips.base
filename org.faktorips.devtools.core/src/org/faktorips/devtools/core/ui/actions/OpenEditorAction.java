@@ -6,7 +6,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
@@ -20,15 +19,11 @@ public class OpenEditorAction extends Action {
 	ISelectionProvider selectionProvider;
     
     public OpenEditorAction(ISelectionProvider selectionProvider) {
-        this();
-        this.selectionProvider = selectionProvider;
-    }
-    
-    public OpenEditorAction() {
         super();
         super.setText(Messages.OpenEditorAction_name);
         super.setDescription(Messages.OpenEditorAction_description);
         super.setToolTipText(Messages.OpenEditorAction_tooltip);
+        this.selectionProvider = selectionProvider;
     }
     
     public void run() {
@@ -49,7 +44,7 @@ public class OpenEditorAction extends Action {
         	ISelection selection = this.selectionProvider.getSelection();
         	if (selection instanceof IStructuredSelection) {
         		Object selected = ((IStructuredSelection)selection).getFirstElement();
-        		if (selected instanceof IIpsElement) {
+        		if (selected instanceof IIpsObject) {
         			return ((IIpsObject)selected).getIpsSrcFile();
         		}
         	}

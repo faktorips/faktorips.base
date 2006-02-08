@@ -52,8 +52,8 @@ public abstract class Member extends IpsObjectPart implements IMember {
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         name = element.getAttribute("name");
     }
 

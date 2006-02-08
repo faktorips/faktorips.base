@@ -96,7 +96,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(), new IpsPasteAction(this, this.getSite().getShell()));
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), new IpsDeleteAction(this));
         
-        menumanager.add(new OpenEditorAction());
+        menumanager.add(new OpenEditorAction(tree));
         menumanager.add(new Separator());
         menumanager.add(ActionFactory.CUT.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(ActionFactory.COPY.create(this.getSite().getWorkbenchWindow()));

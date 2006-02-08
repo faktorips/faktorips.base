@@ -202,8 +202,8 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         productCmptTypeRelation = element.getAttribute(PROPERTY_PCTYPE_RELATION);
         target = element.getAttribute(PROPERTY_TARGET);
         minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));

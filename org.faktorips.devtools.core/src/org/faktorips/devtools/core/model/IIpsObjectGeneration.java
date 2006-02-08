@@ -35,4 +35,10 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
      * @throws NullPointerException if valid from is null.
      */
     public void setValidFrom(GregorianCalendar validFrom);
+
+    /**
+     * copies structure and values from the given source.
+     */
+	public void initFromGeneration(IIpsObjectGeneration source);
+
 }

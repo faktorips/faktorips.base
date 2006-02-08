@@ -25,11 +25,11 @@ public class GenerationsPage extends IpsObjectEditorPage {
         super(editor, PAGE_ID, IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()));
     }
 
-    ProductCmptEditor getProductCmptEditor() {
+    private ProductCmptEditor getProductCmptEditor() {
         return (ProductCmptEditor)getEditor();
     }
     
-    IProductCmpt getProductCmpt() {
+    private IProductCmpt getProductCmpt() {
         return getProductCmptEditor().getProductCmpt(); 
     }
     

@@ -227,8 +227,8 @@ public class ForeignKey extends Key implements IForeignKey {
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         refTableStructure = element.getAttribute(PROPERTY_REF_TABLE_STRUCTURE);
         refUniqueKey = element.getAttribute(PROPERTY_REF_UNIQUE_KEY);
     }

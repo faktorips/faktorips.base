@@ -362,5 +362,4 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			
 		throw new IllegalArgumentException("Unknown part type" + partType);
 	}
-    
 }

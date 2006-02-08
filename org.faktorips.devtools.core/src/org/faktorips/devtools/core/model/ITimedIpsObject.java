@@ -46,10 +46,15 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date);
     
     /**
-     * Creates a new generation.
+     * Creates a new, empty generation.
      */
     public IIpsObjectGeneration newGeneration();
-    
+
+    /**
+     * Creates a new generation filled with data from the generation matching the given valid from date.
+     */
+	public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom);
+
     /**
      * Returns the number of generation.
      */

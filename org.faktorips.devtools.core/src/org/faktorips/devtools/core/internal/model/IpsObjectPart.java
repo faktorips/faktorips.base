@@ -167,16 +167,19 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
-    protected void initPropertiesFromXml(Element element) {
-        String s = element.getAttribute(PROPERTY_ID);
-        if (!StringUtils.isEmpty(s)) {
-            id = Integer.parseInt(s);
-        } // else keep the id set in the constructor. migration for old files without id!
-        description = DescriptionHelper.getDescription(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+    	if (id != -1) {
+    		this.id = id;
+    	}
+    	else {
+	        String s = element.getAttribute(PROPERTY_ID);
+	        if (!StringUtils.isEmpty(s)) {
+	            id = Integer.parseInt(s);
+	        } // else keep the id set in the constructor. migration for old files without id!
+    	}
+    	description = DescriptionHelper.getDescription(element);
     }
     
     /**

@@ -8,13 +8,11 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
@@ -28,8 +26,8 @@ public class ProductContentProvider implements ITreeContentProvider {
      * Overridden.
      */
     public Object[] getChildren(Object parentElement) {
-        // For the department, we only descend up to generations into the model.
-        if (!(parentElement instanceof IIpsElement) || parentElement instanceof IIpsObjectGeneration) {
+        // For the department, we only descend up to the product into the model.
+        if (!(parentElement instanceof IIpsElement) || parentElement instanceof IProductCmpt) {
             return new Object[0];
         }
         try {
@@ -137,7 +135,7 @@ public class ProductContentProvider implements ITreeContentProvider {
             if (ipsElement instanceof IIpsPackageFragment) {
                 return getPackageFragmentContent((IIpsPackageFragment)element).length > 0;
             }
-            else if (ipsElement instanceof IProductCmptGeneration) {
+            else if (ipsElement instanceof IProductCmpt) {
                 return false;
             }
             else {

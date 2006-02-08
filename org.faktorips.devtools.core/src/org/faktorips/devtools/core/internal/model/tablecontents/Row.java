@@ -190,8 +190,8 @@ public class Row extends IpsObjectPart implements IRow {
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         NodeList nl = element.getElementsByTagName(VALUE_TAG_NAME);
         initValues();
         for(int i=0; i<values.length; i++) {

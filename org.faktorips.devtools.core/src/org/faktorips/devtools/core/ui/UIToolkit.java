@@ -230,15 +230,20 @@ public class UIToolkit {
         return newLink;
     }
     
-    public Text createText(Composite parent) {
+    public Text createText(Composite parent, int style) {
         Text newText;
         if (formToolkit!=null) {
-            newText = formToolkit.createText(parent, null);
+            newText = formToolkit.createText(parent, null, style);
         } else {
             newText = new Text(parent, SWT.SINGLE | SWT.BORDER);
         }
         newText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         return newText;
+    	
+    }
+    
+    public Text createText(Composite parent) {
+    	return createText(parent, SWT.NONE);
     }
     
     public Text createMultilineText(Composite parent) {

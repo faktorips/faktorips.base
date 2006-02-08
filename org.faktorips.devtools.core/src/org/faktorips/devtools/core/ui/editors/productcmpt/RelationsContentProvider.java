@@ -101,7 +101,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
 				IpsPlugin.log(e);
 			}
 		}
-		IpsPlugin.log(new IpsStatus("Unknown element class " + element.getClass()));
+		IpsPlugin.log(new IpsStatus(Messages.RelationsContentProvider_msg_UnknownElementClass + element.getClass()));
 		return new Object[0];
 	}
 

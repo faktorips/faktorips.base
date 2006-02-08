@@ -1,19 +1,18 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -23,166 +22,160 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
+ * Section to display and edit the product attributes
  * 
+ * @author Thorsten Guenther
  */
-public class ProductAttributesSection extends TimedIpsSection {
+public class ProductAttributesSection extends IpsSection {
 
+	/**
+	 * Generation which holds the informations to display
+	 */
 	private IProductCmptGeneration generation;
-	private boolean fGenerationDirty;
-
+	
+	/**
+	 * Toolkit to handle common ui-operations
+	 */
 	private UIToolkit toolkit;
 
-	private Composite workArea;
+	/**
+	 * Pane which serves as parent for all controlls created inside this section.
+	 */
+	private Composite rootPane;
 
-	// edit controls and fields
+	/**
+	 * List of controls displaying data (needed to enable/disable).
+	 */
 	private List editControls = new ArrayList();
-
-	private List labels = new ArrayList();
-
+	
 	// Text field showing the policy component type
 	private Text pcTypeText;
+	private Text generationText;
 
-	// UIController
-	private CompositeUIController uiController = null;
-
+	/**
+	 * Controller to handle update of ui and model automatically.
+	 */
+	private CompositeUIController uiMasterController = null;
+	
+	/**
+	 * Creates a new attributes section.
+	 * 
+	 * @param generation The generation to get all informations to display from.
+	 * @param parent The parent to link the ui-items to.
+	 * @param toolkit The toolkit to use for easier ui-handling
+	 */
 	public ProductAttributesSection(IProductCmptGeneration generation,
 			Composite parent, UIToolkit toolkit) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 		this.generation = generation;
-		fGenerationDirty = true;
 		initControls();
 		setText(Messages.ProductAttributesSection_attribute);
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	protected void initClientComposite(Composite client, UIToolkit toolkit) {
+		this.toolkit = toolkit;
+
 		GridLayout layout = new GridLayout(1, true);
 		layout.marginHeight = 2;
 		layout.marginWidth = 1;
 		client.setLayout(layout);
-		this.toolkit = toolkit;
-		workArea = toolkit.createStructuredLabelEditColumnComposite(client);
-		workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout workAreaLayout = (GridLayout) workArea.getLayout();
+
+		rootPane = toolkit.createLabelEditColumnComposite(client);
+		rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
+		GridLayout workAreaLayout = (GridLayout) rootPane.getLayout();
 		workAreaLayout.marginHeight = 5;
 		workAreaLayout.marginWidth = 5;
 
-		// following line forces the paint listener to draw a light grey border
-		// around
+		// following line forces the paint listener to draw a light grey border around
 		// the text control. Can only be understood by looking at the
 		// FormToolkit.PaintBorder class.
-		workArea.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-		toolkit.getFormToolkit().paintBordersFor(workArea);
+		rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+		toolkit.getFormToolkit().paintBordersFor(rootPane);
+		
 		// create label and text control for the policy component type
 		// this product component is based on.
-		toolkit.createLabel(workArea,
-				Messages.ProductAttributesSection_template);
-		toolkit.createLabel(workArea, ""); //$NON-NLS-1$
-		pcTypeText = toolkit.createText(workArea);
-		pcTypeText.setEnabled(false);
+		toolkit.createLabel(rootPane, IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
+		this.generationText = toolkit.createText(rootPane);
+		this.generationText.setText(this.generation.getName());
+		this.generationText.setEnabled(false);
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		
+		// create label and text for the currently displayed generation
+		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
+		this.pcTypeText = toolkit.createText(rootPane);
+		this.pcTypeText.setEnabled(false);
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+
+		createEditControls();
+		
+		IpsObjectUIController controller = new IpsObjectUIController(generation.getIpsObject());
+		controller.add(new TextField(pcTypeText), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
+		
+		uiMasterController.add(controller);
+		uiMasterController.updateUI();
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.ui.forms.IpsSection#performRefresh()
+	 * {@inheritDoc}
 	 */
 	protected void performRefresh() {
-		try {
-			if (structureChanged()) {
-				createEditControls();
-				IpsObjectUIController controller = new IpsObjectUIController(
-						generation.getIpsObject());
-				controller.add(new TextField(pcTypeText),
-						IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
-				uiController.add(controller);
-			}
-			uiController.updateUI();
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
+		uiMasterController.updateUI();
 	}
 
-	private boolean structureChanged() {
-		if (uiController == null) {
-			// page hasn't been initialized, consider that as a change so that
-			// the controls are created.
-			return true;
-		}
-		
-		if (fGenerationDirty) {
-			return true;
-		}
-		
-		IConfigElement[] elements = generation
-				.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE);
-		if (labels.size() != elements.length) {
-			return true;
-		}
-		for (int i = 0; i < elements.length; i++) {
-			Label label = (Label) labels.get(i);
-			if (!label.getText().equals(
-					StringUtils.capitalise(elements[i].getPcTypeAttribute()))) {
-				return true;
-			}
-		}
-		return false;
-	}
+	private void createEditControls() {
+		uiMasterController = new CompositeUIController();
 
-	private void createEditControls() throws CoreException {
-
-		uiController = new CompositeUIController();
 		// create a label and edit control for each config element
-		IConfigElement[] elements = generation
-				.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE);
+		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE);
 		for (int i = 0; i < elements.length; i++) {
-			if (i < labels.size()) {
-				((Label) labels.get(i)).setText(elements[i]
-						.getPcTypeAttribute());
-			} else {
-				Label label = toolkit.createLabel(workArea, StringUtils
-						.capitalise(elements[i].getPcTypeAttribute()));
-				labels.add(label);
-				toolkit.createLabel(workArea, ""); //$NON-NLS-1$
-				Text text = toolkit.createText(workArea);
-				editControls.add(text);
-				TextField field = new TextField(text);
-				IpsPartUIController controller = new IpsPartUIController(
-						elements[i]);
-				controller.add(field, elements[i],
-						IConfigElement.PROPERTY_VALUE);
-				uiController.add(controller);
-				toolkit.createVerticalSpacer(workArea, 3).setBackground(
-						workArea.getBackground());
-				toolkit.createVerticalSpacer(workArea, 3).setBackground(
-						workArea.getBackground());
-				toolkit.createVerticalSpacer(workArea, 3).setBackground(
-						workArea.getBackground());
-			}
+			addAndRegister(elements[i]);
 		}
 
-		for (int i = elements.length + 1; i < labels.size(); i++) {
-			((Label) labels.get(i)).dispose();
-			((Control) editControls.get(i)).dispose();
-		}
-		workArea.layout(true);
-		workArea.redraw();
-		fGenerationDirty = false;
+		rootPane.layout(true);
+		rootPane.redraw();
 	}
 
-	public void setActiveGeneration(IProductCmptGeneration generation) {
-		if (this.generation.equals(generation)) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setEnabled(boolean enabled) {
+		if (isEnabled() == enabled) {
 			return;
 		}
 		
-		if (generation instanceof IProductCmptGeneration) {
-			this.generation = (IProductCmptGeneration)generation;
-			fGenerationDirty = true;
-			performRefresh();
+		super.setEnabled(enabled);
+		
+		// to get the disabled look, we have to disable all the input-fields manually :-(
+		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
+			Text element = (Text) iter.next();
+			element.setEnabled(enabled);
+			
 		}
+		rootPane.layout(true);
+		rootPane.redraw();
+	}
+	
+	/**
+	 * Creates a new label and input for the given config element and links the input with the config element.
+	 */
+	private void addAndRegister(IConfigElement toDisplay) {
+		toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));		
+		Text text = toolkit.createText(rootPane);
+		editControls.add(text);
+		
+		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
+		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
+
+		IpsPartUIController controller = new IpsPartUIController(toDisplay);
+		controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);		
+		uiMasterController.add(controller);
 	}
 }

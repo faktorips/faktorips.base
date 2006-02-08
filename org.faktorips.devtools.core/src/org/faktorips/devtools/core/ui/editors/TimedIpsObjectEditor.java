@@ -12,6 +12,8 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
  */
 public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
 
+	private IIpsObjectGeneration generation;
+	
     /**
      * 
      */
@@ -23,13 +25,28 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
      * Returns the generation currently selected to display and edit.
      */
     public IIpsObjectGeneration getActiveGeneration() {
+    	return generation;
+    }
+    
+    /**
+     * Sets the generation active on this editor.
+     */
+    public void setActiveGeneration(IIpsObjectGeneration generation) {
+    	this.generation = generation;
+    }
+    
+    /**
+     * Returns the generation which is preferred to be displayed to match the 
+     * working date set in preferences.
+     */
+    public IIpsObjectGeneration getPreferredGeneration() {
         GregorianCalendar workingDate = IpsPreferences.getWorkingDate();
         ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
-        IIpsObjectGeneration generation = object.getGenerationByEffectiveDate(workingDate);
-        if (generation==null && object.getNumOfGenerations()>0) {
-            generation = object.getGenerations()[object.getNumOfGenerations()-1];            
+        IIpsObjectGeneration prefGen = object.getGenerationByEffectiveDate(workingDate);
+        if (prefGen==null && object.getNumOfGenerations()>0) {
+        	prefGen = object.getGenerations()[object.getNumOfGenerations()-1];            
         }
-        return generation;
+        return prefGen;    	
     }
     
 }

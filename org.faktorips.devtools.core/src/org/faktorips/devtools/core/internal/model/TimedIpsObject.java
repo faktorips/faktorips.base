@@ -99,12 +99,35 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return null;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public IIpsObjectGeneration newGeneration() {
         IpsObjectGeneration generation = newGenerationInternal(getNextPartId());
         updateSrcFile();
         return generation;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom) {
+        IIpsObjectGeneration oldGen = findGenerationEffectiveOn(validFrom);
+        return newGeneration(oldGen, validFrom);
+    }
+
+    public IIpsObjectGeneration newGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom) {
+    	int newId = getNextPartId();
+        IpsObjectGeneration generation = newGenerationInternal(newId);
+
+        generation.initFromGeneration(source);
+
+        generation.setValidFrom(validFrom);
+        
+        updateSrcFile();
+        return generation;
+    }
+
     public int getNumOfGenerations() {
         return generations.size();
     }
@@ -142,8 +165,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         // nothing else to do so far
     }
     

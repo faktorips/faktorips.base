@@ -328,8 +328,8 @@ public class Method extends Member implements IMethod {
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();

@@ -289,8 +289,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element) {
-        super.initPropertiesFromXml(element);
+    protected void initPropertiesFromXml(Element element, int id) {
+        super.initPropertiesFromXml(element, id);
         type = ConfigElementType.getConfigElementType(element.getAttribute(PROPERTY_TYPE));
         value = element.getAttribute(PROPERTY_VALUE);
         pcTypeAttribute = element.getAttribute(PROPERTY_PCTYPE_ATTRIBUTE);

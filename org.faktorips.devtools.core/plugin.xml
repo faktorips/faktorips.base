@@ -391,7 +391,7 @@
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
             id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu"
-            targetID="org.faktorips.devtools.core.ui.views.productExplorer">
+            targetID="org.faktorips.devtools.core.ui.views.productDefinitionExplorer">
          <menu
                id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team"
                label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team">

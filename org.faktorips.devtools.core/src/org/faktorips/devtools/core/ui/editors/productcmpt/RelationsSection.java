@@ -137,6 +137,7 @@ public class RelationsSection extends IpsSection {
 	}
 
 	private void buildContextMenu() {
+		
 		MenuManager menumanager = new MenuManager();
 		menumanager.setRemoveAllWhenShown(false);
 
@@ -152,14 +153,15 @@ public class RelationsSection extends IpsSection {
 
         menumanager.add(new Separator());
         menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
+        menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
         menumanager.add(new Separator());
 		
 		Menu menu = menumanager.createContextMenu(treeViewer.getControl());
 
 		treeViewer.getControl().setMenu(menu);
 
-		site.registerContextMenu("productCmptEditor.relations", menumanager, treeViewer);
+		// Dont register context menu to avoid population with debug etc.
+        // site.registerContextMenu("productCmptEditor.relations", menumanager, treeViewer); //$NON-NLS-1$
 	}
 	
 	/**
@@ -242,7 +244,6 @@ public class RelationsSection extends IpsSection {
 	    		
 				uiController.add(kardMinField, rel, Relation.PROPERTY_MIN_CARDINALITY);
 				uiController.add(kardMaxField, rel, Relation.PROPERTY_MAX_CARDINALITY);
-				System.out.println("update: " + rel);
 				uiController.updateUI();
 			}
 			else {

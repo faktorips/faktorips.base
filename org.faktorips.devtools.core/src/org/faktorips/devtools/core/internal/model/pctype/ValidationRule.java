@@ -300,8 +300,8 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	/**
 	 * @inheritDoc
 	 */
-	protected void initPropertiesFromXml(Element element) {
-		super.initPropertiesFromXml(element);
+	protected void initPropertiesFromXml(Element element, int id) {
+		super.initPropertiesFromXml(element, id);
 		name = element.getAttribute(PROPERTY_NAME);
 		applyInAll = Boolean.valueOf(
 				element.getAttribute(PROPERTY_APPLIED_IN_ALL_FUNCTIONS))
