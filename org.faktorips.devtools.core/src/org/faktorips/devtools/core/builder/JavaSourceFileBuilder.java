@@ -134,7 +134,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	/**
 	 * Returns the Java naming convention to be used.
 	 */
-	public JavaNamingConvention getJavaNamingConvention() throws CoreException {
+	public JavaNamingConvention getJavaNamingConvention() {
 		return JavaNamingConvention.ECLIPSE_STANDARD;
 	}
 	

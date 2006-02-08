@@ -4,9 +4,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
@@ -31,6 +34,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private IIpsArtefactBuilder[] builders;
     private TableImplBuilder tableImplBuilder;
+    private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
 
     /**
      * Overridden.
@@ -56,6 +60,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         code.appendClassName(tableImplBuilder.getQualifiedClassName(fct.getTableStructure().getIpsSrcFile()));
         code.append(".getInstance(");
         code.append(fct.getIpsProject().getCodeToGetTheRuntimeRepository());
+        //TODO pk: findRow is not correct in general
         code.append(").findRow(");
         for (int i = 0; i < argResults.length; i++) {
             if (i>0) {
@@ -70,6 +75,21 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return result;
     }
 
+    
+    public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
+        return new AbstractParameterIdentifierResolver(){
+
+            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+                return policyCmptInterfaceBuilder.getAttributeGetterMethodName(attribute, datatype);    
+            }
+            
+        };
+    }
+
+    public boolean isSupportFlIdentifierResolver() {
+        return true;
+    }
+
     /**
      * Instantiates the artefact builders for this set.
      */
@@ -78,7 +98,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // create policy component type builders
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(
                 this, KIND_POLICY_CMPT_IMPL);
-        PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(
+        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(
                 this, KIND_POLICY_CMPT_INTERFACE);
         
         

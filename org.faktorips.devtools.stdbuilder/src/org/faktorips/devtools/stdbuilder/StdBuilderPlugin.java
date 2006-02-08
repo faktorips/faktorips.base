@@ -17,5 +17,5 @@ public class StdBuilderPlugin extends Plugin {
     /**
      * The id of the standard builder set extension like it is defined in the plugin.xml file
      */
-    public final static String STANDARD_BUILDER_EXTENSION_ID = "org.faktorips.stdbuilder.ipsstdbuilderset";
+    public final static String STANDARD_BUILDER_EXTENSION_ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
 }

@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
@@ -51,6 +52,14 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
     }
 
 	public IdentifierResolver getFlIdentifierResolver() {
+		return null;
+	}
+
+	public boolean isSupportFlIdentifierResolver() {
+		return false;
+	}
+
+	public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
 		return null;
 	}
 

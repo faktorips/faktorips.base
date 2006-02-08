@@ -1,8 +1,5 @@
-package org.faktorips.devtools.core.internal.model;
+package org.faktorips.devtools.core.builder;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
@@ -10,13 +7,14 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 
 /**
@@ -24,22 +22,27 @@ import org.faktorips.util.message.Message;
  * <code>Parameter</code>s that can be registered via the <code>add()</code>
  * methods.
  */
-public class ParameterIdentifierResolver implements IdentifierResolver {
+public abstract class AbstractParameterIdentifierResolver implements
+		IParameterIdentifierResolver {
 
 	private IIpsProject project;
 
-	private List params = new ArrayList(0);
+	private Parameter[] params = new Parameter[0];
 
-	public ParameterIdentifierResolver(IIpsProject project) {
-		this.project = project;
+	/**
+	 * Provides the name of the getter method for the provided attribute.
+	 */
+	protected abstract String getParameterAttributGetterName(
+			IAttribute attribute, Datatype datatype);
+
+	public void setIpsProject(IIpsProject ipsProject) {
+		ArgumentCheck.notNull(ipsProject);
+		this.project = ipsProject;
 	}
 
-	public void add(Parameter p) {
-		params.add(p);
-	}
-
-	public Parameter[] getParameters() {
-		return (Parameter[]) params.toArray(new Parameter[params.size()]);
+	public void setParameters(Parameter[] parameters) {
+		ArgumentCheck.notNull(parameters);
+		this.params = parameters;
 	}
 
 	/**
@@ -49,6 +52,12 @@ public class ParameterIdentifierResolver implements IdentifierResolver {
 	 *      java.util.Locale)
 	 */
 	public CompilationResult compile(String identifier, Locale locale) {
+
+		if (project == null) {
+			throw new IllegalStateException(
+					"The ipsproject needs to be set to this resolver before this method can be called.");
+		}
+
 		String paramName;
 		String attributeName;
 		int pos = identifier.indexOf('.');
@@ -59,10 +68,9 @@ public class ParameterIdentifierResolver implements IdentifierResolver {
 			paramName = identifier.substring(0, pos);
 			attributeName = identifier.substring(pos + 1);
 		}
-		for (Iterator it = params.iterator(); it.hasNext();) {
-			Parameter param = (Parameter) it.next();
-			if (param.getName().equals(paramName)) {
-				return compile(param, attributeName, locale);
+		for (int i = 0; i < params.length; i++) {
+			if (params[i].getName().equals(paramName)) {
+				return compile(params[i], attributeName, locale);
 			}
 		}
 		return CompilationResultImpl.newResultUndefinedIdentifier(locale,
@@ -110,7 +118,8 @@ public class ParameterIdentifierResolver implements IdentifierResolver {
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 			String text = "An error occured while trying to retrieve the attribute "
-					+ attributeName + " from the policy component type "
+					+ attributeName
+					+ " from the policy component type "
 					+ pcType + " ";
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
@@ -132,11 +141,11 @@ public class ParameterIdentifierResolver implements IdentifierResolver {
 				return new CompilationResultImpl(Message.newError(
 						ExprCompiler.UNDEFINED_IDENTIFIER, text));
 			}
-			String code = param.getName()
-					+ '.'
-					+ attribute.getJavaMethod(
-							IAttribute.JAVA_GETTER_METHOD_IMPLEMENATION)
-							.getElementName() + "()";
+			String code = param.getName() + '.'
+					+ getParameterAttributGetterName(attribute, datatype) + "()";
+			// attribute.getJavaMethod(
+			// IAttribute.JAVA_GETTER_METHOD_IMPLEMENATION)
+			// .getElementName() + "()";
 			return new CompilationResultImpl(code, datatype);
 		} catch (Exception e) {
 			IpsPlugin.log(e);

@@ -7,9 +7,11 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.ParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -30,289 +32,316 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *
+ * 
  */
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
-    final static String TAG_NAME = "ConfigElement";
+	final static String TAG_NAME = "ConfigElement";
 
-    private ConfigElementType type = ConfigElementType.PRODUCT_ATTRIBUTE;
-    private String pcTypeAttribute = "";
-    private ValueSet valueSet = ValueSet.ALL_VALUES;
-    private String value = "";
+	private ConfigElementType type = ConfigElementType.PRODUCT_ATTRIBUTE;
 
-    public ConfigElement(ProductCmptGeneration parent, int id) {
-        super(parent, id);
-    }
+	private String pcTypeAttribute = "";
 
-    public ConfigElement() {
-        super();
-    }
+	private ValueSet valueSet = ValueSet.ALL_VALUES;
 
-    /**
-     * Overridden.
-     */
-    public IProductCmpt getProductCmpt() {
-        return (IProductCmpt)getParent().getParent();
-    }
+	private String value = "";
 
-    /**
-     * Overridden.
-     */
-    public IProductCmptGeneration getProductCmptGeneration() {
-        return (IProductCmptGeneration)getParent();
-    }
+	public ConfigElement(ProductCmptGeneration parent, int id) {
+		super(parent, id);
+	}
 
-    /**
-     * Overridden.
-     */
-    public ConfigElementType getType() {
-        return type;
-    }
+	public ConfigElement() {
+		super();
+	}
 
-    /**
-     * Overridden.
-     */
-    public void setType(ConfigElementType newType) {
-        ConfigElementType oldType = type;
-        type = newType;
-        valueChanged(oldType, newType);
+	/**
+	 * Overridden.
+	 */
+	public IProductCmpt getProductCmpt() {
+		return (IProductCmpt) getParent().getParent();
+	}
 
-    }
+	/**
+	 * Overridden.
+	 */
+	public IProductCmptGeneration getProductCmptGeneration() {
+		return (IProductCmptGeneration) getParent();
+	}
 
-    /**
-     * Overridden.
-     */
-    public String getPcTypeAttribute() {
-        return pcTypeAttribute;
-    }
+	/**
+	 * Overridden.
+	 */
+	public ConfigElementType getType() {
+		return type;
+	}
 
-    /**
-     * Overridden.
-     */
-    public void setPcTypeAttribute(String newName) {
-        String oldName = pcTypeAttribute;
-        pcTypeAttribute = newName;
-        name = pcTypeAttribute;
-        valueChanged(oldName, pcTypeAttribute);
-    }
+	/**
+	 * Overridden.
+	 */
+	public void setType(ConfigElementType newType) {
+		ConfigElementType oldType = type;
+		type = newType;
+		valueChanged(oldType, newType);
 
-    /**
-     * Overridden.
-     */
-    public String getValue() {
-        return value;
-    }
+	}
 
-    /**
-     * Overridden.
-     */
-    public void setValue(String newValue) {
-        String oldValue = value;
-        value = newValue;
-        valueChanged(oldValue, value);
-    }
+	/**
+	 * Overridden.
+	 */
+	public String getPcTypeAttribute() {
+		return pcTypeAttribute;
+	}
 
-    /**
-     * Overridden.
-     */
-    public void delete() {
-        ((ProductCmptGeneration)getParent()).removeConfigElement(this);
-        deleted = true;
-    }
+	/**
+	 * Overridden.
+	 */
+	public void setPcTypeAttribute(String newName) {
+		String oldName = pcTypeAttribute;
+		pcTypeAttribute = newName;
+		name = pcTypeAttribute;
+		valueChanged(oldName, pcTypeAttribute);
+	}
 
-    private boolean deleted = false;
+	/**
+	 * Overridden.
+	 */
+	public String getValue() {
+		return value;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDeleted() {
-    	return deleted;
-    }
+	/**
+	 * Overridden.
+	 */
+	public void setValue(String newValue) {
+		String oldValue = value;
+		value = newValue;
+		valueChanged(oldValue, value);
+	}
 
+	/**
+	 * Overridden.
+	 */
+	public void delete() {
+		((ProductCmptGeneration) getParent()).removeConfigElement(this);
+		deleted = true;
+	}
 
-    /**
-     * Overridden.
-     */
-    public Image getImage() {
-        return IpsPlugin.getDefault().getImage("AttributePublic.gif");
-    }
+	private boolean deleted = false;
 
-    /**
-     * Overridden.
-     */
-    public IAttribute findPcTypeAttribute() throws CoreException {
-        IPolicyCmptType pcType = ((IProductCmpt)getIpsObject()).findPolicyCmptType();
-        if (pcType == null) {
-            return null;
-        }
-        IAttribute a = pcType.getAttribute(this.pcTypeAttribute);
-        if (a != null) {
-            return a;
-        }
-        ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
-        return hierarchy.findAttribute(pcType, pcTypeAttribute);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isDeleted() {
+		return deleted;
+	}
 
-    /**
-     * Overridden.
-     */
-    public ExprCompiler getExprCompiler() throws CoreException {
-        ExprCompiler compiler = new ExprCompiler();
-        compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
-        compiler.add(new TableFunctionsResolver(getIpsProject()));
-        ParameterIdentifierResolver resolver = new ParameterIdentifierResolver(getIpsProject());
-        IAttribute a = findPcTypeAttribute();
-        if (a == null) {
-            return compiler;
-        }
-        Parameter[] params = a.getFormulaParameters();
-        for (int i = 0; i < params.length; i++) {
-            resolver.add(params[i]);
-        }
-        compiler.setIdentifierResolver(resolver);
-        return compiler;
-    }
+	/**
+	 * Overridden.
+	 */
+	public Image getImage() {
+		return IpsPlugin.getDefault().getImage("AttributePublic.gif");
+	}
 
-    /**
-     * Overridden.
-     */
-    protected void validate(MessageList list) throws CoreException {
-        super.validate(list);
-        IAttribute attribute = findPcTypeAttribute();
-        if (attribute == null) {
-            String text = "There is no attribute " + pcTypeAttribute + " defined in "
-                    + getProductCmpt().getPolicyCmptType() + ".";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE));
-            return;
-        } 
-        if (attribute.getAttributeType()==AttributeType.CHANGEABLE || attribute.getAttributeType()==AttributeType.CONSTANT) {
-            validateValue(attribute.getDatatype(), list);
-        } else {
-            validateFormula(attribute, list);
-        }
-    }
+	/**
+	 * Overridden.
+	 */
+	public IAttribute findPcTypeAttribute() throws CoreException {
+		IPolicyCmptType pcType = ((IProductCmpt) getIpsObject())
+				.findPolicyCmptType();
+		if (pcType == null) {
+			return null;
+		}
+		IAttribute a = pcType.getAttribute(this.pcTypeAttribute);
+		if (a != null) {
+			return a;
+		}
+		ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
+		return hierarchy.findAttribute(pcType, pcTypeAttribute);
+	}
 
-    private void validateFormula(IAttribute attribute, MessageList list) throws CoreException {
-        if (StringUtils.isEmpty(value)) {
-            return;
-        }
-        ExprCompiler compiler = getExprCompiler();
-        CompilationResult result = compiler.compile(value);
-        if (!result.successfull()) {
-            MessageList compilerMessageList = result.getMessages();
-            for (int i = 0; i < compilerMessageList.getNoOfMessages(); i++) {
-                Message msg = compilerMessageList.getMessage(i);
-                list.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_VALUE));
-            }
-            return;
-        }
-        Datatype attributeDatatype = attribute.findDatatype();
-        if (attributeDatatype==null) {
-            String text = "The attribute's datatype can't be found, so it is not possible to check if the formula returns the correct datatype.";
-            list.add(new Message(IConfigElement.MSGCODE_CANT_FIND_ATTRIBUTE_DATATYPE, text, Message.ERROR, this, PROPERTY_VALUE));
-            return;
-        }
-        if (attributeDatatype.equals(result.getDatatype())) {
-            return;
-        }
-        if (compiler.getConversionCodeGenerator().canConvert(result.getDatatype(), attributeDatatype)) {
-            return;
-        }
-        String text = "Formula should return " + attributeDatatype.getName() + " but returns a " + result.getDatatype().getName()
-            + ". A conversion is not possible.";
-        list.add(new Message(IConfigElement.MSGCODE_FORMULA_HAS_WRONG_DATATYPE, text, Message.ERROR, this, PROPERTY_VALUE));
-    }
+	/**
+	 * Overridden.
+	 */
+	public ExprCompiler getExprCompiler() throws CoreException {
+		ExprCompiler compiler = new ExprCompiler();
+		compiler.add(new ExcelFunctionsResolver(getIpsProject()
+				.getExpressionLanguageFunctionsLanguage()));
+		compiler.add(new TableFunctionsResolver(getIpsProject()));
+		IIpsArtefactBuilderSet builderSet = getIpsProject().getCurrentArtefactBuilderSet();
+		if(builderSet != null) {
+			IAttribute a = findPcTypeAttribute();
+			if (a == null) {
+				return compiler;
+			}
+			IParameterIdentifierResolver resolver = builderSet.getFlParameterIdentifierResolver();
+			if(resolver == null){
+				return compiler;
+			}
+			resolver.setIpsProject(getIpsProject());
+			resolver.setParameters(a.getFormulaParameters());
+			compiler.setIdentifierResolver(resolver);
+		}
+		return compiler;
+	}
 
-    private void validateValue(String datatype, MessageList list) throws CoreException {
-        Datatype datatypeObject = getIpsProject().findDatatype(datatype);
-        if (datatypeObject == null) {
-            if (!StringUtils.isEmpty(value)) {
-                String text = "The value can't be parsed because the datatype is unkown!";
-                list.add(new Message("", text, Message.WARNING, this, PROPERTY_VALUE));
-            }
-            return;
-        } 
-        if (!datatypeObject.isValueDatatype()) {
-            if (!StringUtils.isEmpty(datatype)) {
-                String text = "The value can't be parsed because the datatype is not a value datatype!";
-                list.add(new Message("", text, Message.WARNING, this, PROPERTY_VALUE));
-                return;
-            } 
-        } 
-        ValueDatatype valueDatatype = (ValueDatatype)datatypeObject;
-        try {
+	/**
+	 * Overridden.
+	 */
+	protected void validate(MessageList list) throws CoreException {
+		super.validate(list);
+		IAttribute attribute = findPcTypeAttribute();
+		if (attribute == null) {
+			String text = "There is no attribute " + pcTypeAttribute
+					+ " defined in " + getProductCmpt().getPolicyCmptType()
+					+ ".";
+			list
+					.add(new Message("", text, Message.ERROR, this,
+							PROPERTY_VALUE));
+			return;
+		}
+		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
+				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
+			validateValue(attribute.getDatatype(), list);
+		} else {
+			validateFormula(attribute, list);
+		}
+	}
+
+	private void validateFormula(IAttribute attribute, MessageList list)
+			throws CoreException {
+		if (StringUtils.isEmpty(value)) {
+			return;
+		}
+		ExprCompiler compiler = getExprCompiler();
+		CompilationResult result = compiler.compile(value);
+		if (!result.successfull()) {
+			MessageList compilerMessageList = result.getMessages();
+			for (int i = 0; i < compilerMessageList.getNoOfMessages(); i++) {
+				Message msg = compilerMessageList.getMessage(i);
+				list.add(new Message(msg.getCode(), msg.getText(), msg
+						.getSeverity(), this, PROPERTY_VALUE));
+			}
+			return;
+		}
+		Datatype attributeDatatype = attribute.findDatatype();
+		if (attributeDatatype == null) {
+			String text = "The attribute's datatype can't be found, so it is not possible to check if the formula returns the correct datatype.";
+			list.add(new Message(
+					IConfigElement.MSGCODE_CANT_FIND_ATTRIBUTE_DATATYPE, text,
+					Message.ERROR, this, PROPERTY_VALUE));
+			return;
+		}
+		if (attributeDatatype.equals(result.getDatatype())) {
+			return;
+		}
+		if (compiler.getConversionCodeGenerator().canConvert(
+				result.getDatatype(), attributeDatatype)) {
+			return;
+		}
+		String text = "Formula should return " + attributeDatatype.getName()
+				+ " but returns a " + result.getDatatype().getName()
+				+ ". A conversion is not possible.";
+		list.add(new Message(IConfigElement.MSGCODE_FORMULA_HAS_WRONG_DATATYPE,
+				text, Message.ERROR, this, PROPERTY_VALUE));
+	}
+
+	private void validateValue(String datatype, MessageList list)
+			throws CoreException {
+		Datatype datatypeObject = getIpsProject().findDatatype(datatype);
+		if (datatypeObject == null) {
+			if (!StringUtils.isEmpty(value)) {
+				String text = "The value can't be parsed because the datatype is unkown!";
+				list.add(new Message("", text, Message.WARNING, this,
+						PROPERTY_VALUE));
+			}
+			return;
+		}
+		if (!datatypeObject.isValueDatatype()) {
+			if (!StringUtils.isEmpty(datatype)) {
+				String text = "The value can't be parsed because the datatype is not a value datatype!";
+				list.add(new Message("", text, Message.WARNING, this,
+						PROPERTY_VALUE));
+				return;
+			}
+		}
+		ValueDatatype valueDatatype = (ValueDatatype) datatypeObject;
+		try {
 			if (valueDatatype.validate().containsErrorMsg()) {
-			    String text = "The value can't be parsed because the datatype is invalid!";
-			    list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE));
-			    return;
+				String text = "The value can't be parsed because the datatype is invalid!";
+				list.add(new Message("", text, Message.ERROR, this,
+						PROPERTY_VALUE));
+				return;
 			}
 		} catch (Exception e) {
 			throw new CoreException(new IpsStatus(e));
 		}
-        if (StringUtils.isNotEmpty(value)) {
-            if (!valueDatatype.isParsable(value)) {
-                String text = "The value " + value + " is not a " + valueDatatype.getName() + ".";
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE));
-                return;
-            }
-            if (!valueSet.contains(value, valueDatatype)) {
-                list.add(new Message("", "The value " + value
-                        + " is no member of the specified valueSet!", Message.ERROR, this, PROPERTY_VALUE));
-            }
-        }
-    }
+		if (StringUtils.isNotEmpty(value)) {
+			if (!valueDatatype.isParsable(value)) {
+				String text = "The value " + value + " is not a "
+						+ valueDatatype.getName() + ".";
+				list.add(new Message("", text, Message.ERROR, this,
+						PROPERTY_VALUE));
+				return;
+			}
+			if (!valueSet.contains(value, valueDatatype)) {
+				list.add(new Message("", "The value " + value
+						+ " is no member of the specified valueSet!",
+						Message.ERROR, this, PROPERTY_VALUE));
+			}
+		}
+	}
 
-    /**
-     * Overridden.
-     */
-    public ValueSet getValueSet() {
-        return valueSet;
-    }
+	/**
+	 * Overridden.
+	 */
+	public ValueSet getValueSet() {
+		return valueSet;
+	}
 
-    /**
-     * Overridden.
-     */
-    public void setValueSet(ValueSet set) {
-        ValueSet oldset = valueSet;
-        valueSet = set;
-        valueChanged(oldset, set);
-    }
+	/**
+	 * Overridden.
+	 */
+	public void setValueSet(ValueSet set) {
+		ValueSet oldset = valueSet;
+		valueSet = set;
+		valueChanged(oldset, set);
+	}
 
-    /**
-     * Overridden.
-     */
-    protected Element createElement(Document doc) {
-        return doc.createElement(TAG_NAME);
-    }
+	/**
+	 * Overridden.
+	 */
+	protected Element createElement(Document doc) {
+		return doc.createElement(TAG_NAME);
+	}
 
-    /**
-     * Overridden.
-     */
-    protected void initPropertiesFromXml(Element element, int id) {
-        super.initPropertiesFromXml(element, id);
-        type = ConfigElementType.getConfigElementType(element.getAttribute(PROPERTY_TYPE));
-        value = element.getAttribute(PROPERTY_VALUE);
-        pcTypeAttribute = element.getAttribute(PROPERTY_PCTYPE_ATTRIBUTE);
-        name = pcTypeAttribute;
-        Element valueSetEl = XmlUtil.getFirstElement(element, ValueSet.XML_TAG);
-        if (valueSetEl==null) {
-            valueSet = ValueSet.ALL_VALUES;
-        } else {
-        	valueSet = ValueSet.createFromXml(valueSetEl);
-        }
-    }
-    
-    /**
-     * Overridden.
-     */
-    protected void propertiesToXml(Element element) {
-        super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TYPE, type.getId());
-        element.setAttribute(PROPERTY_PCTYPE_ATTRIBUTE, pcTypeAttribute);
-        element.setAttribute(PROPERTY_VALUE, value);
-        element.appendChild(valueSet.toXml(element.getOwnerDocument()));
-    }
+	/**
+	 * Overridden.
+	 */
+	protected void initPropertiesFromXml(Element element, int id) {
+		super.initPropertiesFromXml(element, id);
+		type = ConfigElementType.getConfigElementType(element
+				.getAttribute(PROPERTY_TYPE));
+		value = element.getAttribute(PROPERTY_VALUE);
+		pcTypeAttribute = element.getAttribute(PROPERTY_PCTYPE_ATTRIBUTE);
+		name = pcTypeAttribute;
+		Element valueSetEl = XmlUtil.getFirstElement(element, ValueSet.XML_TAG);
+		if (valueSetEl == null) {
+			valueSet = ValueSet.ALL_VALUES;
+		} else {
+			valueSet = ValueSet.createFromXml(valueSetEl);
+		}
+	}
+
+	/**
+	 * Overridden.
+	 */
+	protected void propertiesToXml(Element element) {
+		super.propertiesToXml(element);
+		element.setAttribute(PROPERTY_TYPE, type.getId());
+		element.setAttribute(PROPERTY_PCTYPE_ATTRIBUTE, pcTypeAttribute);
+		element.setAttribute(PROPERTY_VALUE, value);
+		element.appendChild(valueSet.toXml(element.getOwnerDocument()));
+	}
 
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType);

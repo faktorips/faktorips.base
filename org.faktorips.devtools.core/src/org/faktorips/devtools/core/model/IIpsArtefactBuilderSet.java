@@ -1,11 +1,8 @@
 package org.faktorips.devtools.core.model;
 
-import java.util.Locale;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.IdentifierResolver;
 
 /**
  * Interface for the extension point org.faktorips.plugin.artefactbuilderset of
@@ -39,6 +36,12 @@ public interface IIpsArtefactBuilderSet {
 	public boolean isSupportTableAccess();
 
 	/**
+	 * Returns <code>true</code> if the builder set supports an formula
+	 * language identifierResolver.
+	 */
+	public boolean isSupportFlIdentifierResolver();
+
+	/**
 	 * Returns a compilation result that gives access to a table via the
 	 * indicated function. Returns <code>null</code> if this builder set does
 	 * not support table access.
@@ -55,11 +58,12 @@ public interface IIpsArtefactBuilderSet {
 			CompilationResult[] argResults) throws CoreException;
 
 	/**
-	 * Returns the <code>org.faktorips.fl.IdentifierResolver</code>. Returns
-	 * <code>null</code> if this builder set doesn't support an formula
-	 * language identifier resolver.
+	 * Returns the
+	 * <code>org.faktorips.devtools.core.model.IParameterIdentifierResolver</code>.
+	 * Returns <code>null</code> if this builder set doesn't support an
+	 * formula language identifier resolver.
 	 */
-	public IdentifierResolver getFlIdentifierResolver();
+	public IParameterIdentifierResolver getFlParameterIdentifierResolver();
 
 	/**
 	 * When the builder set is loaded by the faktor ips plugin the extension id

@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.ParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -28,16 +27,17 @@ import org.faktorips.util.ArgumentCheck;
 public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private ExprCompiler compiler;
-    private ParameterIdentifierResolver identifierResolver;
-
-    public FormulaCompletionProcessor(IIpsProject project, ExprCompiler compiler) {
+    private IAttribute attribute;
+    
+    public FormulaCompletionProcessor(IAttribute attribute, IIpsProject project, ExprCompiler compiler) {
         super();
+        ArgumentCheck.notNull(attribute);
         ArgumentCheck.notNull(project);
         setIpsProject(project);
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
+        this.attribute = attribute;
         setComputeProposalForEmptyPrefix(true);
-        identifierResolver = (ParameterIdentifierResolver)compiler.getIdentifierResolver();
     }
 
     /**
@@ -72,7 +72,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private void addMatchingParameters(List result, String prefix, int replacementOffset) {
-        Parameter[] params = identifierResolver.getParameters();
+        Parameter[] params = attribute.getFormulaParameters();
         for (int i=0; i<params.length; i++) {
             if (params[i].getName().startsWith(prefix)) {
                 addParamToResult(result, params[i], replacementOffset, prefix.length());
@@ -172,7 +172,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
     
     private Parameter getParameter(String name) {
-        Parameter[] params = identifierResolver.getParameters();
+        Parameter[] params = attribute.getFormulaParameters();
         for (int i=0; i<params.length; i++) {
             if (params[i].getName().equals(name)) {
                 return params[i];

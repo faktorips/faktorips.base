@@ -110,7 +110,9 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         
         Text formulaText = uiToolkit.createMultilineText(c);
         try {
-            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(configElement.getIpsProject(), configElement.getExprCompiler());
+            FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(
+					attribute, configElement.getIpsProject(), configElement
+							.getExprCompiler());
             ContentAssistHandler.createHandlerForText(formulaText, CompletionUtil.createContentAssistant(completionProcessor));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

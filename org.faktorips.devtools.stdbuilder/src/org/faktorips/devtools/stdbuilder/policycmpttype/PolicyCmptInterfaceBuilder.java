@@ -395,13 +395,17 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         memberVarsBuilder.varDeclaration(modifier, helper.getJavaClassName(), varName, initialValueExpression);
     }
     
+    public String getAttributeGetterMethodName(IAttribute a, Datatype datatype){
+        return getJavaNamingConvention().getGetterMethodName(a.getName(), datatype);
+    }
+    
     void generateSignatureAttributeGetter(
             IAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         int modifier = java.lang.reflect.Modifier.PUBLIC;
-        String methodName = getJavaNamingConvention().getGetterMethodName(a.getName(), datatypeHelper.getDatatype());
+        String methodName = getAttributeGetterMethodName(a, datatypeHelper.getDatatype());
         methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), methodName, new String[0], new String[0]);
     }
     
