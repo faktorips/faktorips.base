@@ -36,7 +36,6 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         setIpsProject(project);
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
-        ArgumentCheck.isInstanceOf(compiler.getIdentifierResolver(), ParameterIdentifierResolver.class);
         setComputeProposalForEmptyPrefix(true);
         identifierResolver = (ParameterIdentifierResolver)compiler.getIdentifierResolver();
     }

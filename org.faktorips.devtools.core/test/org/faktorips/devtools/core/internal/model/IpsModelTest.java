@@ -59,7 +59,6 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
     	IJavaProject javaProject = addJavaCapabilities(project);
     	IIpsProject ipsProject = model.createIpsProject(javaProject);
     	assertNotNull(ipsProject);
-    	assertNotNull(ipsProject.getCurrentArtefactBuilderSet());
     	assertEquals(0, ipsProject.getValueDatatypes(false).length);
     	IIpsObjectPath path = ipsProject.getIpsObjectPath();
     	assertNotNull(path);

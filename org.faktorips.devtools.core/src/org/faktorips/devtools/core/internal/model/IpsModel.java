@@ -129,7 +129,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 		}
 		IIpsProject ipsProject = getIpsProject(javaProject.getProject());
 		Util.addNature(javaProject.getProject(), IIpsProject.NATURE_ID);
-		ipsProject.setCurrentArtefactBuilderSet(getAvailableArtefactBuilderSets()[0].getId());
+		IIpsArtefactBuilderSet builderSets[] = getAvailableArtefactBuilderSets();
+		if(builderSets.length > 0){
+			ipsProject.setCurrentArtefactBuilderSet(getAvailableArtefactBuilderSets()[0].getId());
+		}
 		ipsProject.setValueDatatypes(new String[0]);
 		return ipsProject;
 	}

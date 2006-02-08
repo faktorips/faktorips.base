@@ -6,6 +6,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.fl.IdentifierResolver;
 
 public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
 
@@ -48,5 +49,9 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
     public CompilationResult getTableAccessCode(ITableAccessFunction fct, CompilationResult[] argResults) throws CoreException {
         return null;
     }
+
+	public IdentifierResolver getFlIdentifierResolver() {
+		return null;
+	}
 
 }

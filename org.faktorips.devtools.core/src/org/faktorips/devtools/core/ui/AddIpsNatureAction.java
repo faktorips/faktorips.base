@@ -1,8 +1,5 @@
 package org.faktorips.devtools.core.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;

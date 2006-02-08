@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
-import org.faktorips.devtools.core.internal.model.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;

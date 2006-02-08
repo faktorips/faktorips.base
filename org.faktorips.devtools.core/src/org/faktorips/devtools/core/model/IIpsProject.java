@@ -243,7 +243,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns <code>null</code> if no corresponding IPS source file exists.
      * 
      * @throws CoreException if an error occurs while searching the corresponding IPS source file.
-     * @throws NullPointerException if cu is null.   
+     * @throws NullPointerException if cu is null.
+     * @deprecated   
      */
     public IIpsSrcFile findIpsSrcFile(ICompilationUnit cu) throws CoreException;
     
