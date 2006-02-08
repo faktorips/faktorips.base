@@ -25,6 +25,7 @@ import org.faktorips.fl.operations.DivideDecimalDecimal;
 import org.faktorips.fl.operations.DivideMoneyDecimal;
 import org.faktorips.fl.operations.EqualsDecimalDecimal;
 import org.faktorips.fl.operations.EqualsMoneyMoney;
+import org.faktorips.fl.operations.EqualsStringString;
 import org.faktorips.fl.operations.GreaterThanDecimalDecimal;
 import org.faktorips.fl.operations.GreaterThanMoneyMoney;
 import org.faktorips.fl.operations.GreaterThanOrEqualDecimalDecimal;
@@ -231,6 +232,7 @@ public class ExprCompiler {
         // equals operation
         register(new EqualsDecimalDecimal());
         register(new EqualsMoneyMoney());
+        register(new EqualsStringString());
 
         // not equals operation
         register(new NotEqualsDecimalDecimal());
