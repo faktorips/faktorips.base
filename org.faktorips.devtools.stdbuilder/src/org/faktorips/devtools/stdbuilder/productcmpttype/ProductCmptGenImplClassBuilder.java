@@ -1,7 +1,6 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,6 @@ import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
@@ -238,24 +236,23 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.appendln(");");
                 builder.append("if (relationElements != null) {");
                 String fieldName = getMemberVarNameRelation(r);
-                // if (r.is1ToMany()) { auskommentiert bis genauer Umgang mit relationen geklaert
-                // ist. Jan
-                builder.append(fieldName);
-                builder.appendln(" = new ");
-                builder.appendClassName(String.class);
-                builder.appendln("[relationElements.size()];");
-                builder.appendln("for (int i=0; i<relationElements.size(); i++) {");
-                builder.append(fieldName);
-                builder.append("[i] = ((");
-                builder.appendClassName(Element.class);
-                builder.append(")relationElements.get(i)).getAttribute(\"target\");");
-                builder.appendln("}");
-                // folgende Zeilen auskommentiert bis genauer Umgang mit relationen gekl�rt ist. Jan
-                // } else {
-                // frag.append(r.getJavaField(IRelation.JAVA_PRODUCTCMPT_FIELD).getElementName());
-                // frag.append(" = ((Element)relationElements.get(0)).getAttribute(\"target\");");
-                // getImportsManager().addImport(Element.class.getName());
-                // }
+                if (r.is1ToMany()) {
+                    builder.append(fieldName);
+                    builder.appendln(" = new ");
+                    builder.appendClassName(String.class);
+                    builder.appendln("[relationElements.size()];");
+                    builder.appendln("for (int i=0; i<relationElements.size(); i++) {");
+                    builder.append(fieldName);
+                    builder.append("[i] = ((");
+                    builder.appendClassName(Element.class);
+                    builder.append(")relationElements.get(i)).getAttribute(\"target\");");
+                    builder.appendln("}");
+                } else {
+                    builder.append(fieldName);
+                    builder.append(" = ((");
+                    builder.appendClassName(Element.class);
+                    builder.append(")relationElements.get(0)).getAttribute(\"target\");");
+                }
                 builder.appendln("}");
             }
         }
@@ -349,6 +346,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         generateMemberVarRelation(relation, memberVarsBuilder);
         if (relation.is1ToMany()) {
             generateMethodRelationGetMany(relation, memberVarsBuilder, methodsBuilder);
+        } else {
+            generateMethodRelationGet1(relation, memberVarsBuilder, methodsBuilder);
         }
     }
     
@@ -411,6 +410,27 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.appendln("}");
         methodsBuilder.appendln("return result;");
     
+        methodsBuilder.closeBracket();
+    }
+    
+    private void generateMethodRelationGet1(
+            IProductCmptTypeRelation relation, 
+            JavaCodeFragmentBuilder memberVarsBuilder, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureRelationGetMany(relation, methodsBuilder);
+
+        // Sample code
+        // return (CoveragePk) getRepository().getProductComponent(coverageType);
+        String fieldName = getMemberVarNameRelation(relation);
+        String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return (");
+        methodsBuilder.appendClassName(targetClass);
+        methodsBuilder.append(")getRepository().getProductComponent(");
+        methodsBuilder.append(fieldName);
+        methodsBuilder.append(");");
         methodsBuilder.closeBracket();
     }
     

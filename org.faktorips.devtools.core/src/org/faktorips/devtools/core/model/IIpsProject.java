@@ -38,7 +38,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IJavaProject getJavaProject();
     
     /**
-     * Returns the charset/encoding used for the XML-Files.
+     * Returns the charset/encoding in that the IIpsSrcFile contents is stored.
      */
     public String getXmlFileCharset();
     
@@ -78,6 +78,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the language (as a locale) in that the generated Java sourcecode
      * is documented. 
+     * <p>
+     * E.g. in English we could generate getNumOfCoverages(), in German we could 
+     * generate getAnzahlCoverages().
      */
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage();
     

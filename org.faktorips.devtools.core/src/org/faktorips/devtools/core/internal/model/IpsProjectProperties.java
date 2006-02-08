@@ -1,5 +1,8 @@
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.Locale;
+import java.util.StringTokenizer;
+
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -21,6 +24,7 @@ public class IpsProjectProperties {
 		
 	private boolean modelProject;
 	private boolean productDefinitionProject;
+	private Locale javaSrcLanguage = Locale.ENGLISH;
 	private String builderSetId = "";
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -54,6 +58,14 @@ public class IpsProjectProperties {
 	public void setProductDefinitionProject(boolean productDefinitionProject) {
 		this.productDefinitionProject = productDefinitionProject;
 	}
+	
+	public Locale getJavaSrcLanguage() {
+		return javaSrcLanguage;
+	}
+
+	public void setJavaSrcLanguage(Locale javaSrcLanguage) {
+		this.javaSrcLanguage = javaSrcLanguage;
+	}
 
 	public void setIpsObjectPath(IIpsObjectPath path) {
 		ArgumentCheck.notNull(path);
@@ -84,6 +96,7 @@ public class IpsProjectProperties {
 		Element projectEl = doc.createElement(TAG_NAME);
 		projectEl.setAttribute("modelProject", "" + modelProject);
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject);
+		projectEl.setAttribute("javaSrcLanguage", javaSrcLanguage.toString());
 		Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
 		projectEl.appendChild(builderSetEl);
 		builderSetEl.setAttribute("id", builderSetId);
@@ -107,6 +120,7 @@ public class IpsProjectProperties {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue();
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue();
+	    javaSrcLanguage = getLocale(element.getAttribute("javaSrcLanguage"));
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id");
         } else {
@@ -150,7 +164,22 @@ public class IpsProjectProperties {
         for (int i=0; i<nl.getLength(); i++) {
             definedDatatypes[i] = DynamicValueDatatype.createFromXml(ipsProject, (Element)nl.item(i));
         }
-        
     }
-    
+
+    static Locale getLocale(String s) {
+    	StringTokenizer tokenzier = new StringTokenizer(s, "_");
+    	if (!tokenzier.hasMoreTokens()) {
+    		return Locale.ENGLISH;
+    	}
+    	String language = tokenzier.nextToken();
+    	if (!tokenzier.hasMoreTokens()) {
+    		return new Locale(language);
+    	}
+    	String country = tokenzier.nextToken();
+    	if (!tokenzier.hasMoreTokens()) {
+    		return new Locale(language, country);
+    	}
+    	String variant = tokenzier.nextToken();
+    	return new Locale(language, country, variant);
+    }
 }

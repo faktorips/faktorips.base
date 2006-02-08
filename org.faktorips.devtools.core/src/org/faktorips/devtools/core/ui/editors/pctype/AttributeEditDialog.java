@@ -105,7 +105,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        
         extFactory.createControls(workArea,uiToolkit,(IpsObjectPartContainer)attribute);
 
         uiToolkit.createFormLabel(workArea, "Name:");

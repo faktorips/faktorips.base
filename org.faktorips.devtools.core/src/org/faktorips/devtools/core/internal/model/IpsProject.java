@@ -250,10 +250,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage() {
-        return Locale.GERMAN;
+    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	return properties.getJavaSrcLanguage();
     }
 
-    /**
+	/**
      * Overridden.
      */
     public Image getImage() {

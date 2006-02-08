@@ -144,16 +144,15 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     void generateSignatureRelationGetMany(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getJavaNamingConvention().getMultiValueGetterMethodName(implementationBuilder.getPropertyNameRelation(relation));
         IProductCmptType target = relation.findTarget();
+        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target)+ (relation.is1ToMany() ? "[]" : "");
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
-                productCmptTypeInterfaceBuilder.getQualifiedClassName(target)+"[]", methodName, new String[0], new String[0]);
+                returnType, methodName, new String[0], new String[0]);
     }
 
     /**
      * {@inheritDoc}
      */
     protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        // TODO Auto-generated method stub
-        
     }
 
 

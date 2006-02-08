@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.Locale;
+
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -18,6 +20,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		IpsProjectProperties props = new IpsProjectProperties();
 		props.setModelProject(true);
 		props.setProductDefinitionProject(true);
+		props.setJavaSrcLanguage(Locale.ITALIAN);
 		props.setBuilderSetId("myBuilder");
 		IIpsObjectPath path = new IpsObjectPath();
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
@@ -29,6 +32,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.initFromXml(ipsProject, projectEl);
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
+		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("myBuilder", props.getBuilderSetId());
 		path = props.getIpsObjectPath();
 		assertNotNull(path);
@@ -47,6 +51,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.initFromXml(ipsProject, docEl);
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
+		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("org.faktorips.devtools.stdbuilder.ipsstdbuilderset", props.getBuilderSetId());
 		IIpsObjectPath path = props.getIpsObjectPath();
 		assertNotNull(path);
@@ -63,6 +68,14 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
         DynamicValueDatatype[] dynTypes = props.getDefinedDatatypes();
         assertEquals(1, dynTypes.length);
         assertEquals("PaymentMode", dynTypes[0].getQualifiedName());
+	}
+	
+	public void testGetLocale() {
+		assertEquals(Locale.ENGLISH, IpsProjectProperties.getLocale(""));
+		assertEquals(Locale.ENGLISH, IpsProjectProperties.getLocale(Locale.ENGLISH.toString()));
+		assertEquals(Locale.GERMANY, IpsProjectProperties.getLocale(Locale.GERMANY.toString()));
+		assertEquals(new Locale("de", "DE", "variantA"), IpsProjectProperties.getLocale("de_DE_variantA"));
+		
 	}
 
 }
