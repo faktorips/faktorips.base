@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -21,6 +25,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -167,15 +172,39 @@ public class ProductAttributesSection extends IpsSection {
 	 * Creates a new label and input for the given config element and links the input with the config element.
 	 */
 	private void addAndRegister(IConfigElement toDisplay) {
-		toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));		
-		Text text = toolkit.createText(rootPane);
-		editControls.add(text);
+		toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));	
+		
+		IpsPartUIController controller = new IpsPartUIController(toDisplay);
+		uiMasterController.add(controller);
+
+		try {
+			if (toDisplay.findPcTypeAttribute().findDatatype().equals(Datatype.BOOLEAN)) {
+				Combo combo = toolkit.createCombo(rootPane);
+				combo.add("true");
+				combo.add("false");
+				combo.add(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+				ComboField field = new ComboField(combo);
+				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+			}
+			else if (toDisplay.findPcTypeAttribute().findDatatype().equals(Datatype.PRIMITIVE_BOOLEAN)) {
+				Combo combo = toolkit.createCombo(rootPane);
+				combo.add("true");
+				combo.add("false");
+				ComboField field = new ComboField(combo);
+				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+			}
+			else {
+				Text text = toolkit.createText(rootPane);
+				editControls.add(text);
+				controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);		
+			}
+		} catch (CoreException e) {
+			Text text = toolkit.createText(rootPane);
+			editControls.add(text);
+			controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);		
+		}
 		
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
-
-		IpsPartUIController controller = new IpsPartUIController(toDisplay);
-		controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);		
-		uiMasterController.add(controller);
 	}
 }

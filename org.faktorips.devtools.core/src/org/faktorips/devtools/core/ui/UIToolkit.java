@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -334,21 +336,19 @@ public class UIToolkit {
     public DatatypeRefControl createDatatypeRefEdit(IIpsProject project, Composite parent) {
         return new DatatypeRefControl(project, parent, this);
     }
-    
+
+    /**
+     * Creates a new Combo-Box. Note that the FormToolkit does not support Combos, so the appearence of
+     * this Combo-Box is NOT similar to the oter FormToolkit-Controls.
+     */
     public Combo createCombo(Composite parent) {
-        if (formToolkit!=null) {
-            Combo newCombo = new Combo(parent, SWT.READ_ONLY);
-            newCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END));
-            return newCombo;
-        }
         Combo newCombo = new Combo(parent, SWT.READ_ONLY);
         newCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END));
         return newCombo;
     }
     
     public Combo createCombo(Composite parent, EnumType type) {
-        Combo newCombo = new Combo(parent, SWT.READ_ONLY);
-        newCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END));
+        Combo newCombo = createCombo(parent);
         String[] names = new String[type.getNumOfValues()];
         EnumValue[] values = type.getValues();
         for (int i=0; i<values.length; i++) {
@@ -358,7 +358,25 @@ public class UIToolkit {
         return newCombo;
     }
     
-    public Group createGroup(Composite parent, String text) {
+	public Combo createCombo(Composite parent, EnumDatatype enumValues) {
+		Combo newCombo = createCombo(parent);
+		newCombo.setItems(enumValues.getAllValueIds());
+		return newCombo;
+	}
+
+	public Combo createCombo(Composite parent, EnumValueSet enumValues) {
+		Combo newCombo = createCombo(parent);
+		
+		String[] values = new String[enumValues.getNumOfValues()];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = enumValues.getValue(i);
+		}
+		
+		newCombo.setItems(values);
+		return newCombo;
+	}
+
+	public Group createGroup(Composite parent, String text) {
         return createGroup(parent, SWT.NONE, text);
     }
     
@@ -402,4 +420,5 @@ public class UIToolkit {
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         return line;
     }
+
 }
