@@ -66,7 +66,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	 */
 	public final static String[] ANNOTATION_MODIFIABLE = new String[] { "modifiable" };
 
-	private final static String JAVA_EXTENSION = ".java";
+	final protected static String JAVA_EXTENSION = ".java";
 
 	private boolean mergeEnabled;
 
