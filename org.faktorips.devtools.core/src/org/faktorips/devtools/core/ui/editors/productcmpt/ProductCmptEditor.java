@@ -15,6 +15,7 @@ import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -230,7 +231,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * Triggers a refresh for sturcturals changes. 
      */
     private void refreshStructure() {
-		this.propertiesPage.refreshStructure();
+    	if (this.propertiesPage != null) {
+    		this.propertiesPage.refreshStructure();
+    	}
 	}
 
     /**
@@ -302,7 +305,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     	else {
 			this.setTitleImage(disabledImage);
     	}
-		propertiesPage.setEnabled(enabled);
+    	if (propertiesPage != null) {
+    		propertiesPage.setEnabled(enabled);
+    	}
     }
             
     /**
@@ -319,5 +324,24 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 		}
     	
-    }    
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setActiveGeneration(IIpsObjectGeneration generation) {
+    	if (generation == null) {
+    		return;
+    	}
+    	
+    	if (getActiveGeneration() != null && getActiveGeneration().equals(generation)) {
+    		return;
+    	}
+
+    	super.setActiveGeneration(generation);
+		IProductCmpt prod = getProductCmpt();
+		IProductCmptGeneration editableGeneration  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
+    	refreshStructure();
+	    setPropertiesEnabled(generation.equals(editableGeneration));
+    }
 }

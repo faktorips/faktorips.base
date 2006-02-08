@@ -21,7 +21,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	/**
 	 * Id to identify the page.
 	 */
-    private final static String PAGE_ID = "Properties"; //$NON-NLS-1$
+    public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
 
     // Sections for different property-groups
     private ProductAttributesSection productAttributesSection;

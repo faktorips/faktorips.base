@@ -312,6 +312,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
             IIpsObjectPart part = getSelectedPart();
             Memento memento = part.newMemento();
             EditDialog dialog = createEditDialog(part, getShell());
+            if (dialog == null) {
+            	return;
+            }
             dialog.open();
             if (dialog.getReturnCode()==Window.CANCEL) {
                 part.setState(memento);

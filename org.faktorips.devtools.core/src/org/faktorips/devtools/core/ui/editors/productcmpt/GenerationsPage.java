@@ -25,23 +25,29 @@ public class GenerationsPage extends IpsObjectEditorPage {
         super(editor, PAGE_ID, IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()));
     }
 
-    private ProductCmptEditor getProductCmptEditor() {
+    /**
+     * Get owning editor.ü
+     */
+    ProductCmptEditor getProductCmptEditor() {
         return (ProductCmptEditor)getEditor();
     }
-    
-    private IProductCmpt getProductCmpt() {
+
+    /**
+     * Get Product which is parent of the generations
+     */
+    IProductCmpt getProductCmpt() {
         return getProductCmptEditor().getProductCmpt(); 
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		GridLayout layout = new GridLayout(2, true);
 		formBody.setLayout(layout);
 		
 		final GenerationsSection generationsSection 
-			= new GenerationsSection(getProductCmpt(), formBody, toolkit);
+			= new GenerationsSection(this, formBody, toolkit);
 		final DescriptionSection descSection = new DescriptionSection(getProductCmpt(), formBody, toolkit);
 		generationsSection.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -51,14 +57,4 @@ public class GenerationsPage extends IpsObjectEditorPage {
 		    
 		});
     }
-    
-    /** 
-     * Overridden.
-     */
-    protected void refresh() {
-        super.refresh();
-    }
-    
-    
-
 }
