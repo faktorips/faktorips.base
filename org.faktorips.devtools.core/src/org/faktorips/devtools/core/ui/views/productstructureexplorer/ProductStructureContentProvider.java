@@ -7,7 +7,6 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -193,47 +192,5 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 		
 		Node[] result = new Node[children.size()];
 		return (Node[])children.toArray(result);
-    }
-
-	/**
-	 * Class to allow the content provider to evaluate the structure of the data to display once and
-	 * cache this information using this class.
-	 * 
-	 * @author Thorsten Guenther
-	 */
-    protected class Node {
-    	private Node[] children;
-    	private Node parent;
-    	private IIpsElement wrapped;
-    	
-    	public Node(IIpsElement wrapped, Node parent) {
-    		this.parent = parent;
-    		this.wrapped = wrapped;
-    	}
-    	
-    	public Node getParent() {
-    		return parent;
-    	}
-    	
-    	public Node[] getChildren() {
-    		return children;
-    	}
-    	
-    	public void setChildren(Node[] children) {
-    		this.children = children;
-    	}
-    	
-    	public IIpsElement getWrappedElement() {
-    		return wrapped;
-    	}
-    	
-    	public Image getImage() {
-    		return wrapped.getImage();
-    	}
-    	
-    	public String getText() {
-    		return wrapped.getName();
-    	}
-    }
-    
+    }   
 }

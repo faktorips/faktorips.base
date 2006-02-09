@@ -86,6 +86,16 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IProductCmptRelation newRelation(String relation);
     
     /**
+     * Creates a new relation. The relation is placed before the given one.
+     */
+    public IProductCmptRelation newRelation(String relation, IProductCmptRelation insertBefore);
+    
+    /**
+     * Moves the first given relation in front of the second one.
+     */
+    public void moveRelation(IProductCmptRelation toMove, IProductCmptRelation moveBefore);
+
+    /**
      * Returns the Java type that correspond to this product component generation and is of the indicated kind.
      * If this generation contains no formula config element, the implementation class returned by the 
      * corresponding policy component type's getJavaMethod(IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE) is

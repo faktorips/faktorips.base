@@ -12,6 +12,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -183,8 +184,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
         			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
         			Text step = toolkit.createText(rootPane);
-        			field = new TextField(text);
-        			this.editControls.add(text);
+        			this.editControls.add(step);
         			
         			if (valueSet.isAllValues()) {
         				new RangeChangedListener(upper, lower, step, elements[i], controller);
@@ -220,7 +220,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 		
 		// to get the disabled look, we have to disable all the input-fields manually :-(
 		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
-			Text element = (Text) iter.next();
+			Control element = (Control) iter.next();
 			element.setEnabled(enabled);
 			
 		}

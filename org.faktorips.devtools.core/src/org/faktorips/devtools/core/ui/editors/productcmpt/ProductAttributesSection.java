@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -160,7 +161,7 @@ public class ProductAttributesSection extends IpsSection {
 		
 		// to get the disabled look, we have to disable all the input-fields manually :-(
 		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
-			Text element = (Text) iter.next();
+			Control element = (Control) iter.next();
 			element.setEnabled(enabled);
 			
 		}
@@ -185,6 +186,7 @@ public class ProductAttributesSection extends IpsSection {
 				combo.add(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				editControls.add(combo);
 			}
 			else if (toDisplay.findPcTypeAttribute().findDatatype().equals(Datatype.PRIMITIVE_BOOLEAN)) {
 				Combo combo = toolkit.createCombo(rootPane);
@@ -192,6 +194,7 @@ public class ProductAttributesSection extends IpsSection {
 				combo.add("false");
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				editControls.add(combo);
 			}
 			else {
 				Text text = toolkit.createText(rootPane);

@@ -7,11 +7,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -102,7 +105,8 @@ public class RelationsSection extends IpsSection {
 			treeViewer.setLabelProvider(new RelationsLabelProvider());
 			treeViewer.setInput(generation);
 			treeViewer.addSelectionChangedListener(new SelectionChangedListener());
-			treeViewer.addDropSupport(DND.DROP_LINK, new Transfer[] {TextTransfer.getInstance()}, new DropListener());
+			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()}, new DropListener());
+			treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()}, new DragListener(treeViewer));
 			treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
 			treeViewer.expandAll();
 
@@ -212,6 +216,13 @@ public class RelationsSection extends IpsSection {
     	generation.newRelation(relation.getName()).setTarget(target);
     }
 
+    /**
+     * Creates a new relation which connects the currently displayed generation with the given target. The
+     * new relation is placed before the the given one.
+     */
+    private void newRelation(String target, IProductCmptTypeRelation relation, IProductCmptRelation insertBefore) {
+    	generation.newRelation(relation.getName(), insertBefore).setTarget(target);
+    }
     
     /**
      * Listener for updating the kardinality triggerd by the selection of another relation.
@@ -225,19 +236,24 @@ public class RelationsSection extends IpsSection {
 				IProductCmptRelation rel = (IProductCmptRelation) selected;
 
 				if (rel.isDeleted()) {
+		    		uiController.remove(kardMinField);
+		    		uiController.remove(kardMaxField);
+					kardMin.setEnabled(false);
+					kardMax.setEnabled(false);
 					return;
 				}
-				
-				if (uiController == null || !uiController.getIpsObjectPart().equals(rel)) {
+
+				if (uiController != null) {
+					uiController.remove(kardMinField);
+					uiController.remove(kardMaxField);
+				}
+
+	    		if (uiController == null || !uiController.getIpsObjectPart().equals(rel)) {
 		    		uiController = new IpsPartUIController(rel);
 				}
 				
 				kardMin.setEnabled(true);
-				kardMax.setEnabled(true);
-
-	    		uiController.remove(kardMinField);
-	    		uiController.remove(kardMaxField);
-	    		
+				kardMax.setEnabled(true);	    		
 
 	    		kardMinField = new IntegerField(kardMin);
 	    		kardMaxField = new TextField(kardMax);
@@ -254,6 +270,7 @@ public class RelationsSection extends IpsSection {
 		}
     }
     
+    private IProductCmptRelation toMove;
     /**
      * Listener for Drop-Actions to create new relations.
      * 
@@ -262,9 +279,10 @@ public class RelationsSection extends IpsSection {
     private class DropListener implements DropTargetListener {
 
 		public void dragEnter(DropTargetEvent event) {
-			event.detail = DND.DROP_LINK;
+			if (event.detail == 0) {
+				event.detail = DND.DROP_LINK;
+			}
 			event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
-			
 		}
 
 		public void dragLeave(DropTargetEvent event) {
@@ -280,40 +298,81 @@ public class RelationsSection extends IpsSection {
 		}
 
 		public void drop(DropTargetEvent event) {
+			Object insertAt = null;
 			if (event.item != null && event.item.getData() != null) {
-				Object dropAt = event.item.getData();
-				
-				try {
-					if (dropAt instanceof IProductCmptTypeRelation) {
-						newRelation((String)event.data, ((IProductCmptTypeRelation)dropAt));
-					}
-					else if (dropAt instanceof IProductCmptRelation) {
-						newRelation((String)event.data, ((IProductCmptRelation)dropAt).findProductCmptTypeRelation());
-					}
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
+				insertAt = event.item.getData();
+			}
+			else {
+				// event happened on the treeview, but not targeted at an entry
+				Object[] items = treeViewer.getVisibleExpandedElements();
+				if (items.length > 0) {
+					insertAt = items[items.length-1];
 				}
+			}
 
+			// found no relation or relationtype which gives us the information about
+			// the position of the insert, so dont drop.
+			if (insertAt == null) {
+				return;
+			}
+			
+			if (event.operations == DND.DROP_MOVE) {
+				move(insertAt);
+			}
+			else {
+				insert((String)event.data, insertAt);
 			}
 		}
 
 		public void dropAccept(DropTargetEvent event) {
-			event.detail = DND.DROP_LINK;
-			
+			//nothing to do
 		}    	
-    }
-
-	public void setActiveGeneration(IProductCmptGeneration generation) {
-		if (this.generation.equals(generation)) {
-			return;
+		
+		private void move(Object insertBefore) {
+			if (insertBefore instanceof IProductCmptRelation) {
+				generation.moveRelation(toMove, (IProductCmptRelation)insertBefore);
+			}
 		}
 		
-		if (generation instanceof IProductCmptGeneration) {
-			this.generation = (IProductCmptGeneration)generation;
-			fGenerationDirty = true;
-			performRefresh();
+		private void insert(String target, Object type) {
+			try {
+				if (type instanceof IProductCmptTypeRelation) {
+					newRelation(target, ((IProductCmptTypeRelation)type));
+				}
+				else if (type instanceof IProductCmptRelation) {
+					newRelation(target, ((IProductCmptRelation)type).findProductCmptTypeRelation(), (IProductCmptRelation)type);
+					}
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+			
 		}
-	}
+    }
+    
+    private class DragListener implements DragSourceListener {
+    	ISelectionProvider selectionProvider;
+    	
+    	public DragListener(ISelectionProvider selectionProvider) {
+    		this.selectionProvider = selectionProvider;
+    	}
+    	
+		public void dragStart(DragSourceEvent event) {
+			Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
+			event.doit = selected instanceof IProductCmptRelation;
+		}
 
+		public void dragSetData(DragSourceEvent event) {
+	        Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
+	        if (selected instanceof IProductCmptRelation) {
+	        	toMove = (IProductCmptRelation)selected;
+	        	event.data = "local";
+	        }
+		}
+
+		public void dragFinished(DragSourceEvent event) {
+			toMove = null;
+		}
+    	
+    }
 }
 

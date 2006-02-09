@@ -5,12 +5,8 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.pctype.Relation;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeRelation;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -61,8 +57,10 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
 
      */
     public void delete() {
+    	if (deleted) {
+    		return;
+    	}
         ((ProductCmptGeneration)getParent()).removeRelation(this);
-        System.out.println("Relation: " + this);
         parent = null;
         deleted = true;
     }

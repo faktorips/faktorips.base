@@ -33,7 +33,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         IProductCmptGeneration {
 
     private List configElements = new ArrayList(0);
-    private List relations = new ArrayList(0);
+    private ArrayList relations = new ArrayList(0);
 
     public ProductCmptGeneration(ITimedIpsObject ipsObject, int id) {
         super(ipsObject, id);
@@ -238,17 +238,54 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         return newRelation;
     }
     
+    public IProductCmptRelation newRelation(String pcTypeRelation, IProductCmptRelation insertBefore) {
+        ProductCmptRelation newRelation = newRelationInternal(getNextPartId(), insertBefore);
+        newRelation.setProductCmptTypeRelation(pcTypeRelation);
+        updateSrcFile();
+        return newRelation;
+    }
+
     public IProductCmptRelation newRelation() {
     	return newRelationInternal(getNextPartId());
     }
 
-    private ProductCmptRelation newRelationInternal(int id) {
+    private ProductCmptRelation newRelationInternal(int id, IProductCmptRelation insertBefore) {
         ProductCmptRelation newRelation = new ProductCmptRelation(this, id);
-        relations.add(newRelation);
+        if (insertBefore == null) {
+        	relations.add(newRelation);
+        }
+        else {
+        	int index = relations.indexOf(insertBefore);
+        	if (index == -1) {
+        		relations.add(newRelation);
+        	}
+        	else {
+        		relations.add(index, newRelation);
+        	}
+        }
         return newRelation;
     }
 
-    void removeRelation(ProductCmptRelation relation) {
+    private ProductCmptRelation newRelationInternal(int id) {
+        return newRelationInternal(id, null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void moveRelation(IProductCmptRelation toMove, IProductCmptRelation moveBefore) {
+    	relations.remove(toMove);
+    	int index = relations.indexOf(moveBefore);
+    	if (index == -1) {
+    		relations.add(toMove);
+    	}
+    	else {
+    		relations.add(index, toMove);
+    	}
+        updateSrcFile();
+	}
+
+	void removeRelation(ProductCmptRelation relation) {
         relations.remove(relation);
         updateSrcFile();
     }

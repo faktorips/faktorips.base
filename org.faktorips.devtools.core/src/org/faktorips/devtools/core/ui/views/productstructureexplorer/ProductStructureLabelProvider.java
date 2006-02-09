@@ -7,7 +7,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider.Node;
 
 public class ProductStructureLabelProvider implements ILabelProvider {
 
