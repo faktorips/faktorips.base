@@ -176,7 +176,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     	else {
 	        String s = element.getAttribute(PROPERTY_ID);
 	        if (!StringUtils.isEmpty(s)) {
-	            id = Integer.parseInt(s);
+	            this.id = Integer.parseInt(s);
 	        } // else keep the id set in the constructor. migration for old files without id!
     	}
     	description = DescriptionHelper.getDescription(element);

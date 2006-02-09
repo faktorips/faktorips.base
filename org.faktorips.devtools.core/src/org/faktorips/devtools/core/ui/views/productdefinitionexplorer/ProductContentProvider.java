@@ -116,13 +116,14 @@ public class ProductContentProvider implements ITreeContentProvider {
             parent = ((IIpsElement)element).getParent(); 
         }
 
-        // ignore root, srcfiles and default-package
-        if (parent instanceof IIpsPackageFragmentRoot || parent instanceof IIpsSrcFile || ((IIpsPackageFragment)parent).isDefaultPacakge()) {
-            // For the department, we don't show IpsPackageFragmentRoots (children of IpsProject) and
-            // IpsObjects (children of IpsSrcFile).
-            parent = parent.getParent();
+        if (parent != null) {
+	        // ignore root, srcfiles and default-package
+	        if (parent instanceof IIpsPackageFragmentRoot || parent instanceof IIpsSrcFile || (parent instanceof IIpsPackageFragment && ((IIpsPackageFragment)parent).isDefaultPacakge())) {
+	            // For the department, we don't show IpsPackageFragmentRoots (children of IpsProject) and
+	            // IpsObjects (children of IpsSrcFile).
+	            parent = parent.getParent();
+	        }
         }
-
         return parent;
     }
 
