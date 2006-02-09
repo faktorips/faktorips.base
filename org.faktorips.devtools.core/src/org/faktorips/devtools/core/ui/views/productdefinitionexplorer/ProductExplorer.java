@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsCutAction;
+import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
@@ -102,6 +103,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         menumanager.add(ActionFactory.COPY.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(ActionFactory.PASTE.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(ActionFactory.DELETE.create(this.getSite().getWorkbenchWindow()));
+        menumanager.add(new IpsDeepCopyAction(this.getSite().getShell(), tree));
         menumanager.add(new Separator());
         menumanager.add(new ShowStructureAction());
         menumanager.add(new FindReferenceAction());

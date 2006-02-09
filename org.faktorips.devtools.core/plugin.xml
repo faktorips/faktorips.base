@@ -307,12 +307,14 @@
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.ProductExplorer"
+            icon="icons/ProductDefinitionExplorer.gif"
             id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
             name="%org.faktorips.devtools.core.ui.views.productDefinitionExplorer"/>
       <view
             allowMultiple="true"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer"
+            icon="icons/ProductStructureExplorer.gif"
             id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
             name="%org.faktorips.devtools.core.ui.views.productStructureExplorer"/>
       <category

@@ -48,7 +48,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
 	public void createPartControl(Composite parent) {
 		tree = new TreeViewer(parent);
-		tree.setContentProvider(new StructureContentProvider());
+		tree.setContentProvider(new ProductStructureContentProvider(false));
 
         ProductStructureLabelProvider labelProvider = new ProductStructureLabelProvider();
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));

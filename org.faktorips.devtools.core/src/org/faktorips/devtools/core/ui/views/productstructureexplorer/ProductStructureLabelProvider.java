@@ -7,47 +7,59 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider.Node;
 
 public class ProductStructureLabelProvider implements ILabelProvider {
 
 	private List listeners = new ArrayList();
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void addListener(ILabelProviderListener listener) {
 		listeners.add(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void dispose() {
 		this.listeners = null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isLabelProperty(Object element, String property) {
 		return true; 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void removeListener(ILabelProviderListener listener) {
 		listeners.remove(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Image getImage(Object element) {
-        if (element instanceof DummyRoot) {
-            return ((DummyRoot)element).data.getImage();
+        if (element instanceof Node) {
+            return ((Node)element).getImage();
         } 
-        else if (element instanceof IIpsElement) {
-			return ((IIpsElement)element).getImage();
-		}
 		else {
 		    return IpsPlugin.getDefault().getImage(Messages.ProductStructureLabelProvider_undefined);
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getText(Object element) {
-        if (element instanceof DummyRoot) {
-            return ((DummyRoot)element).data.getName();
+        if (element instanceof Node) {
+            return ((Node)element).getText();
         } 
-        else if (element instanceof IIpsElement) {
-			return ((IIpsElement)element).getName();
-		}
 		else {
 		    return Messages.ProductStructureLabelProvider_undefined;
 		}
