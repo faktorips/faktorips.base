@@ -96,7 +96,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         } else {
             initialValueExpression.append("null");
         }
-        String comment = getPolicyCmptTypeImplBuilder().getLocalizedText(RELATION_FIELD_COMMENT,
+        String comment = getPolicyCmptTypeImplBuilder().getLocalizedText(relation, RELATION_FIELD_COMMENT,
             relation.getName());
         methodsBuilder.javaDoc(comment,
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -143,7 +143,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             synchronizeReverseRelation(fieldname, relation, reverseRelation, body);
         }
 
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(
+        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation, 
             RELATION_IMPLEMENTATION_ADD_JAVADOC, relation.getTargetRoleSingular());
 
         methodsBuilder.method(
@@ -182,7 +182,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             body.append(".contains(refObject);");
         }
 
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(
+        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation,
             RELATION_IMPLEMENTATION_CONTAINS_JAVADOC, relation.getTargetRolePlural());
 
         methodsBuilder.method(
@@ -209,7 +209,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         } else {
             code = getContainerRelationGetAllMethodBody(relation, classname, subRelations);
         }
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(
+        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation,
             RELATION_IMPLEMENTATION_GETALL_JAVADOC, relation.getTargetRoleSingular());
 
         methodsBuilder.method(Modifier.PUBLIC, classname + "[]",
@@ -239,7 +239,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         } else {
             body = getContainerRelationGetNumOfMethodBody(relation, subRelations);
         }
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(
+        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation, 
             RELATION_IMPLEMENTATION_NUMOF_JAVADOC, relation.getTargetRoleSingular());
 
         methodsBuilder.method(Modifier.PUBLIC,
@@ -267,7 +267,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         } else {
             body = getContainerRelationGetterMethodBody(relation, subRelations);
         }
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(
+        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation, 
             RELATION_IMPLEMENTATION_GETTER_JAVADOC, relation.getTargetRoleSingular());
 
         methodsBuilder.method(Modifier.PUBLIC, classname, methodName,
@@ -311,7 +311,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         }
         body.append('}');
 
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(
+        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation, 
             RELATION_IMPLEMENTATION_REMOVE_JAVADOC, relation.getTargetRoleSingular());
 
         methodsBuilder.method(
@@ -367,7 +367,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             synchronizeReverseRelation(fieldname, relation, reverseRelation, body);
         }
 
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(
+        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation,
             RELATION_IMPLEMENTATION_SETTER_JAVADOC, relation.getTargetRoleSingular());
 
         methodsBuilder.method(Modifier.PUBLIC,

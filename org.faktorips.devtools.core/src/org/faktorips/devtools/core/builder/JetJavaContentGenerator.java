@@ -112,8 +112,8 @@ public abstract class JetJavaContentGenerator {
      * @param key the key that identifies the requested text
      * @return the requested text
      */
-    public String getLocalizedText(String key) {
-        return getJavaSourceFileBuilder().getLocalizedText(key);
+    public String getLocalizedText(IIpsSrcFile file, String key) {
+        return getJavaSourceFileBuilder().getLocalizedText(file, key);
     }
 
     /**
@@ -125,8 +125,8 @@ public abstract class JetJavaContentGenerator {
      *            representation of this value
      * @return the requested text
      */
-    public String getLocalizedText(String key, Object replacement) {
-        return getJavaSourceFileBuilder().getLocalizedText(key, replacement);
+    public String getLocalizedText(IIpsSrcFile file, String key, Object replacement) {
+        return getJavaSourceFileBuilder().getLocalizedText(file, key, replacement);
     }
 
     /**

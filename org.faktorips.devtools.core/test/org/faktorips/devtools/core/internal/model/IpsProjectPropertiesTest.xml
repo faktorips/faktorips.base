@@ -2,6 +2,7 @@
 
 <IpsProject modelProject="true" productDefinitionProject="true" javaSrcLanguage="it"> 
 	<IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset"/>	
+	<GeneratedSourcecode docLanguage="it" changesInTimeNamingConvention="myConvention"/>
 	<IpsObjectPath outputDefinedPerSrcFolder="true" outputFolder="" basePackage="">
 		<Entry type="src" sourceFolder="ips-src" 
 			outputFolderGenerated="java-gen" basePackageGenerated="org.faktorips.sample.model"

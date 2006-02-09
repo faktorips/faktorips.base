@@ -1,34 +1,27 @@
 package org.faktorips.devtools.core.internal.model;
 
-import java.io.ByteArrayInputStream;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.values.Decimal;
 
 
 /**
@@ -224,49 +217,6 @@ public class IpsProjectTest extends IpsPluginTest {
         assertEquals(product0, result[0]);
         assertEquals(product1, result[1]);
         assertEquals(product2, result[2]);
-    }
-    
-    public void testFindIpsSrcFile() throws CoreException {
-        IJavaProject javaProject = ipsProject.getJavaProject();
-        IPackageFragmentRoot javaRoot = root.getJavaPackageFragmentRoot(IIpsPackageFragmentRoot.JAVA_ROOT_GENERATED_CODE);
-        
-        IIpsPackageFragment ipsPack = root.getIpsPackageFragment("motor.coverages");
-        IPackageFragment interfacePack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE);
-        ICompilationUnit interfaceCu = interfacePack.getCompilationUnit("CollisionCoverage.java");
-        IPackageFragment implementationPack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-        ICompilationUnit implementationCu = implementationPack.getCompilationUnit("CollisionCoverageImpl.java");
-        
-        // published interface in correct package
-        IIpsSrcFile file = ipsProject.findIpsSrcFile(interfaceCu);
-        String expectedFileName = IpsObjectType.POLICY_CMPT_TYPE.getFileName("CollisionCoverage");  
-        assertNotNull(file);
-        assertEquals(expectedFileName, file.getName());
-        assertEquals("motor.coverages", file.getIpsPackageFragment().getName());
-        
-        // published interface in wrong package
-        interfaceCu = implementationPack.getCompilationUnit("CollisionCoverage.java");
-        file = ipsProject.findIpsSrcFile(interfaceCu);
-        assertNull(file);
-        
-        // implementation class in correct package
-        file = ipsProject.findIpsSrcFile(implementationCu);
-        assertNotNull(file);
-        assertEquals(expectedFileName, file.getName());
-        assertEquals("motor.coverages", file.getIpsPackageFragment().getName());
-        
-        // implementation class in wrong package
-        implementationCu = interfacePack.getCompilationUnit("CollisionCoverageImpl.java");
-        file = ipsProject.findIpsSrcFile(implementationCu);
-        assertNotNull(file); // there is no way to find out that CollisionCoverageImpl is
-        					 // not a ips object (unless we prohibit ips names ending with Impl). 
-        
-        // Java package fragment root does not correspond to the ips root.
-        javaRoot = javaProject.getPackageFragmentRoot("test.jar");
-        interfacePack = javaRoot.getPackageFragment("motor.coverages");
-        interfaceCu = interfacePack.getCompilationUnit("CollisionCoverage.java");
-        
-        file = ipsProject.findIpsSrcFile(interfaceCu);
-        assertNull(file);
     }
     
     public void testSetIpsObjectPath() throws CoreException {

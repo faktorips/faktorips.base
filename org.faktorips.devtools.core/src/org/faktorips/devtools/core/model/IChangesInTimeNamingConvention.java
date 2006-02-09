@@ -31,14 +31,24 @@ import java.util.Locale;
 public interface IChangesInTimeNamingConvention {
 	
 	/**
+	 * The id of the VAA naming convention.
+	 */
+	public final static String VAA = "VAA";
+	
+	/**
+	 * The id of the product-manager naming convention.
+	 */
+	public final static String PM = "PM";
+
+	/**
 	 * Returns the conventions' identification.
 	 */
 	public String getId();
 	
 	/**
-	 * Returns the conventions' name, used to present it itself to the user.
+	 * Returns the conventions' name, used to present it to the user.
 	 */
-	public String getName();
+	public String getName(Locale locale);
 
 	/**
 	 * Returns the name for the generation concept in singular.
@@ -87,5 +97,11 @@ public interface IChangesInTimeNamingConvention {
 	 * the abbreivation should be returned.
 	 */
 	public String getVersionConceptNameAbbreviation(Locale locale);
+	
+	/**
+	 * Returns the name for the effective date concept. E.g. in some
+	 * cases this might be called validFrom.
+	 */
+	public String getEffectiveDateConceptName(Locale locale);
 
 }

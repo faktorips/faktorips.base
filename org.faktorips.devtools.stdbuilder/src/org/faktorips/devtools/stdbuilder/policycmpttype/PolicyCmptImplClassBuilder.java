@@ -230,7 +230,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilders) throws CoreException {
         
         JavaCodeFragment initialValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
-        String comment = getLocalizedText(ATTRIBUTE_FIELD_COMMENT, a.getName());
+        String comment = getLocalizedText(a, ATTRIBUTE_FIELD_COMMENT, a.getName());
         String fieldName = getMemberVarNameForAttribute(a);
 
         memberVarsBuilders.javaDoc(comment, ANNOTATION_GENERATED);
@@ -286,7 +286,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             body.append(";");
         }
 
-        String javaDoc = getLocalizedText(ATTRIBUTE_DERIVED_GETTER_JAVADOC, a.getName());
+        String javaDoc = getLocalizedText(a, ATTRIBUTE_DERIVED_GETTER_JAVADOC, a.getName());
         builder.method(Util.getJavaModifier(a.getModifier()), datatypeHelper.getJavaClassName(),
             getPcInterfaceGetValueMethodName(a), new String[0], new String[0], body, javaDoc,
             ANNOTATION_MODIFIABLE);
@@ -461,7 +461,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
 
-        String javaDoc = getLocalizedText(VALIDATEDEPS_IMPLEMENTATION_JAVADOC, getPcType()
+        String javaDoc = getLocalizedText(getPcType(), VALIDATEDEPS_IMPLEMENTATION_JAVADOC, getPcType()
                 .getName());
 
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
@@ -477,7 +477,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         // TODO Methodenname von pcType holen
         String methodName = "validateSelf";
-        String javaDoc = getLocalizedText(VALIDATESELF_IMPLEMENTATION_JAVADOC, getPcType()
+        String javaDoc = getLocalizedText(getIpsObject(), VALIDATESELF_IMPLEMENTATION_JAVADOC, getPcType()
                 .getName());
 
         JavaCodeFragment body = new JavaCodeFragment();
@@ -550,7 +550,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
             String methodName = "createMessageForRule" + StringUtils.capitalise(r.getName());
 
-            String javaDoc = getLocalizedText(CREATEMESSAGEFOR_POLICY_JAVADOC, r.getName());
+            String javaDoc = getLocalizedText(r, CREATEMESSAGEFOR_POLICY_JAVADOC, r.getName());
 
             builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
                 methodName, paramNameList, paramTypeList, body, javaDoc, ANNOTATION_GENERATED);
@@ -571,7 +571,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
          * Beispiel: public MotorPolicy(MotorPolicyPk pc) { super(pc); ... } ... steht fuer
          * Initialisierung von produktrelevanten, aenderbaren Attributen
          */
-        String javaDoc = getLocalizedText(CONSTRUCTOR_POLICY_JAVADOC, getUnqualifiedClassName());
+        String javaDoc = getLocalizedText(getIpsObject(), CONSTRUCTOR_POLICY_JAVADOC, getUnqualifiedClassName());
         JavaCodeFragment fragment = new JavaCodeFragment();
         String[] paramTypes, paramNames;
         if (!isParamListEmpty) {
@@ -592,7 +592,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     private void createInitMethod(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText(INITIALIZE_JAVADOC);
+        String javaDoc = getLocalizedText(getIpsObject(), INITIALIZE_JAVADOC);
         JavaCodeFragment fragment = new JavaCodeFragment();
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             fragment.append("super.initialize();");
@@ -727,7 +727,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
-            String javaDoc = getLocalizedText(EXECMESSAGE_POLICY_JAVADOC, r.getName());
+            String javaDoc = getLocalizedText(getIpsObject(), EXECMESSAGE_POLICY_JAVADOC, r.getName());
             JavaCodeFragment body = new JavaCodeFragment();
             body.append("if(false) ");
             body.appendOpenBracket();
@@ -858,7 +858,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
             initialValueExpression.append(" }");
         }
-        String comment = getLocalizedText(ATTRIBUTE_FIELD_COMMENT, a.getName());
+        String comment = getLocalizedText(a, ATTRIBUTE_FIELD_COMMENT, a.getName());
 
         builder.javaDoc(comment, ANNOTATION_GENERATED);
         builder.varDeclaration(java.lang.reflect.Modifier.PROTECTED
@@ -898,8 +898,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.append("return ");
         body.append(methodNameMax);
         body.append("();");
-        String javaDocMax = getLocalizedText(JAVA_GETTER_METHOD_MAX_VALUESET, a.getName());
-        String javaDoc = getLocalizedText(JAVA_GETTER_METHOD_VALUESET, a.getName());
+        String javaDocMax = getLocalizedText(a, JAVA_GETTER_METHOD_MAX_VALUESET, a.getName());
+        String javaDoc = getLocalizedText(a, JAVA_GETTER_METHOD_VALUESET, a.getName());
 
         if (a.getValueSet().isRange()) {
 

@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -54,48 +55,6 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText("JAVADOC_INTERFACE", new String[]{getProductCmptType().getName()});
-        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        
-        generateSignatureGetGeneration(methodsBuilder);
-        methodsBuilder.append(';');
-        generateSignatureCreatePolicyCmpt(methodsBuilder);
-        methodsBuilder.append(';');
-    }
-    
-    void generateSignatureGetGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String generationConceptName = getChangesInTimeNamingConvention().
-        getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
-        String javaDoc = getLocalizedText("JAVADOC_GET_GENERATION_METHOD", generationConceptName);
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        String generationInterface = productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile());
-        String methodName = getLocalizedText("GET_GENERATION_METHOD", generationConceptName);
-        String paramName = getGetGenerationEffectiveDateParamName();
-        methodsBuilder.signature(Modifier.PUBLIC, generationInterface, methodName, new String[]{paramName}, new String[]{Calendar.class.getName()});
-    }
-
-    String getGetGenerationEffectiveDateParamName() {
-        return getLocalizedText("GET_GENERATION_METHOD_EEFECTIVEDATE_PARAM");
-    }
-    
-    void generateSignatureCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String returnType =policyCmptTypeInterfaceBuilder.getQualifiedClassName(getIpsSrcFile());
-        String methodName = "create" + policyCmptTypeInterfaceBuilder.getConceptName(getIpsSrcFile());
-        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, 
-                new String[]{"effectiveDate"}, new String[]{Calendar.class.getName()});
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     protected boolean generatesInterface() {
         return true;
     }
@@ -126,6 +85,83 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
         return new String[] { javaSupertype };
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("INTERFACE", getConceptName(getIpsSrcFile()), getIpsObject(), builder);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        
+        generateMethodGetGeneration(methodsBuilder);
+        generateMethodCreatePolicyCmpt(methodsBuilder);
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [javadoc]
+     * public IProductGen getGeneration(Calendar effectiveDate);
+     * </pre>
+     */
+    private void generateMethodGetGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        IChangesInTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
+        String generationConceptName = convention.getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
+        appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
+        generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
+        methodsBuilder.append(';');
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * public IProductGen getGeneration(Calendar effectiveDate)
+     * </pre>
+     */
+    void generateSignatureGetGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String generationConceptName = getChangesInTimeNamingConvention(type).
+            getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(type));
+        String generationInterface = productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile());
+        String methodName = getLocalizedText(type, "METHOD_GET_GENERATION_NAME", generationConceptName);
+        String paramName = getVarNameEffectiveDate(type);
+        methodsBuilder.signature(Modifier.PUBLIC, generationInterface, methodName, new String[]{paramName}, new String[]{Calendar.class.getName()});
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [javadoc]
+     * public IPolicy createPolicy(Calendar effectiveDate);
+     * </pre>
+     */
+    private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getConceptName(getIpsSrcFile()); 
+        IChangesInTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
+        String effectiveDateConceptName = convention.getEffectiveDateConceptName(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
+        appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptConceptName, effectiveDateConceptName}, getIpsObject(), methodsBuilder);
+        generateSignatureCreatePolicyCmpt(getIpsSrcFile(), methodsBuilder);
+        methodsBuilder.append(';');
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * public IPolicy createPolicy(Calendar effectiveDate)
+     * </pre>
+     */
+    void generateSignatureCreatePolicyCmpt(IIpsSrcFile ipsSrcFile, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getConceptName(ipsSrcFile); 
+        String returnType =policyCmptTypeInterfaceBuilder.getQualifiedClassName(ipsSrcFile);
+        String methodName = getLocalizedText(ipsSrcFile, "METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
+        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, 
+                new String[]{getVarNameEffectiveDate(ipsSrcFile)}, new String[]{Calendar.class.getName()});
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -163,7 +199,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
-        // TODO Auto-generated method stub
+        //  nothing to do
 
     }
 
@@ -171,7 +207,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * {@inheritDoc}
      */
     protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        // TODO Auto-generated method stub
+        //  nothing to do
         
     }
 

@@ -15,9 +15,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
@@ -31,6 +29,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -39,7 +38,6 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -253,6 +251,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
     	return properties.getJavaSrcLanguage();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+	public IChangesInTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
+    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	return getIpsModel().getChangesInTimeNamingConvention(properties.getChangesInTimeConventionIdForGeneratedCode());
+	}
 
 	/**
      * Overridden.
@@ -572,22 +578,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 result.add(roots[i]);
             }
         }
-    }
-
-    /**
-     * Overridden.
-     */
-    public IIpsSrcFile findIpsSrcFile(ICompilationUnit cu) throws CoreException {
-        IPackageFragmentRoot javaRoot = (IPackageFragmentRoot)cu.getParent().getParent();
-        IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            if (roots[i]
-                    .getJavaPackageFragmentRoot(IIpsPackageFragmentRoot.JAVA_ROOT_GENERATED_CODE)
-                    .equals(javaRoot)) {
-                return ((IpsPackageFragmentRoot)roots[i]).findIpsSrcFile(cu);
-            }
-        }
-        return null;
     }
 
     /**

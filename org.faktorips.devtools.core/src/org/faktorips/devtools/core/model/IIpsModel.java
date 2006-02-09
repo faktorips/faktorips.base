@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
@@ -75,16 +74,6 @@ public interface IIpsModel extends IIpsElement {
     public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException;
     
     /**
-     * Returns the IPS source file that correspond to the given compilation unit
-     * or <code>null</code> if no such file can be determined. Note that the returned
-     * file might not exists.
-     *  
-     * @throws CoreException if an error occurs while searching for the file.
-     * @throws NullPointerException if cu is null.
-     */
-    public IIpsSrcFile findIpsSrcFile(ICompilationUnit cu) throws CoreException;
-    
-    /**
      * Returns all IpsArtefactBuilderSets that have been assigned to this model. 
      */
     public IIpsArtefactBuilderSet[] getAvailableArtefactBuilderSets();
@@ -125,6 +114,13 @@ public interface IIpsModel extends IIpsElement {
      * Returns the predefines value datatypes like String, Integer etc. 
      */
     public ValueDatatype[] getPredefinedValueDatatypes();
+    
+    /**
+     * Returns the changes in time naming convention identified by the given id.
+     * If the id does not identify a naming convention, the VAA naming convention is
+     * returned per default.
+     */
+    public IChangesInTimeNamingConvention getChangesInTimeNamingConvention(String id);
 
     /**
      * Removes the given object from the model.

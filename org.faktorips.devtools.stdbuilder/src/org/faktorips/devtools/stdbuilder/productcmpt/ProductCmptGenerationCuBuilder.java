@@ -110,7 +110,7 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
      */
     private void buildConstructor() throws CoreException {
         String className = getUnqualifiedClassName();
-        String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
+        String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC);
         String[] argNames = new String[] { "productCmpt" };
         String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findProductCmptType()) };
         JavaCodeFragment body = new JavaCodeFragment(
@@ -128,7 +128,7 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
         Datatype datatype = attribute.getIpsProject().findDatatype(attribute.getDatatype());
         DatatypeHelper datatypeHelper = attribute.getIpsProject().getDatatypeHelper(datatype);
 
-        String javaDoc = getLocalizedText(COMPUTE_METHOD_JAVADOC, StringUtils
+        String javaDoc = getLocalizedText(formulaElement, COMPUTE_METHOD_JAVADOC, StringUtils
                 .capitalise(attribute.getName()));
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         productCmptGenImplBuilder.generateMethodComputeValue(attribute, datatypeHelper, Modifier.PUBLIC, builder);

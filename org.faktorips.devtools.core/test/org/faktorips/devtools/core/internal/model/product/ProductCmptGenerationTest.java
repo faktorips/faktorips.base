@@ -117,7 +117,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
     /*
      * Class under test for ProductCmptRelation[] getRelations(String)
      */
-    public void testGetRelationsString() {
+    public void testGetRelations_String() {
         IProductCmptRelation r1 = generation.newRelation("coverage");
         IProductCmptRelation r2 = generation.newRelation("risk");
         IProductCmptRelation r3 = generation.newRelation("coverage");
@@ -125,7 +125,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         IProductCmptRelation[] relations = generation.getRelations("coverage");
         assertEquals(2, relations.length);
         assertEquals(r1, relations[0]);
-        assertEquals(r1, relations[1]);
+        assertEquals(r3, relations[1]);
 
         relations = generation.getRelations("unknown");
         assertEquals(0, relations.length);

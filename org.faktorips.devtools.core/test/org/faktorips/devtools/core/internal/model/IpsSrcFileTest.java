@@ -10,12 +10,12 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.StringUtil;
 
 
@@ -133,12 +133,12 @@ public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListe
     }
 
     public void testSave() throws IOException, CoreException {
-        parsableFile.setContents("new contents with german umlaut öäüÖÄÜß");
+        parsableFile.setContents("new contents with german umlaut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         parsableFile.getIpsModel().addChangeListener(this);
         parsableFile.save(true, null);
         IFile file = parsableFile.getCorrespondingFile();
         String contents = StringUtil.readFromInputStream(file.getContents(), pdProject.getXmlFileCharset());
-        assertEquals("new contents with german umlaut öäüÖÄÜß", contents);
+        assertEquals("new contents with german umlaut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", contents);
         assertFalse(parsableFile.isDirty());
         assertEquals(parsableFile, lastEvent.getPdSrcFile());
     }

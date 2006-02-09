@@ -3,9 +3,9 @@ package org.faktorips.devtools.core.builder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 
 public class JetJavaSourceFileBuilderTest extends IpsPluginTest {
 

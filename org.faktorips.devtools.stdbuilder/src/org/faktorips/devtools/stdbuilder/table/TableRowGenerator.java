@@ -59,7 +59,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
 	String CLASS_JAVADOC = "TABLE_ROW_BUILDER_CLASS_JAVADOC";
 
     stringBuffer.append(TEXT_4);
-    stringBuffer.append(getLocalizedText(CLASS_JAVADOC));
+    stringBuffer.append(getLocalizedText(ipsSrcFile, CLASS_JAVADOC));
     stringBuffer.append(TEXT_5);
     stringBuffer.append(getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile));
     stringBuffer.append(TEXT_6);
@@ -75,7 +75,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(TEXT_9);
     }
     stringBuffer.append(TEXT_10);
-    stringBuffer.append(getLocalizedText(CONSTRUCTOR_JAVADOC));
+    stringBuffer.append(getLocalizedText(ipsSrcFile, CONSTRUCTOR_JAVADOC));
     stringBuffer.append(TEXT_11);
     stringBuffer.append(getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile));
     stringBuffer.append(TEXT_12);
@@ -108,7 +108,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 
     stringBuffer.append(TEXT_19);
-    stringBuffer.append(getLocalizedText(GET_FIELD_JAVADOC));
+    stringBuffer.append(getLocalizedText(ipsSrcFile, GET_FIELD_JAVADOC));
     stringBuffer.append(TEXT_20);
     stringBuffer.append(appendClassName(qualifiedDatatypeName));
     stringBuffer.append(TEXT_21);

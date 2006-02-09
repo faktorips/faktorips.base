@@ -5,9 +5,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.LocalizedStringsSet;
 
 public class JetJavaContentGeneratorTest extends IpsPluginTest {
@@ -56,7 +56,7 @@ public class JetJavaContentGeneratorTest extends IpsPluginTest {
     
     public void testGetDocumentText() throws CoreException{
         builder.beforeBuild(ipsObject.getIpsSrcFile(), null);
-        String value = generator.getLocalizedText("key");
+        String value = generator.getLocalizedText(ipsObject.getIpsSrcFile(), "key");
         assertNotNull(value);
     }
     

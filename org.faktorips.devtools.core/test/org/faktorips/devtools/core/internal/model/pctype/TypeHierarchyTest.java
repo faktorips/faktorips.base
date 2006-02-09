@@ -2,11 +2,11 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;

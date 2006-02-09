@@ -10,7 +10,7 @@ package <%=getJavaSourceFileBuilder().getPackage(ipsSrcFile)%>;
 %>
 
 /**
- * <%=getLocalizedText(CLASS_JAVADOC)%>
+ * <%=getLocalizedText(ipsSrcFile, CLASS_JAVADOC)%>
  */ 
 public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>{
 
@@ -24,7 +24,7 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
 			<%}%>
 
 	/**
-	 * <%=getLocalizedText(CONSTRUCTOR_JAVADOC)%>
+	 * <%=getLocalizedText(ipsSrcFile, CONSTRUCTOR_JAVADOC)%>
 	 */
 	public <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>(<%
     for (int i = 0; i < columns.length; i++) {
@@ -45,7 +45,7 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 %>
 	/**
-	 * <%=getLocalizedText(GET_FIELD_JAVADOC)%>
+	 * <%=getLocalizedText(ipsSrcFile, GET_FIELD_JAVADOC)%>
 	 */            
 	public <%=appendClassName(qualifiedDatatypeName)%> get<%=StringUtils.capitalise(columnName)%>(){
 		return <%=columnName%>;

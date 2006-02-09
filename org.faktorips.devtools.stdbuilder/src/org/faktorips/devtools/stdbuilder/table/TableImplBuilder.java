@@ -260,7 +260,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         if (!checkColumnValidity()) {
             return;
         }
-        getJavaCodeFragementBuilder().javaDoc(getLocalizedText(CLASS_JAVADOC));
+        getJavaCodeFragementBuilder().javaDoc(getLocalizedText(getIpsObject(), CLASS_JAVADOC));
         getJavaCodeFragementBuilder().classBegin(Modifier.PUBLIC, getTableStructure().getName(),
                 TableImpl.class, new Class[0]);
         createFields();
@@ -288,7 +288,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         methodBody.append("return rowsArray;");
         getJavaCodeFragementBuilder().method(Modifier.PUBLIC, qualifiedTableRowName + "[]",
                 "getAllRows", new String[0], new String[0], methodBody,
-                getLocalizedText(GET_ALL_ROWS_JAVADOC));
+                getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC));
     }
 
     private void createGetInstanceMethod() throws CoreException {
@@ -305,7 +305,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         getJavaCodeFragementBuilder().method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                 qualifiedName, "getInstance", new String[] { "repository" },
                 new String[] { RuntimeRepository.class.getName() }, methodBody,
-                getLocalizedText(GET_INSTANCE_JAVADOC));
+                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }
 
     private void createAddRowMethod() throws CoreException {
@@ -363,7 +363,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
 
         getJavaCodeFragementBuilder().method(Modifier.PROTECTED, Void.TYPE, "addRow",
                 new String[] { "valueElements" }, new Class[] { NodeList.class }, methodBody,
-                getLocalizedText(ADD_ROW_JAVADOC));
+                getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC));
     }
 
     private void createFindMethods() throws CoreException {
@@ -440,7 +440,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         }
         getJavaCodeFragementBuilder().method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps",
                 new String[0], new Class[0], methodBody,
-                getLocalizedText(INIT_KEY_MAPS_JAVADOC));
+                getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC));
     }
 
     private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) throws CoreException{
@@ -619,7 +619,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
             String[] keyNames,
             String[] keyItemTypes) throws CoreException {
         
-        getJavaCodeFragementBuilder().javaDoc(getLocalizedText(KEY_CLASS_JAVADOC));
+        getJavaCodeFragementBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC));
         getJavaCodeFragementBuilder().classBegin(Modifier.PRIVATE | Modifier.STATIC,
                 hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
@@ -642,7 +642,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         // constructor
         getJavaCodeFragementBuilder()
                 .method(Modifier.PRIVATE, null, hashKeyClassName, keyNames, keyItemTypes,
-                        constructorBody, getLocalizedText(KEY_CLASS_CONSTRUCTOR_JAVADOC));
+                        constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC));
         createKeyClassCalHashCodeMethod(keyNames);
         createKeyClassEqualsMethod(hashKeyClassName, keyNames);
         createKeyClassHashCodeMethod(keyNames);
@@ -693,7 +693,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
 
         getJavaCodeFragementBuilder().method(Modifier.PUBLIC, Boolean.TYPE, "equals",
                 new String[] { "o" }, new Class[] { Object.class }, methodBody,
-                getLocalizedText(KEY_CLASS_EQUALS_JAVADOC));
+                getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC));
     }
 
     private void createKeyClassHashCodeMethod(String[] combineKeyNames) throws CoreException {
@@ -703,7 +703,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
 
         getJavaCodeFragementBuilder().method(Modifier.PUBLIC, Integer.TYPE, "hashCode",
                 new String[0], new Class[0], methodBody,
-                getLocalizedText(KEY_CLASS_HASHCODE_JAVADOC));
+                getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC));
     }
 
     private void createFindMethod(String methodName,
@@ -748,7 +748,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         methodBody.append(';');
 
         getJavaCodeFragementBuilder().method(Modifier.PUBLIC, returnTypeName, methodName,
-                parameterNames, parameterTypes, methodBody, getLocalizedText(FIND_JAVADOC));
+                parameterNames, parameterTypes, methodBody, getLocalizedText(getIpsObject(), FIND_JAVADOC));
     }
 
     private JavaCodeFragment createFindMethodReturnFrag(String returnTypeName) {

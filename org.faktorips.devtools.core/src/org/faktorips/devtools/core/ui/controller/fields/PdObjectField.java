@@ -2,8 +2,8 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 
 

@@ -4,8 +4,8 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
 import org.w3c.dom.Element;
 

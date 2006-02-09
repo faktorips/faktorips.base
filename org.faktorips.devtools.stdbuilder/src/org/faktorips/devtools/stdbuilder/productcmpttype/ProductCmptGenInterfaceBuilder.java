@@ -55,14 +55,14 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
     
     public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String generationAbb = getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode());
+        String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
         return getProductCmptType(ipsSrcFile).getName() + generationAbb;
     }
 
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String generationConceptName = getChangesInTimeNamingConvention().getGenerationConceptNameSingular(
-                getLanguageUsedInGeneratedSourceCode());
-        String javaDoc = getLocalizedText("JAVADOC_INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()});
+        String generationConceptName = getChangesInTimeNamingConvention(getIpsObject()).getGenerationConceptNameSingular(
+                getLanguageUsedInGeneratedSourceCode(getIpsObject()));
+        String javaDoc = getLocalizedText(getIpsObject(), "JAVADOC_INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()});
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
     }
 
@@ -94,14 +94,14 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
 
     protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText("JAVADOC_GETTER_METHOD_DEFAULTVALUE", a.getName());
+        String javaDoc = getLocalizedText(a, "JAVADOC_GETTER_METHOD_DEFAULTVALUE", a.getName());
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateSignatureGetDefaultValue(a, datatypeHelper, getModifierForInterfaceMethod(), methodsBuilder);
         methodsBuilder.append(';');
     }
 
     protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText("JAVADOC_GETTER_METHOD_VALUE", new String[]{a.getName(), a.getDescription()});
+        String javaDoc = getLocalizedText(a, "JAVADOC_GETTER_METHOD_VALUE", new String[]{a.getName(), a.getDescription()});
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateSignatureGetValue(a, datatypeHelper, getModifierForInterfaceMethod(), methodsBuilder);
         methodsBuilder.append(';');
@@ -135,7 +135,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
     
     private void generateMethodRelationGetMany(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText("JAVADOC_GET_MANY_RELATED_OBJECTS", relation.getTargetRolePlural());
+        String javaDoc = getLocalizedText(relation, "JAVADOC_GET_MANY_RELATED_OBJECTS", relation.getTargetRolePlural());
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateSignatureRelationGetMany(relation, methodsBuilder);        
         methodsBuilder.appendln(";");

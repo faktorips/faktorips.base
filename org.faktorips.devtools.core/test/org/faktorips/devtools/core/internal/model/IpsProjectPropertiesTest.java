@@ -21,6 +21,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.setModelProject(true);
 		props.setProductDefinitionProject(true);
 		props.setJavaSrcLanguage(Locale.ITALIAN);
+		props.setChangesInTimeConventionIdForGeneratedCode("myConvention");
 		props.setBuilderSetId("myBuilder");
 		IIpsObjectPath path = new IpsObjectPath();
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
@@ -33,6 +34,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
+		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
 		assertEquals("myBuilder", props.getBuilderSetId());
 		path = props.getIpsObjectPath();
 		assertNotNull(path);
@@ -42,7 +44,6 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertEquals(2, datatypes.length);
 		assertEquals("Integer", datatypes[0]);
 		assertEquals("Boolean", datatypes[1]);
-		
 	}
 
 	public void testInitFromXml() {
@@ -52,6 +53,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
+		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
 		assertEquals("org.faktorips.devtools.stdbuilder.ipsstdbuilderset", props.getBuilderSetId());
 		IIpsObjectPath path = props.getIpsObjectPath();
 		assertNotNull(path);

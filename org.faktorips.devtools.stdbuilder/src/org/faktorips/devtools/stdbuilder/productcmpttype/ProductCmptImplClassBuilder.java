@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -29,11 +28,6 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
     
-    /**
-     * @param packageStructure
-     * @param kindId
-     * @param localizedStringsSet
-     */
     public ProductCmptImplClassBuilder(IJavaPackageStructure packageStructure, String kindId) {
         super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
     }
@@ -42,16 +36,10 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         interfaceBuilder = builder;
     }
     
-    /**
-     * @param productCmptGenInterfaceBuilder The productCmptGenInterfaceBuilder to set.
-     */
     public void setProductCmptGenInterfaceBuilder(ProductCmptGenInterfaceBuilder builder) {
         this.productCmptGenInterfaceBuilder = builder;
     }
     
-    /**
-     * @param policyCmptImplClassBuilder The policyCmptImplClassBuilder to set.
-     */
     public void setPolicyCmptImplClassBuilder(PolicyCmptImplClassBuilder builder) {
         this.policyCmptImplClassBuilder = builder;
     }
@@ -66,66 +54,8 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText("JAVADOC_CLASS", interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile()));
-        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        
-        generateGetGenerationMethod(methodsBuilder);
-        generateMethodCreatePolicyCmpt(methodsBuilder);
-    }
-    
-    private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        interfaceBuilder.generateSignatureGetGeneration(methodsBuilder);
-        methodsBuilder.openBracket();
-        methodsBuilder.append("return (");
-        methodsBuilder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
-        methodsBuilder.append(")getRepository().getProductComponentGeneration(getQualifiedName(), ");
-        methodsBuilder.append(interfaceBuilder.getGetGenerationEffectiveDateParamName());
-        methodsBuilder.append(");");
-        methodsBuilder.closeBracket();
-    }
-    
-    private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureCreatePolicyCmpt(methodsBuilder);
-        methodsBuilder.openBracket();
-        methodsBuilder.append("return new ");
-        methodsBuilder.appendClassName(policyCmptImplClassBuilder.getQualifiedClassName(getIpsSrcFile()));
-        methodsBuilder.appendln("(this, effectiveDate);");
-        methodsBuilder.closeBracket();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected boolean generatesInterface() {
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
-        /*
-         * public MotorPolicy(RuntimeRepository repository, String qName, Class policyComponentType) {
-         *     super(registry, qName, policyComponentType); 
-         * }
-         */
-        String className = getUnqualifiedClassName();
-        String javaDoc = getLocalizedText("JAVADOC_CONSTRUCTOR", className);
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.append("super(repository, qName, policyComponentType);");
-        builder.method(Modifier.PUBLIC, null, className, new String[] { "repository", "qName",
-                "policyComponentType" }, new String[] { RuntimeRepository.class.getName(),
-                String.class.getName(), Class.class.getName() }, body, javaDoc,
-            ANNOTATION_GENERATED);
     }
 
     /**
@@ -150,13 +80,72 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
+    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
+        String interfaceName = interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile());
+        appendLocalizedJavaDoc("CLASS", interfaceName, getIpsObject(), builder);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <pre>
+     * public MotorPolicy(RuntimeRepository repository, String qName, Class policyComponentType) {
+     *     super(registry, qName, policyComponentType);
+     * } 
+     * </pre>
+     */
+    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
+        String className = getUnqualifiedClassName();
+        appendLocalizedJavaDoc("CONSTRUCTOR", className, getIpsObject(), builder);
+        String[] argNames = new String[] { "repository", "qName", "policyComponentType" };
+        String[] argTypes = new String[] { RuntimeRepository.class.getName(), String.class.getName(), Class.class.getName() };
+        builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);
+        builder.append("super(repository, qName, policyComponentType);");
+        builder.methodEnd();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        
+        generateGetGenerationMethod(methodsBuilder);
+        generateMethodCreatePolicyCmpt(methodsBuilder);
+    }
+    
+    private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_GENERATION", getIpsObject(), methodsBuilder);
+        interfaceBuilder.generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return (");
+        methodsBuilder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
+        methodsBuilder.append(")getRepository().getProductComponentGeneration(getQualifiedName(), ");
+        methodsBuilder.append(interfaceBuilder.getVarNameEffectiveDate(getIpsObject()));
+        methodsBuilder.append(");");
+        methodsBuilder.closeBracket();
+    }
+    
+    private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", getIpsObject(), methodsBuilder);
+        interfaceBuilder.generateSignatureCreatePolicyCmpt(getIpsSrcFile(), methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return new ");
+        methodsBuilder.appendClassName(policyCmptImplClassBuilder.getQualifiedClassName(getIpsSrcFile()));
+        methodsBuilder.appendln("(this, ");
+        methodsBuilder.append(getVarNameEffectiveDate(getIpsObject()));
+        methodsBuilder.append(");");
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected void generateCodeForChangeableAttribute(IAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        // nothing to do at the moment
-
+        // nothing to do
     }
 
     /**
@@ -167,7 +156,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        // nothing to do at the moment
+        // nothing to do
     }
     
     /**
@@ -175,7 +164,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
      */
     protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        // nothing to do at the moment
+        // nothing to do
     }
 
     /**
@@ -184,16 +173,15 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     protected void generateCodeForRelation(IProductCmptTypeRelation relation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        // TODO Auto-generated method stub
 
+        // nothing to do
     }
 
     /**
      * {@inheritDoc}
      */
     protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        // TODO Auto-generated method stub
-        
+        // nothing to do
     }
 
 }

@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -20,11 +21,13 @@ public class IpsProjectProperties {
 		return data;
 	}
 	
-	final static String TAG_NAME = "IpsProject"; 
+	final static String TAG_NAME = "IpsProject";
+	final static String GENERATED_CODE_TAG_NAME = "GeneratedSourcecode"; 
 		
 	private boolean modelProject;
 	private boolean productDefinitionProject;
 	private Locale javaSrcLanguage = Locale.ENGLISH;
+	private String changesInTimeConventionIdForGeneratedCode = IChangesInTimeNamingConvention.VAA;
 	private String builderSetId = "";
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -66,6 +69,15 @@ public class IpsProjectProperties {
 	public void setJavaSrcLanguage(Locale javaSrcLanguage) {
 		this.javaSrcLanguage = javaSrcLanguage;
 	}
+	
+	public void setChangesInTimeConventionIdForGeneratedCode(
+			String changesInTimeConventionIdForGeneratedCode) {
+		this.changesInTimeConventionIdForGeneratedCode = changesInTimeConventionIdForGeneratedCode;
+	}
+
+	public String getChangesInTimeConventionIdForGeneratedCode() {
+		return changesInTimeConventionIdForGeneratedCode;
+	}
 
 	public void setIpsObjectPath(IIpsObjectPath path) {
 		ArgumentCheck.notNull(path);
@@ -96,7 +108,10 @@ public class IpsProjectProperties {
 		Element projectEl = doc.createElement(TAG_NAME);
 		projectEl.setAttribute("modelProject", "" + modelProject);
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject);
-		projectEl.setAttribute("javaSrcLanguage", javaSrcLanguage.toString());
+		Element generatedCodeEl = doc.createElement(GENERATED_CODE_TAG_NAME);
+		projectEl.appendChild(generatedCodeEl);
+		generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString());
+		generatedCodeEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode);
 		Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
 		projectEl.appendChild(builderSetEl);
 		builderSetEl.setAttribute("id", builderSetId);
@@ -120,7 +135,14 @@ public class IpsProjectProperties {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue();
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue();
-	    javaSrcLanguage = getLocale(element.getAttribute("javaSrcLanguage"));
+        Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
+        if (generatedCodeEl!=null) {
+    	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage"));
+    	    changesInTimeConventionIdForGeneratedCode = generatedCodeEl.getAttribute("changesInTimeNamingConvention");
+        } else {
+        	javaSrcLanguage = Locale.ENGLISH;
+        	changesInTimeConventionIdForGeneratedCode = IChangesInTimeNamingConvention.VAA;
+        }
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id");
         } else {

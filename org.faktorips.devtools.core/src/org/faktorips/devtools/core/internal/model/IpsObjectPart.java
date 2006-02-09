@@ -219,4 +219,18 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     protected void reinitPartCollections() {
     }
 
+    /**
+     * {@inheritDoc}
+     * Two parts are equal if the have the same parent and the same id.
+     */
+    public boolean equals(Object o) {
+        if (!(o instanceof IIpsObjectPart)) {
+            return false;
+        }
+        IIpsObjectPart other = (IIpsObjectPart)o;
+        return other.getId()==getId() 
+        	&& ( (parent==null && other.getParent()==null)
+        		|| ( parent!=null && parent.equals(other.getParent()) ) );
+    	
+    }
 }

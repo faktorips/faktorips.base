@@ -3,7 +3,6 @@ package org.faktorips.devtools.core;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.internal.model.PMChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.util.XmlUtil;
 
@@ -35,11 +34,10 @@ public class IpsPreferences {
     }
 
     /**
-     * Returns the naming convention used for product changes over time. 
+     * Returns the naming convention used in the GUI for product changes over time.  
      */
     public final static IChangesInTimeNamingConvention getChangesInTimeNamingConvention() {
-        // TODO static Zugriff entfernen
-    	return PMChangesInTimeNamingConvention.getInstance();
+    	return IpsPlugin.getDefault().getIpsModel().getChangesInTimeNamingConvention(IChangesInTimeNamingConvention.VAA);
     }
     
     /**

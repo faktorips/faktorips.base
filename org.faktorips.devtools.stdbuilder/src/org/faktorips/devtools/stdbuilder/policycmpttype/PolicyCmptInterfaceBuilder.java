@@ -70,7 +70,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     private void generateMethodGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC);
+        String javaDoc = getLocalizedText(getIpsObject(), PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC);
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateSignatureGetProductCmpt(getIpsSrcFile(), methodsBuilder);
         methodsBuilder.append(";");
@@ -90,7 +90,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     private void generateMethodSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC);
+        String javaDoc = getLocalizedText(getIpsObject(), PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC);
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateSignatureSetProductCmpt(getIpsSrcFile(), methodsBuilder);
         methodsBuilder.appendln(";");
@@ -135,8 +135,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         if (a.getValueSet() != null && !a.getValueSet().isAllValues()) {
             String methodNameMax = getPolicyCmptInterfaceGetMaxValueSetMethodName(a);
             String methodName = getPolicyCmptInterfaceGetValueSetMethodName(a);
-            String javaDocMax = getLocalizedText(JAVA_GETTER_METHOD_MAX_VALUESET, a.getName());
-            String javaDoc = getLocalizedText(JAVA_GETTER_METHOD_VALUESET, a.getName());
+            String javaDocMax = getLocalizedText(a, JAVA_GETTER_METHOD_MAX_VALUESET, a.getName());
+            String javaDoc = getLocalizedText(a, JAVA_GETTER_METHOD_VALUESET, a.getName());
             if (a.getValueSet().isRange()) {
                 methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
                         helper.getRangeJavaClassName(), methodNameMax, new String[0], new String[0], javaDocMax,
@@ -240,7 +240,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             }
             initialValueExpression.append(" }");
         }
-        String comment = getLocalizedText(ATTRIBUTE_FIELD_COMMENT, a.getName());
+        String comment = getLocalizedText(a, ATTRIBUTE_FIELD_COMMENT, a.getName());
 
         memberVarsBuilder.javaDoc(comment, ANNOTATION_GENERATED);
         memberVarsBuilder.varDeclaration(
@@ -348,7 +348,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         generateSignatureAttributeGetter(attribute, datatypeHelper, methodsBuilder);
         methodsBuilder.appendln(";");
         
-        javaDoc = getLocalizedText("ATTRIBUTE_INTERFACE_SETTER_JAVADOC", attribute.getName());
+        javaDoc = getLocalizedText(attribute, "ATTRIBUTE_INTERFACE_SETTER_JAVADOC", attribute.getName());
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateSignatureAttributeSetter(attribute, datatypeHelper, methodsBuilder);
         methodsBuilder.appendln(";");
@@ -376,7 +376,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String javaDoc = getLocalizedText("ATTRIBUTE_INTERFACE_GETTER_JAVADOC", attribute.getName());
+        String javaDoc = getLocalizedText(attribute, "ATTRIBUTE_INTERFACE_GETTER_JAVADOC", attribute.getName());
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateSignatureAttributeGetter(attribute, datatypeHelper, methodsBuilder);
         methodsBuilder.appendln(";");
@@ -387,7 +387,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             IAttribute a,
             DatatypeHelper helper,
             JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
-        String comment = getLocalizedText(ATTRIBUTE_FIELD_COMMENT, a.getName());
+        String comment = getLocalizedText(a, ATTRIBUTE_FIELD_COMMENT, a.getName());
         memberVarsBuilder.javaDoc(comment, ANNOTATION_GENERATED);
         String varName = getJavaNamingConvention().getMemberVarName(a.getName());
         int modifier = java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL | java.lang.reflect.Modifier.STATIC; 

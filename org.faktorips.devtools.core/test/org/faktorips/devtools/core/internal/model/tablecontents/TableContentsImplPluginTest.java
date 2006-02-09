@@ -3,8 +3,8 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.util.List;
 
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;

@@ -9,10 +9,10 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Element;
 

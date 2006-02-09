@@ -1,6 +1,5 @@
 package org.faktorips.devtools.core.model.pctype;
 
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**

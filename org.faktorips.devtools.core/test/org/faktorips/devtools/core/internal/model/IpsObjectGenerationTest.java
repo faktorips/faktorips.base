@@ -4,8 +4,8 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

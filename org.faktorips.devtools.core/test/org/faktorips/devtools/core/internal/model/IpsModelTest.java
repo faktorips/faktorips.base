@@ -17,16 +17,17 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
 
@@ -130,21 +131,21 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
         IIpsSrcFile sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         IPolicyCmptType object = (PolicyCmptType)sourceFile.getIpsObject();
-        IMethod method = object.newMethod();
-        method.setBody("blabla");
+        IAttribute attribute = object.newAttribute();
+        attribute.setDescription("blabla");
         sourceFile.save(true, null);
         
         IFile file = sourceFile.getCorrespondingFile();
         assertTrue(file.exists());
-        String encoding = ipsProject.getProject().getDefaultCharset(true);
+        String encoding = ipsProject.getXmlFileCharset();
         String contents = StringUtil.readFromInputStream(file.getContents(), encoding);
         contents = StringUtils.replace(contents, "blabla", "something serious");
         ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes(encoding)); 
         file.setContents(is, true, false, null);
         
         object = (IPolicyCmptType)sourceFile.getIpsObject();
-        method = object.getMethods()[0];
-        assertEquals("something serious", method.getBody());
+        attribute = object.getAttributes()[0];
+        assertEquals("something serious", attribute.getDescription());
     }
     
     public void testGetIpsObjectExtensionProperties() {
@@ -223,6 +224,20 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
     public void testGetPredefinedValueDatatypes() {
     	ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
     	assertTrue(datatypes.length > 0);
+    }
+    
+    public void testGetChangesInTimeNamingConvention() {
+    	IChangesInTimeNamingConvention convention = model.getChangesInTimeNamingConvention(IChangesInTimeNamingConvention.VAA);
+    	assertNotNull(convention);
+    	assertEquals(IChangesInTimeNamingConvention.VAA, convention.getId());
+    	
+    	convention = model.getChangesInTimeNamingConvention(IChangesInTimeNamingConvention.PM);
+    	assertNotNull(convention);
+    	assertEquals(IChangesInTimeNamingConvention.PM, convention.getId());
+    	
+    	convention = model.getChangesInTimeNamingConvention("unknown");
+    	assertNotNull(convention);
+    	assertEquals(IChangesInTimeNamingConvention.VAA, convention.getId());
     }
 
     /** 

@@ -1,7 +1,5 @@
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;

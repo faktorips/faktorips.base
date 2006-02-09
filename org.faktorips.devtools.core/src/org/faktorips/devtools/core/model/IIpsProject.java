@@ -6,7 +6,6 @@ import java.util.Locale;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -83,6 +82,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * generate getAnzahlCoverages().
      */
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage();
+    
+    /**
+     * Returns the naming convention for changes over time used in the generated Java sourcecode.
+     */
+    public IChangesInTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode();
     
     /**
      * Returns <code>true</code> if this project contains a model defininition,
@@ -237,16 +241,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * in the project.
      */
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException;
-    
-    /**
-     * Returns the IPS source file that corresponds to the given compilation unit.
-     * Returns <code>null</code> if no corresponding IPS source file exists.
-     * 
-     * @throws CoreException if an error occurs while searching the corresponding IPS source file.
-     * @throws NullPointerException if cu is null.
-     * @deprecated   
-     */
-    public IIpsSrcFile findIpsSrcFile(ICompilationUnit cu) throws CoreException;
     
     /**
      * Returns the IpsArtefactBuilderSet that is currently active for this project.

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
@@ -14,6 +15,9 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -78,6 +82,19 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
     protected int getClassModifier() throws CoreException {
         return getProductCmptType().isAbstract() ? java.lang.reflect.Modifier.PUBLIC
                 | java.lang.reflect.Modifier.ABSTRACT : java.lang.reflect.Modifier.PUBLIC;
+    }
+
+    /**
+     * Returns the abbreviation for the generation (changes over time) concept.
+     * 
+     * @param element An ips element needed to access the ipsproject where the neccessary configuration
+     * information is stored.
+     * 
+     * @see org.faktorips.devtools.core.model.IChangesInTimeNamingConvention
+     */
+    public String getAbbreviationForGenerationConcept(IIpsElement element) {
+        return getChangesInTimeNamingConvention(element).
+            getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(element));
     }
 
     /**
@@ -316,5 +333,15 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
-    
+
+    /**
+     * Returns the variable or parameter name for the effetiveDate.
+     * 
+     * @param element An isp element that gives access to the ips project.
+     */
+    public String getVarNameEffectiveDate(IIpsElement element) {
+        IChangesInTimeNamingConvention convention = element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
+        String conceptName = convention.getEffectiveDateConceptName(element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
+        return StringUtils.uncapitalise(conceptName);
+    }
 }

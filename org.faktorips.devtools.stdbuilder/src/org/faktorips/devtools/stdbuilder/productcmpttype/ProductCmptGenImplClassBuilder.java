@@ -86,7 +86,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * Overridden.
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String generationAbb = getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode());
+        String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
         return getJavaNamingConvention().getImplementationClassName(getProductCmptType(ipsSrcFile).getName() + generationAbb);
     }
 
@@ -94,7 +94,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * Overridden.
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText("JAVADOC_CLASS", interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile()));
+        String javaDoc = getLocalizedText(getIpsSrcFile(), "JAVADOC_CLASS", interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile()));
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
     }
 
@@ -121,7 +121,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * Overridden.
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.javaDoc(getLocalizedText("JAVADOC_CONSTRUCTOR", getUnqualifiedClassName()), ANNOTATION_GENERATED);
+        builder.javaDoc(getLocalizedText(getIpsObject(), "JAVADOC_CONSTRUCTOR", getUnqualifiedClassName()), ANNOTATION_GENERATED);
         builder.append("public ");
         builder.append(getUnqualifiedClassName());
         builder.append('(');
@@ -270,7 +270,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         // member variable
-        String javaDoc = getLocalizedText("JAVADOC_MEMBER_VAR_DEFAULTVALUE", a.getName());
+        String javaDoc = getLocalizedText(a, "JAVADOC_MEMBER_VAR_DEFAULTVALUE", a.getName());
         memberVarsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
@@ -288,7 +288,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         // member variable
-        String javaDoc = getLocalizedText("JAVADOC_MEMBER_VAR_VALUE", a.getName());
+        String javaDoc = getLocalizedText(a, "JAVADOC_MEMBER_VAR_VALUE", a.getName());
         memberVarsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
@@ -304,7 +304,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     String getDefaultValuePropertyName(IAttribute a) {
-        return getLocalizedText("DEFAULTVALUE_PROPERTYNAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "DEFAULTVALUE_PROPERTYNAME", StringUtils.capitalise(a.getName()));
     }
     
     private String getMemberVarNameDefaulValue(IAttribute a) throws CoreException {
@@ -312,7 +312,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
     
     String getValuePropertyName(IAttribute a) {
-        return getLocalizedText("VALUE_PROPERTYNAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "VALUE_PROPERTYNAME", StringUtils.capitalise(a.getName()));
     }
     
     private String getMemberVarNameValue(IAttribute a) throws CoreException {
@@ -321,7 +321,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     
     protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         // generate the abstract computation method
-        String javaDoc = getLocalizedText("JAVADOC_COMPUTE_METHOD", a.getName());
+        String javaDoc = getLocalizedText(a, "JAVADOC_COMPUTE_METHOD", a.getName());
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         generateMethodComputeValue(a, datatypeHelper, Modifier.PUBLIC | Modifier.ABSTRACT, methodsBuilder);
         methodsBuilder.appendln(";");
@@ -336,7 +336,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
     
     public String getMethodNameComputeValue(IAttribute a) {
-        return getLocalizedText("COMPUTE_METHODNAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "COMPUTE_METHODNAME", StringUtils.capitalise(a.getName()));
     }
 
     /**

@@ -70,7 +70,7 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
     private void createRelationAddMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation, IPolicyCmptType target)
             throws CoreException {
         String methodName = getPolicyCmptInterfaceAddPolicyCmptTypeMethod(relation);
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(RELATION_INTERFACE_ADD_JAVADOC,
+        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_ADD_JAVADOC,
             relation.getTargetRoleSingular());
 
         methodsBuilder.methodBegin(
@@ -85,9 +85,8 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
 
     private void createRelationContainsMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation, IPolicyCmptType target)
             throws CoreException {
-        String methodname = "contains" + relation.getTargetRoleSingular(); // TODO von IRelation
-        // abfragen
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(RELATION_INTERFACE_CONTAINS_JAVADOC,
+        String methodname = "contains" + relation.getTargetRoleSingular(); 
+        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_CONTAINS_JAVADOC,
             relation.getTargetRoleSingular());
 
         methodsBuilder.methodBegin(
@@ -108,7 +107,7 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
             throws CoreException {
 
         String methodName = getPolicyCmptTypeInterfaceGetAllPcTypeMethodName(relation);
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(RELATION_INTERFACE_GETALL_JAVADOC,
+        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_GETALL_JAVADOC,
             relation.getTargetRoleSingular());
         String returnType = getPolicyCmptTypeInterfaceBuilder().getQualifiedClassName(
             target.getIpsSrcFile())
@@ -124,7 +123,7 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
     }
 
     private void createRelationGetNumOfMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(RELATION_INTERFACE_NUMOF_JAVADOC,
+        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_NUMOF_JAVADOC,
             relation.getTargetRoleSingular());
 
         methodsBuilder.methodBegin(
@@ -141,7 +140,7 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
     private void createRelationGetterMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation, IPolicyCmptType target)
             throws CoreException {
 
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(RELATION_INTERFACE_GETTER_JAVADOC,
+        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_GETTER_JAVADOC,
             relation.getTargetRoleSingular());
         String returnType = getPolicyCmptTypeInterfaceBuilder().getQualifiedClassName(
             target.getIpsSrcFile());
@@ -158,7 +157,7 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
 
     private void createRelationRemoveMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation, IPolicyCmptType target)
             throws CoreException {
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(RELATION_INTERFACE_REMOVE_JAVADOC,
+        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_REMOVE_JAVADOC,
             relation.getTargetRoleSingular());
 
         methodsBuilder.methodBegin(
@@ -178,7 +177,7 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
     private void createRelationSetterMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation, IPolicyCmptType target)
             throws CoreException {
 
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(RELATION_INTERFACE_SETTER_JAVADOC,
+        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_SETTER_JAVADOC,
             relation.getTargetRoleSingular());
 
         methodsBuilder.methodBegin(
