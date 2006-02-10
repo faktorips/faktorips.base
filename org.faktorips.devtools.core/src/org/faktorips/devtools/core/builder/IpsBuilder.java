@@ -63,10 +63,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             throws CoreException {
 
         IIpsArtefactBuilderSet currentBuilderSet = getIpsProject().getCurrentArtefactBuilderSet();
-
-        if (currentBuilderSet == null) {
-            return buildStatus;
-        }
         IIpsArtefactBuilder[] artefactBuilders = currentBuilderSet.getArtefactBuilders();
         for (int i = 0; i < artefactBuilders.length; i++) {
             try {
@@ -120,6 +116,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return null;
         }
 
+        //reinitialize the builders of the current builder set if an error occurs
         try {
             IIpsArtefactBuilderSet builderSet = getIpsProject().getCurrentArtefactBuilderSet();
             builderSet.initialize();

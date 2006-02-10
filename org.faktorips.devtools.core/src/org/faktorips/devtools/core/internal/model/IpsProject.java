@@ -581,10 +581,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Currently returns all artefact builder available at runtime. Later implementations might
-     * restrict the set of builders available for this project
-     * 
-     * @throws CoreException
+     * {@inheritDoc}
      */
     public IIpsArtefactBuilderSet getCurrentArtefactBuilderSet() throws CoreException {
         return ((IpsModel)getIpsModel()).getCurrentIpsArtefactBuilderSet(this);

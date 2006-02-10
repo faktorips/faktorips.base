@@ -168,19 +168,17 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 				.getExpressionLanguageFunctionsLanguage()));
 		compiler.add(new TableFunctionsResolver(getIpsProject()));
 		IIpsArtefactBuilderSet builderSet = getIpsProject().getCurrentArtefactBuilderSet();
-		if(builderSet != null) {
-			IAttribute a = findPcTypeAttribute();
-			if (a == null) {
-				return compiler;
-			}
-			IParameterIdentifierResolver resolver = builderSet.getFlParameterIdentifierResolver();
-			if(resolver == null){
-				return compiler;
-			}
-			resolver.setIpsProject(getIpsProject());
-			resolver.setParameters(a.getFormulaParameters());
-			compiler.setIdentifierResolver(resolver);
+		IAttribute a = findPcTypeAttribute();
+		if (a == null) {
+			return compiler;
 		}
+		IParameterIdentifierResolver resolver = builderSet.getFlParameterIdentifierResolver();
+		if(resolver == null){
+			return compiler;
+		}
+		resolver.setIpsProject(getIpsProject());
+		resolver.setParameters(a.getFormulaParameters());
+		compiler.setIdentifierResolver(resolver);
 		return compiler;
 	}
 

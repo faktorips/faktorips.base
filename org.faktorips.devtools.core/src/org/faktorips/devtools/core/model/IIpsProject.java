@@ -243,7 +243,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException;
     
     /**
-     * Returns the IpsArtefactBuilderSet that is currently active for this project.
+     * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If no
+     * IpsArtefactBuilderSet is active for this project an <code>EmptyBuilderSet</code> is returned.
      */
     public IIpsArtefactBuilderSet getCurrentArtefactBuilderSet() throws CoreException;
     
