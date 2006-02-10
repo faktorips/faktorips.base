@@ -134,32 +134,49 @@ public class IpsPasteAction extends IpsAction {
     		return;
     	}
 
+    	String name = resource.getName();
+    	String extension = "";
+		String suggestedName = name;
+
     	if (resource.getType() == IResource.FOLDER) {
     		if (((IFolder)resource).getFullPath().equals(targetPath)) {
     			MessageDialog.openError(shell, "Copy Problem", "Copy not possible, source and target are the same");
     			return;
     		}
     	}
+    	else {
+    		int index = name.lastIndexOf(".");
+    		if (index == -1) {
+    			suggestedName = name;
+    		}
+    		else {
+    			suggestedName = name.substring(0, index);
+    			extension = name.substring(index);
+    		}    		
+    	}
+
+    	String nameWithoutExtension = suggestedName;
+    	Validator validator = new Validator(targetPath, resource, extension);
     	
-    	Validator validator = new Validator(targetPath, resource);
-    	String newName = resource.getName();
-    	if (validator.isValid(newName) != null) {
-    		String suggestedName = newName;
+    	int doCopy = InputDialog.OK;
+    	if (validator.isValid(suggestedName) != null) {
     		for (int count = 0; validator.isValid(suggestedName) != null; count++) {
     			if (count == 0) {
-    				suggestedName = "CopyOf" + newName;
+    				suggestedName = "CopyOf" + nameWithoutExtension;
     			}
     			else {
-    				suggestedName = "Copy" + count + "Of" + newName; 
+    				suggestedName = "Copy" + count + "Of" + nameWithoutExtension; 
     			}
     		}
     		    		
-    		InputDialog dialog = new InputDialog(shell, "Name Conflict", "Please enter new Name for " + newName, suggestedName, validator);
+    		InputDialog dialog = new InputDialog(shell, "Name Conflict", "Please enter new Name for " + nameWithoutExtension, suggestedName, validator);
     		dialog.setBlockOnOpen(true);
-    		dialog.open();
-    		newName = dialog.getValue();
+    		doCopy = dialog.open();
+    		nameWithoutExtension = dialog.getValue();
     	}
-    	resource.copy(targetPath.append(newName), true, null);
+    	if (doCopy == InputDialog.OK) {
+    		resource.copy(targetPath.append(nameWithoutExtension + extension), true, null);
+    	}
     }
 
     /**
@@ -170,10 +187,12 @@ public class IpsPasteAction extends IpsAction {
     private class Validator implements IInputValidator {
     	IPath root;
     	IResource resource;
+    	String extension;
     	
-    	public Validator(IPath root, IResource resource) {
+    	public Validator(IPath root, IResource resource, String extension) {
     		this.root = root;
     		this.resource = resource;
+    		this.extension = extension;
     	}
 
     	/**
@@ -183,13 +202,13 @@ public class IpsPasteAction extends IpsAction {
 			IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 			IResource test = null;
 			if (resource.getType() == IResource.FILE) {
-				test = wsRoot.getFile(root.append(newText));
+				test = wsRoot.getFile(root.append(newText + extension));
 			}
 			else if (resource.getType() == IResource.FOLDER) {
 				test = wsRoot.getFolder(root.append(newText));
 			}
 			if (test != null && test.exists()) {
-				return newText + " allready exisits. Please enter another name.";
+				return newText + extension + " allready exisits. Please enter another name.";
 			}
 			
 			return null;
