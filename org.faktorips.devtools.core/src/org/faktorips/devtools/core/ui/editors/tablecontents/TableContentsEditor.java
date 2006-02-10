@@ -41,7 +41,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor {
      * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditor#getUniformPageTitle()
      */
     protected String getUniformPageTitle() {
-        ITableContentsGeneration generation = (ITableContentsGeneration)getActiveGeneration();
+        ITableContentsGeneration generation = (ITableContentsGeneration)getPreferredGeneration();
         String title = "Table Contents: " + getTableContents().getName();
         if (generation==null) {
             return title;
