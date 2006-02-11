@@ -1,7 +1,9 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -59,28 +61,8 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         return getProductCmptType(ipsSrcFile).getName() + generationAbb;
     }
 
-    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String generationConceptName = getChangesInTimeNamingConvention(getIpsObject()).getGenerationConceptNameSingular(
-                getLanguageUsedInGeneratedSourceCode(getIpsObject()));
-        String javaDoc = getLocalizedText(getIpsObject(), "JAVADOC_INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()});
-        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-    }
-
-    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        // nothing to do
-    }
-
     protected boolean generatesInterface() {
         return true;
-    }
-
-    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
-        // nothing to do, building an interface.
-    }
-
-    protected String getSuperclass() throws CoreException {
-        return null;
     }
 
     protected String[] getExtendedInterfaces() throws CoreException {
@@ -93,13 +75,61 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         return new String[] { javaSupertype };
     }
 
-    protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(a, "JAVADOC_GETTER_METHOD_DEFAULTVALUE", a.getName());
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureGetDefaultValue(a, datatypeHelper, getModifierForInterfaceMethod(), methodsBuilder);
-        methodsBuilder.append(';');
+    protected String getSuperclass() throws CoreException {
+        return null;
     }
 
+    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
+        String generationConceptName = getChangesInTimeNamingConvention(getIpsObject()).getGenerationConceptNameSingular(
+                getLanguageUsedInGeneratedSourceCode(getIpsObject()));
+        appendLocalizedJavaDoc("INTERFACE", new String[]{generationConceptName, getProductCmptType().getName()}, getIpsObject(), builder);
+    }
+
+    protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        // nothing to do
+    }
+
+    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
+        // nothing to do, building an interface.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public Integer getDefaultMinAge();
+     * </pre>
+     */
+    void generateMethodGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_DEFAULT_VALUE", a.getName(), a, builder);
+        generateSignatureGetDefaultValue(a, datatypeHelper, builder);
+        builder.append(';');
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public Integer getDefaultMinAge()
+     * </pre>
+     */
+    void generateSignatureGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getJavaNamingConvention().getGetterMethodName(getPropertyNameDefaultValue(a), datatypeHelper.getDatatype());
+        builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
+                methodName, new String[0], new String[0]);
+    }
+    
+    String getPropertyNameDefaultValue(IAttribute a) {
+        return getLocalizedText(a, "PROPERTY_DEFAULT_VALUE_NAME", StringUtils.capitalise(a.getName()));
+    }
+    
     protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String javaDoc = getLocalizedText(a, "JAVADOC_GETTER_METHOD_VALUE", new String[]{a.getName(), a.getDescription()});
         methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
@@ -109,12 +139,6 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
 
     protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         // nothing to do, computation methods are not published.
-    }
-    
-    void generateSignatureGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getJavaNamingConvention().getGetterMethodName(implementationBuilder.getDefaultValuePropertyName(a), datatypeHelper.getDatatype());
-        builder.methodBegin(modifier, datatypeHelper.getJavaClassName(),
-                methodName, new String[0], new String[0]);
     }
     
     void generateSignatureGetValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder builder) throws CoreException {

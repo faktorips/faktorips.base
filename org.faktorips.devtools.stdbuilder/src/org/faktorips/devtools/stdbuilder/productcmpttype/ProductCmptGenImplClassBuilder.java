@@ -93,14 +93,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     /**
      * Overridden.
      */
-    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
-        String javaDoc = getLocalizedText(getIpsSrcFile(), "JAVADOC_CLASS", interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile()));
-        builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-    }
-
-    /**
-     * Overridden.
-     */
     protected boolean generatesInterface() {
         return false;
     }
@@ -120,8 +112,23 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     /**
      * Overridden.
      */
+    protected String[] getExtendedInterfaces() throws CoreException {
+        // The implementation implements the published interface.
+        return new String[] { interfaceBuilder.getQualifiedClassName(getIpsSrcFile()) };
+    }
+
+    /**
+     * Overridden.
+     */
+    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("CLASS", interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile()), getIpsObject(), builder);
+    }
+
+    /**
+     * Overridden.
+     */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.javaDoc(getLocalizedText(getIpsObject(), "JAVADOC_CONSTRUCTOR", getUnqualifiedClassName()), ANNOTATION_GENERATED);
+        appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getIpsObject(), builder);
         builder.append("public ");
         builder.append(getUnqualifiedClassName());
         builder.append('(');
@@ -169,7 +176,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
             String memberVarName;
             if (a.isChangeable()) {
-                memberVarName = getMemberVarNameDefaulValue(a);
+                memberVarName = getFieldNameDefaulValue(a);
             } else {
                 memberVarName = getMemberVarNameValue(a);
             }
@@ -259,32 +266,47 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.methodEnd();
     }
 
-    /**
-     * Overridden.
-     */
-    protected String[] getExtendedInterfaces() throws CoreException {
-        // The implementation implements the published interface.
-        return new String[] { interfaceBuilder.getQualifiedClassName(getIpsSrcFile()) };
-    }
-
     protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        // member variable
-        String javaDoc = getLocalizedText(a, "JAVADOC_MEMBER_VAR_DEFAULTVALUE", a.getName());
-        memberVarsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        generateFieldDefaultValue(a, datatypeHelper, memberVarsBuilder);
+        generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [javadoc]
+     * private Integer minAge;
+     * </pre>
+     */
+    private void generateFieldDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("FIELD_DEFAULTVALUE", a.getName(), a, memberVarsBuilder);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
         memberVarsBuilder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
-                getMemberVarNameDefaulValue(a), defaultValueExpression);
-        
-        // getter method
+                getFieldNameDefaulValue(a), defaultValueExpression);
+    }    
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public Integer getDefaultMinAge() {
+     *     return minAge;
+     * </pre>
+     */
+    private void generateMethodGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetDefaultValue(a, datatypeHelper, Modifier.PUBLIC, methodsBuilder);
+        interfaceBuilder.generateSignatureGetDefaultValue(a, datatypeHelper, methodsBuilder);
+        methodsBuilder.openBracket();
         methodsBuilder.append("return ");
-        methodsBuilder.append(getMemberVarNameDefaulValue(a));
+        methodsBuilder.append(getFieldNameDefaulValue(a));
         methodsBuilder.append(';');
-        methodsBuilder.methodEnd();
+        methodsBuilder.closeBracket();
     }
-
+    
+    private String getFieldNameDefaulValue(IAttribute a) throws CoreException {
+        return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameDefaultValue(a));
+    }
+    
     protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         // member variable
@@ -303,14 +325,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.methodEnd();
     }
 
-    String getDefaultValuePropertyName(IAttribute a) {
-        return getLocalizedText(a, "DEFAULTVALUE_PROPERTYNAME", StringUtils.capitalise(a.getName()));
-    }
-    
-    private String getMemberVarNameDefaulValue(IAttribute a) throws CoreException {
-        return getJavaNamingConvention().getMemberVarName(getDefaultValuePropertyName(a));
-    }
-    
     String getValuePropertyName(IAttribute a) {
         return getLocalizedText(a, "VALUE_PROPERTYNAME", StringUtils.capitalise(a.getName()));
     }
