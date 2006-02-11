@@ -131,7 +131,8 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
         String javaDoc = getLocalizedText(formulaElement, COMPUTE_METHOD_JAVADOC, StringUtils
                 .capitalise(attribute.getName()));
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        productCmptGenImplBuilder.generateMethodComputeValue(attribute, datatypeHelper, Modifier.PUBLIC, builder);
+        productCmptGenImplBuilder.generateSignatureComputeValue(attribute, datatypeHelper, Modifier.PUBLIC, builder);
+        builder.openBracket();
         builder.append("return ");
         builder.append(compileFormulaToJava(formulaElement, attribute));
         builder.appendln(";");

@@ -17,7 +17,6 @@ import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;

@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -109,7 +110,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     void generateMethodGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_DEFAULT_VALUE", a.getName(), a, builder);
+        appendLocalizedJavaDoc("METHOD_GET_DEFAULTVALUE", a.getName(), a, builder);
         generateSignatureGetDefaultValue(a, datatypeHelper, builder);
         builder.append(';');
     }
@@ -127,50 +128,129 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
     
     String getPropertyNameDefaultValue(IAttribute a) {
-        return getLocalizedText(a, "PROPERTY_DEFAULT_VALUE_NAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalise(a.getName()));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(a, "JAVADOC_GETTER_METHOD_VALUE", new String[]{a.getName(), a.getDescription()});
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureGetValue(a, datatypeHelper, getModifierForInterfaceMethod(), methodsBuilder);
-        methodsBuilder.append(';');
+        generateMethodGetValue(a, datatypeHelper, methodsBuilder);
     }
 
-    protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // nothing to do, computation methods are not published.
+    /**
+     * Code sample:
+     * [Javadoc]
+     * <pre>
+     * public Integer getTaxRate();
+     * </pre>
+     */
+    void generateMethodGetValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
+        String[] replacements = new String[]{a.getName(), a.getDescription()};
+        appendLocalizedJavaDoc("METHOD_GET_VALUE", replacements, a, builder);
+        generateSignatureGetValue(a, datatypeHelper, builder);
+        builder.append(';');
     }
-    
-    void generateSignatureGetValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder builder) throws CoreException {
+
+    /**
+     * Code sample:
+     * <pre>
+     * public Integer getTaxRate()
+     * </pre>
+     */
+    void generateSignatureGetValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGetValue(a, datatypeHelper);
-        builder.methodBegin(modifier, datatypeHelper.getJavaClassName(),
+        builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
                 methodName, new String[0], new String[0]);
     }
     
     public String getMethodNameGetValue(IAttribute a, DatatypeHelper datatypeHelper) throws CoreException {
-        return getJavaNamingConvention().getGetterMethodName(implementationBuilder.getValuePropertyName(a), datatypeHelper.getDatatype());
+        return getJavaNamingConvention().getGetterMethodName(getPropertyNameValue(a), datatypeHelper.getDatatype());
+    }
+    
+    String getPropertyNameValue(IAttribute a) {
+        return getLocalizedText(a, "PROPERTY_VALUE_NAME", StringUtils.capitalise(a.getName()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        // nothing to do, computation methods are not published.
+    }
+    
     /**
      * Overridden.
      */
     protected void generateCodeForRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        generateMethodRelationGetMany(relation, methodsBuilder);
+        if (relation.is1ToMany()) {
+            generateMethodGetManyRelatedCmpts(relation, methodsBuilder);
+        } else {
+            generateMethodGet1RelatedCmpt(relation, methodsBuilder);
+        }
     }
     
-    private void generateMethodRelationGetMany(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(relation, "JAVADOC_GET_MANY_RELATED_OBJECTS", relation.getTargetRolePlural());
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureRelationGetMany(relation, methodsBuilder);        
+    /**
+     * Code sample:
+     * [Javadoc]
+     * <pre>
+     * public CoverageType[] getCoverageTypes();
+     * </pre>
+     */
+    private void generateMethodGetManyRelatedCmpts(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", relation.getTargetRolePlural(), relation, methodsBuilder);
+        generateSignatureGetManyRelatedCmpts(relation, methodsBuilder);        
         methodsBuilder.appendln(";");
     }
 
-    void generateSignatureRelationGetMany(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getJavaNamingConvention().getMultiValueGetterMethodName(implementationBuilder.getPropertyNameRelation(relation));
+    /**
+     * Code sample:
+     * <pre>
+     * public CoverageType[] getCoverageTypes()
+     * </pre>
+     */
+    void generateSignatureGetManyRelatedCmpts(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getJavaNamingConvention().getMultiValueGetterMethodName(getPropertyNameToManyRelation(relation));
         IProductCmptType target = relation.findTarget();
-        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target)+ (relation.is1ToMany() ? "[]" : "");
+        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target) + "[]";
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
                 returnType, methodName, new String[0], new String[0]);
+    }
+
+    String getPropertyNameToManyRelation(IProductCmptTypeRelation relation) {
+        String role = StringUtils.capitalise(relation.getTargetRolePlural());
+        return getLocalizedText(relation, "PROPERTY_TOMANY_RELATION_NAME", role);
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public CoverageType getMainCoverageType();
+     * </pre>
+     */
+    void generateMethodGet1RelatedCmpt(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_1_RELATED_CMPT", relation.getTargetRoleSingular(), relation, builder);
+        generateSignatureGet1RelatedCmpt(relation, builder);
+        builder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public CoverageType getMainCoverageType()
+     * </pre>
+     */
+    void generateSignatureGet1RelatedCmpt(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getJavaNamingConvention().getGetterMethodName(getPropertyNameTo1Relation(relation), Datatype.INTEGER);
+        IProductCmptType target = relation.findTarget();
+        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
+        builder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
+    }
+
+    String getPropertyNameTo1Relation(IProductCmptTypeRelation relation) {
+        String role = StringUtils.capitalise(relation.getTargetRoleSingular());
+        return getLocalizedText(relation, "PROPERTY_TO1_RELATION_NAME", role);
     }
 
     /**

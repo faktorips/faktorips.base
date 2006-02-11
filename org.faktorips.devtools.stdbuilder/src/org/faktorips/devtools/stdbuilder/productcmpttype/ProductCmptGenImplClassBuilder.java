@@ -178,7 +178,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             if (a.isChangeable()) {
                 memberVarName = getFieldNameDefaulValue(a);
             } else {
-                memberVarName = getMemberVarNameValue(a);
+                memberVarName = getFieldNameValue(a);
             }
             builder.append("configElement = (");
             builder.appendClassName(Element.class);
@@ -242,8 +242,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.appendQuoted(r.getName());
                 builder.appendln(");");
                 builder.append("if (relationElements != null) {");
-                String fieldName = getMemberVarNameRelation(r);
                 if (r.is1ToMany()) {
+                    String fieldName = getFieldNameToManyRelation(r);
                     builder.append(fieldName);
                     builder.appendln(" = new ");
                     builder.appendClassName(String.class);
@@ -255,7 +255,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     builder.append(")relationElements.get(i)).getAttribute(\"target\");");
                     builder.appendln("}");
                 } else {
-                    builder.append(fieldName);
+                    builder.append(getFieldNameTo1Relation(r));
                     builder.append(" = ((");
                     builder.appendClassName(Element.class);
                     builder.append(")relationElements.get(0)).getAttribute(\"target\");");
@@ -307,105 +307,141 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameDefaultValue(a));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-
-        // member variable
-        String javaDoc = getLocalizedText(a, "JAVADOC_MEMBER_VAR_VALUE", a.getName());
-        memberVarsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        generateFieldValue(a, datatypeHelper, memberVarsBuilder);
+        generateMethodGetValue(a, datatypeHelper, methodsBuilder);
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [javadoc]
+     * private Integer taxRate;
+     * </pre>
+     */
+    private void generateFieldValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
+        appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalise(a.getName()), a, builder);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(a.getDefaultValue());
-        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
-                getMemberVarNameValue(a), defaultValueExpression);
-        
-        // getter method
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetValue(a, datatypeHelper, Modifier.PUBLIC, methodsBuilder);
-        methodsBuilder.append("return ");
-        methodsBuilder.append(getMemberVarNameValue(a));
-        methodsBuilder.append(';');
-        methodsBuilder.methodEnd();
+        builder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(),
+                getFieldNameValue(a), defaultValueExpression);
     }
 
-    String getValuePropertyName(IAttribute a) {
-        return getLocalizedText(a, "VALUE_PROPERTYNAME", StringUtils.capitalise(a.getName()));
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public Integer getInterestRate() {
+     *     return interestRate;
+     * </pre>
+     */
+    private void generateMethodGetValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetValue(a, datatypeHelper, methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return ");
+        methodsBuilder.append(getFieldNameValue(a));
+        methodsBuilder.append(';');
+        methodsBuilder.closeBracket();
     }
     
-    private String getMemberVarNameValue(IAttribute a) throws CoreException {
-        return getJavaNamingConvention().getMemberVarName(getValuePropertyName(a));
+    private String getFieldNameValue(IAttribute a) throws CoreException {
+        return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameValue(a));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected void generateCodeForComputedAndDerivedAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        // generate the abstract computation method
-        String javaDoc = getLocalizedText(a, "JAVADOC_COMPUTE_METHOD", a.getName());
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateMethodComputeValue(a, datatypeHelper, Modifier.PUBLIC | Modifier.ABSTRACT, methodsBuilder);
+        generateMethodComputeValue(a, datatypeHelper, methodsBuilder);
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public abstract Money computePremium(Policy policy, Integer age);
+     * </pre>
+     */
+    public void generateMethodComputeValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_COMPUTE_VALUE", StringUtils.capitalise(a.getName()), a, methodsBuilder);
+        generateSignatureComputeValue(a, datatypeHelper,Modifier.ABSTRACT | Modifier.PUBLIC, methodsBuilder);
         methodsBuilder.appendln(";");
     }
     
-    public void generateMethodComputeValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    /**
+     * Code sample:
+     * <pre>
+     * public abstract Money computePremium(Policy policy, Integer age)
+     * </pre>
+     */
+    public void generateSignatureComputeValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         Parameter[] parameters = a.getFormulaParameters();
         String methodName = getMethodNameComputeValue(a);
-        methodsBuilder.methodBegin(modifier, datatypeHelper.getJavaClassName(),
+        methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(),
                 methodName, BuilderHelper.extractParameterNames(parameters),
                 StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, a.getIpsProject(), policyCmptTypeImplBuilder));
     }
     
     public String getMethodNameComputeValue(IAttribute a) {
-        return getLocalizedText(a, "COMPUTE_METHODNAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "METHOD_COMPUTE_VALUE_NAME", StringUtils.capitalise(a.getName()));
     }
 
     /**
      * Overridden.
      */
     protected void generateCodeForRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        generateMemberVarRelation(relation, memberVarsBuilder);
         if (relation.is1ToMany()) {
-            generateMethodRelationGetMany(relation, memberVarsBuilder, methodsBuilder);
+            generateFieldToManyRelation(relation, memberVarsBuilder);
+            generateMethodGetManyRelatedCmpts(relation, memberVarsBuilder, methodsBuilder);
         } else {
-            generateMethodRelationGet1(relation, memberVarsBuilder, methodsBuilder);
+            generateFieldTo1Relation(relation, memberVarsBuilder);
+            generateMethodGet1RelatedCmpt(relation, memberVarsBuilder, methodsBuilder);
         }
     }
     
-    private void generateMemberVarRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
-        String javaDoc = null; // TODO getLocalizedText("JAVADOC_MEMBER_VAR_DEFAULTVALUE", a.getName());
-        memberVarsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        String type = String.class.getName() + ( relation.is1ToMany() ? "[]" : "");
-        String initValue = relation.is1ToMany() ? "new String[0]" : "null";
-        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getMemberVarNameRelation(relation), new JavaCodeFragment(initValue));
+    private String getFieldNameToManyRelation(IProductCmptTypeRelation relation) throws CoreException {
+        return getJavaNamingConvention().getMultiValueMemberVarName(interfaceBuilder.getPropertyNameToManyRelation(relation));
     }
     
-    private String getMemberVarNameRelation(IProductCmptTypeRelation relation) throws CoreException {
-        if (relation.is1ToMany()) {
-            return getJavaNamingConvention().getMultiValueMemberVarName(getPropertyNameRelation(relation));
-        } else {
-            return getJavaNamingConvention().getMemberVarName(getPropertyNameRelation(relation));
-        }
+    /**
+     * Code sample for 
+     * <pre>
+     * [javadoc]
+     * private CoverageType[] optionalCoverageTypes;
+     * </pre>
+     */
+    private void generateFieldToManyRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+        String role = StringUtils.capitalise(relation.getTargetRolePlural());
+        appendLocalizedJavaDoc("FIELD_TOMANY_RELATION", role, relation, memberVarsBuilder);
+        String type = String.class.getName() + "[]";
+        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, type, getFieldNameToManyRelation(relation), new JavaCodeFragment("new String[0]"));
     }
     
-    String getPropertyNameRelation(IProductCmptTypeRelation relation) throws CoreException {
-        if (relation.is1ToMany()) {
-            return StringUtils.capitalise(relation.getTargetRolePlural());
-        } else {
-            return StringUtils.capitalise(relation.getTargetRoleSingular());
-        }
-    }
-    
-    private void generateMethodRelationGetMany(
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverageType[] getCoverageTypes() {
+     *     ICoverageType[] result = new ICoverageType[coverageTypes.length];
+     *     for (int i = 0; i < result.length; i++) {
+     *         result[i] = (ICoverageType) getRepository().getProductComponent(coverageTypes[i]);
+     *     }
+     *     return result;
+     * }
+     * </pre>
+     */
+    private void generateMethodGetManyRelatedCmpts(
             IProductCmptTypeRelation relation, 
             JavaCodeFragmentBuilder memberVarsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureRelationGetMany(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetManyRelatedCmpts(relation, methodsBuilder);
 
-        // Sample code
-        //
-        // CoverageType[] result = new CoverageType[coverageTypes.length];
-        // for (int i = 0; i < result.length; i++) {
-        //     result[i] = (CoveragePk) getRepository().getProductComponent(
-        //     coveragePk[i]);
-        // }
-        // return result;
-        String fieldName = getMemberVarNameRelation(relation);
+        String fieldName = getFieldNameToManyRelation(relation);
         String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
         methodsBuilder.openBracket();
         methodsBuilder.appendClassName(targetClass);
@@ -427,17 +463,41 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.closeBracket();
     }
     
-    private void generateMethodRelationGet1(
+    
+    private String getFieldNameTo1Relation(IProductCmptTypeRelation relation) throws CoreException {
+        return getJavaNamingConvention().getMemberVarName(interfaceBuilder.getPropertyNameToManyRelation(relation));
+    }
+
+    /**
+     * Code sample for 
+     * <pre>
+     * [javadoc]
+     * private CoverageType mainCoverage;
+     * </pre>
+     */
+    private void generateFieldTo1Relation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
+        String role = StringUtils.capitalise(relation.getTargetRoleSingular());
+        appendLocalizedJavaDoc("FIELD_TO1_RELATION", role, relation, memberVarsBuilder);
+        memberVarsBuilder.varDeclaration(Modifier.PRIVATE, String.class, getFieldNameTo1Relation(relation), new JavaCodeFragment("null"));
+    }
+
+    /**
+     * Code sample for 
+     * <pre>
+     * [javadoc]
+     * public CoverageType getMainCoverageType() {
+     *     return (CoveragePk) getRepository().getProductComponent(mainCoverageType);
+     * }
+     * </pre>
+     */
+    private void generateMethodGet1RelatedCmpt(
             IProductCmptTypeRelation relation, 
             JavaCodeFragmentBuilder memberVarsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureRelationGetMany(relation, methodsBuilder);
-
-        // Sample code
-        // return (CoveragePk) getRepository().getProductComponent(coverageType);
-        String fieldName = getMemberVarNameRelation(relation);
+        interfaceBuilder.generateSignatureGet1RelatedCmpt(relation, methodsBuilder);
+        String fieldName = getFieldNameTo1Relation(relation);
         String targetClass = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
