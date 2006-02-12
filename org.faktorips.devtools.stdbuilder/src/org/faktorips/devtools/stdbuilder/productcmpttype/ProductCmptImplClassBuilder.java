@@ -110,7 +110,9 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
             throws CoreException {
         
         generateGetGenerationMethod(methodsBuilder);
-        generateMethodCreatePolicyCmpt(methodsBuilder);
+        if (!getProductCmptType().isAbstract()) {
+            generateMethodCreatePolicyCmpt(methodsBuilder);
+        }
     }
     
     private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -170,7 +172,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForRelation(IProductCmptTypeRelation relation,
+    protected void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
@@ -180,8 +182,16 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForContainerRelationDefinition(IProductCmptTypeRelation containerRelation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         // nothing to do
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForContainerRelationImplementation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        // nothing to do
+    }
+
 
 }

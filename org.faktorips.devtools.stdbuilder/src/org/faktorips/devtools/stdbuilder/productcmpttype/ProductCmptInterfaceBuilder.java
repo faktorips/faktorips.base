@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -99,7 +99,9 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
             throws CoreException {
         
         generateMethodGetGeneration(methodsBuilder);
-        generateMethodCreatePolicyCmpt(methodsBuilder);
+        if (!getProductCmptType().isAbstract()) {
+            generateMethodCreatePolicyCmpt(methodsBuilder);
+        }
     }
 
     /**
@@ -110,7 +112,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * </pre>
      */
     private void generateMethodGetGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IChangesInTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
+        IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
         String generationConceptName = convention.getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
         generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
@@ -124,12 +126,17 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * </pre>
      */
     void generateSignatureGetGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String generationConceptName = getChangesInTimeNamingConvention(type).
-            getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(type));
-        String generationInterface = productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile());
-        String methodName = getLocalizedText(type, "METHOD_GET_GENERATION_NAME", generationConceptName);
+        String generationInterface = productCmptGenInterfaceBuilder.getQualifiedClassName(type);
+        String methodName = getMethodNameGetGeneration(type);
         String paramName = getVarNameEffectiveDate(type);
         methodsBuilder.signature(Modifier.PUBLIC, generationInterface, methodName, new String[]{paramName}, new String[]{Calendar.class.getName()});
+    }
+    
+    public String getMethodNameGetGeneration(IProductCmptType type) throws CoreException {
+        IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(type);
+        String generationConceptName = convention.getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(type));
+        String generationConceptAbbreviation = convention.getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(type));
+        return getLocalizedText(type, "METHOD_GET_GENERATION_NAME", new String[]{type.getName(), generationConceptAbbreviation, generationConceptName});
     }
 
     /**
@@ -141,7 +148,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getConceptName(getIpsSrcFile()); 
-        IChangesInTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
+        IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
         String effectiveDateConceptName = convention.getEffectiveDateConceptName(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptConceptName, effectiveDateConceptName}, getIpsObject(), methodsBuilder);
         generateSignatureCreatePolicyCmpt(getIpsSrcFile(), methodsBuilder);
@@ -195,7 +202,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForRelation(IProductCmptTypeRelation relation,
+    protected void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
@@ -206,9 +213,16 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        //  nothing to do
-        
+    protected void generateCodeForContainerRelationDefinition(IProductCmptTypeRelation containerRelation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        // nothing to do
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForContainerRelationImplementation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        // nothing to do
+    }
+
 
 }

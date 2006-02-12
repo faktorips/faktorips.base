@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -988,36 +988,36 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	/**
 	 * {@inheritDoc}
 	 */
-	public IChangesInTimeNamingConvention getChangesInTimeNamingConvention(
+	public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(
 			String id) {
 		if (changesInTimeNamingConventionMap == null) {
 			changesInTimeNamingConventionMap = new HashMap();
-			IChangesInTimeNamingConvention vaa = new ChangesInTimeNamingConvention(
-					IChangesInTimeNamingConvention.VAA);
+			IChangesOverTimeNamingConvention vaa = new ChangesOverTimeNamingConvention(
+					IChangesOverTimeNamingConvention.VAA);
 			changesInTimeNamingConventionMap.put(vaa.getId(), vaa);
-			IChangesInTimeNamingConvention pm = new ChangesInTimeNamingConvention(
-					IChangesInTimeNamingConvention.PM);
+			IChangesOverTimeNamingConvention pm = new ChangesOverTimeNamingConvention(
+					IChangesOverTimeNamingConvention.PM);
 			changesInTimeNamingConventionMap.put(pm.getId(), pm);
 		}
-		IChangesInTimeNamingConvention convention = (IChangesInTimeNamingConvention) changesInTimeNamingConventionMap
+		IChangesOverTimeNamingConvention convention = (IChangesOverTimeNamingConvention) changesInTimeNamingConventionMap
 				.get(id);
 		if (convention != null) {
 			return convention;
 		}
-		convention = (IChangesInTimeNamingConvention) changesInTimeNamingConventionMap
-				.get(IChangesInTimeNamingConvention.VAA);
+		convention = (IChangesOverTimeNamingConvention) changesInTimeNamingConventionMap
+				.get(IChangesOverTimeNamingConvention.VAA);
 		if (convention != null) {
 			IpsPlugin.log(new IpsStatus(IpsStatus.WARNING,
 					"Unknown changes in time naming convention " + id
 							+ ". Using default "
-							+ IChangesInTimeNamingConvention.VAA, null));
+							+ IChangesOverTimeNamingConvention.VAA, null));
 			return convention;
 		}
 		IpsPlugin.log(new IpsStatus(
 				"Unknown changes in time naming convention " + id
 						+ ". Default convention "
-						+ IChangesInTimeNamingConvention.VAA + " not found!"));
-		return new ChangesInTimeNamingConvention("VAA");
+						+ IChangesOverTimeNamingConvention.VAA + " not found!"));
+		return new ChangesOverTimeNamingConvention("VAA");
 	}
 
 }

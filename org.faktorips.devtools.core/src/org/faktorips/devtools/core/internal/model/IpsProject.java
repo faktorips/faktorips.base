@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -255,7 +255,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-	public IChangesInTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
+	public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
     	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
     	return getIpsModel().getChangesInTimeNamingConvention(properties.getChangesInTimeConventionIdForGeneratedCode());
 	}

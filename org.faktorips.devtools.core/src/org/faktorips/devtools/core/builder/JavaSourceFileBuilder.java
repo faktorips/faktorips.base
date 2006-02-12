@@ -26,7 +26,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -120,7 +120,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	/**
 	 * Returns the naming convention for product changes over time. 
 	 */
-	public IChangesInTimeNamingConvention getChangesInTimeNamingConvention(IIpsElement element) {
+	public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(IIpsElement element) {
 		return element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
 	}
 

@@ -3,7 +3,7 @@ package org.faktorips.devtools.core;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.util.XmlUtil;
 
 /**
@@ -36,8 +36,8 @@ public class IpsPreferences {
     /**
      * Returns the naming convention used in the GUI for product changes over time.  
      */
-    public final static IChangesInTimeNamingConvention getChangesInTimeNamingConvention() {
-    	return IpsPlugin.getDefault().getIpsModel().getChangesInTimeNamingConvention(IChangesInTimeNamingConvention.VAA);
+    public final static IChangesOverTimeNamingConvention getChangesInTimeNamingConvention() {
+    	return IpsPlugin.getDefault().getIpsModel().getChangesInTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
     }
     
     /**

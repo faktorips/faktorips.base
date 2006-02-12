@@ -28,7 +28,7 @@ import java.util.Locale;
  * 
  * @author Jan Ortmann
  */
-public interface IChangesInTimeNamingConvention {
+public interface IChangesOverTimeNamingConvention {
 	
 	/**
 	 * The id of the VAA naming convention.

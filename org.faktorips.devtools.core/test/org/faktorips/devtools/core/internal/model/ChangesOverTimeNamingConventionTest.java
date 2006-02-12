@@ -4,23 +4,23 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ChangesInTimeNamingConventionTest extends TestCase {
+public class ChangesOverTimeNamingConventionTest extends TestCase {
 
-	private ChangesInTimeNamingConvention vaa;
-	private ChangesInTimeNamingConvention pm;
+	private ChangesOverTimeNamingConvention vaa;
+	private ChangesOverTimeNamingConvention pm;
 	
 	/*
 	 * @see TestCase#setUp()
 	 */
 	protected void setUp() throws Exception {
-		vaa = new ChangesInTimeNamingConvention(IChangesInTimeNamingConvention.VAA);
-		pm = new ChangesInTimeNamingConvention(IChangesInTimeNamingConvention.PM);
+		vaa = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
+		pm = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
 	}
 
 	/*

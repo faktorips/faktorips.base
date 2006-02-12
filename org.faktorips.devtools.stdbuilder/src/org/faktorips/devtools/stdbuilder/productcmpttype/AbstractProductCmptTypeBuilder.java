@@ -2,7 +2,6 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +14,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -58,8 +57,12 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
     /**
      * Returns the product component type this builder builds an artefact for.
      */
-    public IProductCmptType getProductCmptType() throws CoreException {
-        return ((IPolicyCmptType)getIpsObject()).findProductCmptType();
+    public IProductCmptType getProductCmptType() {
+        try {
+            return ((IPolicyCmptType)getIpsObject()).findProductCmptType();
+        } catch (CoreException e) {
+            throw new RuntimeException(e); // this can never happen
+        }
     }
 
     /**
@@ -89,7 +92,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * @param element An ips element needed to access the ipsproject where the neccessary configuration
      * information is stored.
      * 
-     * @see org.faktorips.devtools.core.model.IChangesInTimeNamingConvention
+     * @see org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention
      */
     public String getAbbreviationForGenerationConcept(IIpsElement element) {
         return getChangesInTimeNamingConvention(element).
@@ -264,10 +267,14 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
         IProductCmptTypeRelation[] relations = getProductCmptType().getRelations();
         for (int i = 0; i < relations.length; i++) {
             try {
-                if (relations[i].isAbstractContainer() || relations[i].validate().containsErrorMsg()) {
+                if (relations[i].validate().containsErrorMsg()) {
                     continue;
                 }
-                generateCodeForRelation(relations[i], memberVarsBuilder, methodsBuilder);                
+                if (relations[i].isAbstractContainer()) {
+                    generateCodeForContainerRelationDefinition(relations[i], memberVarsBuilder, methodsBuilder);
+                } else {
+                    generateCodeForNoneContainerRelation(relations[i], memberVarsBuilder, methodsBuilder);                
+                }
                 if (relations[i].implementsContainerRelation()) {
                     IProductCmptTypeRelation containerRel = relations[i].findContainerRelation();
                     List implementationRelations = (List)containerRelations.get(containerRel);
@@ -283,16 +290,37 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        for (Iterator it=containerRelations.values().iterator(); it.hasNext(); ) {
-            IProductCmptTypeRelation containerRel = (IProductCmptTypeRelation)it.next();
-            try {
-                List implementationRels = (List)containerRelations.get(containerRel);
-                generateCodeForContainerRelation(containerRel, implementationRels, memberVarsBuilder, methodsBuilder);
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building container relation "
-                        + containerRel + " of "
-                        + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+        generateCodeForContainerRelationImplementation(getProductCmptType(), containerRelations, memberVarsBuilder, methodsBuilder);
+    }
+    
+    /**
+     * Generates code for container relation implementation for all container relations defined
+     * in the indicated type and it's supertypes.
+     */
+    private void generateCodeForContainerRelationImplementation(
+            IProductCmptType type,
+            HashMap containerImplMap, 
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        IProductCmptTypeRelation[] relations = type.getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            if (relations[i].isAbstractContainer()) {
+                try {
+                    List implRelations = (List)containerImplMap.get(relations[i]);
+                    if (implRelations!=null) {
+                        generateCodeForContainerRelationImplementation(relations[i], implRelations, memberVarsBuilder, methodsBuilder);
+                    }
+                } catch (Exception e) {
+                    addToBuildStatus(new IpsStatus("Error building container relation implementation. "
+                        + "ContainerRelation: " + relations[i]
+                        + "Implementing Type: " + getProductCmptType()));
+                }
             }
+        }
+        IProductCmptType supertype = type.findSupertype();
+        if (supertype!=null) {
+            generateCodeForContainerRelationImplementation(supertype, containerImplMap, memberVarsBuilder, methodsBuilder);
         }
     }
     
@@ -312,21 +340,37 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * @see JavaSourceFileBuilder#addToBuildStatus(CoreException)
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
-    protected abstract void generateCodeForRelation(IProductCmptTypeRelation relation,
+    protected abstract void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
 
     /**
-     * Generates the code for a container relation. The method is called for every valid container
-     * relation.
+     * Generates the code for a container relation definition. The method is called for every 
+     * valid container relation defined in the product component type we currently build sourcecode for.
+     * 
+     * @param containerRelation the container relation source code should be generated for.
+     * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
+     * @param memberVarsBuilder the code fragment builder to build the method section.
+     */
+    protected abstract void generateCodeForContainerRelationDefinition(
+            IProductCmptTypeRelation containerRelation,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception;
+
+
+    /**
+     * Generates code for a container relation implementation. 
+     * The method is called for every valid container relation in the product 
+     * component type we currently build sourcecode for and for each valid container relation
+     * in one of it's supertypes.
      * 
      * @param containerRelation the container relation source code should be generated for.
      * @param implementationRelations the relation implementing the container relation.
      * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
      * @param memberVarsBuilder the code fragment builder to build the method section.
      */
-    protected abstract void generateCodeForContainerRelation(
+    protected abstract void generateCodeForContainerRelationImplementation(
             IProductCmptTypeRelation containerRelation,
             List implementationRelations, 
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -339,7 +383,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * @param element An isp element that gives access to the ips project.
      */
     public String getVarNameEffectiveDate(IIpsElement element) {
-        IChangesInTimeNamingConvention convention = element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
+        IChangesOverTimeNamingConvention convention = element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
         String conceptName = convention.getEffectiveDateConceptName(element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
         return StringUtils.uncapitalise(conceptName);
     }

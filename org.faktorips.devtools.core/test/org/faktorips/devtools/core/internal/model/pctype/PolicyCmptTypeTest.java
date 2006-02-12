@@ -47,6 +47,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         pack = root.createPackageFragment("products.folder", true, null);
         sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)sourceFile.getIpsObject();
+        pcType.setConfigurableByProductCmptType(false);
     }
     
     public void testIsExtensionCompilationUnitGenerated() throws CoreException {

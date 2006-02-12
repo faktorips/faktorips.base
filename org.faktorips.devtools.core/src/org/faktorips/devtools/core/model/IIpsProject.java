@@ -86,7 +86,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the naming convention for changes over time used in the generated Java sourcecode.
      */
-    public IChangesInTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode();
+    public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode();
     
     /**
      * Returns <code>true</code> if this project contains a model defininition,

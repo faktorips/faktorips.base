@@ -1,5 +1,9 @@
-#Tue Feb 07 09:31:47 CET 2006
+#Sun Feb 12 21:29:30 CET 2006
+=\=\=\=\=\=\=
+<<<<<<<=org.eclipse.core.resources.prefs
+>>>>>>>=1.3
 eclipse.preferences.version=1
+encoding//src/org/faktorips/devtools/core/internal/model/VAAChangesOverTimeNamingConvention_en.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/actions/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/editors/productcmpt/messages.properties=8859_1
 encoding//src/org/faktorips/devtools/core/ui/search/messages.properties=8859_1

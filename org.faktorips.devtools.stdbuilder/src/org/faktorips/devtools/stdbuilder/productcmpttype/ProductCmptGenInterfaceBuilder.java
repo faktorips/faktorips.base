@@ -182,12 +182,14 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     /**
      * Overridden.
      */
-    protected void generateCodeForRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if (relation.is1ToMany()) {
             generateMethodGetManyRelatedCmpts(relation, methodsBuilder);
+            generateMethodGetRelatedCmptAtIndex(relation, methodsBuilder);
         } else {
             generateMethodGet1RelatedCmpt(relation, methodsBuilder);
         }
+        generateMethodGetNumOfRelatedCmpts(relation, methodsBuilder);
     }
     
     /**
@@ -242,10 +244,14 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     void generateSignatureGet1RelatedCmpt(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getJavaNamingConvention().getGetterMethodName(getPropertyNameTo1Relation(relation), Datatype.INTEGER);
+        String methodName = getMethodNameGet1RelatedCmpt(relation);
         IProductCmptType target = relation.findTarget();
         String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
         builder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
+    }
+    
+    String getMethodNameGet1RelatedCmpt(IProductCmptTypeRelation relation) throws CoreException {
+        return getJavaNamingConvention().getGetterMethodName(getPropertyNameTo1Relation(relation), Datatype.INTEGER);
     }
 
     String getPropertyNameTo1Relation(IProductCmptTypeRelation relation) {
@@ -256,8 +262,83 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForContainerRelation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForContainerRelationDefinition(IProductCmptTypeRelation containerRelation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", containerRelation.getTargetRolePlural(), containerRelation, methodsBuilder);
+        generateSignatureContainerRelation(containerRelation, methodsBuilder);
+        methodsBuilder.appendln(";");
+        
+        generateMethodGetNumOfRelatedCmpts(containerRelation, methodsBuilder);
+    }
+    
+    void generateSignatureContainerRelation(IProductCmptTypeRelation containerRelation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        generateSignatureGetManyRelatedCmpts(containerRelation, methodsBuilder);        
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForContainerRelationImplementation(IProductCmptTypeRelation containerRelation, List implementationRelations, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        // nothing to do
     }
 
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public int getNumOfCoverageTypes();
+     * </pre>
+     */
+    void generateMethodGetNumOfRelatedCmpts(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String role = relation.getTargetRolePlural();
+        appendLocalizedJavaDoc("METHOD_GET_NUM_OF_RELATED_CMPTS", role, relation, builder);
+        generateSignatureGetNumOfRelatedCmpts(relation, builder);
+        builder.appendln(";");
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * public int getNumOfCoverageTypes()
+     * </pre>
+     */
+    void generateSignatureGetNumOfRelatedCmpts(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameGetNumOfRelatedCmpts(relation);
+        builder.signature(Modifier.PUBLIC, "int", methodName, new String[0], new String[0]);
+    }
+    
+    public String getMethodNameGetNumOfRelatedCmpts(IProductCmptTypeRelation relation) {
+        String propName = getLocalizedText(relation, "PROPERTY_GET_NUM_OF_RELATED_CMPTS_NAME", relation.getTargetRolePlural());
+        return getJavaNamingConvention().getGetterMethodName(propName, Datatype.INTEGER);
+    }
 
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public CoverageType getCoverageType(int index);
+     * </pre>
+     */
+    void generateMethodGetRelatedCmptAtIndex(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String role = relation.getTargetRolePlural();
+        appendLocalizedJavaDoc("METHOD_GET_RELATED_CMPT_AT_INDEX", role, relation, builder);
+        generateSignatureGetRelatedCmptsAtIndex(relation, builder);
+        builder.appendln(";");
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * public CoverageType getCoverageType(int index)
+     * </pre>
+     */
+    void generateSignatureGetRelatedCmptsAtIndex(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameGetRelatedCmptAtIndex(relation);
+        IProductCmptType target = relation.findTarget();
+        String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target);
+        builder.signature(Modifier.PUBLIC, returnType, methodName, new String[]{"index"}, new String[]{"int"});
+    }
+
+    public String getMethodNameGetRelatedCmptAtIndex(IProductCmptTypeRelation relation) {
+        return getJavaNamingConvention().getGetterMethodName(relation.getTargetRoleSingular(), Datatype.INTEGER);
+    }
 }

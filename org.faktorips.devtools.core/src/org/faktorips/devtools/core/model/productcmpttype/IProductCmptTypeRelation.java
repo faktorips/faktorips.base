@@ -45,7 +45,8 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
     
     /**
      * Returns the container relation if this relation implements one or an empty string if
-     * this relation does not implement a container relation.
+     * this relation does not implement a container relation. Note that the container
+     * relation can be either defined in this type or one of the type's supertypes.
      * 
      * @throws CoreException if an error occurs while searching for the container relation.
      */

@@ -42,11 +42,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     private final static String ATTRIBUTE_FIELD_COMMENT = "ATTRIBUTE_FIELD_COMMENT";
 
-    private final static String ATTRIBUTE_IMPLEMENTATION_GETTER_JAVADOC = "ATTRIBUTE_IMPLEMENTATION_GETTER_JAVADOC";
-
-    private final static String ATTRIBUTE_IMPLEMENTATION_SETTER_JAVADOC = "ATTRIBUTE_IMPLEMENTATION_SETTER_JAVADOC";
-    private final static String ATTRIBUTE_VALUESET_IMPLEMENTATION_GETTER_JAVADOC = "ATTRIBUTE_VALUESET_IMPLEMENTATION_GETTER_JAVADOC";
-
     private final static String CONSTRUCTOR_POLICY_JAVADOC = "CONSTRUCTOR_POLICY_JAVADOC";
 
     private final static String VALIDATEDEPS_IMPLEMENTATION_JAVADOC = "VALIDATEDEPS_IMPLEMENTATION_JAVADOC";
@@ -57,11 +52,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     private final static String EXECMESSAGE_POLICY_JAVADOC = "EXECMESSAGE_POLICY_JAVADOC";
 
-    private final static String PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC = "PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC";
-
-    private final static String PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC = "PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC";
-
-    private final static String PRODUCT_CMPT_IMPLEMENTATION_GETTER_JAVADOC = "PRODUCT_CMPT_IMPLEMENTATION_GETTER_JAVADOC";
     private final static String JAVA_GETTER_METHOD_MAX_VALUESET = "JAVA_GETTER_METHOD_MAX_VALUESET";
     private final static String JAVA_GETTER_METHOD_VALUESET = "JAVA_GETTER_METHOD_VALUESET";
 
@@ -104,6 +94,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         this.productCmptGenImplBuilder = builder;
     }
 
+    public IPolicyCmptType getPolicyCmptType() {
+        return (IPolicyCmptType)getIpsObject();
+    }
+    
     protected void assertConditionsBeforeGenerating() {
         String builderName = null;
 
@@ -633,17 +627,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.append("return (");
         builder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
         builder.append(")");
-        builder.append(getMethodNameGetProductComponent());
-        builder.append("().getGeneration(");
+        builder.append(interfaceBuilder.getMethodNameGetProductCmpt(getIpsSrcFile()));
+        builder.append("().");
+        builder.append(productCmptInterfaceBuilder.getMethodNameGetGeneration(getPolicyCmptType().findProductCmptType()));
+        builder.append('(');
         builder.append(getEffectiveDateMethodName());
         builder.appendln("());");
         builder.closeBracket();
     }
     
-    private String getMethodNameGetProductComponent() throws CoreException {
-        return interfaceBuilder.getMethodNameGetProductCmpt(getIpsSrcFile());
-    }
-
     private void generateMethodSetProductCmpt(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureSetProductCmpt(getIpsSrcFile(), builder);

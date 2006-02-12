@@ -120,7 +120,7 @@ public interface IIpsModel extends IIpsElement {
      * If the id does not identify a naming convention, the VAA naming convention is
      * returned per default.
      */
-    public IChangesInTimeNamingConvention getChangesInTimeNamingConvention(String id);
+    public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(String id);
 
     /**
      * Removes the given object from the model.

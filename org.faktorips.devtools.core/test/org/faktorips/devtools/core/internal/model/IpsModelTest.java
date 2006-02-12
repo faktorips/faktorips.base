@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -227,17 +227,17 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
     }
     
     public void testGetChangesInTimeNamingConvention() {
-    	IChangesInTimeNamingConvention convention = model.getChangesInTimeNamingConvention(IChangesInTimeNamingConvention.VAA);
+    	IChangesOverTimeNamingConvention convention = model.getChangesInTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
     	assertNotNull(convention);
-    	assertEquals(IChangesInTimeNamingConvention.VAA, convention.getId());
+    	assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
     	
-    	convention = model.getChangesInTimeNamingConvention(IChangesInTimeNamingConvention.PM);
+    	convention = model.getChangesInTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
     	assertNotNull(convention);
-    	assertEquals(IChangesInTimeNamingConvention.PM, convention.getId());
+    	assertEquals(IChangesOverTimeNamingConvention.PM, convention.getId());
     	
     	convention = model.getChangesInTimeNamingConvention("unknown");
     	assertNotNull(convention);
-    	assertEquals(IChangesInTimeNamingConvention.VAA, convention.getId());
+    	assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
     }
 
     /** 

@@ -3,7 +3,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -27,7 +27,7 @@ public class IpsProjectProperties {
 	private boolean modelProject;
 	private boolean productDefinitionProject;
 	private Locale javaSrcLanguage = Locale.ENGLISH;
-	private String changesInTimeConventionIdForGeneratedCode = IChangesInTimeNamingConvention.VAA;
+	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
 	private String builderSetId = "";
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -141,7 +141,7 @@ public class IpsProjectProperties {
     	    changesInTimeConventionIdForGeneratedCode = generatedCodeEl.getAttribute("changesInTimeNamingConvention");
         } else {
         	javaSrcLanguage = Locale.ENGLISH;
-        	changesInTimeConventionIdForGeneratedCode = IChangesInTimeNamingConvention.VAA;
+        	changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
         }
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id");

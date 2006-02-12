@@ -652,6 +652,10 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                 list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE));
             }
         }
+        if (isConfigurableByProductCmptType() && StringUtils.isEmpty(this.unqalifiedProductCmptType)) {
+            String text = "The product component type name is missing.";
+            list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+        }
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(list);
             IMethod[] methods = getMethods();

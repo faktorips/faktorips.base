@@ -306,6 +306,14 @@ public class ProductCmptType implements IProductCmptType {
 		}
 		return ((ProductCmptType)o).policyCmptType.equals(policyCmptType);
 	}
+	
+	public int hashCode() {
+		return getName().hashCode();
+	}
+	
+	public String toString() {
+        return getParent().toString() + "/" + getName();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -327,4 +335,6 @@ public class ProductCmptType implements IProductCmptType {
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType);
 	}
+	
+	
 }

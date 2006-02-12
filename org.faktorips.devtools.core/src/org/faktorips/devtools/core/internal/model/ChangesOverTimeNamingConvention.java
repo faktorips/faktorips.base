@@ -2,7 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.Locale;
 
-import org.faktorips.devtools.core.model.IChangesInTimeNamingConvention;
+import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -11,22 +11,22 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Jan Ortmann
  */
-public class ChangesInTimeNamingConvention implements
-		IChangesInTimeNamingConvention {
+public class ChangesOverTimeNamingConvention implements
+		IChangesOverTimeNamingConvention {
 
 	
-	private final static String pack = StringUtil.getPackageName(ChangesInTimeNamingConvention.class.getName());
-	private final static String unqalifiedClassName = StringUtil.unqualifiedName(ChangesInTimeNamingConvention.class.getName());
+	private final static String pack = StringUtil.getPackageName(ChangesOverTimeNamingConvention.class.getName());
+	private final static String unqalifiedClassName = StringUtil.unqualifiedName(ChangesOverTimeNamingConvention.class.getName());
 
 	
 	private String id;
 	private LocalizedStringsSet locStringSet;
 
-	public ChangesInTimeNamingConvention(String id) {
-		this(id, new LocalizedStringsSet(pack + "." + id + unqalifiedClassName, ChangesInTimeNamingConvention.class.getClassLoader()));
+	public ChangesOverTimeNamingConvention(String id) {
+		this(id, new LocalizedStringsSet(pack + "." + id + unqalifiedClassName, ChangesOverTimeNamingConvention.class.getClassLoader()));
 	}
 	
-	public ChangesInTimeNamingConvention(String id, LocalizedStringsSet locStringSet) {
+	public ChangesOverTimeNamingConvention(String id, LocalizedStringsSet locStringSet) {
 		ArgumentCheck.notNull(id);
 		ArgumentCheck.notNull(locStringSet);
 		this.id = id;

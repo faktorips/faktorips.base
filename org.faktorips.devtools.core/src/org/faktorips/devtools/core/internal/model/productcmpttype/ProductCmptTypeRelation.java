@@ -349,6 +349,14 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 		ProductCmptTypeRelation other = (ProductCmptTypeRelation)o;
 		return relation.equals(other.relation);
 	}
+	
+	public int hashCode() {
+		return getName().hashCode();
+	}
+	
+	public String toString() {
+        return getParent().toString() + "/" + getName();
+	}
 
 	/**
 	 * {@inheritDoc}
