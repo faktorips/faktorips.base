@@ -114,7 +114,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 													// haven't been looked up.
 
 	// map containg all changes in time naming conventions by id.
-	private Map changesInTimeNamingConventionMap = null;
+	private Map changesOverTimeNamingConventionMap = null;
 
 	IpsModel() {
 		super(null, "IpsModel");
@@ -988,23 +988,16 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	/**
 	 * {@inheritDoc}
 	 */
-	public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(
+	public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(
 			String id) {
-		if (changesInTimeNamingConventionMap == null) {
-			changesInTimeNamingConventionMap = new HashMap();
-			IChangesOverTimeNamingConvention vaa = new ChangesOverTimeNamingConvention(
-					IChangesOverTimeNamingConvention.VAA);
-			changesInTimeNamingConventionMap.put(vaa.getId(), vaa);
-			IChangesOverTimeNamingConvention pm = new ChangesOverTimeNamingConvention(
-					IChangesOverTimeNamingConvention.PM);
-			changesInTimeNamingConventionMap.put(pm.getId(), pm);
-		}
-		IChangesOverTimeNamingConvention convention = (IChangesOverTimeNamingConvention) changesInTimeNamingConventionMap
+		
+		initChangesOverTimeNamingConventionIfNeccessary();
+		IChangesOverTimeNamingConvention convention = (IChangesOverTimeNamingConvention) changesOverTimeNamingConventionMap
 				.get(id);
 		if (convention != null) {
 			return convention;
 		}
-		convention = (IChangesOverTimeNamingConvention) changesInTimeNamingConventionMap
+		convention = (IChangesOverTimeNamingConvention) changesOverTimeNamingConventionMap
 				.get(IChangesOverTimeNamingConvention.VAA);
 		if (convention != null) {
 			IpsPlugin.log(new IpsStatus(IpsStatus.WARNING,
@@ -1020,4 +1013,25 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		return new ChangesOverTimeNamingConvention("VAA");
 	}
 
+	public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
+		initChangesOverTimeNamingConventionIfNeccessary();		
+		IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap.size()];
+		int i=0;
+		for (Iterator it=changesOverTimeNamingConventionMap.values().iterator(); it.hasNext(); ) {
+			conventions[i++] = (IChangesOverTimeNamingConvention)it.next();
+		}
+		return conventions;
+	}
+
+	private void initChangesOverTimeNamingConventionIfNeccessary() {
+		if (changesOverTimeNamingConventionMap == null) {
+			changesOverTimeNamingConventionMap = new HashMap();
+			IChangesOverTimeNamingConvention vaa = new ChangesOverTimeNamingConvention(
+					IChangesOverTimeNamingConvention.VAA);
+			changesOverTimeNamingConventionMap.put(vaa.getId(), vaa);
+			IChangesOverTimeNamingConvention pm = new ChangesOverTimeNamingConvention(
+					IChangesOverTimeNamingConvention.PM);
+			changesOverTimeNamingConventionMap.put(pm.getId(), pm);
+		}
+	}
 }

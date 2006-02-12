@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.DescriptionSection;
@@ -22,7 +22,7 @@ public class GenerationsPage extends IpsObjectEditorPage {
     final static String PAGE_ID = "Generations"; //$NON-NLS-1$
 
     public GenerationsPage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()));
+        super(editor, PAGE_ID, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()));
     }
 
     /**

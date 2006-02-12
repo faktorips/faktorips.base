@@ -17,7 +17,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -106,7 +105,7 @@ public class ProductAttributesSection extends IpsSection {
 		
 		// create label and text control for the policy component type
 		// this product component is based on.
-		toolkit.createLabel(rootPane, IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
+		toolkit.createLabel(rootPane, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
 		this.generationText = toolkit.createText(rootPane);
 		this.generationText.setText(this.generation.getName());
 		this.generationText.setEnabled(false);

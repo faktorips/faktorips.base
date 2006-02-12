@@ -116,11 +116,16 @@ public interface IIpsModel extends IIpsElement {
     public ValueDatatype[] getPredefinedValueDatatypes();
     
     /**
+     * Returns the available changes over time naming conventions.
+     */
+    public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention();
+
+    /**
      * Returns the changes in time naming convention identified by the given id.
      * If the id does not identify a naming convention, the VAA naming convention is
      * returned per default.
      */
-    public IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(String id);
+    public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(String id);
 
     /**
      * Removes the given object from the model.

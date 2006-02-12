@@ -227,15 +227,15 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
     }
     
     public void testGetChangesInTimeNamingConvention() {
-    	IChangesOverTimeNamingConvention convention = model.getChangesInTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
+    	IChangesOverTimeNamingConvention convention = model.getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
     	assertNotNull(convention);
     	assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
     	
-    	convention = model.getChangesInTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
+    	convention = model.getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
     	assertNotNull(convention);
     	assertEquals(IChangesOverTimeNamingConvention.PM, convention.getId());
     	
-    	convention = model.getChangesInTimeNamingConvention("unknown");
+    	convention = model.getChangesOverTimeNamingConvention("unknown");
     	assertNotNull(convention);
     	assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
     }

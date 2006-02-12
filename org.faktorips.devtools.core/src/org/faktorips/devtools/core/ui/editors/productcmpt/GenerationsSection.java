@@ -11,6 +11,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
@@ -43,7 +44,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             Composite parent,
             UIToolkit toolkit) {
         super(page.getProductCmpt(), parent, Section.TITLE_BAR | Section.DESCRIPTION, 
-        	IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()), toolkit);
+        		IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()), toolkit);
         this.page = page;
     }
 
@@ -64,7 +65,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 			IProductCmptGeneration editableGeneration  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
 	    	boolean select = generation.equals(editableGeneration);
 	    	if (!select) {
-	    		String genName = IpsPreferences.getChangesInTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
+	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
 	    		select = MessageDialog.openConfirm(page.getSite().getShell(), genName + " anzeigen?", "Die ausgewählte " + genName + " hat ein Gültig-Ab-Datum (" + generation.getName() + "), welches nicht mit dem aktuellen Arbeitsdatum (" + IpsPreferences.getWorkingDate().getTime().toLocaleString() + ") übereinstimmt. Wenn diese " + genName + " angezeigt wird, kann sie nicht bearbeitet werden. Soll die " + genName + " angezeigt werden?");
 	    	}
 			if (select) {

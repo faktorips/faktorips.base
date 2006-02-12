@@ -11,11 +11,17 @@ import org.faktorips.util.XmlUtil;
  */
 public class IpsPreferences {
     
-    /**
+	/**
      * Constant identifiying the working date preference
      */
     public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate";
-	public static final String NULL_REPRESENTATION_STRING = IpsPlugin.PLUGIN_ID + ".nullRepresentationString";
+	
+    public static final String NULL_REPRESENTATION_STRING = IpsPlugin.PLUGIN_ID + ".nullRepresentationString";
+
+    /**
+     * Constant identifying the changes over time naming concept preference.
+     */
+    public final static String CHANGES_OVER_TIME_NAMING_CONCEPT = IpsPlugin.PLUGIN_ID + ".changesOverTimeConcept";
     
     /**
      * Returns the working date preference.
@@ -36,8 +42,13 @@ public class IpsPreferences {
     /**
      * Returns the naming convention used in the GUI for product changes over time.  
      */
-    public final static IChangesOverTimeNamingConvention getChangesInTimeNamingConvention() {
-    	return IpsPlugin.getDefault().getIpsModel().getChangesInTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
+    public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
+    	String convention = IpsPlugin.getDefault().getPreferenceStore().getString(CHANGES_OVER_TIME_NAMING_CONCEPT);
+    	if (StringUtils.isEmpty(convention)) {
+    		convention = IChangesOverTimeNamingConvention.VAA;
+        	IpsPlugin.getDefault().getPreferenceStore().setValue(NULL_REPRESENTATION_STRING, convention);
+    	}
+    	return IpsPlugin.getDefault().getIpsModel().getChangesOverTimeNamingConvention(convention);
     }
     
     /**

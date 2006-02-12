@@ -257,7 +257,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
 	public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
     	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
-    	return getIpsModel().getChangesInTimeNamingConvention(properties.getChangesInTimeConventionIdForGeneratedCode());
+    	return getIpsModel().getChangesOverTimeNamingConvention(properties.getChangesInTimeConventionIdForGeneratedCode());
 	}
 
 	/**
