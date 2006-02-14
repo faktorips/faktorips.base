@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -46,7 +47,9 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 	 */
 	public CompilationResult getTableAccessCode(ITableAccessFunction fct,
 			CompilationResult[] argResults) throws CoreException {
-		return new CompilationResultImpl();
+        Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
+        JavaCodeFragment code = new JavaCodeFragment();
+        return new CompilationResultImpl(code, returnType);
 	}
 
 	/**

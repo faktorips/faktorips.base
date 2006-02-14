@@ -2,9 +2,9 @@ package org.faktorips.devtools.core;
 
 import java.util.HashMap;
 
-import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ClasspathVariableInitializer;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -50,7 +50,7 @@ public class FaktorIpsClasspathVariableInitializer extends
 		if (m==null) {
 			return;
 		}
-		Bundle bundle = InternalPlatform.getDefault().getBundle(m.getPluginId());
+		Bundle bundle = Platform.getBundle(m.getPluginId());
 		IPath path = new Path(bundle.getLocation());
 		try {
 			JavaCore.setClasspathVariable(variable, path, null);
