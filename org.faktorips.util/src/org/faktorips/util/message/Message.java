@@ -1,6 +1,6 @@
 package org.faktorips.util.message;
 
-import org.apache.commons.lang.SystemUtilsd;
+import org.apache.commons.lang.SystemUtils;
 
 
 /**
