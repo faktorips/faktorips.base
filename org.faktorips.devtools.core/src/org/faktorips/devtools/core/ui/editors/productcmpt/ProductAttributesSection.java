@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -178,7 +179,8 @@ public class ProductAttributesSection extends IpsSection {
 		uiMasterController.add(controller);
 
 		try {
-			if (toDisplay.findPcTypeAttribute().findDatatype().equals(Datatype.BOOLEAN)) {
+			Datatype datatype = toDisplay.findPcTypeAttribute().findDatatype();
+			if (datatype.equals(Datatype.BOOLEAN)) {
 				Combo combo = toolkit.createCombo(rootPane);
 				combo.add("true");
 				combo.add("false");
@@ -187,10 +189,16 @@ public class ProductAttributesSection extends IpsSection {
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				editControls.add(combo);
 			}
-			else if (toDisplay.findPcTypeAttribute().findDatatype().equals(Datatype.PRIMITIVE_BOOLEAN)) {
+			else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
 				Combo combo = toolkit.createCombo(rootPane);
 				combo.add("true");
 				combo.add("false");
+				ComboField field = new ComboField(combo);
+				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				editControls.add(combo);
+			}
+			else if (datatype instanceof EnumDatatype) {
+				Combo combo = toolkit.createCombo(rootPane, (EnumDatatype)toDisplay.findPcTypeAttribute().findDatatype());
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				editControls.add(combo);
