@@ -102,7 +102,7 @@ public class RelationsContentProvider implements ITreeContentProvider {
 			}
 		}
 		IpsPlugin.log(new IpsStatus(Messages.RelationsContentProvider_msg_UnknownElementClass + element.getClass()));
-		return new Object[0];
+		return null;
 	}
 
 	/**

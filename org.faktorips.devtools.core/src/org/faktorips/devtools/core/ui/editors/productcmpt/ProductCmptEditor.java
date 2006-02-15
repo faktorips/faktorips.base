@@ -136,7 +136,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
-        if (delta.isEmpty()) {
+        if (delta == null || delta.isEmpty()) {
             return;
         }
         

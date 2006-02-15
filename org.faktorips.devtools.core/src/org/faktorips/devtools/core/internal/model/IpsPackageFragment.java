@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.transform.TransformerException;
@@ -17,13 +18,18 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
@@ -184,6 +190,47 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile createIpsFileFromTemplate(IpsObjectType type, String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException {
+    	String filename = type.getFileName(name);
+    	
+    	if (!template.getIpsObjectType().equals(type)) {
+    		throw new RuntimeException("Can not create object of type " + type.getName() + " from template of type " + template.getIpsObjectType().getName());
+    	}
+
+        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+    	Element element;
+
+    	IIpsSrcFile file;
+    	if (template instanceof ITimedIpsObject) {
+    		file = createIpsFile(type, name, force, monitor);
+    		ITimedIpsObject newObject = (ITimedIpsObject)file.getIpsObject();
+    		IIpsObjectGeneration target = newObject.newGeneration();
+    		IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
+    		target.initFromGeneration(source);
+    		target.setValidFrom(IpsPreferences.getWorkingDate());
+    		if (template instanceof IProductCmpt) {
+    			((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
+    		}
+    		file.save(true, null);
+    		
+    	}
+    	else {
+    		element = template.toXml(doc);
+            try {
+                String encoding = getIpsProject().getXmlFileCharset();
+                String contents = XmlUtil.nodeToString(element, encoding);
+                file = createIpsFile(filename, contents, force, monitor);
+            } catch (TransformerException e) {
+                throw new RuntimeException(e); 
+            }        
+    	}
+    	return file;
+    	
+	}
+
+	/**
      * Searches all objects of the given type and adds them to the result. 
      */
     void findPdObjects(IpsObjectType type, List result) throws CoreException {

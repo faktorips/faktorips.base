@@ -18,6 +18,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
@@ -36,6 +38,7 @@ import org.faktorips.devtools.core.ui.views.ProductCmptDropListener;
 public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource {
 
     private TreeViewer tree; 
+    private IIpsSrcFile file;
     
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
@@ -84,17 +87,23 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * @throws CoreException 
      */
     public void showStructure(IIpsSrcFile file) throws CoreException {
-        tree.setInput(file.getIpsObject());
+    	this.file = file;
+        tree.setInput(((IProductCmpt)file.getIpsObject()).getStructure());
         tree.expandAll();
     }
 
     public void contentsChanged(ContentChangeEvent event) {
-        if (tree.getContentProvider() != null) {
-            Object currentData = tree.getInput();
-            tree.setInput(null);
-            tree.setInput(currentData);
-            tree.expandAll();
-        }
+    	Object input = tree.getInput();
+    	if (input instanceof IProductCmptStructure) {
+    		((IProductCmptStructure)input).refresh();
+    	}
+    	
+    	tree.refresh();
+
+    	if (event.getPdSrcFile().equals(file)) {
+    		tree.refresh();
+    		System.err.println("refreshed tree2");
+    	}
     }
 
     public ShowInContext getShowInContext() {

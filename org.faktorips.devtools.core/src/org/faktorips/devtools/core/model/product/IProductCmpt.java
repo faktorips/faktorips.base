@@ -67,7 +67,11 @@ public interface IProductCmpt extends ITimedIpsObject {
      */
     public boolean containsFormula();
     
-
+    /**
+     * Returns the product component structure representing the structure defined by relations. The 
+     * structure is rootet at this product.
+     */
+    public IProductCmptStructure getStructure();
     
     
     

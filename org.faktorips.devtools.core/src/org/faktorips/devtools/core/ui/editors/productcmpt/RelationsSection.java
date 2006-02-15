@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 import org.faktorips.util.ArgumentCheck;
 
 
@@ -109,7 +110,7 @@ public class RelationsSection extends IpsSection {
 			treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()}, new DragListener(treeViewer));
 			treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
 			treeViewer.expandAll();
-
+			treeViewer.addDoubleClickListener(new DefaultDoubleclickListener(treeViewer));
 	        buildContextMenu();
 	
 			Composite kardinalityRootPane = toolkit.createComposite(relationRootPane);

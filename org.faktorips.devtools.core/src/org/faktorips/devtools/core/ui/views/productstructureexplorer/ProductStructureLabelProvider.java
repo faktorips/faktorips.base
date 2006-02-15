@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 
 public class ProductStructureLabelProvider implements ILabelProvider {
 
@@ -44,24 +45,21 @@ public class ProductStructureLabelProvider implements ILabelProvider {
 	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
-        if (element instanceof Node) {
-            return ((Node)element).getImage();
-        } 
-		else {
-		    return IpsPlugin.getDefault().getImage(Messages.ProductStructureLabelProvider_undefined);
-		}
+		if (element instanceof IIpsObjectPartContainer) {
+            return ((IIpsObjectPartContainer)element).getImage();
+        }
+		
+	    return IpsPlugin.getDefault().getImage(Messages.ProductStructureLabelProvider_undefined);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getText(Object element) {
-        if (element instanceof Node) {
-            return ((Node)element).getText();
+		if (element instanceof IIpsObjectPartContainer) {
+            return ((IIpsObjectPartContainer)element).getName();
         } 
-		else {
-		    return Messages.ProductStructureLabelProvider_undefined;
-		}
+		return Messages.ProductStructureLabelProvider_undefined;
 	}
 
 }

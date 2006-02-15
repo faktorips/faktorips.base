@@ -1,7 +1,7 @@
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -73,7 +73,7 @@ public class IpsObjectPartState {
 	 */
 	public IpsObjectPartState(String part) {
 		try {
-			state = XmlUtil.getDocument(new StringBufferInputStream(part));
+			state = XmlUtil.getDocument(new ByteArrayInputStream(part.getBytes()));
 		} catch (SAXException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {

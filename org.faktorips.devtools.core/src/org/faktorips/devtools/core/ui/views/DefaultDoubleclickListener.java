@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.ui.views;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -12,6 +13,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.DummyRoot;
 
 public class DefaultDoubleclickListener implements IDoubleClickListener {
@@ -37,6 +40,14 @@ public class DefaultDoubleclickListener implements IDoubleClickListener {
             }
             else if (obj instanceof DummyRoot) {
                 openEditor(((DummyRoot)obj).data);
+            }
+            else if (obj instanceof IProductCmptRelation) {
+            	try {
+            		IProductCmptRelation rel = (IProductCmptRelation)obj;
+					openEditor(rel.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, rel.getTarget()));
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+				}
             }
             else if (obj instanceof IIpsElement) {
                 openEditor((IIpsElement)obj);

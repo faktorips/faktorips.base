@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -175,5 +176,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptStructure getStructure() {
+		return new ProductCmptStructure(this);
 	}
 }
