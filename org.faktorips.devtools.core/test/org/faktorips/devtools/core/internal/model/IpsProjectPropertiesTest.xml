@@ -19,7 +19,17 @@
 		        valueOfMethod="getPaymentMode"
 		        isParsableMethod="isPaymentMode"
 		        valueToStringMethod="getId"
-		        specialNullValue="n"/>
+		        specialNullValue="n"
+		       	isEnumType="true"
+		        getAllValuesMethod="getAllValues"/>
+			<Datatype id="PaymentMode" 
+				valueClass="org.faktorips.sample.model.PaymentMode" 
+		        valueOfMethod="getPaymentMode"
+		        isParsableMethod="isPaymentMode"
+		        valueToStringMethod="getId"
+		        specialNullValue="n"
+		       	isEnumType="false"
+		        getAllValuesMethod=""/>
 		</DatatypeDefinitions>
 	</Datatypes>
 </IpsProject>

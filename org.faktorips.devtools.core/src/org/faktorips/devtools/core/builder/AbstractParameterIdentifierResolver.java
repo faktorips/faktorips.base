@@ -1,9 +1,13 @@
 package org.faktorips.devtools.core.builder;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -73,6 +77,11 @@ public abstract class AbstractParameterIdentifierResolver implements
 				return compile(params[i], attributeName, locale);
 			}
 		}
+		
+		CompilationResult result = compileEnumDatatypeValueIdentifier(paramName, attributeName, locale);
+		if(result != null){
+			return result;
+		}
 		return CompilationResultImpl.newResultUndefinedIdentifier(locale,
 				identifier);
 	}
@@ -106,6 +115,32 @@ public abstract class AbstractParameterIdentifierResolver implements
 		}
 		throw new RuntimeException("Unkown datatype class "
 				+ datatype.getClass());
+	}
+
+	private CompilationResult compileEnumDatatypeValueIdentifier(
+			String enumTypeName, String valueName, Locale locale) {
+		
+		try {
+			Datatype datatype = project.findDatatype(enumTypeName);
+			if(datatype instanceof EnumDatatype){
+				EnumDatatype enumType = (EnumDatatype)datatype;
+				List valueIds = Arrays.asList(enumType.getAllValueIds());
+				if (valueIds.contains(valueName)) {
+					JavaCodeFragment frag = new JavaCodeFragment();
+					frag.appendClassName(enumType.getJavaClassName());
+					frag.append('.');
+					frag.append(valueName);
+					return new CompilationResultImpl(frag, enumType);
+				}
+			}
+		} catch (Exception e) {
+			IpsPlugin.log(e);
+			String text = "An error occured while resolving the enumeration datatype "
+					+ enumTypeName;
+			return new CompilationResultImpl(Message.newError(
+					ExprCompiler.INTERNAL_ERROR, text));
+		}
+		return null;
 	}
 
 	private CompilationResult compilePcTypeAttributeIdentifier(Parameter param,
@@ -142,10 +177,8 @@ public abstract class AbstractParameterIdentifierResolver implements
 						ExprCompiler.UNDEFINED_IDENTIFIER, text));
 			}
 			String code = param.getName() + '.'
-					+ getParameterAttributGetterName(attribute, datatype) + "()";
-			// attribute.getJavaMethod(
-			// IAttribute.JAVA_GETTER_METHOD_IMPLEMENATION)
-			// .getElementName() + "()";
+					+ getParameterAttributGetterName(attribute, datatype)
+					+ "()";
 			return new CompilationResultImpl(code, datatype);
 		} catch (Exception e) {
 			IpsPlugin.log(e);

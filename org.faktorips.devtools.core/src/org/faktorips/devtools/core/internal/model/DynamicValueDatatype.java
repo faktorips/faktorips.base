@@ -6,6 +6,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -18,6 +19,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.util.StringUtil;
+import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -33,7 +36,18 @@ import org.w3c.dom.Element;
 public class DynamicValueDatatype extends GenericValueDatatype {
     
     public final static DynamicValueDatatype createFromXml(IIpsProject ipsProject, Element element) {
-        DynamicValueDatatype datatype = new DynamicValueDatatype(ipsProject);
+    	
+    	DynamicValueDatatype datatype = null;
+    	String isEnumTypeString = element.getAttribute("isEnumType");
+    	if(StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()){
+    		datatype = new DynamicValueDatatype(ipsProject);
+    	}
+    	else{
+    		DynamicEnumDatatype enumDatatype = new DynamicEnumDatatype(ipsProject);
+    		enumDatatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod"));
+    		datatype = enumDatatype;
+    	}
+    	
         datatype.setAdaptedClassName(element.getAttribute("valueClass"));
         datatype.setQualifiedName(element.getAttribute("id"));
         datatype.setValueOfMethodName(element.getAttribute("valueOfMethod"));

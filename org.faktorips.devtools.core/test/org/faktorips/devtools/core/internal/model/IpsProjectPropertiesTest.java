@@ -68,8 +68,11 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
         
         // datatype definitions
         DynamicValueDatatype[] dynTypes = props.getDefinedDatatypes();
-        assertEquals(1, dynTypes.length);
+        assertEquals(2, dynTypes.length);
         assertEquals("PaymentMode", dynTypes[0].getQualifiedName());
+        assertTrue(dynTypes[0] instanceof DynamicEnumDatatype);
+        assertEquals("PaymentMode", dynTypes[1].getQualifiedName());
+        assertTrue(!(dynTypes[1] instanceof DynamicEnumDatatype));
 	}
 	
 	public void testGetLocale() {

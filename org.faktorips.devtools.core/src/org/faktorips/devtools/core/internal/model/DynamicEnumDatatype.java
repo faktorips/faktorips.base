@@ -11,6 +11,8 @@ import org.faktorips.devtools.core.model.IIpsProject;
  */
 public class DynamicEnumDatatype extends DynamicValueDatatype implements EnumDatatype {
 
+	private String getAllValuesMethodName = "";
+	
     public DynamicEnumDatatype(IIpsProject ipsProject) {
         super(ipsProject);
     }
@@ -22,7 +24,15 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements EnumDat
         if (getAdaptedClass()==null) {
             throw new RuntimeException("Datatype " + getQualifiedName() + ", Class " + getAdaptedClassName() + " not found.");
         }
-        return new DefaultGenericEnumDatatype(getAdaptedClass()).getAllValueIds();
+        DefaultGenericEnumDatatype datatype =new DefaultGenericEnumDatatype(getAdaptedClass());
+        datatype.setGetAllValuesMethodName(getAllValuesMethodName);
+        return datatype.getAllValueIds();
     }
-
+ 
+    /**
+     * Sets the name of the method that provides all values of the datatype.
+     */
+    public void setAllValuesMethodName(String getAllValuesMethodName){
+    	this.getAllValuesMethodName = getAllValuesMethodName;
+    }
 }
