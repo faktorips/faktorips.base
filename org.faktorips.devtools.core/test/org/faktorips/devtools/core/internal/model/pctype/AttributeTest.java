@@ -106,7 +106,7 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("money", attribute.getDatatype());
         assertFalse(attribute.isProductRelevant());
         assertEquals(AttributeType.COMPUTED, attribute.getAttributeType());
-        assertEquals("0EUR", attribute.getDefaultValue());
+        assertEquals("42EUR", attribute.getDefaultValue());
         Parameter[] params = attribute.getFormulaParameters();
         assertEquals(2, params.length);
         assertEquals("policy", params[0].getName());
@@ -114,8 +114,10 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("vehicle", params[1].getName());
         assertEquals("Vehicle", params[1].getDatatype());
         assertNotNull(attribute.getValueSet());
+        
         attribute.initFromXml((Element)nl.item(1));
         assertEquals(2, attribute.getId());
+        assertNull(attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
         assertEquals(EnumValueSet.class,attribute.getValueSet().getClass());
         
@@ -207,7 +209,6 @@ public class AttributeTest extends IpsPluginTest {
     	attribute.setFormulaParameters(params);
     	
     	attribute.validate(); // once this produced a stack overflow!
-    	
     }
 
     /**

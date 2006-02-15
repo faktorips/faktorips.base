@@ -155,10 +155,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String xml = null;
         try {
             Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-            Element registryElement = doc.createElement(ClassloaderRuntimeRepository.REPOSITORY_XML_ELEMENT);
             Element tocElement = getToc(root).toXml(doc);
-            registryElement.appendChild(tocElement);
-            xml = XmlUtil.nodeToString(registryElement, encoding);
+            doc.appendChild(tocElement);
+            xml = XmlUtil.nodeToString(doc, encoding);
         } catch (TransformerException e) {
             throw new CoreException(new IpsStatus("Error transforming product component registry's table of contents to xml.", e));
         }

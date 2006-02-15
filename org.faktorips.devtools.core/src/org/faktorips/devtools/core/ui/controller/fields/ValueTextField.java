@@ -33,14 +33,10 @@ public class ValueTextField extends TextField {
 	 * {@inheritDoc}
 	 */
 	public void setValue(Object newValue) {
-		if (newValue instanceof String) {
-			String newString = (String)newValue;
-			if (newString.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-				super.setValue(null);
-			}
-			else {
-				super.setValue(newValue);
-			}
+		if (newValue==null) {
+			super.setValue(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+		} else {
+			super.setValue(newValue);
 		}
 	}	
 }

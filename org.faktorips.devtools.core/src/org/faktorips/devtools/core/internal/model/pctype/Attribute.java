@@ -13,6 +13,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.ValueToXmlHelper;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -42,7 +43,7 @@ public class Attribute extends Member implements IAttribute {
     private String datatype = "";
     private boolean productRelevant = true;
     private AttributeType attributeType = AttributeType.CHANGEABLE;
-    private String defaultValue = "";
+    private String defaultValue = null;
     private Modifier modifier = Modifier.PUBLISHED;
     private Parameter[] parameters = new Parameter[0];
     private ValueSet valueSet = ValueSet.ALL_VALUES;
@@ -364,7 +365,7 @@ public class Attribute extends Member implements IAttribute {
         modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
-        defaultValue = element.getAttribute(PROPERTY_DEFAULT_VALUE);
+        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue");
         Element valueSetEl = XmlUtil.getFirstElement(element, ValueSet.XML_TAG);
         if (valueSetEl == null) {
             valueSet = ValueSet.ALL_VALUES;
@@ -397,7 +398,7 @@ public class Attribute extends Member implements IAttribute {
         element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant);
         element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
-        element.setAttribute(PROPERTY_DEFAULT_VALUE, defaultValue);
+        ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue");
         Document doc = element.getOwnerDocument();
         element.appendChild(valueSet.toXml(doc));
         for (int i = 0; i < parameters.length; i++) {
