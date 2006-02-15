@@ -10,8 +10,8 @@
 		  	<property name="classes" location="build/classes"/>
 		
 			<!-- jars -->
-			<property name="temp_jarfile" location="build/results/temp_util.jar" />
-		    <property name="jarfile" location="build/results/util.jar" />
+			<property name="temp_jarfile" location="build/results/temp_org.faktorips.util.jar" />
+		    <property name="jarfile" location="build/results/org.faktorips.util.jar" />
 	
 			<!-- classpath -->
 	
