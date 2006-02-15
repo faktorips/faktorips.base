@@ -6,7 +6,8 @@ Bundle-Version: 0.8.0
 Bundle-Activator: org.faktorips.devtools.stdbuilder.StdBuilderPlugin
 Bundle-Vendor: FaktorIPS-Devtools-StdBuilder
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
  org.eclipse.text,

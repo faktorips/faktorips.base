@@ -1,8 +1,8 @@
 package org.faktorips.devtools.stdbuilder.table;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.LocalizedStringsSet;
@@ -10,8 +10,8 @@ import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends JavaSourceFileBuilder {
 
-    public TableRowBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(TableRowBuilder.class));
+    public TableRowBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+        super(builderSet, kindId, new LocalizedStringsSet(TableRowBuilder.class));
     }
 
     protected String generate() throws CoreException {

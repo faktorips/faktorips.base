@@ -17,7 +17,7 @@ public class JavaSourceFileBuilderTest extends IpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         ipsSrcFile = newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
-        builder = new DumyJavaSourceFileBuilder(new DumyPackageStructure(), "dumy",
+        builder = new DumyJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "dumy",
                   new LocalizedStringsSet(JavaSourceFileBuilderTest.class));
     }
 

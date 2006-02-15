@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.ArgumentCheck;
@@ -28,7 +29,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
     /**
      * Creates a new JetJavaSourceFileBuilder.
      * 
-     * @param packageStructure see super class constructor
+     * @param builderSet see super class constructor
      * @param kindId see super class constructor
      * @param generatorClass the generator class that is responsible for source content generation.
      *            The generator class must extend the JetJavaContentGenerator
@@ -39,10 +40,10 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
      * @param classNameSuffix is used to create the unqualified name. IpsObject.getName() + suffix =
      *            unqualified name. The classNamePrefix can be applied in addition to the suffix.
      */
-    public JetJavaSourceFileBuilder(IJavaPackageStructure packageStructure, String kindId,
+    public JetJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             Class generatorClass, IpsObjectType ipsObjectType, boolean enableMerge,
             String classNamePrefix, String classNameSuffix) {
-        super(packageStructure, kindId, new LocalizedStringsSet(generatorClass));
+        super(builderSet, kindId, new LocalizedStringsSet(generatorClass));
         ArgumentCheck.notNull(generatorClass, this);
         ArgumentCheck.notNull(ipsObjectType, this);
         this.ipsObjectType = ipsObjectType;

@@ -12,9 +12,9 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -38,9 +38,9 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * @param kindId
      * @param localizedStringsSet
      */
-    public AbstractProductCmptTypeBuilder(IJavaPackageStructure packageStructure, String kindId,
+    public AbstractProductCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
-        super(packageStructure, kindId, localizedStringsSet);
+        super(builderSet, kindId, localizedStringsSet);
     }
 
     /**

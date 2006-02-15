@@ -13,8 +13,8 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.BuilderHelper;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.EnumValueSet;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.Range;
@@ -65,8 +65,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     private static final String INITIALIZE_JAVADOC = "INITIALIZE_JAVADOC";
 
-    public PolicyCmptImplClassBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
+    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
         setMergeEnabled(true);
     }
 

@@ -1,12 +1,18 @@
 package org.faktorips.devtools.core.builder;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
+import org.faktorips.runtime.ClassloaderRuntimeRepository;
 
 /**
  * A default implementation that extends the AbstractBuilderSet and implements the IJavaPackageStructure
@@ -20,7 +26,7 @@ import org.faktorips.fl.CompilationResult;
  * 
  * @author Peter Erzberger
  */
-public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
+public abstract class DefaultBuilderSet extends AbstractBuilderSet {
 
     // kind constants. These constants are not supposed to be used within JavaSourceFileBuilder
     // implementations. Since the JavaSourceFileBuilder implementations might get used in other
@@ -39,6 +45,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public final static String KIND_TABLE_TOCENTRY = "tabletocentry";
     public final static String KIND_TABLE_ROW = "tablerow";
 
+    private final static String INTERNAL_PACKAGE = "internal";
+    
     /**
      * Returns the base package name. It is the <b>base package name for generated java classes</b>
      * from the IpsSrcFolderEntry that is assigned to the package root that contains the provided
@@ -79,8 +87,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         if (!StringUtils.isEmpty(basePackeName)) {
             buf.append(basePackeName).append('.');
         }
-        buf.append("internal");
-
+        buf.append(INTERNAL_PACKAGE);
         String packageFragName = ipsSrcFile.getIpsPackageFragment().getName();
         if (!StringUtils.isEmpty(packageFragName)) {
             buf.append('.').append(packageFragName);
@@ -88,8 +95,25 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
         return buf.toString().toLowerCase();
     }
-
+    
     /**
+	 * {@inheritDoc}
+	 */
+	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
+		IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry(); 
+		String basePack = entry.getBasePackageNameForGeneratedJavaClasses();
+        if (StringUtils.isEmpty(basePack)) {
+        	basePack = INTERNAL_PACKAGE;
+        } else {
+        	basePack = basePack + '.' + INTERNAL_PACKAGE;
+        	
+        }
+		IFolder folder = entry.getOutputFolderForGeneratedJavaFiles();
+		IFolder tocFolder = folder.getFolder(basePack.replace('.', IPath.SEPARATOR));
+		return tocFolder.getFile(ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE);
+	}
+
+	/**
      * Implements the org.faktorips.plugin.builder.IJavaPackageStructure interface.
      */
     public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -158,6 +182,20 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
      * Overridden.
      */
     public CompilationResult getTableAccessCode(ITableAccessFunction fct, CompilationResult[] argResults) throws CoreException {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSupportFlIdentifierResolver() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
         return null;
     }
 

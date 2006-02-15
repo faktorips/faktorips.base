@@ -22,7 +22,7 @@ public class JetJavaContentGeneratorTest extends IpsPluginTest {
         super.setUp();
         project = newIpsProject("TestProject");
         ipsObject = newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
-        builder = new DumyJavaSourceFileBuilder(new DumyPackageStructure(), "dumy",
+        builder = new DumyJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "dumy",
             new LocalizedStringsSet(JavaSourceFileBuilderTest.class));
         generator = new TestJetJavaContentGenerator();
         generator.setJavaSourceFileBuilder(builder);

@@ -1,6 +1,5 @@
 package org.faktorips.devtools.core.builder;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,11 +46,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     public final static String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder";
 
     private static boolean lastBuildWasCancelled = false;
-
-    // a map contains the modification stamp for each ips package fragment root's product component
-    // registry's
-    // table of contents.
-    private Map packFrgmtRootTocModStamps = new HashMap();
 
     private DependencyGraph dependencyGraph;
 
@@ -100,7 +94,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             lastBuildWasCancelled = false;
             return null;
         }
-        rememberTocModificationStamps();
         buildStatus = applyBuildCommand(buildStatus, new BeforeBuildProcessCommand(kind));
         if (kind == IncrementalProjectBuilder.FULL_BUILD
                 || kind == IncrementalProjectBuilder.CLEAN_BUILD || getDelta(getProject()) == null) {
@@ -111,7 +104,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         buildStatus = applyBuildCommand(buildStatus, new AfterBuildProcessCommand(kind));
 
-        saveTocs();
         if (buildStatus.getSeverity() == IStatus.OK) {
             return null;
         }
@@ -137,31 +129,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
     }
 
-    private void rememberTocModificationStamps() throws CoreException {
-        IIpsPackageFragmentRoot[] srcRoots = getIpsProject().getSourceIpsPackageFragmentRoots();
-        for (int i = 0; i < srcRoots.length; i++) {
-            IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
-            long modStamp = root.getRuntimeRepositoryToc().getModificationStamp();
-            packFrgmtRootTocModStamps.put(root, new Long(modStamp));
-        }
-    }
-
-    /**
-     * Saves the table of contents for all source package fragment roots (if the toc has changed.).
-     * 
-     * @throws CoreException
-     */
-    private void saveTocs() throws CoreException {
-        IIpsPackageFragmentRoot[] srcRoots = getIpsProject().getSourceIpsPackageFragmentRoots();
-        for (int i = 0; i < srcRoots.length; i++) {
-            IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
-            Long oldModStamp = (Long)packFrgmtRootTocModStamps.get(root);
-            if (oldModStamp.longValue() != root.getRuntimeRepositoryToc().getModificationStamp()) {
-                root.saveProductCmptRegistryToc();
-            }
-        }
-    }
-
     /**
      * Full build generates Java source files for all IPS objects.
      */
@@ -175,7 +142,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             dependencyGraph = new DependencyGraph(getIpsProject());
             IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
-                ((IpsPackageFragmentRoot)roots[i]).getRuntimeRepositoryToc().clear();
                 IIpsPackageFragment[] packs = roots[i].getIpsPackageFragments();
                 for (int j = 0; j < packs.length; j++) {
                     IIpsElement[] elements = packs[j].getChildren();
@@ -475,7 +441,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException;
     }
 
-    private static class BeforeBuildProcessCommand implements BuildCommand {
+    private class BeforeBuildProcessCommand implements BuildCommand {
 
     	private int buildKind;
     	
@@ -484,7 +450,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     	}
     	
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            builder.beforeBuildProcess(buildKind);
+            builder.beforeBuildProcess(getIpsProject(), buildKind);
         }
         
         public String toString() {
@@ -493,7 +459,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         
     }
 
-    private static class AfterBuildProcessCommand implements BuildCommand {
+    private class AfterBuildProcessCommand implements BuildCommand {
 
     	private int buildKind;
     	
@@ -502,7 +468,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     	}
     	
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
-            builder.afterBuildProcess(buildKind);
+            builder.afterBuildProcess(getIpsProject(), buildKind);
         }
         
         public String toString() {

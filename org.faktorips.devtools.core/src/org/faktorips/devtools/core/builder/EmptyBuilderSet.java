@@ -1,14 +1,17 @@
 package org.faktorips.devtools.core.builder;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
-import org.faktorips.datatype.Datatype;
 
 /**
  * An IIpsArtefactBuilderSet implementation that is supposed to be used in cases
@@ -69,6 +72,20 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 	 * {@inheritDoc}
 	 */
 	public void initialize() throws CoreException {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
+		return null; 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
+		return null;
 	}
 
 }

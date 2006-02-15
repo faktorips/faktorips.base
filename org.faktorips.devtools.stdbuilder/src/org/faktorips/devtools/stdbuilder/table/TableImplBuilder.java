@@ -16,8 +16,8 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -66,8 +66,8 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
     private Map fDatatypes;
     private String qualifiedTableRowName;
 
-    public TableImplBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(TableImplBuilder.class));
+    public TableImplBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+        super(builderSet, kindId, new LocalizedStringsSet(TableImplBuilder.class));
     }
 
     public void setTableRowBuilder(TableRowBuilder tableRowBuilder) {

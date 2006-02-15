@@ -1,5 +1,6 @@
-package org.faktorips.devtools.core.internal.model;
+package org.faktorips.devtools.stdbuilder;
 
+import org.faktorips.devtools.stdbuilder.MutableClRuntimeRepositoryToc;
 import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
 import org.faktorips.runtime.TocEntryObject;
@@ -107,29 +108,39 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
 
     public void testRemoveEntry() {
         long modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy"));
+        toc.removeEntry("MotorProduct");
         assertEquals(modStamp, toc.getModificationStamp());
 
         
         TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
         TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy");
+        TocEntryObject entry2 = TocEntryObject.createTableTocEntry("RateTable", "RateTable.ipstablecontents", "RateTable");
+
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
+        toc.addOrReplaceTocEntry(entry2);
 
         modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("Unknown", "Unknown.ipsproduct", "Unknown", "Unknown"));
+        toc.removeEntry("Unknown Product");
         assertEquals(modStamp, toc.getModificationStamp());
         
         modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicy"));
+        toc.removeEntry(entry1.getIpsObjectName());
         assertTrue(modStamp!=toc.getModificationStamp());
         assertEquals(1, toc.getProductCmptTocEntries().length);
         assertEquals(entry0, toc.getProductCmptTocEntry("MotorPolicy"));
         
         modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy"));
+        toc.removeEntry(entry0.getIpsObjectName());
         assertTrue(modStamp!=toc.getModificationStamp());
         assertEquals(0, toc.getProductCmptTocEntries().length);
+        
+        assertNotNull(toc.getTableTocEntryByClassname("RateTable"));
+        modStamp = toc.getModificationStamp(); 
+        toc.removeEntry(entry2.getIpsObjectName());
+        assertTrue(modStamp!=toc.getModificationStamp());
+        assertNull(toc.getTableTocEntryByClassname("RateTable"));
+        
     }
     
     public void testToXml() {

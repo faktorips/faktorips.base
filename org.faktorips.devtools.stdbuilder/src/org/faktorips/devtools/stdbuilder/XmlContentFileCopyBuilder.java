@@ -9,11 +9,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -28,55 +27,19 @@ import org.faktorips.util.StringUtil;
  * @author Peter Erzberger
  */
 // TODO test case has to be written
-public class XmlContentFileCopyBuilder implements IIpsArtefactBuilder {
+public class XmlContentFileCopyBuilder extends AbstractArtefactBuilder {
 
-    private IJavaPackageStructure packageStructure;
     private IpsObjectType ipsObjectType;
     private String kind;
 
-    public XmlContentFileCopyBuilder(IpsObjectType type, IJavaPackageStructure structure, String kind) {
-        super();
+    public XmlContentFileCopyBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
+        super(builderSet);
         ArgumentCheck.notNull(kind, this);
-        ArgumentCheck.notNull(structure, this);
         ArgumentCheck.notNull(type, this);
         ipsObjectType = type;
-        packageStructure = structure;
         this.kind = kind;
     }
-
-    /**
-     * Empty implementation.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#beforeBuildProcess(int)
-     */
-    public void beforeBuildProcess(int buildKind) throws CoreException {
-    }
-
-    /**
-     * Empty implementation.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#afterBuildProcess(int)
-     */
-    public void afterBuildProcess(int buildKind) throws CoreException {
-    }
-
-    /**
-     * Empty implementation.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#beforeBuild(org.faktorips.devtools.core.model.IIpsObject,
-     *      org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
-    }
-
-    /**
-     * Empty implementation.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.core.model.IIpsSrcFile)
-     */
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
-    }
-
+    
     private String getContentAsString(InputStream is, String charSet) throws CoreException{
         try {
             return StringUtil.readFromInputStream(is, charSet);
@@ -138,7 +101,7 @@ public class XmlContentFileCopyBuilder implements IIpsArtefactBuilder {
     }
 
     private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = packageStructure.getPackage(kind, ipsSrcFile);
+        String packageString = getBuilderSet().getPackage(kind, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination().getFolder(
             pathToPack);

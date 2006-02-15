@@ -7,14 +7,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 
 public class ProductCmptXmlFileBuilderTest extends IpsPluginTest {
@@ -50,25 +48,5 @@ public class ProductCmptXmlFileBuilderTest extends IpsPluginTest {
         assertTrue(file.exists());
     }
     
-    /**
-     * Tests if the product component registry's toc file is written.
-     */
-    public void testTocFile() throws CoreException {
-        srcFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy", true, null);
-        IPolicyCmptType pcType = (IPolicyCmptType)srcFile.getIpsObject(); 
-        productCmpt.setPolicyCmptType(pcType.getQualifiedName());
-        productCmpt.newGeneration();
-        productCmpt.getIpsSrcFile().save(true, null);
-        
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)ipsProject.getIpsObjectPath().getEntries()[0];
-        IFile tocFile = ((IpsPackageFragmentRoot)entry.getIpsPackageFragmentRoot(ipsProject)).getTocFileInOutputFolder();
-        assertTrue(tocFile.exists());
-        
-        // if the product component refers to a none existing policy component type, builder should not crash
-        productCmpt.setPolicyCmptType("notExistingPcType");
-        productCmpt.getIpsSrcFile().save(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-    }
    
 }

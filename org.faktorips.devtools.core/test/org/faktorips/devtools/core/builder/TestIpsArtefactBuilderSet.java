@@ -1,9 +1,12 @@
 package org.faktorips.devtools.core.builder;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
@@ -15,6 +18,10 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
     
     private IIpsArtefactBuilder[] artefactBuilders;
     
+    public TestIpsArtefactBuilderSet(){
+        artefactBuilders = new IIpsArtefactBuilder[0];
+    }
+
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders){
         artefactBuilders = builders;
     }
@@ -60,6 +67,21 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
 	}
 
 	public IParameterIdentifierResolver getFlParameterIdentifierResolver() {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

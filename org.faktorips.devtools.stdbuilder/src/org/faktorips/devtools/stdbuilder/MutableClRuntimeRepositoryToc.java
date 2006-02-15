@@ -1,4 +1,4 @@
-package org.faktorips.devtools.core.internal.model;
+package org.faktorips.devtools.stdbuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -67,11 +67,9 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
         
         if(entry.isProductCmptTypeTocEntry()){
             TocEntryObject currentEntry = (TocEntryObject)pcNameTocEntryMap.get(entry.getIpsObjectName());
-            
             if(entry.equals(currentEntry)){
                 return false;
             }
-
             pcNameTocEntryMap.put(entry.getIpsObjectName(), entry);
             ++modificationStamp;
             return true;
@@ -89,32 +87,29 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
             return true;
         }
         
-        throw new IllegalArgumentException("A toc entry of an unexpected type has been provided to this method: " + entry);
+        throw new IllegalArgumentException("Unknown  toc entry type " + entry);
 	}
 	
 	/**
-	 * Removes the toc entry for the given fully qualified product component name from the table of contents.
-	 * Does nothing if productCmpName is <code>null</code>.
-	 * 
-	 * @param productCmptName The fully qualified product component name.
+	 * Removes the toc entry with the given qualified ips object name. Does nothing if the
+	 * name does not identify an entry.
 	 */
-	public void removeEntry(TocEntryObject entry) {
-	    
-	    Object oldValue = null;
-	    if(entry.isProductCmptTypeTocEntry()){
-	        oldValue = pcNameTocEntryMap.remove(entry.getIpsObjectName());
+	public boolean removeEntry(String qName) {
+	    if (pcNameTocEntryMap.remove(qName)!=null) {
+	    	++modificationStamp;
+	    	return true;
 	    }
-	    
-	    if(entry.isTableTocEntry()){
-	        oldValue = tableImplClassTocEntryMap.remove(entry.getImplementationClassName());
+	    for (Iterator it=tableImplClassTocEntryMap.values().iterator(); it.hasNext();) {
+	    	TocEntryObject entry = (TocEntryObject)it.next();
+	    	if (entry.getIpsObjectName().equals(qName)) {
+                it.remove();
+		    	++modificationStamp;
+		    	return true;
+	    	}
 	    }
-	    
-	    //check of the return value is save since it is guaranteed that null is never associated with a key
-        if(oldValue != null){
-            ++modificationStamp;
-        }
+	    return false;
 	}
-    
+	
 	/**
 	 * Transforms the table of contents to xml.
 	 * 

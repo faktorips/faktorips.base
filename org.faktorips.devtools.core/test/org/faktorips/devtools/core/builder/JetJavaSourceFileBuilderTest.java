@@ -14,7 +14,7 @@ public class JetJavaSourceFileBuilderTest extends IpsPluginTest {
 
     public void setUp() throws Exception {
         super.setUp();
-        builder = new JetJavaSourceFileBuilder(new DumyPackageStructure(), "test",
+        builder = new JetJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "test",
                 JetJavaSourceFileBuilderTest.TestGenerator.class, IpsObjectType.POLICY_CMPT_TYPE,
                 false, "Prefix", "Suffix");
         ipsProject = newIpsProject("TestProject");

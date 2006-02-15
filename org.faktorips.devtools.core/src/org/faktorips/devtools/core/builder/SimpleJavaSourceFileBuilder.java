@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.builder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -53,9 +54,9 @@ public abstract class SimpleJavaSourceFileBuilder extends JavaSourceFileBuilder 
     /**
      * Creates a new SimpleJavaSourceFileBuilder
      */
-    public SimpleJavaSourceFileBuilder(IJavaPackageStructure packageStructure, String kindId,
+    public SimpleJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet stringsSet) {
-        super(packageStructure, kindId, stringsSet);
+        super(builderSet, kindId, stringsSet);
     }
 
     /**

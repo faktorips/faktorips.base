@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -9,9 +10,9 @@ class DumyJavaSourceFileBuilder extends JavaSourceFileBuilder {
     public boolean generateCalled = false;
     public boolean isBuilderFor = false;
 
-    public DumyJavaSourceFileBuilder(IJavaPackageStructure packageStructure, String kindId,
+    public DumyJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
-        super(packageStructure, kindId, localizedStringsSet);
+        super(builderSet, kindId, localizedStringsSet);
     }
 
     protected String generate() throws CoreException {

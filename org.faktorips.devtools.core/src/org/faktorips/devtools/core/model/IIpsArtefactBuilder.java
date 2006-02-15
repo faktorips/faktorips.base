@@ -25,6 +25,11 @@ public interface IIpsArtefactBuilder {
 	public String getName();
 	
 	/**
+	 * Returns the builder set this builder belongs to.
+	 */
+	public IIpsArtefactBuilderSet getBuilderSet();
+	
+	/**
      * Is called on every registered IpsArtefactBuilder before a build process starts.
 	 * @param buildKind TODO
      * 
@@ -32,7 +37,7 @@ public interface IIpsArtefactBuilder {
      *             CoreException or RuntimeException will stop the current build cycle of this
      *             builder.
      */
-    public void beforeBuildProcess(int buildKind) throws CoreException;
+    public void beforeBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException;
 
     /**
      * Is called on every registered IpsArtefactBuilder after a build process has finished.
@@ -40,7 +45,7 @@ public interface IIpsArtefactBuilder {
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions.
      */
-    public void afterBuildProcess(int buildKind) throws CoreException;
+    public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException;
 
     /**
      * Is called directly before the build method is called if the isBuilderFor method has returned true for the

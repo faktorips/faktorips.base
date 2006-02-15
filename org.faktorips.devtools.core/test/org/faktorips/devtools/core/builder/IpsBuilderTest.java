@@ -7,7 +7,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
@@ -167,9 +166,16 @@ public class IpsBuilderTest extends IpsPluginTest {
             new NullProgressMonitor());
     }
 
-    private static class TestRemoveIpsArtefactBuilder implements IIpsArtefactBuilder {
+    private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
 
-        private boolean buildCalled = false;
+        /**
+		 * @param builderSet
+		 */
+		public TestRemoveIpsArtefactBuilder() {
+			super(new TestIpsArtefactBuilderSet());
+		}
+
+		private boolean buildCalled = false;
         private boolean deleteCalled = false;
 
         /**
@@ -179,18 +185,6 @@ public class IpsBuilderTest extends IpsPluginTest {
             return "TestRemoveIpsArtefactBuilder";
         }
         
-        public void beforeBuildProcess(int buildKind) throws CoreException {
-        }
-
-        public void afterBuildProcess(int buildKind) throws CoreException {
-        }
-
-        public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
-        }
-
-        public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
-        }
-
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
             buildCalled = true;
         }
@@ -202,11 +196,19 @@ public class IpsBuilderTest extends IpsPluginTest {
         public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
             deleteCalled = true;
         }
+
     }
 
-    private static class TestDependencyIpsArtefactBuilder implements IIpsArtefactBuilder {
+    private static class TestDependencyIpsArtefactBuilder extends AbstractArtefactBuilder {
 
-        private List builtIpsObjects = new ArrayList();
+        /**
+		 * @param builderSet
+		 */
+		public TestDependencyIpsArtefactBuilder() {
+			super(new TestIpsArtefactBuilderSet());
+		}
+
+		private List builtIpsObjects = new ArrayList();
 
         public List getBuiltIpsObjects() {
             return builtIpsObjects;
@@ -214,18 +216,6 @@ public class IpsBuilderTest extends IpsPluginTest {
 
         public void clear() {
             builtIpsObjects.clear();
-        }
-
-        public void beforeBuildProcess(int buildKind) throws CoreException {
-        }
-
-        public void afterBuildProcess(int buildKind) throws CoreException {
-        }
-
-        public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
-        }
-
-        public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         }
 
         public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -246,6 +236,7 @@ public class IpsBuilderTest extends IpsPluginTest {
 		public String getName() {
 			return "TestDependencyIpsArtefactBuilder";
 		}
+
     }
 
 }

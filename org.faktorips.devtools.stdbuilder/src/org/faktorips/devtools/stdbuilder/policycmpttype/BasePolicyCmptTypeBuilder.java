@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -16,9 +16,9 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
-    public BasePolicyCmptTypeBuilder(IJavaPackageStructure packageStructure, String kindId,
+    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet stringsSet) {
-        super(packageStructure, kindId, stringsSet);
+        super(builderSet, kindId, stringsSet);
     }
     
     protected String getEffectiveDateMethodName() {

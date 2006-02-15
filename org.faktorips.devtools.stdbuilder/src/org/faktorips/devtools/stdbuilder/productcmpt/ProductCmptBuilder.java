@@ -4,8 +4,8 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -19,9 +19,8 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBui
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptBuilder implements IIpsArtefactBuilder {
+public class ProductCmptBuilder extends AbstractArtefactBuilder {
 
-    private IJavaPackageStructure packageStructure;
     private String kindId;
     private MultiStatus buildStatus;
     
@@ -32,8 +31,8 @@ public class ProductCmptBuilder implements IIpsArtefactBuilder {
     /**
      * 
      */
-    public ProductCmptBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        this.packageStructure = packageStructure;
+    public ProductCmptBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+        super(builderSet);
         this.kindId = kindId;
         
     }
@@ -57,10 +56,7 @@ public class ProductCmptBuilder implements IIpsArtefactBuilder {
      * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (!IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
-            return false;
-        }
-        return ((IProductCmpt)ipsSrcFile.getIpsObject()).containsFormula();
+        return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
     
     /**
@@ -96,6 +92,9 @@ public class ProductCmptBuilder implements IIpsArtefactBuilder {
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+        if (!productCmpt.containsFormula()) {
+            return;
+        }
         IIpsObjectGeneration[] generations = productCmpt.getGenerations();
         for (int i = 0; i < generations.length; i++) {
             build((IProductCmptGeneration)generations[i]);
@@ -112,7 +111,7 @@ public class ProductCmptBuilder implements IIpsArtefactBuilder {
     
     private ProductCmptGenerationCuBuilder newProductCmptGenerationCuBuilder(IProductCmptGeneration generation) throws CoreException {
         ProductCmptGenerationCuBuilder genBuilder = new ProductCmptGenerationCuBuilder(
-                generation, packageStructure, kindId);
+                generation, getBuilderSet(), kindId);
         genBuilder.setProductCmptGenImplBuilder(productCmptGenImplBuilder);
         genBuilder.setProductCmptImplBuilder(productCmptImplBuilder);
         return genBuilder;

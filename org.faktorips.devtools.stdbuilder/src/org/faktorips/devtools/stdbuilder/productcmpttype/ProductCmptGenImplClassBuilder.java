@@ -12,7 +12,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -39,8 +39,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptTypeImplBuilder;
     
-    public ProductCmptGenImplClassBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
+    public ProductCmptGenImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+        super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
     }
     

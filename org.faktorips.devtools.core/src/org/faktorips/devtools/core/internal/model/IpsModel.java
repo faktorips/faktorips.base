@@ -94,16 +94,6 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	// values.
 	private HashMap projectDatatypeHelpersMap = new HashMap();
 
-	// a map that contains the table of contents (value) for each ips package
-	// fragment root's (key)
-	// product component
-	// registry.
-	// The map is maintained in the model implementation so that the contents is
-	// cached as there is
-	// only one model
-	// instance.
-	private Map packFrgmtRootRegistryTocMap = new HashMap();
-
 	// the artefact builder sets that are registered with the artefact builder
 	// set extension point
 	private List availableBuilderSets;
@@ -184,50 +174,6 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 */
 	public IIpsModel getIpsModel() {
 		return this;
-	}
-
-	/**
-	 * Returns the product component registry's table of contents for the
-	 * indicated ips package fragment root.
-	 * 
-	 * @throws CoreException
-	 *             if an error occurs while accessing the toc file.
-	 */
-	public MutableClRuntimeRepositoryToc getRuntimeRepositoryToc(
-			IpsPackageFragmentRoot root) throws CoreException {
-		MutableClRuntimeRepositoryToc toc = (MutableClRuntimeRepositoryToc) packFrgmtRootRegistryTocMap
-				.get(root);
-		if (toc == null) {
-			toc = new MutableClRuntimeRepositoryToc();
-			IFile tocFile = root.getTocFileInOutputFolder();
-			if (tocFile.exists()) {
-				InputStream is = tocFile.getContents(true);
-				Document doc;
-				try {
-					DocumentBuilder builder = IpsPlugin.getDefault()
-							.newDocumentBuilder();
-					doc = builder.parse(is);
-				} catch (Exception e) {
-					throw new CoreException(new IpsStatus(
-							"Error parsing toc contents.", e));
-				}
-				Element repositoryEl = XmlUtil.getFirstElement(doc
-						.getDocumentElement(),
-						ReadonlyTableOfContents.TOC_XML_ELEMENT);
-				if (repositoryEl == null) {
-					throw new CoreException(new IpsStatus(
-							"RepositoryElement does not contain toc element!"));
-				}
-				try {
-					toc.initFromXml(repositoryEl);
-				} catch (Exception e) {
-					throw new CoreException(new IpsStatus(
-							"Error initializing toc from xml!", e));
-				}
-			}
-			packFrgmtRootRegistryTocMap.put(root, toc);
-		}
-		return toc;
 	}
 
 	/**
@@ -642,9 +588,8 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * ResourceDeltaVisitor to update any model objects.
+	 * ResourceDeltaVisitor to update any model objects on resource changes.
 	 */
-
 	private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 		public boolean visit(IResourceDelta delta) {
 			IResource resource = delta.getResource();
@@ -654,9 +599,6 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				}
 				IIpsProject ipsProject = getIpsProject(resource.getProject());
 				if (checkProjectPropertiesFileModification(ipsProject, resource)) {
-					return false;
-				}
-				if (checkTocFileModifications(ipsProject, resource)) {
 					return false;
 				}
 				IIpsElement element = getIpsElement(resource);
@@ -691,24 +633,6 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			projectDatatypeHelpersMap.remove(ipsProject.getName());
 			projectPropertiesMap.remove(ipsProject.getName());
 			return true;
-		}
-		return false;
-	}
-
-	/*
-	 * Checks if the changed resource is a toc file. If so, removes it from
-	 * cache and returns true, otherwise false.
-	 */
-	private boolean checkTocFileModifications(IIpsProject ipsProject,
-			IResource resource) throws CoreException {
-		IIpsPackageFragmentRoot[] srcRoots = ipsProject
-				.getSourceIpsPackageFragmentRoots();
-		for (int i = 0; i < srcRoots.length; i++) {
-			IpsPackageFragmentRoot root = (IpsPackageFragmentRoot) srcRoots[i];
-			if (resource.equals(root.getTocFileInOutputFolder())) {
-				packFrgmtRootRegistryTocMap.remove(root);
-				return true;
-			}
 		}
 		return false;
 	}

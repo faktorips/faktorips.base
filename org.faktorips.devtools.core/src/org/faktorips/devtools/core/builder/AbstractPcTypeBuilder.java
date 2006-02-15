@@ -14,6 +14,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -32,9 +33,9 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
 
     private Map containerRelationToSubRelationMap;
 
-    public AbstractPcTypeBuilder(IJavaPackageStructure packageStructure, String kindId,
+    public AbstractPcTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet stringsSet) {
-        super(packageStructure, kindId, stringsSet);
+        super(builderSet, kindId, stringsSet);
     }
 
     /**

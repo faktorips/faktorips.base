@@ -10,8 +10,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -54,10 +54,10 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
      */
     public ProductCmptGenerationCuBuilder(
             IProductCmptGeneration generation,
-            IJavaPackageStructure packageStructure, 
+            IIpsArtefactBuilderSet builderSet, 
             String kindId)
             throws CoreException {
-        super(packageStructure, kindId, new LocalizedStringsSet(
+        super(builderSet, kindId, new LocalizedStringsSet(
                 ProductCmptGenerationCuBuilder.class));
         this.generation = generation;
     }

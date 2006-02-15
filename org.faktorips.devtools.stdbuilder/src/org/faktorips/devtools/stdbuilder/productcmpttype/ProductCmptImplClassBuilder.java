@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -28,8 +28,8 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private PolicyCmptImplClassBuilder policyCmptImplClassBuilder;
     
-    public ProductCmptImplClassBuilder(IJavaPackageStructure packageStructure, String kindId) {
-        super(packageStructure, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
+    public ProductCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+        super(builderSet, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
     }
     
     public void setInterfaceBuilder(ProductCmptInterfaceBuilder builder) {

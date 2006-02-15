@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -17,10 +18,10 @@ public abstract class AbstractPcImplementationBuilder extends
 	protected AbstractPcInterfaceBuilder policyInterfaceBuilder;
 
 	public AbstractPcImplementationBuilder(
-			IJavaPackageStructure packageStructure, String kindId,
+			IIpsArtefactBuilderSet builderSet, String kindId,
 			LocalizedStringsSet stringsSet,
 			AbstractPcInterfaceBuilder policyInterfaceBuilder) {
-		super(packageStructure, kindId, stringsSet);
+		super(builderSet, kindId, stringsSet);
 		this.policyInterfaceBuilder = policyInterfaceBuilder;
 		// TODO Auto-generated constructor stub
 	}

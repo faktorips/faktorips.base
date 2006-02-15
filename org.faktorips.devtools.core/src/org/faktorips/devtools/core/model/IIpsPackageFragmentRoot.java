@@ -1,11 +1,9 @@
 package org.faktorips.devtools.core.model;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.faktorips.devtools.core.internal.model.MutableClRuntimeRepositoryToc;
 
 /**
  * A package fragment root contains a set of package fragments.
@@ -140,20 +138,5 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      */
     public String[] getJavaPackagePrefixes() throws CoreException;
     
-    /**
-     * Returns the file in the package root's associated output folder, that contains the table of contents.
-     * 
-     * @throws CoreException if an error occurs while determining the file.
-     */
-    // TODO This should be moved to the standard builder plugin
-    public IFile getTocFileInOutputFolder() throws CoreException;
-    
-    /**
-     * Returns the table of contents for this package fragment root.
-     * 
-     * @throws CoreException if an error occurs while accessing the toc file.
-     */
-    // TODO This should be moved to the standard builder plugin
-    public MutableClRuntimeRepositoryToc getRuntimeRepositoryToc() throws CoreException;
     
 }

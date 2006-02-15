@@ -1,6 +1,8 @@
 package org.faktorips.devtools.core.model;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 
@@ -12,10 +14,9 @@ import org.faktorips.fl.CompilationResult;
  * collects a list of IpsArtefactBuilders and makes them available to the build
  * system.
  * 
- * 
  * @author Peter Erzberger
  */
-public interface IIpsArtefactBuilderSet {
+public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 
 	/**
 	 * The xml element name.
@@ -64,6 +65,12 @@ public interface IIpsArtefactBuilderSet {
 	 * formula language identifier resolver.
 	 */
 	public IParameterIdentifierResolver getFlParameterIdentifierResolver();
+	
+	/**
+	 * Returns the file that contain the runtime repository toc file.
+	 * Note that the file might not exists.
+	 */
+	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException;
 
 	/**
 	 * When the builder set is loaded by the faktor ips plugin the extension id

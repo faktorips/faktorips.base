@@ -1,16 +1,10 @@
 package org.faktorips.devtools.core.internal.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.xml.transform.TransformerException;
-
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -34,11 +28,7 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.XmlUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 
 /**
@@ -89,84 +79,6 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment " + this));
     }
     
-    /**
-     * Returns the table of contents for this package fragment root.
-     * 
-     * @throws CoreException if an error occurs while accessing the toc file.
-     * 
-     * @see saveProductCmptRegistryToc()
-     */
-    public MutableClRuntimeRepositoryToc getRuntimeRepositoryToc() throws CoreException {
-        return ((IpsModel)getIpsModel()).getRuntimeRepositoryToc(this);
-    }
-    
-    /**
-     * Returns the file in the package root's associated output folder, that contains the table of contents.
-     * 
-     * @see saveProductCmptRegistryToc()
-     * 
-     * @throws CoreException if an error occurs while determining the file.
-     */
-	public IFile getTocFileInOutputFolder() throws CoreException {
-	    IFolder folder;
-        IIpsSrcFolderEntry srcEntry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
-        String pathToPack = getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE).replace('.', '/');
-        if (pathToPack.length()==0) {
-            folder = srcEntry.getOutputFolderForGeneratedJavaFiles();
-        } else {
-            folder = srcEntry.getOutputFolderForGeneratedJavaFiles().getFolder(pathToPack);
-        }
-        return folder.getFile(ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE);
-	}
-	
-	/**
-	 * Saves the product component registry's table of contents to a file. The table of contents file is needed
-	 * by the FaktorIPS runtime's ClassloaderProductCmptRegistry to load the product component's.
-	 * 
-	 * @throws CoreException if an error occurs while writing the toc to the file.
-	 */
-	public void saveProductCmptRegistryToc() throws CoreException {
-        IFile tocFile = getTocFileInOutputFolder();
-        if (tocFile==null) {
-            return;
-        }
-        String encoding = getIpsProject().getProject().getDefaultCharset();
-        if (encoding==null) {
-            return;
-        }
-        String xml = null;
-        try {
-            Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-            Element registryElement = doc.createElement(ClassloaderRuntimeRepository.REPOSITORY_XML_ELEMENT);
-            Element tocElement = getRuntimeRepositoryToc().toXml(doc);
-            registryElement.appendChild(tocElement);
-            xml = XmlUtil.nodeToString(registryElement, encoding);
-        } catch (TransformerException e) {
-            throw new CoreException(new IpsStatus("Error transforming product component registry's table of contents to xml.", e));
-        }
-        InputStream is;
-        try {
-            is = new ByteArrayInputStream(xml.getBytes(encoding));
-        } catch (UnsupportedEncodingException e1) {
-            throw new CoreException(new IpsStatus(e1));
-        }
-        if (tocFile.exists()) {
-            tocFile.setContents(is, true, true, null);
-        } else {
-            if (!tocFile.getParent().exists()) {
-                createFolder((IFolder)tocFile.getParent());
-            }
-            tocFile.create(is, true, null);
-        }
-	}
-	
-    private void createFolder(IFolder folder) throws CoreException {
-        while (!folder.getParent().exists()) {
-            createFolder((IFolder)folder.getParent());
-        }
-        folder.create(true, true, null);
-    }
-
     /**
      * Overridden method.
      * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getIpsProject()

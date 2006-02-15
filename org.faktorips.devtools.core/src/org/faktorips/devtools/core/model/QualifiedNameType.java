@@ -21,9 +21,12 @@ public class QualifiedNameType {
         this.type = type;
         calculateHashCode();
     }
+
+    public String getName() {
+    	return qualifiedName;
+    }
     
     public boolean equals(Object obj) {
-        
         if(obj instanceof QualifiedNameType){
             QualifiedNameType other = (QualifiedNameType)obj;
             return type.equals(other.type) && qualifiedName.equals(other.qualifiedName);

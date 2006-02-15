@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -44,26 +43,6 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
         super.tearDown();
     }
     
-    public void testGetProductCmptRegistryToc() throws CoreException {
-        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
-        type.setUnqualifiedProductCmptType("MotorProduct");
-        type.getIpsSrcFile().save(true, null);
-        IProductCmpt productCmpt = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct2005");
-        productCmpt.setPolicyCmptType("motor.MotorPolicy");
-        productCmpt.newGeneration().setValidFrom(new GregorianCalendar(2005, 0, 1));
-        productCmpt.getIpsSrcFile() .save(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        MutableClRuntimeRepositoryToc toc = ipsRoot.getRuntimeRepositoryToc();
-        TocEntryObject[] entries = toc.getProductCmptTocEntries();
-        assertEquals(1, entries.length);
-        
-        // following line forces a resource changed event
-        // the ips model impl removes the toc from it's cache, so it has to be reloaded on the next request
-        ipsRoot.getTocFileInOutputFolder().touch(null);
-        entries = ipsRoot.getRuntimeRepositoryToc().getProductCmptTocEntries();
-        assertEquals(1, entries.length);
-    }
-
     public void testGetIpsObjectPathEntry() throws CoreException {
         IIpsObjectPathEntry entry = ipsRoot.getIpsObjectPathEntry();
         assertNotNull(entry);
@@ -177,16 +156,6 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
         assertEquals(file.getIpsObject(), pdObject);
         
         assertNull(ipsRoot.getIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c.Unknown"));
-    }
-    
-    public void testSaveProductCmptRegistryToc() throws Exception {
-        MutableClRuntimeRepositoryToc toc = ipsRoot.getRuntimeRepositoryToc();
-        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicy");
-        toc.addOrReplaceTocEntry(entry);
-        ipsRoot.saveProductCmptRegistryToc();
-        
-        IFile file = ipsRoot.getTocFileInOutputFolder();
-        assertTrue(file.exists());
     }
     
     public void testFindProductCmpts() throws CoreException {

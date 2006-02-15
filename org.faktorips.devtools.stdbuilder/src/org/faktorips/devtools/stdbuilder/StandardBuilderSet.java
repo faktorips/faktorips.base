@@ -14,14 +14,12 @@ import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptTocFileUpdateBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
-import org.faktorips.devtools.stdbuilder.table.TableTocFileUpdateBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
@@ -114,8 +112,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 this, KIND_PRODUCT_CMPT_GENERATION_IMPL);
         IIpsArtefactBuilder productCmptContentCopyBuilder = new XmlContentFileCopyBuilder(
                 IpsObjectType.PRODUCT_CMPT, this, KIND_PRODUCT_CMPT_CONTENT);
-        ProductCmptTocFileUpdateBuilder productCmptTocUpdateBuilder = new ProductCmptTocFileUpdateBuilder(
-                this, KIND_PRODUCT_CMPT_TOCENTRY);
         
         // table structure builders
         tableImplBuilder = new TableImplBuilder(this, KIND_TABLE_IMPL);
@@ -125,8 +121,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // table content builders
         IIpsArtefactBuilder tableContentCopyBuilder = new XmlContentFileCopyBuilder(
                 IpsObjectType.TABLE_CONTENTS, this, KIND_TABLE_CONTENT);
-        TableTocFileUpdateBuilder tableContentTocUpdateBuilder = new TableTocFileUpdateBuilder(
-                this, KIND_TABLE_TOCENTRY);
+
+        // toc file builder
+        TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
         
         // wire up the builders
         
@@ -158,14 +155,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // product component builders.
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
-        productCmptTocUpdateBuilder.setPolicyCmptTypeInterfaceBuilder(policyCmptInterfaceBuilder);
-        productCmptTocUpdateBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
-        productCmptTocUpdateBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
-        productCmptTocUpdateBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
         
         // table builders
-        tableContentTocUpdateBuilder.setTableImplBuilder(tableImplBuilder);
+        tocFileBuilder.setPolicyCmptTypeInterfaceBuilder(policyCmptInterfaceBuilder);
+        tocFileBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
+        tocFileBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
+        tocFileBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
+        tocFileBuilder.setTableImplBuilder(tableImplBuilder);
 
+        // toc file builder
+        
         
         builders = new IIpsArtefactBuilder[] { 
                 tableImplBuilder, 
@@ -179,7 +178,17 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 productCmptGenerationImplBuilder,
                 tableContentCopyBuilder, 
                 productCmptContentCopyBuilder,
-                productCmptTocUpdateBuilder, 
-                tableContentTocUpdateBuilder };
+                tocFileBuilder };
+    }
+    
+    /**
+     * For testing purposes.
+     */
+    public IIpsArtefactBuilder getBuilder(Class builderClass) {
+        for (int i = 0; i < builders.length; i++) {
+            if (builders[i].getClass().equals(builderClass)) {
+                return builders[i];            }
+        }
+        throw new RuntimeException("No builder of class " + builderClass + " defined.");
     }
 }

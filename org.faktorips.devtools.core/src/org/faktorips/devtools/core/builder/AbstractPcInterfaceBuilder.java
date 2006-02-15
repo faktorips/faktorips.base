@@ -2,13 +2,14 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class AbstractPcInterfaceBuilder extends AbstractPcTypeBuilder {
 
-	public AbstractPcInterfaceBuilder(IJavaPackageStructure packageStructure, String kindId, LocalizedStringsSet stringsSet) {
-		super(packageStructure, kindId, stringsSet);
+	public AbstractPcInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
+		super(builderSet, kindId, stringsSet);
 	}
 	
 	abstract public void generateCodeForRelationGetOneSignature(IRelation relation,

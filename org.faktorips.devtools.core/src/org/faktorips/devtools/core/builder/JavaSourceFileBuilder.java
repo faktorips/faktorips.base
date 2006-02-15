@@ -27,7 +27,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -50,7 +50,7 @@ import org.faktorips.util.XmlUtil;
  * 
  * @author Peter Erzberger
  */
-public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
+public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 	/**
 	 * This constant is supposed to be used as a javadoc annotation. If the
@@ -71,8 +71,6 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 
 	private boolean mergeEnabled;
 
-	private IJavaPackageStructure packageStructure;
-
 	private String kindId;
 
 	private IIpsObject ipsObject;
@@ -90,7 +88,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	/**
 	 * Creates a new JavaSourceFileBuilder.
 	 * 
-	 * @param packageStructure
+	 * @param builderSet
 	 *            the package information for the generated java source file and
 	 *            for other generated java classes within this package
 	 *            structure. Cannot be null.
@@ -101,11 +99,10 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	 *            getLocalizedText() methods are called and the
 	 *            localizedStringsSet is not set an exception is thrown
 	 */
-	public JavaSourceFileBuilder(IJavaPackageStructure packageStructure,
+	public JavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet,
 			String kindId, LocalizedStringsSet localizedStringsSet) {
-		ArgumentCheck.notNull(packageStructure, this);
+		super(builderSet);
 		ArgumentCheck.notNull(kindId, this);
-		this.packageStructure = packageStructure;
 		this.kindId = kindId;
 		this.localizedStringsSet = localizedStringsSet;
 	}
@@ -116,7 +113,7 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	public String getName() {
 		return StringUtil.unqualifiedName(getClass().getName());
 	}
-
+	
 	/**
 	 * Returns the naming convention for product changes over time. 
 	 */
@@ -307,26 +304,10 @@ public abstract class JavaSourceFileBuilder implements IIpsArtefactBuilder {
 	}
 
 	/**
-	 * Empty implementation of the super class method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#beforeBuildProcess(int)
-	 */
-	public void beforeBuildProcess(int buildKind) throws CoreException {
-	}
-
-	/**
-	 * Empty implementation of the super class method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#afterBuildProcess(int)
-	 */
-	public void afterBuildProcess(int buildKind) throws CoreException {
-	}
-
-	/**
 	 * Returns the java package structure available for this builder.
 	 */
 	public IJavaPackageStructure getPackageStructure() {
-		return packageStructure;
+		return getBuilderSet();
 	}
 
 	/**
