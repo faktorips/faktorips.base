@@ -3,23 +3,23 @@
 		<!-- set global properties for this build -->
 		
 			<!-- src -->
-			<property name="src" location="../src"/>
-			<property name="test_src" location="../test" />
+			<property name="src" location="src"/>
+			<property name="test_src" location="test" />
 		
 			<!-- classes -->
-		  	<property name="classes" location="classes"/>
+		  	<property name="classes" location="build/classes"/>
 		
 			<!-- jars -->
-			<property name="temp_jarfile" location="results/temp_util.jar" />
-		    <property name="jarfile" location="results/util.jar" />
+			<property name="temp_jarfile" location="build/results/temp_util.jar" />
+		    <property name="jarfile" location="build/results/util.jar" />
 	
 			<!-- classpath -->
 	
 			<property name="junit" location="/var/lib/junit.jar"/>
-			<property name="libs" location="../lib/commons-lang-1.0.1.jar" />
+			<property name="libs" location="lib/commons-lang-1.0.1.jar" />
 	
 			<!-- logdir -->
-			<property name="log" location="logs" />
+			<property name="log" location="build/logs" />
 
 
 
