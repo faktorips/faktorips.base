@@ -4,17 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
@@ -335,56 +329,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         return IpsObjectType.TABLE_STRUCTURE;
     }
     
-    /** 
-     * Overridden method.
-     * 
-     * @throws CoreException if type can't be determined
-     * @see org.faktorips.devtools.core.model.IIpsObject#getJavaType(int)
-     */
-    public IType getJavaType(int kind) throws CoreException {
-        return getJavaType(getIpsPackageFragment(), getName(), kind);
-    }
-
-    /**
-     * Returns the Java type that correspond to the IPS object identified by
-     * the IPS package fragment and the given name and the given kind.
-     * 
-     * @throws CoreException if the type can't be determined.
-     */
-    public final static IType getJavaType(
-            IIpsPackageFragment ipsPack, 
-            String tableStructureName, 
-            int kind) throws CoreException {
-        
-        switch (kind) {
-            case JAVA_TABLE_IMPLEMENTATION_TYPE:
-            {
-        	    IPackageFragment pack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-                String javaTypeName = StringUtils.capitalise(tableStructureName);
-        	    ICompilationUnit cu = pack.getCompilationUnit(javaTypeName + ".java");
-        	    return cu.getType(javaTypeName);
-            }
-        	case JAVA_TABLE_ROW_IMPL_TYPE:
-        	{
-        	    IPackageFragment pack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-                String javaTypeName = StringUtils.capitalise(tableStructureName + "Row");
-        	    ICompilationUnit cu = pack.getCompilationUnit(javaTypeName + ".java");
-        	    return cu.getType(javaTypeName);
-        	}
-            default:
-                throw new IllegalArgumentException("Unexpected value for parameter kind: " + kind);
-        }
-    }
-
-    
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getAllJavaTypes()
-     */
-    public IType[] getAllJavaTypes() {
-        return new IType[0];
-    }
-
     /**
      * Overridden.
      */

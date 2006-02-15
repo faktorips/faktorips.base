@@ -1,18 +1,14 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -22,7 +18,6 @@ import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.runtime.TocEntryObject;
 
 
 /**
@@ -48,44 +43,12 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
         assertNotNull(entry);
     }
     
-    public void testGetJavaPackagePrefix() throws CoreException {
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.setOutputFolderForGeneratedJavaFiles(ipsProject.getProject().getFolder("generated"));
-        path.setBasePackageNameForGeneratedJavaClasses("org.faktorips");
-        path.setOutputFolderForGeneratedJavaFiles(ipsProject.getProject().getFolder("extension"));
-        path.setBasePackageNameForGeneratedJavaClasses("org.faktorips");
-        path.setOutputDefinedPerSrcFolder(false);
-        ipsProject.setIpsObjectPath(path);
-        
-        assertEquals("org.faktorips", ipsRoot.getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE));
-        assertEquals("org.faktorips.internal", ipsRoot.getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION));
-        assertEquals("org.faktorips.internal", ipsRoot.getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_EXTENSION));
-        
-        path.setBasePackageNameForGeneratedJavaClasses("");
-        path.setBasePackageNameForExtensionJavaClasses("");
-        ipsProject.setIpsObjectPath(path);
-        assertEquals("", ipsRoot.getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE));
-        assertEquals("internal", ipsRoot.getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION));
-        assertEquals("internal", ipsRoot.getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_EXTENSION));
-    }
-    
     public void testGetArtefactDestination() throws CoreException{
         IFolder destination = ipsRoot.getArtefactDestination();
         assertNotNull(destination);
         IIpsSrcFolderEntry srcEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
         IPath outputPath = srcEntry.getOutputFolderForGeneratedJavaFiles().getProjectRelativePath();
         assertEquals(outputPath, destination.getProjectRelativePath());
-    }
-    
-    public void testGetJavaPackageFragmentRoot() throws CoreException {
-        IPackageFragmentRoot javaRoot = ipsRoot.getJavaPackageFragmentRoot(IIpsPackageFragmentRoot.JAVA_ROOT_GENERATED_CODE);
-        assertNotNull(javaRoot);
-        assertTrue(javaRoot.exists());
-        
-        IPackageFragmentRoot extRoot = ipsRoot.getJavaPackageFragmentRoot(IIpsPackageFragmentRoot.JAVA_ROOT_EXTENSION_CODE);
-        assertNotNull(extRoot);
-        assertTrue(extRoot.exists());
-        
     }
     
     public void testGetPdProject() {

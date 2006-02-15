@@ -1,6 +1,5 @@
 package org.faktorips.devtools.core.internal.model.businessfct;
 
-import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -45,22 +44,6 @@ public class BusinessFunctionImpl extends IpsObject implements
      */
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getJavaType(int)
-     */
-    public IType getJavaType(int kind) {
-        throw new IllegalArgumentException("Unkown kind " + kind);
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getAllJavaTypes()
-     */
-    public IType[] getAllJavaTypes() {
-        return new IType[0];
     }
 
     /**

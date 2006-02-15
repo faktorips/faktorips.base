@@ -6,10 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.Signature;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -20,11 +17,9 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -38,47 +33,6 @@ import org.w3c.dom.NodeList;
  */
 public class Attribute extends Member implements IAttribute {
 
-    private final static String[] JAVA_METHOD_PREFIX;
-    private final static int[] JAVA_METHOD_OF_TYPE;
-
-    static {
-        JAVA_METHOD_PREFIX = new String[JAVA_NUMOF_METHOD];
-
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_IMPLEMENATION] = "get";
-        JAVA_METHOD_PREFIX[JAVA_SETTER_METHOD_IMPLEMENATION] = "set";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_INTERFACE] = "get";
-        JAVA_METHOD_PREFIX[JAVA_SETTER_METHOD_INTERFACE] = "set";
-        JAVA_METHOD_PREFIX[JAVA_COMPUTE_ATTRIBUTE_METHOD_PRODUCTCMPT_INTERFACE] = "compute";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_DEFAULTVALUE_PRODUCT_INTERFACE] = "getVorgabewert";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_VALUE_PRODUCT_INTERFACE] = "get";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_DEFAULTVALUE_PRODUCT_IMPL] = "getVorgabewert";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_VALUE_PRODUCT_IMPL] = "get";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_MAX_VALUESET_POLICY_INTERFACE] = "getMaxWertebereich";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_MAX_VALUESET_POLICY_IMPL] = "getMaxWertebereich";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_MAX_VALUESET_PRODUCT_INTERFACE] = "getMaxWertebereich";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_MAX_VALUESET_PRODUCT_IMPL] = "getMaxWertebereich";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_VALUESET_POLICY_INTERFACE] = "getWertebereich";
-        JAVA_METHOD_PREFIX[JAVA_GETTER_METHOD_VALUESET_POLICY_IMPL] = "getWertebereich";
-
-        JAVA_METHOD_OF_TYPE = new int[JAVA_NUMOF_METHOD];
-
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_IMPLEMENATION] = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_SETTER_METHOD_IMPLEMENATION] = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_INTERFACE] = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_SETTER_METHOD_INTERFACE] = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_COMPUTE_ATTRIBUTE_METHOD_PRODUCTCMPT_INTERFACE] = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_DEFAULTVALUE_PRODUCT_INTERFACE] = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_VALUE_PRODUCT_INTERFACE] = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_DEFAULTVALUE_PRODUCT_IMPL] = IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_VALUE_PRODUCT_IMPL] = IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_MAX_VALUESET_POLICY_INTERFACE] = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_MAX_VALUESET_POLICY_IMPL] = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_MAX_VALUESET_PRODUCT_INTERFACE] = IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_MAX_VALUESET_PRODUCT_IMPL] = IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_VALUESET_POLICY_INTERFACE] = IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE;
-        JAVA_METHOD_OF_TYPE[JAVA_GETTER_METHOD_VALUESET_POLICY_IMPL] = IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE;
-    }
-    
     private static final String TAG_PROPERTY_PARAMETER = "FormulaParameter";
     final static String TAG_NAME = "Attribute";
     private static final String TAG_PARAM_NAME = "name";
@@ -301,47 +255,6 @@ public class Attribute extends Member implements IAttribute {
         parameters = new Parameter[params.length];
         System.arraycopy(params, 0, parameters, 0, params.length);
         updateSrcFile();
-    }
-
-    /**
-     * Overridden.
-     */
-    public IMethod getJavaMethod(int type) throws CoreException {
-        if (type < 0 || type > JAVA_NUMOF_METHOD) {
-            throw new IllegalArgumentException("Unkown type " + type);
-        }
-        String[] paramTypeSignature;
-        if (type == JAVA_COMPUTE_ATTRIBUTE_METHOD_PRODUCTCMPT_INTERFACE) {
-            return getJavaComputationMethod();
-        }
-        if (type == JAVA_SETTER_METHOD_IMPLEMENATION || type == JAVA_SETTER_METHOD_INTERFACE) {
-            String paramTypeName = getIpsProject().findDatatype(datatype).getJavaClassName();
-            String param = Signature.createTypeSignature(paramTypeName, false);
-            paramTypeSignature = new String[] { param };
-        } else {
-            paramTypeSignature = new String[0];
-        }
-        String methodName = JAVA_METHOD_PREFIX[type] + StringUtils.capitalise(getName());
-        return getPolicyCmptType().getJavaType(JAVA_METHOD_OF_TYPE[type]).getMethod(methodName, paramTypeSignature);
-    }
-
-    /*
-     * Returns the compuation method in the product component interface.
-     */
-    private IMethod getJavaComputationMethod() throws CoreException {
-        if (getAttributeType() != AttributeType.COMPUTED && getAttributeType() != AttributeType.DERIVED) {
-            return null;
-        }
-        String methodname = "compute" + StringUtils.capitalise(getName());
-        IType javaType = getPolicyCmptType().getJavaType(IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE);
-        Parameter[] params = getFormulaParameters();
-        String[] typeSignatures = new String[params.length];
-        for (int i = 0; i < params.length; i++) {
-            Datatype datatype = getIpsProject().findDatatype(params[i].getDatatype());
-            String datatypeClassname = StringUtil.unqualifiedName(datatype.getJavaClassName());
-            typeSignatures[i] = Signature.createTypeSignature(datatypeClassname, false);
-        }
-        return javaType.getMethod(methodname, typeSignatures);
     }
 
     /**

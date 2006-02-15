@@ -10,8 +10,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -21,7 +19,6 @@ import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -110,25 +107,6 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
             }
         }
         return false;
-    }
-    
-    /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getJavaPackageFragmentRoot(int)
-     */
-    public IPackageFragmentRoot getJavaPackageFragmentRoot(int kind) throws CoreException {
-        IIpsObjectPathEntry entry = getIpsObjectPathEntry();
-        if (!entry.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
-            throw new CoreException(new IpsStatus("Can't get Java package fragement root for " + this));
-        }
-        IIpsSrcFolderEntry srcEntry = (IIpsSrcFolderEntry)entry;
-        switch (kind) {
-        	case JAVA_ROOT_GENERATED_CODE:
-        	    return getIpsProject().getJavaProject().getPackageFragmentRoot(srcEntry.getOutputFolderForGeneratedJavaFiles());
-        	case JAVA_ROOT_EXTENSION_CODE:
-        	    return getIpsProject().getJavaProject().getPackageFragmentRoot(srcEntry.getOutputFolderForExtensionJavaFiles());
-        }
-        throw new IllegalArgumentException("Unknown kind " + kind);
     }
     
     /**
@@ -306,79 +284,4 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         }
     }
     
-    /**
-     * Overridden method.
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getJavaPackagePrefix(int)
-     */
-    public String getJavaPackagePrefix(int kind) throws CoreException {
-        IIpsObjectPathEntry entry = getIpsObjectPathEntry();
-        if (!entry.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
-            throw new CoreException(new IpsStatus("Can't get Java package prefix for " + this));
-        }
-        // TODO: falsch, exension ber?cksichtigen.
-        String basePackage = ((IIpsSrcFolderEntry)entry).getBasePackageNameForGeneratedJavaClasses();
-        switch (kind) {
-        	case IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION:
-        	    return basePackage.equals("") ? "internal" : basePackage + ".internal";
-        	case IIpsPackageFragment.JAVA_PACK_EXTENSION:
-        	    return basePackage.equals("") ? "internal" : basePackage + ".internal";
-        	case IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE:
-        	    return basePackage;
-        	default:
-                throw new IllegalArgumentException("Can't get Java package prefix for " + this + ". Kind " + kind + " is illegal.");
-        }
-    }
-    
-    /**
-     * Overridden method.
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getJavaPackagePrefixes()
-     */
-    public String[] getJavaPackagePrefixes() throws CoreException {
-        String[] prefixes = new String[2];
-        prefixes[0] = getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-        prefixes[1] = getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE);;
-        return prefixes;
-    }
-    
-    IIpsSrcFile findIpsSrcFile(ICompilationUnit cu) throws CoreException {
-        String ipsPackName = null;
-        String prefix = "";
-        String javaPackName = cu.getParent().getElementName();
-        String[] prefixes = getJavaPackagePrefixes();
-        for (int i=0; i<prefixes.length; i++) {
-            if (javaPackName.startsWith(prefixes[i])) {
-                prefix = prefixes[i];
-                if (prefix.equals("")) {
-                    ipsPackName = javaPackName;
-                } else {
-                    // also remove the separating dot (.)
-                    ipsPackName = javaPackName.substring(prefix.length()+1);
-                }
-                break;
-            }
-        }
-        if (ipsPackName==null) {
-            return null;
-        }
-        String cuName = cu.getElementName();
-        String ipsObjectName = null;
-        IIpsPackageFragment pack = getIpsPackageFragment(ipsPackName);
-        if (prefix.equals(getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION))) {
-            int pos = cuName.lastIndexOf("Impl.java");
-            if (pos>0) {
-                ipsObjectName = cuName.substring(0, pos);
-            } else {}
-        } else if (prefix.equals(getJavaPackagePrefix(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE))) {
-            int pos = cuName.lastIndexOf(".java");
-            if (pos>0) {
-                ipsObjectName = cuName.substring(0, pos);
-            } else {}
-        }
-        if (ipsObjectName!=null) {
-            return pack.getIpsSrcFile(ipsObjectName + "." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
-        }
-        return null;
-    }
 }

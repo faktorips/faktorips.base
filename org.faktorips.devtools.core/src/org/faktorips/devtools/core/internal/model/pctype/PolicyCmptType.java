@@ -6,14 +6,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -28,7 +25,6 @@ import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -133,83 +129,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		throw new IllegalArgumentException("Unknown part type" + partType);
 	}
 
-	/** 
-     * Overridden.
-     */
-    public IType getJavaType(int kind) throws CoreException {
-        return getJavaType(getIpsPackageFragment(), getName(), kind); 
-    }
-    
-    /**
-     * Returns the Java type that correspond to the IPS object identified by
-     * the IPS package fragmeent and the given name and the given kind.
-     * 
-     * @throws CoreException if the type can't be determined.
-     */
-    public final static IType getJavaType(
-            IIpsPackageFragment ipsPack, 
-            String policyCmptTypeName, 
-            int kind) throws CoreException {
-        IPackageFragment pack;
-        String javaTypeName;
-	    ICompilationUnit cu;
-        switch (kind) {
-        	case JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE:
-                pack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-                javaTypeName = StringUtils.capitalise(policyCmptTypeName) + "Impl";
-        	    cu = pack.getCompilationUnit(javaTypeName + ".java");
-        	    return cu.getType(javaTypeName);
-        	case JAVA_POLICY_CMPT_EXTENSTION_IMPLEMENTATION_TYPE:
-                pack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_EXTENSION);
-                javaTypeName = StringUtils.capitalise(policyCmptTypeName) + "ExtImpl";
-        	    cu = pack.getCompilationUnit(javaTypeName + ".java");
-        	    return cu.getType(javaTypeName);
-        	case JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE:
-                pack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE);
-                javaTypeName = StringUtils.capitalise(policyCmptTypeName);
-        	    cu = pack.getCompilationUnit(javaTypeName + ".java");
-        	    return cu.getType(javaTypeName);
-        	case JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE:
-                pack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-                javaTypeName = StringUtils.capitalise(policyCmptTypeName) + "PkImpl";
-        	    cu = pack.getCompilationUnit(javaTypeName + ".java");
-        	    return cu.getType(javaTypeName);
-        	case JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE:
-                pack = ipsPack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE);
-                javaTypeName = StringUtils.capitalise(policyCmptTypeName) + "Pk";
-        	    cu = pack.getCompilationUnit(javaTypeName + ".java");
-        	    return cu.getType(javaTypeName);
-        	default:
-        	    throw new IllegalArgumentException("Unkown kind " + kind);
-        }
-    }
-    
-    /** 
-     * Overridden.
-     */
-    public IType[] getAllJavaTypes() throws CoreException {
-        return getAllJavaTypes(getIpsPackageFragment(), getName());
-    }
-    
-    /**
-     * Returns all Java types that correspond to IPS object identified by
-     * the package fragment and the name.
-     *  
-     * Note that none of the returned Java types must exist.
-     * @throws CoreException
-     */
-    public final static IType[] getAllJavaTypes(
-            IIpsPackageFragment ipsPack, 
-            String policyCmptTypeName) throws CoreException {
-        
-        IType[] types = new IType[4];
-        types[0] = getJavaType(ipsPack, policyCmptTypeName, JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE);
-        types[1] = getJavaType(ipsPack, policyCmptTypeName, JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE);
-        types[2] = getJavaType(ipsPack, policyCmptTypeName, JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE);
-        types[3] = getJavaType(ipsPack, policyCmptTypeName, JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE);
-        return types;
-    }
-    
     /** 
      * {@inheritDoc}
      */
@@ -279,16 +198,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             }
         }
         return false;
-    }
-    
-    /**
-     * Overridden.
-     */
-    public IType getJavaImplementationType() throws CoreException {
-        if (isExtensionCompilationUnitGenerated()) {
-            return getJavaType(JAVA_POLICY_CMPT_EXTENSTION_IMPLEMENTATION_TYPE);
-        }
-        return getJavaType(JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE);
     }
     
     /**
@@ -857,21 +766,24 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /** 
      * Overridden.
      */
-    public String getJavaClassName() {
-        try {
-        	String qName = getJavaType(JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE).getFullyQualifiedName();
-            return StringUtil.getPackageName(qName).toLowerCase() + '.' + StringUtil.unqualifiedName(qName);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /** 
-     * Overridden.
-     */
     public int compareTo(Object o) {
         return 0;
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IType getJavaImplementationType() throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getJavaClassName() {
+		throw new RuntimeException("getJavaClassName is not supported by " + getClass());
+	}
     
     
 }

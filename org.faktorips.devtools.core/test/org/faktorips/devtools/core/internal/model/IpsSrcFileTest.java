@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -51,24 +50,6 @@ public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListe
         super.tearDown();
     }
     
-    public void testGetAllJavaCompilationUnits() throws CoreException {
-        ICompilationUnit[] units = parsableFile.getAllJavaCompilationUnits(); 
-        assertEquals(4, units.length);
-        assertNotNull(units[0]);
-        assertNotNull(units[1]);
-        assertNotNull(units[2]);
-        assertNotNull(units[3]);
-        
-        // also unparsable files must be able to return their comp. units.
-        units = unparsableFile.getAllJavaCompilationUnits(); 
-        assertEquals(4, units.length);
-        assertNotNull(units[0]);
-        assertNotNull(units[1]);
-        assertNotNull(units[2]);
-        assertNotNull(units[3]);
-        
-    }
-
     public void testGetCorrespondingResource() {
         IResource resource = parsableFile.getCorrespondingResource();
         assertTrue(resource.exists());

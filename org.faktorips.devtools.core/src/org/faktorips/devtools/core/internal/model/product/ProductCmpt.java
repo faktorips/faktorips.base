@@ -1,12 +1,8 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
@@ -17,7 +13,6 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
@@ -107,31 +102,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return null;
         }
         return pcType.getRelation(relationName);
-    }
-    
-    /** 
-     * Throws an IllegalArgumentException as no Java type is generated for the product component. Instead
-     * Java types are generated for each generation.
-     * 
-     * Overridden.
-     */
-    public IType getJavaType(int kind) throws CoreException {
-        throw new IllegalArgumentException("Unkown kind");
-    }
-
-    /** 
-     * Overridden.
-     */
-    public IType[] getAllJavaTypes() throws CoreException {
-        List types = new ArrayList();
-        IIpsObjectGeneration[] generations = getGenerations();
-        for (int i=0; i<generations.length; i++) {
-            IType[] genTypes = ((IProductCmptGeneration)generations[i]).getAllJavaTypes();
-            for (int j=0; j<genTypes.length; j++) {
-                types.add(genTypes[i]);
-            }
-        }
-        return (IType[])types.toArray(new IType[types.size()]);
     }
 
     /**

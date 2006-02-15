@@ -169,37 +169,6 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         parametersControl.setParameterListChangeListener(this);
     }
     
-    private String shiftLeft(String text) {
-        StringTokenizer tokenizer = new StringTokenizer(text, SystemUtils.LINE_SEPARATOR);
-        if (!tokenizer.hasMoreTokens()) {
-            return text;
-        }
-        String firstLine = tokenizer.nextToken();
-        String trimmed = StringUtils.trim(firstLine);
-        int pos = firstLine.indexOf(trimmed);
-        if (pos==-1) {
-            return text;
-        }
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(firstLine.substring(pos));
-        while (tokenizer.hasMoreTokens()) {
-            buffer.append(shiftLeft(tokenizer.nextToken(), pos));
-        }
-        return buffer.toString();
-    }
-    
-    private String shiftLeft(String line, int maxChars) {
-        if (maxChars==0) {
-            return line;
-        }
-        int i=0;
-        char[] chars = line.toCharArray();
-        while (Character.isWhitespace(chars[i]) && i<maxChars) {
-            i++;
-        }
-        return line.substring(i+1);
-    }
-    
     /** 
      * Overridden method.
      * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#buildTitle()

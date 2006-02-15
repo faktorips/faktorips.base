@@ -50,7 +50,7 @@ public class IpsBuilderTest extends IpsPluginTest {
         pcType.setSupertype("unknownSupertype");
         pcType.getIpsSrcFile().save(true, null);
         MessageList msgList = pcType.validate();
-        assertEquals(1, msgList.getNoOfMessages());
+        assertTrue(msgList.getNoOfMessages()>0);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD,
             new NullProgressMonitor());
         IResource resource = pcType.getEnclosingResource();

@@ -77,7 +77,7 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
         assertEquals("TestPdProject", ipsProjects[0].getName());
         
         project.getProject().close(null);
-        IIpsProject project2 = super.newIpsProject("TestProject2");
+        super.newIpsProject("TestProject2");
         ipsProjects = model.getIpsProjects();
         assertEquals(1, ipsProjects.length);
         assertEquals("TestProject2", ipsProjects[0].getName());

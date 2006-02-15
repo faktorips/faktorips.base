@@ -7,7 +7,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.Range;
 import org.faktorips.devtools.core.model.ValueSet;
@@ -81,7 +80,7 @@ public class RangeEditControl extends ControlComposite implements InternalValueS
     }
 
     private void createTextControls(UIToolkit toolkit, Composite workArea) {
-        Label min = toolkit.createFormLabel(workArea, "Minimum");
+        toolkit.createFormLabel(workArea, "Minimum");
         lower = toolkit.createText(workArea);
         lower.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         

@@ -77,7 +77,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
     }
     
     public void testGetConfigElement_AttributeName() {
-        IConfigElement ce1 = generation.newConfigElement();
+        generation.newConfigElement();
         IConfigElement ce2 = generation.newConfigElement();
         ce2.setPcTypeAttribute("a2");
         
@@ -89,10 +89,10 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
     public void testGetNumOfConfigElements() {
         assertEquals(0, generation.getNumOfConfigElements());
         
-        IConfigElement ce1 = generation.newConfigElement();
+        generation.newConfigElement();
         assertEquals(1, generation.getNumOfConfigElements());
 
-        IConfigElement ce2 = generation.newConfigElement();
+        generation.newConfigElement();
         assertEquals(2, generation.getNumOfConfigElements());
     }
 
@@ -119,7 +119,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
      */
     public void testGetRelations_String() {
         IProductCmptRelation r1 = generation.newRelation("coverage");
-        IProductCmptRelation r2 = generation.newRelation("risk");
+        generation.newRelation("risk");
         IProductCmptRelation r3 = generation.newRelation("coverage");
         
         IProductCmptRelation[] relations = generation.getRelations("coverage");
@@ -134,10 +134,10 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
     public void testGetNumOfRelations() {
         assertEquals(0, generation.getNumOfRelations());
         
-        IProductCmptRelation r1 = generation.newRelation("coverage");
+        generation.newRelation("coverage");
         assertEquals(1, generation.getNumOfRelations());
 
-        IProductCmptRelation r2 = generation.newRelation("risk");
+        generation.newRelation("risk");
         assertEquals(2, generation.getNumOfRelations());
     }
 

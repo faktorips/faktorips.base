@@ -6,7 +6,6 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IPackageFragment;
 
 /**
  * An IPS package fragment is a portion of the workspace corresponding to an entire package,
@@ -20,33 +19,6 @@ public interface IIpsPackageFragment extends IIpsElement {
      * The char used as separator for subpackages.
      */
     public final static char SEPARATOR = '.';
-    
-    /**
-     * The type constant for the Java package fragment that contains the 
-     * implementation classes.
-     *  
-     * @see getJavaPackageFragment(int)
-     * @deprecated
-     */
-    public final static int JAVA_PACK_IMPLEMENTATION = 0;
-    
-    /**
-     * The type constant for the Java package fragment that contains the 
-     * published interfaces.
-     * 
-     * @see getJavaPackageFragment(int)
-     * @deprecated
-     */
-    public final static int JAVA_PACK_PUBLISHED_INTERFACE = 128;
-    
-    /**
-     * The type constant for the Java package fragment that contains the 
-     * extension classes.
-     *  
-     * @see getJavaPackageFragment(int)
-     * @deprecated
-     */
-    public final static int JAVA_PACK_EXTENSION = 256;
     
     /**
      * Returns the packagefragment which contains this one or null if this one is the default-package.
@@ -68,26 +40,6 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Returns an <code>org.eclipse.core.runtime.IPath</code> object representing for the package fragment name.
      */
     public IPath getRelativePath();
-    
-    /**
-     * Returns the Java package fragment that corresponds to the IPS package
-     * fragment and is of the indicated kind.
-     * 
-     * @param kind A kind constant identifying the kind of package fragment.
-     * @return The corresponding package fragment. Note that the package fragment might not
-     * exists!
-     * @deprecated
-     * @throws IllegalArgumentException if the kind is illegal.   
-     */
-    public IPackageFragment getJavaPackageFragment(int kind) throws CoreException;
-    
-    /**
-     * Returns all Java package fragments that correspond to this IPS package.
-     * Note that the Java packages might not exists.
-     * 
-     * @deprecated
-     */
-    public IPackageFragment[] getAllJavaPackageFragments() throws CoreException;
     
     /**
      * Returns a handle to the IPS source file with the given name.  
@@ -154,13 +106,11 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsSrcFile createIpsFile(IpsObjectType type, String pdObjectName, boolean force, IProgressMonitor monitor) throws CoreException;
 
     /**
-     * Creates a IpsSrcFile that contains an IpsObject of the indicated type and
-     * with the indicated name. The filename is constructed by appending the type
-     * specific file extension to the object name (separated by a dot). The content 
-     * of the IpsSrcFile is copied from the given template. If the template is a 
-     * ITimedIpsObject, only the generation 
+     * Creates a new IpsSrcFile based on a given template. The filename is constructed by 
+     * appending the type specific file extension to the given object name (separated by a dot). 
+     * The content of the IpsSrcFile is copied from the given template. If the template is a 
+     * ITimedIpsObject, only the generation that is valid at the given date is copied. 
      * 
-     * @param type the object's type
 	 * @param name the file name
 	 * @param template the source for the contents to copy from
 	 * @param date the date to find the generation effective on if 
@@ -178,7 +128,7 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * <li> The name is not a valid object name
 	 * </ul>
      */
-    public IIpsSrcFile createIpsFileFromTemplate(IpsObjectType type, String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException;
+    public IIpsSrcFile createIpsFileFromTemplate(String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException;
     
     /**
      * Returns the (unqualified) name of the corresponding folder in the file system.

@@ -11,7 +11,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -42,22 +41,6 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      */
     public IIpsPackageFragment getIpsPackageFragment() {
         return (IIpsPackageFragment)getParent();
-    }
-    
-    public IFile getArtefactFile(){
-        throw new RuntimeException("Not implemented yet.");
-    }
-    
-    public IFile createArtefactFile(){
-        throw new RuntimeException("Not implemented yet.");
-    }
-    
-    /**
-     * Overridden.
-     */
-    public ICompilationUnit[] getAllJavaCompilationUnits() throws CoreException {
-        String objectName = StringUtil.getFilenameWithoutExtension(getName());
-        return getIpsObjectType().getAllJavaCompilationUnits(getIpsPackageFragment(), objectName);
     }
     
     /**

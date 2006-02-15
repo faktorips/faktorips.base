@@ -555,7 +555,7 @@ public class SpreadsheetControl extends Composite {
 	}
 	
 	/**
-	 * IMethod is used to ensure that the selected item is visible. This may include 
+	 * Method is used to ensure that the selected item is visible. This may include 
 	 * horizontal scrolling to the selected item.
 	 */
 	void ensureItemIsVisible() {

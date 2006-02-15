@@ -13,14 +13,6 @@ public interface ITableContents extends ITimedIpsObject {
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure";
     
     /**
-     * The constant for the java <code>IType</code> that contains the table contents.
-     * @deprecated
-     * @see org.faktorips.devtools.core.model.IIpsObject#getJavaType(int)
-     */
-    public final static int JAVA_TABLECONTENTS_IMPLEMENTATION_TYPE = 0;
-    
-    
-    /**
      * Returns the qualified name of the table structure this table contents
      * is based on.
      */

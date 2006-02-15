@@ -2,7 +2,6 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -30,7 +29,6 @@ public class ProductCmptTest extends IpsPluginTest {
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;
     private IIpsSrcFile srcFile;
-    private IPolicyCmptType pcType;
     private IIpsProject pdProject;
     
     /*
@@ -43,14 +41,6 @@ public class ProductCmptTest extends IpsPluginTest {
         pack = root.createPackageFragment("products.folder", true, null);
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
-    }
-    
-    public void testGetJavaType() throws CoreException {
-        try {
-            productCmpt.getJavaType(-1);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
     }
     
     public void testSetPolicyCmptType() {
@@ -74,7 +64,7 @@ public class ProductCmptTest extends IpsPluginTest {
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
         IConfigElement ce1 = gen1.newConfigElement();
         ce1.setValue("0.15");
-        IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt.newGeneration();
+        productCmpt.newGeneration();
         Element element = productCmpt.toXml(newDocument());
         ProductCmpt copy = new ProductCmpt();
         copy.initFromXml(element);

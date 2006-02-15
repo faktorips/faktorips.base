@@ -1,7 +1,6 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IMethod;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
@@ -150,18 +149,6 @@ public interface IAttribute extends IMember {
      * @throws NullPointerException if params if <code>null</code>.
      */
     public void setFormulaParameters(Parameter[] params);
-    
-    /**
-     * Returns the Java method that corresponds to the attribute and is of
-     * the indicated type.
-     * 
-     * @param type A type constant identifying the type of method.
-     * @return The corresponding Java method. Note that the method might not
-     * exists!
-     * @deprecated
-     * @throws IllegalArgumentException if the type constant is illegal.   
-     */
-    public IMethod getJavaMethod(int type) throws CoreException;
     
     /**
      * Returns the set of allowed values.

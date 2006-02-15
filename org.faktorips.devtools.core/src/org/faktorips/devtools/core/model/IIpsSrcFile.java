@@ -3,7 +3,6 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.ICompilationUnit;
 
 /**
  * A handle for files containing sourcecode for ips objects.
@@ -14,14 +13,6 @@ public interface IIpsSrcFile extends IIpsElement {
      * Returns the package fragment the file belongs to.
      */
     public IIpsPackageFragment getIpsPackageFragment();
-    
-    /**
-     * Returns all Java compilation units that correspond to this IPS source file.
-     * Note that any Java compilation unit might not exists.
-     * 
-     * @deprecated 
-     */
-    public ICompilationUnit[] getAllJavaCompilationUnits() throws CoreException;
     
     /**
      * Returns the corresponding platform file.

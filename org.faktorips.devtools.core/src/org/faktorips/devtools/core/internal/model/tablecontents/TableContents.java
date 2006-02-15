@@ -2,13 +2,12 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -118,22 +117,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         updateSrcFile();        
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getJavaType(int)
-     */
-    public IType getJavaType(int kind) {
-        throw new IllegalArgumentException("Unkown kind " + kind);
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getAllJavaTypes()
-     */
-    public IType[] getAllJavaTypes() {
-        return new IType[0];
-    }
-
     /**
      * Overridden IMethod.
      *

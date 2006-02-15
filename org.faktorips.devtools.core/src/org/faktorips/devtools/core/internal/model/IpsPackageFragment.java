@@ -15,12 +15,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
@@ -192,13 +190,9 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     /**
      * {@inheritDoc}
      */
-    public IIpsSrcFile createIpsFileFromTemplate(IpsObjectType type, String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException {
+    public IIpsSrcFile createIpsFileFromTemplate(String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException {
+    	IpsObjectType type = template.getIpsObjectType();
     	String filename = type.getFileName(name);
-    	
-    	if (!template.getIpsObjectType().equals(type)) {
-    		throw new RuntimeException("Can not create object of type " + type.getName() + " from template of type " + template.getIpsObjectType().getName());
-    	}
-
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
     	Element element;
 
@@ -227,7 +221,6 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
             }        
     	}
     	return file;
-    	
 	}
 
 	/**
@@ -292,33 +285,6 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         return new Path(getName().replace('.', '/'));
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#getJavaPackageFragment(int)
-     */ 
-    public IPackageFragment getJavaPackageFragment(int type) throws CoreException {
-        String javaPackName = getRoot().getJavaPackagePrefix(type);
-		if (javaPackName.length() > 0 && getName().length()>0) {
-		    javaPackName = javaPackName + '.';
-		}
-		javaPackName = javaPackName + getName();
-		int rootKind = type == JAVA_PACK_EXTENSION ? IIpsPackageFragmentRoot.JAVA_ROOT_EXTENSION_CODE 
-		        : IIpsPackageFragmentRoot.JAVA_ROOT_GENERATED_CODE;
-        return getRoot().getJavaPackageFragmentRoot(rootKind).getPackageFragment(javaPackName);
-    }
-
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#getAllJavaPackageFragments()
-     */
-    public IPackageFragment[] getAllJavaPackageFragments() throws CoreException {
-        IPackageFragment[] javaPacks = new IPackageFragment[3];
-        javaPacks[0] = getJavaPackageFragment(JAVA_PACK_IMPLEMENTATION);
-        javaPacks[1] = getJavaPackageFragment(JAVA_PACK_PUBLISHED_INTERFACE);
-        javaPacks[2] = getJavaPackageFragment(JAVA_PACK_EXTENSION);
-        return javaPacks;
-    }
-
     /**
      * Overridden
      */

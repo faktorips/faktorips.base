@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -53,11 +51,8 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
-import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Implementation of IpsModel.

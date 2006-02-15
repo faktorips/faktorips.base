@@ -1,7 +1,6 @@
 package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IType;
 
 
 /**
@@ -52,27 +51,5 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * @throws CoreException 
      */
     public QualifiedNameType[] dependsOn() throws CoreException;
-    
-    /**
-     * Returns the Java type that correspond to this IPS object and is of the
-     * indicated kind.
-     * 
-     * @param kind A kind constant identifying the type of compilation unit.
-     * @return The corresponding compilation unit. Note that the unit might not
-     * exists!
-     * 
-     * @deprecated
-     * @throws IllegalArgumentException if the kind constant is illegal.
-     * @throws CoreException if an errors occurs while accessing the Java type.   
-     */
-    public IType getJavaType(int kind) throws CoreException;
-    
-    /**
-     * Returns all Java types that correspond to this IPS object. Note that
-     * none of the returned Java types must exist.
-     * 
-     * @deprecated
-     */
-    public IType[] getAllJavaTypes() throws CoreException;
     
 }

@@ -9,11 +9,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IPackageFragment;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -41,37 +39,6 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
         pack = (IpsPackageFragment)rootPackage.createPackageFragment("products.folder", true, null);
     }
     
-    public void testGetJavaPackageFragment() throws CoreException {
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.setOutputFolderForGeneratedJavaFiles(ipsProject.getProject().getFolder("generated"));
-        path.setBasePackageNameForGeneratedJavaClasses("org.faktorips");
-        path.setOutputDefinedPerSrcFolder(false);
-        ipsProject.setIpsObjectPath(path);
-        
-        IPackageFragment javaPck= pack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-        String expectedName = "org.faktorips.internal." + pack.getName();
-        assertEquals(expectedName, javaPck.getElementName());
-        javaPck= pack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE);
-        expectedName = "org.faktorips." + pack.getName();
-        assertEquals(expectedName, javaPck.getElementName());
-
-        // test with base package = ""
-        path.setBasePackageNameForGeneratedJavaClasses("");
-        ipsProject.setIpsObjectPath(path);
-        javaPck= pack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-        expectedName = "internal." + pack.getName();
-        assertEquals(expectedName, javaPck.getElementName());
-        javaPck= pack.getJavaPackageFragment(IIpsPackageFragment.JAVA_PACK_PUBLISHED_INTERFACE);
-        assertEquals(pack.getName(), javaPck.getElementName());
-
-        // illegal kind
-        try {
-            javaPck= pack.getJavaPackageFragment(-1);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-    }
-    
     public void testGetRelativePath(){
         
         String[] expectedSegments = pack.getName().split("\\.");
@@ -80,12 +47,6 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
             assertEquals(expectedSegments[i],segments[i]);
         }
     }
-    
-    public void testGetAllJavaPackageFragments() throws CoreException {
-        IPackageFragment[] javaPacks = pack.getAllJavaPackageFragments();
-        assertEquals(3, javaPacks.length);
-    }
-    
     
     public void testGetElementName() {
         assertEquals("products.folder", pack.getName());

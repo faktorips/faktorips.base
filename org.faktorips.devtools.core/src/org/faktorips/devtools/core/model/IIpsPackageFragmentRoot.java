@@ -3,7 +3,6 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
  * A package fragment root contains a set of package fragments.
@@ -16,24 +15,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
  * the set of package fragments in an analogous manner.
  */
 public interface IIpsPackageFragmentRoot extends IIpsElement {
-    
-    /**
-     * Constant that identifies the Java package fragment root containg the generated Java sourcecode.
-     * The Java package root can be obtained via the method <code>getJavaPackageFragmentRoot(int)</code>.
-     * 
-     * @deprecated
-     */
-    public final static int JAVA_ROOT_GENERATED_CODE = 0;
-    
-    /**
-     * Constant that identifies the Java package fragment root containg the extension Java sourcecode
-     * where te developer using FaktorIPS can add hs own code.
-     * The Java package root can be obtained via the method <code>getJavaPackageFragmentRoot(int)</code>.
-     * 
-     * @deprecated
-     */
-    public final static int JAVA_ROOT_EXTENSION_CODE = 1;
-    
     
     /**
      * Returns true if this package fragment root contains source files.
@@ -54,17 +35,6 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      */
     public IFolder getArtefactDestination() throws CoreException;
 
-    /**
-     * Returns the corresponding Java package fragment root for the given kind. The kind
-     * must be one of the constants <code>JAVA_ROOT_GENERATED_CODE</code> or 
-     * <code>JAVA_ROOT_EXTENSION_CODE</code>.
-     * 
-     * @deprecated
-     * @param kind The kind of Java package fragment root.
-     * @throws IllegalArgumentException if the kind is not one of the constants described above. 
-     */
-    public IPackageFragmentRoot getJavaPackageFragmentRoot(int kind) throws CoreException;
-        
     /**
      * Returns the package fragments contained in this root folder. 
      * Returns an empty array if this root folder does not contain any folders.
@@ -111,32 +81,4 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      */
     public IIpsObject getIpsObject(QualifiedNameType nameType) throws CoreException;
 
-    /**
-     * Returns the prefix of the Java packages for the given package type.
-     * <p>
-     * The objects in an IPS package fragment are converted into Java sourcecode.
-     * For one IPS object, there might be severall Java types in different packages.
-     * For example for a policy component type we can generate a published interface
-     * and an implementation class. All Java types of the same kind (published interface 
-     * or implementation class) from objects in one IPS package fragment are
-     * placed in the same Java package fragment. The name of the Java package
-     * fragment is derived from the prefix returned by this method and the 
-     * IPS package fragment's name. E.g. for an IPS package fragment <i>motor.coverages</i>
-     * and a prefix <i>com.faktor10.model</i>,  we obtain for the published interfaces 
-     * the following Java package name: <i>com.faktor10.model.motor.coverages</i>.
-     * 
-     * @deprecated
-     */
-    public String getJavaPackagePrefix(int kind) throws CoreException;
-
-    /**
-     * Returns the prefixes of the Java packages that contain Java types for
-     * the IPS objects stored in this IPS package fragment root.
-     * 
-     * @see getJavaPackagePrefix(int)
-     * @deprecated
-     */
-    public String[] getJavaPackagePrefixes() throws CoreException;
-    
-    
 }

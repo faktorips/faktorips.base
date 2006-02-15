@@ -4,16 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -288,40 +282,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	void removeRelation(ProductCmptRelation relation) {
         relations.remove(relation);
         updateSrcFile();
-    }
-
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getJavaType(int)
-     */
-    public IType getJavaType(int kind) throws CoreException {
-        if (kind != JAVA_IMPLEMENTATION_TYPE) {
-            throw new IllegalArgumentException("Unkown kind " + kind);
-        }
-        if (containsFormula()) {
-            IPackageFragment pack = getIpsObject().getIpsPackageFragment().getJavaPackageFragment(
-                IIpsPackageFragment.JAVA_PACK_IMPLEMENTATION);
-            String javaTypeName = StringUtils.capitalise(getProductCmpt().getName());
-            ICompilationUnit cu = pack.getCompilationUnit(javaTypeName + ".java");
-            return cu.getType(javaTypeName);
-        }
-        IPolicyCmptType pcType = getProductCmpt().findPolicyCmptType();
-        if (pcType == null) {
-            throw new CoreException(new IpsStatus(
-                    "Can't find corresponding policy component type for product component generation "
-                            + this));
-        }
-        return pcType.getJavaType(IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE);
-    }
-
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getAllJavaTypes()
-     */
-    public IType[] getAllJavaTypes() throws CoreException {
-        return new IType[] { getJavaType(JAVA_IMPLEMENTATION_TYPE) };
     }
 
     /*

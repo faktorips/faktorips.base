@@ -28,7 +28,7 @@ public class TableContentsImplTest extends IpsObjectTestCase {
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
-        ITableContentsGeneration gen2 = (ITableContentsGeneration)table.newGeneration();
+        table.newGeneration();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
         
@@ -57,7 +57,7 @@ public class TableContentsImplTest extends IpsObjectTestCase {
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
-        ITableContentsGeneration gen2 = (ITableContentsGeneration)table.newGeneration();
+        table.newGeneration();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
         

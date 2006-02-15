@@ -3,7 +3,6 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -410,68 +409,6 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertEquals("p", methods[0].getParameters()[0].getName());
         
         assertTrue(methods[1].isSame(m2));
-    }
-    
-    public void testGetJavaType() throws CoreException {
-        IType type = pcType.getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE);
-        assertNotNull(type);
-        assertEquals("TestPolicyImpl", type.getElementName());
-        
-        type = pcType.getJavaType(IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE);
-        assertNotNull(type);
-        assertEquals("TestPolicy", type.getElementName());
-        
-        try {
-            type = pcType.getJavaType(-1);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-    }
-    
-    public void testGetJavaType_IpsPackageFragment_String_int() throws CoreException {
-        IType type = PolicyCmptType.getJavaType(pack, "TestPolicy", IPolicyCmptType.JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE);
-        assertNotNull(type);
-        assertEquals("TestPolicyImpl", type.getElementName());
-        
-        type = PolicyCmptType.getJavaType(pack, "TestPolicy", IPolicyCmptType.JAVA_POLICY_CMPT_EXTENSTION_IMPLEMENTATION_TYPE);
-        assertNotNull(type);
-        assertEquals("TestPolicyExtImpl", type.getElementName());
-        
-        type = PolicyCmptType.getJavaType(pack, "TestPolicy", IPolicyCmptType.JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE);
-        assertNotNull(type);
-        assertEquals("TestPolicy", type.getElementName());
-        
-        type = PolicyCmptType.getJavaType(pack, "TestPolicy", IPolicyCmptType.JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE);
-        assertNotNull(type);
-        assertEquals("TestPolicyPkImpl", type.getElementName());
-
-        type = PolicyCmptType.getJavaType(pack, "TestPolicy", IPolicyCmptType.JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE);
-        assertNotNull(type);
-        assertEquals("TestPolicyPk", type.getElementName());
-        
-        try {
-            type = PolicyCmptType.getJavaType(pack, "TestPolicy", -1);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
-    }
-    
-    public void testGetAllJavaTypes() throws CoreException {
-        IType[] types = pcType.getAllJavaTypes();
-        assertEquals(4, types.length);
-        assertNotNull(types[0]);
-        assertNotNull(types[1]);
-        assertNotNull(types[2]);
-        assertNotNull(types[3]);
-    }
-    
-    public void testGetAllJavaTypes_IpsPackageFragment_String_int() throws CoreException {
-        IType[] types = PolicyCmptType.getAllJavaTypes(pack, "TestPolicy");
-        assertEquals(4, types.length);
-        assertNotNull(types[0]);
-        assertNotNull(types[1]);
-        assertNotNull(types[2]);
-        assertNotNull(types[3]);
     }
     
     public void testValidate_MustOverrideAbstractMethod() throws CoreException {

@@ -1,8 +1,5 @@
 package org.faktorips.devtools.core.model;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.businessfct.BusinessFunctionImpl;
@@ -174,24 +171,6 @@ public final class IpsObjectType {
 		ArgumentCheck.notNull(pdObjectName);
 		return pdObjectName + "." + fileExtension;
 	}
-	
-    /**
-     * Returns all Java compilation units that correspond to the given sourcef file. 
-     * @throws CoreException
-     */
-    public ICompilationUnit[] getAllJavaCompilationUnits(
-            IIpsPackageFragment pack,
-            String objectName) throws CoreException {
-        if (this!=POLICY_CMPT_TYPE) {
-            return new ICompilationUnit[0];
-        }
-        IType[] types = PolicyCmptType.getAllJavaTypes(pack, name);
-        ICompilationUnit[] units = new ICompilationUnit[types.length];
-        for (int i=0; i<units.length; i++) {
-            units[i] = types[0].getCompilationUnit();
-        }
-        return units;
-    }
 	
 	/**
 	 * Overridden method.

@@ -12,7 +12,6 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -48,7 +47,7 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 				IIpsSrcFile file = (IIpsSrcFile)handleMap.get(toCopy[i]);
 				IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
 				String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-				file = targetPackage.createIpsFileFromTemplate(IpsObjectType.PRODUCT_CMPT, newName, toCopy[i], date, false, monitor);
+				file = targetPackage.createIpsFileFromTemplate(newName, toCopy[i], date, false, monitor);
 				monitor.worked(1);
 				IProductCmpt product = (IProductCmpt)file.getIpsObject();
 				products[i] = product;

@@ -59,7 +59,6 @@ public class MessageCueController {
 	
 	private static String fgPlatform= SWT.getPlatform();
 	private static boolean fgCarbon= "carbon".equals(fgPlatform); //$NON-NLS-1$
-	private static boolean fgWin32= "win32".equals(fgPlatform); //$NON-NLS-1$
 
 	// the shell the controller is attached to
 	private Shell shell;
@@ -87,18 +86,6 @@ public class MessageCueController {
 		return controller;
  	}
  	
-	private void internalSetMessageCue(final Control control, MessageList list) {
-		if (list==null) {
-		    FieldController controller = getFieldController(control, false);
-		    if (controller!=null) {
-		        controller.setMessageList(null);
-		        return;
-		    }
-		}
-	    FieldController controller = getFieldController(control, true);
-	    controller.setMessageList(list);   
-	}
-	
 	/**
 	 * The field controller handles the message cue for a single control.
 	 */
