@@ -22,6 +22,7 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 	private IProductCmpt[] toCopy;
 	private IProductCmpt[] toRefer;
 	private Hashtable handleMap;
+	private IProductCmpt copiedRoot;
 	
 	/**
 	 * Creates a new operation to copy the given product components.
@@ -84,7 +85,7 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 			}
 			monitor.worked(1);
 		}
-		
+		copiedRoot = products[0];
 		monitor.done();
 	}
 	
@@ -114,4 +115,8 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 		result = root.createPackageFragment(path, false, monitor);
 		return result;
 	}	
+	
+	public IProductCmpt getCopiedRoot() {
+		return copiedRoot;
+	}
 }

@@ -202,9 +202,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see org.faktorips.devtools.core.model.XmlSupport#initFromXml(org.w3c.dom.Element)
      */
     public void initFromXml(Element element) {
-        initPropertiesFromXml(element, -1);
-        initPartContainersFromXml(element);
-        initExtPropertiesFromXml(element);
+    	initFromXml(element, -1);
     }
     
     protected void initFromXml(Element element, int id) {

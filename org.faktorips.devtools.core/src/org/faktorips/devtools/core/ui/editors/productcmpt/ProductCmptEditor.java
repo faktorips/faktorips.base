@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 
-
 /**
  *
  */
@@ -240,6 +239,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * {@inheritDoc}
      */
     protected String getUniformPageTitle() {
+    	checkGeneration();
         return Messages.ProductCmptEditor_productComponent + getProductCmpt().getName();
     }
     
@@ -249,7 +249,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * is asked to create one. 
      */
     private void checkGeneration() {
-    	
     	if (this.referenceDate != null && this.referenceDate.equals(IpsPreferences.getWorkingDate())) {
     		// check happned before and user decided not to create a new generation - dont bother 
     		// the user with repeating questions.
@@ -263,10 +262,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 		if (generation == null) {
 			// no generation for the _exact_ current working date.
-			boolean ok = MessageDialog.openConfirm(getContainer().getShell(), Messages.ProductCmptEditor_msg_GenerationMissmatch_1 + getProductCmpt().getName()
-					, Messages.ProductCmptEditor_msg_GenerationMissmatch_2 + IpsPreferences.getWorkingDate().getTime().toLocaleString() + ")." + //$NON-NLS-2$
-							Messages.ProductCmptEditor_msg_GenerationMissmatch_3);
-		
+			String message = Messages.bind(Messages.ProductCmptEditor_msg_GenerationMissmatch, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
+			String title = Messages.bind(Messages.ProductCmptEditor_title_GenerationMissmatch, getProductCmpt().getName());
+			boolean ok = MessageDialog.openConfirm(getContainer().getShell(), title, message);
+			
 			if (ok) {
 				// create a new generation and set it active
 				IProductCmptGeneration newGen = (IProductCmptGeneration)prod.newGeneration(IpsPreferences.getWorkingDate());

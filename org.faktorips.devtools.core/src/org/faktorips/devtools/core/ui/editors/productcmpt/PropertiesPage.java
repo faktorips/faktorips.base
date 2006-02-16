@@ -29,6 +29,8 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	private DefaultsAndRangesSection defaultsAndRangesSection;
 	private RelationsSection relationsSection;
 	
+	private boolean enabled;
+	
 	/**
 	 * Layout for this page (see pageRoot) - if the content-structure for this page changes, the current set top level
 	 * composite is disposed and a completely new one is created. This is to avoid complex code for structural
@@ -54,6 +56,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	 */
     public PropertiesPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, Messages.PropertiesPage_properties);
+        
     }
     
     /**
@@ -97,16 +100,20 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		relationsSection = new RelationsSection(generation, right, toolkit, getEditorSite());
 
 		pageRoot.layout();
+		setEnabled(enabled);
 	}
     
 	/**
 	 * Enables or disables the page for editing.
 	 */
     protected void setEnabled(boolean enabled) {
-		productAttributesSection.setEnabled(enabled);
-		formulasSection.setEnabled(enabled);
-		defaultsAndRangesSection.setEnabled(enabled);
-		relationsSection.setEnabled(enabled);
+    	this.enabled = enabled;
+    	if (productAttributesSection != null) {
+			productAttributesSection.setEnabled(enabled);
+			formulasSection.setEnabled(enabled);
+			defaultsAndRangesSection.setEnabled(enabled);
+			relationsSection.setEnabled(enabled);
+    	}
     }
 
     /**
@@ -115,10 +122,13 @@ public class PropertiesPage extends IpsObjectEditorPage {
      * done to avoid complex code for structural updates.
      */
 	protected void refreshStructure() {
-    	stack.topControl.dispose();
-    	Composite root = new Composite(pageRoot, SWT.NONE);
-    	stack.topControl = root;
-		buildContent(toolkit, root);
+		// if stack == null, the page contents are not created yet, so do nothing.
+		if (stack != null) {
+			stack.topControl.dispose();
+			Composite root = new Composite(pageRoot, SWT.NONE);
+			stack.topControl = root;
+			buildContent(toolkit, root);
+		}		
 	}
 
 	/**

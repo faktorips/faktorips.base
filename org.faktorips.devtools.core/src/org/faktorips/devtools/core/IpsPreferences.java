@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -81,4 +83,19 @@ public class IpsPreferences {
     	return prefStore.getString(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX);
     }
 
+    /**
+     * Returns a default locale date format for valid-from and effective dates.
+     */
+    public DateFormat getValidFromFormat() {
+    	return DateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
+    }
+    
+    /**
+     * Convenience method to get the formatted working date using the format
+     * returned by <code>getValidFromFormat</code>
+     */
+    public String getFormattedWorkingDate() {
+    	return getValidFromFormat().format(getWorkingDate().getTime());
+    }
+    
 }

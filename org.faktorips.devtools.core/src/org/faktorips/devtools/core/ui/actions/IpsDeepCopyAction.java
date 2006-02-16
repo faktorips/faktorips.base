@@ -1,10 +1,17 @@
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.views.IViewDescriptor;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.ui.views.productdefinitionexplorer.ProductExplorer;
+import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -33,6 +40,32 @@ public class IpsDeepCopyAction extends IpsAction {
 			DeepCopyWizard dcw = new DeepCopyWizard(root);
 			WizardDialog wd = new WizardDialog(shell, dcw);
 			wd.open();
+			if (wd.getReturnCode() == WizardDialog.OK) {
+				
+				try {
+					IViewReference[] views = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+					IViewPart pe = null;
+					for (int i = 0; i < views.length; i++) {
+						if (views[i].getId().equals(ProductStructureExplorer.EXTENSION_ID)) {
+							pe = views[i].getView(true);
+							break;
+						}
+					}
+					
+					if (pe == null) {
+						pe = IpsPlugin.getDefault().getWorkbench().getViewRegistry().find(ProductStructureExplorer.EXTENSION_ID).createView();
+					}
+					
+					if (pe == null) {
+						return;
+					}
+					
+					((ProductStructureExplorer)pe).showStructure(dcw.getCopiedRoot());
+					
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+				}
+			}
 		}
 	}
 }

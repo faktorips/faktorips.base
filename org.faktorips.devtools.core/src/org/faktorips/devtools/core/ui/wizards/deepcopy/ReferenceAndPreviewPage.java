@@ -125,7 +125,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		
 		ChangeListener listener = new ChangeListener(this);
 		toolkit.createFormLabel(inputRoot, "Copy is valid from");
-		toolkit.createFormLabel(inputRoot, IpsPreferences.getWorkingDate().getTime().toLocaleString());
+		toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
 		toolkit.createFormLabel(inputRoot, "Target Package");
 		targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getIpsPackageFragment().getRoot(), inputRoot);
 		IIpsPackageFragment pack = structure.getRoot().getIpsPackageFragment();

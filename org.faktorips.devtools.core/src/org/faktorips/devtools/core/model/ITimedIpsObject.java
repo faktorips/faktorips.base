@@ -51,7 +51,11 @@ public interface ITimedIpsObject extends IIpsObject {
     public IIpsObjectGeneration newGeneration();
 
     /**
-     * Creates a new generation filled with data from the generation matching the given valid from date.
+     * Creates a new generation that is valid from the indicated validFrom date. 
+     * If the timed ips object already nhas a generation that tis valid on that date, 
+     * the new generation is initialized with the data from that (existing) generation.
+     * 
+     * @throws NullPointerException if validFrom is <code>null</code>.
      */
 	public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom);
 

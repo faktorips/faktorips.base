@@ -87,11 +87,9 @@ public class Messages extends NLS {
 
 	public static String FormulasSection_noFormulasDefined;
 
-	public static String ProductCmptEditor_msg_GenerationMissmatch_1;
-
-	public static String ProductCmptEditor_msg_GenerationMissmatch_2;
-
-	public static String ProductCmptEditor_msg_GenerationMissmatch_3;
+	public static String ProductCmptEditor_msg_GenerationMissmatch;
+	
+	public static String ProductCmptEditor_title_GenerationMissmatch;
 
 	public static String RelationsContentProvider_msg_UnknownElementClass;
 }

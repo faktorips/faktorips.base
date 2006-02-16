@@ -20,6 +20,7 @@ public class DeepCopyWizard extends Wizard {
 	private IProductCmptStructure structure;
 	private SourcePage sourcePage;
 	private ReferenceAndPreviewPage previewPage;
+	private IProductCmpt copiedRoot;
 	
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product
@@ -44,19 +45,27 @@ public class DeepCopyWizard extends Wizard {
 	 * {@inheritDoc}
 	 */
 	public boolean performFinish() {
-		
+		boolean finished = false;
 		try {
 			DeepCopyOperation dco = new DeepCopyOperation(previewPage.getProductsToCopy(), previewPage.getProductsToRefer(), previewPage.getHandles());
-			new ProgressMonitorDialog(super.getShell()).run(true, false, dco);
+			ProgressMonitorDialog dialog = new ProgressMonitorDialog(super.getShell());
+			dialog.run(true, false, dco);
+			copiedRoot = dco.getCopiedRoot();
+			finished = true;
 		} catch (InvocationTargetException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
-			return false;
 		} catch (InterruptedException e) {
-			return false;
+			IpsPlugin.logAndShowErrorDialog(e);
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
-			return false;
 		}		
-		return true;
+		return finished;
+	}
+
+	/**
+	 * Returns the root product component which was copied.
+	 */
+	public IProductCmpt getCopiedRoot() {
+		return copiedRoot;
 	}
 }

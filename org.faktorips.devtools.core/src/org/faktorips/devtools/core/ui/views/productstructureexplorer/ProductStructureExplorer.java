@@ -81,17 +81,24 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 	}
 
     /**
-     * Displays the structure of the given file. 
+     * Displays the structure of the product component defined by the given file. 
      * 
      * @param selectedItems The selection to display
      * @throws CoreException 
      */
     public void showStructure(IIpsSrcFile file) throws CoreException {
     	this.file = file;
-        tree.setInput(((IProductCmpt)file.getIpsObject()).getStructure());
-        tree.expandAll();
+    	showStructure((IProductCmpt)file.getIpsObject());
     }
 
+    /**
+     * Displays the structure of the given product component.
+     */
+    public void showStructure(IProductCmpt product) {
+        tree.setInput(product.getStructure());
+        tree.expandAll();
+    }
+    
     public void contentsChanged(ContentChangeEvent event) {
     	Object input = tree.getInput();
     	if (input instanceof IProductCmptStructure) {
