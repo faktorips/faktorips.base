@@ -17,7 +17,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
- * Provides the content for a generation-based relations-tree.
+ * Provides the content for a generation-based relations-tree. The relations-types are
+ * requested from the given generation and all supertypes the type containing this generation
+ * is based on.
  * 
  * @author Thorsten Guenther
  */
@@ -25,9 +27,9 @@ public class RelationsContentProvider implements ITreeContentProvider {
 
 	private IProductCmptGeneration generation;
 	
-    /** 
-     * Overridden.
-     */
+    /**
+     * {@inheritDoc}
+     */ 
     public Object[] getElements(Object inputElement) {
 
     	if (inputElement instanceof IProductCmptGeneration) {
@@ -41,13 +43,17 @@ public class RelationsContentProvider implements ITreeContentProvider {
     				return new Object[0];
     			}
     			
-				IProductCmptTypeRelation[] relations = pcType.getRelations();
-				List result = new ArrayList(relations.length);
-				for (int i = 0; i < relations.length; i++) {
-					if (!relations[i].isAbstract()) {
-						result.add(relations[i]);
+				List result = new ArrayList();
+    			while (pcType != null) {
+					IProductCmptTypeRelation[] relations = pcType.getRelations();
+					for (int i = 0; i < relations.length; i++) {
+						if (!relations[i].isAbstract() && !relations[i].isAbstractContainer()) {
+							result.add(relations[i]);
+						}
 					}
-				}
+					pcType = pcType.findSupertype();
+    			}
+    			
 				return (IProductCmptTypeRelation[])result.toArray(new IProductCmptTypeRelation[result.size()]);
 				
 			} catch (CoreException e) {
@@ -58,15 +64,15 @@ public class RelationsContentProvider implements ITreeContentProvider {
         return new Object[0];
     }
 
-    /** 
-     * Overridden.
-     */
+    /**
+     * {@inheritDoc}
+     */ 
     public void dispose() {
     }
 
-    /** 
-     * Overridden.
-     */
+    /**
+     * {@inheritDoc}
+     */ 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     	if (newInput instanceof IProductCmptGeneration) {
     		generation = (IProductCmptGeneration)newInput;
@@ -77,8 +83,8 @@ public class RelationsContentProvider implements ITreeContentProvider {
     }
 
     /**
-     * Overridden.
-     */
+     * {@inheritDoc}
+     */ 
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof IProductCmptTypeRelation && generation != null) {
 			IProductCmptTypeRelation relation = (IProductCmptTypeRelation)parentElement;
@@ -87,9 +93,9 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */ 
 	public Object getParent(Object element) {
 		if (element instanceof IProductCmptTypeRelation) {
 			return ((ProductCmptTypeRelation)element).getParent();
@@ -105,9 +111,9 @@ public class RelationsContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */ 
 	public boolean hasChildren(Object element) {
 		Object[] children = getChildren(element);
 		if (children==null) {
