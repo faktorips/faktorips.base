@@ -162,10 +162,10 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
         IProductCmptTypeRelation relation = findProductCmptTypeRelation();
         if (relation==null) {
             String text = "There is no relation " + productCmptTypeRelation + " defined in " + getProductCmpt().getPolicyCmptType() + ".";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_PCTYPE_RELATION));
+            list.add(new Message(MSGCODE_UNKNWON_RELATIONTYPE, text, Message.ERROR, this, PROPERTY_PCTYPE_RELATION));
         }
-        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT, true, "target", this, PROPERTY_TARGET, list);
-        if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, list)) {
+        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT, true, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list);
+        if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, MSGCODE_MISSING_MAX_CARDINALITY,  list)) {
             int max = -1;
             if (maxCardinality.trim().equals("*")) {
                 max = Integer.MAX_VALUE;
@@ -179,11 +179,11 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
             }
             if (max==0) {
                 String text = "Maximum cardinality must be at least 1.";
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
+                list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
             } else if (max!=-1) {
                 if (minCardinality > max) {
                     String text = "Minimum cardinality is greater than maximum cardinality.";
-                    list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY}));
+                    list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY}));
                 }
             }
         }

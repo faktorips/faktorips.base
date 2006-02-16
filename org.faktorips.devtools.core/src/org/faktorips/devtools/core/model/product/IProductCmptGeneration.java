@@ -9,6 +9,38 @@ import org.faktorips.devtools.core.model.IIpsObjectGeneration;
  */
 public interface IProductCmptGeneration extends IIpsObjectGeneration {
 
+	
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "PRODUCTCMPTGEN-";
+
+    /**
+     * Validation message code to indicate that the generation contains less 
+     * relations of a specific relation type than required by the relation type.
+     * E.g. a motor product must contain at least one collision coverage type, but
+     * the motor product does not contain a relation to a collision coverage type.
+     * <p>
+     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
+     * The first one contains the generation and the second one the relation type as string.
+     * In both cases the property part of the ObjectProperty is empty.
+     */
+    public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations";
+	//  TODO implement, testcase, editor
+    
+    /**
+     * Validation message code to indicate that the generation contains more 
+     * relations of a specific relation type than specified by the relation type.
+     * E.g. a motor product can contain only one collision coverage type, but
+     * the motor product contains two relations to a collision coverage type.
+     * <p>
+     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
+     * The first one contains the generation and the second one the relation type as string.
+     * In both cases the property part of the ObjectProperty is empty.
+     */
+    public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations";
+	//  TODO implement, testcase, editor
+
     /**
      * Returns the product component this generation belongs to.
      */

@@ -341,7 +341,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         super.validate(list);
         IConfigElement[] configElements = getConfigElements();
         for (int i = 0; i < configElements.length; i++) {
-            //TODO the validate(MessageList) method needs to be moved up to the interface
             ((ConfigElement)configElements[i]).validate(list);
         }
     }

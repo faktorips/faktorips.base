@@ -91,6 +91,7 @@ public abstract class ValueSet {
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
     public abstract boolean contains(String value, ValueDatatype datatype);
+    // TODO refactor. umbennenen in containsValue
 
     /**
      * Returns a message if the value set doesn't contain the indicated value, otherwise <code>null</code>.
@@ -100,8 +101,31 @@ public abstract class ValueSet {
      * 
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
+    // TODO refactor. MessageList als Parameter. returntype boolean
+    
     public abstract Message containsValue(String value, ValueDatatype datatype);
     
+    /**
+     * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
+     * 
+     * @param subset The valueset to check.
+     * @param datatype The datatype to parse the valueset's values to 'real' values.
+     * 
+     * @throws NullPointerException if subset or datatype is <code>null</code>. 
+     */
+    // TODO public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype);
+    
+    /**
+     * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
+     * 
+     * @param subset The valueset to check.
+     * @param datatype The datatype to parse the valueset's values to 'real' values.
+     * @param list The list to which a message is added in case the given valueset is not a subset of this valueset. 
+     * 
+     * @throws NullPointerException if subset or datatype is <code>null</code>. 
+     */
+    // TODO public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype, MessageList list);
+
     /**
      * Validates the value set.
      * 

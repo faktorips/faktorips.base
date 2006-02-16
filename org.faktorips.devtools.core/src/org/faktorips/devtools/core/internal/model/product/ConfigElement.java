@@ -165,13 +165,15 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		compiler.add(new ExcelFunctionsResolver(getIpsProject()
 				.getExpressionLanguageFunctionsLanguage()));
 		compiler.add(new TableFunctionsResolver(getIpsProject()));
-		IIpsArtefactBuilderSet builderSet = getIpsProject().getCurrentArtefactBuilderSet();
+		IIpsArtefactBuilderSet builderSet = getIpsProject()
+				.getCurrentArtefactBuilderSet();
 		IAttribute a = findPcTypeAttribute();
 		if (a == null) {
 			return compiler;
 		}
-		IParameterIdentifierResolver resolver = builderSet.getFlParameterIdentifierResolver();
-		if(resolver == null){
+		IParameterIdentifierResolver resolver = builderSet
+				.getFlParameterIdentifierResolver();
+		if (resolver == null) {
 			return compiler;
 		}
 		resolver.setIpsProject(getIpsProject());
@@ -190,9 +192,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			String text = "There is no attribute " + pcTypeAttribute
 					+ " defined in " + getProductCmpt().getPolicyCmptType()
 					+ ".";
-			list
-					.add(new Message("", text, Message.ERROR, this,
-							PROPERTY_VALUE));
+			list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
 			return;
 		}
 		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
@@ -205,6 +205,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 	private void validateFormula(IAttribute attribute, MessageList list)
 			throws CoreException {
+		// todo: fehlende formel ist ein fehler
 		if (StringUtils.isEmpty(value)) {
 			return;
 		}
@@ -223,7 +224,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		if (attributeDatatype == null) {
 			String text = "The attribute's datatype can't be found, so it is not possible to check if the formula returns the correct datatype.";
 			list.add(new Message(
-					IConfigElement.MSGCODE_CANT_FIND_ATTRIBUTE_DATATYPE, text,
+					IConfigElement.MSGCODE_UNKNOWN_DATATYPE_FORMULA, text,
 					Message.ERROR, this, PROPERTY_VALUE));
 			return;
 		}
@@ -237,7 +238,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		String text = "Formula should return " + attributeDatatype.getName()
 				+ " but returns a " + result.getDatatype().getName()
 				+ ". A conversion is not possible.";
-		list.add(new Message(IConfigElement.MSGCODE_FORMULA_HAS_WRONG_DATATYPE,
+		list.add(new Message(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE,
 				text, Message.ERROR, this, PROPERTY_VALUE));
 	}
 
@@ -247,7 +248,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		if (datatypeObject == null) {
 			if (!StringUtils.isEmpty(value)) {
 				String text = "The value can't be parsed because the datatype is unkown!";
-				list.add(new Message("", text, Message.WARNING, this,
+				list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
 						PROPERTY_VALUE));
 			}
 			return;
@@ -255,7 +256,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		if (!datatypeObject.isValueDatatype()) {
 			if (!StringUtils.isEmpty(datatype)) {
 				String text = "The value can't be parsed because the datatype is not a value datatype!";
-				list.add(new Message("", text, Message.WARNING, this,
+				list.add(new Message(IConfigElement.MSGCODE_NOT_A_VALUEDATATYPE, text, Message.WARNING, this,
 						PROPERTY_VALUE));
 				return;
 			}
@@ -264,7 +265,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		try {
 			if (valueDatatype.validate().containsErrorMsg()) {
 				String text = "The value can't be parsed because the datatype is invalid!";
-				list.add(new Message("", text, Message.ERROR, this,
+				list.add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
 						PROPERTY_VALUE));
 				return;
 			}
@@ -275,15 +276,17 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			if (!valueDatatype.isParsable(value)) {
 				String text = "The value " + value + " is not a "
 						+ valueDatatype.getName() + ".";
-				list.add(new Message("", text, Message.ERROR, this,
+				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
 						PROPERTY_VALUE));
 				return;
 			}
+			// TODO, validate valueset, test case
 			if (!valueSet.contains(value, valueDatatype)) {
-				list.add(new Message("", "The value " + value
+				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, "The value " + value
 						+ " is no member of the specified valueSet!",
 						Message.ERROR, this, PROPERTY_VALUE));
 			}
+			// TODO, validate is subset of model valueset, test case
 		}
 	}
 

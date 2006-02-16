@@ -1,40 +1,55 @@
 package org.faktorips.devtools.core.internal.model.product;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.EnumValueSet;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.Range;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  *
  */
-public class ConfigElementTest extends IpsObjectTestCase {
+public class ConfigElementTest extends IpsPluginTest {
 
+	private IPolicyCmptType policyCmptType;
     private IProductCmpt productCmpt;
+    private IIpsSrcFile pdSrcFile;
     private IProductCmptGeneration generation;
     private IConfigElement configElement;
 
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.PRODUCT_CMPT);
-    }
-
-    protected void createObjectAndPart() {
-        productCmpt = new ProductCmpt(pdSrcFile);
+        super.setUp();
+        IIpsProject project = newIpsProject("TestProject");
+        policyCmptType = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
+        productCmpt = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "TestProduct");
+        pdSrcFile = productCmpt.getIpsSrcFile();
+        productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)productCmpt.newGeneration();
         configElement = generation.newConfigElement();
+        
+        policyCmptType.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(true, null);
     }
-
-    protected IConfigElement createconfigElement() {
-        productCmpt = new ProductCmpt(pdSrcFile);
-        generation = (IProductCmptGeneration)productCmpt.newGeneration();
-        return configElement = generation.newConfigElement();
+    
+    public void testValidate_UnknownAttribute() throws CoreException {
+    	configElement.setPcTypeAttribute("a");
+    	MessageList ml = configElement.validate();
+    	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
+    	
+    	policyCmptType.newAttribute().setName("a");
+    	ml = configElement.validate();
+    	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     }
 
     public void testSetValue() {
@@ -56,12 +71,12 @@ public class ConfigElementTest extends IpsObjectTestCase {
      * Class under test for Element toXml(Document)
      */
     public void testToXmlDocument() {
-        IConfigElement cfgElement = createconfigElement();
+        IConfigElement cfgElement = generation.newConfigElement();
         cfgElement.setValue("value");
         cfgElement.setValueSet(new Range("22", "33", "4"));
         Element xmlElement = cfgElement.toXml(getTestDocument());
 
-        IConfigElement newCfgElement = createconfigElement();
+        IConfigElement newCfgElement = generation.newConfigElement();
         newCfgElement.initFromXml(xmlElement);
         assertEquals("value", newCfgElement.getValue());
         assertEquals("22", ((Range)newCfgElement.getValueSet()).getLowerBound());

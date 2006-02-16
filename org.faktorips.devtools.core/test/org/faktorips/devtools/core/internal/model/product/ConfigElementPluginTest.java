@@ -93,7 +93,7 @@ public class ConfigElementPluginTest extends IpsPluginTest {
         list = ce.validate();
         assertEquals(1, list.getNoOfMessages());
         msg = list.getMessage(0);
-        assertEquals(IConfigElement.MSGCODE_CANT_FIND_ATTRIBUTE_DATATYPE, msg.getCode());
+        assertEquals(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_FORMULA, msg.getCode());
         assertEquals(ce, msg.getInvalidObjectProperties()[0].getObject());
         assertEquals(IConfigElement.PROPERTY_VALUE, msg.getInvalidObjectProperties()[0].getProperty());
         
@@ -102,7 +102,7 @@ public class ConfigElementPluginTest extends IpsPluginTest {
         list = ce.validate();
         assertEquals(1, list.getNoOfMessages());
         msg = list.getMessage(0);
-        assertEquals(IConfigElement.MSGCODE_FORMULA_HAS_WRONG_DATATYPE, msg.getCode());
+        assertEquals(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE, msg.getCode());
         assertEquals(ce, msg.getInvalidObjectProperties()[0].getObject());
         assertEquals(IConfigElement.PROPERTY_VALUE, msg.getInvalidObjectProperties()[0].getProperty());
         

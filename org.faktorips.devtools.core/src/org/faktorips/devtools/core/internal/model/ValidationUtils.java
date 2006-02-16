@@ -28,6 +28,8 @@ public class ValidationUtils {
      * the reference is not an empty string. Otherwise an empty reference is valid.
      * 
      * @return true if the reference is valid, otherwise false.
+     * 
+     * @deprecated use the method with the additional msgCode parameter.
      */
     public final static boolean checkIpsObjectReference(
             String objectName,
@@ -37,6 +39,30 @@ public class ValidationUtils {
             IIpsObjectPart part,
             String propertyName,
             MessageList list) throws CoreException {
+
+    	return checkIpsObjectReference(objectName, type, mandatory, propertyDisplayName, part, propertyName, "", list);
+    }
+
+    /**
+     * Tests if the given qualified name identifies a policy component type.
+     * If not, it adds an error message to the given message list.
+     * 
+     * @param objectName the qualified type name to check.
+     * @param mandatory Is the reference mandatory. If yes, it is checked that
+     * the reference is not an empty string. Otherwise an empty reference is valid.
+     * 
+     * @return true if the reference is valid, otherwise false.
+     */
+    // TODO document params
+    public final static boolean checkIpsObjectReference(
+            String objectName,
+            IpsObjectType type,
+            boolean mandatory,
+            String propertyDisplayName,
+            IIpsObjectPart part,
+            String propertyName,
+            String msgCode,
+            MessageList list) throws CoreException {
         
         if (mandatory) {
             if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName,part, propertyName, list)) {
@@ -45,11 +71,10 @@ public class ValidationUtils {
         }
         if (part.getIpsProject().findIpsObject(type, objectName)==null) {
             String text = StringUtils.capitalise(propertyDisplayName) + " " + objectName + " does not exists.";
-            list.add(new Message("", text, Message.ERROR, part, propertyName));
+            list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;
         }
         return true;
-        
     }
     
     /**
@@ -105,12 +130,33 @@ public class ValidationUtils {
      * If it is empty, it adds an error message to the given message list.
      * 
      * @return true if the string is not empty, false if the string is empty.
+     * 
+     * @deprecated use the method with the additional msgCode parameter.
      */
     public final static boolean checkStringPropertyNotEmpty(
             String propertyValue, 
             String propertyDisplayName,
             Object object,
             String propertyName,
+            MessageList list)
+    {
+    	return checkStringPropertyNotEmpty(propertyValue, propertyDisplayName, object, propertyName, "", list);
+    }
+
+
+    /**
+     * Tests if the given property value is not empty.
+     * If it is empty, it adds an error message to the given message list.
+     * 
+     * @return true if the string is not empty, false if the string is empty.
+     */
+    // TODO document params
+    public final static boolean checkStringPropertyNotEmpty(
+            String propertyValue, 
+            String propertyDisplayName,
+            Object object,
+            String propertyName,
+            String msgCode,
             MessageList list)
     {
         if (StringUtils.isEmpty(propertyValue)) {
@@ -120,12 +166,7 @@ public class ValidationUtils {
         }
         return true;
     }
-
-
-    private ValidationUtils() {
-        
-    }
-
+    
     public final static Image getSeverityImage(int messageSeverity) {
         String imageName;
         switch (messageSeverity) {
@@ -146,4 +187,9 @@ public class ValidationUtils {
         }
         return IpsPlugin.getDefault().getImage(imageName);
     }
+
+    private ValidationUtils() {
+        
+    }
+
 }

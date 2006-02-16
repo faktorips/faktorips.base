@@ -14,7 +14,6 @@ import org.w3c.dom.Element;
  * The range has an optional step attribute to define that only the values where <code>((value-lower) mod step)== 0</code>
  * holds true. E.g. 100-200 with step 10 defines the values 100, 110, 120, ... 200.
  *
- * @author Andy Rösch
  * @author Jan Ortmann
  */
 public class Range extends ValueSet {
