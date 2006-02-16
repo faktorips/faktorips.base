@@ -10,8 +10,8 @@
 		  	<property name="classes" location="classes"/>
 		
 			<!-- jars -->
-			<property name="temp_jarfile" location="results/temp_org.faktorips.${projectname}.jar" />
-		    <property name="jarfile" location="results/org.faktorips.${projectname}.jar" />
+			<property name="temp_jarfile" location="results/temp_faktorips.${projectname}.jar" />
+		    <property name="jarfile" location="results/faktorips.${projectname}.jar" />
 	
 			<!-- classpath -->
 	
@@ -64,6 +64,7 @@
         	    <fileset dir="${test_src}">
         	      <include name="**/*.properties" />
         	      <include name="**/*.xml" />
+        	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
         	
@@ -108,7 +109,14 @@
         	
 			<!-- create a temp-jarfile and move it after successful creation to right place -->
         	
-        	<jar destfile="${temp_jarfile}" basedir="${classes}"/>
+        	<jar destfile="${temp_jarfile}" >
+				<fileset dir="${classes}" >
+					<patternset>
+						<exclude name="**/*.java"/>
+						<exclude name="**/*Test*"/>
+					</patternset>
+				</fileset>
+        	</jar>
         		
         	<delete file="${jarfile}" />
         	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
