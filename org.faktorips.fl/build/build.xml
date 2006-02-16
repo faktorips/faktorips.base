@@ -1,0 +1,26 @@
+<project name="org.faktorips.util" default="buildjar">
+
+	<!-- classpath: insert dependend project libs here! -->
+	<path id="classpath">
+		<filelist dir="/var/lib/">
+				<file name="junit.jar"/>
+		</filelist>
+	</path>
+	
+	<!-- calls default-target of template-buildfile -->
+	<target name="buildjar" >
+		<ant antfile="../../org.faktorips.build/build.xml" target="buildjar">
+			<property name="projectname" value="fl" />
+			<reference refid="classpath" torefid="classpath"/>
+		</ant>
+	</target>
+	
+	<!-- calls clean-target of template-buildfile -->
+	<target name="clean">
+		<ant antfile="../../org.faktorips.build/build.xml" target="clean"/>
+	</target>
+	
+	
+	<!-- insert individual targets here -->
+	
+</project>
