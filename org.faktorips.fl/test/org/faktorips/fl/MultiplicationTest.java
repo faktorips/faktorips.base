@@ -40,6 +40,7 @@ public class MultiplicationTest extends AbstractCompilerTest {
     
     public void testIntInt() throws Exception {
         execAndTestSuccessfull("7 * 3", new Integer(21), Datatype.INTEGER);
+        execAndTestSuccessfull("7*3", new Integer(21), Datatype.INTEGER);
     }
     
     public void testIntInteger() throws Exception {
