@@ -68,12 +68,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     private MultiStatus addIpsStatus(IIpsArtefactBuilder builder, BuildCommand command, MultiStatus buildStatus, Exception e) {
-        MultiStatus returnStatus = null;
-        if (buildStatus == null) {
+        MultiStatus returnStatus = buildStatus;
+        if (returnStatus == null) {
             returnStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, "Build Results", null);
         }
         String text = builder.getName() + ": Error during: " + command + ".";
-        buildStatus.add(new IpsStatus(text, e));
+        returnStatus.add(new IpsStatus(text, e));
         return returnStatus;
     }
 

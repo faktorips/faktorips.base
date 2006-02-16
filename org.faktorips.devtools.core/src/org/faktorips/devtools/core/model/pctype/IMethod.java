@@ -17,18 +17,6 @@ public interface IMethod extends IMember {
     public final static String PROPERTY_PARAM_DATATYPE = "param.datatype";
     
     /**
-     * The Java method that contains the implementation.
-     * @deprecated
-     */
-    public final static int JAVA_IMPLEMENTATION_METHOD = 0;
-    
-    /**
-     * The Java method that is part of the published interface.
-     * @deprecated
-     */
-    public final static int JAVA_PUBLISHED_INTERFACE_METHOD = 1;
-    
-    /**
      * Returns the policy component type this method belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();

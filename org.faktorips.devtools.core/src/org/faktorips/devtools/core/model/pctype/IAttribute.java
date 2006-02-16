@@ -22,40 +22,6 @@ public interface IAttribute extends IMember {
     public final static String PROPERTY_FORMULAPARAM_NAME = "param.name";
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype";
     
-    ////Konstanten die mit JAVA_ anfangen sind deprecated
-    // type constants for corresponding Java methods
-    public final static int JAVA_NUMOF_METHOD = 15;
-    
-    public final static int JAVA_GETTER_METHOD_IMPLEMENATION = 0;
-    public final static int JAVA_SETTER_METHOD_IMPLEMENATION = 1;
-    public final static int JAVA_GETTER_METHOD_INTERFACE = 2;
-    public final static int JAVA_SETTER_METHOD_INTERFACE = 3;
-    
-    /** 
-     * Constant for the computation method for a derived or computed attribute in the 
-     * product component interface.     
-     */
-    public final static int JAVA_COMPUTE_ATTRIBUTE_METHOD_PRODUCTCMPT_INTERFACE = 4;
-
-    public final static int JAVA_GETTER_METHOD_DEFAULTVALUE_PRODUCT_INTERFACE =5;
-    public final static int JAVA_GETTER_METHOD_VALUE_PRODUCT_INTERFACE = 6;
-    public final static int JAVA_GETTER_METHOD_DEFAULTVALUE_PRODUCT_IMPL =7;
-    public final static int JAVA_GETTER_METHOD_VALUE_PRODUCT_IMPL = 8;
-    
-    public final static int JAVA_GETTER_METHOD_MAX_VALUESET_POLICY_INTERFACE = 9;
-    public final static int JAVA_GETTER_METHOD_MAX_VALUESET_POLICY_IMPL = 10;
-    public final static int JAVA_GETTER_METHOD_MAX_VALUESET_PRODUCT_INTERFACE = 11;
-    public final static int JAVA_GETTER_METHOD_MAX_VALUESET_PRODUCT_IMPL = 12;
-    public final static int JAVA_GETTER_METHOD_VALUESET_POLICY_INTERFACE = 13;
-    public final static int JAVA_GETTER_METHOD_VALUESET_POLICY_IMPL = 14;
-    
-    
-    // type constants for corresponding Java fields
-    public final static int JAVA_FIELD_VALUE_POLICY = 0;
-    public final static int JAVA_FIELD_VALUESET_POLICY = 1;
-    public final static int JAVA_FIELD_VALUE_PRODUCT = 0;   
-    public final static int JAVA_FIELD_VALUESET_PRODUCT = 1;    
-    
     /**
      * Returns the attribute's datatype.
      */

@@ -21,8 +21,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+     * {@inheritDoc}
      */
     protected void createFieldEditors() {
         StringFieldEditor workingDateField = new StringFieldEditor(
@@ -35,6 +34,11 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                 "String-Representation for NULL-Values:", getFieldEditorParent());
         addField(nullRepresentation);
         
+        StringFieldEditor productCmptPostfixField = new StringFieldEditor(
+                IpsPreferences.DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, 
+                "Default Product Component Type Postfix:", getFieldEditorParent());
+        addField(productCmptPostfixField);
+
         IChangesOverTimeNamingConvention[] conventions = IpsPlugin.getDefault().getIpsModel().getChangesOverTimeNamingConvention();
         String[][] nameValues = new String[conventions.length][2];
         Locale locale = Locale.getDefault();
@@ -48,8 +52,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     * {@inheritDoc}
      */
     public void init(IWorkbench workbench) {
         setPreferenceStore(IpsPlugin.getDefault().getPreferenceStore());

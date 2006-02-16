@@ -56,6 +56,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     // the document builder factory provides the DocumentBuilder for this plugin
     private DocumentBuilderFactory docBuilderFactory;
 
+    private IpsPreferences preferences;
+    
     private IpsModelManager manager;
 
     /**
@@ -85,6 +87,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
+        preferences = new IpsPreferences(getPreferenceStore());
         docBuilderFactory = DocumentBuilderFactory.newInstance();
         manager = new IpsModelManager();
         ((IpsModel)getIpsModel()).startListeningToResourceChanges();
@@ -235,11 +238,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         return manager;
     }
     
-    private IpsPreferences preferences;
     public IpsPreferences getIpsPreferences() {
-    	if (preferences == null) {
-    		preferences = new IpsPreferences();
-    	}
     	return preferences;
     }
 }

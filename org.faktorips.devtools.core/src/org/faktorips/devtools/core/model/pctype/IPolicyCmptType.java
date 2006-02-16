@@ -40,43 +40,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public final static String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration";
     
     /**
-     * The Java type that contains the policy component implementation.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
-     */
-    public final static int JAVA_POLICY_CMPT_IMPLEMENTATION_TYPE = 0;
-    
-    /**
-     * The Java type that contains the policy component extension implementation.
-     * The extension implementation is the implementation where the developer using
-     * FaktorIps places his own code.
-     * @deprecated
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
-     */
-    public final static int JAVA_POLICY_CMPT_EXTENSTION_IMPLEMENTATION_TYPE = 1;
-    
-    /**
-     * The Java type that contains the policy component's published interface.
-     * @deprecated
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
-     */
-    public final static int JAVA_POLICY_CMPT_PUBLISHED_INTERFACE_TYPE = 2;
-    
-    /**
-     * The Java type that contains the product component implementation.
-     * @deprecated
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
-     */
-    public final static int JAVA_PRODUCT_CMPT_IMPLEMENTATION_TYPE = 3;
-    
-    /**
-     * The Java type that contains the product component's published interface.
-     * @deprecated
-     * @see org.faktorips.devtools.core.model.IIpsSrcFile#getJavaCompilationUnit(int)
-     */
-    public final static int JAVA_PRODUCT_CMPT_PUBLISHED_INTERFACE_TYPE = 4;
-    
-    /**
      * Validation message code to indicate that an abstract method exists in the type's supertype
      * hierarchy that must be overriden in the conrete type.
      */

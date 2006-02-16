@@ -1,10 +1,7 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.List;
-import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;

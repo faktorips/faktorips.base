@@ -1,9 +1,11 @@
 package org.faktorips.devtools.core;
 
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
 
 /**
@@ -24,19 +26,36 @@ public class IpsPreferences {
     public final static String CHANGES_OVER_TIME_NAMING_CONCEPT = IpsPlugin.PLUGIN_ID + ".changesOverTimeConcept";
     
     /**
+     * Constant identifying the default postfix for product component types
+     */
+    public final static String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID + ".defaultProductCmptTypePostfix";
+
+    /**
      * Returns the working date preference.
      */
     // TODO static Zugriff entfernen
     public final static GregorianCalendar getWorkingDate() {
-        String date = IpsPlugin.getDefault().getPreferenceStore().getString(WORKING_DATE);
-        if (StringUtils.isEmpty(date)) {
-            return new GregorianCalendar();
-        }
+    	String date = IpsPlugin.getDefault().getIpsPreferences().prefStore.getString(WORKING_DATE);
         try {
             return XmlUtil.parseXmlDateStringToGregorianCalendar(date);
         } catch (Exception e) {
-            return null;
+            return new GregorianCalendar();
         }
+    }
+
+    private IPreferenceStore prefStore;
+    
+    public IpsPreferences(IPreferenceStore prefStore) {
+    	ArgumentCheck.notNull(prefStore);
+    	this.prefStore = prefStore;
+    	prefStore.setDefault(NULL_REPRESENTATION_STRING, "<null>");
+    	prefStore.setDefault(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(new GregorianCalendar()));
+    	prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.VAA);
+    	if (Locale.getDefault().getLanguage().equals(Locale.GERMAN.getLanguage())) {
+        	prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Typ");
+    	} else {
+    		prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Type");
+    	}
     }
 
     /**
@@ -44,10 +63,6 @@ public class IpsPreferences {
      */
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
     	String convention = IpsPlugin.getDefault().getPreferenceStore().getString(CHANGES_OVER_TIME_NAMING_CONCEPT);
-    	if (StringUtils.isEmpty(convention)) {
-    		convention = IChangesOverTimeNamingConvention.VAA;
-        	IpsPlugin.getDefault().getPreferenceStore().setValue(NULL_REPRESENTATION_STRING, convention);
-    	}
     	return IpsPlugin.getDefault().getIpsModel().getChangesOverTimeNamingConvention(convention);
     }
     
@@ -55,15 +70,15 @@ public class IpsPreferences {
      * Returns the string to represent null values to the user. 
      */
     public final String getNullPresentation() {
-    	String ret = IpsPlugin.getDefault().getPreferenceStore().getString(NULL_REPRESENTATION_STRING);
-    	if (StringUtils.isEmpty(ret)) {
-    		ret = "<null>";
-        	IpsPlugin.getDefault().getPreferenceStore().setValue(NULL_REPRESENTATION_STRING, ret);
-    	}
-    	return ret;
+    	return prefStore.getString(NULL_REPRESENTATION_STRING);
     }
 
-    public IpsPreferences() {
+    /**
+     * Returns the postfix used to create a default name for a product component type for a 
+     * given policy component type name.
+     */
+    public final String getDefaultProductCmptTypePostfix() {
+    	return prefStore.getString(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX);
     }
 
 }

@@ -1,8 +1,10 @@
 package org.faktorips.devtools.core.ui.wizards.pctype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IMethod;
@@ -47,6 +49,13 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
         IPolicyCmptType type = (IPolicyCmptType)pdObject;
         String supertypeName = typePage.getSuperType(); 
         type.setSupertype(supertypeName);
+        String postfix = IpsPlugin.getDefault().getIpsPreferences().getDefaultProductCmptTypePostfix();
+        if (StringUtils.isNotEmpty(postfix)) {
+        	type.setConfigurableByProductCmptType(true);
+        	type.setUnqualifiedProductCmptType(type.getName() + postfix);
+        } else {
+        	type.setConfigurableByProductCmptType(false);
+        }
         if (typePage.overrideAbstractMethods()) {
             IMethod[] abstractMethods = type.findOverrideCandidates(true);
             type.override(abstractMethods);

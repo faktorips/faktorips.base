@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  */
 public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     
-	private boolean configurableByProductCmptType = true;
+	private boolean configurableByProductCmptType = false;
 	private String unqalifiedProductCmptType = "";
     private String supertype = "";
     private boolean abstractFlag = false;
@@ -534,8 +534,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
         }
-        
-        throw new RuntimeException("Could not create part for tag name " + xmlTagName);
+        throw new RuntimeException("Could not create part for tag name" + xmlTagName);
     }
     
     /**

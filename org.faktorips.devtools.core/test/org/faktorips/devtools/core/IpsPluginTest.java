@@ -232,6 +232,7 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 	    IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
 	    IIpsObject ipsObject = file.getIpsObject();
 	    if (ipsObject instanceof IPolicyCmptType) {
+	    	((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(true);
 	    	((IPolicyCmptType)ipsObject).setUnqualifiedProductCmptType(unqualifiedName + "ProductCmpt");
 	    }
 	    return ipsObject;
