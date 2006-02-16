@@ -13,7 +13,8 @@
 	</path>
 	
 	<!-- calls default-target of template-buildfile -->
-	<target name="buildjar" >
+	
+	<target name="buildProdJar"  > <!-- different name, because buildJar depends on this target -->
 		<ant antfile="../../org.faktorips.build/build.xml" target="buildjar">
 			<property name="projectname" value="util" />
 			<reference refid="classpath" torefid="classpath"/>
@@ -27,5 +28,14 @@
 	
 	
 	<!-- insert individual targets here -->
+	<target name="buildjar" depends="buildProdJar">
+    	<jar destfile="results/faktorips.util.test.jar" >
+			<fileset dir="classes/" >
+				<patternset>
+					<include name="**/*Test*"/>
+				</patternset>
+			</fileset>
+    	</jar>
+	</target>
 	
 </project>
