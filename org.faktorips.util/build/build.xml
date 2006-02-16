@@ -28,8 +28,11 @@
 	
 	
 	<!-- insert individual targets here -->
+	
 	<target name="buildjar" depends="buildProdJar">
-    	<jar destfile="results/faktorips.util.test.jar" >
+    
+		<!-- we need compiled testcases for some other projects -->
+		<jar destfile="results/faktorips.util.test.jar" >
 			<fileset dir="classes/" >
 				<patternset>
 					<include name="**/*Test*"/>
