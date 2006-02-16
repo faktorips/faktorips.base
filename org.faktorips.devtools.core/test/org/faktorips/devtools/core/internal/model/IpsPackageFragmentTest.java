@@ -4,12 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -17,6 +20,8 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.util.StringUtil;
 
 
@@ -201,6 +206,26 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
     	assertEquals(children[1].getName(), "products.test1");
     	assertEquals(children[2].getName(), "products.test2");
     	
+    }
+    
+    public void testCreateIpsFileFromTemplate() throws CoreException {
+    	IpsPlugin.getDefault().getPreferenceStore().setValue(IpsPreferences.WORKING_DATE, "2006-01-01");
+    	GregorianCalendar date = IpsPreferences.getWorkingDate();
+    	IProductCmpt template = (IProductCmpt)newIpsObject(this.rootPackage, IpsObjectType.PRODUCT_CMPT, "products.Bla");
+    	IProductCmptGeneration generation = (IProductCmptGeneration)template.newGeneration(date);
+    	generation.newRelation("testRelation");
+    	template.getIpsSrcFile().save(true, null);
+    	
+    	IIpsSrcFile file = pack.createIpsFileFromTemplate("copy", template, date, true, null);
+    	IProductCmpt copy = (IProductCmpt)file.getIpsObject();
+    	file.save(true, null);
+    	
+    	assertEquals("copy", copy.getName());
+    	
+    	IProductCmptGeneration copyGen = (IProductCmptGeneration)copy.getGenerationByEffectiveDate(date);
+    	assertEquals(generation.getValidFrom(), copyGen.getValidFrom());
+    	
+    	assertEquals(generation.getRelations().length, copyGen.getRelations().length);
     }
     
 }

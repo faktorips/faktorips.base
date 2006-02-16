@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicyCmptType description="" configurableByProductCmptType="true" unqualifiedProductCmptType="Product" supertype="" abstract="false" forceExtensionCompilationUnitGeneration="false">
+    <Attribute id="0" description="" name="inceptionDate" datatype="Date" productRelevant="true" modifier="published" attributeType="changeable" defaultValue="">
+        <ValueSet>
+            <AllValues/>
+        </ValueSet>
+    </Attribute>
+    <Attribute id="1" description="" name="paymentMode" datatype="String" productRelevant="true" modifier="published" attributeType="changeable" defaultValue="">
+        <ValueSet>
+            <AllValues/>
+        </ValueSet>
+    </Attribute>
+    <Attribute id="2" description="" name="grossPremium" datatype="Money" productRelevant="true" modifier="published" attributeType="computed" defaultValue="">
+        <ValueSet>
+            <AllValues/>
+        </ValueSet>
+        <FormulaParameter name="param" datatype="String"/>
+    </Attribute>
+    <Relation id="3" description="" relationType="comp" readOnlyContainer="false" target="independant.Coverage" targetRoleSingular="Coverage" targetRolePlural="Coverages" minCardinality="0" maxCardinality="*" containerRelation="" reverseRelation="" productRelevant="true" targetRoleSingularProductSide="CoverageType" targetRolePluralProductSide="CoverageTypes" minCardinalityProductSide="0" maxCardinalityProductSide="1"/>
+</PolicyCmptType>
+

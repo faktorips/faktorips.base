@@ -120,7 +120,9 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     	int newId = getNextPartId();
         IpsObjectGeneration generation = newGenerationInternal(newId);
 
-        generation.initFromGeneration(source);
+        if (source != null) {
+        	generation.initFromGeneration(source);
+        }
 
         generation.setValidFrom(validFrom);
         

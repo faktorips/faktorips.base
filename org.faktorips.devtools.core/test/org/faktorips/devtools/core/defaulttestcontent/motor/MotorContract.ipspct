@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicyCmptType description="" configurableByProductCmptType="true" unqualifiedProductCmptType="MotorProduct" supertype="independant.Contract" abstract="false" forceExtensionCompilationUnitGeneration="false">
+    <Relation id="0" description="" relationType="comp" readOnlyContainer="false" target="motor.Vehicle" targetRoleSingular="Vehicle" targetRolePlural="Vehicles" minCardinality="0" maxCardinality="1" containerRelation="" reverseRelation="" productRelevant="true" targetRoleSingularProductSide="VehicleType" targetRolePluralProductSide="VehicleTypes" minCardinalityProductSide="0" maxCardinalityProductSide="1"/>
+    <Relation id="1" description="" relationType="comp" readOnlyContainer="false" target="motor.CollisionCoverage" targetRoleSingular="CollisionCoverage" targetRolePlural="CollisionCoverages" minCardinality="0" maxCardinality="1" containerRelation="" reverseRelation="" productRelevant="true" targetRoleSingularProductSide="CollisionCoverageType" targetRolePluralProductSide="CollisionCoverageTypes" minCardinalityProductSide="0" maxCardinalityProductSide="1"/>
+    <Relation id="2" description="" relationType="comp" readOnlyContainer="false" target="motor.TplCoverage" targetRoleSingular="TplCoverage" targetRolePlural="TplCoverages" minCardinality="0" maxCardinality="1" containerRelation="" reverseRelation="" productRelevant="true" targetRoleSingularProductSide="TplCoverageType" targetRolePluralProductSide="TplCoverageTypes" minCardinalityProductSide="0" maxCardinalityProductSide="1"/>
+</PolicyCmptType>
+

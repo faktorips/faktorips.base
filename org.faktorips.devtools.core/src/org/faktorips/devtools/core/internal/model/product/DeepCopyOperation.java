@@ -6,6 +6,7 @@ import java.util.Hashtable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -22,6 +23,14 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 	private IProductCmpt[] toRefer;
 	private Hashtable handleMap;
 	
+	/**
+	 * Creates a new operation to copy the given product components.
+	 * 
+	 * @param toCopy All product components that should be copied.
+	 * @param toRefer All product components which should be referred from the copied ones.
+	 * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing resources!). Keys are the
+	 * product components given in <code>toCopy</code>.
+	 */
 	public DeepCopyOperation(IProductCmpt[] toCopy, IProductCmpt[] toRefer, Hashtable handleMap) {
 		this.toCopy = toCopy;
 		this.toRefer = toRefer;
@@ -29,13 +38,16 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 	}
 
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
 		monitor.beginTask("Deep Copy", 2 + toCopy.length*2 + toRefer.length);
 		
 		monitor.worked(1);
 		
 		Hashtable referMap = new Hashtable();
 		for (int i = 0; i < toRefer.length; i++) {
-			referMap.put(toRefer[i].getName(), toRefer[i].getName());
+			referMap.put(toRefer[i].getQualifiedName(), toRefer[i].getName());
 		}
 		
 		monitor.worked(1);
@@ -64,6 +76,12 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 
 		for (int i = 0; i < products.length; i++) {
 			fixRelations(products[i], nameMap, referMap);
+			try {
+				products[i].getIpsSrcFile().save(true, monitor);
+			} catch (CoreException e) {
+				IpsPlugin.logAndShowErrorDialog(e);
+				return;
+			}
 			monitor.worked(1);
 		}
 		

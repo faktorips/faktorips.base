@@ -34,7 +34,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 * {@inheritDoc}
 	 */
 	public IProductCmpt[] getTargets(IProductCmptTypeRelation relationType, IProductCmpt cmpt) {
-		Node node = (Node)elementToNodeMapping.get(cmpt);
+		Node node = (Node)elementToNodeMapping.get(relationType);
 		
 		if (node == null) {
 			return new IProductCmpt[0];

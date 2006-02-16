@@ -534,7 +534,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName);
+        
+        throw new RuntimeException("Could not create part for tag name " + xmlTagName);
     }
     
     /**
