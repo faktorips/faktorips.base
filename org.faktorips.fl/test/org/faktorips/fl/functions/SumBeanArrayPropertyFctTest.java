@@ -14,7 +14,7 @@ import org.faktorips.values.Decimal;
  * 
  * @author Jan Ortmann
  */
-public class SumBeanArrayPropertyFctTest extends AbstractFunctionTest {
+public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
     
     protected void setUp() throws Exception {
         super.setUp();

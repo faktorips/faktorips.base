@@ -10,7 +10,7 @@ import org.faktorips.values.Money;
 /**
  *
  */
-public class DivisionTest extends AbstractCompilerTest {
+public class DivisionTest extends CompilerAbstractTest {
     
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("10.8 / 4.2", Decimal.valueOf("2.5714285714"), Datatype.DECIMAL);

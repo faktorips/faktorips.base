@@ -52,14 +52,13 @@ import org.faktorips.fl.operations.PlusPrimitiveInt;
 import org.faktorips.fl.operations.SubtractDecimalDecimal;
 import org.faktorips.fl.operations.SubtractIntInt;
 import org.faktorips.fl.operations.SubtractMoneyMoney;
+import org.faktorips.fl.parser.FlParser;
+import org.faktorips.fl.parser.ParseException;
 import org.faktorips.fl.parser.SimpleNode;
+import org.faktorips.fl.parser.TokenMgrError;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.Message;
-
-import com.faktor10.openips.fl.parser.FlParser;
-import com.faktor10.openips.fl.parser.ParseException;
-import com.faktor10.openips.fl.parser.TokenMgrError;
 
 /**
  * A compiler to compile expressions.

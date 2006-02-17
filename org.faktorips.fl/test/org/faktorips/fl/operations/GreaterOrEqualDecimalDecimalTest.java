@@ -1,7 +1,7 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.AbstractCompilerTest;
+import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.ExprCompiler;
 
@@ -10,7 +10,7 @@ import org.faktorips.fl.ExprCompiler;
 /**
  *
  */
-public class GreaterOrEqualDecimalDecimalTest extends AbstractCompilerTest {
+public class GreaterOrEqualDecimalDecimalTest extends CompilerAbstractTest {
     
     protected void setUp() throws Exception {
         super.setUp();

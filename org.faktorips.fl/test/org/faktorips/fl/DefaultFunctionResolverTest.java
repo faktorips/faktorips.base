@@ -22,14 +22,14 @@ public class DefaultFunctionResolverTest extends TestCase {
     }
 
     public void testAdd() {
-        FlFunction fct = new TestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]);
+        FlFunction fct = new AbstractTestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]);
         resolver.add(fct);
         assertEquals(1, resolver.getFunctions().length);
         assertSame(fct, resolver.getFunctions()[0]);
     }
 
     public void testRemove() {
-        TestFlFunction fct1 = new TestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]); 
+        AbstractTestFlFunction fct1 = new AbstractTestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]); 
         resolver.add(fct1);
         resolver.remove(fct1);
         assertEquals(0, resolver.getFunctions().length);
@@ -38,12 +38,12 @@ public class DefaultFunctionResolverTest extends TestCase {
     }
 
 
-    static class TestFlFunction extends AbstractFlFunction {
+    static class AbstractTestFlFunction extends AbstractFlFunction {
         
         // result to be returned.
         private CompilationResult result;
         
-        TestFlFunction(String name, Datatype type, Datatype[] argTypes) {
+        AbstractTestFlFunction(String name, Datatype type, Datatype[] argTypes) {
             super(name, "", type, argTypes);
         }
         

@@ -5,7 +5,7 @@ import org.faktorips.values.Decimal;
 
 /**
  */
-public class SumDecimalTest extends AbstractFunctionTest {
+public class SumDecimalTest extends FunctionAbstractTest {
     
     protected void setUp() throws Exception {
         super.setUp();

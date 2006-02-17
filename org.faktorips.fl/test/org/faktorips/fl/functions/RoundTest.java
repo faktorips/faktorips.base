@@ -8,7 +8,7 @@ import org.faktorips.values.Decimal;
 /**
  *
  */
-public class RoundTest extends AbstractFunctionTest {
+public class RoundTest extends FunctionAbstractTest {
     
     protected void setUp() throws Exception {
         super.setUp();

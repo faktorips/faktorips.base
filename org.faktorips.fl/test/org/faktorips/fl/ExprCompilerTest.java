@@ -19,7 +19,7 @@ import org.faktorips.values.Money;
 /**
  *
  */
-public class ExprCompilerTest extends AbstractCompilerTest {
+public class ExprCompilerTest extends CompilerAbstractTest {
     
     /*
      * @see TestCase#setUp()

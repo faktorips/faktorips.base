@@ -11,7 +11,7 @@ import org.faktorips.values.Money;
  * Contains all tests for the unary minus (+) operator that as defined by the
  * default unary operations.
  */
-public class MinusTest extends AbstractCompilerTest {
+public class MinusTest extends CompilerAbstractTest {
 
     public void testDecimal() throws Exception {
         execAndTestSuccessfull("- 10.23", Decimal.valueOf(-1023, 2), Datatype.DECIMAL);

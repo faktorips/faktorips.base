@@ -6,7 +6,7 @@ import org.faktorips.values.Decimal;
 /**
  *
  */
-public class DecimalTestArrayFctTest extends AbstractFunctionTest {
+public class DecimalTestArrayFctTest extends FunctionAbstractTest {
     
     protected void setUp() throws Exception {
         super.setUp();

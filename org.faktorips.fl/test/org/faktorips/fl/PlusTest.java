@@ -11,7 +11,7 @@ import org.faktorips.values.Money;
  * Contains all tests for the unary plus (+) operator that as defined by the
  * default unary operations.
  */
-public class PlusTest extends AbstractCompilerTest {
+public class PlusTest extends CompilerAbstractTest {
 
     protected void setUp() throws Exception {
         super.setUp();

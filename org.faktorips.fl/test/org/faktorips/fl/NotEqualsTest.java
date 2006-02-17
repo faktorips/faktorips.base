@@ -8,7 +8,7 @@ import org.faktorips.datatype.Datatype;
 /**
  *
  */
-public class NotEqualsTest extends AbstractCompilerTest {
+public class NotEqualsTest extends CompilerAbstractTest {
     
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("7.45 != 7.45", Boolean.FALSE, Datatype.BOOLEAN);

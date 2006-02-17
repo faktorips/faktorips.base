@@ -8,7 +8,7 @@ import org.faktorips.datatype.Datatype;
 /**
  *
  */
-public abstract class AbstractCompilerTest extends TestCase {
+public abstract class CompilerAbstractTest extends TestCase {
     
     protected ExprCompiler compiler;
     private ExprEvaluator processor;

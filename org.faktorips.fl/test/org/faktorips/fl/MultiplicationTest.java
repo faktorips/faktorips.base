@@ -10,7 +10,7 @@ import org.faktorips.values.Money;
 /**
  *
  */
-public class MultiplicationTest extends AbstractCompilerTest {
+public class MultiplicationTest extends CompilerAbstractTest {
     
     protected void setUp() throws Exception {
         super.setUp();

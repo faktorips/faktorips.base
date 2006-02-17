@@ -7,7 +7,7 @@ import org.faktorips.values.Money;
 /**
  *
  */
-public class IfTest extends AbstractFunctionTest {
+public class IfTest extends FunctionAbstractTest {
     
     protected void setUp() throws Exception {
         super.setUp();

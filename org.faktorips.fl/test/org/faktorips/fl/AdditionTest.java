@@ -10,7 +10,7 @@ import org.faktorips.values.Money;
 /**
  *
  */
-public class AdditionTest extends AbstractCompilerTest {
+public class AdditionTest extends CompilerAbstractTest {
     
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("3.5 + 7.45", Decimal.valueOf("10.95"), Datatype.DECIMAL);

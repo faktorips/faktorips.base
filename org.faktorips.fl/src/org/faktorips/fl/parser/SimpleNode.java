@@ -2,11 +2,7 @@
 
 package org.faktorips.fl.parser;
 
-import com.faktor10.openips.fl.parser.FlParser;
-import com.faktor10.openips.fl.parser.FlParserTreeConstants;
-import com.faktor10.openips.fl.parser.FlParserVisitor;
-import com.faktor10.openips.fl.parser.Node;
-import com.faktor10.openips.fl.parser.Token;
+
 
 public class SimpleNode implements Node {
   protected Node parent;

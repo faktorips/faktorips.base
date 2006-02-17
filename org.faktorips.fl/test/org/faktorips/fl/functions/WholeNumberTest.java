@@ -5,7 +5,7 @@ import org.faktorips.datatype.Datatype;
 /**
  *
  */
-public class WholeNumberTest extends AbstractFunctionTest {
+public class WholeNumberTest extends FunctionAbstractTest {
 
     public void test() throws Exception {
         registerFunction(new WholeNumber("WHOLENUMBER", ""));

@@ -15,7 +15,7 @@ options {
 
 PARSER_BEGIN(FlParser)
 
-package com.faktor10.openips.fl.parser;
+package org.faktorips.fl.parser;
 
 public class FlParser {
   public static void main(String args[]) {

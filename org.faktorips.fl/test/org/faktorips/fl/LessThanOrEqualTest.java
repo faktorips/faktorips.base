@@ -8,7 +8,7 @@ import org.faktorips.datatype.Datatype;
 /**
  *
  */
-public class LessThanOrEqualTest extends AbstractCompilerTest {
+public class LessThanOrEqualTest extends CompilerAbstractTest {
     
     public void testDecimalDecimal() throws Exception {
         execAndTestSuccessfull("7.45 <= 7.46", Boolean.TRUE, Datatype.BOOLEAN);
