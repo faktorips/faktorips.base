@@ -67,6 +67,14 @@
         	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
+
+        	<copy todir="${classes}">
+        	    <fileset dir="${src}">
+        	      <include name="**/*.properties" />
+        	      <include name="**/*.xml" />
+        	      <include name="**/*.ipsproduct" />
+        	    </fileset>
+        	</copy>
         	
         	<echo>"--> test compile </echo>
         	<javac srcdir="${test_src}" destdir="${classes}" classpathref="classpath" />
@@ -92,7 +100,7 @@
 						<patternset id="test.sources">
 						    <exclude name="**/*.java"/>
 							<exclude name="**/*AbstractTest*"/>
-						    <include name="**/*Test*"/>
+						    <include name="**/*Test.class"/>
 						</patternset>
 					</fileset>
 				</batchtest>
