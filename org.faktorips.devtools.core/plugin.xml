@@ -419,6 +419,37 @@
                id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.update"
                label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.update"
                menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
+         <menu
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new">
+            <separator name="system"/>
+            <separator name="product"/>
+         </menu>
+         <action
+               class="org.faktorips.devtools.core.ui.NewFolderActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.folder"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.folder"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new/system"/>
+         <action
+               class="org.faktorips.devtools.core.ui.NewProductCmptActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.product"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.product"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new/product"/>
+         <menu
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor">
+            <separator name="basic"/>
+         </menu>
+         <action
+               class="org.faktorips.devtools.core.internal.refactor.actions.RenameActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.rename"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.rename"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor/basic"/>
+         <action
+               class="org.faktorips.devtools.core.internal.refactor.actions.MoveActionDelegate"
+               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.move"
+               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.move"
+               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor/basic"/>
       </viewerContribution>
    </extension>
 

@@ -48,6 +48,8 @@ public class ConfigElementTest extends IpsPluginTest {
     	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     	
     	policyCmptType.newAttribute().setName("a");
+        policyCmptType.getIpsSrcFile().save(true, null);
+    	
     	ml = configElement.validate();
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     }
