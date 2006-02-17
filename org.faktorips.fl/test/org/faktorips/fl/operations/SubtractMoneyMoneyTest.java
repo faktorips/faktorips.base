@@ -1,8 +1,8 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.BinaryOperation;
+import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.values.Money;
 
