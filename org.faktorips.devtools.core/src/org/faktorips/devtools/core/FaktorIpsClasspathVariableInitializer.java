@@ -1,8 +1,10 @@
 package org.faktorips.devtools.core;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ClasspathVariableInitializer;
@@ -51,11 +53,28 @@ public class FaktorIpsClasspathVariableInitializer extends
 			return;
 		}
 		Bundle bundle = Platform.getBundle(m.getPluginId());
-		IPath path = new Path(bundle.getLocation());
+		if (bundle == null) {
+			JavaCore.removeClasspathVariable(variable, null);
+			return;
+		}
+		URL installLocation= bundle.getEntry("/"); //$NON-NLS-1$
+		URL local= null;
 		try {
-			JavaCore.setClasspathVariable(variable, path, null);
-		} catch (JavaModelException e) {
-			IpsPlugin.log(e);
+			local= Platform.asLocalURL(installLocation);
+		} catch (IOException e) {
+			JavaCore.removeClasspathVariable(variable, null);
+			return;
+		}
+		try {
+			File file = new File(local.getPath());
+			String fullPath= file.getAbsolutePath();
+			int index = fullPath.indexOf("configuration");
+			if (file.exists()) {
+				
+				JavaCore.setClasspathVariable(variable, Path.fromOSString(fullPath), null);
+			}
+		} catch (JavaModelException e1) {
+			JavaCore.removeClasspathVariable(variable, null);
 		}
 	}
 

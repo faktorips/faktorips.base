@@ -25,6 +25,9 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return "getEffectiveFrom";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void generateCodeForAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,

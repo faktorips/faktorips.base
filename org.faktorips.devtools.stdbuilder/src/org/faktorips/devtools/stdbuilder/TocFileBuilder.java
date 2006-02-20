@@ -206,15 +206,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 					throw new CoreException(new IpsStatus(
 							"Error parsing toc contents.", e));
 				}
-				Element repositoryEl = XmlUtil.getFirstElement(doc
-						.getDocumentElement(),
-						ReadonlyTableOfContents.TOC_XML_ELEMENT);
-				if (repositoryEl == null) {
-					throw new CoreException(new IpsStatus(
-							"RepositoryElement does not contain toc element!"));
-				}
+				Element tocEl = doc.getDocumentElement();
 				try {
-					toc.initFromXml(repositoryEl);
+					toc.initFromXml(tocEl);
 				} catch (Exception e) {
 					throw new CoreException(new IpsStatus(
 							"Error initializing toc from xml!", e));

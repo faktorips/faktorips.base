@@ -225,11 +225,21 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException;
     
     /**
-     * Returns the code generation helper for given datatype or <code>null</code> if no helper is
+     * Returns the code generation helper for the given datatype or <code>null</code> if no helper is
      * available for the given datatype. 
      */
     public DatatypeHelper getDatatypeHelper(Datatype datatype);
     
+    /**
+     * Returns the code generation helper for the given datatype or <code>null</code> if no helper is
+     * available for the given datatype.
+     * 
+     *  @param qName The qualified datatype name.
+     *  
+     *  @throws CoreException if an error occurs while searching for the datatype.
+     */
+    public DatatypeHelper findDatatypeHelper(String qName) throws CoreException;
+
     /**
      * Returns the possible value set types that are defined for the given datatype.
      * The type <code>ALL_VALUES</code> is always returned and is the first element in the array.

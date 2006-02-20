@@ -15,22 +15,6 @@ import org.faktorips.devtools.core.model.pctype.Parameter;
  */
 public class BuilderHelper {
     
-	/**
-	 * @deprecated this method does not work for params that refer to policy component types,
-	 * as the getJavaClassName() method in policy component type can't now what the name of the
-	 * class is, the builder set generates for it.
-	 */
-    public final static String[] transformParameterTypesToJavaClassNames(
-    		IIpsProject ipsProject,
-    		Parameter[] params) throws CoreException {
-	    String[] javaClasses = new String[params.length];
-	    for (int i=0; i<params.length; i++) {
-	        Datatype paramDatatype = ipsProject.findDatatype(params[i].getDatatype());
-	        javaClasses[i] = paramDatatype.getJavaClassName();
-	    }
-        return javaClasses;
-    }
-
     public final static String[] extractParameterNames(Parameter[] params) {
 	    String[] paramNames = new String[params.length];
 	    for (int i=0; i<params.length; i++) {

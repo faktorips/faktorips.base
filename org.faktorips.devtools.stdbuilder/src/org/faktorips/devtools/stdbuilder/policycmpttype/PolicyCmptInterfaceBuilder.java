@@ -2,13 +2,10 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -19,7 +16,7 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.stdbuilder.Util;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IPolicyComponent;
@@ -30,12 +27,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     private final static String ATTRIBUTE_FIELD_COMMENT = "ATTRIBUTE_FIELD_COMMENT";
 
-    private final static String ATTRIBUTE_MAX_VALUESET_JAVADOC = "ATTRIBUTE_MAX_VALUESET_JAVADOC";
-    private final static String ATTRIBUTE_VALUESET_JAVADOC = "ATTRIBUTE_VALUESET_JAVADOC";
-
-    private final static String PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC = "PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC";
-    private final static String PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC = "PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC";
-    private final static String PRODUCT_CMPT_IMPLEMENTATION_GETTER_JAVADOC = "PRODUCT_CMPT_IMPLEMENTATION_GETTER_JAVADOC";
     private final static String JAVA_GETTER_METHOD_MAX_VALUESET = "JAVA_GETTER_METHOD_MAX_VALUESET";
     private final static String JAVA_GETTER_METHOD_VALUESET = "JAVA_GETTER_METHOD_VALUESET";
 
@@ -61,58 +52,152 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getPublishedInterfaceName(getConceptName(ipsSrcFile));
+        return getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptTypeName(ipsSrcFile));
     }
     
-    public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public String getPolicyCmptTypeName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
         return StringUtils.capitalise(name);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean generatesInterface() {
+        return true;
+    }
 
-    private void generateMethodGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(getIpsObject(), PRODUCT_CMPT_INTERFACE_GETTER_JAVADOC);
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureGetProductCmpt(getIpsSrcFile(), methodsBuilder);
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
+        appendLocalizedJavaDoc("INTERFACE", getIpsObject().getName(), getIpsObject(), builder);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
+            throws CoreException {
+        if (getPcType().isConfigurableByProductCmptType()) {
+            generateMethodGetProductCmpt(methodsBuilder);
+            generateMethodSetProductCmpt(methodsBuilder);
+            generateMethodGetProductCmptGeneration(getProductCmptType(), methodsBuilder);
+        }
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public IMotorProduct getMotorProduct();
+     * </pre>
+     */
+    protected void generateMethodGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String[] replacements = new String[]{getProductCmptType().getName(), getPcType().getName()};
+        appendLocalizedJavaDoc("METHOD_GET_PRODUCTCMPT", replacements, getPcType(), methodsBuilder);
+        generateSignatureGetProductCmpt(getProductCmptType(), methodsBuilder);
         methodsBuilder.append(";");
     }
     
-    public void generateSignatureGetProductCmpt(IIpsSrcFile ipsSrcFile, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String returnType = productCmptInterfaceBuilder.getQualifiedClassName(ipsSrcFile);
-        String methodName = getMethodNameGetProductCmpt(ipsSrcFile);
+    /**
+     * Code sample:
+     * <pre>
+     * public IMotorProduct getMotorProduct()
+     * </pre>
+     */
+    public void generateSignatureGetProductCmpt(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String returnType = productCmptInterfaceBuilder.getQualifiedClassName(type);
+        String methodName = getMethodNameGetProductCmpt(type);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
     }
     
-    public void generateSignatureSetProductCmpt(IIpsSrcFile ipsSrcFile, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String methodName = getMethodNameSetProductCmpt(ipsSrcFile);
-        String[] paramTypes = new String[] { productCmptInterfaceBuilder.getQualifiedClassName(ipsSrcFile), "boolean" };
-        String[] paramNames = new String[] { "pc", "isInitMode" };
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
+    /**
+     * Returns the name of the method to access the product component, e.g. getMotorProduct
+     */
+    public String getMethodNameGetProductCmpt(IProductCmptType type) throws CoreException {
+        return getLocalizedText(type, "METHOD_GET_PRODUCTCMPT_NAME", type.getName());
     }
-    
-    private void generateMethodSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(getIpsObject(), PRODUCT_CMPT_INTERFACE_SETTER_JAVADOC);
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureSetProductCmpt(getIpsSrcFile(), methodsBuilder);
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void setMotorProduct(IMotorProduct motorProduct, boolean initPropertiesWithConfiguratedDefaults);
+     * </pre>
+     */
+    protected void generateMethodSetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String[] replacements = new String[]{getProductCmptType().getName(), StringUtils.uncapitalise(getProductCmptType().getName()), "initPropertiesWithConfiguratedDefaults"};
+        appendLocalizedJavaDoc("METHOD_SET_PRODUCTCMPT", replacements, getProductCmptType(), methodsBuilder);
+        generateSignatureSetProductCmpt(getProductCmptType(), methodsBuilder);
         methodsBuilder.appendln(";");
     }
 
-    public void generateSignatureGetProductCmptGeneration(IIpsSrcFile ipsScrFile, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String genName = productCmptGenInterfaceBuilder.getQualifiedClassName(ipsScrFile);
-        String methodName = getMethodNameGetProductCmptGeneration(ipsScrFile);
+    /**
+     * Code sample:
+     * <pre>
+     * public void setMotorProduct(IMotorProduct motorProduct, boolean initPropertiesWithConfiguratedDefaults)
+     * </pre>
+     */
+    public void generateSignatureSetProductCmpt(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String methodName = getMethodNameSetProductCmpt(type);
+        String[] paramTypes = new String[] { productCmptInterfaceBuilder.getQualifiedClassName(type), "boolean" };
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, getMethodParamNamesSetProductCmpt(type), paramTypes);
+    }
+    
+    /**
+     * Returns the name of the method to set the product component, e.g. setMotorProduct
+     */
+    public String getMethodNameSetProductCmpt(IProductCmptType type) throws CoreException {
+        return getLocalizedText(type, "METHOD_SET_PRODUCTCMPT_NAME", type.getName());
+    }
+
+    /**
+     * Returns the method parameters for the method: setProductCmpt.
+     */
+    public String[] getMethodParamNamesSetProductCmpt(IProductCmptType type) throws CoreException {
+        return new String[] { StringUtils.uncapitalise(type.getName()), "initPropertiesWithConfiguratedDefaults" };
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public IMotorProductGen getMotorProductGen();
+     * </pre>
+     */
+    public void generateMethodGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String[] replacements = new String[]{getNameForGenerationConcept(type), type.getName(), type.findPolicyCmptyType().getName()};
+        appendLocalizedJavaDoc("METHOD_GET_PRODUCTCMPT_GENERATION", replacements, type, methodsBuilder);
+        generateSignatureGetProductCmptGeneration(type, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public IMotorProductGen getMotorProductGen()
+     * </pre>
+     */
+    public void generateSignatureGetProductCmptGeneration(IProductCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String genName = productCmptGenInterfaceBuilder.getQualifiedClassName(type);
+        String methodName = getMethodNameGetProductCmptGeneration(type);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, genName, methodName, 
                 new String[0], new String[0]);
     }
     
-    public String getMethodNameGetProductCmpt(IIpsSrcFile ipsScrFile) throws CoreException {
-        return "get" + StringUtils.capitalise(productCmptInterfaceBuilder.getConceptName(ipsScrFile));
-    }
-
-    public String getMethodNameSetProductCmpt(IIpsSrcFile ipsScrFile) throws CoreException {
-        return "set" + StringUtils.capitalise(productCmptInterfaceBuilder.getConceptName(ipsScrFile));
-    }
-
-    public String getMethodNameGetProductCmptGeneration(IIpsSrcFile ipsScrFile) throws CoreException {
-        return "get" + StringUtils.capitalise(productCmptGenInterfaceBuilder.getConceptName(ipsScrFile));
+    /**
+     * Returns the name of the method to access the product component generation, e.g. getMotorProductGen
+     */
+    public String getMethodNameGetProductCmptGeneration(IProductCmptType type) throws CoreException {
+        String[] replacements = new String[]{type.getName(), getAbbreviationForGenerationConcept(type), getNameForGenerationConcept(type)};
+        return getLocalizedText(type, "METHOD_GET_PRODUCTCMPT_GENERATION_NAME", replacements);
     }
     
     private String getPolicyCmptInterfaceGetMaxValueSetMethodName(IAttribute a) {
@@ -162,46 +247,55 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
 
-    private String getPolicyCmptInterfaceSetMethodName(IAttribute a) {
-        return "set" + StringUtils.capitalise(a.getName());
-    }
-
-    private String getPolicyCmptInterfaceGetMethodName(IAttribute a) {
-        return "get" + StringUtils.capitalise(a.getName());
-    }
-
-    private void buildMethods(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        IMethod[] methods = getPcType().getMethods();
-        for (int i = methods.length - 1; i >= 0; i--) {
-            if (!methods[i].validate().containsErrorMsg()) {
-                try {
-                    buildMethod(methodsBuilder, methods[i]);
-                } catch (Exception e) {
-                    addToBuildStatus(new IpsStatus(IStatus.ERROR, "Error building method " + methods[i].getName()
-                            + " of " + getPcType(), e));
-                }
-            }
-        }
-    }
-
-    private String getPolicyCmptInterfacePublishedInterfaceMethodName(IMethod m) {
-        return m.getName();
-    }
-
-    private void buildMethod(JavaCodeFragmentBuilder methodsBuilder, IMethod method) throws CoreException {
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForMethodDefinedInModel(
+            IMethod method,
+            Datatype returnType,
+            Datatype[] paramTypes,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
         if (method.getModifier() != Modifier.PUBLISHED) {
             return;
         }
-        Datatype datatype = getPcType().getIpsProject().findDatatype(method.getDatatype());
-        String methodName = getPolicyCmptInterfacePublishedInterfaceMethodName(method);
-
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.ABSTRACT | Util.getJavaModifier(method.getModifier()),
-                datatype.getJavaClassName(), methodName, method.getParameterNames(), BuilderHelper
-                        .transformParameterTypesToJavaClassNames(method.getIpsProject(), method.getParameters()),
-                method.getDescription(), ANNOTATION_GENERATED);
+        methodsBuilder.javaDoc(method.getDescription(), ANNOTATION_GENERATED);
+        generateSignatureForMethodDefinedInModel(method, java.lang.reflect.Modifier.PUBLIC, returnType, paramTypes, methodsBuilder);
         methodsBuilder.appendln(";");
     }
-
+    
+    /**
+     * Code samples:
+     * <pre>
+     * public void calculatePremium(IPolicy policy)
+     * public ICoverage getCoverageWithHighestSumInsured()
+     * </pre>
+     */
+    public void generateSignatureForMethodDefinedInModel(
+        IMethod method,
+        int javaModifier,
+        Datatype returnType,
+        Datatype[] paramTypes,
+        JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String[] paramClassNames = new String[paramTypes.length];
+        for (int i = 0; i < paramClassNames.length; i++) {
+            if (paramTypes[i] instanceof IPolicyCmptType) {
+                paramClassNames[i] = getQualifiedClassName((IPolicyCmptType)paramTypes[i]);
+            } else {
+                paramClassNames[i] = paramTypes[i].getJavaClassName();
+            }
+        }
+        String returnClassName;
+        if  (returnType instanceof IPolicyCmptType) {
+            returnClassName = getQualifiedClassName((IPolicyCmptType)returnType);
+        } else {
+            returnClassName = returnType.getJavaClassName();
+        }
+        methodsBuilder.signature(javaModifier, returnClassName, method.getName(), 
+                method.getParameterNames(), paramClassNames);
+    }
+    
     private String getPolicyCmptInterfaceValueSetFiedName(IAttribute a) {
         return "maxWertebereich" + StringUtils.capitalise(a.getName());
     }
@@ -258,34 +352,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         if (builderName != null) {
             throw new IllegalStateException("One of the builders this builder depends on is not set: " + builderName);
         }
-    }
-
-    protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
-        builder.javaDoc(null, ANNOTATION_GENERATED);
-    }
-
-    protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
-        generateMethodGetProductCmpt(methodsBuilder);
-        generateMethodSetProductCmpt(methodsBuilder);
-        
-        // getProductComponentGeneration()
-        String javaDoc = ""; 
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureGetProductCmptGeneration(getIpsSrcFile(), methodsBuilder);
-        methodsBuilder.append(";");
-
-        buildMethods(methodsBuilder);
-    }
-
-    protected boolean generatesInterface() {
-        return true;
-    }
-
-    /**
-     * Empty implementation
-     */
-    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
     }
 
     /**

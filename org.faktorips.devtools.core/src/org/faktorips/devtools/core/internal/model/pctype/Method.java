@@ -45,6 +45,8 @@ public class Method extends Member implements IMethod {
     private boolean abstractFlag = false;
     private Parameter[] parameters = new Parameter[0];
     private String body = "";
+    private boolean deleted = false;
+
     
     /**
      * Creates a new method.
@@ -71,8 +73,6 @@ public class Method extends Member implements IMethod {
         updateSrcFile();
         deleted = true;
     }
-
-    private boolean deleted = false;
 
     /**
      * {@inheritDoc}
@@ -262,8 +262,15 @@ public class Method extends Member implements IMethod {
     public Modifier getModifier() {
         return modifier;
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	public int getJavaModifier() {
+		return modifier.getJavaModifier() | (abstractFlag ? java.lang.reflect.Modifier.ABSTRACT : 0);
+	}
 
-    /** 
+	/** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.pctype.IMethod#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)
      */

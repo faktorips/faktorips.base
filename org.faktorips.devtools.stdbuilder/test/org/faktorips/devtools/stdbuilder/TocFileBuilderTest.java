@@ -108,9 +108,8 @@ public class TocFileBuilderTest extends IpsPluginTest {
         assertEquals(project.getXmlFileCharset(), tocFile.getCharset());
         
         Document doc = getDocumentBuilder().parse(tocFile.getContents());
-        Element tocElement = XmlUtil.getFirstElement(doc.getDocumentElement());
         ReadonlyTableOfContentsImpl toc = new ReadonlyTableOfContentsImpl();
-        toc.initFromXml(tocElement);
+        toc.initFromXml(doc.getDocumentElement());
 
         // asserts for product cmpt entry
         TocEntryObject[] entries = toc.getProductCmptTocEntries();

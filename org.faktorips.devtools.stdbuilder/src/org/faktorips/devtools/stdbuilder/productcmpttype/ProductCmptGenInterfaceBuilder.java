@@ -57,9 +57,17 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         return getJavaNamingConvention().getPublishedInterfaceName(getConceptName(ipsSrcFile));
     }
     
+    /**
+     * @deprecated
+     */
     public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
         return getProductCmptType(ipsSrcFile).getName() + generationAbb;
+    }
+
+    public String getConceptName(IProductCmptType type) throws CoreException {
+        String generationAbb = getAbbreviationForGenerationConcept(type);
+        return type.getName() + generationAbb;
     }
 
     protected boolean generatesInterface() {

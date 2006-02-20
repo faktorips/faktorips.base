@@ -34,6 +34,13 @@ public interface IMethod extends IMember {
     public void setAbstract(boolean newValue);
     
     /**
+     * Returns the Java modifier. Determined from the ips modifier and the abstract flag.
+     * 
+     * @see java.lang.reflect.Modifier
+     */
+    public int getJavaModifier();
+
+    /**
      * Returns the method's parameters. Returns an empty array if the mehthod
      * doeen't have any parameter.
      */

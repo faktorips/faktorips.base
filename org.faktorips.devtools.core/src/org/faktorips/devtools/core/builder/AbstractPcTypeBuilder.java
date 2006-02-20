@@ -15,11 +15,15 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -46,6 +50,18 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     }
 
     /**
+     * Returns the product component type that belongs to the policy component type
+     * this builder is building. Returns <code>null</code> if the policy component
+     * type is not configurable by a product component type.
+     */
+    public IProductCmptType getProductCmptType() throws CoreException {
+    	if (getPcType().isConfigurableByProductCmptType()) {
+    		return getPcType().findProductCmptType();
+    	}
+    	return null;
+    }
+    
+    /**
      * Overridden.
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
@@ -58,6 +74,32 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         super.afterBuild(ipsSrcFile);
         containerRelationToSubRelationMap = null;
+    }
+    
+    /**
+     * Returns the abbreviation for the generation (changes over time) concept.
+     * 
+     * @param element An ips element needed to access the ipsproject where the neccessary configuration
+     * information is stored.
+     * 
+     * @see org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention
+     */
+    public String getAbbreviationForGenerationConcept(IIpsElement element) {
+        return getChangesInTimeNamingConvention(element).
+            getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(element));
+    }
+
+    /**
+     * Returns the name (singular form) for the generation (changes over time) concept.
+     * 
+     * @param element An ips element needed to access the ipsproject where the neccessary configuration
+     * information is stored.
+     * 
+     * @see org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention
+     */
+    public String getNameForGenerationConcept(IIpsElement element) {
+        return getChangesInTimeNamingConvention(element).
+            getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(element));
     }
 
     /**
@@ -100,6 +142,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
         generateCodeForAttributes(memberVarCodeBuilder, methodCodeBuilder);
         generateCodeForRelations(memberVarCodeBuilder, methodCodeBuilder);
         generateOther(memberVarCodeBuilder, methodCodeBuilder);
+        generateCodeForMethodsDefinedInModel(methodCodeBuilder);
 
         codeBuilder.append(memberVarCodeBuilder.getFragment());
         generateConstructors(codeBuilder);
@@ -137,9 +180,6 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
      */
     protected abstract boolean generatesInterface();
 
-    protected abstract void generateConstructors(JavaCodeFragmentBuilder builder)
-            throws CoreException;
-
     /**
      * Returns the qualified name of the superclass or <code>null</code> if the class being
      * generated is not derived from a class or is an interface.
@@ -147,10 +187,22 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     protected abstract String getSuperclass() throws CoreException;
 
     /**
+     * Returns the class modifier.
+     * 
+     * @see java.lang.reflect.Modifier
+     */
+    protected int getClassModifier() throws CoreException {
+        return getPcType().isAbstract() ? java.lang.reflect.Modifier.PUBLIC
+                | java.lang.reflect.Modifier.ABSTRACT : java.lang.reflect.Modifier.PUBLIC;
+    }
+
+    /**
      * Returns the qualified name of the interfaces the generated class or interface extends.
      * Returns an empty array if no interfaces are extended
      */
     protected abstract String[] getExtendedInterfaces() throws CoreException;
+
+    protected abstract void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException;
 
     protected final void generateCodeForAttributes(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -338,13 +390,41 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * Returns the class modifier.
+     * Generates the sourcecode for all methods defined in the policy component type.
      * 
-     * @see java.lang.reflect.Modifier
+     * @throws CoreException
      */
-    protected int getClassModifier() throws CoreException {
-        return getPcType().isAbstract() ? java.lang.reflect.Modifier.PUBLIC
-                | java.lang.reflect.Modifier.ABSTRACT : java.lang.reflect.Modifier.PUBLIC;
+    protected final void generateCodeForMethodsDefinedInModel(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        IMethod[] methods = getPcType().getMethods();
+        IIpsProject project = getPcType().getIpsProject();
+        for (int i = 0; i < methods.length; i++) {
+            IMethod method = methods[i];
+            if (!method.validate().containsErrorMsg()) {
+                try {
+                    Datatype returnType = project.findDatatype(method.getDatatype());
+                    String[] paramTypes = method.getParameterTypes();
+                    Datatype[] paramDatatypes = new Datatype[paramTypes.length];
+                    for (int j = 0; j < paramDatatypes.length; j++) {
+                    	paramDatatypes[j] = project.findDatatype(paramTypes[j]);
+					}
+                    generateCodeForMethodDefinedInModel(method, returnType, paramDatatypes, methodsBuilder);
+                    
+                } catch (Exception e) {
+                    throw new CoreException(new IpsStatus(IStatus.ERROR,
+                            "Error building method " + methods[i].getName() + " of "
+                                    + getQualifiedClassName(method.getIpsObject()), e));
+                }
+            }
+        }
     }
+
+	/**
+	 * Generates the sourcecode for the indicated method.
+	 */
+	protected abstract void generateCodeForMethodDefinedInModel(
+			IMethod method,
+			Datatype returnType,
+			Datatype[] paramTypes,
+			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
 }

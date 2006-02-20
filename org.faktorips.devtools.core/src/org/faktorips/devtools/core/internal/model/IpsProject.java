@@ -532,8 +532,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         return null;
     }
-
+    
     /**
+	 * {@inheritDoc}
+	 */
+	public DatatypeHelper findDatatypeHelper(String qName) throws CoreException {
+		Datatype datatype = findDatatype(qName);
+		return getDatatypeHelper(datatype);
+	}
+
+	/**
      * Overridden.
      */
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException {

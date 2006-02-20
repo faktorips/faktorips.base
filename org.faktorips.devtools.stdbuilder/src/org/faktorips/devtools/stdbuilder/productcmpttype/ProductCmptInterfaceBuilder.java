@@ -147,7 +147,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * </pre>
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getConceptName(getIpsSrcFile()); 
+        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(getIpsSrcFile()); 
         IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
         String effectiveDateConceptName = convention.getEffectiveDateConceptName(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptConceptName, effectiveDateConceptName}, getIpsObject(), methodsBuilder);
@@ -162,7 +162,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * </pre>
      */
     void generateSignatureCreatePolicyCmpt(IIpsSrcFile ipsSrcFile, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getConceptName(ipsSrcFile); 
+        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(ipsSrcFile); 
         String returnType =policyCmptTypeInterfaceBuilder.getQualifiedClassName(ipsSrcFile);
         String methodName = getLocalizedText(ipsSrcFile, "METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
         methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, 
