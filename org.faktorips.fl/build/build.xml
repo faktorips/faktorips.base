@@ -1,6 +1,10 @@
 <project name="org.faktorips.util" default="buildjar">
 
+	<!-- can also be set from outside, ie. eclipse workspace -->
+	<property name="javacchome" value="/var/lib/javacc/" />
+	
 	<property name="parser_src" value="../src/org/faktorips/fl/parser/" />
+
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
@@ -68,10 +72,10 @@
 		
 		
 		<mkdir dir="${parser_src}" />
-		<jjtree javacchome="/var/lib/javacc" target="../javacc/fl.jjt" outputdirectory="${parser_src}" 
+		<jjtree javacchome="${javacchome}" target="../javacc/fl.jjt" outputdirectory="${parser_src}" 
 		        nodepackage="org.faktorips.fl.parser"/>
 		
-		<javacc javacchome="/var/lib/javacc" target="${parser_src}/fl.jj" outputdirectory="${parser_src}"
+		<javacc javacchome="${javacchome}" target="${parser_src}/fl.jj" outputdirectory="${parser_src}"
 			     />
 		
 	</target>
