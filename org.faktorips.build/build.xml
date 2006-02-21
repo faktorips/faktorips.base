@@ -76,7 +76,6 @@
         	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
-        	
         	<javac srcdir="${test_src}" destdir="${classes}" classpathref="classpath" />
         </target>
 
@@ -87,8 +86,8 @@
 	<!-- perform Junit Tests -->
 	    <target name="test" depends="compile">
 		
-	    	<junit fork="yes" haltonerror="yes"  timeout="3600" >
-	    		<formatter type="xml" />
+	    	<junit fork="yes" haltonerror="yes" filtertrace="off" timeout="3600" printsummary="withOutAndErr"  showoutput="yes">
+	    		<formatter type="xml" usefile="false"/>
 	    		<classpath>
 	    		    <pathelement location="${classes}"/>
 	    		    <pathelement path="${java.class.path}"/> 
