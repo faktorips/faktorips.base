@@ -59,7 +59,6 @@
 	
 	<!--Compile -->
         <target name="compile" depends="init">
-        	<echo>"--> source compile</echo>
 			<javac  srcdir="${src}" destdir="${classes}" classpathref="classpath"/> 
         	
         	<copy todir="${classes}">
@@ -78,7 +77,6 @@
         	    </fileset>
         	</copy>
         	
-        	<echo>"--> test compile </echo>
         	<javac srcdir="${test_src}" destdir="${classes}" classpathref="classpath" />
         </target>
 
@@ -90,7 +88,7 @@
 	    <target name="test" depends="compile">
 		
 	    	<junit fork="yes" haltonerror="yes" filtertrace="off" timeout="3600" printsummary="withOutAndErr"  showoutput="yes">
-	    		<formatter type="plain" usefile="false"/>
+	    		<formatter type="xml" usefile="false"/>
 	    		<classpath>
 	    		    <pathelement location="${classes}"/>
 	    		    <pathelement path="${java.class.path}"/> 
