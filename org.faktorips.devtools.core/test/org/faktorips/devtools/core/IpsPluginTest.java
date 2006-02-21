@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -8,6 +9,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
@@ -257,5 +259,27 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 	protected IIpsObject newIpsObject(IIpsPackageFragment pack, IpsObjectType type, String unqualifiedName) throws CoreException {
 	    IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
 	    return file.getIpsObject();
+	}
+
+	/**
+	 * Copies the given project properties file and the given classes to the given project. The classes are 
+	 * added to the classpath of the project.
+	 * @throws CoreException 
+	 * 
+	 */
+	protected void configureProject(IIpsProject project, String ipsProjectFileName, Class[] dependencies) throws CoreException {
+		IPath outputPath = project.getJavaProject().getOutputLocation();
+		IFolder output = project.getProject().getFolder(outputPath);
+		for (int i = 0; i < dependencies.length; i++) {
+			String name = dependencies[i].getName() + ".class";
+			output.getFile(name).create(dependencies[i].getResourceAsStream(name), true, null);
+		}
+		IFile ipsproject = project.getProject().getFile(".ipsproject");
+		if (ipsproject.exists()) {
+			ipsproject.setContents(getClass().getResourceAsStream(ipsProjectFileName), true, false, null);
+		}
+		else {
+			ipsproject.create(getClass().getResourceAsStream(ipsProjectFileName), true, null);
+		}
 	}
 }

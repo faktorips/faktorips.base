@@ -15,13 +15,11 @@ import org.w3c.dom.Element;
 public class EnumValueSetTest extends XmlAbstractTestCase {
     
     private DefaultEnumType gender;
-    private DefaultEnumValue male;
-    private DefaultEnumValue female;
 
     protected void setUp() {
         gender = new DefaultEnumType("Gender", DefaultEnumValue.class);
-        male = new DefaultEnumValue(gender, "male");
-        female = new DefaultEnumValue(gender, "female");
+        new DefaultEnumValue(gender, "male");
+        new DefaultEnumValue(gender, "female");
     }
 
     public void testEnumValueSet() {
@@ -32,15 +30,68 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         assertEquals("female", elements[1]);
     }
 
-    public void testContains() {
+    public void testContainsValue() {
         EnumValueSet set = new EnumValueSet();
         set.addValue("10EUR");
         set.addValue("20EUR");
         set.addValue("30EUR");
-        assertTrue(set.contains("10EUR", Datatype.MONEY));
-        assertTrue(set.contains("10 EUR", Datatype.MONEY));
-        assertFalse(set.contains("15 EUR", Datatype.MONEY));
-        assertFalse(set.contains("abc", Datatype.MONEY));
+        assertTrue(set.containsValue("10EUR", Datatype.MONEY));
+        assertTrue(set.containsValue("10 EUR", Datatype.MONEY));
+        assertFalse(set.containsValue("15 EUR", Datatype.MONEY));
+        assertFalse(set.containsValue("abc", Datatype.MONEY));
+        
+        try {
+        	set.containsValue("10EUR", null);
+        	fail();
+        }
+        catch (NullPointerException e) {
+			// nothing to do
+		}
+        
+        MessageList list = new MessageList();
+        set.containsValue("15 EUR", Datatype.MONEY, list, null, null);
+        assertTrue(list.containsErrorMsg());
+        
+        list.clear();
+        set.containsValue("10 EUR", Datatype.MONEY, list, null, null);
+        assertFalse(list.containsErrorMsg());
+    }
+    
+    public void testContainsValueSet() {
+    	EnumValueSet superset = new EnumValueSet();
+    	superset.addValue("1");
+    	superset.addValue("2");
+    	superset.addValue("3");
+    	
+    	EnumValueSet subset = new EnumValueSet();
+    	assertTrue(superset.containsValueSet(subset, Datatype.INTEGER));
+    	
+    	subset.addValue("1");
+    	assertTrue(superset.containsValueSet(subset, Datatype.INTEGER));
+
+    	subset.addValue("2");
+    	subset.addValue("3");
+    	assertTrue(superset.containsValueSet(subset, Datatype.INTEGER));
+
+    	MessageList list = new MessageList();
+    	superset.containsValueSet(subset, Datatype.INTEGER, list, null, null);
+    	assertFalse(list.containsErrorMsg());
+
+    	subset.addValue("4");
+    	assertFalse(superset.containsValueSet(subset, Datatype.INTEGER));
+
+    	list.clear();
+    	superset.containsValueSet(subset, Datatype.INTEGER, list, null, null);
+    	assertTrue(list.containsErrorMsg());
+    	
+        try {
+        	superset.containsValueSet(subset, null, list, null, null);
+        	fail();
+        }
+        catch (NullPointerException e) {
+			// nothing to do
+		}
+
     }
 
     public void testAddValue() {
@@ -124,8 +175,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         list.clear();
         set.validate(Datatype.STRING, list);
         assertEquals(2, list.getNoOfMessages());
-        String msg = list.getMessage(0).getText();
-        assertEquals("The value 2w is more than once in the value set!", msg);
+        assertEquals(list.getMessage(0).getCode(), EnumValueSet.MSGCODE_DUPLICATE_VALUE);
     }
 
     public void testSetElements() {

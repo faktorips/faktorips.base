@@ -800,11 +800,16 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
 				"datatypeDefinition");
 		IExtension[] extensions = point.getExtensions();
+		
+		// first, get all datatypes defined by the ips-plugin itself 
+		// to get them at top of the list...
 		for (int i = 0; i < extensions.length; i++) {
 			if (extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
 				createDatatypeDefinition(extensions[i]);
 			}
 		}
+		
+		// and second, get the rest.
 		for (int i = 0; i < extensions.length; i++) {
 			if (!extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
 				createDatatypeDefinition(extensions[i]);

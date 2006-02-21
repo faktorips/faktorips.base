@@ -23,6 +23,38 @@ import org.w3c.dom.Element;
 public abstract class ValueSet {
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "VALUESET-";
+
+    /**
+     * Validation message code to indicate that the value is not contained in the value set.
+     */
+    public final static String MSGCODE_VALUE_NOT_CONTAINED = MSGCODE_PREFIX + "ValueNotContained";
+
+    /**
+     * Validation message code to indicate that the value-subset is not of the correct type.
+     */
+    public final static String MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING = MSGCODE_PREFIX + "TypeOfValueSetNotMatching";
+
+    /**
+     * Validation message code to indicate that the value could not be parsed.
+     */
+    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable";
+    
+    /**
+     * Validation message code to indicate that the lower bound of the subset is less than the lower
+     * bound of this value set. 
+     */
+    public final static String MSGCODE_NOT_COMPARABLE = MSGCODE_PREFIX + "NotComparable";
+    
+    /**
+     * Validation message code to indicate that the lower bound of the subset is less than the lower
+     * bound of this value set. 
+     */
+    public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype";
+    
+    /**
      * Name of the xml element used in the xml conversion.
      */
     public final static String XML_TAG = "ValueSet";
@@ -90,20 +122,24 @@ public abstract class ValueSet {
      * 
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
-    public abstract boolean contains(String value, ValueDatatype datatype);
-    // TODO refactor. umbennenen in containsValue
+    public abstract boolean containsValue(String value, ValueDatatype datatype);
 
     /**
-     * Returns a message if the value set doesn't contain the indicated value, otherwise <code>null</code>.
+     * Returns <code>true</code> it the value set contains the indicated value, otherwise <code>false</code>.
+     * A message is stored in the message list, if the value set doesn't contain the indicated value.
      * 
      * @param value The value to check.
      * @param datatype The datatype to parse the string values to 'real' values.
-     * 
+     * @param list The list to add messages, if any. Can be null if no messages are needed.
+     * @param invalidObject The object the message refers to. Ignored if <code>list</code>
+     *                      is <code>null</code>. Can be <code>null</code> itself. 
+     * @param invalidProperty The property of the object the message refers to. Ignored if 
+     *                        <code>list</code> or <code>invalidObject</code> is <code>null</code>.
+     *                        Can be <code>null</code> itself.
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
-    // TODO refactor. MessageList als Parameter. returntype boolean
-    
-    public abstract Message containsValue(String value, ValueDatatype datatype);
+    public abstract boolean containsValue(String value, ValueDatatype datatype,
+			MessageList list, Object invalidObject, String invalidProperty);
     
     /**
      * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
@@ -113,7 +149,7 @@ public abstract class ValueSet {
      * 
      * @throws NullPointerException if subset or datatype is <code>null</code>. 
      */
-    // TODO public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype);
+    public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype);
     
     /**
      * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
@@ -121,10 +157,16 @@ public abstract class ValueSet {
      * @param subset The valueset to check.
      * @param datatype The datatype to parse the valueset's values to 'real' values.
      * @param list The list to which a message is added in case the given valueset is not a subset of this valueset. 
+     * @param invalidObject The object the message refers to. Ignored if <code>list</code>
+     *                      is <code>null</code>. Can be <code>null</code> itself. 
+     * @param invalidProperty The property of the object the message refers to. Ignored if 
+     *                        <code>list</code> or <code>invalidObject</code> is <code>null</code>.
+     *                        Can be <code>null</code> itself.
      * 
      * @throws NullPointerException if subset or datatype is <code>null</code>. 
      */
-    // TODO public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype, MessageList list);
+    public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype, 
+    		MessageList list, Object invalidObject, String invalidProperty);
 
     /**
      * Validates the value set.
@@ -145,4 +187,29 @@ public abstract class ValueSet {
     
     protected abstract Element createSubclassElement(Document doc);
 
+    /**
+     * Creates a new message with severity ERROR and adds the new message to the given message list.
+     * 
+     * @param list The message list to add the new message to 
+     * @param id The message code
+     * @param text The message text
+     * @param invalidObject The object this message is for. Can be null if no relation to an object exists.
+     * @param invalidProperty The name of the property the message is created for. Can be null.
+     */
+    protected void addMsg(MessageList list, String id, String text, Object invalidObject, String invalidProperty) {
+    	Message msg;
+    	int severity = Message.ERROR;
+    	
+    	if (invalidObject == null) {
+    		msg = new Message(id, text, severity);
+    	}
+    	else if (invalidProperty == null) {
+    		msg = new Message(id, text, severity, invalidObject);
+    	}
+    	else {
+    		msg = new Message(id, text, severity, invalidObject, invalidProperty);
+    	}
+    	
+    	list.add(msg);
+    }
 }

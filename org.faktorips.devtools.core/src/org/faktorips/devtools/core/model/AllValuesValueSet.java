@@ -1,7 +1,6 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,20 +52,34 @@ public class AllValuesValueSet extends ValueSet {
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.model.ValueSet#contains(java.lang.String, org.faktorips.datatype.ValueDatatype)
+     * @see org.faktorips.devtools.core.model.ValueSet#containsValue(java.lang.String, org.faktorips.datatype.ValueDatatype)
      */
-    public boolean contains(String value, ValueDatatype datatype) {
+    public boolean containsValue(String value, ValueDatatype datatype) {
         return true;
     }
 
     /**
      * Overridden IMethod.
      */
-    public Message containsValue(String value, ValueDatatype datatype) {
-        return null;
+    public boolean containsValue(String value, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
+        return true;
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public boolean containsValueSet(ValueSet subset, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
+		return true;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean containsValueSet(ValueSet subset, ValueDatatype datatype) {
+		return true;
+	}
+
+	/**
      * Overridden IMethod.
      *
      * @see org.faktorips.devtools.core.model.ValueSet#copys()

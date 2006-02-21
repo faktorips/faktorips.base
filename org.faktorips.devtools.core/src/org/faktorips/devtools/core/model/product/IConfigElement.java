@@ -36,60 +36,46 @@ public interface IConfigElement extends IIpsObjectPart {
      * formula's datatype can't be checked against it.
      */
     public final static String MSGCODE_UNKNOWN_DATATYPE_FORMULA = MSGCODE_PREFIX + "UnknownDatatypeFormula";
-    // TODO test case
     
     /**
      * Validation message code to indicate that the attribute's datatype can't be found and so the 
      * value can't be parsed.
      */
     public final static String MSGCODE_UNKNOWN_DATATYPE_VALUE = MSGCODE_PREFIX + "UnknownDatatypeValue";
-    // TODO test case
 
     /**
      * Validation message code to indicate that the formula's datatype is not compatible with the 
      * one defined by the attribute.
      */
     public final static String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype";
-    // TODO test case
     
     /**
      * Validation message code to indicate that the datatype is not a value datatype.
      */
-    public final static String MSGCODE_NOT_A_VALUEDATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype";
-    // TODO test case
+    public final static String MSGCODE_NOT_A_VALUEDATATYPE = MSGCODE_PREFIX + "NotAValudDatatype";
 
     /**
      * Validation message code to indicate that the datatype is invalid. (E.g. the definition
      * of a dynamic datatype can be wrong.)
      */
     public final static String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype";
-    // TODO test case
+    // TODO test case - untestable at the moment (20.02.2006) because no datatype implements validate()
 
     /**
      * Validation message code to indicate that the value can't be parsed, it is not an instance
      * of the datatype
      */
     public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable";
-    // TODO test case
 
     /**
      * Validation message code to indicate that the value is not contained in the valueset.
      */
     public final static String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet";
-    // TODO test case
-    
-    /**
-     * Validation message code to indicate that the valueset is not a subset of the valueset defined
-     * in the model.
-     */
-    public final static String MSGCODE_VALUESET_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetNotASubset";
-    // TODO implement, testcase
     
     /**
      * Validation message code to indicate that formula is missing.
      */
     public final static String MSGCODE_MISSING_FORMULA = MSGCODE_PREFIX + "MissingFormula";
-    // TODO implement, testcase
 
     /**
      * Returns the product component generation this config element belongs to.

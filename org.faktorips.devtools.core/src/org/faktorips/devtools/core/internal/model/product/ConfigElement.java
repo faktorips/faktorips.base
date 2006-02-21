@@ -197,7 +197,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
 				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
-			validateValue(attribute.getDatatype(), list);
+			validateValue(attribute, list);
 		} else {
 			validateFormula(attribute, list);
 		}
@@ -205,8 +205,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 	private void validateFormula(IAttribute attribute, MessageList list)
 			throws CoreException {
-		// todo: fehlende formel ist ein fehler
 		if (StringUtils.isEmpty(value)) {
+			list.add(new Message(MSGCODE_MISSING_FORMULA, "No formula defined.", Message.ERROR, this, PROPERTY_VALUE));
 			return;
 		}
 		ExprCompiler compiler = getExprCompiler();
@@ -242,8 +242,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 				text, Message.ERROR, this, PROPERTY_VALUE));
 	}
 
-	private void validateValue(String datatype, MessageList list)
+	private void validateValue(IAttribute attribute, MessageList list)
 			throws CoreException {
+		String datatype = attribute.getDatatype();
 		Datatype datatypeObject = getIpsProject().findDatatype(datatype);
 		if (datatypeObject == null) {
 			if (!StringUtils.isEmpty(value)) {
@@ -280,13 +281,22 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 						PROPERTY_VALUE));
 				return;
 			}
-			// TODO, validate valueset, test case
-			if (!valueSet.contains(value, valueDatatype)) {
+			
+			valueSet.validate(valueDatatype, list);
+			if (list.containsErrorMsg()) {
+				return;
+			}
+			
+			ValueSet modelValueSet = attribute.getValueSet();
+			if (!modelValueSet.containsValueSet(valueSet, valueDatatype, list, this, null)) {
+				return;
+			}
+
+			if (!valueSet.containsValue(value, valueDatatype)) {
 				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, "The value " + value
 						+ " is no member of the specified valueSet!",
 						Message.ERROR, this, PROPERTY_VALUE));
 			}
-			// TODO, validate is subset of model valueset, test case
 		}
 	}
 

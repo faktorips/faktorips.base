@@ -291,7 +291,7 @@ public class Attribute extends Member implements IAttribute {
                         return;
                     }
                     if (valueSet != null) {
-                        if (valueSet.contains(defaultValue, valueDatatype) == false) {
+                        if (valueSet.containsValue(defaultValue, valueDatatype) == false) {
                             result.add(new Message("", "The default value " + defaultValue
                                     + " is no member of the specified valueSet!", Message.ERROR, this,
                                     PROPERTY_DEFAULT_VALUE));

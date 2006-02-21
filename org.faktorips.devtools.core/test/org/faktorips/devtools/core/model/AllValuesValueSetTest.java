@@ -26,7 +26,7 @@ public class AllValuesValueSetTest extends XmlAbstractTestCase {
 	
 	public void testContains () {
 	    AllValuesValueSet allValues = new AllValuesValueSet();
-	    assertTrue(allValues.contains("abc", Datatype.DECIMAL));
+	    assertTrue(allValues.containsValue("abc", Datatype.DECIMAL));
  	}
 	
 }

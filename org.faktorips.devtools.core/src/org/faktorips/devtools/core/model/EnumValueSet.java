@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -17,10 +18,21 @@ import org.w3c.dom.NodeList;
  * EnumValueEnumSet realizes a Valueset of Strings dupplicate values are not prohibeted, but in the responsibility of te
  * user of the class.
  * 
- * @author Andy Rösch
+ * @author Andy Rï¿½sch
  */
 public class EnumValueSet extends ValueSet {
 
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "ENUMVALUESET-";
+
+    /**
+     * Validation message code to indicate that a value in this value set is duplicate.
+     */
+    public final static String MSGCODE_DUPLICATE_VALUE = MSGCODE_PREFIX + "DuplicateValue";
+
+    
     public static final String XML_TAG = "Enum";
     
     private static final String XML_VALUE = "Value";
@@ -98,16 +110,24 @@ public class EnumValueSet extends ValueSet {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.ValueSet#contains(java.lang.String)
+     * {@inheritDoc}
      */
-    public boolean contains(String value, ValueDatatype datatype) {
-        if (datatype==null) {
-            return false;
-        }
+    public boolean containsValue(String value, ValueDatatype datatype) {
+    	return containsValue(value, datatype, null, null, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsValue(String value, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
         if (!datatype.isParsable(value)) {
+        	if (list != null) {
+        		String msg = "Value " + value + " is not parsable by datatype " + datatype.getName();
+        		addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
+        	}
             return false;
         }
+        
         Object val = datatype.getValue(value);
         for (Iterator it=elements.iterator(); it.hasNext(); ) {
             String each = (String)it.next();
@@ -118,21 +138,42 @@ public class EnumValueSet extends ValueSet {
                 }
             }
         }
-        return false;
-    }
-
-    /**
-     * Overridden.
-     */
-    public Message containsValue(String value, ValueDatatype datatype) {
-        if (!contains(value, datatype)) {
-            String text = "The value is not included in the enumeration.";
-            return Message.newError("", text);
+        if (list != null) {
+        	String text = "The value is not included in the enumeration.";
+        	addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, invalidProperty);
         }
-        return null;
+        return false;
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public boolean containsValueSet(ValueSet subset, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
+    	if (!(subset instanceof EnumValueSet)) {
+    		if (list != null) {
+    			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, "The subset is not an enum value set", invalidObject, invalidProperty);
+    		}
+    		return false;
+    	}
+    	
+    	EnumValueSet enumSubset = (EnumValueSet)subset;
+    	String[] subsetValues = enumSubset.getElements();
+    	
+    	boolean contains = true;
+    	for (int i = 0; i < subsetValues.length && contains; i++) {
+			contains = this.containsValue(subsetValues[i], datatype, list, invalidObject, invalidProperty);
+		}
+		return contains;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean containsValueSet(ValueSet subset, ValueDatatype datatype) {
+		return containsValueSet(subset, datatype, null, null, null);
+	}
+
+	/**
      * Adds the value to the set.
      */
     public void addValue(String val) {
@@ -216,8 +257,8 @@ public class EnumValueSet extends ValueSet {
         for (int i = 0; i < numOfValues; i++) {
             String value = (String)elements.get(i);
             if (!datatype.isParsable(value)) {
-                String msg = "The value " + value + " is not a " + datatype.getName() + "!";
-                list.add(new Message("", msg, Message.ERROR, value));
+                String msg = NLS.bind("The value {0} is not a {1}.", value, datatype.getName());
+                list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, value));
             }
         }
         for (int i = 0; i < numOfValues - 1; i++) {
@@ -225,9 +266,9 @@ public class EnumValueSet extends ValueSet {
             for (int j = i + 1; j < numOfValues; j++) {
                 String valueOfj = (String)elements.get(j);
                 if (valueOfi.equals(valueOfj)) {
-                    String msg = "The value " + valueOfi + " is more than once in the value set!";
-                    list.add(new Message("", msg, Message.ERROR, valueOfi));
-                    list.add(new Message("", msg, Message.ERROR, valueOfj));
+                    String msg = NLS.bind("The value {0} is more than once in the value set.", valueOfi);
+                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, valueOfi));
+                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, valueOfj));
                 }
             }
         }
