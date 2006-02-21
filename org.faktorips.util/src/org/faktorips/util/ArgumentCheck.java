@@ -16,7 +16,7 @@ import org.w3c.dom.Node;
  * 
  * @author Jan Ortmann
  */
-public class ArgumentCheck {
+public class ArgumentChecks {
 
     /**
      * Checks if the indicated argument is not null.
