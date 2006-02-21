@@ -3,7 +3,9 @@ So conceptually a value set knows excactly one value datatype.
 However as FaktorIPS is an IDE, this value datatype is not fixed.
 For example when editing an attribute the user can change the datatype or
 the datatype can even be unavailable because the user made a spelling mistake.
-??? Alternativ könnten wir einem ValueDatatypeProvider einführen. Was meint ihr ???
+Currently this problem is solved by passing the ValueDatatype to all
+methods that require access to it. We are currently thinking of introducing
+a ValueDatatypeProvider via that the ValueSet can access the type.
 
 AllValuesValueSet represents all values defined by the datatype. If the datatype is an Integer, these 
 are all integers, if it is the enum datatype gender, then it is male and female.
