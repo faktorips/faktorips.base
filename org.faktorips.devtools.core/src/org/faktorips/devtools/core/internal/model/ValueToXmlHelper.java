@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.faktorips.util.XmlUtil;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
 /**
@@ -42,7 +43,16 @@ public class ValueToXmlHelper {
 		if (Boolean.valueOf(valueEl.getAttribute("isNull")).equals(Boolean.TRUE)) {
 			return null;
 		}
-		return XmlUtil.getFirstCDataSection(valueEl).getData();
+		CDATASection cdata = XmlUtil.getFirstCDataSection(valueEl);
+		
+		// if no cdata-section was found, the value stored was an empty string. In this
+		// case, the cdata-section get lost during transformation of the xml-document
+		// to a string.
+		String result = "";
+		if (cdata != null) {
+			result = cdata.getData();
+		}
+		return result;
 	}
 	
 	private ValueToXmlHelper() {
