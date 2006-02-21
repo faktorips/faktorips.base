@@ -87,8 +87,8 @@
 	<!-- perform Junit Tests -->
 	    <target name="test" depends="compile">
 		
-	    	<junit fork="yes" haltonerror="yes" filtertrace="off" timeout="3600" printsummary="withOutAndErr"  showoutput="yes">
-	    		<formatter type="xml" usefile="false"/>
+	    	<junit fork="yes" haltonerror="yes"  timeout="3600" >
+	    		<formatter type="xml" />
 	    		<classpath>
 	    		    <pathelement location="${classes}"/>
 	    		    <pathelement path="${java.class.path}"/> 
