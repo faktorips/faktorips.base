@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.Range;
@@ -116,7 +117,7 @@ public class ValueSetEditControl extends ControlComposite {
                             // until now the value set was AllValues, now the user has selected enumeration
                             // the datatype itself is an enum type
                             // => so default the enum value set with the values from the type.
-                            enumControl.setValueSet(new EnumValueSet((DefaultEnumType )datatype));
+                            enumControl.setValueSet(EnumValueSet.createFromEnumDatatype((EnumDatatype)datatype));
                         }
                         topControl = enumControl;
                         valueSetChangeListener.valueSetChanged(enumControl.getEnumValueSet()); // fires a change event

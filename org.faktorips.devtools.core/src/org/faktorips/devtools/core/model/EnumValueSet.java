@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -31,6 +32,20 @@ public class EnumValueSet extends ValueSet {
      * Validation message code to indicate that a value in this value set is duplicate.
      */
     public final static String MSGCODE_DUPLICATE_VALUE = MSGCODE_PREFIX + "DuplicateValue";
+
+    /**
+     * Creates a new enum value set with all values from the given enum datatype.
+     * 
+     * @throws NullPointerException if datatype is <code>null</code>.
+     */
+	public final static EnumValueSet createFromEnumDatatype(EnumDatatype datatype) {
+        EnumValueSet newSet = new EnumValueSet();
+		String[] valueIds = datatype.getAllValueIds();
+        for (int i = 0; i < valueIds.length; i++) {
+            newSet.addValue(valueIds[i]);
+        }
+		return newSet;
+	}
 
     
     public static final String XML_TAG = "Enum";

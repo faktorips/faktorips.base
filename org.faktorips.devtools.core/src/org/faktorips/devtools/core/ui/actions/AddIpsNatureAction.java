@@ -1,7 +1,9 @@
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.actions;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -11,6 +13,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -60,6 +63,20 @@ public class AddIpsNatureAction extends ActionDelegate {
 			ErrorDialog.openError(getShell(), "Error creating IPS project.", null, status);
 			return;
 		}
+		IProjectDescription description;
+		try {
+			description = javaProject.getProject().getDescription();
+			String[] natures = description.getNatureIds();
+			for (int i = 0; i < natures.length; i++) {
+				if (natures[i].equals(IIpsProject.NATURE_ID)) {
+					MessageDialog.openInformation(getShell(), "Add FaktorIPS nature", "The project has already got the FaktorIPS nature.");
+					return;
+				}
+			}
+		} catch (CoreException e1) {
+			IpsPlugin.log(e1);
+			return;
+		}
 		try {
 			IFolder javaSrcFolder = javaProject.getProject().getFolder("src");
 			IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
@@ -67,7 +84,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 				if (roots[i].getKind()==IPackageFragmentRoot.K_SOURCE ) {
 					if (roots[i].getCorrespondingResource() instanceof IProject) {
 						IpsStatus status = new IpsStatus("Java project must keep it's source files in folders. Keeping the Java sourcec files in the project iself, is not supported.");
-						ErrorDialog.openError(getShell(), "Error creating IPS project.", null, status);
+						ErrorDialog.openError(getShell(), "Add FaktorIPS nature", null, status);
 						return;
 					}
 					javaSrcFolder = (IFolder)roots[i].getCorrespondingResource();	
@@ -90,18 +107,23 @@ public class AddIpsNatureAction extends ActionDelegate {
 			ipsProject.setIpsObjectPath(path);
 		} catch (CoreException e) {
 			IpsStatus status = new IpsStatus("Couldn't create IPS project based on Java project " + javaProject, e);
-			ErrorDialog.openError(getShell(), "Error creating IPS project.", null, status);
+			ErrorDialog.openError(getShell(), "Add FaktorIPS nature", null, status);
 			IpsPlugin.log(e);
 		}
 	}
 	
 	private void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
 		IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-		String[] ipsVariables = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES;
-		IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + ipsVariables.length];
+		int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN.length;
+		IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
 		System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-		for (int i = 0; i < ipsVariables.length; i++) {
-			entries[oldEntries.length+i] = JavaCore.newVariableEntry(new Path(ipsVariables[i]), null, null);
+		for (int i = 0; i < numOfJars; i++) {
+			Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN[i]);
+			Path srcZipPath = null;
+			if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i])) {
+				srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i]);
+			}
+			entries[oldEntries.length+i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
 		}
 		javaProject.setRawClasspath(entries, null);
 	}

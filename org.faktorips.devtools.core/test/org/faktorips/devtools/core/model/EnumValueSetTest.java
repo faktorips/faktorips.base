@@ -1,6 +1,8 @@
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.util.XmlAbstractTestCase;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -10,7 +12,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * @author Andy R�sch
  */
 public class EnumValueSetTest extends XmlAbstractTestCase {
     
@@ -190,4 +191,93 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         assertEquals(2, set.getElements().length);
     }
 
+    public void testCreateFromEnumDatatype() {
+    	EnumValueSet set = EnumValueSet.createFromEnumDatatype(new EnumDatatypePaymentMode());
+        String[] elements = set.getElements();
+        assertEquals(2, elements.length);
+        assertEquals("annual", elements[0]);
+        assertEquals("monthly", elements[1]);
+    }
+
+    
+    class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDatatype {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String[] getAllValueIds() {
+			return new String[]{"annual", "monthly"};
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Datatype getWrapperType() {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean isParsable(String value) {
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Object getValue(String value) {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String valueToString(Object value) {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean isNull(Object value) {
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String getName() {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String getQualifiedName() {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean isPrimitive() {
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean isValueDatatype() {
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String getJavaClassName() {
+			return null;
+		}
+    	
+    }
 }
