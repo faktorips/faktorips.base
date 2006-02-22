@@ -137,7 +137,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
     private class ChangeListener implements IResourceChangeListener {
         
         public void resourceChanged(IResourceChangeEvent event) {
-        	System.out.println("resourceChanged!");
         	if (event.getType()==IResourceChangeEvent.PRE_BUILD && event.getBuildKind()==IncrementalProjectBuilder.CLEAN_BUILD) {
         		return;
         	}
