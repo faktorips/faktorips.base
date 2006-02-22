@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsCutAction;
@@ -101,9 +102,11 @@ public class RelationsSection extends IpsSection {
 			GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 			tree.setLayoutData(layoutData);
 
+			RelationsLabelProvider labelProvider = new RelationsLabelProvider();
+
 			treeViewer = new TreeViewer(tree);
 			treeViewer.setContentProvider(new RelationsContentProvider());
-			treeViewer.setLabelProvider(new RelationsLabelProvider());
+			treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider));
 			treeViewer.setInput(generation);
 			treeViewer.addSelectionChangedListener(new SelectionChangedListener());
 			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()}, new DropListener());
@@ -112,7 +115,7 @@ public class RelationsSection extends IpsSection {
 			treeViewer.expandAll();
 			treeViewer.addDoubleClickListener(new DefaultDoubleclickListener(treeViewer));
 	        buildContextMenu();
-	
+	        
 			Composite kardinalityRootPane = toolkit.createComposite(relationRootPane);
 			layout = new GridLayout(1, false);
 			layout.marginHeight = 1;
@@ -342,7 +345,7 @@ public class RelationsSection extends IpsSection {
 				}
 				else if (type instanceof IProductCmptRelation) {
 					newRelation(target, ((IProductCmptRelation)type).findProductCmptTypeRelation(), (IProductCmptRelation)type);
-					}
+				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
