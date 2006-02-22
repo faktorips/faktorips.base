@@ -59,7 +59,7 @@
 	
 	<!--Compile -->
         <target name="compile" depends="init">
-			<javac  srcdir="${src}" destdir="${classes}" classpathref="classpath"/> 
+			<javac encoding="UTF-8" srcdir="${src}" destdir="${classes}" classpathref="classpath"/> 
         	
         	<copy todir="${classes}">
         	    <fileset dir="${test_src}">
@@ -76,7 +76,7 @@
         	      <include name="**/*.ipsproduct" />
         	    </fileset>
         	</copy>
-        	<javac srcdir="${test_src}" destdir="${classes}" classpathref="classpath" />
+        	<javac encoding="UTF-8" srcdir="${test_src}" destdir="${classes}" classpathref="classpath" />
         </target>
 
 	
