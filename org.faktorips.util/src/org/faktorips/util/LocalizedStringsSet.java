@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  * Example:
  * <p>
  * In the message "The sum insured must be at least {0}." the sum insured
- * must be inserted at runtime depending on the chosen product.
+ * must be inserted at runtime depending on the chosen product. 
  */
 public class LocalizedStringsSet {
 
