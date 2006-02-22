@@ -249,6 +249,11 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         newRel.delete();
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
+        
+        generation.getProductCmpt().setPolicyCmptType("");
+        ml = generation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
+        
     }
 
     public void testNewPart() {

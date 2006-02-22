@@ -26,7 +26,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * In both cases the property part of the ObjectProperty is empty.
      */
     public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations";
-	//  TODO implement, testcase, editor
+	//  TODO editor should show this error
     
     /**
      * Validation message code to indicate that the generation contains more 
@@ -39,8 +39,14 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * In both cases the property part of the ObjectProperty is empty.
      */
     public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations";
-	//  TODO implement, testcase, editor
+	//  TODO editor should show this error
 
+    /**
+     * Validation message code to indicate that the template for the product this generation
+     * is for could not be found.
+     */
+    public final static String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate";
+    
     /**
      * Returns the product component this generation belongs to.
      */

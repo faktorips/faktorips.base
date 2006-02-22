@@ -352,7 +352,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			((ProductCmptRelation)relations.get(i)).validate(list);
 		}
         
-		IRelation[] relationTypes = getProductCmpt().findPolicyCmptType().getRelations();
+        IPolicyCmptType type = getProductCmpt().findPolicyCmptType();
+        
+        // no type information available, so no further validation possible
+        if (type == null) {
+        	list.add(new Message(MSGCODE_NO_TEMPLATE, "Template not found", Message.ERROR, this));
+        	return;
+        }
+        
+		IRelation[] relationTypes = type.getRelations();
 		for (int i = 0; i < relationTypes.length; i++) {
 			IProductCmptRelation[] relations = getRelations(relationTypes[i].getTargetRoleSingularProductSide());
 			
