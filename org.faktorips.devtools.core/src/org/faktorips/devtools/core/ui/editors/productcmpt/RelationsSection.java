@@ -3,7 +3,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -17,6 +20,7 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
@@ -32,6 +36,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -65,6 +73,7 @@ public class RelationsSection extends IpsSection {
 	private TreeViewer treeViewer;
 	private IEditorSite site;
 	private boolean fGenerationDirty;
+    private IProductCmptRelation toMove;
 
 	/**
 	 * Creates a new RelationsSection which displays relations for the given generation.
@@ -109,7 +118,7 @@ public class RelationsSection extends IpsSection {
 			treeViewer.setLabelProvider(new MessageCueLabelProvider(labelProvider));
 			treeViewer.setInput(generation);
 			treeViewer.addSelectionChangedListener(new SelectionChangedListener());
-			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()}, new DropListener());
+			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance(), FileTransfer.getInstance()}, new DropListener());
 			treeViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()}, new DragListener(treeViewer));
 			treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
 			treeViewer.expandAll();
@@ -274,7 +283,6 @@ public class RelationsSection extends IpsSection {
 		}
     }
     
-    private IProductCmptRelation toMove;
     /**
      * Listener for Drop-Actions to create new relations.
      * 
@@ -303,6 +311,7 @@ public class RelationsSection extends IpsSection {
 
 		public void drop(DropTargetEvent event) {
 			Object insertAt = null;
+			// find the position to insert/move to
 			if (event.item != null && event.item.getData() != null) {
 				insertAt = event.item.getData();
 			}
@@ -324,7 +333,19 @@ public class RelationsSection extends IpsSection {
 				move(insertAt);
 			}
 			else {
-				insert((String)event.data, insertAt);
+				if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+					// we have a file transfer
+					String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
+					for (int i = 0; i < filenames.length; i++) {
+						IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filenames[i]));
+						insert(file, insertAt);
+					}
+				}
+				else if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
+					// we have a text transfer
+					String data = (String)TextTransfer.getInstance().nativeToJava(event.currentDataType);
+					insert(data, insertAt);
+				}
 			}
 		}
 
@@ -338,13 +359,45 @@ public class RelationsSection extends IpsSection {
 			}
 		}
 		
-		private void insert(String target, Object type) {
-			try {
-				if (type instanceof IProductCmptTypeRelation) {
-					newRelation(target, ((IProductCmptTypeRelation)type));
+		/**
+		 * Insert a new relation to the product component contained in the given file.
+		 * If the file is <code>null</code> or does not contain a product component, 
+		 * the insert is aborted.
+		 * 
+		 * @param file The file describing a product component (can be null, no insert
+		 * takes place then).
+		 * @param insertAt The relation or relation type to insert at.
+		 */
+		private void insert(IFile file, Object insertAt) {
+			if (file == null) {
+				return;
+			}
+			
+			IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+			if (element instanceof IIpsSrcFile && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+				try {
+					insert(((IProductCmpt)((IIpsSrcFile)element).getIpsObject()).getQualifiedName(), insertAt);
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
 				}
-				else if (type instanceof IProductCmptRelation) {
-					newRelation(target, ((IProductCmptRelation)type).findProductCmptTypeRelation(), (IProductCmptRelation)type);
+			}
+		}
+
+		/**
+		 * Inserts a new relation to the product component identified by the given target name.
+		 * @param target The qualified name for the target product component
+		 * @param insertAt The product component relation or product component type relation 
+		 * the new relations has to be inserted. The type of the new relation is determined from
+		 * this object (which means the new relation has the same product component relation type
+		 * as the given one or is of the given type).
+		 */
+		private void insert(String target, Object insertAt) {
+			try {
+				if (insertAt instanceof IProductCmptTypeRelation) {
+					newRelation(target, ((IProductCmptTypeRelation)insertAt));
+				}
+				else if (insertAt instanceof IProductCmptRelation) {
+					newRelation(target, ((IProductCmptRelation)insertAt).findProductCmptTypeRelation(), (IProductCmptRelation)insertAt);
 				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
