@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
  * when the check passes successfully. 
  * 
  * @author Jan Ortmann   
- */
+ */  
 public class ArgumentCheck {
 
     /**
