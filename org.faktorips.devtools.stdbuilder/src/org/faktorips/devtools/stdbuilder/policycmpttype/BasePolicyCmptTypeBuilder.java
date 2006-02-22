@@ -7,7 +7,6 @@ import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -68,25 +67,4 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
     
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateCodeForRelation(IRelation relation,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected void generateCodeForContainerRelations(IRelation containerRelation,
-            IRelation[] subRelations,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        // TODO Auto-generated method stub
-
-    }
-
 }

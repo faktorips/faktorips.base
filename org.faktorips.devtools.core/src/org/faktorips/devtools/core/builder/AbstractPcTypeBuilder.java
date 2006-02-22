@@ -204,7 +204,10 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
 
     protected abstract void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException;
 
-    protected final void generateCodeForAttributes(JavaCodeFragmentBuilder memberVarsBuilder,
+    /*
+     * Generates the code for all attributes.
+     */
+    private void generateCodeForAttributes(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IAttribute[] attributes = getPcType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
@@ -241,6 +244,9 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
+    /*
+     * Generates the code for all relations.
+     */
     private void generateCodeForRelations(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         createContainerRelationToSubRelationsMap();

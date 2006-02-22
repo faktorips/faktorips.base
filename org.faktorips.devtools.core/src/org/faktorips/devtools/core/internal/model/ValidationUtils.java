@@ -15,7 +15,9 @@ import org.faktorips.util.message.ObjectProperty;
 
 
 /**
- *
+ * A collection of helper methods for validating model objects.
+ * 
+ * @author Jan Ortmann
  */
 public class ValidationUtils {
     

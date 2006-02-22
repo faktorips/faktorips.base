@@ -65,7 +65,9 @@ public class AttributesSection extends SimpleIpsPartsSection {
          * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
          */ 
         protected IIpsObjectPart newIpsPart() {
-            return getPcType().newAttribute();
+            IAttribute a = getPcType().newAttribute();
+            a.setProductRelevant(getPcType().isConfigurableByProductCmptType());
+            return a;
         }
 
         /**

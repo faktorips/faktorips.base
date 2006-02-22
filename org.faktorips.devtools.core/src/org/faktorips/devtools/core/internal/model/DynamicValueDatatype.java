@@ -19,8 +19,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.util.StringUtil;
-import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Element;
 
 /**

@@ -27,15 +27,28 @@ public interface IRelation extends IIpsObjectPart {
     public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide";
     public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide";
     
-    // type constant for the Java field in the java policy component type impl and the product component type impl.
-    public final static int JAVA_PCTYPE_FIELD = 0;
-    public final static int JAVA_PRODUCTCMPT_FIELD = 1;
-    
-    // type constants for corresponding Java methods
-    // 1. max cardinality is 1
-    
+
 	public static final String CARDINALITY_ONE = "1";
 	public static final String CARDINALITY_MANY = "*";
+
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "PolicyCmptTypeRelation-";
+    
+    /**
+     * Validation message code to indicate that an relation implementing a container relation
+     * must have the same value for the product relevant property as it's container relation.
+     */
+    public final static String MSGCODE_IMPLEMENTATION_MUST_HAVE_SAME_PRODUCT_RELEVANT_VALUE = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue";
+    // TODO implement, test case
+	
+    /**
+     * Validation message code to indicate that a reverse composition has a max cardinality greater
+     * than 1 (it should be 1).
+     */
+    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue";
+    // TODO implement, test case
     
     /**
      * Returns the policy component type this relation belongs to.

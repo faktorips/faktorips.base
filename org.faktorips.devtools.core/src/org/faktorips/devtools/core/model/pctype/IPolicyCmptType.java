@@ -40,11 +40,23 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public final static String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration";
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "POLICYCMPTTYPE-";
+
+    /**
      * Validation message code to indicate that an abstract method exists in the type's supertype
      * hierarchy that must be overriden in the conrete type.
      */
-    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = "PCTYPE-MustOverrideAbstractMethod";
+    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod";
     
+    /**
+     * Validation message code to indicate that an abstract relation exists in the type's supertype
+     * hierarchy that must be implemented, or the type must also be abstract.
+     */
+    public final static String MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION = MSGCODE_PREFIX + "MustImplementAbstractRelation";
+    // TODO implement, test case
+    	
     /**
      * Returns <code>true</code> if this class has a corresponding product component type,
      * otherwise <code>false</code>.

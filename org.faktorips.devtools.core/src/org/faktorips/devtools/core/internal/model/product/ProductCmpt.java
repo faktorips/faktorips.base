@@ -85,6 +85,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return new ProductCmptGeneration(this, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if (findPolicyCmptType()==null) {
@@ -154,4 +157,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	public IProductCmptStructure getStructure() {
 		return new ProductCmptStructure(this);
 	}
+	
+	
 }

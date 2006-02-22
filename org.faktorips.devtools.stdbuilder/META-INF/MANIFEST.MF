@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Stdbuilder Plug-in
+Bundle-Name: FaktorIPS-StandardBuilder
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder; singleton:=true
 Bundle-Version: 0.9.1
 Bundle-Activator: org.faktorips.devtools.stdbuilder.StdBuilderPlugin
-Bundle-Vendor: FaktorIPS-Devtools-StdBuilder
+Bundle-Vendor: FaktorZehn
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
