@@ -1,0 +1,31 @@
+<project name="org.faktorips.util" default="buildjar">
+
+	
+	<!-- classpath: insert dependend project libs here! -->
+	<path id="classpath">
+		<filelist dir="/var/lib/">
+				<file name="junit.jar"/>
+
+		</filelist>
+
+		<!-- devtools.core depends on org.faktorips.dtflcommon -->
+		<fileset dir="../../org.faktorips.dtflcommon/" >
+		    <patternset>
+		    		<include name="lib/*.jar" /> 
+		    		<include name="build/results/*.jar" />
+		    </patternset>
+		</fileset>
+		
+	</path>
+	
+	<!-- calls default-target of template-buildfile -->
+	<target name="buildjar"  >
+		<ant antfile="../../org.faktorips.build/build.xml" target="buildjar">
+			<property name="projectname" value="fl" />
+			<reference refid="classpath" torefid="classpath"/>
+		</ant>
+	</target>
+	
+
+	
+</project>
