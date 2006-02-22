@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controls.EnumValuesControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -157,7 +156,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         		
     			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
     			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
-    			EnumValuesControl evc = new EnumValuesControl(rootPane, toolkit, elements[i], this.getShell());
+    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell());
     			evc.setText(valueSet.toString());
     			this.editControls.add(evc.getTextControl());
     		}

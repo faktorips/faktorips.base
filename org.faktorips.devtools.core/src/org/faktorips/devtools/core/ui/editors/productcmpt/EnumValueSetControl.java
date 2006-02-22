@@ -1,10 +1,10 @@
-package org.faktorips.devtools.core.ui.controls;
+package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.productcmpt.DefaultsAndRangesEditDialog;
+import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 
 /**
  * Control to edit the values of an enum. A textfeld followed by a button is provided.
@@ -12,12 +12,12 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.DefaultsAndRangesEditD
  * 
  * @author Thorsten Guenther
  */
-public class EnumValuesControl extends TextButtonControl {
+public class EnumValueSetControl extends TextButtonControl {
 
 	IConfigElement configElement;
 	Shell shell;
 	
-	public EnumValuesControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell) {
+	public EnumValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell) {
 		super(parent, toolkit, "...", true, 15);
 		this.configElement = configElement;
 		this.shell = shell;
