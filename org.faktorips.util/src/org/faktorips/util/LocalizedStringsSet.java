@@ -73,7 +73,7 @@ public class LocalizedStringsSet {
 
     public String getString(String key, Object[] replacements) {
         return getString(key, Locale.getDefault(), replacements);
-    }
+    } 
     
     public String getString(String key, Object replacement) {
         return getString(key, Locale.getDefault(), replacement);
