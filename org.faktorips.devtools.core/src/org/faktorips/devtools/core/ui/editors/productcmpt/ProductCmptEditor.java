@@ -56,8 +56,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     public ProductCmptEditor() {
         super();
         IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new WorkingDateChangeListener());
-        enabledImage = IpsPlugin.getDefault().getImage("ProductCmpt.gif");
-        disabledImage = IpsPlugin.getDefault().getImage("lockedProductCmpt.gif");
+        enabledImage = IpsPlugin.getDefault().getImage("ProductCmpt.gif"); //$NON-NLS-1$
+        disabledImage = IpsPlugin.getDefault().getImage("lockedProductCmpt.gif"); //$NON-NLS-1$
     }
 
     /**

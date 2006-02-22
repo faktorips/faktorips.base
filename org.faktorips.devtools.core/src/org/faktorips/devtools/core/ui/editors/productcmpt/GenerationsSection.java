@@ -66,12 +66,12 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 	    	boolean select = generation.equals(editableGeneration);
 	    	if (!select) {
 	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
-	    		String title = Messages.bind("Show {0}?", genName);
+	    		String title = Messages.bind(Messages.GenerationsSection_titleShowGeneration, genName);
 	    		Object[] args = new Object[3];
 	    		args[0] = genName;
 	    		args[1] = generation.getName();
 	    		args[2] = IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
-	    		String message = Messages.bind("Die ausgewählte {0} hat ein Gültig-Ab-Datum ({1}), welches nicht mit dem aktuellen Arbeitsdatum ({2}) übereinstimmt. Wenn diese {0} angezeigt wird, kann sie nicht bearbeitet werden. Soll die {0} angezeigt werden?", args);	    		
+	    		String message = Messages.bind(Messages.GenerationsSection_msgShowGeneration, args);	    		
 	    		select = MessageDialog.openConfirm(page.getSite().getShell(), title, message);
 	    	}
 			if (select) {

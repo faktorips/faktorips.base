@@ -362,7 +362,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 				ObjectProperty prop1 = new ObjectProperty(this, null);
 				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
 				list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
-				System.out.println(msg);
 			}
 			
 			String maxCardinality = relationTypes[i].getMaxCardinality();
@@ -375,7 +374,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 					ObjectProperty prop1 = new ObjectProperty(this, null);
 					ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
 					list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
-					System.out.println(msg);
 				}
 			}
 		}
@@ -393,5 +391,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		}
 			
 		throw new IllegalArgumentException("Unknown part type" + partType);
-	}
+	}	
+
 }

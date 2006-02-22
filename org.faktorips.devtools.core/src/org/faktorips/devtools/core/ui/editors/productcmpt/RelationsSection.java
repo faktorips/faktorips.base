@@ -369,7 +369,7 @@ public class RelationsSection extends IpsSection {
 	        Object selected = ((IStructuredSelection)selectionProvider.getSelection()).getFirstElement();
 	        if (selected instanceof IProductCmptRelation) {
 	        	toMove = (IProductCmptRelation)selected;
-	        	event.data = "local";
+	        	event.data = "local"; //$NON-NLS-1$
 	        }
 		}
 

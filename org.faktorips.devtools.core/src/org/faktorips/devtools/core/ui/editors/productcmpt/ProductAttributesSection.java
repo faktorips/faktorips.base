@@ -1,12 +1,14 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -104,28 +106,47 @@ public class ProductAttributesSection extends IpsSection {
 		rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 		toolkit.getFormToolkit().paintBordersFor(rootPane);
 		
-		// create label and text control for the policy component type
-		// this product component is based on.
-		toolkit.createLabel(rootPane, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
+		// create label and text for the currently displayed generation
+		String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()); 
+		toolkit.createLabel(rootPane, generationConceptName);
 		this.generationText = toolkit.createText(rootPane);
 		this.generationText.setText(this.generation.getName());
 		this.generationText.setEnabled(false);
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+
+		// Create label and text to display the valid-to date
+		String text = NLS.bind(Messages.ProductAttributesSection_labelGenerationValidTo, generationConceptName);
+		toolkit.createLabel(rootPane, text);
+		Text validTo = toolkit.createText(rootPane);
+		GregorianCalendar date = generation.getValidTo();
+		String validToString;
+		if (date == null) {
+			validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
+		}
+		else {
+			validToString = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().format(date.getTime());
+		}
+		validTo.setText(validToString);
+		validTo.setEnabled(false);
+
 		
-		// create label and text for the currently displayed generation
+		// create label and text control for the policy component type
+		// this product component is based on.
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
 		this.pcTypeText = toolkit.createText(rootPane);
 		this.pcTypeText.setEnabled(false);
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 
+		
+		
 		createEditControls();
 		
 		IpsObjectUIController controller = new IpsObjectUIController(generation.getIpsObject());
 		controller.add(new TextField(pcTypeText), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
-		
 		uiMasterController.add(controller);
+		
 		uiMasterController.updateUI();
 	}
 
@@ -182,8 +203,8 @@ public class ProductAttributesSection extends IpsSection {
 			Datatype datatype = toDisplay.findPcTypeAttribute().findDatatype();
 			if (datatype.equals(Datatype.BOOLEAN)) {
 				Combo combo = toolkit.createCombo(rootPane);
-				combo.add("true");
-				combo.add("false");
+				combo.add(Messages.ProductAttributesSection_true);
+				combo.add(Messages.ProductAttributesSection_false);
 				combo.add(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
@@ -191,8 +212,8 @@ public class ProductAttributesSection extends IpsSection {
 			}
 			else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
 				Combo combo = toolkit.createCombo(rootPane);
-				combo.add("true");
-				combo.add("false");
+				combo.add(Messages.ProductAttributesSection_true);
+				combo.add(Messages.ProductAttributesSection_false);
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				editControls.add(combo);

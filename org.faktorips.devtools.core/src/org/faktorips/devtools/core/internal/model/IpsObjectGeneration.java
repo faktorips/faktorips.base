@@ -72,7 +72,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     public GregorianCalendar getValidFrom() {
         return validFrom;
     }
-
+    
     /** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.IIpsObjectGeneration#setValidFrom(java.util.GregorianCalendar)
@@ -150,4 +150,30 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 		updateSrcFile();
 		
 	}
+
+	/**
+     * {@inheritDoc}
+     */
+	public GregorianCalendar getValidTo() {
+		IIpsObjectGeneration[] generations = this.getTimedIpsObject().getGenerations();
+		
+		for (int i = 0; i < generations.length; i++) {
+			if (generations[i].getGenerationNo() == this.getGenerationNo()+1) {
+				GregorianCalendar date = generations[i].getValidFrom();
+				if (date != null) {
+					// make a copy to not modify the validfrom-date of the generation
+					date = (GregorianCalendar)date.clone();
+					
+					// reduce the valid-from date of the follow-up generation
+					// by one millisecond to avoid that two generations are valid
+					// at the same time. This generation is not valid at the time 
+					// the follow-up generation is valid from.
+					date.setTimeInMillis(date.getTimeInMillis() - 1);
+				}
+				return date;
+			}
+		}
+		return null;
+	}
+
 }

@@ -75,4 +75,23 @@ public class IpsObjectGenerationTest extends IpsObjectTestCase {
         assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
     }
 
+    public void testGetValidTo() {
+        generation.setValidFrom(new GregorianCalendar(2005, 1, 1));
+    	GregorianCalendar validTo = generation.getValidTo();
+    	assertNull(validTo);
+    	
+        IIpsObjectGeneration gen2 = timedPdo.newGeneration();    	
+    	validTo = generation.getValidTo();
+    	assertNull(validTo);
+    	
+    	GregorianCalendar date = new GregorianCalendar(2006, 1, 1);
+    	gen2.setValidFrom(date);
+    	
+    	validTo = generation.getValidTo();
+    	assertFalse(date.equals(validTo));
+
+    	date.setTimeInMillis(date.getTimeInMillis()-1);
+    	assertEquals(date, validTo);
+    }
+    
 }

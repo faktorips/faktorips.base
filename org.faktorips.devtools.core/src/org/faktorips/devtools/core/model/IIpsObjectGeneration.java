@@ -29,6 +29,12 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
     public GregorianCalendar getValidFrom();
     
     /**
+     * Returns the date this generations is no longer valid or null, if this generation
+     * is valid forever.
+     */
+	public GregorianCalendar getValidTo();
+
+    /**
      * Sets the new point in time from that on this generation contains
      * the object's data.
      * 

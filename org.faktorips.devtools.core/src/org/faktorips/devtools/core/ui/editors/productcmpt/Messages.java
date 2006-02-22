@@ -92,4 +92,17 @@ public class Messages extends NLS {
 	public static String ProductCmptEditor_title_GenerationMissmatch;
 
 	public static String RelationsContentProvider_msg_UnknownElementClass;
+
+	public static String GenerationsSection_titleShowGeneration;
+
+	public static String GenerationsSection_msgShowGeneration;
+
+	public static String ProductAttributesSection_labelGenerationValidTo;
+
+	public static String ProductAttributesSection_valueGenerationValidToUnlimited;
+
+	public static String ProductAttributesSection_true;
+
+	public static String ProductAttributesSection_false;
+
 }
