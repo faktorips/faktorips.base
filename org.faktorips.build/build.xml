@@ -86,15 +86,22 @@
 	<!-- perform Junit Tests -->
 	    <target name="test" depends="compile">
 		
-	    	<junit fork="yes" haltonerror="yes" filtertrace="off" timeout="3600" printsummary="withOutAndErr"  showoutput="yes">
-	    		<formatter type="xml" usefile="false"/>
+	    	<!-- delete previos junit-logging -->
+	    	<delete includeemptydirs="true" >
+	    		<fileset dir="${log}">
+	    			<include name="**/*.xml" />
+	    		</fileset>
+	    	</delete>
+	    	
+	    	<junit fork="yes" haltonerror="yes" timeout="3600" printsummary="withOutAndErr"   showoutput="yes">
+	    		<formatter type="xml" usefile="true"/>
 	    		<classpath>
 	    		    <pathelement location="${classes}"/>
 	    		    <pathelement path="${java.class.path}"/> 
 	    			<path refid="classpath" />
 	    		</classpath>
 	    		
-				<batchtest filtertrace="off" > 
+				<batchtest filtertrace="off"  todir="logs/"> 
 					<fileset dir="${classes}">
 						<patternset id="test.sources">
 						    <exclude name="**/*.java"/>
