@@ -51,7 +51,7 @@
 		<ant antfile="../../org.faktorips.build/build.xml" target="buildjar">
 			<property name="projectname" value="fl" />
 			<reference refid="classpath" torefid="classpath"/>
-		</ant> 
+		</ant>
 	</target>
 	
 	<!-- calls clean-target of template-buildfile -->

@@ -31,7 +31,7 @@
 	
 	<target name="buildjar" depends="buildProdJar">
     
-		<!-- we need compiled testcases for some other projects -->
+		<!-- we need compiled testcases for some other testprojects to build (bad idea)-->
 		<jar destfile="results/faktorips.util.test.jar" >
 			<fileset dir="classes/" >
 				<patternset>
