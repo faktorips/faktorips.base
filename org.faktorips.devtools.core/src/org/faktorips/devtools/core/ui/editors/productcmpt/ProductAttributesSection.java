@@ -129,6 +129,8 @@ public class ProductAttributesSection extends IpsSection {
 		}
 		validTo.setText(validToString);
 		validTo.setEnabled(false);
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 
 		
 		// create label and text control for the policy component type
