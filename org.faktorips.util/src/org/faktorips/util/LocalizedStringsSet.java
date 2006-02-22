@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
  * A LocalizedStringsSet is a set of strings available in different locales.
  * A localized string can be looked up by a locale independant key and a 
  * {@link java.util.Locale locale}. 
- * <p>
+ * <p> 
  * The locale dependent strings have to be stored in property files. They are accessed via Java's
  * {@link java.util.ResourceBundle ResourceBundle}. To access the property files,
  * they all have to be in the same package and must start with the same prefix.
