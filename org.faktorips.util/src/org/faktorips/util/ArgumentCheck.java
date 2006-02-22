@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
  * the check has failed and avoid to create a String object in the default case,
  * when the check passes successfully. 
  * 
- * @author Jan Ortmann
+ * @author Jan Ortmann 
  */
 public class ArgumentCheck {
 
