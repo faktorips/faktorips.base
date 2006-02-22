@@ -108,9 +108,10 @@ public abstract class ValueSet {
     }
     
     /**
-     * Returns <code>true</code> if this is value set is an enumeration, otherwise <code>false</code>.
+     * Returns <code>true</code> if this is an EnumValueSet you can safely cast it to EnumValueSet,
+     * otherwise <code>false</code>.
      */
-    public final boolean isEnum() {
+    public final boolean isEnumValueSet() {
         return getValueSetType()==ValueSetType.ENUM;
     }
 

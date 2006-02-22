@@ -56,7 +56,7 @@ public class ValueSetEditControl extends ControlComposite {
         parentArea.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         createValidTypesCombo(toolkit, parentArea);
         valueSetArea = createValueCntrlArea(toolkit, parentArea);
-        if (valueSet.isEnum()) {
+        if (valueSet.isEnumValueSet()) {
             enumControl = new EnumValueSetEditControl((EnumValueSet)valueSet, valueSetArea, tableElementValidator);
             rangeControl = new RangeEditControl(valueSetArea, toolkit, new Range(), uiController);
         } else if (valueSet.isRange()) {

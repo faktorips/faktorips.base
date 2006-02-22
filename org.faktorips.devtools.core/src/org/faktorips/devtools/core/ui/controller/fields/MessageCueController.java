@@ -125,9 +125,6 @@ public class MessageCueController {
 		 * Sets the messages shown in the hover and the list's severity shown as cue.
 		 */
 		void setMessageList(MessageList list) {
-//		    if (list.getSeverity()==Message.NONE) {
-//		        list.add(new ValidationMessage("", "bla", Message.WARNING));
-//		    }
 		    messageList = list;
 		    if (list==null || list.getSeverity()==Message.NONE) {
 		        if (installed()) {

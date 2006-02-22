@@ -139,9 +139,9 @@ public class DefaultsAndRangesSection extends IpsSection {
     		toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
     		toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 
-    		if ((valueSet.isAllValues() && dataType instanceof EnumDatatype) || valueSet.isEnum()) {
+    		if ((valueSet.isAllValues() && dataType instanceof EnumDatatype) || valueSet.isEnumValueSet()) {
     			Combo combo;
-    			if (valueSet.isEnum()) {
+    			if (valueSet.isEnumValueSet()) {
     				combo = toolkit.createCombo(rootPane, (EnumValueSet)valueSet);
     			}
     			else {

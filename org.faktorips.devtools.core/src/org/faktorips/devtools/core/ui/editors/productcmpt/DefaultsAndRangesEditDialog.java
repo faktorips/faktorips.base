@@ -89,7 +89,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
                 rangeEditControl.setValueSetChangeListener(this);
                 return rangeEditControl;
             } 
-            if (valueSet.isEnum()) {
+            if (valueSet.isEnumValueSet()) {
                 EnumValueSetEditControl valueSetControl = new EnumValueSetEditControl((EnumValueSet)valueSet,
                         workArea, new ProductElementValidator());
                 valueSetControl.setValueSetChangeListener(this);
