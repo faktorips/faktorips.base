@@ -36,8 +36,7 @@ public class ProductCmptDropListener implements DropTargetListener {
         try {
             dropTarget.setInput(IpsPlugin.getDefault().getIpsModel().getIpsProjects()[0].findIpsObject(IpsObjectType.PRODUCT_CMPT, (String)event.data));
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            IpsPlugin.log(e);
         }
     }
 

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -18,7 +20,9 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * 
@@ -343,8 +347,40 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         for (int i = 0; i < configElements.length; i++) {
             ((ConfigElement)configElements[i]).validate(list);
         }
+        
+        for (int i = 0; i < relations.size(); i++) {
+			((ProductCmptRelation)relations.get(i)).validate(list);
+		}
+        
+		IRelation[] relationTypes = getProductCmpt().findPolicyCmptType().getRelations();
+		for (int i = 0; i < relationTypes.length; i++) {
+			IProductCmptRelation[] relations = getRelations(relationTypes[i].getTargetRoleSingularProductSide());
+			
+			if (relationTypes[i].getMinCardinality() > relations.length) {
+				Object[] params = {new Integer(relations.length), relationTypes[i].getTargetRoleSingularProductSide(), new Integer(relationTypes[i].getMinCardinality())};
+				String msg = NLS.bind("Found only {0} relations of type {1}, but at least {2} relations are required.", params);
+				ObjectProperty prop1 = new ObjectProperty(this, null);
+				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
+				list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
+				System.out.println(msg);
+			}
+			
+			String maxCardinality = relationTypes[i].getMaxCardinality();
+			if (!StringUtils.isEmpty(maxCardinality) && !maxCardinality.equals("*")) {
+				int max = Integer.parseInt(maxCardinality);
+				
+				if (max < relations.length) {
+					Object[] params = {new Integer(relations.length), maxCardinality, relationTypes[i].getTargetRoleSingularProductSide()};
+					String msg = NLS.bind("Found {0} relations, but only {1} relations of type {2} are allowed.", params);
+					ObjectProperty prop1 = new ObjectProperty(this, null);
+					ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
+					list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
+					System.out.println(msg);
+				}
+			}
+		}
     }
-
+    
     /**
      * {@inheritDoc}
      */

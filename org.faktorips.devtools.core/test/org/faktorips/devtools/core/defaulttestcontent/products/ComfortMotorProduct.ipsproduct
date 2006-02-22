@@ -11,7 +11,7 @@
                 <AllValues/>
             </ValueSet>
         </ConfigElement>
-        <ConfigElement id="2" description="" type="formula" pcTypeAttribute="grossPremium" value="">
+        <ConfigElement id="2" description="" type="formula" pcTypeAttribute="grossPremium" value="1EUR">
             <ValueSet>
                 <AllValues/>
             </ValueSet>
