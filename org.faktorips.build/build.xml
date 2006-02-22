@@ -93,7 +93,7 @@
 	    		</fileset>
 	    	</delete>
 	    	
-	    	<junit fork="yes" haltonerror="yes" timeout="3600" printsummary="withOutAndErr"   showoutput="yes">
+	    	<junit fork="yes" haltonerror="yes" haltonfailure="yes" timeout="3600" printsummary="withOutAndErr"   showoutput="yes">
 	    		<formatter type="xml" usefile="true"/>
 	    		<classpath>
 	    		    <pathelement location="${classes}"/>
