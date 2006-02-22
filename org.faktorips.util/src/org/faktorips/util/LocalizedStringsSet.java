@@ -67,7 +67,7 @@ public class LocalizedStringsSet {
         return getString(key, locale, new Object[]{replacement});
     }
     
-    public String getString(String key, Locale locale) {
+    public String getString(String key, Locale locale) { 
         return ResourceBundle.getBundle(name, locale, loader).getString(key);        
     }
 
