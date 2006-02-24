@@ -463,7 +463,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             dataTypeValueSet = datatype.getJavaClassName() + "[]";
             initialValueExpression = new JavaCodeFragment();
-            String[] elements = ((EnumValueSet)a.getValueSet()).getElements();
+            String[] elements = ((EnumValueSet)a.getValueSet()).getValues();
             initialValueExpression.append("{ ");
             for (int i = 0; i < elements.length; i++) {
                 if (i > 0) {
