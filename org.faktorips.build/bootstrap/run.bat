@@ -7,27 +7,27 @@ REM ***********************************
 REM The eclipse directory from which eclipse will be started for building and testing. 
 REM This eclipse instance will be the build host
 REM the AntRunner application is started within this eclipse installation
-set eclipseDir=D:\eclipse\eclipse-3.0.1
+set eclipseDir=C:\Programme\eclipse31\eclipse
 
 REM vm specifies the java vm which starts up the build host
 set vm=java
 
 REM The version of the PDE Build plug-in is needed to determine the script directory
 REM The version will probably be equal to the eclipse version
-set pdeBuildPluginVersion=3.0.1
+set pdeBuildPluginVersion=3.1.0
 
 REM The pluginAutomaticBuildDir contains the necessary files provided by the plug-in
 REM itself for the build-process, e.g. build.properties, customTargets.xml.
 REM It is not bound to reside in the workspace of the eclipse and can reside on any
 REM accessible location
-set pluginAutomaticBuildDir=D:\build\org.rubypeople.rdt.build\bootstrap
+set pluginAutomaticBuildDir=F:\temp\org.faktorips.build\bootstrap
 
 REM Directory where the build takes place. The workspace will also be created in this directory
-set buildDirectory=D:\build\rdt
+set buildDirectory=F:\temp\faktorips
 
 REM use pserver method to connect to the repository both for fetching the map files and the plug-ins
 REM comment out for using ext method
-set usePserver=-DusePserver=true
+rem set usePserver=-DusePserver=true
 
 REM Verbose is a switch for the AntRunner application
 REM set verboseAnt=-verbose
@@ -37,7 +37,7 @@ REM docboook.root is the directory where you unzipped the docbook zip file
 REM (http://213.203.244.123/rdt/docbook.tar.gz). It contains to subfolders:
 REM docbook-xsl-1.64.1 and dtd
 REM It must be a URI, windows style path names are not allowed
-set docbook.root=D:/Temp/docbook
+rem set docbook.root=D:/Temp/docbook
 
 
 REM **********************************
