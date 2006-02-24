@@ -1,0 +1,8 @@
+feature@org.faktorips.feature=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
+plugin@org.faktorips.devtools.core=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
+plugin@org.faktorips.devtools.stdbuilder=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
+plugin@org.faktorips.dtflcommon=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
+plugin@org.faktorips.fl=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
+plugin@org.faktorips.runtime=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
+plugin@org.faktorips.util=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
+plugin@org.faktorips.valuetypes=HEAD,:extssh:erzberger@faktorips.org:/usr/local/cvsroot,me_3879
