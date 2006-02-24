@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="FaktorIPS"
-      version="0.9.1"
+      version="0.9.2"
       provider-name="FaktorZehn">
    <install-handler/>
 
