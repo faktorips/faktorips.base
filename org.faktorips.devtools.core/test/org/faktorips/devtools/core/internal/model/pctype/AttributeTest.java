@@ -190,7 +190,7 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("MotorPolicy", paramsCopy[0].getDatatype());
         assertEquals("vehicle", paramsCopy[1].getName());
         assertEquals("Vehicle", paramsCopy[1].getDatatype());
-        String [] vekt = ((EnumValueSet)copy.getValueSet()).getElements();
+        String [] vekt = ((EnumValueSet)copy.getValueSet()).getValues();
         assertEquals("a", vekt[0]);
         assertEquals("b", vekt[1]);
         assertEquals("x", vekt[2]);

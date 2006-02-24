@@ -110,18 +110,8 @@ public class EnumValueSet extends ValueSet {
     /**
      * Returns an array of all Elements in the EnunValueSet
      */
-    public String[] getElements() {
+    public String[] getValues() {
         return (String[])elements.toArray(new String[elements.size()]);
-    }
-
-    /**
-     * Sets the elements to the given elements of the String[]
-     */
-    public void setElements(String[] elements) {
-        this.elements.clear();
-        for (int i = 0; i < elements.length; i++) {
-            this.elements.add(elements[i]);
-        }
     }
 
     /**
@@ -172,7 +162,7 @@ public class EnumValueSet extends ValueSet {
     	}
     	
     	EnumValueSet enumSubset = (EnumValueSet)subset;
-    	String[] subsetValues = enumSubset.getElements();
+    	String[] subsetValues = enumSubset.getValues();
     	
     	boolean contains = true;
     	for (int i = 0; i < subsetValues.length && contains; i++) {

@@ -306,11 +306,11 @@ public class ConfigElementTest extends IpsPluginTest {
 
         cfgElement.setValueSet(enumValueSet);
         xmlElement = cfgElement.toXml(getTestDocument());
-        assertEquals(4, ((EnumValueSet)cfgElement.getValueSet()).getElements().length);
-        assertEquals("one", ((EnumValueSet)cfgElement.getValueSet()).getElements()[0]);
-        assertEquals("two", ((EnumValueSet)cfgElement.getValueSet()).getElements()[1]);
-        assertEquals("three", ((EnumValueSet)cfgElement.getValueSet()).getElements()[2]);
-        assertEquals("four", ((EnumValueSet)cfgElement.getValueSet()).getElements()[3]);
+        assertEquals(4, ((EnumValueSet)cfgElement.getValueSet()).getValues().length);
+        assertEquals("one", ((EnumValueSet)cfgElement.getValueSet()).getValues()[0]);
+        assertEquals("two", ((EnumValueSet)cfgElement.getValueSet()).getValues()[1]);
+        assertEquals("three", ((EnumValueSet)cfgElement.getValueSet()).getValues()[2]);
+        assertEquals("four", ((EnumValueSet)cfgElement.getValueSet()).getValues()[3]);
 
     }
 

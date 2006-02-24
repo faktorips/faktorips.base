@@ -26,4 +26,41 @@ public class ArgumentCheckTest extends TestCase {
         } catch (IllegalArgumentException e) {
         }
     }
+    
+    public void testIsNullArray(){
+    	String[] ids = new String[3];
+    	try{
+    		ArgumentCheck.notNull(ids);
+    		fail();
+    	}
+    	catch(RuntimeException e){
+    		//an exception is excepted to be thrown
+    	}
+    	
+    	ids[0] = "";
+    	ids[1] = "";
+    	ids[2] = "";
+    	
+    	//expected to pass
+    	ArgumentCheck.notNull(ids);
+    }
+    
+    public void testIsNullArrayContext(){
+    	String[] ids = new String[3];
+    	try{
+    		ArgumentCheck.notNull(ids, this);
+    		fail();
+    	}
+    	catch(RuntimeException e){
+    		//an exception is excepted to be thrown
+    	}
+    	
+    	ids[0] = "";
+    	ids[1] = "";
+    	ids[2] = "";
+    	
+    	//expected to pass
+    	ArgumentCheck.notNull(ids, this);
+    }
+
 }

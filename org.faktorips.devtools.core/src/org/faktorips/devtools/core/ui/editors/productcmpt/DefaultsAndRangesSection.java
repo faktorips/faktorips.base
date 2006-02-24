@@ -28,9 +28,11 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -140,18 +142,19 @@ public class DefaultsAndRangesSection extends IpsSection {
     		toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 
     		if ((valueSet.isAllValues() && dataType instanceof EnumDatatype) || valueSet.isEnumValueSet()) {
-    			Combo combo;
+    			
+    			Combo combo = toolkit.createCombo(rootPane);
+    			EditField defaultField;
     			if (valueSet.isEnumValueSet()) {
-    				combo = toolkit.createCombo(rootPane, (EnumValueSet)valueSet);
+    				defaultField = new EnumValueSetField(combo, (EnumValueSet)valueSet, (EnumDatatype)dataType);
     			}
     			else {
-    				combo = toolkit.createCombo(rootPane, (EnumDatatype)dataType);
+    				defaultField = new EnumDatatypeField(combo, (EnumDatatype)dataType);
     			}
     			
     			this.editControls.add(combo);
-        		ComboField field = new ComboField(combo);
         		IpsPartUIController controller = new IpsPartUIController(elements[i]);
-        		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
+        		controller.add(defaultField, elements[i], IConfigElement.PROPERTY_VALUE);
         		uiMasterController.add(controller);
         		
     			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$

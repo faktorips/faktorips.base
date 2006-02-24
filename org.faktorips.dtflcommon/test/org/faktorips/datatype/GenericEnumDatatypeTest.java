@@ -38,4 +38,11 @@ public class GenericEnumDatatypeTest extends TestCase {
         
     }
 
+    public void testGetNameMethod(){
+        datatype.setGetAllValuesMethodName("getAllPaymentModes");
+        datatype.setToStringMethodName("getId");
+        datatype.setGetNameMethodName("getName");
+        datatype.setIsSupportingNames(true);
+        assertEquals("Annual Payment", datatype.getValueName(PaymentMode.ANNUAL.getId()));
+    }
 }

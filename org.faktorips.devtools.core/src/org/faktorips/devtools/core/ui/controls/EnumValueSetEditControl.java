@@ -219,7 +219,7 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
     private class ContentProvider implements IStructuredContentProvider {
 
         public Object[] getElements(Object inputElement) {
-            int len = valueSet.getElements().length;
+            int len = valueSet.getValues().length;
             IndexValueWrapper[] wrappers = new IndexValueWrapper[len];
             for (int i = 0; i < len; i++) {
                 wrappers[i] = new IndexValueWrapper(i);

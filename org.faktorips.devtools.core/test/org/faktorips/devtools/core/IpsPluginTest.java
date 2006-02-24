@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -22,6 +24,10 @@ import org.eclipse.jdt.core.search.ITypeNameRequestor;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
+import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.IpsProject;
+import org.faktorips.devtools.core.internal.model.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
@@ -35,114 +41,122 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlAbstractTestCase;
 
-
-
 /**
- * Base class for all plugin test cases. Has a factory method to create an ips project
- * including the underlying platform project. 
+ * Base class for all plugin test cases. Has a factory method to create an ips
+ * project including the underlying platform project.
  * 
  * @author Jan Ortmann
  */
 public abstract class IpsPluginTest extends XmlAbstractTestCase {
 
-    /**
-     * 
-     */
-    public IpsPluginTest() {
-        super();
-    }
+	/**
+	 * 
+	 */
+	public IpsPluginTest() {
+		super();
+	}
 
-    /**
-     * @param name
-     */
-    public IpsPluginTest(String name) {
-        super(name);
-    }
-    
-    protected void setUp() throws Exception {
-        setAutoBuild(false);
-        IpsPlugin.getDefault().reinitModel();
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-                for (int i=0; i<projects.length; i++) {
-                    projects[i].close(null);
-                    projects[i].delete(true, true, null);
-                }               
-            }
-        };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
-    }
+	/**
+	 * @param name
+	 */
+	public IpsPluginTest(String name) {
+		super(name);
+	}
+
+	protected void setUp() throws Exception {
+		setAutoBuild(false);
+		IpsPlugin.getDefault().reinitModel();
+		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
+				IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+						.getProjects();
+				for (int i = 0; i < projects.length; i++) {
+					projects[i].close(null);
+					projects[i].delete(true, true, null);
+				}
+			}
+		};
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE,
+				null);
+	}
 
 	/**
 	 * Creates a new IpsProject.
 	 */
-	protected IIpsProject newIpsProject(final String name) throws CoreException
-	{
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            public void run(IProgressMonitor monitor) throws CoreException {
-        	    IProject project = newPlatformProject(name);
-        		addJavaCapabilities(project);
-        		addIpsCapabilities(project);
-            }
-        };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
-	    
+	protected IIpsProject newIpsProject(final String name) throws CoreException {
+		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
+				IProject project = newPlatformProject(name);
+				addJavaCapabilities(project);
+				addIpsCapabilities(project);
+			}
+		};
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE,
+				null);
+
 		return IpsPlugin.getDefault().getIpsModel().getIpsProject(name);
-	}
-	
-	/**
-	 * Creates a new platfrom project with the given name and opens it.  
-	 * @throws CoreException
-	 */
-	protected IProject newPlatformProject(final String name) throws CoreException {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            public void run(IProgressMonitor monitor) throws CoreException {
-                internalNewPlatformProject(name);
-            }
-        };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
-        return workspace.getRoot().getProject(name);
 	}
 
 	/**
-	 * Creates a new platfrom project with the given name and opens it.  
+	 * Creates a new platfrom project with the given name and opens it.
+	 * 
 	 * @throws CoreException
 	 */
-	private IProject internalNewPlatformProject(final String name) throws CoreException {
+	protected IProject newPlatformProject(final String name)
+			throws CoreException {
+		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
+				internalNewPlatformProject(name);
+			}
+		};
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE,
+				null);
+		return workspace.getRoot().getProject(name);
+	}
+
+	/**
+	 * Creates a new platfrom project with the given name and opens it.
+	 * 
+	 * @throws CoreException
+	 */
+	private IProject internalNewPlatformProject(final String name)
+			throws CoreException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject(name);
 		project.create(null);
 		project.open(null);
 		return project;
 	}
-	
+
 	/**
-	 * Creates a new Java Project for the given platform project. 
+	 * Creates a new Java Project for the given platform project.
 	 */
-	protected IJavaProject addJavaCapabilities(IProject project) throws CoreException {
+	protected IJavaProject addJavaCapabilities(IProject project)
+			throws CoreException {
 		IJavaProject javaProject = JavaCore.create(project);
 		// add Java nature
 		Util.addNature(project, JavaCore.NATURE_ID);
 		// create bin folder and set as output folder.
-		IFolder binFolder= project.getFolder("bin");
+		IFolder binFolder = project.getFolder("bin");
 		if (!binFolder.exists()) {
 			binFolder.create(true, true, null);
 		}
 		IFolder srcFolder = project.getFolder("src");
 		javaProject.setOutputLocation(binFolder.getFullPath(), null);
 		if (!srcFolder.exists()) {
-		    srcFolder.create(true, true, null);
+			srcFolder.create(true, true, null);
 		}
 		IFolder extFolder = project.getFolder("extension");
 		if (!extFolder.exists()) {
-		    extFolder.create(true, true, null);
+			extFolder.create(true, true, null);
 		}
-		IPackageFragmentRoot srcRoot = javaProject.getPackageFragmentRoot(srcFolder);
-		IPackageFragmentRoot extRoot = javaProject.getPackageFragmentRoot(extFolder);
+		IPackageFragmentRoot srcRoot = javaProject
+				.getPackageFragmentRoot(srcFolder);
+		IPackageFragmentRoot extRoot = javaProject
+				.getPackageFragmentRoot(extFolder);
 		IClasspathEntry[] entries = new IClasspathEntry[2];
 		entries[0] = JavaCore.newSourceEntry(srcRoot.getPath());
 		entries[1] = JavaCore.newSourceEntry(extRoot.getPath());
@@ -151,135 +165,209 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 		addSystemLibraries(javaProject);
 		return javaProject;
 	}
-	
-	protected void addIpsCapabilities(IProject project) throws CoreException {
-	    Util.addNature(project, IIpsProject.NATURE_ID);
-	    IFolder rootFolder = project.getFolder("productdef");
-	    rootFolder.create(true, true, null);
-	    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
-	    IIpsObjectPath path = ipsProject.getIpsObjectPath();
-	    path.setOutputDefinedPerSrcFolder(true);
-	    IIpsSrcFolderEntry entry = path.newSourceFolderEntry(rootFolder);
-	    entry.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model");
-	    entry.setSpecificOutputFolderForGeneratedJavaFiles(project.getFolder("src"));
-	    entry.setSpecificBasePackageNameForExtensionJavaClasses("org.faktorips.sample.model");
-	    entry.setSpecificOutputFolderForExtensionJavaFiles(project.getFolder("extension"));
-	    ipsProject.setIpsObjectPath(path);
 
-	    //TODO: wichtig dies erzeugt eine Abh�ngigkeit vom StdBuilder Projekt. Dies muss dringend �berarbeitet
-        //werden
-        ipsProject.setCurrentArtefactBuilderSet("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
-	    ipsProject.setValueDatatypes(new String[]{"Decimal", "Money", "String", "Boolean"});
+	protected void addIpsCapabilities(IProject project) throws CoreException {
+		Util.addNature(project, IIpsProject.NATURE_ID);
+		IFolder rootFolder = project.getFolder("productdef");
+		rootFolder.create(true, true, null);
+		IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel()
+				.getIpsProject(project.getName());
+		IIpsObjectPath path = ipsProject.getIpsObjectPath();
+		path.setOutputDefinedPerSrcFolder(true);
+		IIpsSrcFolderEntry entry = path.newSourceFolderEntry(rootFolder);
+		entry
+				.setSpecificBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model");
+		entry.setSpecificOutputFolderForGeneratedJavaFiles(project
+				.getFolder("src"));
+		entry
+				.setSpecificBasePackageNameForExtensionJavaClasses("org.faktorips.sample.model");
+		entry.setSpecificOutputFolderForExtensionJavaFiles(project
+				.getFolder("extension"));
+		ipsProject.setIpsObjectPath(path);
+
+		// TODO: wichtig dies erzeugt eine Abh�ngigkeit vom StdBuilder Projekt.
+		// Dies muss dringend �berarbeitet
+		// werden
+		ipsProject
+				.setCurrentArtefactBuilderSet("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
+		ipsProject.setValueDatatypes(new String[] { "Decimal", "Money",
+				"String", "Boolean" });
 	}
 
-	private void addSystemLibraries(IJavaProject javaProject) throws JavaModelException 
-	{
-		IClasspathEntry[] oldEntries= javaProject.getRawClasspath();
-		IClasspathEntry[] newEntries= new IClasspathEntry[oldEntries.length + 1];
+	private void addSystemLibraries(IJavaProject javaProject)
+			throws JavaModelException {
+		IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
+		IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
 		System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-		newEntries[oldEntries.length]= JavaRuntime.getDefaultJREContainerEntry();
+		newEntries[oldEntries.length] = JavaRuntime
+				.getDefaultJREContainerEntry();
 		javaProject.setRawClasspath(newEntries, null);
 	}
-	
-	private void waitForIndexer() throws JavaModelException 
-	{
-	    SearchEngine engine = new SearchEngine();
-	    engine.searchAllTypeNames(
-	            new char[] {}, 
-	            new char[] {}, 
-	            SearchPattern.R_EXACT_MATCH,
-	            IJavaSearchConstants.CLASS,
-	            SearchEngine.createJavaSearchScope(new IJavaElement[0]),
+
+	private void waitForIndexer() throws JavaModelException {
+		SearchEngine engine = new SearchEngine();
+		engine.searchAllTypeNames(new char[] {}, new char[] {},
+				SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
+				SearchEngine.createJavaSearchScope(new IJavaElement[0]),
 				new ITypeNameRequestor() {
-	    			public void acceptClass(char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path) {
-	    			}
-	    			public void acceptInterface(char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path) {
-	    			}
-	    		}, 
-	    		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+					public void acceptClass(char[] packageName,
+							char[] simpleTypeName, char[][] enclosingTypeNames,
+							String path) {
+					}
+
+					public void acceptInterface(char[] packageName,
+							char[] simpleTypeName, char[][] enclosingTypeNames,
+							String path) {
+					}
+				}, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
 	}
-	
+
 	protected void setAutoBuild(boolean autoBuild) throws CoreException {
-        IWorkspaceDescription description = ResourcesPlugin.getWorkspace().getDescription();
-        if (autoBuild != ResourcesPlugin.getWorkspace().isAutoBuilding()) {
-            description.setAutoBuilding(autoBuild);
-            ResourcesPlugin.getWorkspace().setDescription(description);
-        }
-    }
-	
-	/**
-	 * Creates a new ipsobject in the indicated project's first source folder. If the qualifiedName includes a 
-	 * package name, the package is created if it does not already exists.
-	 * 
-	 * @throws CoreException
-	 */
-	protected IIpsObject newIpsObject(IIpsProject project, IpsObjectType type, String qualifiedName) throws CoreException {
-	    IIpsPackageFragmentRoot root = project.getSourceIpsPackageFragmentRoots()[0];
-	    return newIpsObject(root, type, qualifiedName);
-	}
-	
-	/**
-	 * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes a 
-	 * package name, the package is created if it does not already exists.
-	 * 
-	 * @throws CoreException
-	 */
-	protected IIpsObject newIpsObject(IIpsPackageFragmentRoot root, IpsObjectType type, String qualifiedName) throws CoreException {
-	    String packName = StringUtil.getPackageName(qualifiedName);
-	    String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
-	    IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
-	    if (!pack.exists()) {
-	        pack = root.createPackageFragment(packName, true, null);
-	    }
-	    IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
-	    IIpsObject ipsObject = file.getIpsObject();
-	    if (ipsObject instanceof IPolicyCmptType) {
-	    	((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(true);
-	    	((IPolicyCmptType)ipsObject).setUnqualifiedProductCmptType(unqualifiedName + "ProductCmpt");
-	    }
-	    return ipsObject;
-	}
-	
-	/**
-	 * Creates a new policy component type in the indicated package fragment root. If the qualifiedName includes a 
-	 * package name, the package is created if it does not already exists.
-	 * 
-	 * @throws CoreException
-	 */
-	protected PolicyCmptType newPolicyCmptType(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
-	    return (PolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
-	}
-	
-	/**
-	 * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes a 
-	 * package name, the package is created if it does not already exists.
-	 * 
-	 * @throws CoreException
-	 */
-	protected IIpsObject newIpsObject(IIpsPackageFragment pack, IpsObjectType type, String unqualifiedName) throws CoreException {
-	    IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
-	    return file.getIpsObject();
+		IWorkspaceDescription description = ResourcesPlugin.getWorkspace()
+				.getDescription();
+		if (autoBuild != ResourcesPlugin.getWorkspace().isAutoBuilding()) {
+			description.setAutoBuilding(autoBuild);
+			ResourcesPlugin.getWorkspace().setDescription(description);
+		}
 	}
 
 	/**
-	 * Copies the given project properties file and the given classes to the given project. The classes are 
-	 * added to the classpath of the project.
-	 * @throws CoreException 
+	 * Creates a new ipsobject in the indicated project's first source folder.
+	 * If the qualifiedName includes a package name, the package is created if
+	 * it does not already exists.
+	 * 
+	 * @throws CoreException
+	 */
+	protected IIpsObject newIpsObject(IIpsProject project, IpsObjectType type,
+			String qualifiedName) throws CoreException {
+		IIpsPackageFragmentRoot root = project
+				.getSourceIpsPackageFragmentRoots()[0];
+		return newIpsObject(root, type, qualifiedName);
+	}
+
+	/**
+	 * Creates a new ipsobject in the indicated package fragment root. If the
+	 * qualifiedName includes a package name, the package is created if it does
+	 * not already exists.
+	 * 
+	 * @throws CoreException
+	 */
+	protected IIpsObject newIpsObject(IIpsPackageFragmentRoot root,
+			IpsObjectType type, String qualifiedName) throws CoreException {
+		String packName = StringUtil.getPackageName(qualifiedName);
+		String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
+		IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
+		if (!pack.exists()) {
+			pack = root.createPackageFragment(packName, true, null);
+		}
+		IIpsSrcFile file = pack
+				.createIpsFile(type, unqualifiedName, true, null);
+		IIpsObject ipsObject = file.getIpsObject();
+		if (ipsObject instanceof IPolicyCmptType) {
+			((IPolicyCmptType) ipsObject)
+					.setConfigurableByProductCmptType(true);
+			((IPolicyCmptType) ipsObject)
+					.setUnqualifiedProductCmptType(unqualifiedName
+							+ "ProductCmpt");
+		}
+		return ipsObject;
+	}
+
+	/**
+	 * Creates a new policy component type in the indicated package fragment
+	 * root. If the qualifiedName includes a package name, the package is
+	 * created if it does not already exists.
+	 * 
+	 * @throws CoreException
+	 */
+	protected PolicyCmptType newPolicyCmptType(IIpsPackageFragmentRoot root,
+			String qualifiedName) throws CoreException {
+		return (PolicyCmptType) newIpsObject(root,
+				IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
+	}
+
+	/**
+	 * Creates a new ipsobject in the indicated package fragment root. If the
+	 * qualifiedName includes a package name, the package is created if it does
+	 * not already exists.
+	 * 
+	 * @throws CoreException
+	 */
+	protected IIpsObject newIpsObject(IIpsPackageFragment pack,
+			IpsObjectType type, String unqualifiedName) throws CoreException {
+		IIpsSrcFile file = pack
+				.createIpsFile(type, unqualifiedName, true, null);
+		return file.getIpsObject();
+	}
+
+	/**
+	 * Expects an array of classes that comply to the enum type pattern. The
+	 * enum types are registered to the provided IpsProject as definded
+	 * datatypes. The qualifiedName of a registered datatype is the unqualified
+	 * class name of the enum type class. The enum type class must have the
+	 * folloing methods:
+	 * </p>
+	 * <ol>
+	 * <li>public final static &lt;EnumValue &gt; getAllValues()</li>
+	 * <li>public String getId()</li>
+	 * <li>public String getName()</li>
+	 * <li>public boolean isValueOf(String)</li>
+	 * <li>public String toString(), must return the id of the enum value</li>
+	 * <li>public final static &lt;EnumValue &gt; valueOf(String), the id is
+	 * provided to this method and an enum values is supposed to be returned by
+	 * this method</li>
+	 * </ol>
+	 */
+	protected DynamicEnumDatatype[] newDefinedEnumDatatype(IpsProject project,
+			Class[] adaptedClass) {
+
+		ArrayList dataTypes = new ArrayList(adaptedClass.length);
+		for (int i = 0; i < adaptedClass.length; i++) {
+			DynamicEnumDatatype dataType = new DynamicEnumDatatype(project);
+			dataType.setAdaptedClass(adaptedClass[i]);
+			dataType.setAllValuesMethodName("getAllValues");
+			dataType.setGetNameMethodName("getName");
+			dataType.setIsParsableMethodName("isValueOf");
+			dataType.setIsSupportingNames(true);
+			dataType.setQualifiedName(StringUtil
+					.unqualifiedName(adaptedClass[i].getName()));
+			dataType.setToStringMethodName("toString");
+			dataType.setValueOfMethodName("valueOf");
+			dataTypes.add(dataType);
+		}
+
+		IpsProjectProperties properties = ((IpsModel) project.getIpsModel())
+				.getIpsProjectProperties(project);
+		DynamicEnumDatatype[] returnValue = (DynamicEnumDatatype[]) dataTypes
+				.toArray(new DynamicEnumDatatype[adaptedClass.length]);
+		properties.setDefinedDatatypes(returnValue);
+		return returnValue;
+	}
+
+	/**
+	 * Copies the given project properties file and the given classes to the
+	 * given project. The classes are added to the classpath of the project.
+	 * 
+	 * @throws CoreException
 	 * 
 	 */
-	protected void configureProject(IIpsProject project, String ipsProjectFileName, Class[] dependencies) throws CoreException {
+	protected void configureProject(IIpsProject project,
+			String ipsProjectFileName, Class[] dependencies)
+			throws CoreException {
 		IPath outputPath = project.getJavaProject().getOutputLocation();
 		IFolder output = project.getProject().getFolder(outputPath);
 		for (int i = 0; i < dependencies.length; i++) {
 			String name = dependencies[i].getName() + ".class";
-			output.getFile(name).create(dependencies[i].getResourceAsStream(name), true, null);
+			output.getFile(name).create(
+					dependencies[i].getResourceAsStream(name), true, null);
 		}
 		IFile ipsproject = project.getProject().getFile(".ipsproject");
 		if (ipsproject.exists()) {
-			ipsproject.setContents(getClass().getResourceAsStream(ipsProjectFileName), true, false, null);
-		}
-		else {
-			ipsproject.create(getClass().getResourceAsStream(ipsProjectFileName), true, null);
+			ipsproject.setContents(getClass().getResourceAsStream(
+					ipsProjectFileName), true, false, null);
+		} else {
+			ipsproject.create(getClass()
+					.getResourceAsStream(ipsProjectFileName), true, null);
 		}
 	}
 }

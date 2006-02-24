@@ -8,9 +8,11 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -39,6 +41,7 @@ public class IpsProjectTest extends IpsPluginTest {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
+        newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     }
     
     public void testFindProductCmptType() throws CoreException {
@@ -279,5 +282,16 @@ public class IpsProjectTest extends IpsPluginTest {
     	assertEquals(1, valueDatatypes.length);
     	assertEquals(Datatype.BOOLEAN, valueDatatypes[0]);
     }
+
+    public void testFindEnumDatatypes() throws CoreException{
+    	EnumDatatype[] dataType = ipsProject.findEnumDatatypes();
+    	assertEquals(1, dataType.length);
+    	assertEquals("TestEnumType", dataType[0].getQualifiedName());
+    	
+    }
     
+    public void testFindEnumDatatype() throws CoreException{
+    	EnumDatatype dataType = ipsProject.findEnumDatatype("TestEnumType");
+    	assertEquals("TestEnumType", dataType.getQualifiedName());
+    }
 }

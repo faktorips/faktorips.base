@@ -486,6 +486,35 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public EnumDatatype[] findEnumDatatypes() throws CoreException{
+    	//TODO this implementation can be improved and instanceof can be avoided. Therefore the storage of EnumDatatypes an Datatypes
+    	//has to be separated within the IpsModel class
+    	Datatype[] datatypes = findDatatypes(true, false);
+    	ArrayList enumDatatypeList = new ArrayList();
+    	for (int i = 0; i < datatypes.length; i++) {
+			if(datatypes[i] instanceof EnumDatatype){
+				enumDatatypeList.add(datatypes[i]);
+			}
+		}
+    	return (EnumDatatype[])enumDatatypeList.toArray(new EnumDatatype[enumDatatypeList.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public EnumDatatype findEnumDatatype(String qualifiedName) throws CoreException{
+    	EnumDatatype[] allEnums = findEnumDatatypes();
+    	for (int i = 0; i < allEnums.length; i++) {
+			if(allEnums[i].getQualifiedName().equals(qualifiedName)){
+				return allEnums[i];
+			}
+		}
+    	return null;
+    }
+    
+    /**
      * Overridden.
      */
     public Datatype findDatatype(String qualifiedName) throws CoreException {

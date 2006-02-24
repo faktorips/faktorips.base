@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -24,6 +25,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * 
  */
+//TODO Tests are missing for this class
 public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private ExprCompiler compiler;
@@ -64,11 +66,47 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             String attributePrefix = identifier.substring(pos+1);
             int replacementOffset = prefix.length() - attributePrefix.length();
             addMatchingAttributes(result, paramName, attributePrefix, replacementOffset);
+            addMatchingEnumValues(result, paramName, attributePrefix, replacementOffset);
         } else {
             int replacementOffset = prefix.length() - identifier.length();
             addMatchingParameters(result, identifier, replacementOffset);
             addMatchingFunctions(result, identifier, replacementOffset);
+            addMatchingEnumTypes(result, identifier, replacementOffset);
         }
+    }
+    
+    private void addMatchingEnumTypes(List result, String enumTypePrefix, int replacementOffset) throws CoreException{
+    	EnumDatatype[] enumTypes = ipsProject.findEnumDatatypes();
+    	for (int i = 0; i < enumTypes.length; i++) {
+			if(enumTypes[i].getName().startsWith(enumTypePrefix)){
+		        CompletionProposal proposal = new CompletionProposal(
+		        		enumTypes[i].getName(), replacementOffset, enumTypePrefix.length(), enumTypes[i].getName().length(),  
+		                new DefaultLabelProvider().getImage(enumTypes[i]), enumTypes[i].getName(), null, null);
+		        result.add(proposal);
+			}
+		}
+    }
+    
+    private void addMatchingEnumValues(List result, String enumTypeName, String enumValuePrefix, int replacementOffset) throws CoreException{
+		EnumDatatype[] enumTypes = ipsProject.findEnumDatatypes();
+		for (int i = 0; i < enumTypes.length; i++) {
+			if(enumTypes[i].getName().equals(enumTypeName)){
+				String[] valueIds = enumTypes[i].getAllValueIds();
+				for (int t = 0; t < valueIds.length; t++) {
+		    		if(valueIds[t].startsWith(enumValuePrefix)){
+		    			addEnumValueToResult(result, enumTypes[i], valueIds[t],replacementOffset, enumValuePrefix.length());
+		    		}
+				}
+				return;
+			}
+		}
+    }
+    
+    private void addEnumValueToResult(List result, EnumDatatype enumType, String enumValue, int replacementOffset, int replacementLength){
+        CompletionProposal proposal = new CompletionProposal(
+                enumValue, replacementOffset, replacementLength, enumValue.length(),  
+                new DefaultLabelProvider().getImage(enumType), enumValue, null, null);
+        result.add(proposal);
     }
     
     private void addMatchingParameters(List result, String prefix, int replacementOffset) {
@@ -84,7 +122,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         String name = param.getName();
         String displayText = name + " - " + param.getDatatype(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
-                name, replacementOffset, replacementLength, replacementOffset + name.length(),  
+                name, replacementOffset, 0, replacementOffset + name.length(),  
                 new DefaultLabelProvider().getImage(param), displayText, null, null);
         result.add(proposal);
     }
@@ -98,7 +136,6 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
                 FlFunction f2 = (FlFunction)o2;
                 return f1.getName().compareTo(f2.getName());
             }
-            
         });
         for (int i=0; i<functions.length; i++) {
             if (functions[i].getName().startsWith(prefix)) {
@@ -166,7 +203,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
-                name, replacementOffset, replacementLength, replacementOffset + name.length(),  
+                name, replacementOffset, replacementLength, name.length(),  
                 attribute.getImage(), displayText, null, attribute.getDescription());
         result.add(proposal);
     }

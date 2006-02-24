@@ -32,6 +32,33 @@ public class ArgumentCheck {
     }
     
     /**
+     * Checks if the provided array or one of the objects at the array's positions is null. 
+     * If so a NullPointerException is thrown.
+     *
+     * @param arg the argument to check.
+     */
+    public final static void notNull(Object[] arg){
+    	notNull((Object)arg);
+    	for (int i = 0; i < arg.length; i++) {
+			notNull((Object)arg[i]);
+		}
+    }
+
+	/**
+	 * Checks if the provided array or the objects at the array positions are null. 
+	 * If so a NullPointerException is thrown.
+	 *
+	 * @param arg the argument to check.
+	 * @param context information, in case the test fails, the context's toString()
+	 */
+	public final static void notNull(Object[] arg, Object context){
+		notNull((Object)arg);
+		for (int i = 0; i < arg.length; i++) {
+			notNull((Object)arg[i], context);
+		}
+	}
+
+    /**
      * Checks if the indicated argument is not null.
      * 
      * @param arg		the argument to check.
@@ -42,7 +69,7 @@ public class ArgumentCheck {
      */
     public final static void notNull(Object arg, Object context) {
         if (arg==null) {
-            throw new NullPointerException(context.toString());
+            throw new NullPointerException("" + context);
         }
     }
     

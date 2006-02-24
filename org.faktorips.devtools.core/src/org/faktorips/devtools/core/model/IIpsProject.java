@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -199,7 +200,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public ValueDatatype[] getValueDatatypes(boolean includeVoid);
 
     /**
-     * Returns all datatypes accesible on the project's path.
+     * Returns all datatypes accessible on the project's path.
      * 
      * @param valuetypesOnly true if only value datatypes should be returned.
      * @param includeVoid    true if <code>Datatype.VOID</code> should be included.
@@ -207,6 +208,19 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an exception occurs while searching for the datatypes.
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException;
+    
+    /**
+     * Returns all enumeration datatypes accessible on the project's path.
+     * @throws CoreException if an exception occurs while searching for the datatypes.
+     */
+    public EnumDatatype[] findEnumDatatypes() throws CoreException;
+    
+    /**
+     * Returns the enumeration datatype accessible on the projects's path with the specified qualifiedName. 
+     * If none is found null will be returned.
+     * @throws CoreException if an exception occurs while searching for the datatypes.
+     */
+    public EnumDatatype findEnumDatatype(String qualifiedName) throws CoreException;
     
     /**
      * Returns the first datatype found on the path with the given qualified name.

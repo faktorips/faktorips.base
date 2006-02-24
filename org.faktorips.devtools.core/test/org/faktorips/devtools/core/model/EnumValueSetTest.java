@@ -25,7 +25,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
 
     public void testEnumValueSet() {
         EnumValueSet set = new EnumValueSet(gender);
-        String[] elements = set.getElements();
+        String[] elements = set.getValues();
         assertEquals(2, elements.length);
         assertEquals("male", elements[0]);
         assertEquals("female", elements[1]);
@@ -99,7 +99,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         EnumValueSet set = new EnumValueSet();
         set.addValue("one");
         set.addValue("two");
-        assertEquals(2, set.getElements().length);
+        assertEquals(2, set.getValues().length);
         assertEquals("one", set.getValue(0));
     }
 
@@ -107,7 +107,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         EnumValueSet set = new EnumValueSet();
         set.addValue("one");
         set.addValue("two");
-        assertEquals(2, set.getElements().length);
+        assertEquals(2, set.getValues().length);
         set.removeValue(0);
         assertEquals("two", set.getValue(0));
     }
@@ -179,21 +179,9 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         assertEquals(list.getMessage(0).getCode(), EnumValueSet.MSGCODE_DUPLICATE_VALUE);
     }
 
-    public void testSetElements() {
-        EnumValueSet set = new EnumValueSet();
-        set.addValue("one");
-        set.addValue("two");
-        set.addValue("two");
-        String[] newValues = { "1", "2" };
-        set.setElements(newValues);
-        assertEquals("1", set.getValue(0));
-        assertEquals("2", set.getValue(1));
-        assertEquals(2, set.getElements().length);
-    }
-
     public void testCreateFromEnumDatatype() {
     	EnumValueSet set = EnumValueSet.createFromEnumDatatype(new EnumDatatypePaymentMode());
-        String[] elements = set.getElements();
+        String[] elements = set.getValues();
         assertEquals(2, elements.length);
         assertEquals("annual", elements[0]);
         assertEquals("monthly", elements[1]);
@@ -209,6 +197,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
 			return new String[]{"annual", "monthly"};
 		}
 
+		
 		/**
 		 * {@inheritDoc}
 		 */
@@ -277,6 +266,16 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
 		 */
 		public String getJavaClassName() {
 			return null;
+		}
+
+
+		public boolean isSupportingNames() {
+			return false;
+		}
+
+
+		public String getValueName(String id) {
+			throw new RuntimeException("Not supported");
 		}
     	
     }
