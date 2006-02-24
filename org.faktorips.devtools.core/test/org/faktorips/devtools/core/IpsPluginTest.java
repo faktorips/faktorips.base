@@ -20,15 +20,16 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
-import org.eclipse.jdt.core.search.ITypeNameRequestor;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -190,7 +191,7 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 		// werden
 		ipsProject
 				.setCurrentArtefactBuilderSet("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
-		ipsProject.setValueDatatypes(new String[] { "Decimal", "Money",
+		ipsProject.setValueDatatypes(new String[] { "Decimal", "Money", "Integer", 
 				"String", "Boolean" });
 	}
 
@@ -205,21 +206,15 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 	}
 
 	private void waitForIndexer() throws JavaModelException {
-		SearchEngine engine = new SearchEngine();
-		engine.searchAllTypeNames(new char[] {}, new char[] {},
-				SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
-				SearchEngine.createJavaSearchScope(new IJavaElement[0]),
-				new ITypeNameRequestor() {
-					public void acceptClass(char[] packageName,
-							char[] simpleTypeName, char[][] enclosingTypeNames,
-							String path) {
-					}
-
-					public void acceptInterface(char[] packageName,
-							char[] simpleTypeName, char[][] enclosingTypeNames,
-							String path) {
-					}
-				}, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+	    SearchEngine engine = new SearchEngine();
+	    engine.searchAllTypeNames(
+	            new char[] {}, 
+	            new char[] {}, 
+	            SearchPattern.R_EXACT_MATCH,
+	            IJavaSearchConstants.CLASS,
+	            SearchEngine.createJavaSearchScope(new IJavaElement[0]),
+				new TypeNameRequestor() {}, 
+	    		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
 	}
 
 	protected void setAutoBuild(boolean autoBuild) throws CoreException {
@@ -274,18 +269,45 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 	}
 
 	/**
-	 * Creates a new policy component type in the indicated package fragment
-	 * root. If the qualifiedName includes a package name, the package is
-	 * created if it does not already exists.
+	 * Creates a new policy component type in the indicated package fragment root. If the qualifiedName includes a 
+	 * package name, the package is created if it does not already exists.
 	 * 
 	 * @throws CoreException
 	 */
-	protected PolicyCmptType newPolicyCmptType(IIpsPackageFragmentRoot root,
-			String qualifiedName) throws CoreException {
-		return (PolicyCmptType) newIpsObject(root,
-				IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
+	protected PolicyCmptType newPolicyCmptType(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
+	    return (PolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
 	}
-
+	
+	/**
+	 * Creates a new policy component type in the project's first package fragment root. 
+	 * If the qualifiedName includes a package name, the package is created if it does not already exists.
+	 * 
+	 * @throws CoreException
+	 */
+	protected PolicyCmptType newPolicyCmptType(IIpsProject project, String qualifiedName) throws CoreException {
+		return (PolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
+	}
+	
+	/**
+	 * Creates a new product component in the indicated package fragment root. If the qualifiedName includes a 
+	 * package name, the package is created if it does not already exists.
+	 * 
+	 * @throws CoreException
+	 */
+	protected ProductCmpt newProductCmpt(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
+	    return (ProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, qualifiedName);
+	}
+	
+	/**
+	 * Creates a new product component in the project's first package fragment root. 
+	 * If the qualifiedName includes a package name, the package is created if it does not already exists.
+	 * 
+	 * @throws CoreException
+	 */
+	protected ProductCmpt newProductCmpt(IIpsProject project, String qualifiedName) throws CoreException {
+		return (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, qualifiedName);
+	}
+	
 	/**
 	 * Creates a new ipsobject in the indicated package fragment root. If the
 	 * qualifiedName includes a package name, the package is created if it does
