@@ -202,10 +202,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see org.faktorips.devtools.core.model.XmlSupport#initFromXml(org.w3c.dom.Element)
      */
     public void initFromXml(Element element) {
-    	initFromXml(element, -1);
+    	initFromXml(element, null);
     }
     
-    protected void initFromXml(Element element, int id) {
+    protected void initFromXml(Element element, Integer id) {
         initPropertiesFromXml(element, id);
         initPartContainersFromXml(element);
         initExtPropertiesFromXml(element);
@@ -215,9 +215,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * The method is called by the initFromXml() method, so that subclasses can load their properties from
      * the xml element passed as parameter.
      * 
-     * @param element
+     * @param element 
+     * @param id The value for the id-property of the ips object part or null, if the id should be generated 
+     *           automatically (preferred).
      */
-    protected abstract void initPropertiesFromXml(Element element, int id);
+    protected abstract void initPropertiesFromXml(Element element, Integer id);
 
     /*
      * The method is called by the initFromXml() method to retrieve the values of the

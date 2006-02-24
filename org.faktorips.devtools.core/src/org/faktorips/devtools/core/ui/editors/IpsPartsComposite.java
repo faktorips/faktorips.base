@@ -1,5 +1,8 @@
 package org.faktorips.devtools.core.ui.editors;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -335,7 +338,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
         try {
             Table table = (Table)getViewer().getControl();
             int selectedIndexAfterDeletion = Math.min(table.getSelectionIndex(), table.getItemCount()-2);
-            getSelectedPart().delete();
+            IIpsObjectPart part = getSelectedPart();
+            fireAboutToDelete(part);
+            part.delete();
             if (selectedIndexAfterDeletion>=0) {
                 Object selected = viewer.getElementAt(selectedIndexAfterDeletion);
                 viewer.setSelection(new StructuredSelection(selected), true);
@@ -390,4 +395,19 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
         return indexes;
     }
     
+    private ArrayList deleteListeners = new ArrayList();
+    protected void addDeleteListener(IDeleteListener listener) {
+    	deleteListeners.add(listener);
+    }
+    
+    protected void removeDeleteListener(IDeleteListener listener) {
+    	deleteListeners.remove(listener);
+    }
+    
+    private void fireAboutToDelete(IIpsObjectPart part) {
+    	for (Iterator iter = deleteListeners.iterator(); iter.hasNext();) {
+			IDeleteListener listener = (IDeleteListener) iter.next();
+			listener.aboutToDelete(part);
+		}
+    }
 }

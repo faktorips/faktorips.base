@@ -1,11 +1,14 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -67,6 +70,22 @@ public class RulesSection extends SimpleIpsPartsSection {
          * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
+        	IValidationRule rule = (IValidationRule)part;
+        	if (rule.isCheckValueAgainstValueSetRule()) {
+        		String[] attrNames = rule.getValidatedAttributes();
+        		if (attrNames.length == 1) {
+        			IAttribute attr = getPcType().getAttribute(attrNames[0]);
+        			if (attr == null) {
+        				String msg = NLS.bind("This is a special rule to validate the value of the attribute {0} against its value set. The attribute does not exist, the rule is deleted.", attrNames[0]);
+        				MessageDialog.openInformation(getShell(), "Edit Rule", msg);
+        				rule.delete();
+        				return null;
+        			}
+        			AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell());
+        			dialog.showValidationRulePage();
+        			return dialog;
+        		}
+        	}
             return new RuleEditDialog((IValidationRule)part, shell);
         }
         

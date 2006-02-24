@@ -125,7 +125,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         validFrom = XmlUtil.parseXmlDateStringToGregorianCalendar(element.getAttribute(PROPERTY_VALID_FROM));
     }
@@ -146,7 +146,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 	public void initFromGeneration(IIpsObjectGeneration source) {
 		int id = this.getId();
 		Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
-		this.initFromXml(source.toXml(doc), id);
+		this.initFromXml(source.toXml(doc), new Integer(id));
 		updateSrcFile();
 		
 	}

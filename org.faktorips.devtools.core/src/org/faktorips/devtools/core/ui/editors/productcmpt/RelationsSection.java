@@ -221,12 +221,15 @@ public class RelationsSection extends IpsSection {
 
     /**
      * Creates a new relation which connects the currently displayed generation with the given target.
+     * The max cardinality for the new relation is set to the max cardinality of the given type.
      * 
      * @param target The target for the new relation.
      * @param relation The type of the new relation.
      */
     private void newRelation(String target, IProductCmptTypeRelation relation) {
-    	generation.newRelation(relation.getName()).setTarget(target);
+    	IProductCmptRelation prodRelation = generation.newRelation(relation.getName());
+    	prodRelation.setTarget(target);
+    	prodRelation.setMaxCardinality(relation.getMaxCardinality());
     }
 
     /**

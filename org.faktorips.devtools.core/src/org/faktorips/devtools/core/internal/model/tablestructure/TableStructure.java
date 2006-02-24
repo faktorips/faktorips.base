@@ -411,7 +411,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         // nothing else to do
     }

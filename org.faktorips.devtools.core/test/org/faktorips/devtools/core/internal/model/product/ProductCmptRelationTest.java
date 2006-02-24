@@ -11,6 +11,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -102,6 +103,62 @@ public class ProductCmptRelationTest extends IpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+ 
+    public void testValidate() throws CoreException {
+    	MessageList ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_UNKNWON_RELATIONTYPE));
+    	
+    	IRelation rel = policyCmptType.newRelation();
+    	rel.setTargetRoleSingularProductSide("CoverageType");
+
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_UNKNWON_RELATIONTYPE));
+    	
+    	relation.setTarget("unknown");
+    	ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_UNKNWON_TARGET));
+
+    	relation.setTarget(productCmpt.getQualifiedName());
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_UNKNWON_TARGET));
+    	
+    	relation.setMaxCardinality("");
+    	ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MISSING_MAX_CARDINALITY));
+
+    	relation.setMaxCardinality("0");
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MISSING_MAX_CARDINALITY));
+    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+
+    	relation.setMaxCardinality("1");
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+    	
+    	relation.setMinCardinality(2);
+    	ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+    	
+    	relation.setMaxCardinality("3");
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+    	
+    	rel.setMinCardinality(3);
+    	ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN));
+
+    	rel.setMinCardinality(0);
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN));
+    	
+    	rel.setMaxCardinality("1");
+    	ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+
+    	rel.setMaxCardinality("3");
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }
     
 }

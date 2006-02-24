@@ -217,6 +217,21 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertNotNull(pcType.getRelations()[0]);
     }
     
+    public void testGetProductRelevantRelations() {
+    	IRelation[] relations = pcType.getProductRelevantRelations();
+    	assertEquals(0, relations.length);
+    	
+    	IRelation rel1 = pcType.newRelation();
+    	IRelation rel2 = pcType.newRelation();
+    	
+    	rel1.setProductRelevant(false);
+    	rel2.setProductRelevant(true);
+    	
+    	relations = pcType.getProductRelevantRelations();
+    	assertEquals(1, relations.length);
+    	assertSame(rel2, relations[0]);
+    }
+    
     public void testGetRelation() {
         assertNull(pcType.getRelation("unkown"));
         IRelation r1 = pcType.newRelation();

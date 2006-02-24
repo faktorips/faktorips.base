@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueTextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -229,7 +230,7 @@ public class ProductAttributesSection extends IpsSection {
 			else {
 				Text text = toolkit.createText(rootPane);
 				editControls.add(text);
-				controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				controller.add(new ValueTextField(text), toDisplay, IConfigElement.PROPERTY_VALUE);		
 			}
 		} catch (CoreException e) {
 			Text text = toolkit.createText(rootPane);

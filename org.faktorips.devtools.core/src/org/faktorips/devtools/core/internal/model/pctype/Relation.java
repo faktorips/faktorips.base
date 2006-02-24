@@ -551,7 +551,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         type = RelationType.getRelationType(element.getAttribute(PROPERTY_RELATIONTYPE));
         readOnlyContainer = Boolean.valueOf(element.getAttribute(PROPERTY_READONLY_CONTAINER)).booleanValue();

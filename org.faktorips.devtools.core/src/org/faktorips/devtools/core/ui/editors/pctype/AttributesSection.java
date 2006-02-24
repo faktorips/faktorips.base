@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -9,9 +10,11 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.editors.IDeleteListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
@@ -42,6 +45,35 @@ public class AttributesSection extends SimpleIpsPartsSection {
         public AttributesComposite(IIpsObject pdObject, Composite parent,
                 UIToolkit toolkit) {
             super(pdObject, parent, toolkit);
+            super.addDeleteListener(new IDeleteListener() {
+			
+				public void aboutToDelete(IIpsObjectPart part) {
+					String msg = "A rule is defined for this attribute to check the value against the value set. Should this rule also be deleted?";
+					boolean delete = MessageDialog.openQuestion(getShell(), "Delete Attribute", msg);
+					IValidationRule rule = findValidationRule(part);
+					if (delete && rule != null) {
+						rule.delete();
+					}
+					else if (!delete && rule != null) {
+						rule.setCheckValueAgainstValueSetRule(false);
+					}
+				}
+			
+				private IValidationRule findValidationRule(IIpsObjectPart part) {
+					String name = part.getName();
+					IValidationRule[] rules = getPcType().getRules();
+					for (int i = 0; i < rules.length; i++) {
+						if (!rules[i].isCheckValueAgainstValueSetRule()) {
+							continue;
+						}
+						String[] attributes = rules[i].getValidatedAttributes();
+						if (attributes.length == 1 && attributes[0].equals(name)) {
+							return rules[i];
+						}
+					}
+					return null;
+				}
+			});
         }
         
         public IPolicyCmptType getPcType() {

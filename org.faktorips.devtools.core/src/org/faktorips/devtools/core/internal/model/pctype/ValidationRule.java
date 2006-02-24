@@ -48,6 +48,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	private boolean validatedAttrSpecifiedInSrc = false;
 
 	/**
+	 * Flag which is <code>true</code> if this rule is a default rule for validating the value of an attribute
+	 * against the value set defined for the attribute. Default means, that the rule is not a manually 
+	 * build rule - it is an automatically created rule. The creation of this rule has to be allowed by 
+	 * the user.
+	 */
+	private boolean checkValueAgainstValueSetRule = false;
+	
+	/**
 	 * Creates a new validation rule definition.
 	 * 
 	 * @param pcType
@@ -66,7 +74,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void delete() {
 		((PolicyCmptType) getIpsObject()).removeRule(this);
@@ -85,7 +93,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setName(String newName) {
 		String oldName = name;
@@ -94,21 +102,21 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public Image getImage() {
 		return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif");
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String[] getBusinessFunctions() {
 		return (String[]) functions.toArray(new String[functions.size()]);
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setBusinessFunctions(String[] functionNames) {
 		functions.clear();
@@ -119,14 +127,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public int getNumOfBusinessFunctions() {
 		return functions.size();
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void addBusinessFunction(String functionName) {
 		ArgumentCheck.notNull(functionName);
@@ -135,7 +143,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void removeBusinessFunction(int index) {
 		functions.remove(index);
@@ -143,14 +151,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String getBusinessFunction(int index) {
 		return (String) functions.get(index);
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setBusinessFunctions(int index, String functionName) {
 		ArgumentCheck.notNull(functionName);
@@ -160,14 +168,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public boolean isAppliedInAllBusinessFunctions() {
 		return applyInAll;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setAppliedInAllBusinessFunctions(boolean newValue) {
 		boolean oldValue = applyInAll;
@@ -176,12 +184,12 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	protected void validate(MessageList list) throws CoreException {
 		super.validate(list);
 		ValidationUtils.checkStringPropertyNotEmpty(name, "name", this,
-				PROPERTY_NAME, list);
+				PROPERTY_NAME, "", list);
 		IIpsProject project = getIpsProject();
 		for (Iterator it = functions.iterator(); it.hasNext();) {
 			String function = (String) it.next();
@@ -243,14 +251,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String getMessageText() {
 		return msgText;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setMessageText(String newText) {
 		String oldText = msgText;
@@ -259,14 +267,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String getMessageCode() {
 		return msgCode;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setMessageCode(String newCode) {
 		String oldCode = msgCode;
@@ -275,14 +283,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public MessageSeverity getMessageSeverity() {
 		return msgSeverity;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setMessageSeverity(MessageSeverity newSeverity) {
 		MessageSeverity oldSeverity = msgSeverity;
@@ -290,17 +298,19 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		valueChanged(oldSeverity, msgSeverity);
 	}
 
+	
+	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	protected Element createElement(Document doc) {
 		return doc.createElement(TAG_NAME);
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
-	protected void initPropertiesFromXml(Element element, int id) {
+	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		name = element.getAttribute(PROPERTY_NAME);
 		applyInAll = Boolean.valueOf(
@@ -310,6 +320,9 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		msgText = element.getAttribute(PROPERTY_MESSAGE_TEXT);
 		msgSeverity = MessageSeverity.getMessageSeverity(element
 				.getAttribute(PROPERTY_MESSAGE_SEVERITY));
+		checkValueAgainstValueSetRule = Boolean.valueOf(
+				element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
+				.booleanValue();
 		validatedAttrSpecifiedInSrc = Boolean.valueOf(
 				element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
 				.booleanValue();
@@ -330,9 +343,9 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		}
 		functions.trimToSize();
 	}
-
+	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	protected void propertiesToXml(Element newElement) {
 		super.propertiesToXml(newElement);
@@ -342,7 +355,8 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
 		newElement.setAttribute(PROPERTY_MESSAGE_TEXT, msgText);
 		newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
-		newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC,
+		newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(checkValueAgainstValueSetRule));
+		newElement.setAttribute(PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET,
 				String.valueOf(validatedAttrSpecifiedInSrc));
 		Document doc = newElement.getOwnerDocument();
 		for (int i = 0; i < functions.size(); i++) {
@@ -359,7 +373,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String addValidatedAttribute(String attributeName) {
 		ArgumentCheck.notNull(this, attributeName);
@@ -369,7 +383,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String[] getValidatedAttributes() {
 		return (String[]) validatedAttributes
@@ -377,7 +391,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void removeValidatedAttribute(int index) {
 		validatedAttributes.remove(index);
@@ -385,14 +399,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String getValidatedAttributeAt(int index) {
 		return (String) validatedAttributes.get(index);
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setValidatedAttributeAt(int index, String attributeName) {
 		String oldValue = getValidatedAttributeAt(index);
@@ -401,14 +415,14 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public boolean isValidatedAttrSpecifiedInSrc() {
 		return validatedAttrSpecifiedInSrc;
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public void setValidatedAttrSpecifiedInSrc(
 			boolean validatedAttrSpecifiedInSrc) {
@@ -417,7 +431,29 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		valueChanged(oldValue, validatedAttrSpecifiedInSrc);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isCheckValueAgainstValueSetRule() {
+		return checkValueAgainstValueSetRule;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setCheckValueAgainstValueSetRule(boolean isAttributeValueValidationRule) {
+		boolean oldValue = isCheckValueAgainstValueSetRule();
+		this.checkValueAgainstValueSetRule = isAttributeValueValidationRule;
+		valueChanged(oldValue, isAttributeValueValidationRule);
+		
+	}
+	
+
 }

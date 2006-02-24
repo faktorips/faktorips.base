@@ -58,31 +58,31 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getProductCmptType() {
 		return getIpsPackageFragment().getName() + '.' + unqalifiedProductCmptType;
 	}
     
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public boolean isConfigurableByProductCmptType() {
 		return configurableByProductCmptType;
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public void setConfigurableByProductCmptType(boolean newValue) {
 		boolean oldValue = configurableByProductCmptType;
 		configurableByProductCmptType = newValue;
 		valueChanged(oldValue, newValue);
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public IProductCmptType findProductCmptType() throws CoreException {
 		if (!configurableByProductCmptType) {
 			return null;
@@ -93,16 +93,16 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		return new ProductCmptType(this);
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public String getUnqualifiedProductCmptType() {
 		return unqalifiedProductCmptType;
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public void setUnqualifiedProductCmptType(String newUnqualifiedName) {
 		ArgumentCheck.notNull(newUnqualifiedName);
         String oldName = unqalifiedProductCmptType;
@@ -146,8 +146,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return getIpsProject().findPolicyCmptType(supertype);
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public void setSupertype(String newSupertype) {
         String oldSupertype = supertype;
@@ -156,14 +156,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isForceExtensionCompilationUnitGeneration() {
         return forceExtensionCompilationUnitGeneration;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setForceExtensionCompilationUnitGeneration(boolean flag) {
         boolean oldValue = forceExtensionCompilationUnitGeneration;
@@ -172,7 +172,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isExtensionCompilationUnitGenerated() {
         if (forceExtensionCompilationUnitGeneration) {
@@ -201,7 +201,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
         int numOfChildren = getNumOfAttributes()
@@ -218,8 +218,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return childrenArray;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IAttribute[] getAttributes() {
         IAttribute[] a = new IAttribute[attributes.size()];
@@ -228,7 +228,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IAttribute getAttribute(String name) {
         for (Iterator it=attributes.iterator(); it.hasNext();) {
@@ -241,14 +241,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public int getNumOfAttributes() {
         return attributes.size();
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IAttribute newAttribute() {
         Attribute a = newAttributeInternal(getNextPartId());
@@ -257,7 +257,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public int[] moveAttributes(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(attributes);
@@ -287,9 +287,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         attributes.remove(attribute);
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#getMethods()
+    /**
+     * {@inheritDoc}
      */
     public IMethod[] getMethods() {
         IMethod[] m = new IMethod[methods.size()];
@@ -304,9 +303,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return methods;
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#newMethod()
+    /**
+     * {@inheritDoc}
      */
     public IMethod newMethod() {
         IMethod m = newMethodInternal(getNextPartId());
@@ -323,15 +321,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return m;
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public int getNumOfMethods() {
         return methods.size();
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public int[] moveMethods(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(methods);
@@ -345,8 +343,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         methods.remove(method);
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IRelation[] getRelations() {
         IRelation[] r = new IRelation[relations.size()];
@@ -355,7 +353,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IRelation getRelation(String name) {
         ArgumentCheck.notNull(name);
@@ -369,9 +367,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
-    //TODO test case
     public IRelation[] getProductRelevantRelations(){
         ArrayList productRelevantRelations = new ArrayList();
         for (Iterator it = relations.iterator(); it.hasNext();) {
@@ -472,17 +469,17 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         rules.remove(rule);
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.POLICY_CMPT_TYPE;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE)).booleanValue();
         unqalifiedProductCmptType = element.getAttribute(PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
@@ -492,7 +489,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void reinitPartCollections() {
         attributes.clear();
@@ -502,7 +499,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
         if (part instanceof IAttribute) {
@@ -538,7 +535,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
@@ -550,7 +547,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void validateThis(MessageList list) throws CoreException {
         IPolicyCmptType supertypeObj = null;
@@ -613,15 +610,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return isAbstractMethodImplemented(supertype, method, hierarchy);
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public boolean isAbstract() {
         return abstractFlag;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public void setAbstract(boolean newValue) {
         boolean oldValue = abstractFlag;
@@ -629,22 +626,22 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         valueChanged(oldValue, newValue);
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
         return TypeHierarchy.getSupertypeHierarchy(this);
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
         return TypeHierarchy.getSubtypeHierarchie(this);
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IMethod[] findOverrideCandidates(boolean onlyAbstractMethods) throws CoreException {
         List candidates = new ArrayList();
@@ -657,7 +654,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         ArrayList qualifiedNameTypes = new ArrayList();
@@ -706,14 +703,14 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean hasSameMethod(IMethod method) {
         return getMatchingMethod(method)!=null;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IMethod getMatchingMethod(IMethod method) {
         for (Iterator it=this.methods.iterator(); it.hasNext(); ) {
@@ -725,8 +722,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return null;
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IMethod[] override(IMethod[] methods) {
         IMethod[] newMethods = new IMethod[methods.length];
@@ -742,29 +739,29 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return newMethods;
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public boolean isVoid() {
         return false;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public boolean isPrimitive() {
         return false;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public boolean isValueDatatype() {
         return false;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public int compareTo(Object o) {
         return 0;

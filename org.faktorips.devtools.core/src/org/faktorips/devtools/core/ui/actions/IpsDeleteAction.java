@@ -11,7 +11,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 
 
 public class IpsDeleteAction extends IpsAction {
@@ -28,12 +27,6 @@ public class IpsDeleteAction extends IpsAction {
 
             if (selected instanceof IIpsObjectPart) {
                 ((IIpsObjectPart)selected).delete();
-            }
-            else if (selected instanceof IProductCmptGeneration) {
-                IProductCmptGeneration generation = (IProductCmptGeneration)selected;
-                if (generation.getProductCmpt().getGenerations().length == 1) {
-                    // TODO ask for deletion
-                }
             }
             else if (selected instanceof IIpsElement) {
                 IResource res;

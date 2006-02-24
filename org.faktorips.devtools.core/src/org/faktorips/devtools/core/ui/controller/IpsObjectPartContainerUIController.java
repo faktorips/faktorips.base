@@ -9,9 +9,8 @@ package org.faktorips.devtools.core.ui.controller;
 public abstract class IpsObjectPartContainerUIController extends DefaultUIController {
 
 
-		public IpsObjectPartContainerUIController() {
+	public IpsObjectPartContainerUIController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 		public abstract void add(EditField editField, String propertyName);

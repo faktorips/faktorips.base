@@ -8,6 +8,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ValueToXmlHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
@@ -28,6 +29,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * 
@@ -326,11 +328,29 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	/**
 	 * Overridden.
 	 */
-	protected void initPropertiesFromXml(Element element, int id) {
+	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		type = ConfigElementType.getConfigElementType(element
 				.getAttribute(PROPERTY_TYPE));
-		value = element.getAttribute(PROPERTY_VALUE);
+		
+		//TODO remove migration code
+		// Code for migrating old content
+		Node valueAttr = element.getAttributeNode(PROPERTY_VALUE);
+		String tmpValue = null;
+		if (valueAttr != null) {
+			tmpValue = element.getAttribute(PROPERTY_VALUE);
+		}
+		// end of migration code
+		
+		value = ValueToXmlHelper.getValueFromElement(element, "Value");
+		
+		//TODO remove migration code
+		// Code for migrating old content
+		if (value == null) {
+			value = tmpValue;
+		}
+		// end of migration code
+
 		pcTypeAttribute = element.getAttribute(PROPERTY_PCTYPE_ATTRIBUTE);
 		name = pcTypeAttribute;
 		Element valueSetEl = XmlUtil.getFirstElement(element, ValueSet.XML_TAG);
@@ -348,7 +368,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_TYPE, type.getId());
 		element.setAttribute(PROPERTY_PCTYPE_ATTRIBUTE, pcTypeAttribute);
-		element.setAttribute(PROPERTY_VALUE, value);
+		ValueToXmlHelper.addValueToElement(value, element, "Value");
 		element.appendChild(valueSet.toXml(element.getOwnerDocument()));
 	}
 

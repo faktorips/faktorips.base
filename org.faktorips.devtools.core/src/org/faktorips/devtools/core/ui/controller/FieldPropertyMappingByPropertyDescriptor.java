@@ -78,7 +78,7 @@ class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
             }
             field.setValue(propertyValue, false);
         } catch (Exception e) {
-            throw new RuntimeException("Error setting value in control for property " + property.getName());
+            throw new RuntimeException("Error setting value in control for property " + property.getName(), e);
         }
     }
     

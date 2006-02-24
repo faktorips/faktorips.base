@@ -163,7 +163,7 @@ public class ValidationUtils {
     {
         if (StringUtils.isEmpty(propertyValue)) {
             String text = StringUtils.capitalise(propertyDisplayName) + " is missing.";
-            list.add(new Message("", text, Message.ERROR, object, propertyName));
+            list.add(new Message(msgCode, text, Message.ERROR, object, propertyName));
             return false;
         }
         return true;

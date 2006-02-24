@@ -167,7 +167,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         // nothing else to do so far
     }

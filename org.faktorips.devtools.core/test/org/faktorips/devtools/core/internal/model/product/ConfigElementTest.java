@@ -311,6 +311,13 @@ public class ConfigElementTest extends IpsPluginTest {
         assertEquals("two", ((EnumValueSet)cfgElement.getValueSet()).getValues()[1]);
         assertEquals("three", ((EnumValueSet)cfgElement.getValueSet()).getValues()[2]);
         assertEquals("four", ((EnumValueSet)cfgElement.getValueSet()).getValues()[3]);
+        
+        cfgElement.setValue(null);
+        xmlElement = cfgElement.toXml(getTestDocument());
+        newCfgElement.initFromXml(xmlElement);
+        
+        assertNull(newCfgElement.getValue());
+        
 
     }
 

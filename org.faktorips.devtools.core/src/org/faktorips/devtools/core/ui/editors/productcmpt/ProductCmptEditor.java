@@ -284,9 +284,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			this.setActiveGeneration(generation);
 			setPropertiesEnabled(true);
 			refreshStructure();
-
-			// TODO It is possible, that the user has changed the active generation before. In this
-			// case, we should preserve the active generation...
 		}
 		else {
 			setPropertiesEnabled(true);

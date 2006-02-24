@@ -153,7 +153,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         structure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
         numOfColumns = Integer.parseInt(element.getAttribute("numOfColumns"));

@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.ValueTextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -157,22 +157,28 @@ public class DefaultsAndRangesSection extends IpsSection {
         		controller.add(defaultField, elements[i], IConfigElement.PROPERTY_VALUE);
         		uiMasterController.add(controller);
         		
-    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
-    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell());
-    			evc.setText(valueSet.toString());
-    			this.editControls.add(evc.getTextControl());
+        		if (!valueSet.isAllValues()) {
+        			// only if the value set defined in the model is not an all values value set
+        			// we can modify the content of the value set.
+	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
+	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell());
+	    			evc.setText(valueSet.toString());
+	    			this.editControls.add(evc.getTextControl());
+        		}
     		}
     		else if (valueSet.isRange() || valueSet.isAllValues()) {
         		IpsPartUIController controller = new IpsPartUIController(elements[i]);
 
     			Text text = toolkit.createText(rootPane);    			
     			this.editControls.add(text);
-        		TextField field = new TextField(text);
+        		ValueTextField field = new ValueTextField(text);
         		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
         		uiMasterController.add(controller);
 
-        		if (!(valueSet.isAllValues() && attribute.getDatatype().equals(Datatype.STRING.getName()))) {
+        		if (!valueSet.isAllValues() && !attribute.getDatatype().equals(Datatype.STRING.getName())) {
+        			// only if the value set defined in the model is not an all values value set
+        			// and the datatype is not a string we can modify the ranges of the value set.
         			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
         			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
         			Text lower = toolkit.createText(rootPane);

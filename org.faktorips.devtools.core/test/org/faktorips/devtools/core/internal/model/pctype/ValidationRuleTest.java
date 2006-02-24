@@ -117,6 +117,7 @@ public class ValidationRuleTest extends IpsObjectTestCase {
         rule.setMessageSeverity(MessageSeverity.WARNING);
         rule.setBusinessFunctions(new String[]{"NewOffer", "Renewal"});
         rule.addValidatedAttribute("a");
+        rule.setCheckValueAgainstValueSetRule(true);
         
         Element element = rule.toXml(this.newDocument());
         
@@ -135,6 +136,7 @@ public class ValidationRuleTest extends IpsObjectTestCase {
         assertEquals("Renewal", functions[1]);
         String[] validationAttributes = copy.getValidatedAttributes();
         assertEquals("a", validationAttributes[0]);
+        assertTrue(copy.isCheckValueAgainstValueSetRule());
     }
     
     public void testAddBusinessFunction() {

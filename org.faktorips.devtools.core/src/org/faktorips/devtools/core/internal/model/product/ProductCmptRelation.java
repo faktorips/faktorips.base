@@ -1,12 +1,14 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -160,9 +162,13 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
         IProductCmptTypeRelation relation = findProductCmptTypeRelation();
+    	IRelation relType = null;
         if (relation==null) {
             String text = "There is no relation " + productCmptTypeRelation + " defined in " + getProductCmpt().getPolicyCmptType() + ".";
             list.add(new Message(MSGCODE_UNKNWON_RELATIONTYPE, text, Message.ERROR, this, PROPERTY_PCTYPE_RELATION));
+        }
+        else {
+        	relType = relation.findPolicyCmptTypeRelation();
         }
         ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT, true, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list);
         if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, MSGCODE_MISSING_MAX_CARDINALITY,  list)) {
@@ -185,6 +191,25 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
                     String text = "Minimum cardinality is greater than maximum cardinality.";
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY}));
                 }
+                if (relType != null && !relType.getMaxCardinality().equals("*")) {
+                    try {
+						int maxType = Integer.parseInt(relType.getMaxCardinality());
+						if (max > maxType) {
+							String text = NLS.bind("The maximum cardinality ({0}) exceeds the model defined maximum cardinality ({1})", maxCardinality, relType.getMaxCardinality());
+							list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
+						}
+					} catch (NumberFormatException e) {
+						// ignore this problem in the model
+					}
+                }
+            }
+        }
+        if (relType != null) {
+            if (minCardinality < relType.getMinCardinality()) {
+            	Integer min = new Integer(minCardinality);
+            	Integer modelMin = new Integer(relType.getMinCardinality());
+            	String text = NLS.bind("Minimum cardinality ({0}) is less than the minimum cardinality defined in the model ({1})", min, modelMin);
+            	list.add(new Message(MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN, text, Message.ERROR, this, PROPERTY_MIN_CARDINALITY));
             }
         }
     }
@@ -200,7 +225,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         productCmptTypeRelation = element.getAttribute(PROPERTY_PCTYPE_RELATION);
         target = element.getAttribute(PROPERTY_TARGET);

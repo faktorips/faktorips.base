@@ -51,15 +51,7 @@ public class RelationsLabelProvider implements ILabelProvider{
 			return ((IProductCmptTypeRelation)element).getImage();
 		}
 		else if (element instanceof IProductCmptRelation) {
-			IProductCmptRelation rel = ((IProductCmptRelation)element);
-			try {
-				IIpsObject ipsObj = rel.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, rel.getTarget());
-				if (ipsObj != null) {
-					return ipsObj.getImage();
-				}
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
+			return IpsObjectType.PRODUCT_CMPT.getImage();
 		}
 		return IpsPlugin.getDefault().getImage(Messages.RelationsLabelProvider_undefined);
 	}

@@ -142,7 +142,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     /**
      * Overridden.
      */
-    protected void initPropertiesFromXml(Element element, int id) {
+    protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
     }

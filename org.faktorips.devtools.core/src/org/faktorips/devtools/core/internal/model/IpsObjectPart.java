@@ -169,9 +169,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
-    protected void initPropertiesFromXml(Element element, int id) {
-    	if (id != -1) {
-    		this.id = id;
+    protected void initPropertiesFromXml(Element element, Integer id) {
+    	if (id != null) {
+    		this.id = id.intValue();
     	}
     	else {
 	        String s = element.getAttribute(PROPERTY_ID);

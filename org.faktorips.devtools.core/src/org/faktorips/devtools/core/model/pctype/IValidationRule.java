@@ -24,6 +24,7 @@ public interface IValidationRule extends IIpsObjectPart {
 
 	public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc";
 
+	public final static String PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET = "validatesAttrValueAgainstValueSet";
 	/**
 	 * Sets the rules name.
 	 */
@@ -173,5 +174,21 @@ public interface IValidationRule extends IIpsObjectPart {
 	 */
 	public void setValidatedAttrSpecifiedInSrc(
 			boolean validatedAttrSpecifiedInSrc);
+	
+	/**
+	 * Returns <code>true</code> if this rule is a default rule for validating the value of an attribute
+	 * against the value set defined for the attribute. Default means, that the rule is not a manually 
+	 * build rule - it is an automatically created rule. The creation of this rule has to be allowed by 
+	 * the user.
+	 */
+	public boolean isCheckValueAgainstValueSetRule();
 
+	/**
+	 * Sets the isAttributeValueValidationRule flag that indicates whether this 
+	 * is a default rule or not.
+	 * 
+	 * @see #isCheckValueAgainstValueSetRule()
+	 */
+	public void setCheckValueAgainstValueSetRule(boolean isCheckValueAgainstValueSetRule);
+	
 }
