@@ -588,9 +588,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	}
 
 	/**
-	 * Overridden IMethod.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#delete(org.faktorips.devtools.core.model.IIpsSrcFile)
+	 * {@inheritDoc}
 	 */
 	public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
 		IFile file = getJavaFile(ipsSrcFile);

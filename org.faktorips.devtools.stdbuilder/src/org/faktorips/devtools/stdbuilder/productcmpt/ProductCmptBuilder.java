@@ -95,6 +95,10 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         if (!productCmpt.containsFormula()) {
             return;
         }
+        if (productCmpt.findProductCmptType()==null) {
+            // if the type can't be found, nothing an be generated.
+            return;
+        }
         IIpsObjectGeneration[] generations = productCmpt.getGenerations();
         for (int i = 0; i < generations.length; i++) {
             build((IProductCmptGeneration)generations[i]);

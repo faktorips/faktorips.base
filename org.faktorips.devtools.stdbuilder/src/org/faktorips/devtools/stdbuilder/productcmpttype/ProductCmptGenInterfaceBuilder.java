@@ -188,7 +188,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if (relation.is1ToMany()) {

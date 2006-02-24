@@ -47,11 +47,31 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * Overridden.
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        if (!ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
-            return false;
-        }
+        return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        return type.isConfigurableByProductCmptType();
+        if (type.isConfigurableByProductCmptType()) {
+            // this condition can't be handled in isBuilderFor() as the isBuilderFor() method
+            // is also called in the case the file has been deleted. In this case, the 
+            // file's ips object can't be accessed. 
+            super.build(ipsSrcFile);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+        // TODO delete generate files for product cmpt type
+        // the problem here is that the name of the product component type can't
+        // be derived from the file name. It is stored in the ips srcfile that contains
+        // the policy component type. But this has been deleted, so we don't now the name
+        // of the product component type. perhaps we can use the toc.
     }
 
     /**
@@ -98,7 +118,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
         return getChangesInTimeNamingConvention(element).
             getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(element));
     }
-
+    
     /**
      * Overridden.
      * 

@@ -124,7 +124,6 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
         assertTrue(result.failed());
         assertEquals(1, result.getMessages().getNoOfMessages());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
-
     }
 
 }

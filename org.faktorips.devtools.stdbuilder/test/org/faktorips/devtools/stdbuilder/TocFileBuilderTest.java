@@ -18,9 +18,7 @@ import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
 import org.faktorips.runtime.TocEntryGeneration;
 import org.faktorips.runtime.TocEntryObject;
-import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * 
