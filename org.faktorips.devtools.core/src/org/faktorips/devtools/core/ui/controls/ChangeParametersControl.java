@@ -1,4 +1,4 @@
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.corext.Assert;
+import org.eclipse.jface.util.Assert;
 import org.eclipse.jdt.internal.ui.util.SWTUtil;
 import org.eclipse.jdt.internal.ui.util.TableLayoutComposite;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
@@ -53,6 +53,8 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
+import org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -281,6 +283,10 @@ public abstract class ChangeParametersControl extends Composite {
 	
 	public List getInput() {
 	    return fParameterInfos;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.fTableViewer.getControl().setEnabled(enabled);
 	}
 	
 	// ---- Parameter table -----------------------------------------------------------------------------------

@@ -9,8 +9,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -135,7 +135,7 @@ public class FormulasSection extends IpsSection {
 					elements[i], this.getShell());
 			ctrl.add(new ValueTextField(evc.getTextControl()), elements[i],
 					ConfigElement.PROPERTY_VALUE);
-			this.editControls.add(evc.getTextControl());
+			this.editControls.add(evc);
 
 			try {
 				FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(
@@ -157,12 +157,12 @@ public class FormulasSection extends IpsSection {
 	 * {@inheritDoc}
 	 */
 	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
+//		super.setEnabled(enabled);
 
 		// to get the disabled look, we have to disable all the input-fields
 		// manually :-(
 		for (Iterator iter = editControls.iterator(); iter.hasNext();) {
-			Text element = (Text) iter.next();
+			Control element = (Control) iter.next();
 			element.setEnabled(enabled);
 
 		}

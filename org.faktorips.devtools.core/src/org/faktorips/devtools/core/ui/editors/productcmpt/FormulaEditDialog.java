@@ -19,8 +19,8 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
-import org.faktorips.devtools.core.ui.editors.pctype.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -44,17 +44,45 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     
     // edit fields
     private TextField formulaField;
+    
+    /**
+     * Flag indicating that this dialog is only a view (which does not allow to 
+     * modify its contents).
+     */
+    private boolean viewOnly = false;
 
+    /**
+     * Creates a new dialog which allows to edit a formula. This dialog is editable.
+     * 
+     * @param configElement The config element the formula is for.
+     * @param parentShell The shell as parent for the dialog.
+     * 
+     * @throws CoreException if the config element is invalid (e.g. no datatype can be found for it).
+     */
     public FormulaEditDialog(IConfigElement configElement, Shell parentShell) throws CoreException {
+    	this(configElement, parentShell, false);
+    }
+    
+    /**
+     * Creates a new dialog which allows to edit a formula. 
+     * 
+     * @param configElement The config element the formula is for.
+     * @param parentShell The shell as parent for the dialog.
+     * @param viewOnly <code>true</code> to get a dialog where no modifications can be made, 
+     *        <code>false</code> to get a unlocked, fully modifyable dialog.
+     *        
+     * @throws CoreException if the config element is invalid (e.g. no datatype can be found for it).
+     */
+    public FormulaEditDialog(IConfigElement configElement, Shell parentShell, boolean viewOnly) throws CoreException {
         super(configElement, parentShell, Messages.FormulaEditDialog_editFormula, true);
         ArgumentCheck.notNull(configElement);
         this.configElement = configElement;
         attribute = configElement.findPcTypeAttribute();
+        this.viewOnly = viewOnly;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -64,6 +92,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         firstPage.setControl(createFirstPage(folder));
         
         createDescriptionTabItem(folder);
+        super.setEnabledDescription(!viewOnly);
+
         return folder;
     }
     
@@ -107,6 +137,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setTableStyle(SWT.BORDER);
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
+        parametersControl.setEnabled(!viewOnly);
         
         Text formulaText = uiToolkit.createMultilineText(c);
         try {
@@ -117,6 +148,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        formulaText.setEnabled(!viewOnly);
         
         // create fields
         formulaField = new TextField(formulaText);
@@ -125,8 +157,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
+     * {@inheritDoc}
      */
     protected void connectToModel() {
         super.connectToModel();

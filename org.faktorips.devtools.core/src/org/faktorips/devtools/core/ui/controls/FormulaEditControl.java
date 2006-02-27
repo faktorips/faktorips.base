@@ -27,10 +27,14 @@ public class FormulaEditControl extends TextButtonControl {
 	
 	protected void buttonClicked() {
 		try {
-			new FormulaEditDialog(configElement, shell).open();
+			new FormulaEditDialog(configElement, shell, !super.getTextControl().isEnabled()).open();
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}
 	}
 
+	public void setEnabled(boolean enabled) {
+		super.getTextControl().setEnabled(enabled);
+	}
+	
 }

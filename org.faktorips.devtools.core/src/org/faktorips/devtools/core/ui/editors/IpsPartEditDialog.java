@@ -94,4 +94,9 @@ public abstract class IpsPartEditDialog extends EditDialog {
         }
     }
 
+    protected void setEnabledDescription(boolean enabled) {
+    	if (descriptionField != null) {
+    		descriptionField.getControl().setEnabled(enabled);
+    	}
+    }
 }
