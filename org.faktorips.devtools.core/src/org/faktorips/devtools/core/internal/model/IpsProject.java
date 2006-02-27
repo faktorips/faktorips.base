@@ -79,7 +79,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Returns the file that stores the project's properties. Note that the file need not exist.
      */
     public IFile getIpsProjectPropertiesFile() {
-    	return getProject().getFile(".ipsproject");
+    	return getProject().getFile(".ipsproject"); //$NON-NLS-1$
     }
 
     /**
@@ -93,7 +93,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public String getXmlFileCharset() {
-        return "UTF-8";
+        return "UTF-8"; //$NON-NLS-1$
     }
     
     /**
@@ -185,13 +185,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
             contents = XmlUtil.nodeToString(propertiesEl, charset);
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(
-                    "Error tranforming project data to xml string", e));
+                    "Error tranforming project data to xml string", e)); //$NON-NLS-1$
         }
         ByteArrayInputStream is;
         try {
             is = new ByteArrayInputStream(contents.getBytes(charset));
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus("Error creating byte stream", e));
+            throw new CoreException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
         }
         if (file.exists()) {
             file.setContents(is, true, true, null);
@@ -264,7 +264,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsProject.gif");
+        return IpsPlugin.getDefault().getImage("IpsProject.gif"); //$NON-NLS-1$
     }
 
     /**
@@ -628,7 +628,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public JavaCodeFragment getCodeToGetTheRuntimeRepository() throws CoreException {
-        return new JavaCodeFragment("null"); // TODO must read from ipsproject file.
+        return new JavaCodeFragment("null"); // TODO must read from ipsproject file. //$NON-NLS-1$
     }
     
     private IpsProjectProperties getProperties() {

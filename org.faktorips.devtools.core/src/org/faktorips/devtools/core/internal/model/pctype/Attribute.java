@@ -34,13 +34,13 @@ import org.w3c.dom.NodeList;
  */
 public class Attribute extends Member implements IAttribute {
 
-    private static final String TAG_PROPERTY_PARAMETER = "FormulaParameter";
-    final static String TAG_NAME = "Attribute";
-    private static final String TAG_PARAM_NAME = "name";
-    private static final String TAG_PARAM_DATATYPE = "datatype";
+    private static final String TAG_PROPERTY_PARAMETER = "FormulaParameter"; //$NON-NLS-1$
+    final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
+    private static final String TAG_PARAM_NAME = "name"; //$NON-NLS-1$
+    private static final String TAG_PARAM_DATATYPE = "datatype"; //$NON-NLS-1$
 
     // member variables.
-    private String datatype = "";
+    private String datatype = ""; //$NON-NLS-1$
     private boolean productRelevant = true;
     private AttributeType attributeType = AttributeType.CHANGEABLE;
     private String defaultValue = null;
@@ -218,7 +218,7 @@ public class Attribute extends Member implements IAttribute {
         if (attributeType == AttributeType.COMPUTED || attributeType == AttributeType.DERIVED) {
             return ConfigElementType.FORMULA;
         }
-        throw new RuntimeException("Unkown AttributeType!");
+        throw new RuntimeException("Unkown AttributeType!"); //$NON-NLS-1$
     }
 
     /**
@@ -226,9 +226,9 @@ public class Attribute extends Member implements IAttribute {
      */
     public Image getImage() {
         if (modifier == Modifier.PRIVATE) {
-            return IpsPlugin.getDefault().getImage("AttributePrivate.gif");
+            return IpsPlugin.getDefault().getImage("AttributePrivate.gif"); //$NON-NLS-1$
         } else {
-            return IpsPlugin.getDefault().getImage("AttributePublic.gif");
+            return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
         }
 
     }
@@ -265,35 +265,35 @@ public class Attribute extends Member implements IAttribute {
     	super.validate(result);
         IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()) {
-            result.add(new Message("", "Invalid attribute name " + name + "!", Message.ERROR, this, PROPERTY_NAME));
+            result.add(new Message("", Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-3$
         }
         Datatype datatypeObject = ValidationUtils.checkDatatypeReference(datatype, true, false, this,
                 PROPERTY_DATATYPE, result);
         if (datatypeObject == null) {
             if (!StringUtils.isEmpty(defaultValue)) {
-                String text = "The default value " + defaultValue + " can't be parsed because the datatype is unkown!";
-                result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
+                String text = Messages.Attribute_msgDefaultNotParsable_UnknownDatatype + defaultValue + Messages.Attribute_12;
+                result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
             } else {
             }
         } else {
             if (!datatypeObject.isValueDatatype()) {
                 if (!StringUtils.isEmpty(datatype)) {
-                    String text = "The default value " + defaultValue + " can't be parsed because the datatype is not a value datatype!";
-                    result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
+                    String text = Messages.Attribute_msgValueNotParsable_InvalidDatatype + defaultValue + Messages.Attribute_15;
+                    result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                 } else {
                 }
             } else {
                 ValueDatatype valueDatatype = (ValueDatatype)datatypeObject;
                 if (StringUtils.isNotEmpty(defaultValue)) {
                     if (!valueDatatype.isParsable(defaultValue)) {
-                        String text = "The default value " + defaultValue + " is not a " + datatype + ".";
-                        result.add(new Message("", text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE));
+                        String text = Messages.Attribute_msgValueTypeMismatch + defaultValue + Messages.Attribute_18 + datatype + Messages.Attribute_19;
+                        result.add(new Message("", text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                         return;
                     }
                     if (valueSet != null) {
                         if (valueSet.containsValue(defaultValue, valueDatatype) == false) {
-                            result.add(new Message("", "The default value " + defaultValue
-                                    + " is no member of the specified valueSet!", Message.ERROR, this,
+                            result.add(new Message("", Messages.Attribute_msgDefaultNotInValueset + defaultValue //$NON-NLS-1$
+                                    + Messages.Attribute_23, Message.ERROR, this,
                                     PROPERTY_DEFAULT_VALUE));
                         }
                     }
@@ -301,8 +301,8 @@ public class Attribute extends Member implements IAttribute {
                 valueSet.validate(valueDatatype, result);
             }
             if (isDerivedOrComputed() && isProductRelevant() && parameters.length == 0) {
-                String text = "No parameters are defined as input for the calculation formulas.";
-                result.add(new Message("", text, Message.WARNING, this));
+                String text = Messages.Attribute_msgNoInputparams;
+                result.add(new Message("", text, Message.WARNING, this)); //$NON-NLS-1$
             }
         }
         for (int i = 0; i < parameters.length; i++) {
@@ -313,27 +313,27 @@ public class Attribute extends Member implements IAttribute {
 
     private void validate(Parameter param, MessageList result) throws CoreException {
         if (!isDerivedOrComputed() && !isProductRelevant()) {
-            String text = "The definition of calculation parameters is only neccessary for computed attributes that are product relevant.";
-            result.add(new Message("", text, Message.WARNING, param));
+            String text = Messages.Attribute_msgNoParamsNeccessary;
+            result.add(new Message("", text, Message.WARNING, param)); //$NON-NLS-1$
         }
         if (StringUtils.isEmpty(param.getName())) {
-            result.add(new Message("", "The name is empty!", Message.ERROR, param, PROPERTY_FORMULAPARAM_NAME));
+            result.add(new Message("", Messages.Attribute_msgEmptyName, Message.ERROR, param, PROPERTY_FORMULAPARAM_NAME)); //$NON-NLS-1$
         } else {
             IStatus status = JavaConventions.validateIdentifier(param.getName());
             if (!status.isOK()) {
                 result
-                        .add(new Message("", "Invalid parameter name.", Message.ERROR, param,
+                        .add(new Message("", Messages.Attribute_msgInvalidParamName, Message.ERROR, param, //$NON-NLS-1$
                                 PROPERTY_FORMULAPARAM_NAME));
             }
         }
         if (StringUtils.isEmpty(param.getDatatype())) {
-            result.add(new Message("", "The datatype is empty!", Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE));
+            result.add(new Message("", Messages.Attribute_msgDatatypeEmpty, Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE)); //$NON-NLS-1$
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
             if (datatypeObject == null) {
                 result
-                        .add(new Message("", "The datatype " + param.getDatatype()
-                                + " does not exists on the object path!", Message.ERROR, param,
+                        .add(new Message("", Messages.Attribute_msgDatatypeNotFound + param.getDatatype() //$NON-NLS-1$
+                                + Messages.Attribute_36, Message.ERROR, param,
                                 PROPERTY_FORMULAPARAM_DATATYPE));
             } else {
             	if (datatypeObject instanceof ValueDatatype) {
@@ -365,7 +365,7 @@ public class Attribute extends Member implements IAttribute {
         modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
-        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue");
+        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
         Element valueSetEl = XmlUtil.getFirstElement(element, ValueSet.XML_TAG);
         if (valueSetEl == null) {
             valueSet = ValueSet.ALL_VALUES;
@@ -395,10 +395,10 @@ public class Attribute extends Member implements IAttribute {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant);
+        element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
         element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
-        ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue");
+        ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
         Document doc = element.getOwnerDocument();
         element.appendChild(valueSet.toXml(doc));
         for (int i = 0; i < parameters.length; i++) {
@@ -410,6 +410,6 @@ public class Attribute extends Member implements IAttribute {
     }
    
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

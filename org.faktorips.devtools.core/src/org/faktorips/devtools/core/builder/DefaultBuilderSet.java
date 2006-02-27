@@ -32,20 +32,20 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     // implementations. Since the JavaSourceFileBuilder implementations might get used in other
     // artefact builder sets using these constants would introduce a dependency to this builder set.
     // however the constants are public for use in test cases
-    public final static String KIND_PRODUCT_CMPT_INTERFACE = "productcmptinterface";
-    public final static String KIND_PRODUCT_CMPT_IMPL = "productcmptimplementation";
-    public final static String KIND_PRODUCT_CMPT_GENERATION_INTERFACE = "productCmptGenerationInterface";
-    public final static String KIND_PRODUCT_CMPT_GENERATION_IMPL = "productCmptGenerationImpl";
-    public final static String KIND_PRODUCT_CMPT_CONTENT = "productcmptcontent";
-    public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry";
-    public final static String KIND_POLICY_CMPT_INTERFACE = "policycmptinterface";
-    public final static String KIND_POLICY_CMPT_IMPL = "policycmptimpl";
-    public final static String KIND_TABLE_IMPL = "tableimpl";
-    public final static String KIND_TABLE_CONTENT = "tablecontent";
-    public final static String KIND_TABLE_TOCENTRY = "tabletocentry";
-    public final static String KIND_TABLE_ROW = "tablerow";
+    public final static String KIND_PRODUCT_CMPT_INTERFACE = "productcmptinterface"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_IMPL = "productcmptimplementation"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_GENERATION_INTERFACE = "productCmptGenerationInterface"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_GENERATION_IMPL = "productCmptGenerationImpl"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_CONTENT = "productcmptcontent"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
+    public final static String KIND_POLICY_CMPT_INTERFACE = "policycmptinterface"; //$NON-NLS-1$
+    public final static String KIND_POLICY_CMPT_IMPL = "policycmptimpl"; //$NON-NLS-1$
+    public final static String KIND_TABLE_IMPL = "tableimpl"; //$NON-NLS-1$
+    public final static String KIND_TABLE_CONTENT = "tablecontent"; //$NON-NLS-1$
+    public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
+    public final static String KIND_TABLE_ROW = "tablerow"; //$NON-NLS-1$
 
-    private final static String INTERNAL_PACKAGE = "internal";
+    private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
     
     /**
      * Returns the base package name. It is the <b>base package name for generated java classes</b>
@@ -167,8 +167,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             }
         }
 
-        throw new IllegalArgumentException("No package has been defined for the provided kind: "
-                + kind + " and IpsSrcFile: " + ipsSrcFile);
+        throw new IllegalArgumentException("No package has been defined for the provided kind: " //$NON-NLS-1$
+                + kind + " and IpsSrcFile: " + ipsSrcFile); //$NON-NLS-1$
     }
 
     /**

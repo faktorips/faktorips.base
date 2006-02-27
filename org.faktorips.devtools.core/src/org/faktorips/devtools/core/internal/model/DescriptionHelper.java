@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
  */
 public class DescriptionHelper {
     
-    public final static String XML_ATTRIBUTE_NAME = "description";
+    public final static String XML_ATTRIBUTE_NAME = "description"; //$NON-NLS-1$
     
     /**
      * Adds the description to the element.

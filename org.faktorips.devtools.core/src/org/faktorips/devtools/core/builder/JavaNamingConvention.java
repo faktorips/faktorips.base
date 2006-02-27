@@ -36,7 +36,7 @@ public class JavaNamingConvention {
      */
     public String getPublishedInterfaceName(String name) {
         if (type==1) {
-            return "I" + name;
+            return "I" + name; //$NON-NLS-1$
         } else {
             return name;
         }
@@ -49,7 +49,7 @@ public class JavaNamingConvention {
         if (type==1) {
             return name;
         } else {
-            return name + "Impl";
+            return name + "Impl"; //$NON-NLS-1$
         }
     }
     
@@ -72,23 +72,23 @@ public class JavaNamingConvention {
      */
     public String getGetterMethodName(String propertyName, Datatype datatype) {
     	if (datatype.equals(Datatype.BOOLEAN) || datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-    		return "is" + StringUtils.capitalise(propertyName);
+    		return "is" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
     	}
-		return "get" + StringUtils.capitalise(propertyName);
+		return "get" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
     }
     
     /**
      * Returns the method name for the method with that a multie value property is read. 
      */
     public String getMultiValueGetterMethodName(String propertyNamePlural) {
-		return "get" + StringUtils.capitalise(propertyNamePlural);
+		return "get" + StringUtils.capitalise(propertyNamePlural); //$NON-NLS-1$
     }
     
     /**
      * Returns the method name for the method with that the property is set. 
      */
     public String getSetterMethodName(String propertyName, Datatype datatype) {
-		return "set" + StringUtils.capitalise(propertyName);
+		return "set" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
     }
     
     /**

@@ -24,9 +24,9 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     /**
      * The name of the table structure property
      */
-    public final static String PROPERTY_TABLE_STRUCTURE = "tableStructure";
+    public final static String PROPERTY_TABLE_STRUCTURE = "tableStructure"; //$NON-NLS-1$
 
-    private String structure = "";
+    private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
     
     /**
@@ -107,7 +107,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     public void deleteColumn(int columnIndex) {
         if (columnIndex<0 || columnIndex>=numOfColumns) {
-            throw new IllegalArgumentException("Illegal column index " + columnIndex);
+            throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
         }
         IIpsObjectGeneration[] generations = getGenerations();
         for (int i=0; i<generations.length; i++) {
@@ -132,8 +132,8 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if (findTableStructure() == null) {
-            String text = "The table structure " + this.structure + " does not exist";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
+            String text = Messages.TableContents_msgMissingTablestructure + this.structure + Messages.TableContents_4;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); //$NON-NLS-1$
         }
     }
 
@@ -145,7 +145,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TABLESTRUCTURE, structure);
-        newElement.setAttribute("numOfColumns", "" + numOfColumns);
+        newElement.setAttribute("numOfColumns", "" + numOfColumns); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -156,13 +156,13 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         structure = element.getAttribute(PROPERTY_TABLESTRUCTURE);
-        numOfColumns = Integer.parseInt(element.getAttribute("numOfColumns"));
+        numOfColumns = Integer.parseInt(element.getAttribute("numOfColumns")); //$NON-NLS-1$
     }
 
     /**
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

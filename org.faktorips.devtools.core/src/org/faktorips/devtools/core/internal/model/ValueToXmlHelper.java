@@ -21,7 +21,7 @@ public class ValueToXmlHelper {
 	public final static void addValueToElement(String value, Element el, String tagName) {
 		Element valueEl = el.getOwnerDocument().createElement(tagName);
 		el.appendChild(valueEl);
-        valueEl.setAttribute("isNull", value==null?"true":"false");    
+        valueEl.setAttribute("isNull", value==null?"true":"false");     //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (value!=null) {
             valueEl.appendChild(el.getOwnerDocument().createCDATASection(value));
         }
@@ -40,7 +40,7 @@ public class ValueToXmlHelper {
 		if (valueEl==null) {
 			return null;
 		}
-		if (Boolean.valueOf(valueEl.getAttribute("isNull")).equals(Boolean.TRUE)) {
+		if (Boolean.valueOf(valueEl.getAttribute("isNull")).equals(Boolean.TRUE)) { //$NON-NLS-1$
 			return null;
 		}
 		CDATASection cdata = XmlUtil.getFirstCDataSection(valueEl);
@@ -48,7 +48,7 @@ public class ValueToXmlHelper {
 		// if no cdata-section was found, the value stored was an empty string. In this
 		// case, the cdata-section get lost during transformation of the xml-document
 		// to a string.
-		String result = "";
+		String result = ""; //$NON-NLS-1$
 		if (cdata != null) {
 			result = cdata.getData();
 		}

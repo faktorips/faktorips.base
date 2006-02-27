@@ -100,7 +100,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         for (int i = 0; i < elements.length; i++) {
             IAttribute a = elements[i].findPcTypeAttribute();
             if (elements[i].getType() == ConfigElementType.FORMULA) {
-                elements[i].setValue("");
+                elements[i].setValue(""); //$NON-NLS-1$
             }
             elements[i].setType(a.getConfigElementType());
         }
@@ -312,7 +312,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         } else if (xmlTagName.equals(ProductCmptRelation.TAG_NAME)) {
             return newRelationInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName);
+        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
 
     /**
@@ -328,7 +328,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
             relations.add(part);
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
     /**
@@ -356,7 +356,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         
         // no type information available, so no further validation possible
         if (type == null) {
-        	list.add(new Message(MSGCODE_NO_TEMPLATE, "Template not found", Message.ERROR, this));
+        	list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound, Message.ERROR, this));
         	return;
         }
         
@@ -366,19 +366,19 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			
 			if (relationTypes[i].getMinCardinality() > relations.length) {
 				Object[] params = {new Integer(relations.length), relationTypes[i].getTargetRoleSingularProductSide(), new Integer(relationTypes[i].getMinCardinality())};
-				String msg = NLS.bind("Found only {0} relations of type {1}, but at least {2} relations are required.", params);
+				String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
 				ObjectProperty prop1 = new ObjectProperty(this, null);
 				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
 				list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
 			}
 			
 			String maxCardinality = relationTypes[i].getMaxCardinality();
-			if (!StringUtils.isEmpty(maxCardinality) && !maxCardinality.equals("*")) {
+			if (!StringUtils.isEmpty(maxCardinality) && !maxCardinality.equals("*")) { //$NON-NLS-1$
 				int max = Integer.parseInt(maxCardinality);
 				
 				if (max < relations.length) {
 					Object[] params = {new Integer(relations.length), maxCardinality, relationTypes[i].getTargetRoleSingularProductSide()};
-					String msg = NLS.bind("Found {0} relations, but only {1} relations of type {2} are allowed.", params);
+					String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
 					ObjectProperty prop1 = new ObjectProperty(this, null);
 					ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
 					list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
@@ -398,7 +398,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			return newRelation();
 		}
 			
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}	
 
 }

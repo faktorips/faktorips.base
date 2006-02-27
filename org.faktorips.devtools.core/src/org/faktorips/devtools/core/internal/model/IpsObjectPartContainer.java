@@ -27,22 +27,22 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Name of the xml element the containing the elements for the extension property values.
      */
-    protected final static String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties";
+    protected final static String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties"; //$NON-NLS-1$
 
     /**
      * Name of the xml element containing a property value.
      */
-    protected final static String XML_VALUE_ELEMENT = "Value";
+    protected final static String XML_VALUE_ELEMENT = "Value"; //$NON-NLS-1$
 
     /**
      * Name of the value element's attribute that stores the property id.
      */
-    protected final static String XML_ATTRIBUTE_EXTPROPERTYID = "id";
+    protected final static String XML_ATTRIBUTE_EXTPROPERTYID = "id"; //$NON-NLS-1$
 
     /**
      * Name of the value element's attribute that stores the information if the value is null or not.
      */
-    protected final static String XML_ATTRIBUTE_ISNULL = "isNull";
+    protected final static String XML_ATTRIBUTE_ISNULL = "isNull"; //$NON-NLS-1$
     
     
     // map containing extension property ids as keys and their values.
@@ -118,7 +118,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private void checkExtProperty(String propertyId) {
         initExtPropertiesIfNotDoneSoFar();
         if (!extPropertyValues.containsKey(propertyId)) {
-            throw new IllegalArgumentException("Extension property " + propertyId + " is not defined for type " + getClass().getName());
+            throw new IllegalArgumentException("Extension property " + propertyId + " is not defined for type " + getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
     
@@ -160,7 +160,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             String propertyId = properties[i].getPropertyId();
             valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, propertyId);
             Object value = extPropertyValues.get(propertyId);
-            valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value==null ? "true" : "false");
+            valueEl.setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, value==null ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
             if (value!=null) {
                 properties[i].valueToXml(valueEl, value);
             }
@@ -258,7 +258,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
             IExtensionPropertyDefinition property = (IExtensionPropertyDefinition)extPropertyDefinitions.get(propertyId);
             if (property==null) {
-                throw new RuntimeException("Extension property " + propertyId + " for " + this + " is unknown");
+                throw new RuntimeException("Extension property " + propertyId + " for " + this + " is unknown"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             value = property.getValueFromXml(valueElement);
         }
@@ -287,7 +287,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (partEl.getNodeName().equals(XML_EXT_PROPERTIES_ELEMENT)) {
             	continue;
             }
-            String id = partEl.getAttribute("id").trim();
+            String id = partEl.getAttribute("id").trim(); //$NON-NLS-1$
             IIpsObjectPart part = (IIpsObjectPart)idPartMap.get(id);
             if (part==null) {
                 part = newPart(partEl.getNodeName(), nextId++);
@@ -307,7 +307,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         IIpsElement[] parts = getChildren();
         for (int i = 0; i < parts.length; i++) {
             IIpsObjectPart part = (IIpsObjectPart)parts[i];
-            map.put(""+part.getId(), part);
+            map.put(""+part.getId(), part); //$NON-NLS-1$
         }
         return map;
     }
@@ -318,7 +318,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         for (int i=0; i<nl.getLength(); i++) {
             if (nl.item(i).getNodeType()==Node.ELEMENT_NODE) {
                 Element partEl = (Element)nl.item(i);
-                String id = partEl.getAttribute("id");
+                String id = partEl.getAttribute("id"); //$NON-NLS-1$
                 if (!StringUtils.isEmpty(id)) {
                     int partId = Integer.parseInt(id);
                     if (partId > maxId) {

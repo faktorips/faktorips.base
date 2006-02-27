@@ -87,7 +87,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public void setTarget(String newTarget) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public boolean is1ToMany() {
-		return "*".equals(getMaxCardinality());
+		return "*".equals(getMaxCardinality()); //$NON-NLS-1$
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public void delete() {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
     }
 
     private boolean deleted = false;
@@ -220,7 +220,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public void setDescription(String newDescription) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
@@ -304,42 +304,42 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public Element toXml(Document doc) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void initFromXml(Element element) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public Memento newMemento() {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setState(Memento memento) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public Object getExtPropertyValue(String propertyId) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setExtPropertyValue(String propertyId, Object value) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	public boolean equals(Object o) {
@@ -355,13 +355,13 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	}
 	
 	public String toString() {
-        return getParent().toString() + "/" + getName();
+        return getParent().toString() + "/" + getName(); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

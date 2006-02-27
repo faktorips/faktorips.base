@@ -54,7 +54,7 @@ public abstract class Member extends IpsObjectPart implements IMember {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        name = element.getAttribute("name");
+        name = element.getAttribute("name"); //$NON-NLS-1$
     }
 
     /**
@@ -64,7 +64,7 @@ public abstract class Member extends IpsObjectPart implements IMember {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("name", name);
+        element.setAttribute("name", name); //$NON-NLS-1$
     }
     
 }

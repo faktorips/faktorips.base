@@ -50,16 +50,16 @@ public class BuilderHelper {
     
     public final static String transformMessage(String message) {
     	int count = 0;
-    	String transformedMessage = "";
+    	String transformedMessage = ""; //$NON-NLS-1$
 		while(true) {
 			int start = message.indexOf('{');
 			if(start > -1) {
 				int end = message.indexOf('}', start + 2); // param darf kein Leerstring sein
 				if(end > -1) {
 					transformedMessage += message.substring(0,start);
-					transformedMessage += "{";
+					transformedMessage += "{"; //$NON-NLS-1$
 					transformedMessage += count;
-					transformedMessage += "}";
+					transformedMessage += "}"; //$NON-NLS-1$
 					message = message.substring(end + 1); 
 					count++;
 				}

@@ -42,7 +42,7 @@ public class ValidationUtils {
             String propertyName,
             MessageList list) throws CoreException {
 
-    	return checkIpsObjectReference(objectName, type, mandatory, propertyDisplayName, part, propertyName, "", list);
+    	return checkIpsObjectReference(objectName, type, mandatory, propertyDisplayName, part, propertyName, "", list); //$NON-NLS-1$
     }
 
     /**
@@ -72,7 +72,7 @@ public class ValidationUtils {
             }
         }
         if (part.getIpsProject().findIpsObject(type, objectName)==null) {
-            String text = StringUtils.capitalise(propertyDisplayName) + " " + objectName + " does not exists.";
+            String text = StringUtils.capitalise(propertyDisplayName) + Messages.ValidationUtils_msgObjectDoesNotExist + objectName + Messages.ValidationUtils_2;
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;
         }
@@ -100,14 +100,14 @@ public class ValidationUtils {
             MessageList list) throws CoreException {
         
         if (mandatory) {
-            if (!checkStringPropertyNotEmpty(datatypeName, "Datatype", part, propertyName, list)) {
+            if (!checkStringPropertyNotEmpty(datatypeName, "Datatype", part, propertyName, list)) { //$NON-NLS-1$
                 return null;
             }
         }
         Datatype datatype = part.getIpsProject().findDatatype(datatypeName);
         if (datatype==null) {
-            String text = "Datatype " + datatypeName + " does not exists.";
-            list.add(new Message("", text, Message.ERROR, part, propertyName));
+            String text = Messages.ValidationUtils_msgDatatypeDoesNotExist + datatypeName + Messages.ValidationUtils_msgDatatypeNotExists; //$NON-NLS-2$
+            list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
             return null;
         }
         try {
@@ -120,8 +120,8 @@ public class ValidationUtils {
             throw new CoreException(new IpsStatus(e));
         }
         if (datatype.isVoid() && !voidAllowed) {
-            String text = "Datatype void is not allowed.";
-            list.add(new Message("", text, Message.ERROR, part, propertyName));
+            String text = Messages.ValidationUtils_msgVoidNotAllowed;
+            list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
         }
         return datatype;
         
@@ -142,7 +142,7 @@ public class ValidationUtils {
             String propertyName,
             MessageList list)
     {
-    	return checkStringPropertyNotEmpty(propertyValue, propertyDisplayName, object, propertyName, "", list);
+    	return checkStringPropertyNotEmpty(propertyValue, propertyDisplayName, object, propertyName, "", list); //$NON-NLS-1$
     }
 
 
@@ -162,7 +162,7 @@ public class ValidationUtils {
             MessageList list)
     {
         if (StringUtils.isEmpty(propertyValue)) {
-            String text = StringUtils.capitalise(propertyDisplayName) + " is missing.";
+            String text = StringUtils.capitalise(propertyDisplayName) + Messages.ValidationUtils_msgPropertyMissing;
             list.add(new Message(msgCode, text, Message.ERROR, object, propertyName));
             return false;
         }
@@ -173,19 +173,19 @@ public class ValidationUtils {
         String imageName;
         switch (messageSeverity) {
         	case Message.ERROR: {
-        	    imageName = "size8/ErrorMessage.gif";
+        	    imageName = "size8/ErrorMessage.gif"; //$NON-NLS-1$
         	    break;
         	}
         	case Message.WARNING: {
-        	    imageName = "size8/WarningMessage.gif";
+        	    imageName = "size8/WarningMessage.gif"; //$NON-NLS-1$
         	    break;
         	}
         	case Message.INFO: {
-        	    imageName = "size8/InfoMessage.gif";
+        	    imageName = "size8/InfoMessage.gif"; //$NON-NLS-1$
         	    break;
         	}
         	default:
-        	    imageName = "size8/NullMessage.gif";
+        	    imageName = "size8/NullMessage.gif"; //$NON-NLS-1$
         }
         return IpsPlugin.getDefault().getImage(imageName);
     }

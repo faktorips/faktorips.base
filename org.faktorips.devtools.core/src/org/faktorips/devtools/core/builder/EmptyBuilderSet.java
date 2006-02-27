@@ -63,7 +63,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 
 			protected String getParameterAttributGetterName(
 					IAttribute attribute, Datatype datatype) {
-				return "";
+				return ""; //$NON-NLS-1$
 			}
 		};
 	}

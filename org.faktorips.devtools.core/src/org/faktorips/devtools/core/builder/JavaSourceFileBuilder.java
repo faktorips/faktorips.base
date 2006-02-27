@@ -57,7 +57,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * merging capabilities are activated a class, method or attribute that is
 	 * marked by this annotation will be regenerated with every build.
 	 */
-	public final static String[] ANNOTATION_GENERATED = new String[] { "generated" };
+	public final static String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLS-1$
 
 	/**
 	 * This constant is supposed to be used as a javadoc annotation. It becomes
@@ -65,9 +65,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * piece of code was generated in the first place and will not be overridden
 	 * by the generator by further builds.
 	 */
-	public final static String[] ANNOTATION_MODIFIABLE = new String[] { "modifiable" };
+	public final static String[] ANNOTATION_MODIFIABLE = new String[] { "modifiable" }; //$NON-NLS-1$
 
-	final protected static String JAVA_EXTENSION = ".java";
+	final protected static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
 
 	private boolean mergeEnabled;
 
@@ -373,7 +373,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 		if (localizedStringsSet == null) {
 			throw new RuntimeException(
-					"A LocalizedStringSet has to be set to this builder to be able to call this method.");
+					"A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
 		}
 		return getLocalizedStringSet().getString(
 				key,
@@ -400,8 +400,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * @return the requested text
 	 */
 	public void appendLocalizedJavaDoc(String keyPrefix, IIpsElement element, JavaCodeFragmentBuilder builder) {
-		String text = getLocalizedText(element, keyPrefix + "_JAVADOC");
-		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")};
+		String text = getLocalizedText(element, keyPrefix + "_JAVADOC"); //$NON-NLS-1$
+		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")}; //$NON-NLS-1$
 		builder.javaDoc(text, annotations);
 	}
 
@@ -427,8 +427,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * @return the requested text
 	 */
 	public void appendLocalizedJavaDoc(String keyPrefix, Object replacement, IIpsElement element, JavaCodeFragmentBuilder builder) {
-		String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacement);
-		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")};
+		String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacement); //$NON-NLS-1$
+		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")}; //$NON-NLS-1$
 		builder.javaDoc(text, annotations);
 	}
 
@@ -454,8 +454,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * @return the requested text
 	 */
 	public void appendLocalizedJavaDoc(String keyPrefix, Object[] replacements, IIpsElement element, JavaCodeFragmentBuilder builder) {
-		String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacements);
-		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")};
+		String text = getLocalizedText(element, keyPrefix + "_JAVADOC", replacements); //$NON-NLS-1$
+		String[] annotations = new String[]{getLocalizedText(element, keyPrefix + "_ANNOTATION")}; //$NON-NLS-1$
 		builder.javaDoc(text, annotations);
 	}
 
@@ -478,7 +478,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	public String getLocalizedText(IIpsElement element, String key, Object replacement) {
 		if (localizedStringsSet == null) {
 			throw new RuntimeException(
-					"A LocalizedStringSet has to be set to this builder to be able to call this method.");
+					"A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
 		}
 		return getLocalizedStringSet().getString(
 				key,
@@ -505,7 +505,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	public String getLocalizedText(IIpsElement element, String key, Object[] replacements) {
 		if (localizedStringsSet == null) {
 			throw new RuntimeException(
-					"A LocalizedStringSet has to be set to this builder to be able to call this method.");
+					"A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
 		}
 		return getLocalizedStringSet().getString(
 				key,
@@ -567,7 +567,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 				}
 			} catch (IOException e) {
 				throw new CoreException(new IpsStatus(
-						"An exception occured while trying to read the content of the file: "
+						"An exception occured while trying to read the content of the file: " //$NON-NLS-1$
 								+ javaFile.getName(), e));
 			}
 		}
@@ -607,7 +607,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	}
 	
 	protected String getJavaDocCommentForOverriddenMethod() {
-		return "{@inheritDoc}";
+		return "{@inheritDoc}"; //$NON-NLS-1$
 	}
 
 	/**
@@ -654,14 +654,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 		if (index == name.length()) {
 			throw new RuntimeException(
-					"The qualified class name is not a valid java class name");
+					"The qualified class name is not a valid java class name"); //$NON-NLS-1$
 		}
 		if (index == -1) {
 			return destinationFolder.getFile(name + JAVA_EXTENSION);
 		}
 		String packageName = name.substring(0, index);
 		String fileName = name.substring(index + 1, name.length());
-		String[] packageFolders = packageName.split("\\.");
+		String[] packageFolders = packageName.split("\\."); //$NON-NLS-1$
 		IFolder folder = destinationFolder;
 		for (int i = 0; i < packageFolders.length; i++) {
 			folder = folder.getFolder(packageFolders[i]);
@@ -679,7 +679,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 			StringBuffer mergeFile = new StringBuffer();
 			mergeFile.append('/').append(
 					JavaSourceFileBuilder.class.getPackage().getName().replace(
-							'.', '/')).append("/merge.xml");
+							'.', '/')).append("/merge.xml"); //$NON-NLS-1$
 			is = (InputStream) Platform.getBundle(IpsPlugin.PLUGIN_ID)
 					.getResource(mergeFile.toString()).getContent();
 			org.w3c.dom.Document doc = XmlUtil.getDocument(is);
@@ -726,8 +726,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 			return new ByteArrayInputStream(content.getBytes(charset));
 		} catch (UnsupportedEncodingException e) {
 			throw new CoreException(new Status(IStatus.ERROR,
-					"org.faktorips.std.builder", IStatus.OK,
-					"The charset is not supported: " + charset, e));
+					"org.faktorips.std.builder", IStatus.OK, //$NON-NLS-1$
+					"The charset is not supported: " + charset, e)); //$NON-NLS-1$
 		}
 	}
 
@@ -739,7 +739,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 			if (parent instanceof IFolder) {
 				createFolder((IFolder) parent);
 			}
-			file.create(new ByteArrayInputStream("".getBytes()), true, null);
+			file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
 			return true;
 		}
 

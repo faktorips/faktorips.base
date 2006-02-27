@@ -79,7 +79,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      * Overridden.
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsSrcFile.gif");
+        return IpsPlugin.getDefault().getImage("IpsSrcFile.gif"); //$NON-NLS-1$
     }
 
     /** 

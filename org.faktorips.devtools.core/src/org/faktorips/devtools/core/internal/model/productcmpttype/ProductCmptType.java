@@ -168,7 +168,7 @@ public class ProductCmptType implements IProductCmptType {
 	 */
 	public String getName() {
 		if (StringUtils.isEmpty(policyCmptType.getUnqualifiedProductCmptType())) {
-			return policyCmptType.getName() + "Pk";
+			return policyCmptType.getName() + "Pk"; //$NON-NLS-1$
 		} else {
 			return policyCmptType.getUnqualifiedProductCmptType();
 		}
@@ -241,14 +241,14 @@ public class ProductCmptType implements IProductCmptType {
 	 * Overridden.
 	 */
 	public Object getExtPropertyValue(String propertyId) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setExtPropertyValue(String propertyId, Object value) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
@@ -262,28 +262,28 @@ public class ProductCmptType implements IProductCmptType {
 	 * Overridden.
 	 */
 	public Element toXml(Document doc) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void initFromXml(Element element) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public Memento newMemento() {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
 	 * Overridden.
 	 */
 	public void setState(Memento memento) {
-		throw new RuntimeException("Not implemented yet!");
+		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class ProductCmptType implements IProductCmptType {
 	}
 	
 	public String toString() {
-        return getParent().toString() + "/" + getName();
+        return getParent().toString() + "/" + getName(); //$NON-NLS-1$
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class ProductCmptType implements IProductCmptType {
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 	
 	

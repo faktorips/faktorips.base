@@ -4,7 +4,7 @@ public class ValueDatatypeDefinition {
 
     private String className;
     private String qualifiedName;
-    private String valueOfMethodName = "valueOf";
+    private String valueOfMethodName = "valueOf"; //$NON-NLS-1$
     private String isParsableMethodName = null;
     private String valueToStringMethodName = null;
     private String nullValueId = null;

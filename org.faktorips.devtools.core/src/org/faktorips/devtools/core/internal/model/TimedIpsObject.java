@@ -198,7 +198,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             generations.add(part);
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
     
     /**

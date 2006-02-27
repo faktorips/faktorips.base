@@ -132,7 +132,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new RuntimeException("Can't get index for column " + column);
+        throw new RuntimeException("Can't get index for column " + column); //$NON-NLS-1$
     }
     
     /**
@@ -362,20 +362,20 @@ public class TableStructure extends IpsObject implements ITableStructure {
     private ITableAccessFunction createFunction(int id, IUniqueKey key, IColumn column) {
         TableAccessFunction fct = new TableAccessFunction(this, id);
         fct.setAccessedColumn(column.getName());
-        fct.setName(getName() + "." + column.getName());
+        fct.setName(getName() + "." + column.getName()); //$NON-NLS-1$
         fct.setType(column.getDatatype());
-        StringBuffer description = new StringBuffer("The function retrieves the row identified by "); 
+        StringBuffer description = new StringBuffer(Messages.TableStructure_descriptionStart); 
         IKeyItem[] items = key.getKeyItems();
         String[] argTypes = new String[items.length];
         for (int i = 0; i < items.length; i++) {
             argTypes[i] = items[i].getDatatype();
             if (i>0) {
-                description.append(", ");
+                description.append(", "); //$NON-NLS-1$
             }
             description.append(items[i].getAccessParameterName());
         }
         fct.setArgTypes(argTypes);
-        description.append(" and returns the value of the column " + column.getName());
+        description.append(Messages.TableStructure_descriptionEnd + column.getName());
         fct.setDescription(description.toString());
         return fct;
     }
@@ -447,7 +447,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
             foreignKeys.add(part);
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
 
     /**
@@ -465,7 +465,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (xmlTagName.equals(ForeignKey.TAG_NAME)) {
             return newForeignKeyInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName);
+        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
 	/**
 	 * {@inheritDoc}
@@ -480,6 +480,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
         } else if (partType.equals(IForeignKey.class)) {
             return newForeignKeyInternal(this.getNextPartId());
         }
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

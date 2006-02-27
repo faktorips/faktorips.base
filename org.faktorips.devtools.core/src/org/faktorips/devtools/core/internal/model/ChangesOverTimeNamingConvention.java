@@ -23,7 +23,7 @@ public class ChangesOverTimeNamingConvention implements
 	private LocalizedStringsSet locStringSet;
 
 	public ChangesOverTimeNamingConvention(String id) {
-		this(id, new LocalizedStringsSet(pack + "." + id + unqalifiedClassName, ChangesOverTimeNamingConvention.class.getClassLoader()));
+		this(id, new LocalizedStringsSet(pack + "." + id + unqalifiedClassName, ChangesOverTimeNamingConvention.class.getClassLoader())); //$NON-NLS-1$
 	}
 	
 	public ChangesOverTimeNamingConvention(String id, LocalizedStringsSet locStringSet) {
@@ -44,56 +44,56 @@ public class ChangesOverTimeNamingConvention implements
 	 * {@inheritDoc}
 	 */
 	public String getName(Locale locale) {
-		return locStringSet.getString("name", locale);
+		return locStringSet.getString("name", locale); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getGenerationConceptNameSingular(Locale locale) {
-		return locStringSet.getString("generationConceptNameSingular", locale);
+		return locStringSet.getString("generationConceptNameSingular", locale); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getGenerationConceptNamePlural(Locale locale) {
-		return locStringSet.getString("generationConceptNamePlural", locale);
+		return locStringSet.getString("generationConceptNamePlural", locale); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getGenerationConceptNameAbbreviation(Locale locale) {
-		return locStringSet.getString("generationConceptAbbreviation", locale);
+		return locStringSet.getString("generationConceptAbbreviation", locale); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getVersionConceptNameSingular(Locale locale) {
-		return locStringSet.getString("versionConceptNameSingular", locale);
+		return locStringSet.getString("versionConceptNameSingular", locale); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getVersionConceptNamePlural(Locale locale) {
-		return locStringSet.getString("versionConceptNamePlural", locale);
+		return locStringSet.getString("versionConceptNamePlural", locale); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getVersionConceptNameAbbreviation(Locale locale) {
-		return locStringSet.getString("versionConceptAbbreviation", locale);
+		return locStringSet.getString("versionConceptAbbreviation", locale); //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getEffectiveDateConceptName(Locale locale) {
-		return locStringSet.getString("effectiveDateConceptName", locale);
+		return locStringSet.getString("effectiveDateConceptName", locale); //$NON-NLS-1$
 	}
 
 	public String toString() {

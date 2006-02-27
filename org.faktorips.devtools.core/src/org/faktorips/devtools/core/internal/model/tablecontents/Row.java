@@ -21,8 +21,8 @@ import org.w3c.dom.Text;
  */
 public class Row extends IpsObjectPart implements IRow {
     
-    final static String TAG_NAME = "Row";
-    final static String VALUE_TAG_NAME = "Value";
+    final static String TAG_NAME = "Row"; //$NON-NLS-1$
+    final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
     
     private String[] values;
 
@@ -42,7 +42,7 @@ public class Row extends IpsObjectPart implements IRow {
         int columns = getNumOfColumns();
         values = new String[columns];
         for (int i=0; i<columns; i++) {
-            values[i] = "";
+            values[i] = ""; //$NON-NLS-1$
         }
     }
     
@@ -70,7 +70,7 @@ public class Row extends IpsObjectPart implements IRow {
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()
      */
     public String getName() {
-        return "" + getId();
+        return "" + getId(); //$NON-NLS-1$
     }
 
     /**
@@ -123,7 +123,7 @@ public class Row extends IpsObjectPart implements IRow {
      * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableRow.gif");
+        return IpsPlugin.getDefault().getImage("TableRow.gif"); //$NON-NLS-1$
     }
 
     /*
@@ -197,13 +197,13 @@ public class Row extends IpsObjectPart implements IRow {
         for(int i=0; i<values.length; i++) {
             if (i<nl.getLength()) {
                 Element valueElement = (Element)nl.item(i);
-                String isNull = valueElement.getAttribute("isNull");
+                String isNull = valueElement.getAttribute("isNull"); //$NON-NLS-1$
                 if (Boolean.valueOf(isNull).booleanValue()) {
                     values[i] = null;
                 } else {
                     Text textNode = getTextNode(valueElement);
                     if (textNode==null) {
-                        values[i] = "";
+                        values[i] = ""; //$NON-NLS-1$
                     } else {
                         values[i] = textNode.getNodeValue();
                     }
@@ -222,7 +222,7 @@ public class Row extends IpsObjectPart implements IRow {
         Document doc = element.getOwnerDocument();
         for (int i=0; i<values.length; i++) {
             Element valueElement = doc.createElement(VALUE_TAG_NAME);
-            valueElement.setAttribute("isNull", values[i]==null?"true":"false");    
+            valueElement.setAttribute("isNull", values[i]==null?"true":"false");     //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             if (values[i]!=null) {
                 valueElement.appendChild(doc.createTextNode(values[i]));
             }
@@ -234,6 +234,6 @@ public class Row extends IpsObjectPart implements IRow {
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

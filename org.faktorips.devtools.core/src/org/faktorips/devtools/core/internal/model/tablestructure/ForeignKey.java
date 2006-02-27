@@ -20,13 +20,13 @@ import org.w3c.dom.Element;
  */
 public class ForeignKey extends Key implements IForeignKey {
     
-    final static String TAG_NAME = "ForeignKey";
+    final static String TAG_NAME = "ForeignKey"; //$NON-NLS-1$
     
     // the table structure referenced by this fk.
-    private String refTableStructure = "";
+    private String refTableStructure = ""; //$NON-NLS-1$
     
     // the unique key referenced by this fk.
-    private String refUniqueKey = "";
+    private String refUniqueKey = ""; //$NON-NLS-1$
 
     public ForeignKey(TableStructure tableStructure, int id) {
         super(tableStructure, id);
@@ -114,21 +114,21 @@ public class ForeignKey extends Key implements IForeignKey {
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
         ValidationUtils.checkIpsObjectReference(refTableStructure, 
-                IpsObjectType.TABLE_STRUCTURE, true, "referenced table", 
+                IpsObjectType.TABLE_STRUCTURE, true, "referenced table",  //$NON-NLS-1$
                 this, PROPERTY_REF_TABLE_STRUCTURE, list);
         ITableStructure structure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, refTableStructure);
         if (structure!=null) {
-            if (!ValidationUtils.checkStringPropertyNotEmpty(refUniqueKey, "referenced unique key", this, PROPERTY_REF_UNIQUE_KEY, list)) {
+            if (!ValidationUtils.checkStringPropertyNotEmpty(refUniqueKey, "referenced unique key", this, PROPERTY_REF_UNIQUE_KEY, list)) { //$NON-NLS-1$
                 return;
             }
             IUniqueKey uk = structure.getUniqueKey(refUniqueKey);
             if (uk==null) {
-                String text = "The table " + refTableStructure + " does not contain an unique key " + refUniqueKey + ".";
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_REF_UNIQUE_KEY));
+                String text = Messages.ForeignKey_msgMissingUniqueKey + refTableStructure + Messages.ForeignKey_6 + refUniqueKey + Messages.ForeignKey_7;
+                list.add(new Message("", text, Message.ERROR, this, PROPERTY_REF_UNIQUE_KEY)); //$NON-NLS-1$
             } else {
                 if (uk.getNumOfKeyItems()!=this.getNumOfKeyItems()) {
-                    String text = "The foreign key must have as many key items as the referenced unique key.";
-                    list.add(new Message("", text, Message.ERROR, this, PROPERTY_REF_UNIQUE_KEY));
+                    String text = Messages.ForeignKey_msgMalformedForeignKey;
+                    list.add(new Message("", text, Message.ERROR, this, PROPERTY_REF_UNIQUE_KEY)); //$NON-NLS-1$
                 } else {
                     String[] ukItems = uk.getKeyItemNames();
                     String[] fkItems = this.getKeyItemNames();
@@ -151,64 +151,64 @@ public class ForeignKey extends Key implements IForeignKey {
             validateColumnItem(column, refStructure, refItem, list);
             return;
         }
-        String text = "The key item " + fkItem + " does not identify a column or range.";
-        list.add(new Message("", text, Message.ERROR, fkItem));
+        String text = Messages.ForeignKey_msgInvalidKeyItem + fkItem + Messages.ForeignKey_12;
+        list.add(new Message("", text, Message.ERROR, fkItem)); //$NON-NLS-1$
         return;
     }
     
     private void validateRangeItem(IColumnRange item, ITableStructure refStructure, String refItem, MessageList list) throws CoreException {
         IColumn column = refStructure.getColumn(refItem);
         if (column!=null) {
-            String text = "Foreign key item is a range but referenced key item is a column!";
-            list.add(new Message("", text, Message.ERROR, item.getName()));
+            String text = Messages.ForeignKey_msgKeyItemMissmatch;
+            list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
             return;
         }
         IColumnRange refRange = refStructure.getRange(refItem);
         if (refRange==null) {
-            String text = "Can't check datatype validity because the item " + refItem + " in the referenced unique key does not identify a range.";
-            list.add(new Message("", text, Message.WARNING, item.getName()));
+            String text = Messages.ForeignKey_msgNotARange + refItem + Messages.ForeignKey_17;
+            list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
         IColumn from = getTableStructure().getColumn(item.getFromColumn());
         IColumn to = getTableStructure().getColumn(item.getToColumn());
         if (from==null || to==null) {
-            String text = "Can't check datatype validity because the range is invalid.";
-            list.add(new Message("", text, Message.WARNING, item.getName()));
+            String text = Messages.ForeignKey_msgInvalidRange;
+            list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
         IColumn refFrom = refStructure.getColumn(refRange.getFromColumn());
         IColumn refTo = refStructure.getColumn(refRange.getToColumn());
         if (refFrom==null || refTo==null) {
-            String text = "Can't check datatype validity because the range in the referenced key is invalid.";
-            list.add(new Message("", text, Message.WARNING, item.getName()));
+            String text = Messages.ForeignKey_msgReferencedRangeInvalid;
+            list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
         if (!from.getDatatype().equals(refFrom.getDatatype())) {
-            String text = "The foreign key column " + from.getName() + " has a different datatype than it's corresponding column " + refFrom + ".";
-            list.add(new Message("", text, Message.ERROR, item.getName()));
+            String text = Messages.ForeignKey_msgForeignKeyDatatypeMismatch + from.getName() + Messages.ForeignKey_24 + refFrom + Messages.ForeignKey_25;
+            list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
         }
         if (!to.getDatatype().equals(refTo.getDatatype())) {
-            String text = "The foreign key column " + to.getName() + " has a different datatype than it's corresponding column " + refTo + ".";
-            list.add(new Message("", text, Message.ERROR, item.getName()));
+            String text = Messages.ForeignKey_msgColumnDatatypeMismatch + to.getName() + Messages.ForeignKey_28 + refTo + Messages.ForeignKey_29;
+            list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
         }
     }
     
     private void validateColumnItem(IColumn item, ITableStructure refStructure, String refItem, MessageList list) throws CoreException {
         IColumnRange range = refStructure.getRange(refItem);
         if (range!=null) {
-            String text = "Foreign key item is a column but referenced key item is a range!";
-            list.add(new Message("", text, Message.ERROR, item.getName()));
+            String text = Messages.ForeignKey_msgKeyMissmatch;
+            list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
             return;
         }
         IColumn refColumn = refStructure.getColumn(refItem);
         if (refColumn==null) {
-            String text = "Can't check datatype validity because the item " + refItem + " in the referenced unique key does not identify a column.";
-            list.add(new Message("", text, Message.WARNING, item.getName()));
+            String text = Messages.ForeignKey_msgNotAColumn + refItem + Messages.ForeignKey_34;
+            list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
         if (!item.getDatatype().equals(refColumn.getDatatype())) {
-            String text = "The foreign key item " + item.getName() + " has a different datatype than it's corresponding item " + refItem + ".";
-            list.add(new Message("", text, Message.ERROR, item.getName()));
+            String text = Messages.ForeignKey_msgKeyDatatypeMismatch + item.getName() + Messages.ForeignKey_37 + refItem + Messages.ForeignKey_38;
+            list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
             return;
         }
     }
@@ -248,6 +248,6 @@ public class ForeignKey extends Key implements IForeignKey {
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

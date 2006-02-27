@@ -102,7 +102,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	private Map changesOverTimeNamingConventionMap = null;
 
 	IpsModel() {
-		super(null, "IpsModel");
+		super(null, "IpsModel"); //$NON-NLS-1$
 	}
 
 	public void startListeningToResourceChanges() {
@@ -189,7 +189,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 * Overridden.
 	 */
 	public Image getImage() {
-		return IpsPlugin.getDefault().getImage("IpsModel.gif");
+		return IpsPlugin.getDefault().getImage("IpsModel.gif"); //$NON-NLS-1$
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					} catch (Exception e) {
 						IpsPlugin
 								.log(new IpsStatus(
-										"Error notifying IPS model change listener",
+										"Error notifying IPS model change listener", //$NON-NLS-1$
 										e));
 					}
 				}
@@ -296,7 +296,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 * Overridden.
 	 */
 	public String toString() {
-		return "IpsModel";
+		return "IpsModel"; //$NON-NLS-1$
 	}
 
 	/**
@@ -355,9 +355,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			}
 		}
 		if (!StringUtils.isEmpty(id)) {
-			IpsPlugin.log(new IpsStatus("Unable to find the selected "
-					+ IIpsArtefactBuilderSet.class.getName() + ": " + id
-					+ " in the set of registered builder sets."));
+			IpsPlugin.log(new IpsStatus("Unable to find the selected " //$NON-NLS-1$
+					+ IIpsArtefactBuilderSet.class.getName() + ": " + id //$NON-NLS-1$
+					+ " in the set of registered builder sets.")); //$NON-NLS-1$
 		}
 		return new EmptyBuilderSet();
 	}
@@ -409,7 +409,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		try {
 			is = file.getContents(true);
 		} catch (CoreException e1) {
-			IpsPlugin.log(new IpsStatus("Error reading project file contents "
+			IpsPlugin.log(new IpsStatus("Error reading project file contents " //$NON-NLS-1$
 					+ file, e1));
 			return data;
 		}
@@ -417,14 +417,14 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			doc = IpsPlugin.getDefault().newDocumentBuilder().parse(is);
 		} catch (Exception e) {
 			IpsPlugin
-					.log(new IpsStatus("Error parsing project file " + file, e));
+					.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
 			return data;
 		} finally {
 			try {
 				is.close();
 			} catch (Exception e) {
 				IpsPlugin.log(new IpsStatus(
-						"Error closing input stream after reading project file "
+						"Error closing input stream after reading project file " //$NON-NLS-1$
 								+ file, e));
 				return data;
 			}
@@ -480,7 +480,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			} catch (Exception e) {
 				IpsPlugin
 						.log(new IpsStatus(
-								"Error updating model objects in resurce changed event.",
+								"Error updating model objects in resurce changed event.", //$NON-NLS-1$
 								e));
 			}
 		}
@@ -491,7 +491,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		availableBuilderSets = new ArrayList();
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
-				"artefactbuilderset");
+				"artefactbuilderset"); //$NON-NLS-1$
 		IExtension[] extensions = point.getExtensions();
 
 		for (int i = 0; i < extensions.length; i++) {
@@ -500,17 +500,17 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					.getConfigurationElements();
 			if (configElements.length > 0) {
 				IConfigurationElement element = configElements[0];
-				if (element.getName().equals("builderSet")) {
+				if (element.getName().equals("builderSet")) { //$NON-NLS-1$
 					Object builderInstance = null;
 					try {
 						builderInstance = element
-								.createExecutableExtension("class");
+								.createExecutableExtension("class"); //$NON-NLS-1$
 					} catch (CoreException e) {
 						IpsPlugin
 								.log(new IpsStatus(
-										"Unable to create the artefact builder set: "
+										"Unable to create the artefact builder set: " //$NON-NLS-1$
 												+ element
-														.getAttribute("qualifiedClassName"),
+														.getAttribute("qualifiedClassName"), //$NON-NLS-1$
 										e));
 						// TODO: qualifiedClassName korrekt?
 						continue;
@@ -518,10 +518,10 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					if (!(builderInstance instanceof IIpsArtefactBuilderSet)) {
 						IpsPlugin
 								.log(new IpsStatus(
-										"The class that has been registered for the "
-												+ "artefact builder set doesn't implement the "
+										"The class that has been registered for the " //$NON-NLS-1$
+												+ "artefact builder set doesn't implement the " //$NON-NLS-1$
 												+ IIpsArtefactBuilderSet.class
-												+ " interface: "
+												+ " interface: " //$NON-NLS-1$
 												+ extension
 														.getUniqueIdentifier()));
 						continue;
@@ -536,8 +536,8 @@ public class IpsModel extends IpsElement implements IIpsModel,
 						arteFactBuilderSet.initialize();
 					} catch (CoreException e) {
 						IpsPlugin.log(new IpsStatus(
-								"An exception occured while trying to initialize"
-										+ " the artefact builder set: "
+								"An exception occured while trying to initialize" //$NON-NLS-1$
+										+ " the artefact builder set: " //$NON-NLS-1$
 										+ extension.getUniqueIdentifier(), e));
 						continue;
 					}
@@ -609,8 +609,8 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				return true;
 			} catch (Exception e) {
 				IpsPlugin.log(new IpsStatus(
-						"Error updating model objects after resource "
-								+ resource + " changed.", e));
+						"Error updating model objects after resource " //$NON-NLS-1$
+								+ resource + " changed.", e)); //$NON-NLS-1$
 			}
 			return true;
 		}
@@ -694,7 +694,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		typeExtensionPropertiesMap = new HashMap();
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
-				"objectExtensionProperty");
+				"objectExtensionProperty"); //$NON-NLS-1$
 		IExtension[] extensions = point.getExtensions();
 
 		for (int i = 0; i < extensions.length; i++) {
@@ -718,47 +718,47 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		IConfigurationElement[] configElements = extension
 				.getConfigurationElements();
 		if (configElements.length != 1
-				|| !configElements[0].getName().equalsIgnoreCase("property")) {
+				|| !configElements[0].getName().equalsIgnoreCase("property")) { //$NON-NLS-1$
 			IpsPlugin.log(new IpsStatus(
-					"Illegal definition of external property "
+					"Illegal definition of external property " //$NON-NLS-1$
 							+ extension.getUniqueIdentifier()));
 			return null;
 		}
 		IConfigurationElement element = configElements[0];
 		Object propertyInstance = null;
 		try {
-			propertyInstance = element.createExecutableExtension("class");
+			propertyInstance = element.createExecutableExtension("class"); //$NON-NLS-1$
 		} catch (CoreException e) {
-			IpsPlugin.log(new IpsStatus("Unable to create extension property "
+			IpsPlugin.log(new IpsStatus("Unable to create extension property " //$NON-NLS-1$
 					+ extension.getUniqueIdentifier()
-					+ ". Reason: Can't instantiate "
-					+ element.getAttribute("class"), e));
+					+ ". Reason: Can't instantiate " //$NON-NLS-1$
+					+ element.getAttribute("class"), e)); //$NON-NLS-1$
 			return null;
 		}
 		if (!(propertyInstance instanceof ExtensionPropertyDefinition)) {
-			IpsPlugin.log(new IpsStatus("Unable to create extension property "
+			IpsPlugin.log(new IpsStatus("Unable to create extension property " //$NON-NLS-1$
 					+ extension.getUniqueIdentifier()
-					+ element.getAttribute("class") + " does not derived from "
+					+ element.getAttribute("class") + " does not derived from " //$NON-NLS-1$ //$NON-NLS-2$
 					+ ExtensionPropertyDefinition.class));
 			return null;
 		}
 		ExtensionPropertyDefinition extProperty = (ExtensionPropertyDefinition) propertyInstance;
 		extProperty.setPropertyId(extension.getUniqueIdentifier());
 		extProperty.setDisplayName(extension.getLabel());
-		extProperty.setDefaultValue(element.getAttribute("defaultValue"));
+		extProperty.setDefaultValue(element.getAttribute("defaultValue")); //$NON-NLS-1$
 		extProperty.setEditedInStandardExtensionArea(element
-				.getAttribute("editedInStandardExtensionArea"));
-		if (StringUtils.isNotEmpty(element.getAttribute("sortOrder"))) {
+				.getAttribute("editedInStandardExtensionArea")); //$NON-NLS-1$
+		if (StringUtils.isNotEmpty(element.getAttribute("sortOrder"))) { //$NON-NLS-1$
 			extProperty.setSortOrder(Integer.parseInt(element
-					.getAttribute("sortOrder")));
+					.getAttribute("sortOrder"))); //$NON-NLS-1$
 		}
-		String extType = element.getAttribute("extendedType");
+		String extType = element.getAttribute("extendedType"); //$NON-NLS-1$
 		try {
 			extProperty.setExtendedType(extProperty.getClass().getClassLoader()
 					.loadClass(extType));
 		} catch (ClassNotFoundException e) {
-			IpsPlugin.log(new IpsStatus("Extended type " + extType
-					+ " not found for extension property "
+			IpsPlugin.log(new IpsStatus("Extended type " + extType //$NON-NLS-1$
+					+ " not found for extension property " //$NON-NLS-1$
 					+ extProperty.getPropertyId(), e));
 			return null;
 		}
@@ -798,7 +798,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		datatypeHelpersMap = new HashMap();
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
-				"datatypeDefinition");
+				"datatypeDefinition"); //$NON-NLS-1$
 		IExtension[] extensions = point.getExtensions();
 		
 		// first, get all datatypes defined by the ips-plugin itself 
@@ -822,23 +822,23 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				.getConfigurationElements();
 		for (int i = 0; i < configElements.length; i++) {
 			if (!configElements[i].getName().equalsIgnoreCase(
-					"datatypeDefinition")) {
-				String text = "Illegal datatype definition "
+					"datatypeDefinition")) { //$NON-NLS-1$
+				String text = "Illegal datatype definition " //$NON-NLS-1$
 						+ extension.getUniqueIdentifier()
-						+ ". Expected Config Element <datatypeDefinition> was "
+						+ ". Expected Config Element <datatypeDefinition> was " //$NON-NLS-1$
 						+ configElements[i].getName();
 				IpsPlugin.log(new IpsStatus(text));
 				continue;
 			}
 			Object datatypeObj = createExecutableExtension(extension,
-					configElements[i], "datatypeClass", Datatype.class);
+					configElements[i], "datatypeClass", Datatype.class); //$NON-NLS-1$
 			if (datatypeObj == null) {
 				continue;
 			}
 			Datatype datatype = (Datatype) datatypeObj;
 			datatypes.put(datatype.getQualifiedName(), datatype);
 			Object dtHelperObj = createExecutableExtension(extension,
-					configElements[i], "helperClass", DatatypeHelper.class);
+					configElements[i], "helperClass", DatatypeHelper.class); //$NON-NLS-1$
 			if (dtHelperObj == null) {
 				continue;
 			}
@@ -884,16 +884,16 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		try {
 			object = element.createExecutableExtension(propertyName);
 		} catch (CoreException e) {
-			IpsPlugin.log(new IpsStatus("Unable to create extension "
+			IpsPlugin.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
 					+ extension.getUniqueIdentifier()
-					+ ". Reason: Can't instantiate "
+					+ ". Reason: Can't instantiate " //$NON-NLS-1$
 					+ element.getAttribute(propertyName), e));
 			return null;
 		}
 		if (!(expectedType.isAssignableFrom(object.getClass()))) {
-			IpsPlugin.log(new IpsStatus("Unable to create extension "
-					+ extension.getUniqueIdentifier() + "Reason: "
-					+ element.getAttribute(propertyName) + " is not of type "
+			IpsPlugin.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
+					+ extension.getUniqueIdentifier() + "Reason: " //$NON-NLS-1$
+					+ element.getAttribute(propertyName) + " is not of type " //$NON-NLS-1$
 					+ expectedType));
 			return null;
 		}
@@ -925,16 +925,16 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				.get(IChangesOverTimeNamingConvention.VAA);
 		if (convention != null) {
 			IpsPlugin.log(new IpsStatus(IpsStatus.WARNING,
-					"Unknown changes in time naming convention " + id
-							+ ". Using default "
+					"Unknown changes in time naming convention " + id //$NON-NLS-1$
+							+ ". Using default " //$NON-NLS-1$
 							+ IChangesOverTimeNamingConvention.VAA, null));
 			return convention;
 		}
 		IpsPlugin.log(new IpsStatus(
-				"Unknown changes in time naming convention " + id
-						+ ". Default convention "
-						+ IChangesOverTimeNamingConvention.VAA + " not found!"));
-		return new ChangesOverTimeNamingConvention("VAA");
+				"Unknown changes in time naming convention " + id //$NON-NLS-1$
+						+ ". Default convention " //$NON-NLS-1$
+						+ IChangesOverTimeNamingConvention.VAA + " not found!")); //$NON-NLS-1$
+		return new ChangesOverTimeNamingConvention("VAA"); //$NON-NLS-1$
 	}
 
 	public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {

@@ -23,22 +23,22 @@ import org.w3c.dom.Element;
  */
 public class Relation extends IpsObjectPart implements IRelation {
 
-    final static String TAG_NAME = "Relation";
+    final static String TAG_NAME = "Relation"; //$NON-NLS-1$
 
     private RelationType type = RelationType.ASSOZIATION;
-    private String target = "";
-    private String targetRoleSingular = "";
-    private String targetRolePlural = "";
+    private String target = ""; //$NON-NLS-1$
+    private String targetRoleSingular = ""; //$NON-NLS-1$
+    private String targetRolePlural = ""; //$NON-NLS-1$
     private int minCardinality = 0;
-    private String maxCardinality = "1";
+    private String maxCardinality = "1"; //$NON-NLS-1$
     private boolean productRelevant = true;
-    private String containerRelation = "";
-    private String reverseRelation = "";
+    private String containerRelation = ""; //$NON-NLS-1$
+    private String reverseRelation = ""; //$NON-NLS-1$
     private boolean readOnlyContainer = false;
-    private String targetRoleSingularProductSide = "";
-    private String targetRolePluralProductSide = "";
+    private String targetRoleSingularProductSide = ""; //$NON-NLS-1$
+    private String targetRolePluralProductSide = ""; //$NON-NLS-1$
     private int minCardinalityProductSide = 0;
-    private String maxCardinalityProductSide = "1";
+    private String maxCardinalityProductSide = "1"; //$NON-NLS-1$
 
     public Relation(IPolicyCmptType pcType, int id) {
         super(pcType, id);
@@ -205,7 +205,7 @@ public class Relation extends IpsObjectPart implements IRelation {
      * @return
      */
     public Integer getMaxCardinalityAsInteger() {
-        if ("*".equals(maxCardinality.trim())) {
+        if ("*".equals(maxCardinality.trim())) { //$NON-NLS-1$
             return new Integer(Integer.MAX_VALUE);
         }
         try {
@@ -219,7 +219,7 @@ public class Relation extends IpsObjectPart implements IRelation {
      * Overridden.
      */
     public boolean is1ToMany() {
-        if (maxCardinality.equals("*")) {
+        if (maxCardinality.equals("*")) { //$NON-NLS-1$
             return true;
         }
         try {
@@ -404,9 +404,9 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     public Image getImage() {
         if (this.type==RelationType.COMPOSITION) {
-            return IpsPlugin.getDefault().getImage("Aggregation.gif");
+            return IpsPlugin.getDefault().getImage("Aggregation.gif"); //$NON-NLS-1$
         }
-        return IpsPlugin.getDefault().getImage("Relation.gif");
+        return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
     }
 
     /** 
@@ -414,30 +414,30 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
-        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this, PROPERTY_TARGET, list);
-        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR, list);
-        if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, list)) {
+        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this, PROPERTY_TARGET, list); //$NON-NLS-1$
+        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR, list); //$NON-NLS-1$
+        if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, list)) { //$NON-NLS-1$
             int max = -1;
-            if (maxCardinality.trim().equals("*")) {
+            if (maxCardinality.trim().equals("*")) { //$NON-NLS-1$
                 max = Integer.MAX_VALUE;
             } else {
                 try {
                     max = Integer.parseInt(maxCardinality);
                 } catch (NumberFormatException e) {
-                    String text = "Max cardinality must be either a number or an asterix (*).";
-                    list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
+                    String text = Messages.Relation_msgErrorMaxCardinalityMalformed;
+                    list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
                 }
             }
             if (max==0) {
-                String text = "Maximum cardinality must be at least 1.";
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
+                String text = Messages.Relation_msgMaxCardinalityMustBeAtLeast1;
+                list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
             } else if (max==1 && isReadOnlyContainer() && getRelationType() != RelationType.REVERSE_COMPOSITION) {
-                String text = "Maximum cardinality for a container relation must be greater than 1 (otherwise it is not a container).";
-                list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY}));
+                String text = Messages.Relation_msgMaxCardinalityForContainerRelationTooLow;
+                list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
             } else if (max!=-1) {
                 if (minCardinality > max) {
-                    String text = "Minimum cardinality is greater than maximum cardinality.";
-                    list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY}));
+                    String text = Messages.Relation_msgMinCardinalityGreaterThanMaxCardinality;
+                    list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
                 }
             }
         }
@@ -451,43 +451,43 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         IRelation relation = findContainerRelation();
         if (relation==null) {
-            String text = "The container relation " + containerRelation + " does not exist in the super type hierarchy";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));
+            String text = Messages.Relation_msgContainerRelNotInSupertype + containerRelation + Messages.Relation_27;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
         if (!relation.isReadOnlyContainer()) {
-            String text = "The relation is not marked as a container relation.";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));
+            String text = Messages.Relation_msgNotMarkedAsContainerRel;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
         IPolicyCmptType superRelationTarget = getIpsProject().findPolicyCmptType(relation.getTarget());
         if (superRelationTarget==null) {
-            String text = "The target role of the specified container relation is empty or the target does not exists!";
-            list.add(new Message("", text, Message.WARNING, this, PROPERTY_CONTAINER_RELATION));
+            String text = Messages.Relation_msgNoTarget;
+            list.add(new Message("", text, Message.WARNING, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
         IPolicyCmptType pcType = getIpsProject().findPolicyCmptType(target);
         if (pcType!=null) {
             ITypeHierarchy hierachy = pcType.getSupertypeHierarchy();
             if (!superRelationTarget.equals(pcType) && !hierachy.isSupertypeOf(superRelationTarget, pcType)) {
-                String text = "The target class of this relation is not a subclass (or the same class) of the container relation's target.";
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));    
+                String text = Messages.Relation_msgTargetNotSubclass;
+                list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));     //$NON-NLS-1$
             }
         }
         IRelation reverseRel = findContainerRelationOfTypeReverseComposition();
         if(reverseRel != null && reverseRel != relation)  {
-            String text = "Container relation is not the reverse relation of the container relation of the reverse relation.";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));
+            String text = Messages.Relation_msgContainerRelNotReverseRel;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
         if (relation.getTargetRolePlural().equals(getTargetRolePlural()))  {
-            String text = "IRelation has same plural rolename as the container relation.";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));
+            String text = Messages.Relation_msgSamePluralRolename;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
         if (relation.getTargetRoleSingular().equals(getTargetRoleSingular()))  {
-            String text = "IRelation has same singular rolename as the container relation.";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION));
+            String text = Messages.Relation_msgSameSingularRoleName;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
     }
@@ -498,28 +498,28 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         IRelation reverseRelationObj = findReverseRelation();
         if (reverseRelationObj==null) {
-            String text = "The relation " + reverseRelation + " does not exist in the target " + target;
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION));
+            String text = Messages.Relation_msgRelationNotInTarget + reverseRelation + Messages.Relation_26 + target;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
             return;
         }
         if (!reverseRelationObj.getReverseRelation().equals(getName())) {
-            String text = "The reverse relation does not specify this relation as it's reverse one!";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION));
+            String text = Messages.Relation_msgReverseRelationNotSpecified;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
         }
         if (isReadOnlyContainer() && ! reverseRelationObj.isReadOnlyContainer()) {
-            String text = "The reverse relation of a container relation must be a container relation too!";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION));
+            String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
         }
         
         if((type.isComposition() && !reverseRelationObj.getRelationType().isReverseComposition())
                 || (reverseRelationObj.getRelationType().isComposition() && !type.isReverseComposition())) {
-	            String text = "The reverse relation of a composition must be a reverse composition!";
-	            list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_REVERSE_RELATION, PROPERTY_READONLY_CONTAINER}));
+	            String text = Messages.Relation_msgReverseCompositionMissmatch;
+	            list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_REVERSE_RELATION, PROPERTY_READONLY_CONTAINER})); //$NON-NLS-1$
 	    }
 	    if  ((type.isAssoziation() && !reverseRelationObj.getRelationType().isAssoziation())
 	            || (reverseRelationObj.getRelationType().isAssoziation() && !type.isAssoziation())) {
-	            String text = "The reverse relation of an association must be an assoziation!";
-	            list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_REVERSE_RELATION}));
+	            String text = Messages.Relation_msgReverseAssociationMissmatch;
+	            list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_REVERSE_RELATION})); //$NON-NLS-1$
         }
     }
     
@@ -583,22 +583,22 @@ public class Relation extends IpsObjectPart implements IRelation {
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_RELATIONTYPE, type.getId());
-        newElement.setAttribute(PROPERTY_READONLY_CONTAINER, "" + readOnlyContainer);
+        newElement.setAttribute(PROPERTY_READONLY_CONTAINER, "" + readOnlyContainer); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_TARGET, target);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);
-        newElement.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality);
+        newElement.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_MAX_CARDINALITY, maxCardinality);
         newElement.setAttribute(PROPERTY_CONTAINER_RELATION, containerRelation);
         newElement.setAttribute(PROPERTY_REVERSE_RELATION, reverseRelation);
-        newElement.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant);
+        newElement.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE, targetRoleSingularProductSide);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE, targetRolePluralProductSide);
-        newElement.setAttribute(PROPERTY_MIN_CARDINALITY_PRODUCTSIDE, "" + minCardinalityProductSide);
+        newElement.setAttribute(PROPERTY_MIN_CARDINALITY_PRODUCTSIDE, "" + minCardinalityProductSide); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, maxCardinalityProductSide);
     }
     
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

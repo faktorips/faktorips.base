@@ -17,9 +17,9 @@ import org.w3c.dom.Element;
  */
 public class Column extends IpsObjectPart implements IColumn {
     
-    final static String TAG_NAME = "Column";
+    final static String TAG_NAME = "Column"; //$NON-NLS-1$
     
-    private String datatype = "";
+    private String datatype = ""; //$NON-NLS-1$
 
     Column(TableStructure table, int id) {
         super(table, id);
@@ -92,12 +92,12 @@ public class Column extends IpsObjectPart implements IColumn {
      * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableColumn.gif");
+        return IpsPlugin.getDefault().getImage("TableColumn.gif"); //$NON-NLS-1$
     }
 
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
-        ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, list);
+        ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, list); //$NON-NLS-1$
         ValidationUtils.checkDatatypeReference(datatype, true, false, this, PROPERTY_DATATYPE, list);
     }
 
@@ -117,8 +117,8 @@ public class Column extends IpsObjectPart implements IColumn {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        name = element.getAttribute("name");
-        datatype = element.getAttribute("datatype");
+        name = element.getAttribute("name"); //$NON-NLS-1$
+        datatype = element.getAttribute("datatype"); //$NON-NLS-1$
     }
 
     /**
@@ -126,8 +126,8 @@ public class Column extends IpsObjectPart implements IColumn {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute("name", name);
-        element.setAttribute("datatype", datatype);
+        element.setAttribute("name", name); //$NON-NLS-1$
+        element.setAttribute("datatype", datatype); //$NON-NLS-1$
     }
 
     /**
@@ -141,7 +141,7 @@ public class Column extends IpsObjectPart implements IColumn {
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
     
 }

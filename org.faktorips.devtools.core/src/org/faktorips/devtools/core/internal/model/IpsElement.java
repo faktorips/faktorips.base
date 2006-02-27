@@ -117,7 +117,7 @@ public abstract class IpsElement implements IIpsElement {
         if (getParent()==null) {
             return getName();
         }
-        return getParent().toString() + "/" + getName();
+        return getParent().toString() + "/" + getName(); //$NON-NLS-1$
     }
 
 

@@ -115,7 +115,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         if (xmlTagName.equals(Row.TAG_NAME)) {
             return newRowInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName);
+        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
     
     /**
@@ -128,7 +128,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             rows.add(part);
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
     
     /**
@@ -148,6 +148,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             return newRowInternal(this.getNextPartId());
 		}
 		
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

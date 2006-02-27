@@ -22,7 +22,7 @@ import org.w3c.dom.NodeList;
  */
 public abstract class Key extends IpsObjectPart implements IKey {
     
-    final static String KEY_ITEM_TAG_NAME = "Item";
+    final static String KEY_ITEM_TAG_NAME = "Item"; //$NON-NLS-1$
     
     private List items = new ArrayList(0);
 
@@ -109,7 +109,7 @@ public abstract class Key extends IpsObjectPart implements IKey {
      * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableKey.gif");
+        return IpsPlugin.getDefault().getImage("TableKey.gif"); //$NON-NLS-1$
     }
 
     /** 
@@ -162,7 +162,7 @@ public abstract class Key extends IpsObjectPart implements IKey {
         items = new ArrayList(nl.getLength());
         for (int i=0; i<nl.getLength(); i++) {
             Element itemElement = (Element)nl.item(i);
-            String item = itemElement.getAttribute("name");
+            String item = itemElement.getAttribute("name"); //$NON-NLS-1$
             items.add(item);
         }
     }
@@ -177,7 +177,7 @@ public abstract class Key extends IpsObjectPart implements IKey {
         for (Iterator it=items.iterator(); it.hasNext(); ) {
             String item = (String)it.next();
             Element itemElement = element.getOwnerDocument().createElement(KEY_ITEM_TAG_NAME);
-            itemElement.setAttribute("name", item);
+            itemElement.setAttribute("name", item); //$NON-NLS-1$
             element.appendChild(itemElement);
         }
     }

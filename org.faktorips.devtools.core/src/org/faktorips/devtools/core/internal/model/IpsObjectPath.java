@@ -28,18 +28,18 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * Xml element name for ips object path.
      */
-    final static String XML_TAG_NAME = "IpsObjectPath";
+    final static String XML_TAG_NAME = "IpsObjectPath"; //$NON-NLS-1$
 
     private IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[0];
     private boolean outputDefinedPerSourceFolder = false;
     
     // output folder and base package for the generated Java files
     private IFolder outputFolderGenerated;
-    private String basePackageGenerated = "";
+    private String basePackageGenerated = ""; //$NON-NLS-1$
     
     // output folder and base package for the extension Java files
     private IFolder outputFolderExtension;
-    private String basePackageExtension = "";
+    private String basePackageExtension = ""; //$NON-NLS-1$
     
     /**
      * Overridden.
@@ -281,11 +281,11 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_TAG_NAME);
-        element.setAttribute("outputDefinedPerSrcFolder", "" + outputDefinedPerSourceFolder);
-        element.setAttribute("outputFolderGenerated", outputFolderGenerated==null?"":outputFolderGenerated.getProjectRelativePath().toString());
-        element.setAttribute("basePackageGenerated", basePackageGenerated);
-        element.setAttribute("outputFolderExtension", outputFolderExtension==null?"":outputFolderExtension.getProjectRelativePath().toString());
-        element.setAttribute("basePackageExtension", basePackageExtension);
+        element.setAttribute("outputDefinedPerSrcFolder", "" + outputDefinedPerSourceFolder); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("outputFolderGenerated", outputFolderGenerated==null?"":outputFolderGenerated.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("basePackageGenerated", basePackageGenerated); //$NON-NLS-1$
+        element.setAttribute("outputFolderExtension", outputFolderExtension==null?"":outputFolderExtension.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("basePackageExtension", basePackageExtension); //$NON-NLS-1$
         
         // entries
         for (int i=0; i<entries.length; i++) {
@@ -301,21 +301,21 @@ public class IpsObjectPath implements IIpsObjectPath {
      */
     public final static IIpsObjectPath createFromXml(IIpsProject ipsProject, Element element) {
         IpsObjectPath path = new IpsObjectPath();
-        path.setBasePackageNameForGeneratedJavaClasses(element.getAttribute("basePackageGenerated"));
-        path.setBasePackageNameForExtensionJavaClasses(element.getAttribute("basePackageExtension"));
-        String outputFolderPathGenerated = element.getAttribute("outputFolderGenerated");
-        if (outputFolderPathGenerated.equals("")) {
+        path.setBasePackageNameForGeneratedJavaClasses(element.getAttribute("basePackageGenerated")); //$NON-NLS-1$
+        path.setBasePackageNameForExtensionJavaClasses(element.getAttribute("basePackageExtension")); //$NON-NLS-1$
+        String outputFolderPathGenerated = element.getAttribute("outputFolderGenerated"); //$NON-NLS-1$
+        if (outputFolderPathGenerated.equals("")) { //$NON-NLS-1$
             path.setOutputFolderForGeneratedJavaFiles(null);
         } else {
             path.setOutputFolderForGeneratedJavaFiles(ipsProject.getProject().getFolder(new Path(outputFolderPathGenerated)));
         }
-        String outputFolderPathExtension = element.getAttribute("outputFolderExtension");
-        if (outputFolderPathExtension.equals("")) {
+        String outputFolderPathExtension = element.getAttribute("outputFolderExtension"); //$NON-NLS-1$
+        if (outputFolderPathExtension.equals("")) { //$NON-NLS-1$
             path.setOutputFolderForExtensionJavaFiles(null);
         } else {
             path.setOutputFolderForExtensionJavaFiles(ipsProject.getProject().getFolder(new Path(outputFolderPathExtension)));
         }
-        path.setOutputDefinedPerSrcFolder(Boolean.valueOf(element.getAttribute("outputDefinedPerSrcFolder")).booleanValue());
+        path.setOutputDefinedPerSrcFolder(Boolean.valueOf(element.getAttribute("outputDefinedPerSrcFolder")).booleanValue()); //$NON-NLS-1$
         
         // init entries 
         NodeList nl = element.getElementsByTagName(IpsObjectPathEntry.XML_ELEMENT);

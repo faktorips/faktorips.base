@@ -111,7 +111,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     public String generate() throws CoreException {
         assertConditionsBeforeGenerating();
         StringBuffer content = new StringBuffer();
-        content.append("package ");
+        content.append("package "); //$NON-NLS-1$
         content.append(getPackage(getIpsSrcFile()));
         content.append(';');
         content.append(StringUtil.getSystemLineSeparator());
@@ -217,13 +217,13 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
                     Datatype datatype = a.getIpsProject().findDatatype(a.getDatatype());
                     DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
                     if (helper == null) {
-                        throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
+                        throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));             //$NON-NLS-1$
                     }
                     generateCodeForAttribute(a, helper, memberVarsBuilder, methodsBuilder);
                 } catch (Exception e) {
 
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
-                            "Error building attribute " + attributes[i].getName() + " of "
+                            "Error building attribute " + attributes[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
                                     + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
                 }
             }
@@ -258,8 +258,8 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
                 try {
                     generateCodeForRelation(relations[i], memberVarsBuilder, methodsBuilder);
                 } catch (Exception e) {
-                    throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation "
-                            + relations[i].getName() + " of "
+                    throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation " //$NON-NLS-1$
+                            + relations[i].getName() + " of " //$NON-NLS-1$
                             + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
                 }
             }
@@ -275,7 +275,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
                     memberVarsBuilder, methodsBuilder);
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
-                        "Error building container relation " + containerRelation.getName() + " of "
+                        "Error building container relation " + containerRelation.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
                                 + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
 
@@ -417,7 +417,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
                     
                 } catch (Exception e) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
-                            "Error building method " + methods[i].getName() + " of "
+                            "Error building method " + methods[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
                                     + getQualifiedClassName(method.getIpsObject()), e));
                 }
             }

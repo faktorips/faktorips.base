@@ -42,7 +42,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * The builders extension id.
      */
-    public final static String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder";
+    public final static String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder"; //$NON-NLS-1$
 
     private static boolean lastBuildWasCancelled = false;
 
@@ -70,9 +70,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private MultiStatus addIpsStatus(IIpsArtefactBuilder builder, BuildCommand command, MultiStatus buildStatus, Exception e) {
         MultiStatus returnStatus = buildStatus;
         if (returnStatus == null) {
-            returnStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, "Build Results", null);
+            returnStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, "Build Results", null); //$NON-NLS-1$
         }
-        String text = builder.getName() + ": Error during: " + command + ".";
+        String text = builder.getName() + ": Error during: " + command + "."; //$NON-NLS-1$ //$NON-NLS-2$
         returnStatus.add(new IpsStatus(text, e));
         return returnStatus;
     }
@@ -114,9 +114,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         } catch (Exception e) {
             buildStatus
                     .add(new IpsStatus(
-                            "An exception occured while trying to reinitialize the current " +
-                            "artefact builder set. The reason for reinitializing the current " +
-                            "builder set was an exception that was thrown during the build cycle."));
+                            Messages.IpsBuilder_msgErrorExceptionDuringBuild +
+                            Messages.IpsBuilder_5 +
+                            Messages.IpsBuilder_6));
         }
         throw new CoreException(buildStatus);
     }
@@ -132,9 +132,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * Full build generates Java source files for all IPS objects.
      */
     private MultiStatus fullBuild(IProgressMonitor monitor) {
-        System.out.println("Full build started.");
+        System.out.println("Full build started."); //$NON-NLS-1$
         long begin = System.currentTimeMillis();
-        MultiStatus buildStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, "Full Build Results",
+        MultiStatus buildStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.IpsBuilder_msgFullBuildResults,
                 null);
 
         try {
@@ -161,7 +161,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             buildStatus.add(new IpsStatus(e));
         }
         long end = System.currentTimeMillis();
-        System.out.println("Full build finished. Duration: " + (end - begin));
+        System.out.println("Full build finished. Duration: " + (end - begin)); //$NON-NLS-1$
         return buildStatus;
     }
 
@@ -196,9 +196,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * Incremental build generates Java source files for all PdObjects that have been changed.
      */
     private MultiStatus incrementalBuild(IProgressMonitor monitor) {
-        System.out.println("Incremental build started.");
+        System.out.println("Incremental build started."); //$NON-NLS-1$
         MultiStatus buildStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
-                "Incremental Build Results", null);
+                Messages.IpsBuilder_msgIncrementalBuildResults, null);
         IResourceDelta delta = getDelta(getProject());
         try {
 
@@ -208,7 +208,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         } catch (Exception e) {
             buildStatus.add(new IpsStatus(e));
         } finally {
-            System.out.println("Incremental build finished.");
+            System.out.println("Incremental build finished."); //$NON-NLS-1$
             monitor.done();
         }
         return buildStatus;
@@ -241,7 +241,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         } else if (msgSeverity == IMarker.SEVERITY_INFO) {
             return IMarker.SEVERITY_INFO;
         }
-        throw new RuntimeException("Unknown severity " + msgSeverity);
+        throw new RuntimeException("Unknown severity " + msgSeverity); //$NON-NLS-1$
     }
 
     /**
@@ -427,7 +427,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     work++;
                     break;
                 default:
-                    throw new RuntimeException("Unkown delta kind " + delta.getKind());
+                    throw new RuntimeException("Unkown delta kind " + delta.getKind()); //$NON-NLS-1$
             }
             return true;
         }
@@ -453,7 +453,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         
         public String toString() {
-        	return "BeforeBuildProcessCmd[kind=" + buildKind + "]";
+        	return "BeforeBuildProcessCmd[kind=" + buildKind + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         
     }
@@ -471,7 +471,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         
         public String toString() {
-        	return "AfterBuildProcessCmd[kind=" + buildKind + "]";
+        	return "AfterBuildProcessCmd[kind=" + buildKind + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -495,7 +495,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         
         public String toString() {
-        	return "Build file " + ipsSrcFile; 
+        	return "Build file " + ipsSrcFile;  //$NON-NLS-1$
         }
     }
 
@@ -514,7 +514,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         
         public String toString() {
-        	return "Delete file " + toDelete; 
+        	return "Delete file " + toDelete;  //$NON-NLS-1$
         }
         
     }

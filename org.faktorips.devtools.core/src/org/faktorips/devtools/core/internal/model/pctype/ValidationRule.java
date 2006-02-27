@@ -30,11 +30,11 @@ import org.w3c.dom.NodeList;
  */
 public class ValidationRule extends IpsObjectPart implements IValidationRule {
 
-	final static String TAG_NAME = "ValidationRuleDef";
+	final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
-	private String msgText = "";
+	private String msgText = ""; //$NON-NLS-1$
 
-	private String msgCode = "";
+	private String msgCode = ""; //$NON-NLS-1$
 
 	private List validatedAttributes = new ArrayList();
 
@@ -105,7 +105,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 * {@inheritDoc}
 	 */
 	public Image getImage() {
-		return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif");
+		return IpsPlugin.getDefault().getImage("ValidationRuleDef.gif"); //$NON-NLS-1$
 	}
 
 	/**
@@ -188,22 +188,22 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 */
 	protected void validate(MessageList list) throws CoreException {
 		super.validate(list);
-		ValidationUtils.checkStringPropertyNotEmpty(name, "name", this,
-				PROPERTY_NAME, "", list);
+		ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
+				PROPERTY_NAME, "", list); //$NON-NLS-1$
 		IIpsProject project = getIpsProject();
 		for (Iterator it = functions.iterator(); it.hasNext();) {
 			String function = (String) it.next();
 			if (StringUtils.isNotEmpty(function)) {
 				if (project.findIpsObject(IpsObjectType.BUSINESS_FUNCTION,
 						function) == null) {
-					String text = function + " does not exists.";
-					list.add(new Message("", text, Message.ERROR, function,
-							"name"));
+					String text = function + Messages.ValidationRule_msgFunctionNotExists;
+					list.add(new Message("", text, Message.ERROR, function, //$NON-NLS-1$
+							"name")); //$NON-NLS-1$
 				} else {
 					if (isAppliedInAllBusinessFunctions()) {
-						String text = "The rule is applied in all business functions, this information is ignored.";
-						list.add(new Message("", text, Message.WARNING,
-								function, "name"));
+						String text = Messages.ValidationRule_msgIgnored;
+						list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
+								function, "name")); //$NON-NLS-1$
 					}
 				}
 			}
@@ -227,9 +227,9 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		for (int i = 0; i < validatedAttributes.size(); i++) {
 			String validatedAttribute = (String) validatedAttributes.get(i);
 			if (!attributeNames.contains(validatedAttribute)) {
-				String text = "The specified attribute is not defined for the policy class of this rule.";
-				list.add(new Message("", text, Message.ERROR,
-						new ObjectProperty(this, "validatedAttributes", i)));
+				String text = Messages.ValidationRule_msgUndefinedAttribute;
+				list.add(new Message("", text, Message.ERROR, //$NON-NLS-1$
+						new ObjectProperty(this, "validatedAttributes", i))); //$NON-NLS-1$
 			}
 		}
 
@@ -238,13 +238,13 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 			for (int r = i + 1; r < validatedAttributes.size(); r++) {
 				if (validatedAttributes.get(i).equals(
 						validatedAttributes.get(r))) {
-					String text = "Duplicate entries.";
-					list.add(new Message("", text, Message.WARNING,
+					String text = Messages.ValidationRule_msgDuplicateEntries;
+					list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
 							new ObjectProperty[] {
 									new ObjectProperty(this,
-											"validatedAttributes", i),
+											"validatedAttributes", i), //$NON-NLS-1$
 									new ObjectProperty(this,
-											"validatedAttributes", r) }));
+											"validatedAttributes", r) })); //$NON-NLS-1$
 				}
 			}
 		}
@@ -333,11 +333,11 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		for (int i = 0; i < nl.getLength(); i++) {
 			if (nl.item(i) instanceof Element) {
 				Element subElement = (Element) nl.item(i);
-				if (subElement.getNodeName().equals("BusinessFunction")) {
-					functions.add(subElement.getAttribute("name"));
+				if (subElement.getNodeName().equals("BusinessFunction")) { //$NON-NLS-1$
+					functions.add(subElement.getAttribute("name")); //$NON-NLS-1$
 				}
-				if (subElement.getNodeName().equals("ValidatedAttribute")) {
-					validatedAttributes.add(subElement.getAttribute("name"));
+				if (subElement.getNodeName().equals("ValidatedAttribute")) { //$NON-NLS-1$
+					validatedAttributes.add(subElement.getAttribute("name")); //$NON-NLS-1$
 				}
 			}
 		}
@@ -360,13 +360,13 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 				String.valueOf(validatedAttrSpecifiedInSrc));
 		Document doc = newElement.getOwnerDocument();
 		for (int i = 0; i < functions.size(); i++) {
-			Element fctElement = doc.createElement("BusinessFunction");
-			fctElement.setAttribute("name", (String) functions.get(i));
+			Element fctElement = doc.createElement("BusinessFunction"); //$NON-NLS-1$
+			fctElement.setAttribute("name", (String) functions.get(i)); //$NON-NLS-1$
 			newElement.appendChild(fctElement);
 		}
 		for (int i = 0; i < validatedAttributes.size(); i++) {
-			Element attrElement = doc.createElement("ValidatedAttribute");
-			attrElement.setAttribute("name", (String) validatedAttributes
+			Element attrElement = doc.createElement("ValidatedAttribute"); //$NON-NLS-1$
+			attrElement.setAttribute("name", (String) validatedAttributes //$NON-NLS-1$
 					.get(i));
 			newElement.appendChild(attrElement);
 		}
@@ -435,7 +435,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 
 	/**

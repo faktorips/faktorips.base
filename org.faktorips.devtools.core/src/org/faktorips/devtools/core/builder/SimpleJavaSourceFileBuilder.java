@@ -97,7 +97,7 @@ public abstract class SimpleJavaSourceFileBuilder extends JavaSourceFileBuilder 
     public final String generate() throws CoreException {
         generateInternal();
         StringBuffer content = new StringBuffer();
-        content.append("package ");
+        content.append("package "); //$NON-NLS-1$
         content.append(getPackage(getIpsSrcFile()));
         content.append(';');
         content.append(StringUtil.getSystemLineSeparator());

@@ -34,7 +34,7 @@ import org.osgi.framework.BundleContext;
  */
 public class IpsPlugin extends AbstractUIPlugin {
 
-    public final static String PLUGIN_ID = "org.faktorips.devtools.core";
+    public final static String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
 
     /**
      * Returns the full extension id. This is the plugin's id plus the plugin
@@ -132,7 +132,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public Image getImage(String name) {
         Image image = getImageRegistry().get(name);
         if (image == null) {
-            URL url = getBundle().getEntry("icons/" + name);
+            URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
             ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
             if (descriptor == null) {
                 descriptor = ImageDescriptor.getMissingImageDescriptor();
@@ -157,7 +157,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     public ImageDescriptor getImageDescriptor(String name) {
-        String iconPath = "icons/";
+        String iconPath = "icons/"; //$NON-NLS-1$
         URL url = getBundle().getEntry(iconPath + '/' + name);
         return ImageDescriptor.createFromURL(url);
     }
@@ -190,8 +190,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public final static void logAndShowErrorDialog(IStatus status) {
         plugin.getLog().log(status);
-        ErrorDialog.openError(Display.getCurrent().getActiveShell(), "OpenIPS",
-            "An unexpected program error has occured!", status);
+        ErrorDialog.openError(Display.getCurrent().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
+            Messages.IpsPlugin_msgUnexpectedError, status);
     }
 
     /**

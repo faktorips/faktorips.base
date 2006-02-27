@@ -73,7 +73,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     	int count = 0;
     	for (int i = 0; i < content.length; i++) {
     		if (content[i].getType() == IFolder.FOLDER) {
-        		String packageName = this.getName().equals("")?content[i].getName():this.getName() + "." + content[i].getName();
+        		String packageName = this.getName().equals("")?content[i].getName():this.getName() + "." + content[i].getName(); //$NON-NLS-1$ //$NON-NLS-2$
         		result[count] = new IpsPackageFragment(this.getParent(), packageName);  
         		count++;
     		}
@@ -135,7 +135,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      * Overridden.
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsPackageFragment.gif");
+        return IpsPlugin.getDefault().getImage("IpsPackageFragment.gif"); //$NON-NLS-1$
     }
     
     /**
@@ -293,7 +293,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 	}
 
 	public boolean isDefaultPacakge() {
-		return this.name.equals("");
+		return this.name.equals(""); //$NON-NLS-1$
 	}
     
     

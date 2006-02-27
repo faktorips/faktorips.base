@@ -13,8 +13,8 @@ import org.faktorips.util.LocalizedStringsSet;
 public abstract class AbstractPcImplementationBuilder extends
 		AbstractPcTypeBuilder {
 
-	protected static final String[] ANNOTATION_GENERATED = new String[] { "generated" };
-	protected static final String[] ANNOTATION_MODIFIABLE = new String[] { "modifiable" };
+	protected static final String[] ANNOTATION_GENERATED = new String[] { "generated" }; //$NON-NLS-1$
+	protected static final String[] ANNOTATION_MODIFIABLE = new String[] { "modifiable" }; //$NON-NLS-1$
 	protected AbstractPcInterfaceBuilder policyInterfaceBuilder;
 
 	public AbstractPcImplementationBuilder(
@@ -37,7 +37,7 @@ public abstract class AbstractPcImplementationBuilder extends
 		IPolicyCmptType targetType = relation.findTarget();
 		if (targetType == null) {
 			// !TODO richtige Exception werfen
-			throw new CoreException(new IpsStatus("FEEEEEEHHHLER"));
+			throw new CoreException(new IpsStatus("FEEEEEEHHHLER")); //$NON-NLS-1$
 		}
 	
 		if (relation.getMaxCardinality().equals(IRelation.CARDINALITY_ONE)) {

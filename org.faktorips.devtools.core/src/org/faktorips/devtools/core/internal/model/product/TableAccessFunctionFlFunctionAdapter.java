@@ -38,12 +38,12 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
         try {
             IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getCurrentArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
-                return new CompilationResultImpl(Message.newError("", "The builder for this project does not support table access functions!"));
+                return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
             }
             return builderSet.getTableAccessCode(fct, argResults);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return new CompilationResultImpl(Message.newError("", "An error occured while generating the code for the table access function " + fct.toString()));
+            return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
         }
     }
 
@@ -60,7 +60,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     public void setDescription(String description) {
-        throw new RuntimeException("The adpater does not support setDescription()!");
+        throw new RuntimeException("The adpater does not support setDescription()!"); //$NON-NLS-1$
     }
 
     public Datatype getType() {
@@ -83,7 +83,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
             try {
                 types[i] = project.findValueDatatype(argTypes[i]);
             } catch (CoreException e) {
-                throw new RuntimeException("Error searching for datatype " + argTypes[i], e);
+                throw new RuntimeException("Error searching for datatype " + argTypes[i], e); //$NON-NLS-1$
             }
         }
         return types;

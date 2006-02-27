@@ -30,13 +30,13 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private IFolder outputFolderGenerated;
 
     // the name of the base package containing the generated Java files.
-    private String basePackageGenerated = "";
+    private String basePackageGenerated = ""; //$NON-NLS-1$
 
     // the output folder containing the Java files where the developer adds it's own code.
     private IFolder outputFolderExtension;
 
     // the name of the base package containing the Java files where the developer adds it's own code.
-    private String basePackageExtension = "";
+    private String basePackageExtension = ""; //$NON-NLS-1$
 
     IpsSrcFolderEntry(IpsObjectPath path) {
         super(path);
@@ -199,16 +199,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * Overridden.
      */
     public void initFromXml(Element element, IProject project) {
-        String sourceFolderPath = element.getAttribute("sourceFolder");
+        String sourceFolderPath = element.getAttribute("sourceFolder"); //$NON-NLS-1$
         sourceFolder = project.getFolder(new Path(sourceFolderPath));
-        String outputFolderPathGenerated = element.getAttribute("outputFolderGenerated");
-        outputFolderGenerated = outputFolderPathGenerated.equals("") ? null : project.getFolder(new Path(
+        String outputFolderPathGenerated = element.getAttribute("outputFolderGenerated"); //$NON-NLS-1$
+        outputFolderGenerated = outputFolderPathGenerated.equals("") ? null : project.getFolder(new Path( //$NON-NLS-1$
                 outputFolderPathGenerated));
-        basePackageGenerated = element.getAttribute("basePackageGenerated");
-        String outputFolderPathExtension = element.getAttribute("outputFolderExtension");
-        outputFolderExtension = outputFolderPathExtension.equals("") ? null : project.getFolder(new Path(
+        basePackageGenerated = element.getAttribute("basePackageGenerated"); //$NON-NLS-1$
+        String outputFolderPathExtension = element.getAttribute("outputFolderExtension"); //$NON-NLS-1$
+        outputFolderExtension = outputFolderPathExtension.equals("") ? null : project.getFolder(new Path( //$NON-NLS-1$
                 outputFolderPathExtension));
-        basePackageExtension = element.getAttribute("basePackageExtension");
+        basePackageExtension = element.getAttribute("basePackageExtension"); //$NON-NLS-1$
     }
 
     /**
@@ -216,14 +216,14 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      */
     public Element toXml(Document doc) {
         Element element = doc.createElement(IpsObjectPathEntry.XML_ELEMENT);
-        element.setAttribute("type", TYPE_SRC_FOLDER);
-        element.setAttribute("sourceFolder", sourceFolder.getProjectRelativePath().toString());
-        element.setAttribute("outputFolderGenerated", outputFolderGenerated == null ? "" : outputFolderGenerated
+        element.setAttribute("type", TYPE_SRC_FOLDER); //$NON-NLS-1$
+        element.setAttribute("sourceFolder", sourceFolder.getProjectRelativePath().toString()); //$NON-NLS-1$
+        element.setAttribute("outputFolderGenerated", outputFolderGenerated == null ? "" : outputFolderGenerated //$NON-NLS-1$ //$NON-NLS-2$
                 .getProjectRelativePath().toString());
-        element.setAttribute("basePackageGenerated", basePackageGenerated==null ? "" : basePackageGenerated);
-        element.setAttribute("outputFolderExtension", outputFolderExtension == null ? "" : outputFolderExtension
+        element.setAttribute("basePackageGenerated", basePackageGenerated==null ? "" : basePackageGenerated); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("outputFolderExtension", outputFolderExtension == null ? "" : outputFolderExtension //$NON-NLS-1$ //$NON-NLS-2$
                 .getProjectRelativePath().toString());
-        element.setAttribute("basePackageExtension", basePackageExtension==null ? "" : basePackageExtension);
+        element.setAttribute("basePackageExtension", basePackageExtension==null ? "" : basePackageExtension); //$NON-NLS-1$ //$NON-NLS-2$
         return element;
     }
 

@@ -36,15 +36,15 @@ import org.w3c.dom.Node;
  */
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
-	final static String TAG_NAME = "ConfigElement";
+	final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
 
 	private ConfigElementType type = ConfigElementType.PRODUCT_ATTRIBUTE;
 
-	private String pcTypeAttribute = "";
+	private String pcTypeAttribute = ""; //$NON-NLS-1$
 
 	private ValueSet valueSet = ValueSet.ALL_VALUES;
 
-	private String value = "";
+	private String value = ""; //$NON-NLS-1$
 
 	public ConfigElement(ProductCmptGeneration parent, int id) {
 		super(parent, id);
@@ -139,7 +139,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * Overridden.
 	 */
 	public Image getImage() {
-		return IpsPlugin.getDefault().getImage("AttributePublic.gif");
+		return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
 	}
 
 	/**
@@ -191,9 +191,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		super.validate(list);
 		IAttribute attribute = findPcTypeAttribute();
 		if (attribute == null) {
-			String text = "There is no attribute " + pcTypeAttribute
-					+ " defined in " + getProductCmpt().getPolicyCmptType()
-					+ ".";
+			String text = Messages.ConfigElement_msgAttrNotDefined + pcTypeAttribute
+					+ Messages.ConfigElement_5 + getProductCmpt().getPolicyCmptType()
+					+ Messages.ConfigElement_6;
 			list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
 			return;
 		}
@@ -208,7 +208,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	private void validateFormula(IAttribute attribute, MessageList list)
 			throws CoreException {
 		if (StringUtils.isEmpty(value)) {
-			list.add(new Message(MSGCODE_MISSING_FORMULA, "No formula defined.", Message.ERROR, this, PROPERTY_VALUE));
+			list.add(new Message(MSGCODE_MISSING_FORMULA, Messages.ConfigElement_msgFormulaNotDefined, Message.ERROR, this, PROPERTY_VALUE));
 			return;
 		}
 		ExprCompiler compiler = getExprCompiler();
@@ -224,7 +224,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 		Datatype attributeDatatype = attribute.findDatatype();
 		if (attributeDatatype == null) {
-			String text = "The attribute's datatype can't be found, so it is not possible to check if the formula returns the correct datatype.";
+			String text = Messages.ConfigElement_msgDatatypeMissing;
 			list.add(new Message(
 					IConfigElement.MSGCODE_UNKNOWN_DATATYPE_FORMULA, text,
 					Message.ERROR, this, PROPERTY_VALUE));
@@ -237,9 +237,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 				result.getDatatype(), attributeDatatype)) {
 			return;
 		}
-		String text = "Formula should return " + attributeDatatype.getName()
-				+ " but returns a " + result.getDatatype().getName()
-				+ ". A conversion is not possible.";
+		String text = Messages.ConfigElement_msgReturnTypeMissmatch + attributeDatatype.getName()
+				+ Messages.ConfigElement_10 + result.getDatatype().getName()
+				+ Messages.ConfigElement_11;
 		list.add(new Message(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE,
 				text, Message.ERROR, this, PROPERTY_VALUE));
 	}
@@ -250,7 +250,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		Datatype datatypeObject = getIpsProject().findDatatype(datatype);
 		if (datatypeObject == null) {
 			if (!StringUtils.isEmpty(value)) {
-				String text = "The value can't be parsed because the datatype is unkown!";
+				String text = Messages.ConfigElement_msgUndknownDatatype;
 				list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
 						PROPERTY_VALUE));
 			}
@@ -258,7 +258,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 		if (!datatypeObject.isValueDatatype()) {
 			if (!StringUtils.isEmpty(datatype)) {
-				String text = "The value can't be parsed because the datatype is not a value datatype!";
+				String text = Messages.ConfigElement_msgNoValueDatatype;
 				list.add(new Message(IConfigElement.MSGCODE_NOT_A_VALUEDATATYPE, text, Message.WARNING, this,
 						PROPERTY_VALUE));
 				return;
@@ -267,7 +267,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		ValueDatatype valueDatatype = (ValueDatatype) datatypeObject;
 		try {
 			if (valueDatatype.validate().containsErrorMsg()) {
-				String text = "The value can't be parsed because the datatype is invalid!";
+				String text = Messages.ConfigElement_msgInvalidDatatype;
 				list.add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
 						PROPERTY_VALUE));
 				return;
@@ -277,8 +277,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 		if (StringUtils.isNotEmpty(value)) {
 			if (!valueDatatype.isParsable(value)) {
-				String text = "The value " + value + " is not a "
-						+ valueDatatype.getName() + ".";
+				String text = Messages.ConfigElement_msgValueNotParsable + value + Messages.ConfigElement_16
+						+ valueDatatype.getName() + Messages.ConfigElement_17;
 				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
 						PROPERTY_VALUE));
 				return;
@@ -295,8 +295,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			}
 
 			if (!valueSet.containsValue(value, valueDatatype)) {
-				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, "The value " + value
-						+ " is no member of the specified valueSet!",
+				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, Messages.ConfigElement_msgValueNotInValueset + value
+						+ Messages.ConfigElement_19,
 						Message.ERROR, this, PROPERTY_VALUE));
 			}
 		}
@@ -342,7 +342,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 		// end of migration code
 		
-		value = ValueToXmlHelper.getValueFromElement(element, "Value");
+		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 		
 		//TODO remove migration code
 		// Code for migrating old content
@@ -368,11 +368,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_TYPE, type.getId());
 		element.setAttribute(PROPERTY_PCTYPE_ATTRIBUTE, pcTypeAttribute);
-		ValueToXmlHelper.addValueToElement(value, element, "Value");
+		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
 		element.appendChild(valueSet.toXml(element.getOwnerDocument()));
 	}
 
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

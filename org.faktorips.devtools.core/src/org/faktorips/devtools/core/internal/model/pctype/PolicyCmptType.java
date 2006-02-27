@@ -38,8 +38,8 @@ import org.w3c.dom.Element;
 public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     
 	private boolean configurableByProductCmptType = false;
-	private String unqalifiedProductCmptType = "";
-    private String supertype = "";
+	private String unqalifiedProductCmptType = ""; //$NON-NLS-1$
+    private String supertype = ""; //$NON-NLS-1$
     private boolean abstractFlag = false;
     private boolean forceExtensionCompilationUnitGeneration = false;
     private List attributes = new ArrayList(0);
@@ -126,7 +126,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		else if (partType.equals(IValidationRule.class)) {
 			return newRule();
 		}
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 
     /** 
@@ -515,7 +515,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             rules.add(part);
             return;
         }
-        throw new RuntimeException("Unknown part type" + part.getClass());
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
     
     /**
@@ -531,7 +531,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
         }
-        throw new RuntimeException("Could not create part for tag name" + xmlTagName);
+        throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
     
     /**
@@ -539,11 +539,11 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType);
+        newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE, unqalifiedProductCmptType);
         newElement.setAttribute(PROPERTY_SUPERTYPE, supertype);
-        newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag);
-        newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration);
+        newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU, "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
     }
 
     /**
@@ -551,24 +551,24 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     protected void validateThis(MessageList list) throws CoreException {
         IPolicyCmptType supertypeObj = null;
-        if (!supertype.equals("")) {
+        if (!supertype.equals("")) { //$NON-NLS-1$
             supertypeObj = (IPolicyCmptType)getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, supertype);
             if (supertypeObj==null) {
-                String text = "The supertype " + supertype + " does not exists!";
-                list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE));
+                String text = Messages.PolicyCmptType_msgSupertypeNotFound + supertype + Messages.PolicyCmptType_10;
+                list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE)); //$NON-NLS-1$
             }
         }
         if (isConfigurableByProductCmptType() && StringUtils.isEmpty(this.unqalifiedProductCmptType)) {
-            String text = "The product component type name is missing.";
-            list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+            String text = Messages.PolicyCmptType_msgNameMissing;
+            list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
         }
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(list);
             IMethod[] methods = getMethods();
             for (int i=0; i<methods.length; i++) {
                 if (methods[i].isAbstract()) {
-                    String text = "Only an abstract type can have abstract methods.";
-                    list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_ABSTRACT));
+                    String text = Messages.PolicyCmptType_msgAbstractMissmatch;
+                    list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
                 }
             }
         }
@@ -583,7 +583,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         for (int i=0; i<methods.length; i++) {
             if (methods[i].isAbstract()) {
                 if (!isAbstractMethodImplemented(this, methods[i], hierarchy)) {
-                    String text = "Must override the abstract method " + methods[i].getName() + " defined in " 
+                    String text = Messages.PolicyCmptType_msgMustOverrideAbstractMethod + methods[i].getName() + Messages.PolicyCmptType_17 
                 		+ methods[i].getPolicyCmptType().getQualifiedName();
                     list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
                 }
@@ -779,7 +779,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 * {@inheritDoc}
 	 */
 	public String getJavaClassName() {
-		throw new RuntimeException("getJavaClassName is not supported by " + getClass());
+		throw new RuntimeException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
 	}
     
     

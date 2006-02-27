@@ -25,12 +25,12 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRelation{
 
-    final static String TAG_NAME = "Relation";
+    final static String TAG_NAME = "Relation"; //$NON-NLS-1$
     
-    private String productCmptTypeRelation = "";
-    private String target = "";
+    private String productCmptTypeRelation = ""; //$NON-NLS-1$
+    private String target = ""; //$NON-NLS-1$
     private int minCardinality = 0;
-    private String maxCardinality = "1";
+    private String maxCardinality = "1"; //$NON-NLS-1$
 
     public ProductCmptRelation(IProductCmptGeneration generation, int id) {
         super(generation, id);
@@ -85,7 +85,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
      * Overridden.
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("ProductCmptRelation.gif");
+        return IpsPlugin.getDefault().getImage("ProductCmptRelation.gif"); //$NON-NLS-1$
     }
 
     /**
@@ -164,38 +164,38 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
         IProductCmptTypeRelation relation = findProductCmptTypeRelation();
     	IRelation relType = null;
         if (relation==null) {
-            String text = "There is no relation " + productCmptTypeRelation + " defined in " + getProductCmpt().getPolicyCmptType() + ".";
+            String text = Messages.ProductCmptRelation_msgNoRelationDefined + productCmptTypeRelation + Messages.ProductCmptRelation_6 + getProductCmpt().getPolicyCmptType() + Messages.ProductCmptRelation_7;
             list.add(new Message(MSGCODE_UNKNWON_RELATIONTYPE, text, Message.ERROR, this, PROPERTY_PCTYPE_RELATION));
         }
         else {
         	relType = relation.findPolicyCmptTypeRelation();
         }
-        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT, true, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list);
-        if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, MSGCODE_MISSING_MAX_CARDINALITY,  list)) {
+        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.PRODUCT_CMPT, true, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
+        if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, MSGCODE_MISSING_MAX_CARDINALITY,  list)) { //$NON-NLS-1$
             int max = -1;
-            if (maxCardinality.trim().equals("*")) {
+            if (maxCardinality.trim().equals("*")) { //$NON-NLS-1$
                 max = Integer.MAX_VALUE;
             } else {
                 try {
                     max = Integer.parseInt(maxCardinality);
                 } catch (NumberFormatException e) {
-                    String text = "Max cardinality must be either a number or an asterix (*).";
-                    list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
+                    String text = Messages.ProductCmptRelation_msgMalformedMaxCardinality;
+                    list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
                 }
             }
             if (max==0) {
-                String text = "Maximum cardinality must be at least 1.";
+                String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThan1;
                 list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
             } else if (max!=-1) {
                 if (minCardinality > max) {
-                    String text = "Minimum cardinality is greater than maximum cardinality.";
+                    String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY}));
                 }
-                if (relType != null && !relType.getMaxCardinality().equals("*")) {
+                if (relType != null && !relType.getMaxCardinality().equals("*")) { //$NON-NLS-1$
                     try {
 						int maxType = Integer.parseInt(relType.getMaxCardinality());
 						if (max > maxType) {
-							String text = NLS.bind("The maximum cardinality ({0}) exceeds the model defined maximum cardinality ({1})", maxCardinality, relType.getMaxCardinality());
+							String text = NLS.bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax, maxCardinality, relType.getMaxCardinality());
 							list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
 						}
 					} catch (NumberFormatException e) {
@@ -208,7 +208,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
             if (minCardinality < relType.getMinCardinality()) {
             	Integer min = new Integer(minCardinality);
             	Integer modelMin = new Integer(relType.getMinCardinality());
-            	String text = NLS.bind("Minimum cardinality ({0}) is less than the minimum cardinality defined in the model ({1})", min, modelMin);
+            	String text = NLS.bind(Messages.ProductCmptRelation_msgMinCardinalityIsLessThanModelMin, min, modelMin);
             	list.add(new Message(MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN, text, Message.ERROR, this, PROPERTY_MIN_CARDINALITY));
             }
         }
@@ -240,7 +240,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_PCTYPE_RELATION, productCmptTypeRelation);
         element.setAttribute(PROPERTY_TARGET, target);
-        element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality);
+        element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
         element.setAttribute(PROPERTY_MAX_CARDINALITY, maxCardinality);
     }
 
@@ -248,6 +248,6 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
      * {@inheritDoc}
      */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

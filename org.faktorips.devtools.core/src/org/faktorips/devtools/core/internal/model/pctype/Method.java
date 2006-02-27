@@ -36,15 +36,15 @@ import org.w3c.dom.Text;
  */
 public class Method extends Member implements IMethod {
     
-    final static String TAG_NAME = "Method";
-    final static String PARAMETER_TAG_NAME = "Parameter";
-    final static String BODY_TAG_NAME = "Body";
+    final static String TAG_NAME = "Method"; //$NON-NLS-1$
+    final static String PARAMETER_TAG_NAME = "Parameter"; //$NON-NLS-1$
+    final static String BODY_TAG_NAME = "Body"; //$NON-NLS-1$
 
-    private String datatype = "void";
+    private String datatype = "void"; //$NON-NLS-1$
     private Modifier modifier = Modifier.PUBLISHED;
     private boolean abstractFlag = false;
     private Parameter[] parameters = new Parameter[0];
-    private String body = "";
+    private String body = ""; //$NON-NLS-1$
     private boolean deleted = false;
 
     
@@ -105,9 +105,9 @@ public class Method extends Member implements IMethod {
     public Image getImage() {
         Image image;
         if (modifier==Modifier.PRIVATE) {
-            image = IpsPlugin.getDefault().getImage("MethodPrivate.gif");    
+            image = IpsPlugin.getDefault().getImage("MethodPrivate.gif");     //$NON-NLS-1$
         } else {
-            image = IpsPlugin.getDefault().getImage("MethodPublic.gif");
+            image = IpsPlugin.getDefault().getImage("MethodPublic.gif"); //$NON-NLS-1$
         }
         if (!isAbstract()) {
             return image;
@@ -161,7 +161,7 @@ public class Method extends Member implements IMethod {
             String datatypeName = params[i].getDatatype();
             Datatype datatype = getIpsProject().findDatatype(datatypeName);
             if (datatype==null) {
-                throw new CoreException(new IpsStatus("Datatype " + datatypeName + " not found for method " + this + ", parameter " + i));
+                throw new CoreException(new IpsStatus("Datatype " + datatypeName + " not found for method " + this + ", parameter " + i)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             String classname = StringUtil.unqualifiedName(datatype.getJavaClassName());
             signatures[i] = Signature.createTypeSignature(classname, false);    
@@ -213,23 +213,23 @@ public class Method extends Member implements IMethod {
     protected void validate(MessageList result) throws CoreException {
     	super.validate(result);
         if (StringUtils.isEmpty(name)) {
-            result.add(new Message("", "The name is empty!", Message.ERROR, this, PROPERTY_NAME));
+            result.add(new Message("", Messages.Method_msgNameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
 	        IStatus status = JavaConventions.validateMethodName(name);
 	        if (!status.isOK()) {
-	            result.add(new Message("", "Invalid method name.", Message.ERROR, this, PROPERTY_NAME));
+	            result.add(new Message("", Messages.Method_msgInvalidMethodname, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
 	        }
         }
         if (StringUtils.isEmpty(datatype)) {
-            result.add(new Message("", "The type is empty!", Message.ERROR, this, PROPERTY_DATATYPE));
+            result.add(new Message("", Messages.Method_msgTypeEmpty, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(datatype);
             if (datatypeObject==null) {
-                result.add(new Message("", "The datatype " + datatype + " does not exists on the object path!", Message.ERROR, this, PROPERTY_DATATYPE));
+                result.add(new Message("", Messages.Method_msgDatatypeNotFound + datatype + Messages.Method_18, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
             }
         }
         if (isAbstract() && !getPolicyCmptType().isAbstract()) {
-            result.add(new Message("", "The abstract method " + getName() + " can only be defined in an abstract class!", Message.ERROR, this, PROPERTY_ABSTRACT));
+            result.add(new Message("", Messages.Method_abstractMethodError + getName() + Messages.Method_21, Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
         for (int i=0; i<parameters.length; i++) {
             validate(parameters[i], result);
@@ -238,19 +238,19 @@ public class Method extends Member implements IMethod {
     
     private void validate(Parameter param, MessageList result) throws CoreException {
         if (StringUtils.isEmpty(param.getName())) {
-            result.add(new Message("", "The name is empty!", Message.ERROR, param, PROPERTY_PARAM_NAME));
+            result.add(new Message("", Messages.Method_msgNameEmpty, Message.ERROR, param, PROPERTY_PARAM_NAME)); //$NON-NLS-1$
         } else {
 	        IStatus status = JavaConventions.validateIdentifier(param.getName());
 	        if (!status.isOK()) {
-	            result.add(new Message("", "Invalid parameter name.", Message.ERROR, param, PROPERTY_PARAM_NAME));
+	            result.add(new Message("", Messages.Method_msgInvalidParameterName, Message.ERROR, param, PROPERTY_PARAM_NAME)); //$NON-NLS-1$
 	        }
         }
         if (StringUtils.isEmpty(param.getDatatype())) {
-            result.add(new Message("", "The datatype is empty!", Message.ERROR, param, PROPERTY_PARAM_DATATYPE));
+            result.add(new Message("", Messages.Method_msgDatatypeEmpty, Message.ERROR, param, PROPERTY_PARAM_DATATYPE)); //$NON-NLS-1$
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
             if (datatypeObject==null) {
-                result.add(new Message("", "The datatype " + param.getDatatype() + " does not exists on the object path!", Message.ERROR, param, PROPERTY_PARAM_DATATYPE));
+                result.add(new Message("", Messages.Method_msgDatatypeNotFound + param.getDatatype() + Messages.Method_30, Message.ERROR, param, PROPERTY_PARAM_DATATYPE)); //$NON-NLS-1$
             }
         }
     }
@@ -348,8 +348,8 @@ public class Method extends Member implements IMethod {
                 Element paramElement = (Element)nl.item(i);
                 if (paramElement.getTagName().equals(PARAMETER_TAG_NAME)) {
                     Parameter newParam = new Parameter(paramIndex);
-                    newParam.setName(paramElement.getAttribute("name"));
-                    newParam.setDatatype(paramElement.getAttribute("datatype"));
+                    newParam.setName(paramElement.getAttribute("name")); //$NON-NLS-1$
+                    newParam.setDatatype(paramElement.getAttribute("datatype")); //$NON-NLS-1$
                     params.add(newParam);
                     paramIndex++;
                 }
@@ -363,7 +363,7 @@ public class Method extends Member implements IMethod {
                 body = bodyText.getData();
             }
         } else {
-            body = "";
+            body = ""; //$NON-NLS-1$
         }
     }
 
@@ -376,12 +376,12 @@ public class Method extends Member implements IMethod {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_DATATYPE, datatype);
         newElement.setAttribute(PROPERTY_MODIFIER, modifier.getId());
-        newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag);
+        newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
         Document doc = newElement.getOwnerDocument();
         for (int i=0; i<parameters.length; i++) {
             Element newParamElement = doc.createElement(PARAMETER_TAG_NAME);
-            newParamElement.setAttribute("name", parameters[i].getName());
-            newParamElement.setAttribute("datatype", parameters[i].getDatatype());
+            newParamElement.setAttribute("name", parameters[i].getName()); //$NON-NLS-1$
+            newParamElement.setAttribute("datatype", parameters[i].getDatatype()); //$NON-NLS-1$
             newElement.appendChild(newParamElement);
         }
         Element bodyElement = doc.createElement(BODY_TAG_NAME);
@@ -408,7 +408,7 @@ public class Method extends Member implements IMethod {
          */
         protected void drawCompositeImage(int width, int height) {
     		drawImage(baseImage.getImageData(), 0, 0);
-    		drawImage(IpsPlugin.getDefault().getImage("AbstractIndicator.gif").getImageData(), 8, 0);
+    		drawImage(IpsPlugin.getDefault().getImage("AbstractIndicator.gif").getImageData(), 8, 0); //$NON-NLS-1$
         }
 
         /** 
@@ -421,7 +421,7 @@ public class Method extends Member implements IMethod {
     }
 
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}    
     
 }

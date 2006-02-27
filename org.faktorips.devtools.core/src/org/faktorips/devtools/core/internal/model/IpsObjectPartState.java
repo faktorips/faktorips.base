@@ -35,12 +35,12 @@ public class IpsObjectPartState {
 	/**
 	 * Name of the node to store the type-information.
 	 */
-	private static final String ELEMENT_TYPE = "ipsObjectPartStateTypeInformation";
+	private static final String ELEMENT_TYPE = "ipsObjectPartStateTypeInformation"; //$NON-NLS-1$
 	
 	/**
 	 * Name of the node to store the object-representation.
 	 */
-	private static final String ELEMENT_DATA = "ipsObjectPartStateData";
+	private static final String ELEMENT_DATA = "ipsObjectPartStateData"; //$NON-NLS-1$
 	
 	/**
 	 * Creates a new state-snapshot from the given part.
@@ -57,14 +57,14 @@ public class IpsObjectPartState {
 			}
 		}
 		state = XmlUtil.getDefaultDocumentBuilder().newDocument();
-		Element root = state.createElement("root");
+		Element root = state.createElement("root"); //$NON-NLS-1$
 		state.appendChild(root);
 		Element data = state.createElement(ELEMENT_DATA);
 		root.appendChild(data);
 		data.appendChild(part.toXml(state));
 		Element typeInfo = state.createElement(ELEMENT_TYPE);
 		
-		typeInfo.setAttribute("type", type.getName());
+		typeInfo.setAttribute("type", type.getName()); //$NON-NLS-1$
 		root.appendChild(typeInfo);
 	}
 	
@@ -85,10 +85,10 @@ public class IpsObjectPartState {
 		NodeList nodes = state.getDocumentElement().getElementsByTagName(ELEMENT_TYPE);
 		
 		if (nodes.getLength() != 1) {
-			throw new RuntimeException("Illegal String - expected exactly ONE node with tagname " + ELEMENT_TYPE + ", but found " + nodes.getLength());
+			throw new RuntimeException("Illegal String - expected exactly ONE node with tagname " + ELEMENT_TYPE + ", but found " + nodes.getLength()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		Attr typeAttr = (Attr)nodes.item(0).getAttributes().getNamedItem("type");
+		Attr typeAttr = (Attr)nodes.item(0).getAttributes().getNamedItem("type"); //$NON-NLS-1$
 		String typeName = typeAttr.getValue();
 		try {
 			type = Class.forName(typeName);
@@ -103,7 +103,7 @@ public class IpsObjectPartState {
 	 */
 	public String toString() {
 		try {
-			return XmlUtil.nodeToString(state, "UTF-8");
+			return XmlUtil.nodeToString(state, "UTF-8"); //$NON-NLS-1$
 		} catch (TransformerException e) {
 			throw new RuntimeException(e);
 		}
@@ -121,11 +121,11 @@ public class IpsObjectPartState {
 		NodeList nodes = state.getDocumentElement().getElementsByTagName(ELEMENT_DATA);
 		
 		if (nodes.getLength() != 1) {
-			throw new RuntimeException("Illegal String - expected exactly ONE node with tagname " + ELEMENT_DATA + ", but found " + nodes.getLength());
+			throw new RuntimeException("Illegal String - expected exactly ONE node with tagname " + ELEMENT_DATA + ", but found " + nodes.getLength()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		Element el = (Element)nodes.item(0);
-		part.initFromXml((Element)el.getElementsByTagName("*").item(0));
+		part.initFromXml((Element)el.getElementsByTagName("*").item(0)); //$NON-NLS-1$
 		return part;
 	}
 	

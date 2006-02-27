@@ -60,7 +60,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 
 		if (project == null) {
 			throw new IllegalStateException(
-					"The ipsproject needs to be set to this resolver before this method can be called.");
+					Messages.AbstractParameterIdentifierResolver_msgResolverMustBeSet);
 		}
 
 		String paramName;
@@ -68,7 +68,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 		int pos = identifier.indexOf('.');
 		if (pos == -1) {
 			paramName = identifier;
-			attributeName = "";
+			attributeName = ""; //$NON-NLS-1$
 		} else {
 			paramName = identifier.substring(0, pos);
 			attributeName = identifier.substring(pos + 1);
@@ -93,17 +93,17 @@ public abstract class AbstractParameterIdentifierResolver implements
 		try {
 			datatype = project.findDatatype(param.getDatatype());
 			if (datatype == null) {
-				String text = "The datatype " + param.getDatatype()
-						+ "of parameter " + param.getName()
-						+ " can't be resolved!";
+				String text = Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved + param.getDatatype()
+						+ Messages.AbstractParameterIdentifierResolver_3 + param.getName()
+						+ Messages.AbstractParameterIdentifierResolver_4;
 				return new CompilationResultImpl(Message.newError(
 						ExprCompiler.UNDEFINED_IDENTIFIER, text));
 			}
 		} catch (Exception e) {
 			IpsPlugin.log(e);
-			String text = "An error occured while resolving the datatype "
-					+ param.getDatatype() + " of parameter " + param.getName()
-					+ ".";
+			String text = Messages.AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving
+					+ param.getDatatype() + Messages.AbstractParameterIdentifierResolver_6 + param.getName()
+					+ Messages.AbstractParameterIdentifierResolver_7;
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
@@ -114,7 +114,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 		if (datatype instanceof ValueDatatype) {
 			return new CompilationResultImpl(param.getName(), datatype);
 		}
-		throw new RuntimeException("Unkown datatype class "
+		throw new RuntimeException("Unkown datatype class " //$NON-NLS-1$
 				+ datatype.getClass());
 	}
 
@@ -136,7 +136,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 			}
 		} catch (Exception e) {
 			IpsPlugin.log(e);
-			String text = "An error occured while resolving the enumeration datatype "
+			String text = Messages.AbstractParameterIdentifierResolver_msgErrorDuringEnumDatatypeResolving
 					+ enumTypeName;
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
@@ -153,16 +153,16 @@ public abstract class AbstractParameterIdentifierResolver implements
 					attributeName);
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
-			String text = "An error occured while trying to retrieve the attribute "
+			String text = Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute
 					+ attributeName
-					+ " from the policy component type "
-					+ pcType + " ";
+					+ Messages.AbstractParameterIdentifierResolver_11
+					+ pcType + Messages.AbstractParameterIdentifierResolver_12;
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
 		if (attribute == null) {
-			String text = "The parameter " + param.getName() + " of class "
-					+ pcType.getName() + " has not attribute " + attributeName;
+			String text = Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute + param.getName() + Messages.AbstractParameterIdentifierResolver_14
+					+ pcType.getName() + Messages.AbstractParameterIdentifierResolver_15 + attributeName;
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.UNDEFINED_IDENTIFIER, text));
 		}
@@ -171,21 +171,21 @@ public abstract class AbstractParameterIdentifierResolver implements
 			Datatype datatype = attribute.getIpsProject().findDatatype(
 					attribute.getDatatype());
 			if (datatype == null) {
-				String text = "The datatype " + attribute.getDatatype()
-						+ "of attribute " + attributeName
-						+ " can't be resolved!";
+				String text = Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute + attribute.getDatatype()
+						+ Messages.AbstractParameterIdentifierResolver_17 + attributeName
+						+ Messages.AbstractParameterIdentifierResolver_18;
 				return new CompilationResultImpl(Message.newError(
 						ExprCompiler.UNDEFINED_IDENTIFIER, text));
 			}
 			String code = param.getName() + '.'
 					+ getParameterAttributGetterName(attribute, datatype)
-					+ "()";
+					+ "()"; //$NON-NLS-1$
 			return new CompilationResultImpl(code, datatype);
 		} catch (Exception e) {
 			IpsPlugin.log(e);
-			String text = "An error occured while resolving the datatype "
-					+ attribute.getDatatype() + " of attribute "
-					+ attributeName + ".";
+			String text = Messages.AbstractParameterIdentifierResolver_msgErrorAttributeDatatypeResolving
+					+ attribute.getDatatype() + Messages.AbstractParameterIdentifierResolver_21
+					+ attributeName + Messages.AbstractParameterIdentifierResolver_22;
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}

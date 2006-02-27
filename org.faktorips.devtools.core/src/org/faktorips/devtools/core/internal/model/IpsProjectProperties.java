@@ -21,14 +21,14 @@ public class IpsProjectProperties {
 		return data;
 	}
 	
-	final static String TAG_NAME = "IpsProject";
-	final static String GENERATED_CODE_TAG_NAME = "GeneratedSourcecode"; 
+	final static String TAG_NAME = "IpsProject"; //$NON-NLS-1$
+	final static String GENERATED_CODE_TAG_NAME = "GeneratedSourcecode";  //$NON-NLS-1$
 		
 	private boolean modelProject;
 	private boolean productDefinitionProject;
 	private Locale javaSrcLanguage = Locale.ENGLISH;
 	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
-	private String builderSetId = "";
+	private String builderSetId = ""; //$NON-NLS-1$
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
@@ -106,25 +106,25 @@ public class IpsProjectProperties {
 
 	public Element toXml(Document doc) {
 		Element projectEl = doc.createElement(TAG_NAME);
-		projectEl.setAttribute("modelProject", "" + modelProject);
-		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject);
+		projectEl.setAttribute("modelProject", "" + modelProject); //$NON-NLS-1$ //$NON-NLS-2$
+		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
 		Element generatedCodeEl = doc.createElement(GENERATED_CODE_TAG_NAME);
 		projectEl.appendChild(generatedCodeEl);
-		generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString());
-		generatedCodeEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode);
+		generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString()); //$NON-NLS-1$
+		generatedCodeEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
 		Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
 		projectEl.appendChild(builderSetEl);
-		builderSetEl.setAttribute("id", builderSetId);
+		builderSetEl.setAttribute("id", builderSetId); //$NON-NLS-1$
 		projectEl.appendChild(((IpsObjectPath)path).toXml(doc));
 		
 		// datatypes
-		Element datatypesEl = doc.createElement("Datatypes");
+		Element datatypesEl = doc.createElement("Datatypes"); //$NON-NLS-1$
 		projectEl.appendChild(datatypesEl);
-        Element predefinedTypesEl = doc.createElement("UsedPredefinedDatatypes");
+        Element predefinedTypesEl = doc.createElement("UsedPredefinedDatatypes"); //$NON-NLS-1$
         datatypesEl.appendChild(predefinedTypesEl);
 		for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
-			Element datatypeEl = doc.createElement("Datatype");
-			datatypeEl.setAttribute("id", predefinedDatatypesUsed[i]);
+			Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
+			datatypeEl.setAttribute("id", predefinedDatatypesUsed[i]); //$NON-NLS-1$
             predefinedTypesEl.appendChild(datatypeEl);
 		}
 		
@@ -133,20 +133,20 @@ public class IpsProjectProperties {
 	
 	public void initFromXml(IIpsProject ipsProject, Element element) {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
-        modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue();
-        productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue();
+        modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
+        productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
-    	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage"));
-    	    changesInTimeConventionIdForGeneratedCode = generatedCodeEl.getAttribute("changesInTimeNamingConvention");
+    	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$
+    	    changesInTimeConventionIdForGeneratedCode = generatedCodeEl.getAttribute("changesInTimeNamingConvention"); //$NON-NLS-1$
         } else {
         	javaSrcLanguage = Locale.ENGLISH;
         	changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
         }
         if(artefactEl != null) {
-            builderSetId = artefactEl.getAttribute("id");
+            builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
         } else {
-        	builderSetId = "";
+        	builderSetId = ""; //$NON-NLS-1$
         }
         Element pathEl = XmlUtil.getFirstElement(element, IpsObjectPath.XML_TAG_NAME);
         if (pathEl != null) {
@@ -154,14 +154,14 @@ public class IpsProjectProperties {
         } else {
         	path = new IpsObjectPath();
         }
-        Element datatypesEl = XmlUtil.getFirstElement(element, "Datatypes");
+        Element datatypesEl = XmlUtil.getFirstElement(element, "Datatypes"); //$NON-NLS-1$
         if (datatypesEl==null) {
         	predefinedDatatypesUsed = new String[0];
             definedDatatypes = new DynamicValueDatatype[0];
         	return;
         }
-        initUsedPredefinedDatatypesFromXml(XmlUtil.getFirstElement(datatypesEl, "UsedPredefinedDatatypes"));
-        initDefinedDatatypesFromXml(ipsProject, XmlUtil.getFirstElement(datatypesEl, "DatatypeDefinitions"));
+        initUsedPredefinedDatatypesFromXml(XmlUtil.getFirstElement(datatypesEl, "UsedPredefinedDatatypes")); //$NON-NLS-1$
+        initDefinedDatatypesFromXml(ipsProject, XmlUtil.getFirstElement(datatypesEl, "DatatypeDefinitions")); //$NON-NLS-1$
 	}
 
     private void initUsedPredefinedDatatypesFromXml(Element element) {
@@ -169,10 +169,10 @@ public class IpsProjectProperties {
             predefinedDatatypesUsed = new String[0];
             return;
         }
-        NodeList nl = element.getElementsByTagName("Datatype");
+        NodeList nl = element.getElementsByTagName("Datatype"); //$NON-NLS-1$
         predefinedDatatypesUsed = new String[nl.getLength()];
         for (int i=0; i<nl.getLength(); i++) {
-            predefinedDatatypesUsed[i] = ((Element)nl.item(i)).getAttribute("id");
+            predefinedDatatypesUsed[i] = ((Element)nl.item(i)).getAttribute("id"); //$NON-NLS-1$
         }
     }
     
@@ -181,7 +181,7 @@ public class IpsProjectProperties {
             definedDatatypes = new DynamicValueDatatype[0];
             return;
         }
-        NodeList nl = element.getElementsByTagName("Datatype");
+        NodeList nl = element.getElementsByTagName("Datatype"); //$NON-NLS-1$
         definedDatatypes = new DynamicValueDatatype[nl.getLength()];
         for (int i=0; i<nl.getLength(); i++) {
             definedDatatypes[i] = DynamicValueDatatype.createFromXml(ipsProject, (Element)nl.item(i));
@@ -189,7 +189,7 @@ public class IpsProjectProperties {
     }
 
     static Locale getLocale(String s) {
-    	StringTokenizer tokenzier = new StringTokenizer(s, "_");
+    	StringTokenizer tokenzier = new StringTokenizer(s, "_"); //$NON-NLS-1$
     	if (!tokenzier.hasMoreTokens()) {
     		return Locale.ENGLISH;
     	}

@@ -25,10 +25,10 @@ import org.w3c.dom.Element;
  */
 public class ColumnRange extends IpsObjectPart implements IColumnRange {
     
-    final static String TAG_NAME = "Range";
+    final static String TAG_NAME = "Range"; //$NON-NLS-1$
 
-    private String from = "";
-    private String to = "";
+    private String from = ""; //$NON-NLS-1$
+    private String to = ""; //$NON-NLS-1$
     private ColumnRangeType rangeType = ColumnRangeType.TWO_COLUMN_RANGE;
     
     public ColumnRange(TableStructure parent, int id) {
@@ -124,24 +124,24 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
      * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableRange.gif");
+        return IpsPlugin.getDefault().getImage("TableRange.gif"); //$NON-NLS-1$
     }
 
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
         if ((rangeType.isTwoColumn() || rangeType.isOneColumnFrom()) && 
-             ValidationUtils.checkStringPropertyNotEmpty(from, "from column", this, PROPERTY_FROM_COLUMN, list)) {
+             ValidationUtils.checkStringPropertyNotEmpty(from, "from column", this, PROPERTY_FROM_COLUMN, list)) { //$NON-NLS-1$
             if (getTableStructure().getColumn(from)==null) {
-                String text = "The table does not contain a column with name " + from;
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_FROM_COLUMN));
+                String text = Messages.ColumnRange_msgMissingColumn + from;
+                list.add(new Message("", text, Message.ERROR, this, PROPERTY_FROM_COLUMN)); //$NON-NLS-1$
             }
         }
         
         if((rangeType.isTwoColumn() || rangeType.isOneColumnTo()) && 
-            ValidationUtils.checkStringPropertyNotEmpty(to, "to column", this, PROPERTY_TO_COLUMN, list)){
+            ValidationUtils.checkStringPropertyNotEmpty(to, "to column", this, PROPERTY_TO_COLUMN, list)){ //$NON-NLS-1$
             if (getTableStructure().getColumn(to)==null) {
-                String text = "The table does not contain a column with name " + to;
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_TO_COLUMN));
+                String text = Messages.ColumnRange_msgMissingColumn + to;
+                list.add(new Message("", text, Message.ERROR, this, PROPERTY_TO_COLUMN)); //$NON-NLS-1$
             }
         }
     }
@@ -199,7 +199,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         if(rangeType.isOneColumnTo()){
             return to;
         }
-        throw new IllegalStateException("The range type is not specified.");
+        throw new IllegalStateException("The range type is not specified."); //$NON-NLS-1$
     }
 
     /**
@@ -257,6 +257,6 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

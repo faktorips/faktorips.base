@@ -24,10 +24,10 @@ import org.w3c.dom.Element;
  */
 public abstract class IpsObject extends IpsObjectPartContainer implements IIpsObject {
     
-    private String description = "";
+    private String description = ""; //$NON-NLS-1$
 
     protected IpsObject(IIpsSrcFile file) {
-        super(file, "");
+        super(file, ""); //$NON-NLS-1$
     }
     
     /**
@@ -55,7 +55,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     public String getQualifiedName() {
         String folderName = getParent().getParent().getName();
-        if (folderName.equals("")) {
+        if (folderName.equals("")) { //$NON-NLS-1$
             return getName();
         }
         return folderName + '.' + getName();
@@ -68,7 +68,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         String filename = getParent().getName();
         int index = filename.indexOf('.');
         if (index==-1) {
-            throw new RuntimeException("filename has no extension: " + filename);
+            throw new RuntimeException("filename has no extension: " + filename); //$NON-NLS-1$
         }
         return filename.substring(0, index);
     }
@@ -119,7 +119,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         try {
             Element element = toXml(doc);
-            String encoding = getIpsProject()==null?"UTF-8":getIpsProject().getXmlFileCharset();
+            String encoding = getIpsProject()==null?"UTF-8":getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
             String newContents = XmlUtil.nodeToString(element, encoding);
             ((IpsSrcFile)getParent()).setContentsInternal(newContents);
         } catch (TransformerException e) {
@@ -145,7 +145,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     public void setState(Memento memento) {
         if (!memento.getOriginator().equals(this)) {
-            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this);
+            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
         }
         initFromXml(((XmlMemento)memento).getState());
     }
@@ -235,7 +235,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     
     public String toString() {
         if (getParent()==null) {
-            return "unnamed object"; // can only happen in test cases. 
+            return "unnamed object"; // can only happen in test cases.  //$NON-NLS-1$
         }
         return super.toString();
     }

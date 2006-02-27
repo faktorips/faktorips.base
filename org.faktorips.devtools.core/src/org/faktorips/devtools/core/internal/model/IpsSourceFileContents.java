@@ -62,7 +62,7 @@ class IpsSourceFileContents {
     
     void updateStateFromMemento(IIpsSrcFileMemento memento) throws CoreException {
         if (!memento.getIpsSrcFile().equals(this.ipsSrcFile)) {
-            throw new CoreException(new IpsStatus(this + ": Memento " + memento + " is from different object."));
+            throw new CoreException(new IpsStatus(this + ": Memento " + memento + " is from different object.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         sourceText = memento.getContents();
         contentParsable = null;
@@ -127,7 +127,7 @@ class IpsSourceFileContents {
         if (contentParsable.booleanValue()) {
             return ipsObject;    
         }
-        throw new CoreException(new IpsStatus(this.toString() + " can't be parsed!"));
+        throw new CoreException(new IpsStatus(this.toString() + " can't be parsed!")); //$NON-NLS-1$
     }
     
     /*
@@ -159,6 +159,6 @@ class IpsSourceFileContents {
     }
     
     public String toString() {
-        return "Content of file: " + ipsSrcFile + ", parse status: " + contentParsable;
+        return "Content of file: " + ipsSrcFile + ", parse status: " + contentParsable; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

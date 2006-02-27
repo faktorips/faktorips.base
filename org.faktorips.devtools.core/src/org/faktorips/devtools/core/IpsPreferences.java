@@ -18,19 +18,19 @@ public class IpsPreferences {
 	/**
      * Constant identifiying the working date preference
      */
-    public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate";
+    public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate"; //$NON-NLS-1$
 	
-    public static final String NULL_REPRESENTATION_STRING = IpsPlugin.PLUGIN_ID + ".nullRepresentationString";
+    public static final String NULL_REPRESENTATION_STRING = IpsPlugin.PLUGIN_ID + ".nullRepresentationString"; //$NON-NLS-1$
 
     /**
      * Constant identifying the changes over time naming concept preference.
      */
-    public final static String CHANGES_OVER_TIME_NAMING_CONCEPT = IpsPlugin.PLUGIN_ID + ".changesOverTimeConcept";
+    public final static String CHANGES_OVER_TIME_NAMING_CONCEPT = IpsPlugin.PLUGIN_ID + ".changesOverTimeConcept"; //$NON-NLS-1$
     
     /**
      * Constant identifying the default postfix for product component types
      */
-    public final static String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID + ".defaultProductCmptTypePostfix";
+    public final static String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID + ".defaultProductCmptTypePostfix"; //$NON-NLS-1$
 
     /**
      * Returns the working date preference.
@@ -50,13 +50,13 @@ public class IpsPreferences {
     public IpsPreferences(IPreferenceStore prefStore) {
     	ArgumentCheck.notNull(prefStore);
     	this.prefStore = prefStore;
-    	prefStore.setDefault(NULL_REPRESENTATION_STRING, "<null>");
+    	prefStore.setDefault(NULL_REPRESENTATION_STRING, "<null>"); //$NON-NLS-1$
     	prefStore.setDefault(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(new GregorianCalendar()));
     	prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.VAA);
     	if (Locale.getDefault().getLanguage().equals(Locale.GERMAN.getLanguage())) {
-        	prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Typ");
+        	prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Typ"); //$NON-NLS-1$
     	} else {
-    		prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Type");
+    		prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Type"); //$NON-NLS-1$
     	}
     }
 

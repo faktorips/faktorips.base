@@ -70,7 +70,7 @@ public class FaktorIpsClasspathVariableInitializer extends
 		}
 		Bundle bundle = Platform.getBundle(m.getPluginId());
 		if (bundle == null) {
-			IpsPlugin.log(new IpsStatus("Error initializing classpath variable " + variable 
+			IpsPlugin.log(new IpsStatus("Error initializing classpath variable " + variable  //$NON-NLS-1$
 					+ ". Bundle " + m.pluginId + "not found.")); //$NON-NLS-1$ //$NON-NLS-2$
 			return;
 		}
@@ -84,7 +84,7 @@ public class FaktorIpsClasspathVariableInitializer extends
 		try {
 			local= Platform.asLocalURL(installLocation);
 		} catch (Exception e) {
-			IpsPlugin.log(new IpsStatus("Error initializing classpath variable " + variable 
+			IpsPlugin.log(new IpsStatus("Error initializing classpath variable " + variable  //$NON-NLS-1$
 					+ ". Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
 			return;
 		}

@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  */
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     
-    private String policyCmptType = "";
+    private String policyCmptType = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
@@ -91,8 +91,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if (findPolicyCmptType()==null) {
-            String text = "The template " + this.policyCmptType + " does not exists";
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+            String text = Messages.ProductCmpt_msgUnknownTemplate + this.policyCmptType + Messages.ProductCmpt_2;
+            list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE)); //$NON-NLS-1$
         }
     }
     
@@ -148,7 +148,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 	
 	/**

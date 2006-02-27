@@ -38,7 +38,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 			IIpsProject ipsProject, Element element) {
 
 		DynamicValueDatatype datatype = null;
-		String isEnumTypeString = element.getAttribute("isEnumType");
+		String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
 		if (StringUtils.isEmpty(isEnumTypeString)
 				|| !Boolean.valueOf(isEnumTypeString).booleanValue()) {
 			datatype = new DynamicValueDatatype(ipsProject);
@@ -46,26 +46,26 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 			DynamicEnumDatatype enumDatatype = new DynamicEnumDatatype(
 					ipsProject);
 			enumDatatype.setAllValuesMethodName(element
-					.getAttribute("getAllValuesMethod"));
+					.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
 			enumDatatype.setGetNameMethodName(element
-					.getAttribute("getNameMethod"));
+					.getAttribute("getNameMethod")); //$NON-NLS-1$
 			String isSupporting = element
-					.getAttribute("isSupportingNames");
+					.getAttribute("isSupportingNames"); //$NON-NLS-1$
 			enumDatatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
 							: Boolean.valueOf(isSupporting).booleanValue());
 			datatype = enumDatatype;
 		}
 
-		datatype.setAdaptedClassName(element.getAttribute("valueClass"));
-		datatype.setQualifiedName(element.getAttribute("id"));
-		datatype.setValueOfMethodName(element.getAttribute("valueOfMethod"));
+		datatype.setAdaptedClassName(element.getAttribute("valueClass")); //$NON-NLS-1$
+		datatype.setQualifiedName(element.getAttribute("id")); //$NON-NLS-1$
+		datatype.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
 		datatype.setIsParsableMethodName(element
-				.getAttribute("isParsableMethod"));
+				.getAttribute("isParsableMethod")); //$NON-NLS-1$
 		datatype.setToStringMethodName(element
-				.getAttribute("valueToStringMethod"));
-		if (element.hasAttribute("specialNullValue")) {
+				.getAttribute("valueToStringMethod")); //$NON-NLS-1$
+		if (element.hasAttribute("specialNullValue")) { //$NON-NLS-1$
 			datatype.setSpecialNullValue(element
-					.getAttribute("specialNullValue"));
+					.getAttribute("specialNullValue")); //$NON-NLS-1$
 		}
 		datatype.getAdaptedClass();
 		return datatype;
@@ -110,11 +110,11 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 				adaptedClass = getProjectClassloader(
 						ipsProject.getJavaProject()).loadClass(className);
 				// get the URL from the resource the class was loaded from
-				URL url = adaptedClass.getResource("/"
-						+ adaptedClass.getName().replace('.', '/') + ".class");
-				if (url.getProtocol().equals("file")) {
+				URL url = adaptedClass.getResource("/" //$NON-NLS-1$
+						+ adaptedClass.getName().replace('.', '/') + ".class"); //$NON-NLS-1$
+				if (url.getProtocol().equals("file")) { //$NON-NLS-1$
 					startListeningToClassContainerChanges(url.getFile());
-				} else if (url.getProtocol().equals("jar")) {
+				} else if (url.getProtocol().equals("jar")) { //$NON-NLS-1$
 					String path = url.getPath();
 					String jarFile = path.substring(5, path.indexOf('!'));
 					startListeningToClassContainerChanges(jarFile);

@@ -85,7 +85,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      * Overridden.
      */
     public void initFromXml(Element element, IProject project) {
-        String projectName = element.getAttribute("referencedIpsProject");
+        String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
         referencedIpsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
     }
 
@@ -94,8 +94,8 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      */
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
-        element.setAttribute("type", TYPE_PROJECT_REFERENCE);
-        element.setAttribute("referencedIpsProject", referencedIpsProject.getName());
+        element.setAttribute("type", TYPE_PROJECT_REFERENCE); //$NON-NLS-1$
+        element.setAttribute("referencedIpsProject", referencedIpsProject.getName()); //$NON-NLS-1$
         return element;
     }
 

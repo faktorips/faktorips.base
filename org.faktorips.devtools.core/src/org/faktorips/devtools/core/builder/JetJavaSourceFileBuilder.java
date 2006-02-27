@@ -57,7 +57,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
 	 * {@inheritDoc}
 	 */
 	public String getName() {
-		return "JET-Builder";
+		return Messages.JetJavaSourceFileBuilder_name;
 	}
 
 	/**

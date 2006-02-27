@@ -16,7 +16,7 @@ public class IpsStatus extends Status {
      */
     public IpsStatus(Throwable throwable) {
         super(IStatus.ERROR, IpsPlugin.PLUGIN_ID, 0, 
-                throwable.getMessage()!=null?throwable.getMessage():"", throwable); 
+                throwable.getMessage()!=null?throwable.getMessage():"", throwable); //$NON-NLS-1$
         // use the throwable's message as the Errordialg makes no use of the throwable
     }
     

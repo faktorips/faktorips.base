@@ -12,9 +12,9 @@ import org.faktorips.devtools.core.model.IIpsProject;
 public class DynamicEnumDatatype extends DynamicValueDatatype implements
 		EnumDatatype {
 
-	private String getAllValuesMethodName = "";
+	private String getAllValuesMethodName = ""; //$NON-NLS-1$
 
-	private String getNameMethodName = "";
+	private String getNameMethodName = ""; //$NON-NLS-1$
 
 	private boolean isSupportingNames = false;
 
@@ -27,8 +27,8 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 	 */
 	public String[] getAllValueIds() {
 		if (getAdaptedClass() == null) {
-			throw new RuntimeException("Datatype " + getQualifiedName()
-					+ ", Class " + getAdaptedClassName() + " not found.");
+			throw new RuntimeException("Datatype " + getQualifiedName() //$NON-NLS-1$
+					+ ", Class " + getAdaptedClassName() + " not found."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(
 				getAdaptedClass());
@@ -77,7 +77,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 			return datatype.getValueName(id);
 		}
 		throw new UnsupportedOperationException(
-				"The getName(String) method is not supported by this enumeration class: "
+				"The getName(String) method is not supported by this enumeration class: " //$NON-NLS-1$
 						+ getAdaptedClass());
 	}
 

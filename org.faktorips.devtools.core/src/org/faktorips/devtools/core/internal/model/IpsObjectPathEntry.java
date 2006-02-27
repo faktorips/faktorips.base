@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     
     // name of xml elements representing path entries.
-    final static String XML_ELEMENT = "Entry";
+    final static String XML_ELEMENT = "Entry"; //$NON-NLS-1$
 
     private IpsObjectPath path;
     
@@ -84,7 +84,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      */
     public final static IIpsObjectPathEntry createFromXml(IpsObjectPath path, Element element, IProject project) {
         IpsObjectPathEntry entry;
-        String type = element.getAttribute("type");
+        String type = element.getAttribute("type"); //$NON-NLS-1$
         if (type.equals(TYPE_SRC_FOLDER)) {
             entry = new IpsSrcFolderEntry(path);
             entry.initFromXml(element, project);
@@ -95,7 +95,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
             entry.initFromXml(element, project);
             return entry;
         }
-        throw new RuntimeException("Unknown entry type " + type);
+        throw new RuntimeException("Unknown entry type " + type); //$NON-NLS-1$
     }
     
 

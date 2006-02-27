@@ -42,7 +42,7 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
-		monitor.beginTask("Deep Copy", 2 + toCopy.length*2 + toRefer.length);
+		monitor.beginTask(Messages.DeepCopyOperation_taskTitle, 2 + toCopy.length*2 + toRefer.length);
 		
 		monitor.worked(1);
 		

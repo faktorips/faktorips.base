@@ -93,7 +93,7 @@ public abstract class JetJavaContentGenerator {
 
         StringBuffer importBuffer = new StringBuffer();
         for (Iterator it = importDeclartion.iterator(); it.hasNext();) {
-            importBuffer.append("import ");
+            importBuffer.append("import "); //$NON-NLS-1$
             importBuffer.append((String)it.next());
             importBuffer.append(';');
 

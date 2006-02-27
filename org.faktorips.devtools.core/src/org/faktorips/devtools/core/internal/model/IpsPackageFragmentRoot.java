@@ -62,7 +62,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      */
     public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("IpsPackageFragmentRoot does not exist!"));
+            throw new CoreException(new IpsStatus("IpsPackageFragmentRoot does not exist!")); //$NON-NLS-1$
         }
         IIpsObjectPathEntry[] entries = getIpsProject().getIpsObjectPath().getEntries();
         for (int i=0; i<entries.length; i++) {
@@ -73,7 +73,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
                 }
             }
         }
-        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment " + this));
+        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment " + this)); //$NON-NLS-1$
     }
     
     /**
@@ -116,8 +116,8 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         List list = new ArrayList();
-        list.add(new IpsPackageFragment(this, "")); // add the default package
-        getIpsPackageFragments(folder, "", list);
+        list.add(new IpsPackageFragment(this, "")); // add the default package //$NON-NLS-1$
+        getIpsPackageFragments(folder, "", list); //$NON-NLS-1$
         IIpsPackageFragment[] pdFolders = new IIpsPackageFragment[list.size()];  
         list.toArray(pdFolders);
         return pdFolders;
@@ -136,7 +136,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
                 // package name is not the platform folder name, but the concatenation
                 // of platform folder names starting at the root folder separated by dots
                 packs.add(new IpsPackageFragment(this, name));
-                getIpsPackageFragments((IFolder)resources[i], name + ".", packs);
+                getIpsPackageFragments((IFolder)resources[i], name + ".", packs); //$NON-NLS-1$
             }
         }
     }
@@ -153,7 +153,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      * Overridden
      */
     public IIpsPackageFragment getIpsDefaultPackageFragment() {
-		return this.getIpsPackageFragment("");
+		return this.getIpsPackageFragment(""); //$NON-NLS-1$
 	}
 
 	/** 
@@ -162,7 +162,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      */
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor) throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
-        StringTokenizer tokenizer = new StringTokenizer(name, ".");
+        StringTokenizer tokenizer = new StringTokenizer(name, "."); //$NON-NLS-1$
         while (tokenizer.hasMoreTokens()) {
             folder = folder.getFolder(tokenizer.nextToken());
             if (!folder.exists()) {
@@ -194,7 +194,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif");
+        return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
     }
 
     /** 

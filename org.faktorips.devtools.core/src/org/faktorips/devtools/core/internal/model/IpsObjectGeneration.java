@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
  */
 public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsObjectGeneration {
     
-    public final static String TAG_NAME = "Generation";
+    public final static String TAG_NAME = "Generation"; //$NON-NLS-1$
     
     private GregorianCalendar validFrom;
 
@@ -47,7 +47,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
                 return i+1;
             }
         }
-        throw new RuntimeException("Coulnd't find the generation " + this + " in it's parent " + getIpsObject() + "!");
+        throw new RuntimeException("Coulnd't find the generation " + this + " in it's parent " + getIpsObject() + "!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     
     /**
@@ -59,7 +59,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      */
     public String getName() {
         if (validFrom==null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT);
         return format.format(validFrom.getTime());
@@ -108,7 +108,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Generation.gif");
+        return IpsPlugin.getDefault().getImage("Generation.gif"); //$NON-NLS-1$
     }
 
     /**

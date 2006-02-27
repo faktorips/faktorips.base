@@ -21,16 +21,16 @@ import org.w3c.dom.Element;
  */
 public abstract class IpsObjectPart extends IpsObjectPartContainer implements IIpsObjectPart {
     
-    private String description = "";
+    private String description = ""; //$NON-NLS-1$
     private int id;
     
     protected IpsObjectPart(IIpsObject parent, int id) {
-        super(parent, "");
+        super(parent, ""); //$NON-NLS-1$
         this.id = id;
     }
     
     protected IpsObjectPart(IIpsObjectPart parent, int id) {
-        super(parent, "");
+        super(parent, ""); //$NON-NLS-1$
         this.id = id;
     }
     
@@ -70,7 +70,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
                 return (IIpsObject)element;
             }
         }
-        throw new RuntimeException("Can't get IpsObject for " + this);
+        throw new RuntimeException("Can't get IpsObject for " + this); //$NON-NLS-1$
     }
     
     /**
@@ -107,7 +107,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      */
     public void setState(Memento memento) {
         if (!memento.getOriginator().equals(this)) {
-            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this);
+            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
         }
         initFromXml(((XmlMemento)memento).getState());
     }
@@ -197,7 +197,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
      * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
      */
     protected void propertiesToXml(Element element) {
-        element.setAttribute(PROPERTY_ID, "" + id);
+        element.setAttribute(PROPERTY_ID, "" + id); //$NON-NLS-1$
         DescriptionHelper.setDescription(element, description);
     }
     
