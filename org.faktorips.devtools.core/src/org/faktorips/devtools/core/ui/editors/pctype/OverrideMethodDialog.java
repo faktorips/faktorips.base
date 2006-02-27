@@ -30,10 +30,10 @@ public class OverrideMethodDialog extends CheckedTreeSelectionDialog {
     
     public OverrideMethodDialog(IPolicyCmptType pcType, Shell parent) {
         super(parent, new DefaultLabelProvider(), new CandidatesContentProvider(pcType));
-        setTitle("Overrider/implement methods");
+        setTitle(Messages.OverrideMethodDialog_title);
         setSize(80, 30);
         setContainerMode(true);
-        setEmptyListMessage("No methods available.");
+        setEmptyListMessage(Messages.OverrideMethodDialog_msgEmpty);
 		setMessage(null);			
         setInput(new Object());
         selectAbstractMethods(pcType);
@@ -214,7 +214,7 @@ public class OverrideMethodDialog extends CheckedTreeSelectionDialog {
             if (element instanceof IMethod) {
                 return ((IMethod)element).getParent();
             }
-            throw new RuntimeException("Unkown element " + element);
+            throw new RuntimeException("Unkown element " + element); //$NON-NLS-1$
         }
 
         /** 

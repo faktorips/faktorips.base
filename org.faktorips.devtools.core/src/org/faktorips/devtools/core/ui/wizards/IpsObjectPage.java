@@ -74,7 +74,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         } else if (selection.getFirstElement() instanceof IIpsElement) {
         	selectedResource = ((IIpsElement)selection.getFirstElement()).getCorrespondingResource();
         } else {
-            throw new RuntimeException("Unknown selection element " + selection.getFirstElement().getClass());
+            throw new RuntimeException("Unknown selection element " + selection.getFirstElement().getClass()); //$NON-NLS-1$
         }
     }
     
@@ -86,7 +86,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
         setTitle(getPdObjectType().getName());
-        setMessage("Create a new " + getPdObjectType().getName() + ".");
+        setMessage(Messages.IpsObjectPage_msgNew + getPdObjectType().getName() + Messages.IpsObjectPage_2); 
         
         parent.setLayout(new GridLayout(1, false));
         pageControl = new Composite(parent, SWT.NONE);
@@ -97,12 +97,12 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         setControl(pageControl);
         
         Composite locationComposite  = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createFormLabel(locationComposite, "Source Folder:");
+        toolkit.createFormLabel(locationComposite, Messages.IpsObjectPage_labelSrcFolder);
         sourceFolderControl = toolkit.createPdPackageFragmentRootRefControl(locationComposite, true);
         sourceFolderField = new TextButtonField(sourceFolderControl);
         sourceFolderField.addChangeListener(this);
 
-        toolkit.createFormLabel(locationComposite, "Package:");
+        toolkit.createFormLabel(locationComposite, Messages.IpsObjectPage_labelPackage);
         packageControl = toolkit.createPdPackageFragmentRefControl(locationComposite);
         packageField = new TextButtonField(packageControl);
         packageField.addChangeListener(this);
@@ -156,7 +156,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     }
     
     protected Text addNameLabelField(UIToolkit toolkit) {
-        toolkit.createFormLabel(nameComposite, "Name:");
+        toolkit.createFormLabel(nameComposite, Messages.IpsObjectPage_labelName); 
         Text nameText = toolkit.createText(nameComposite);
         nameText.setFocus();
         nameField = new TextField(nameText);
@@ -246,7 +246,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      * Can be overridden in subclasses to add specific validation logic. 
      */
     protected void validatePage() throws CoreException {
-        setMessage("", IMessageProvider.NONE);
+        setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
 		setErrorMessage(null);
         validateSourceRoot();
         if (getErrorMessage()!=null) {
@@ -267,9 +267,9 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 	    IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot(); 
         if (root!=null) {
             if (!root.getCorrespondingResource().exists()) {
-                setErrorMessage(root.getName() + " does not exist.");
+                setErrorMessage(root.getName() + Messages.IpsObjectPage_msgRootMissing); 
             } else if (!root.exists()) {
-                setErrorMessage(root.getName() + " is not an IPS source folder.");
+                setErrorMessage(root.getName() + Messages.IpsObjectPage_msgRootNoIPSSrcFolder); 
             }
         }
 	}
@@ -280,7 +280,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 	private void validatePackage() {
 	    IIpsPackageFragment pack = packageControl.getPdPackageFragment(); 
         if (pack!=null && !pack.exists()) {
-            setErrorMessage(pack.getName() + " does not exist.");
+            setErrorMessage(pack.getName() + Messages.IpsObjectPage_msgPackageMissing); 
         }
 	}
 	
@@ -294,19 +294,19 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 		String name=nameField.getText(); 
 		// must not be empty
 		if (name.length() == 0) {
-			setErrorMessage("Name is empty.");
+			setErrorMessage(Messages.IpsObjectPage_msgEmptyName);
 			return;
 		}
 		if (name.indexOf('.') != -1) {
-			setErrorMessage("Name must not be qualified.");
+			setErrorMessage(Messages.IpsObjectPage_msgNameMustNotBeQualified);
 			return;
 		}
 		IStatus val= JavaConventions.validateJavaTypeName(name);
 		if (val.getSeverity() == IStatus.ERROR) {
-			setErrorMessage("The name " + name + " is not valid.");
+			setErrorMessage(Messages.IpsObjectPage_msgInvalidName + name + Messages.IpsObjectPage_13);
 			return;
 		} else if (val.getSeverity() == IStatus.WARNING) {
-			setMessage("The name is discouraged.", IMessageProvider.WARNING);
+			setMessage(Messages.IpsObjectPage_msgNameDiscouraged, IMessageProvider.WARNING); 
 			// continue checking
 		}		
 		IIpsPackageFragment pack = packageControl.getPdPackageFragment();
@@ -314,7 +314,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 		if (pack!=null) {
 		    IFolder folder = (IFolder)pack.getCorrespondingResource();
 		    if (folder.getFile(filename).exists()) {
-		        setErrorMessage("Object already exists.");
+		        setErrorMessage(Messages.IpsObjectPage_msgObjectAllreadyExists);
 		        return;
 		    }
 		}
@@ -325,8 +325,8 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
             setPageComplete(false);
             return;
         }
-        boolean complete = !"".equals(sourceFolderControl.getText())
-        	&& !"".equals(nameField.getText());
+        boolean complete = !"".equals(sourceFolderControl.getText()) //$NON-NLS-1$
+        	&& !"".equals(nameField.getText()); //$NON-NLS-1$
         setPageComplete(complete);
     }
 

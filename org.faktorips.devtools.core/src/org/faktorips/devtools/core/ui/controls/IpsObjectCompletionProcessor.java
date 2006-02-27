@@ -57,7 +57,7 @@ public class IpsObjectCompletionProcessor implements IContentAssistProcessor, IS
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
      */
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported.");
+        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
@@ -65,7 +65,7 @@ public class IpsObjectCompletionProcessor implements IContentAssistProcessor, IS
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
      */
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported.");
+        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
@@ -117,7 +117,7 @@ public class IpsObjectCompletionProcessor implements IContentAssistProcessor, IS
 			return null;
 		}
         if (control==null && pdProject==null) {
-            errorMessage = "No project context available.";
+            errorMessage = Messages.IpsObjectCompletionProcessor_msgNoProject;
             return null;
         }
 		String input= contentAssistSubjectControl.getDocument().get();
@@ -134,7 +134,7 @@ public class IpsObjectCompletionProcessor implements IContentAssistProcessor, IS
             for (int i=0; i<objects.length; i++) {
                 if (objects[i].getName().toLowerCase().startsWith(match)) {
                     String qName = objects[i].getQualifiedName();
-                    String displayText = objects[i].getName() + " - " + objects[i].getParent().getParent().getName();
+                    String displayText = objects[i].getName() + " - " + objects[i].getParent().getParent().getName(); //$NON-NLS-1$
                     CompletionProposal proposal = new CompletionProposal(
                             qName, 0, documentOffset, qName.length(),  
                             objects[i].getImage(), displayText, null, objects[i].getDescription());
@@ -142,7 +142,7 @@ public class IpsObjectCompletionProcessor implements IContentAssistProcessor, IS
                 }
             }
         } catch (Exception e) {
-            errorMessage = "An internal error occured while searching. See the log file for details.";
+            errorMessage = Messages.IpsObjectCompletionProcessor_msgInternalError;
             IpsPlugin.log(e);
             return null;
         }

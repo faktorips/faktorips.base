@@ -54,7 +54,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
      * @param title
      */
     public RangeEditDialog(IColumnRange range, Shell parentShell) {
-        super(range, parentShell, "Edit Column", true);
+        super(range, parentShell, Messages.RangeEditDialog_title, true);
         this.range = range;
     }
 
@@ -66,7 +66,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
         TabFolder folder = (TabFolder)parent;
         
         TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText("General");
+        page.setText(Messages.RangeEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
         
         createDescriptionTabItem(folder);
@@ -77,7 +77,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 				
 				Composite c = createTabItemComposite(folder, 1, false);
 				Composite rangeTypeArea = uiToolkit.createGridComposite(c, 2, false, true);
-				uiToolkit.createFormLabel(rangeTypeArea, "Type: ");
+				uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
 				rangeTypeField = new EnumValueField(uiToolkit.createCombo(
 				    rangeTypeArea, ColumnRangeType.getEnumType()), ColumnRangeType.getEnumType());
 				rangeTypeField.addChangeListener(new ValueChangeListener(){
@@ -89,26 +89,26 @@ public class RangeEditDialog extends IpsPartEditDialog {
 				Composite container = uiToolkit.createGridComposite(c, 3, false, false);
 				
 				Composite left = uiToolkit.createGridComposite(container, 1, false, true);
-				Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, "Range columns");
+				Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, Messages.RangeEditDialog_groupTitle);
 				
 				Composite editArea = uiToolkit.createLabelEditColumnComposite(leftGroup);
 				GridData data = (GridData)editArea.getLayoutData();
 				data.widthHint = 180;
 				data.heightHint = 200;
-				fromLabel = uiToolkit.createFormLabel(editArea, "From: ");
+				fromLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelFrom);
 				Text fromText = uiToolkit.createText(editArea);
 				fromField = new TextField(fromText);
 				
 				// add space so that the text control for the to column is aligned
 				// with it's buttons
-				uiToolkit.createLabel(editArea, "");
-				uiToolkit.createLabel(editArea, "");
-				uiToolkit.createLabel(editArea, "");
-				uiToolkit.createLabel(editArea, "");
+				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
+				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
+				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
+				uiToolkit.createLabel(editArea, ""); //$NON-NLS-1$
 				uiToolkit.createVerticalSpacer(editArea, 10);
 				uiToolkit.createVerticalSpacer(editArea, 10);
 				
-				toLabel = uiToolkit.createFormLabel(editArea, "To: ");
+				toLabel = uiToolkit.createFormLabel(editArea, Messages.RangeEditDialog_labelTo);
 				Text toText = uiToolkit.createText(editArea);
 				toField = new TextField(toText);
 				
@@ -117,7 +117,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
 				createButtons(middle);
 				
 				Composite right = uiToolkit.createGridComposite(container, 1, false, true);
-				Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, "Available columns");
+				Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, Messages.RangeEditDialog_groupAvailableColsTitle);
 				createColumnSelectionComposite(rightGroup);
 				
 				return c;
@@ -161,9 +161,9 @@ public class RangeEditDialog extends IpsPartEditDialog {
     private void createButtons(Composite middle) {
         Control spacer1 = uiToolkit.createVerticalSpacer(middle, 10);
         
-        toLeft = uiToolkit.createButton(middle, "");
+        toLeft = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif"));
+        toLeft.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
         toLeft.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -174,9 +174,9 @@ public class RangeEditDialog extends IpsPartEditDialog {
             }
         });
         
-        toRight= uiToolkit.createButton(middle, "");
+        toRight= uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif"));
+        toRight.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
         toRight.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -189,9 +189,9 @@ public class RangeEditDialog extends IpsPartEditDialog {
         
         uiToolkit.createVerticalSpacer(middle, 10);
         
-        toLeft2 = uiToolkit.createButton(middle, "");
+        toLeft2 = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toLeft2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toLeft2.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif"));
+        toLeft2.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
         toLeft2.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -203,9 +203,9 @@ public class RangeEditDialog extends IpsPartEditDialog {
         });
         
         
-        toRight2= uiToolkit.createButton(middle, "");
+        toRight2= uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toRight2.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        toRight2.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif"));
+        toRight2.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
         toRight2.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -267,7 +267,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
     
     private void clearColumn(TextField field) {
-        field.setValue("");
+        field.setValue(""); //$NON-NLS-1$
         uiController.updateModel();
     }
     

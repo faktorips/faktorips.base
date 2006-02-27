@@ -25,7 +25,7 @@ public class ProductCmptPage extends IpsObjectPage {
      * @throws JavaModelException
      */
     public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, "NewProductCmpt");
+        super(selection, Messages.ProductCmptPage_title);
     }
     
     /**
@@ -34,7 +34,7 @@ public class ProductCmptPage extends IpsObjectPage {
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         addNameLabelField(toolkit);
-        toolkit.createFormLabel(nameComposite, "Policy class:");
+        toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelName);
         pcTypeControl = toolkit.createPcTypeRefControl(null, nameComposite);
         TextButtonField pcTypeField = new TextButtonField(pcTypeControl);
         pcTypeField.addChangeListener(this);
@@ -70,7 +70,7 @@ public class ProductCmptPage extends IpsObjectPage {
         }
         IPolicyCmptType pcType = pcTypeControl.findPcType();
         if (pcType==null) {
-			setErrorMessage("Policy class " + pcTypeControl.getText() + " does not exists.");
+			setErrorMessage(Messages.ProductCmptPage_msgPolicyClassMissing + pcTypeControl.getText() + Messages.ProductCmptPage_3);
 			return;
         }
         updatePageComplete();

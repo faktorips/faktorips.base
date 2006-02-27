@@ -60,7 +60,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
      * @param title
      */
     public RelationEditDialog(IRelation relation, Shell parentShell) {
-        super(relation, parentShell, "Edit Relation", true );
+        super(relation, parentShell, Messages.RelationEditDialog_title, true );
         this.relation = relation;
         
         extFactory = new ExtensionPropertyControlFactory(relation.getClass());
@@ -73,11 +73,11 @@ public class RelationEditDialog extends IpsPartEditDialog {
         TabFolder folder = (TabFolder)parent;
         
         TabItem firstPage = new TabItem(folder, SWT.NONE);
-        firstPage.setText("Properties");
+        firstPage.setText(Messages.RelationEditDialog_propertiesTitle);
         firstPage.setControl(createFirstPage(folder));
         
         TabItem productSidePage = new TabItem(folder, SWT.NONE);
-        productSidePage.setText("Product Side");
+        productSidePage.setText(Messages.RelationEditDialog_productSideTitle);
         productSidePage.setControl(createProductSidePage(folder));
         
         createDescriptionTabItem(folder);
@@ -92,16 +92,16 @@ public class RelationEditDialog extends IpsPartEditDialog {
     	Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)relation, "top");
+        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)relation, "top"); //$NON-NLS-1$
                 
-        uiToolkit.createFormLabel(workArea, "Type:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelType);
         Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
         typeCombo.setFocus();
         
-        uiToolkit.createFormLabel(workArea, "Read-Only Container:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReadOnlyContainer);
         Checkbox abstractContainerCheckbox = uiToolkit.createCheckbox(workArea);
 
-        uiToolkit.createFormLabel(workArea, "Target:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTarget);
         PcTypeRefControl targetControl = uiToolkit.createPcTypeRefControl(relation.getIpsProject(), workArea);
         targetControl.addFocusListener(new FocusAdapter() {
             
@@ -117,28 +117,28 @@ public class RelationEditDialog extends IpsPartEditDialog {
             }
         });
         
-        uiToolkit.createFormLabel(workArea, "Target Role (Singular):");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
         Text targetRoleSingularText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Target Role (Plural):");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRolePlural);
         Text targetRolePluralText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Minimum Cardinality:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMinCardinality);
         Text minCardinalityText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Maximum Cardinality:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMaxCardinality);
         Text maxCardinalityText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Product Relevant:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelProdRelevant);
         Checkbox productRelevantCheckbox = uiToolkit.createCheckbox(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Reverse Relation:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReverseRel);
         Text reverseRelationText = uiToolkit.createText(workArea);
         ReverseRelationCompletionProcessor reverseRelationCompletionProcessor = new ReverseRelationCompletionProcessor(relation);
         reverseRelationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler.createHandlerForText(reverseRelationText, CompletionUtil.createContentAssistant(reverseRelationCompletionProcessor));
 
-        uiToolkit.createFormLabel(workArea, "Container Relation:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelContainerRel);
         Text containerRelationText = uiToolkit.createText(workArea);
         ContainerRelationCompletionProcessor completionProcessor = new ContainerRelationCompletionProcessor(relation);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
@@ -166,16 +166,16 @@ public class RelationEditDialog extends IpsPartEditDialog {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        uiToolkit.createFormLabel(workArea, "Target Role (Singular):");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
         Text targetRoleSingularText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Target Role (Plural):");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRolePlural);
         Text targetRolePluralText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Minimum Cardinality:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMinCardinality);
         Text minCardinalityText = uiToolkit.createText(workArea);
         
-        uiToolkit.createFormLabel(workArea, "Maximum Cardinality:");
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMaxCardinality);
         Text maxCardinalityText = uiToolkit.createText(workArea);
         
         // create fields

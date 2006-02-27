@@ -16,7 +16,7 @@ public class TableStructurePage extends IpsObjectPage {
      * @throws JavaModelException
      */
     public TableStructurePage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, "NewTableStructure");
+        super(selection, Messages.TableStructurePage_title);
     }
     
 }

@@ -1,4 +1,4 @@
-#Mon Feb 27 16:59:31 CET 2006
+#Mon Feb 27 17:48:45 CET 2006
 =\=\=\=\=\=\=
 <<<<<<<=org.eclipse.core.resources.prefs
 >>>>>>>=1.3
@@ -14,11 +14,23 @@ encoding//src/org/faktorips/devtools/core/internal/refactor/messages.properties=
 encoding//src/org/faktorips/devtools/core/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/model/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/actions/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/controls/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/controls/spreadsheet/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/editors/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/editors/pctype/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/editors/productcmpt/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/editors/tablecontents/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/editors/tablestructure/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/search/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/views/attrtable/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/views/productdefinitionexplorer/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/views/productstructureexplorer/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/wizards/deepcopy/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/wizards/messages.properties=UTF-8
 encoding//src/org/faktorips/devtools/core/ui/wizards/move/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/wizards/pctype/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/wizards/productcmpt/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/wizards/tablecontents/messages.properties=UTF-8
+encoding//src/org/faktorips/devtools/core/ui/wizards/tablestructure/messages.properties=UTF-8
 encoding/<project>=UTF-8

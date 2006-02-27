@@ -18,7 +18,7 @@ public class TableStructureRefControl extends IpsObjectRefControl {
             IIpsProject project, 
             Composite parent, 
             UIToolkit toolkit) {
-        super(project, parent, toolkit, "Table Structure Selection", "Select a table (?=any character, *=any string");
+        super(project, parent, toolkit, Messages.TableStructureRefControl_title, Messages.TableStructureRefControl_description);
     }
     
     /**

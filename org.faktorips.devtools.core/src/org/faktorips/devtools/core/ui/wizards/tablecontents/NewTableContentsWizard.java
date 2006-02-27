@@ -59,7 +59,7 @@ public class NewTableContentsWizard extends NewIpsObjectWizard {
         ITableStructure structure = (ITableStructure)table.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, table.getTableStructure());
         if (structure!=null) {
             for (int i=0; i<structure.getNumOfColumns(); i++) {
-                table.newColumn("");
+                table.newColumn(""); //$NON-NLS-1$
             }
         }
     }

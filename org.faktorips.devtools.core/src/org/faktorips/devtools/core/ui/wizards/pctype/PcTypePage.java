@@ -26,19 +26,19 @@ public class PcTypePage extends IpsObjectPage implements ValueChangeListener {
      * @throws JavaModelException
      */
     public PcTypePage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, "NewPcType");
+        super(selection, Messages.PcTypePage_title);
     }
     
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
-        toolkit.createFormLabel(nameComposite, "Superclass:");
+        toolkit.createFormLabel(nameComposite, Messages.PcTypePage_labelSuperclass);
         superTypeControl = toolkit.createPcTypeRefControl(null, nameComposite);
         TextButtonField supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
         
         // Composite options = toolkit.createGridComposite(nameComposite.getParent(), 1, false, false);
-        toolkit.createLabel(nameComposite, "Option:");
-        overrideCheckbox = toolkit.createCheckbox(nameComposite, "Override abstract methods");
+        toolkit.createLabel(nameComposite, Messages.PcTypePage_labelOption);
+        overrideCheckbox = toolkit.createCheckbox(nameComposite, Messages.PcTypePage_labelOverride);
         overrideCheckbox.setChecked(true);
     }
     

@@ -164,10 +164,10 @@ public class SpreadsheetControl extends Composite {
 		
 		MenuItem item = new MenuItem(popupMenu_, SWT.NONE);
 		item.setAccelerator(SWT.ALT | SWT.DEL);
-		item.setText("Delete row");
+		item.setText(Messages.getString("SpreadsheetControl.menuDelete")); //$NON-NLS-1$
 		// TODO Image handling 
 		// item.setImage(PdfsPlugin.getPlugin().getImage("Delete.gif"));
-		item.setData("deleteRow");
+		item.setData("deleteRow"); //$NON-NLS-1$
 		
 		item.addSelectionListener(new SelectionListener()
 		{
@@ -184,10 +184,10 @@ public class SpreadsheetControl extends Composite {
 		
 		item = new MenuItem(popupMenu_, SWT.NONE);
 		item.setAccelerator(SWT.DEL);
-		item.setText("Set cell to null");
+		item.setText(Messages.getString("SpreadsheetControl.menuSetNull")); //$NON-NLS-1$
 		// TODO image handling
 		//item.setImage(PdfsPlugin.getPlugin().getImage("Clear.gif"));
-		item.setData("clearCell");
+		item.setData("clearCell"); //$NON-NLS-1$
 
 		item.addSelectionListener(new SelectionListener()
 		{
@@ -334,7 +334,7 @@ public class SpreadsheetControl extends Composite {
                 return columnInfos[i];
             }
         }
-        throw new RuntimeException("Unkown column " + columnName);
+        throw new RuntimeException("Unkown column " + columnName); //$NON-NLS-1$
     }
     
     private ColumnInfo getColumnInfo(int index) {
@@ -407,7 +407,7 @@ public class SpreadsheetControl extends Composite {
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(contentProvider);
 		viewer.setLabelProvider(new LabelProvider());
-		viewer.setInput("DummyInput");
+		viewer.setInput("DummyInput"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -569,7 +569,7 @@ public class SpreadsheetControl extends Composite {
 		
 		// check scroll right
 		if (cursorBounds.x < clientArea.x) {
-		    System.out.println("Scroll right");
+		    System.out.println("Scroll right"); //$NON-NLS-1$
 			//TODO: This hack should be replaced in version 3.0 of swt
 			//      by the showColumn method of the table control. 
 			int dx = cursorBounds.x - clientArea.x;			
@@ -581,7 +581,7 @@ public class SpreadsheetControl extends Composite {
 			int dx = cursorBounds.x + cursorBounds.width - (clientArea.x + clientArea.width);
 			//obsolete OS.SendMessage (table.handle, OS. LVM_SCROLL, dx, 0);
 			cursor.setSelection(table.getSelectionIndex(), cursor.getInternalColumn());
-		    System.out.println("Scroll left");
+		    System.out.println("Scroll left"); //$NON-NLS-1$
 		}
 	}
 
@@ -672,7 +672,7 @@ public class SpreadsheetControl extends Composite {
 
         public String getColumnText(Object element, int columnIndex) {
             if (isSizingColumn(columnIndex)) {
-                return "";
+                return ""; //$NON-NLS-1$
             }
             return columnInfos[columnIndex-1].getText(element);
         }

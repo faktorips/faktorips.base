@@ -42,4 +42,26 @@ public class Messages extends NLS {
 	public static String PdObjectSelectionDialog_labelMatches;
 
 	public static String PdObjectSelectionDialog_labelQualifier;
+
+	public static String NewFolderActionDelegate_msgNoParentFound;
+
+	public static String NewFolderActionDelegate_msgFolderAllreadyExists;
+
+	public static String NewFolderActionDelegate_2;
+
+	public static String DatatypeSelectionDialog_title;
+
+	public static String DatatypeSelectionDialog_description;
+
+	public static String DatatypeSelectionDialog_labelMatchingDatatypes;
+
+	public static String DatatypeSelectionDialog_msgLabelQualifier;
+
+	public static String PdSourceRootSelectionDialog_title;
+
+	public static String PdSourceRootSelectionDialog_description;
+
+	public static String AbstractCompletionProcessor_msgNoProject;
+
+	public static String AbstractCompletionProcessor_msgInternalError;
 }

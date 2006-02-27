@@ -25,7 +25,7 @@ public class DatatypeRefControl extends TextButtonControl {
             IIpsProject project,
             Composite parent, 
             UIToolkit toolkit) {
-        super(parent, toolkit, "Browse");
+        super(parent, toolkit, Messages.DatatypeRefControl_title);
         ipsProject = project;
         completionProcessor = new DatatypeCompletionProcessor();
         completionProcessor.setIpsProject(project);
@@ -66,7 +66,7 @@ public class DatatypeRefControl extends TextButtonControl {
                     Datatype datatype = (Datatype)dialog.getResult()[0];
                     text.setText(datatype.getName());
                 } else {
-                    text.setText("");
+                    text.setText(""); //$NON-NLS-1$
                 }
             }
         } catch (Exception e) {

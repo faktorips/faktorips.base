@@ -27,13 +27,13 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
             Composite parent, 
             boolean onlySourceRoots,
             UIToolkit toolkit) {
-        super(parent, toolkit, "Browse");
+        super(parent, toolkit, Messages.IpsPckFragmentRootRefControl_title);
         this.onlySourceRoots = onlySourceRoots;
     }
     
     public void setPdPckFragmentRoot(IIpsPackageFragmentRoot root) {
         if (root==null) {
-            setText("");
+            setText(""); //$NON-NLS-1$
         } else {
             String newText = root.getCorrespondingResource().getFullPath().toString().substring(1); 
             setText(newText);

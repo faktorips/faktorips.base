@@ -14,7 +14,7 @@ public class StructurePage extends PctEditorPage {
     final static String PAGEID = "Structure"; //$NON-NLS-1$
 
     public StructurePage(PctEditor editor) {
-        super(editor, PAGEID, "Structure");
+        super(editor, PAGEID, Messages.StructurePage_title);
     }
     
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {

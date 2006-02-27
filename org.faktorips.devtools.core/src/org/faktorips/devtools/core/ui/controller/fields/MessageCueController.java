@@ -323,19 +323,19 @@ public class MessageCueController {
 		    String imageName;
 		    switch (messageList.getSeverity()) {
 		    	case Message.ERROR: {
-		    	    imageName = "size8/ErrorMessage.gif";
+		    	    imageName = "size8/ErrorMessage.gif"; //$NON-NLS-1$
 		    	    break;
 		    	}
 		    	case Message.WARNING: {
-		    	    imageName = "size8/WarningMessage.gif";
+		    	    imageName = "size8/WarningMessage.gif"; //$NON-NLS-1$
 		    	    break;
 		    	}
 		    	case Message.INFO: {
-		    	    imageName = "size8/InfoMessage.gif";
+		    	    imageName = "size8/InfoMessage.gif"; //$NON-NLS-1$
 		    	    break;
 		    	}
 		    	default:
-		    	    imageName = "size8/NullMessage.gif";
+		    	    imageName = "size8/NullMessage.gif"; //$NON-NLS-1$
 		    }
 	        return IpsPlugin.getDefault().getImage(imageName);
 		}

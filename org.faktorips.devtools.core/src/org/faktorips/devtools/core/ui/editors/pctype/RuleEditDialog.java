@@ -46,7 +46,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
      * @param title
      */
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
-        super(rule, parentShell, "Edit Validation Rule", true);
+        super(rule, parentShell, Messages.RuleEditDialog_title, true);
         this.rule = rule;
     }
 
@@ -59,15 +59,15 @@ public class RuleEditDialog extends IpsPartEditDialog {
         TabFolder folder = (TabFolder)parent;
         
         TabItem msgPage = new TabItem(folder, SWT.NONE);
-        msgPage.setText("Message");
+        msgPage.setText(Messages.RuleEditDialog_messageTitle);
         msgPage.setControl(createMessagePage(folder));
         
         TabItem functionsPage = new TabItem(folder, SWT.NONE);
-        functionsPage.setText("Usage");
+        functionsPage.setText(Messages.RuleEditDialog_functionTitle);
         functionsPage.setControl(createFunctionsPage(folder));
         
         TabItem attributesPage = new TabItem(folder, SWT.NONE);
-        attributesPage.setText("Validated Attributes");
+        attributesPage.setText(Messages.RuleEditDialog_attrTitle);
         attributesPage.setControl(createAttributesPage(folder));
         
         createDescriptionTabItem(folder);
@@ -79,19 +79,19 @@ public class RuleEditDialog extends IpsPartEditDialog {
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
         Composite nameComposite = uiToolkit.createLabelEditColumnComposite(workArea);
-        uiToolkit.createFormLabel(nameComposite, "Name:");
+        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_labelName);
         Text nameText = uiToolkit.createText(nameComposite);
         nameText.setFocus();
 
         // message group
-        Group msgGroup = uiToolkit.createGroup(workArea, "Message");
+        Group msgGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_messageGroupTitle);
         Composite msgComposite = uiToolkit.createLabelEditColumnComposite(msgGroup);
         msgComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        uiToolkit.createFormLabel(msgComposite, "Code:");
+        uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelCode);
         Text codeText = uiToolkit.createText(msgComposite);
-        uiToolkit.createFormLabel(msgComposite, "Severity:");
+        uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelSeverity);
         Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
-        Label label = uiToolkit.createFormLabel(msgComposite, "Text:");
+        Label label = uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelText);
         label.getParent().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
         Text msgText = uiToolkit.createMultilineText(msgComposite);
         
@@ -108,7 +108,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
     private Control createFunctionsPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder,1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
-        Checkbox appliedToAllCheckbox = uiToolkit.createCheckbox(workArea, "Applied in all business functions");
+        Checkbox appliedToAllCheckbox = uiToolkit.createCheckbox(workArea, Messages.RuleEditDialog_labelApplyInAllBusinessFunctions);
         rfControl = new RuleFunctionsControl((IValidationRule)super.getIpsPart(), workArea);
         
         appliedToAllField = new CheckboxField(appliedToAllCheckbox);
@@ -118,7 +118,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
     private Control createAttributesPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder,1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
-        Checkbox specifiedInSrc = uiToolkit.createCheckbox(workArea, "Specified in the source code");
+        Checkbox specifiedInSrc = uiToolkit.createCheckbox(workArea, Messages.RuleEditDialog_labelSpecifiedInSrc);
         specifiedInSrcField = new CheckboxField(specifiedInSrc);
         
         new ValidatedAttributesControl((IValidationRule)super.getIpsPart(), workArea);

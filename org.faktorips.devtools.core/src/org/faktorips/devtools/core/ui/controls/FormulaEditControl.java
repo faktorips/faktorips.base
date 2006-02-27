@@ -20,7 +20,7 @@ public class FormulaEditControl extends TextButtonControl {
 	Shell shell;
 	
 	public FormulaEditControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell) {
-		super(parent, toolkit, "...", true, 15);
+		super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
 		this.configElement = configElement;
 		this.shell = shell;
 	}

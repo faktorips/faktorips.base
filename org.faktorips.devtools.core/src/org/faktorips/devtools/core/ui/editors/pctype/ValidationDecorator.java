@@ -54,19 +54,19 @@ public class ValidationDecorator extends Composite {
 	    String imageName;
 	    switch (list.getSeverity()) {
 	    	case Message.ERROR: {
-	    	    imageName = "size8/Error.gif";
+	    	    imageName = "size8/Error.gif"; //$NON-NLS-1$
 	    	    break;
 	    	}
 	    	case Message.WARNING: {
-	    	    imageName = "size8/Warning.gif";
+	    	    imageName = "size8/Warning.gif"; //$NON-NLS-1$
 	    	    break;
 	    	}
 	    	case Message.INFO: {
-	    	    imageName = "info.gif";
+	    	    imageName = "info.gif"; //$NON-NLS-1$
 	    	    break;
 	    	}
 	    	default:
-	    	    imageName = "empty.gif";
+	    	    imageName = "empty.gif"; //$NON-NLS-1$
 	    }
         imageLabel.setImage(IpsPlugin.getDefault().getImage(imageName));
 	}

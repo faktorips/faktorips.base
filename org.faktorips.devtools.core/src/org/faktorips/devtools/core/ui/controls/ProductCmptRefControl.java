@@ -20,7 +20,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
             IIpsProject project, 
             Composite parent, 
             UIToolkit toolkit) {
-        super(project, parent, toolkit, "Product Component Selection", "Select a component (?=any character, *=any string");
+        super(project, parent, toolkit, Messages.ProductCmptRefControl_title, Messages.ProductCmptRefControl_description);
     }
     
     /**

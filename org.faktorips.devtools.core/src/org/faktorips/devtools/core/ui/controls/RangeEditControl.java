@@ -53,7 +53,7 @@ public class RangeEditControl extends ControlComposite implements InternalValueS
     }
 
     private Group createRangeGroup(UIToolkit toolkit) {
-        Group group = toolkit.createGroup(this, " Range ");
+        Group group = toolkit.createGroup(this, Messages.RangeEditControl_titleRange);
         GridLayout grouplayout = new GridLayout(1, false);
         grouplayout.marginHeight = 10;
         group.setLayout(grouplayout);
@@ -80,15 +80,15 @@ public class RangeEditControl extends ControlComposite implements InternalValueS
     }
 
     private void createTextControls(UIToolkit toolkit, Composite workArea) {
-        toolkit.createFormLabel(workArea, "Minimum");
+        toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelMinimum);
         lower = toolkit.createText(workArea);
         lower.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         
-        toolkit.createLabel(workArea, "Maximum");        
+        toolkit.createLabel(workArea, Messages.RangeEditControl_labelMaximum);        
         upper = toolkit.createText(workArea);
         upper.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         
-        toolkit.createFormLabel(workArea, "Step");        
+        toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelStep);        
         step = toolkit.createText(workArea);
         step.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         

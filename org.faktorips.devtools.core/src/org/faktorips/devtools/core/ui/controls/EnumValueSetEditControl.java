@@ -58,7 +58,7 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
      * wrong type, a new EnumValueEnumSet is created. Labels the control with default-text ("Values") in english.
      */
     public EnumValueSetEditControl(EnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator) {
-    	this(valueSet, parent, tableElementValidator, "Values");
+    	this(valueSet, parent, tableElementValidator, Messages.EnumValueSetEditControl_titleValues);
     }
 
     protected void initModelObject(Object modelObject) {
@@ -122,7 +122,7 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#getColumnPropertyNames()
      */
     protected String[] getColumnPropertyNames() {
-        return new String[] { "message", "Value" };
+        return new String[] { Messages.EnumValueSetEditControl_colName_1, Messages.EnumValueSetEditControl_colName_2 };
     }
 
     /**
@@ -159,7 +159,7 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#addElement()
      */
     public Object addElement() {
-        String newValue = "";
+        String newValue = ""; //$NON-NLS-1$
         valueSet.addValue(newValue);
         if (valueSetChangeListener != null) {
             valueSetChangeListener.valueSetChanged(valueSet);
@@ -210,7 +210,7 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
 
         public String getColumnText(Object element, int columnIndex) {
             if (columnIndex == 0) {
-                return "";
+                return ""; //$NON-NLS-1$
             }
             return element.toString();
         }

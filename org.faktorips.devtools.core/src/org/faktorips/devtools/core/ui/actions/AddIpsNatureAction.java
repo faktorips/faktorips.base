@@ -59,8 +59,8 @@ public class AddIpsNatureAction extends ActionDelegate {
 	public void runWithEvent(IAction action, Event event) {
 		IJavaProject javaProject = getJavaProject();
 		if (javaProject==null) {
-			IpsStatus status = new IpsStatus(IpsStatus.WARNING, 0, "Tried to execute addIpsNatureAction on selection " + selection + " which does not contain one single IJavaProject", null);
-			ErrorDialog.openError(getShell(), "Error creating IPS project.", null, status);
+			IpsStatus status = new IpsStatus(IpsStatus.WARNING, 0, Messages.AddIpsNatureAction_noJavaProject + selection + Messages.AddIpsNatureAction_1, null);
+			ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_errorTitle, null, status);
 			return;
 		}
 		IProjectDescription description;
@@ -69,7 +69,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 			String[] natures = description.getNatureIds();
 			for (int i = 0; i < natures.length; i++) {
 				if (natures[i].equals(IIpsProject.NATURE_ID)) {
-					MessageDialog.openInformation(getShell(), "Add FaktorIPS nature", "The project has already got the FaktorIPS nature.");
+					MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, Messages.AddIpsNatureAction_msgIPSNatureAlreadySet);
 					return;
 				}
 			}
@@ -78,13 +78,13 @@ public class AddIpsNatureAction extends ActionDelegate {
 			return;
 		}
 		try {
-			IFolder javaSrcFolder = javaProject.getProject().getFolder("src");
+			IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
 			IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
 			for (int i = 0; i < roots.length; i++) {
 				if (roots[i].getKind()==IPackageFragmentRoot.K_SOURCE ) {
 					if (roots[i].getCorrespondingResource() instanceof IProject) {
-						IpsStatus status = new IpsStatus("Java project must keep it's source files in folders. Keeping the Java sourcec files in the project iself, is not supported.");
-						ErrorDialog.openError(getShell(), "Add FaktorIPS nature", null, status);
+						IpsStatus status = new IpsStatus(Messages.AddIpsNatureAction_msgSourceInProjectImpossible);
+						ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, null, status);
 						return;
 					}
 					javaSrcFolder = (IFolder)roots[i].getCorrespondingResource();	
@@ -94,20 +94,20 @@ public class AddIpsNatureAction extends ActionDelegate {
 			addIpsRuntimeLibraries(javaProject);
 			IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
 			ipsProject.setValueDatatypes(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
-			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model");
+			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model"); //$NON-NLS-1$
 			if (!ipsModelFolder.exists()) {
 				ipsModelFolder.create(true, true, null);
 			}
 			IpsObjectPath path = new IpsObjectPath();
 			path.setOutputDefinedPerSrcFolder(false);
-			path.setBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model");
+			path.setBasePackageNameForGeneratedJavaClasses("org.faktorips.sample.model"); //$NON-NLS-1$
 			path.setOutputFolderForGeneratedJavaFiles(javaSrcFolder);
-			path.setBasePackageNameForExtensionJavaClasses("org.faktorips.sample.model");
+			path.setBasePackageNameForExtensionJavaClasses("org.faktorips.sample.model"); //$NON-NLS-1$
 			path.newSourceFolderEntry(ipsModelFolder);
 			ipsProject.setIpsObjectPath(path);
 		} catch (CoreException e) {
-			IpsStatus status = new IpsStatus("Couldn't create IPS project based on Java project " + javaProject, e);
-			ErrorDialog.openError(getShell(), "Add FaktorIPS nature", null, status);
+			IpsStatus status = new IpsStatus(Messages.AddIpsNatureAction_msgErrorCreatingIPSProject + javaProject, e);
+			ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, null, status);
 			IpsPlugin.log(e);
 		}
 	}

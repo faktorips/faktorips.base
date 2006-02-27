@@ -89,7 +89,7 @@ public class ValueSetEditControl extends ControlComposite {
     }
 
     private void createValidTypesCombo(UIToolkit toolkit, Composite parentArea) {
-        Label label = toolkit.createFormLabel(this, "Type:");
+        Label label = toolkit.createFormLabel(this, Messages.ValueSetEditControl_labelType);
         GridData labelGridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
         label.setLayoutData(labelGridData);
         validTypesCombo = toolkit.createCombo(this);

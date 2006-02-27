@@ -137,11 +137,11 @@ public abstract class EditTableControl extends Composite {
 
 		UnfocusableTextCellEditor[] editors = createCellEditors();
 		if (editors!=null && editors.length!=table.getColumnCount()) {
-		    throw new RuntimeException("Number of editors must be equal to the number of table columns!");
+		    throw new RuntimeException("Number of editors must be equal to the number of table columns!"); //$NON-NLS-1$
 		}
 		fTableViewer.setCellEditors(editors);
 		if (getColumnPropertyNames().length!=table.getColumnCount()) {
-		    throw new RuntimeException("Number of ColumnProperties must be equal to the number of table columns!");
+		    throw new RuntimeException("Number of ColumnProperties must be equal to the number of table columns!"); //$NON-NLS-1$
 		}
 		fTableViewer.setColumnProperties(getColumnPropertyNames());
 		fTableViewer.setCellModifier(createCellModifier());

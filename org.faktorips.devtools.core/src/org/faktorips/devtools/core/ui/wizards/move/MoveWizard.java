@@ -71,7 +71,7 @@ public class MoveWizard extends Wizard {
 			super.setWindowTitle(Messages.MoveWizard_titleRename);
 		}
 		else {
-			String msg = Messages.bind(Messages.MoveWizard_warnInvalidOperation, ""+operation);
+			String msg = Messages.bind(Messages.MoveWizard_warnInvalidOperation, ""+operation); //$NON-NLS-1$
 			IpsStatus status = new IpsStatus(msg);
 			IpsPlugin.log(status);
 			this.operation = OPERATION_MOVE;

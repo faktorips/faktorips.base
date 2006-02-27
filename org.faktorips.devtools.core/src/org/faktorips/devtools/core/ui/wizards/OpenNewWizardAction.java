@@ -57,7 +57,7 @@ public abstract class OpenNewWizardAction implements IWorkbenchWindowActionDeleg
 		INewWizard wizard = createWizard();
 		IStructuredSelection selection = getCurrentSelection();
 		if (selection==null) {
-			IpsPlugin.log(new IpsStatus("No selection available, can't open wizard!"));
+			IpsPlugin.log(new IpsStatus("No selection available, can't open wizard!")); //$NON-NLS-1$
 			return;
 		}
 		wizard.init(window.getWorkbench(), selection);

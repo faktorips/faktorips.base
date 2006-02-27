@@ -12,7 +12,7 @@ public class DescriptionPage extends IpsObjectEditorPage {
     final static String PAGEID = "Description"; //$NON-NLS-1$
     
     public DescriptionPage(IpsObjectEditor editor) {
-        super(editor, PAGEID, "Description");
+        super(editor, PAGEID, Messages.getString("DescriptionPage.description")); //$NON-NLS-1$
     }
 
     /** 

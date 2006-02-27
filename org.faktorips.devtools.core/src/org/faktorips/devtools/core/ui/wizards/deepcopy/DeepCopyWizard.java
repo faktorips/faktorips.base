@@ -28,7 +28,7 @@ public class DeepCopyWizard extends Wizard {
 	public DeepCopyWizard(IProductCmpt product) {
 		super();
 		structure = product.getStructure();
-		super.setWindowTitle("Copy Product");
+		super.setWindowTitle(Messages.DeepCopyWizard_title);
 	}
 
 	/**

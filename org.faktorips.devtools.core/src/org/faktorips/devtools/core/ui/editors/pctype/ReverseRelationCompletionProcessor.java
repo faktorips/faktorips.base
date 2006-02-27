@@ -48,7 +48,7 @@ public class ReverseRelationCompletionProcessor extends AbstractCompletionProces
     
     private void addToResult(List result, IRelation relation, int documentOffset) {
         String name = relation.getName();
-        String displayText = name + " - " + relation.getParent().getName();
+        String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
                 name, 0, documentOffset, name.length(),  
                 relation.getImage(), displayText, null, relation.getDescription());

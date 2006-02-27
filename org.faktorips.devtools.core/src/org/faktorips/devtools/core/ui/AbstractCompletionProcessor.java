@@ -48,7 +48,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
      */
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported.");
+        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
@@ -56,7 +56,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
      */
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported.");
+        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
@@ -108,7 +108,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
 			return null;
 		}
         if (ipsProject==null) {
-            errorMessage = "No project context available.";
+            errorMessage = Messages.AbstractCompletionProcessor_msgNoProject;
             return null;
         }
 		String input= contentAssistSubjectControl.getDocument().get();
@@ -118,7 +118,7 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
         try {
             doComputeCompletionProposals(prefix, documentOffset, result);
         } catch (Exception e) {
-            errorMessage = "An internal error occured while searching. See the log file for details.";
+            errorMessage = Messages.AbstractCompletionProcessor_msgInternalError;
             IpsPlugin.log(e);
             return null;
         }

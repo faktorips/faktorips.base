@@ -71,7 +71,7 @@ public class NewFolderActionDelegate implements IViewActionDelegate {
 			}
 			
 			if (res == null) {
-				MessageDialog.openError(shell, Messages.NewFolderActionDelegate_titleNewFolder, "Could not identify a valid parent.");
+				MessageDialog.openError(shell, Messages.NewFolderActionDelegate_titleNewFolder, Messages.NewFolderActionDelegate_msgNoParentFound);
 				return;
 			}
 			
@@ -127,7 +127,7 @@ public class NewFolderActionDelegate implements IViewActionDelegate {
 		public String isValid(String newText) {
 			IFolder folder = getFolder(parent, newText);
 			if (folder.exists()) {
-				return "The folder " + folder.getFullPath().toOSString() + "allready exists.";
+				return Messages.NewFolderActionDelegate_msgFolderAllreadyExists + folder.getFullPath().toOSString() + Messages.NewFolderActionDelegate_2;
 			}
 			return null;
 		}

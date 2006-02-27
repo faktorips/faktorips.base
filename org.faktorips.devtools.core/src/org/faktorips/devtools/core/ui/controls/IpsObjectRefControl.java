@@ -34,7 +34,7 @@ abstract class IpsObjectRefControl extends TextButtonControl {
             UIToolkit toolkit,
             String dialogTitle,
             String dialogMessage) {
-        super(parent, toolkit, "Browse");
+        super(parent, toolkit, Messages.IpsObjectRefControl_title);
         this.pdProject = project;
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
@@ -60,7 +60,7 @@ abstract class IpsObjectRefControl extends TextButtonControl {
                     IIpsObject pdObject = (IIpsObject)dialog.getResult()[0];
                     setText(pdObject.getQualifiedName());
                 } else {
-                    setText("");
+                    setText(""); //$NON-NLS-1$
                 }
             }
         } catch (Exception e) {

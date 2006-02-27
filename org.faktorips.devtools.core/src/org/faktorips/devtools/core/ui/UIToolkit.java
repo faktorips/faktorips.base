@@ -234,7 +234,7 @@ public class UIToolkit {
 			newLink = formToolkit.createHyperlink(parent, text, SWT.NONE);
 			;
 		} else {
-			throw new RuntimeException("Not implemented yet!");
+			throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 		}
 		newLink.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_END));
@@ -419,7 +419,7 @@ public class UIToolkit {
 
 	public Group createGroup(Composite parent, int style, String text) {
 		if (formToolkit != null) {
-			throw new RuntimeException("Not implemented for forms!");
+			throw new RuntimeException("Not implemented for forms!"); //$NON-NLS-1$
 		}
 		Group newGroup = new Group(parent, style);
 		if (text != null) {

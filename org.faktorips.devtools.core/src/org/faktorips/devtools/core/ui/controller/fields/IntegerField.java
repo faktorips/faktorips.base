@@ -35,7 +35,7 @@ public class IntegerField extends DefaultEditField {
      */
     public Object getValue() {
         if (StringUtils.isEmpty(getText())) {
-            throw new RuntimeException("Can't return an Integer, field is empty.");
+            throw new RuntimeException("Can't return an Integer, field is empty."); //$NON-NLS-1$
         }
         return Integer.valueOf(getText());
     }

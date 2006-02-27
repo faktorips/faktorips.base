@@ -22,8 +22,8 @@ public class RelationLabelProvider extends DefaultLabelProvider {
             targetName = targetName.substring(pos+1);
         }
         return relation.getTargetRoleSingular() +
-            " : " + targetName + 
-        	" [" + relation.getMinCardinality() +
-        	".." + relation.getMaxCardinality() + "]";
+            " : " + targetName +  //$NON-NLS-1$
+        	" [" + relation.getMinCardinality() + //$NON-NLS-1$
+        	".." + relation.getMaxCardinality() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

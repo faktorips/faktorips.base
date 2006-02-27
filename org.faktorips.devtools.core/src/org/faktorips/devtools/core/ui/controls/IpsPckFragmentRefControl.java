@@ -19,7 +19,7 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
     public IpsPckFragmentRefControl(
             Composite parent, 
             UIToolkit toolkit) {
-        super(parent, toolkit, "Browse");
+        super(parent, toolkit, Messages.IpsPckFragmentRefControl_titleBrowse);
     }
     
     public void setPdPckFragmentRoot(IIpsPackageFragmentRoot root) {
@@ -36,7 +36,7 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
     
     public void setPdPackageFragment(IIpsPackageFragment newPack) {
         if (newPack==null) {
-            text.setText("");
+            text.setText(""); //$NON-NLS-1$
         } else {
             setText(newPack.getName());
         }
@@ -57,7 +57,7 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
                 if (dialog.getSelectedPackage()!=null) {
                     setText(dialog.getSelectedPackage().getName());
                 } else {
-                    setText("");
+                    setText(""); //$NON-NLS-1$
                 }
             }
         } catch (Exception e) {

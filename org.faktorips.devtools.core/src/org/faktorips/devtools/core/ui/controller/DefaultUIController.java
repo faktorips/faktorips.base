@@ -48,12 +48,12 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 				}
 			}
 		} catch (IntrospectionException e) {
-			throw new RuntimeException("Exception while introspection class "
+			throw new RuntimeException("Exception while introspection class " //$NON-NLS-1$
 					+ object.getClass(), e);
 		}
 		if (property == null) {
-			throw new IllegalArgumentException("Class " + object.getClass()
-					+ " does not have a property " + propertyName);
+			throw new IllegalArgumentException("Class " + object.getClass() //$NON-NLS-1$
+					+ " does not have a property " + propertyName); //$NON-NLS-1$
 		}
 		addMapping(new FieldPropertyMappingByPropertyDescriptor(field, object,
 				property));

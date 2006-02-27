@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class ColumnsSection extends SimpleIpsPartsSection {
 
     public ColumnsSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, "Columns", toolkit);
+        super(table, parent, Messages.ColumnsSection_title, toolkit);
     }
     
     /**

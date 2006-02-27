@@ -1,0 +1,43 @@
+package org.faktorips.devtools.core.ui.editors.tablestructure;
+
+import org.eclipse.osgi.util.NLS;
+
+/**
+ * 
+ * @author Thorsten Guenther
+ */
+public class Messages extends NLS {
+	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.tablestructure.messages"; //$NON-NLS-1$
+
+	private Messages() {
+	}
+
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+	}
+
+	public static String RangesSection_title;
+	public static String ColumnEditDialog_title;
+	public static String ColumnEditDialog_pageTitle;
+	public static String ColumnEditDialog_labelName;
+	public static String ColumnEditDialog_labelDatatype;
+	public static String StructurePage_title;
+	public static String UniqueKeysSection_title;
+	public static String ForeignKeysSection_title;
+	public static String ColumnsSection_title;
+	public static String KeyEditDialog_title;
+	public static String KeyEditDialog_generalTitle;
+	public static String KeyEditDialog_labelReferenceStructure;
+	public static String KeyEditDialog_labelReferenceUniqueKey;
+	public static String KeyEditDialog_labelKeyItems;
+	public static String KeyEditDialog_groupTitle;
+	public static String RangeEditDialog_title;
+	public static String RangeEditDialog_generalTitle;
+	public static String RangeEditDialog_labelType;
+	public static String RangeEditDialog_groupTitle;
+	public static String RangeEditDialog_labelFrom;
+	public static String RangeEditDialog_labelTo;
+	public static String RangeEditDialog_groupAvailableColsTitle;
+	public static String TableStructureEditor_title;
+}

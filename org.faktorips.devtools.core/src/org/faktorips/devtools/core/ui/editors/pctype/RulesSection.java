@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class RulesSection extends SimpleIpsPartsSection {
 
     public RulesSection(IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
-        super(pcType, parent, "Rules", toolkit);
+        super(pcType, parent, Messages.RulesSection_title, toolkit);
     }
     
     public IPolicyCmptType getPcType() {
@@ -76,8 +76,8 @@ public class RulesSection extends SimpleIpsPartsSection {
         		if (attrNames.length == 1) {
         			IAttribute attr = getPcType().getAttribute(attrNames[0]);
         			if (attr == null) {
-        				String msg = NLS.bind("This is a special rule to validate the value of the attribute {0} against its value set. The attribute does not exist, the rule is deleted.", attrNames[0]);
-        				MessageDialog.openInformation(getShell(), "Edit Rule", msg);
+        				String msg = NLS.bind(Messages.RulesSection_msgMissingAttribute, attrNames[0]);
+        				MessageDialog.openInformation(getShell(), Messages.RulesSection_titleMissingAttribute, msg);
         				rule.delete();
         				return null;
         			}

@@ -62,7 +62,7 @@ class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
             Method setter = property.getWriteMethod();
             setter.invoke(object, new Object[]{field.getValue()});
         } catch (Exception e) {
-            throw new RuntimeException("Error setting property value " + property.getName(), e);
+            throw new RuntimeException("Error setting property value " + property.getName(), e); //$NON-NLS-1$
         }
     }
     
@@ -86,7 +86,7 @@ class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
             field.setValue(propertyValue, false);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error setting value in control for property " + property.getName(), e);
+            throw new RuntimeException("Error setting value in control for property " + property.getName(), e); //$NON-NLS-1$
         }
     }
     
@@ -95,7 +95,7 @@ class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
             Method getter = property.getReadMethod();
             return getter.invoke(object, new Object[0]);
         } catch (Exception e) {
-            throw new RuntimeException("Error getting property value " + property.getName());
+            throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
         }
     }
     

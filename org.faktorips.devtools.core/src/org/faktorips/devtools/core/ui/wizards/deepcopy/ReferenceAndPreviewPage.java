@@ -51,7 +51,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	/**
 	 * The ID to identify this page.
 	 */
-	private static final String PAGE_ID = "deepCopyWizard.preview";
+	private static final String PAGE_ID = "deepCopyWizard.preview"; //$NON-NLS-1$
 	
 	/**
 	 * The page where the source for the deep copy operation is defined
@@ -101,11 +101,11 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * search and replace patterns.
 	 */
 	protected ReferenceAndPreviewPage(IProductCmptStructure structure, SourcePage sourcePage) {
-		super(PAGE_ID, "Preview and reference selection", null);
+		super(PAGE_ID, Messages.ReferenceAndPreviewPage_title, null);
 		this.sourcePage = sourcePage;
 		this.structure = structure;
-		this.setTitle("Configure Product Copy");
-		this.setDescription("Select products for copy, deselect them to keep a reference. To remove a product from the tree, go to the previous page and uncheck it there.");
+		this.setTitle(Messages.ReferenceAndPreviewPage_pageTitle);
+		this.setDescription(Messages.ReferenceAndPreviewPage_description);
 		setPageComplete(false);
 		this.errorElements = new Hashtable();
 	}
@@ -124,9 +124,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 		
 		ChangeListener listener = new ChangeListener(this);
-		toolkit.createFormLabel(inputRoot, "Copy is valid from");
+		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
 		toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
-		toolkit.createFormLabel(inputRoot, "Target Package");
+		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
 		targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getIpsPackageFragment().getRoot(), inputRoot);
 		IIpsPackageFragment pack = structure.getRoot().getIpsPackageFragment();
 		if (pack.getIpsParentPackageFragment() != null) {
@@ -135,16 +135,16 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		targetInput.getTextControl().addModifyListener(listener);
 		
 		// TODO fill combo from config
-		toolkit.createFormLabel(inputRoot, "Search Pattern");
+		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
 		searchInput = toolkit.createCombo(inputRoot);
-		searchInput.add("(.*)_\\d{2}_\\d{4}");
+		searchInput.add("(.*)_\\d{2}_\\d{4}"); //$NON-NLS-1$
 		searchInput.select(0);
 		searchInput.addModifyListener(listener);
 
 		// TODO make combo and fill from config
-		toolkit.createFormLabel(inputRoot, "Replace Pattern");
+		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelReplacePattern);
 		replaceInput = toolkit.createText(inputRoot);
-		replaceInput.setText("$1_" + getDateString()); 
+		replaceInput.setText("$1_" + getDateString());  //$NON-NLS-1$
 		replaceInput.addModifyListener(listener);
 
 		tree = new ContainerCheckedTreeViewer(root);
@@ -158,11 +158,11 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * Returns a string like MM_YYYY from the working date set in preferences.
 	 */
 	private String getDateString() {
-		String result = "";
+		String result = ""; //$NON-NLS-1$
 		GregorianCalendar workingDate = IpsPreferences.getWorkingDate(); 
 		int month = workingDate.get(GregorianCalendar.MONTH) + 1;
 		int year = workingDate.get(GregorianCalendar.YEAR);
-		result = "" + (month<10?"0"+month:"" + month) + "_" + year;
+		result = "" + (month<10?"0"+month:"" + month) + "_" + year; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		return result;
 	}
 
@@ -194,7 +194,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				tree.setChecked(checkState[i], true);
 		}
 		
-		tree.update(sourcePage.getCheckedProducts(), new String[] {"label"});
+		tree.update(sourcePage.getCheckedProducts(), new String[] {"label"}); //$NON-NLS-1$
 	}
 
 	/**
@@ -207,11 +207,11 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		}
 		else {
 			super.setPageComplete(false);
-			super.setMessage("Copy not possible. Details see tree.", ERROR);
+			super.setMessage(Messages.ReferenceAndPreviewPage_msgCopyNotPossible, ERROR);
 		}
 		
 		checkState = tree.getCheckedElements();
-		tree.update(sourcePage.getCheckedProducts(), new String[] {"label"});
+		tree.update(sourcePage.getCheckedProducts(), new String[] {"label"}); //$NON-NLS-1$
 	}
 
 	/**
@@ -288,8 +288,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		
 		String base = targetBase.getRelativePath().toString().replace('/', '.');
 
-		if (!base.equals("")) {
-			base = base + ".";
+		if (!base.equals("")) { //$NON-NLS-1$
+			base = base + "."; //$NON-NLS-1$
 		}
 		
 		return base +  toAppend;
@@ -302,7 +302,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	private String getNewName(String oldName) {
 		String searchPattern = getSearchPattern();
 		String replaceText = getReplaceText();
-		if (!replaceText.equals("") && !searchPattern.equals("")) {
+		if (!replaceText.equals("") && !searchPattern.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
 			return oldName.replaceAll(searchPattern, replaceText);
 		}
 		return oldName;
@@ -338,14 +338,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
 				if (file.exists()) {
 					message = new StringBuffer();
-					message.append("Can not create file ").append(packageName).append(".");
-					message.append(newName).append(" - file allready exsists. ");
+					message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName).append("."); //$NON-NLS-2$
+					message.append(newName).append(Messages.ReferenceAndPreviewPage_msgFileAllreadyExists);
 					addMessage(toCopy[i], message.toString());
 				}
 				String name = file.getEnclosingResource().getFullPath().toString();
 				if (filenameMap.containsKey(name)) {
-					addMessage(toCopy[i], "Name collision. ");
-					addMessage((IProductCmpt)filenameMap.get(name), "Name collision. ");
+					addMessage(toCopy[i], Messages.ReferenceAndPreviewPage_msgNameCollision);
+					addMessage((IProductCmpt)filenameMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
 				}
 				else {
 					filenameMap.put(name, toCopy[i]);
@@ -424,7 +424,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		try {
 			Pattern.compile(result);
 		} catch (PatternSyntaxException e) {
-			result = "";
+			result = ""; //$NON-NLS-1$
 		}
 		return result;
 	}
@@ -469,10 +469,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		public Image getImage(Object element) {
 			if (element instanceof IProductCmpt) {
 				if (!tree.getChecked(element)) {
-					return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif");
+					return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
 				}
 				if (isInError(element)) {
-					return IpsPlugin.getDefault().getImage("error_tsk.gif");
+					return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
 				}
 			}
 			
@@ -490,7 +490,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 					}
 				}
 				if (isInError(element)) {
-					name = name + " ERROR: " + getErrorMessage(element);
+					name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert + getErrorMessage(element);
 				}
 				return name;
 			}

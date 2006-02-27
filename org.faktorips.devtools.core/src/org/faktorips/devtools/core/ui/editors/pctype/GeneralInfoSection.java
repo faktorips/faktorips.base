@@ -55,7 +55,7 @@ public class GeneralInfoSection extends IpsSection {
         extFactory = new ExtensionPropertyControlFactory(pcType.getClass());
         
         initControls();
-        setText("General information");
+        setText(Messages.GeneralInfoSection_title);
     }
 
     /**
@@ -65,7 +65,7 @@ public class GeneralInfoSection extends IpsSection {
         client.setLayout(new GridLayout(1, false));
         Composite composite = toolkit.createLabelEditColumnComposite(client);
         
-        Hyperlink link = toolkit.createHyperlink(composite, "Superclass:");
+        Hyperlink link = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_linkSuperclass);
         link.addHyperlinkListener(new HyperlinkAdapter() {
 
             public void linkActivated(HyperlinkEvent event) {
@@ -85,11 +85,11 @@ public class GeneralInfoSection extends IpsSection {
         PcTypeRefControl control = toolkit.createPcTypeRefControl(pcType.getIpsProject(), composite);
         
         Composite c2 = toolkit.createLabelEditColumnComposite(client);
-        toolkit.createFormLabel(c2, "Abstract class:");
+        toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelAbstractClass);
         Checkbox abstractCheckbox = toolkit.createCheckbox(c2);
-        toolkit.createFormLabel(c2, "Configurable by Product:");
+        toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelProduct);
         Checkbox configuratedCheckbox = toolkit.createCheckbox(c2);
-        toolkit.createFormLabel(c2, "Product Component Type:");
+        toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelType);
         Text productCmptTypeNameText = toolkit.createText(c2);
 
         // create fields

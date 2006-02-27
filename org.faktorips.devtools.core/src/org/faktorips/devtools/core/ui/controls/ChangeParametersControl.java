@@ -102,7 +102,7 @@ public abstract class ChangeParametersControl extends Composite {
 		public String getColumnText(Object element, int columnIndex) {
 			ParameterInfo info= (ParameterInfo) element;
 			if (columnIndex == MESSAGE_PROP)
-				return "";
+				return ""; //$NON-NLS-1$
 			if (columnIndex == TYPE_PROP)
 				return info.getNewTypeName();
 			if (columnIndex == NEWNAME_PROP)
@@ -113,7 +113,7 @@ public abstract class ChangeParametersControl extends Composite {
 			    else
 			        return "-"; //$NON-NLS-1$
 			}
-			throw new RuntimeException("Unknown column " + columnIndex);
+			throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
 		}
 	}
 
@@ -159,7 +159,7 @@ public abstract class ChangeParametersControl extends Composite {
 		}
 	}
 
-	private static final String[] PROPERTIES= { "message", "type", "new", "default" }; //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-3$
+	private static final String[] PROPERTIES= { "message", "type", "new", "default" }; //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-3$ //$NON-NLS-4$
 	private static final int MESSAGE_PROP= 0;
 	private static final int TYPE_PROP= 1;
 	private static final int NEWNAME_PROP= 2;

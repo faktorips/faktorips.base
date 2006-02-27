@@ -26,7 +26,7 @@ public class ForeignKeysSection extends SimpleIpsPartsSection{
      * @param toolkit
      */
     public ForeignKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, "Foreign Keys", toolkit);
+        super(table, parent, Messages.ForeignKeysSection_title, toolkit);
     }
     
     /** 

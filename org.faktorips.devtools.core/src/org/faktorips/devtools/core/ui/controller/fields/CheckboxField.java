@@ -50,7 +50,7 @@ public class CheckboxField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#getText()
      */
     public String getText() {
-        return checkbox.isChecked()?"true":"false";
+        return checkbox.isChecked()?"true":"false"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /** 

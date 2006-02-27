@@ -18,7 +18,7 @@ public class PcTypeRefControl extends IpsObjectRefControl {
             IIpsProject project, 
             Composite parent, 
             UIToolkit toolkit) {
-        super(project, parent, toolkit, "Type Selection", "Select a type (?=any character, *=any string");
+        super(project, parent, toolkit, Messages.PcTypeRefControl_title, Messages.PcTypeRefControl_description);
     }
     
     /** 

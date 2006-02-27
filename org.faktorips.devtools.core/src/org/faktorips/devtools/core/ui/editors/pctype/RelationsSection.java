@@ -24,7 +24,7 @@ public class RelationsSection extends SimpleIpsPartsSection {
             IPolicyCmptType pcType, 
             Composite parent,
             UIToolkit toolkit) {
-        super(pcType, parent, "Relation", toolkit);
+        super(pcType, parent, Messages.RelationsSection_title, toolkit);
     }
     
     public IPolicyCmptType getPcType() {

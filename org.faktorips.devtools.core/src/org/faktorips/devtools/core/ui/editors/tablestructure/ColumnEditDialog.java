@@ -32,7 +32,7 @@ public class ColumnEditDialog extends IpsPartEditDialog {
      * @param title
      */
     public ColumnEditDialog(IColumn column, Shell parentShell) {
-        super(column, parentShell, "Edit Column", true);
+        super(column, parentShell, Messages.ColumnEditDialog_title, true);
         this.column = column;
     }
 
@@ -44,7 +44,7 @@ public class ColumnEditDialog extends IpsPartEditDialog {
         TabFolder folder = (TabFolder)parent;
         
         TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText("General");
+        page.setText(Messages.ColumnEditDialog_pageTitle);
         page.setControl(createGeneralPage(folder));
         
         createDescriptionTabItem(folder);
@@ -56,11 +56,11 @@ public class ColumnEditDialog extends IpsPartEditDialog {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         
-        uiToolkit.createFormLabel(workArea, "Name:");
+        uiToolkit.createFormLabel(workArea, Messages.ColumnEditDialog_labelName);
         Text nameText = uiToolkit.createText(workArea);
         nameText.setFocus();
         
-        uiToolkit.createFormLabel(workArea, "Datatype:");
+        uiToolkit.createFormLabel(workArea, Messages.ColumnEditDialog_labelDatatype);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(column.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(false);

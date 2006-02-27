@@ -9,10 +9,10 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class BehaviourPage extends PctEditorPage {
     
-    final static String PAGE_ID = "BehaviourPage";
+    final static String PAGE_ID = "BehaviourPage"; //$NON-NLS-1$
     
     public BehaviourPage(PctEditor editor) {
-        super(editor, PAGE_ID, "Behaviour"); 
+        super(editor, PAGE_ID, Messages.BehaviourPage_title); 
     }
 
     /**

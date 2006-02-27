@@ -32,9 +32,9 @@ import org.faktorips.util.message.MessageList;
  */
 public class ValidatedAttributesControl extends EditTableControl {
 
-	private static String MESSAGE_COLUMN_PROPERTY = "message";
+	private static String MESSAGE_COLUMN_PROPERTY = "message"; //$NON-NLS-1$
 
-	private static String ATTRIBUTENAME_COLUMN_PROPERTY = "attributeName";
+	private static String ATTRIBUTENAME_COLUMN_PROPERTY = "attributeName"; //$NON-NLS-1$
 
 	private static String[] columnProperties = new String[] {
 			MESSAGE_COLUMN_PROPERTY, ATTRIBUTENAME_COLUMN_PROPERTY };
@@ -43,7 +43,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 
 	public ValidatedAttributesControl(Object modelObject, Composite parent) {
 		super(modelObject, parent, SWT.NONE,
-				"Specify the attributes that are validated within this rule:");
+				Messages.ValidatedAttributesControl_description);
 		new MessageService(getTableViewer());
 	}
 
@@ -85,7 +85,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 		messageColumn.setResizable(false);
 		TableColumn attributeNameColumn = new TableColumn(table, SWT.NONE);
 		attributeNameColumn.setResizable(false);
-		attributeNameColumn.setText("Attribute name");
+		attributeNameColumn.setText(Messages.ValidatedAttributesControl_label);
 
 	}
 
@@ -95,7 +95,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 	}
 
 	protected Object addElement() {
-		return rule.addValidatedAttribute("");
+		return rule.addValidatedAttribute(""); //$NON-NLS-1$
 	}
 
 	protected void removeElement(int index) {
@@ -159,7 +159,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 				return ((IndexedValidatedAttributeWrapper) element)
 						.getAttributeName();
 			}
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	}
 

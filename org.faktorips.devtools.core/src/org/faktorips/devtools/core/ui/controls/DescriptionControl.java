@@ -30,7 +30,7 @@ public class DescriptionControl extends Composite implements ModifyListener {
         layout.marginWidth = 0;
         setLayout(layout);
         Group group = new Group(this, SWT.NONE);
-        group.setText("Description");
+        group.setText(Messages.DescriptionControl_title);
         group.setLayoutData(new GridData(GridData.FILL_BOTH));
         group.setLayout(new GridLayout(1, false));
         descriptionText = new Text(group, SWT.BORDER | SWT.MULTI | SWT.WRAP);

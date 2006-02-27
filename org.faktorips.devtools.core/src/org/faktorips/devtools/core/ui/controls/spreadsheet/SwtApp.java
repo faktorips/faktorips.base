@@ -37,7 +37,7 @@ public class SwtApp {
         Display display = new Display();
 	    Shell shell = new Shell(display);
 	    shell.setSize(500, 500);
-	    shell.setText("SWT TestApp");
+	    shell.setText("SWT TestApp"); //$NON-NLS-1$
 	    FillLayout layout = new FillLayout();
 	    shell.setLayout(layout);
 	    
@@ -126,13 +126,13 @@ public class SwtApp {
     
     private static class SimpleTableContentProvider implements TableContentProvider {
 
-	    Object row1 = new String[] {"Hello", "World", "b"};
-	    Object row2 = new String[] {"42", "13", "a"};
+	    Object row1 = new String[] {"Hello", "World", "b"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	    Object row2 = new String[] {"42", "13", "a"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	    List rows = new ArrayList();
 	    
-	    ColumnInfo col1 = new SimpleColumnInfo(0, "Column1", SWT.LEFT, 100, true);
-	    ColumnInfo col2 = new SimpleColumnInfo(1, "Column2", SWT.RIGHT, 100, true);
-	    ColumnInfo col3 = new SimpleColumnInfo(2, "Column3", SWT.LEFT, 100, true);
+	    ColumnInfo col1 = new SimpleColumnInfo(0, "Column1", SWT.LEFT, 100, true); //$NON-NLS-1$
+	    ColumnInfo col2 = new SimpleColumnInfo(1, "Column2", SWT.RIGHT, 100, true); //$NON-NLS-1$
+	    ColumnInfo col3 = new SimpleColumnInfo(2, "Column3", SWT.LEFT, 100, true); //$NON-NLS-1$
 	    ColumnInfo[] columns = new ColumnInfo[]{col1, col2, col3};
         
         SimpleTableContentProvider() {
@@ -145,7 +145,7 @@ public class SwtApp {
          * @see org.faktorips.devtools.core.ui.controls.spreadsheet.TableContentProvider#newRow()
          */
         public Object newRow() {
-            Object[] newRow = new String[] {"1", "2", "3"};
+            Object[] newRow = new String[] {"1", "2", "3"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             rows.add(newRow);
             return newRow;
         }

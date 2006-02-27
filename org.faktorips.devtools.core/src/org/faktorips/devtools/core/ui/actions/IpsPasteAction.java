@@ -135,17 +135,17 @@ public class IpsPasteAction extends IpsAction {
     	}
 
     	String name = resource.getName();
-    	String extension = "";
+    	String extension = ""; //$NON-NLS-1$
 		String suggestedName = name;
 
     	if (resource.getType() == IResource.FOLDER) {
     		if (((IFolder)resource).getFullPath().equals(targetPath)) {
-    			MessageDialog.openError(shell, "Copy Problem", "Copy not possible, source and target are the same");
+    			MessageDialog.openError(shell, Messages.IpsPasteAction_errorTitle, Messages.IpsPasteAction_msgSrcAndTargetSame);
     			return;
     		}
     	}
     	else {
-    		int index = name.lastIndexOf(".");
+    		int index = name.lastIndexOf("."); //$NON-NLS-1$
     		if (index == -1) {
     			suggestedName = name;
     		}
@@ -162,14 +162,14 @@ public class IpsPasteAction extends IpsAction {
     	if (validator.isValid(suggestedName) != null) {
     		for (int count = 0; validator.isValid(suggestedName) != null; count++) {
     			if (count == 0) {
-    				suggestedName = "CopyOf" + nameWithoutExtension;
+    				suggestedName = Messages.IpsPasteAction_suggestedNamePrefixSimple + nameWithoutExtension;
     			}
     			else {
-    				suggestedName = "Copy" + count + "Of" + nameWithoutExtension; 
+    				suggestedName = Messages.IpsPasteAction_suggestedNamePrefixComplex + count + Messages.IpsPasteAction_6 + nameWithoutExtension; 
     			}
     		}
     		    		
-    		InputDialog dialog = new InputDialog(shell, "Name Conflict", "Please enter new Name for " + nameWithoutExtension, suggestedName, validator);
+    		InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, Messages.IpsPasteAction_msgNamingConflict + nameWithoutExtension, suggestedName, validator);
     		dialog.setBlockOnOpen(true);
     		doCopy = dialog.open();
     		nameWithoutExtension = dialog.getValue();
@@ -208,7 +208,7 @@ public class IpsPasteAction extends IpsAction {
 				test = wsRoot.getFolder(root.append(newText));
 			}
 			if (test != null && test.exists()) {
-				return newText + extension + " allready exisits. Please enter another name.";
+				return newText + extension + Messages.IpsPasteAction_msgFileAllreadyExists;
 			}
 			
 			return null;

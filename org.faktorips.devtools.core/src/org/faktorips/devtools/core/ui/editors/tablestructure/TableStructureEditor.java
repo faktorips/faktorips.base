@@ -40,7 +40,7 @@ public class TableStructureEditor extends IpsObjectEditor {
      * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditor#getUniformPageTitle()
      */
     protected String getUniformPageTitle() {
-        return "Table Structure: " + getIpsObject().getName();
+        return Messages.TableStructureEditor_title + getIpsObject().getName();
     }
 
 }

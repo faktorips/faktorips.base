@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class UniqueKeysSection extends SimpleIpsPartsSection {
 
     public UniqueKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, "Unique Keys", toolkit);
+        super(table, parent, Messages.UniqueKeysSection_title, toolkit);
     }
     
     /** 

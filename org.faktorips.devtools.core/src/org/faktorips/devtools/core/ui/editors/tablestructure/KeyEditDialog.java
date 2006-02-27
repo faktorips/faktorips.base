@@ -80,7 +80,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
     private Button downButton;
     
     public KeyEditDialog(IKey key, Shell parentShell) {
-        super(key, parentShell, "Edit Unique Key", true);
+        super(key, parentShell, Messages.KeyEditDialog_title, true);
         this.key = key;
     }
 
@@ -92,7 +92,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
         TabFolder folder = (TabFolder)parent;
         
         TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText("General");
+        page.setText(Messages.KeyEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
         
         createDescriptionTabItem(folder);
@@ -108,7 +108,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             Composite refTableComposite = uiToolkit.createLabelEditColumnComposite(pageComposite);
             GridLayout layout = (GridLayout)refTableComposite.getLayout();
             layout.marginHeight = 12;
-            uiToolkit.createFormLabel(refTableComposite, "Referenced Table Structure:");
+            uiToolkit.createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceStructure);
             TableStructureRefControl refControl = uiToolkit.createTableStructureRefControl(key.getIpsProject(), refTableComposite);
             refControl.setFocus();
             tableStructureRefField = new TextButtonField(refControl);
@@ -138,7 +138,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
                 }
                 
             });
-            uiToolkit.createFormLabel(refTableComposite, "Referenced Unique Key:");
+            uiToolkit.createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceUniqueKey);
             Text ukRefControl = uiToolkit.createText(refTableComposite);
             completionProcessor = new UniqueKeyCompletionProcessor();
             ContentAssistHandler.createHandlerForText(ukRefControl, CompletionUtil.createContentAssistant(completionProcessor));
@@ -161,7 +161,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             pageComposite = itemEditComposite;
         }
         Composite left = uiToolkit.createGridComposite(itemEditComposite, 1, false, true);
-        Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, "Key items");
+        Composite leftGroup = uiToolkit.createGroup(left, SWT.NONE, Messages.KeyEditDialog_labelKeyItems);
         createKeyItemsComposite(leftGroup);
         
         Composite middle = uiToolkit.createGridComposite(itemEditComposite, 1, true, true);
@@ -169,7 +169,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
         createButtons(middle);
         
         Composite right = uiToolkit.createGridComposite(itemEditComposite, 1, false, true);
-        Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, "Available columns && ranges");
+        Composite rightGroup = uiToolkit.createGroup(right, SWT.NONE, Messages.KeyEditDialog_groupTitle);
         createItemCandidatesComposite(rightGroup);
         
         return pageComposite;
@@ -223,9 +223,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
     private void createButtons(Composite middle) {
         uiToolkit.createVerticalSpacer(middle, 10);
         
-        addButton = uiToolkit.createButton(middle, "");
+        addButton = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        addButton.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif"));
+        addButton.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
         addButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -236,9 +236,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
             }
         });
         
-        removeButton= uiToolkit.createButton(middle, "");
+        removeButton= uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        removeButton.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif"));
+        removeButton.setImage(IpsPlugin.getDefault().getImage("ArrowRight.gif")); //$NON-NLS-1$
         removeButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -251,9 +251,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
         
         uiToolkit.createVerticalSpacer(middle, 10);
         
-        upButton = uiToolkit.createButton(middle, "");
+        upButton = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        upButton.setImage(IpsPlugin.getDefault().getImage("ArrowUp.gif"));
+        upButton.setImage(IpsPlugin.getDefault().getImage("ArrowUp.gif")); //$NON-NLS-1$
         upButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -265,9 +265,9 @@ public class KeyEditDialog extends IpsPartEditDialog {
         });
         
         
-        downButton = uiToolkit.createButton(middle, "");
+        downButton = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        downButton.setImage(IpsPlugin.getDefault().getImage("ArrowDown.gif"));
+        downButton.setImage(IpsPlugin.getDefault().getImage("ArrowDown.gif")); //$NON-NLS-1$
         downButton.addSelectionListener(new SelectionListener() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -407,7 +407,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
             if (range!=null) {
                 image = super.getImage(range);
             } else {
-                image = IpsPlugin.getDefault().getImage("TableColumn.gif");
+                image = IpsPlugin.getDefault().getImage("TableColumn.gif"); //$NON-NLS-1$
             }
             MessageList list;
             try {

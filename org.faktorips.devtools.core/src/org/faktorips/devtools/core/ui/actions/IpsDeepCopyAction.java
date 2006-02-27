@@ -27,7 +27,7 @@ public class IpsDeepCopyAction extends IpsAction {
 	public IpsDeepCopyAction(Shell shell, ISelectionProvider selectionProvider) {
 		super(selectionProvider);
 		this.shell = shell;
-		setText("Copy Product ...");
+		setText(Messages.IpsDeepCopyAction_name);
 	}
 
 	/** 

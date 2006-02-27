@@ -23,18 +23,18 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 	private IProductCmptStructure structure;
 	private ContainerCheckedTreeViewer tree;
 	
-	private static final String PAGE_ID = "deepCopyWizard.source";
+	private static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
 	/**
 	 * Creates a new page to select the objects to copy.
 	 */
 	protected SourcePage(IProductCmptStructure structure) {
-		super(PAGE_ID, "Select products to copy", null);
+		super(PAGE_ID, Messages.SourcePage_title, null); 
 		this.structure = structure;
 		setPageComplete();
 		
-		super.setTitle("Configure Product Copy");
-		super.setDescription("Choose the products which sould be copyied.");
+		super.setTitle(Messages.SourcePage_pageTitle);
+		super.setDescription(Messages.SourcePage_description);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 			super.setMessage(null);
 		}
 		else {
-			super.setMessage("Select products to include", INFORMATION);
+			super.setMessage(Messages.SourcePage_msgSelect, INFORMATION);
 		}
 	}
 	

@@ -30,7 +30,7 @@ public class DescriptionSection extends IpsSection {
         super(parent, Section.DESCRIPTION | Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.describedObj = described;
         initControls();
-        setText("Description");
+        setText(Messages.getString("DescriptionSection.description")); //$NON-NLS-1$
     }
     
     public DescriptionSection(
@@ -41,7 +41,7 @@ public class DescriptionSection extends IpsSection {
         super(parent, style, GridData.FILL_BOTH, toolkit);
         this.describedObj = described;
         initControls();
-        setText("Description");
+        setText(Messages.getString("DescriptionSection.description")); //$NON-NLS-1$
     }
     
     /** 
@@ -53,7 +53,7 @@ public class DescriptionSection extends IpsSection {
         layout.marginHeight = 2;
         layout.marginWidth = 1;
         client.setLayout(layout);
-        descriptionText = toolkit.getFormToolkit().createText(client, "", SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.FLAT);
+        descriptionText = toolkit.getFormToolkit().createText(client, "", SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.FLAT); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL_BOTH);
         data.widthHint = 100;
         descriptionText.setLayoutData(data);

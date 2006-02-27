@@ -42,12 +42,12 @@ public class TableContentsEditor extends TimedIpsObjectEditor {
      */
     protected String getUniformPageTitle() {
         ITableContentsGeneration generation = (ITableContentsGeneration)getPreferredGeneration();
-        String title = "Table Contents: " + getTableContents().getName();
+        String title = Messages.TableContentsEditor_title + getTableContents().getName();
         if (generation==null) {
             return title;
         }
         DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT);
-        return title + ", Generation " + format.format(generation.getValidFrom().getTime());
+        return title + Messages.TableContentsEditor_1 + format.format(generation.getValidFrom().getTime());
     }
 
 }

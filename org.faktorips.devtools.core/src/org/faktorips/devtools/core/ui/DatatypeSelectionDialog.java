@@ -17,10 +17,10 @@ public class DatatypeSelectionDialog extends TwoPaneElementSelector {
      */
     public DatatypeSelectionDialog(Shell parent) {
         super(parent, new QualifierLabelProvider(), new QualifierLabelProvider());
-        setTitle("Select Datatype");
-        setMessage("Select a type (?=any character, *=any string");
-        setUpperListLabel("Matching Datatypes:");
-        setLowerListLabel("Qualifier:");
+        setTitle(Messages.DatatypeSelectionDialog_title);
+        setMessage(Messages.DatatypeSelectionDialog_description);
+        setUpperListLabel(Messages.DatatypeSelectionDialog_labelMatchingDatatypes);
+        setLowerListLabel(Messages.DatatypeSelectionDialog_msgLabelQualifier);
         setIgnoreCase(true);
         setMatchEmptyString(true);
     }

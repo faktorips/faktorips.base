@@ -34,7 +34,7 @@ public class ExtensionPropertyControlFactory   {
 	    	if(extensionProperties[i].getEditedInStandardTextArea().equals(where)
 	    			&&(extensionEditFields[i]==null))
 	    	{
-	            uiToolkit.createFormLabel(workArea, extensionProperties[i].getDisplayName() + ":");
+	            uiToolkit.createFormLabel(workArea, extensionProperties[i].getDisplayName() + ":"); //$NON-NLS-1$
 	            extensionEditFields[i]=extensionProperties[i].newEditField(ipsObjectPart, workArea, uiToolkit);    		
 	    	}
 	    }
@@ -51,10 +51,10 @@ public class ExtensionPropertyControlFactory   {
 	{
 		for(int i=0; i< extensionProperties.length; i++)
 	    {
-	    	if((!extensionProperties[i].getEditedInStandardTextArea().equals("false")) 
+	    	if((!extensionProperties[i].getEditedInStandardTextArea().equals("false"))  //$NON-NLS-1$
 	    		&&(extensionEditFields[i] == null))
 	    	{
-	            uiToolkit.createFormLabel(workArea, extensionProperties[i].getDisplayName() + ":");
+	            uiToolkit.createFormLabel(workArea, extensionProperties[i].getDisplayName() + ":"); //$NON-NLS-1$
 	            extensionEditFields[i]=extensionProperties[i].newEditField(ipsObjectPart, workArea, uiToolkit);    		
 	    	}
 	    }

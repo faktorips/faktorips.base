@@ -132,7 +132,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * @param title
      */
     public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
-        super(attribute, parentShell, "Edit Attribute", true);
+        super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
         
@@ -165,19 +165,19 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         folder = (TabFolder)parent;
 
         TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText("General");
+        page.setText(Messages.AttributeEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
 
         page = new TabItem(folder, SWT.NONE);
-        page.setText("Value Set");
+        page.setText(Messages.AttributeEditDialog_valuesetTitle);
         page.setControl(createValueSetPage(folder));
 
         page = new TabItem(folder, SWT.NONE);
-        page.setText("Calculation Parameters");
+        page.setText(Messages.AttributeEditDialog_calcParamsTitle);
         page.setControl(createFormulaParametersPage(folder));
 
         page = new TabItem(folder, SWT.NONE);
-        page.setText("Validation Rule");
+        page.setText(Messages.AttributeEditDialog_validationRuleTitle);
         page.setControl(createValidationRulePage(folder));
         if (startWithRulePage) {
         	folder.setSelection(3);
@@ -203,11 +203,11 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         extFactory.createControls(workArea,uiToolkit,(IpsObjectPartContainer)attribute);
 
-        uiToolkit.createFormLabel(workArea, "Name:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(workArea);
         nameText.setFocus();
 
-        uiToolkit.createFormLabel(workArea, "Datatype:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
         datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
@@ -217,16 +217,16 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
             }
         });
 
-        uiToolkit.createFormLabel(workArea, "Modifier:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
         Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.getEnumType());
 
-        uiToolkit.createFormLabel(workArea, "Attribute Type:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelAttrType);
         Combo typeCombo = uiToolkit.createCombo(workArea, AttributeType.getEnumType());
 
-        uiToolkit.createFormLabel(workArea, "Product Relevant:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelProdRelevant);
         Checkbox checkbox = uiToolkit.createCheckbox(workArea);
 
-        uiToolkit.createFormLabel(workArea, "Default Value:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
         Text defaultValueText = uiToolkit.createText(workArea);
         
         // create fields
@@ -252,7 +252,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Composite pageControl = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
 
-        parametersControl = new ChangeParametersControl(workArea, SWT.NONE, "Parameters", attribute.getIpsProject()) {
+        parametersControl = new ChangeParametersControl(workArea, SWT.NONE, Messages.AttributeEditDialog_labelParams, attribute.getIpsProject()) {
 
             public MessageList validate(int paramIndex) throws CoreException {
                 MessageList result = new MessageList();
@@ -290,12 +290,12 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
         Composite checkComposite = uiToolkit.createGridComposite(workArea, 1, true, false);
-        Checkbox active = uiToolkit.createCheckbox(checkComposite, "Activate validation rule");
-        active.setToolTipText("If activated, a rule is created which checks the value of this attribute against its value set.");
+        Checkbox active = uiToolkit.createCheckbox(checkComposite, Messages.AttributeEditDialog_labelActivateValidationRule);
+        active.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
         active.getButton().addSelectionListener(new SelectionListener() {
 		
 			public void widgetDefaultSelected(SelectionEvent e) {
-				System.out.println("defSel");
+				System.out.println("defSel"); //$NON-NLS-1$
 				
 			}
 		
@@ -306,22 +306,22 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 		
 		});
         
-        Group ruleGroup = uiToolkit.createGroup(checkComposite, "Rule");
+        Group ruleGroup = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
         Composite nameComposite = uiToolkit.createLabelEditColumnComposite(ruleGroup);
-        Label nameLabel = uiToolkit.createFormLabel(nameComposite, "Name:");
+        Label nameLabel = uiToolkit.createFormLabel(nameComposite, Messages.AttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(nameComposite);
         nameText.setFocus();
-        nameText.setText("validate" + attribute.getName());
+        nameText.setText(Messages.AttributeEditDialog_suggestedNamePrefix + attribute.getName());
 
         // message group
-        Group msgGroup = uiToolkit.createGroup(ruleGroup, "Message");
+        Group msgGroup = uiToolkit.createGroup(ruleGroup, Messages.AttributeEditDialog_messageTitle);
         Composite msgComposite = uiToolkit.createLabelEditColumnComposite(msgGroup);
         msgComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        Label codeLabel = uiToolkit.createFormLabel(msgComposite, "Code:");
+        Label codeLabel = uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelCode);
         Text codeText = uiToolkit.createText(msgComposite);
-        Label severityLabel = uiToolkit.createFormLabel(msgComposite, "Severity:");
+        Label severityLabel = uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelSeverity);
         Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
-        Label label = uiToolkit.createFormLabel(msgComposite, "Text:");
+        Label label = uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelText);
         label.getParent().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
         Text msgText = uiToolkit.createMultilineText(msgComposite);
         
@@ -370,7 +370,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     		rule.setAppliedInAllBusinessFunctions(true);
     		rule.setCheckValueAgainstValueSetRule(true);
     		rule.setValidatedAttrSpecifiedInSrc(false);
-    		rule.setDescription("Automatically created rule to check the value of one attribute against the valueset of this attribute.");
+    		rule.setDescription(Messages.AttributeEditDialog_descriptionContent);
 
     		initRuleUIController();
     		

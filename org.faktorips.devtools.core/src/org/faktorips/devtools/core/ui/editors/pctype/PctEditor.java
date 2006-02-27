@@ -43,6 +43,6 @@ public class PctEditor extends IpsObjectEditor {
      * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditor#getUniformPageTitle()
      */
     protected String getUniformPageTitle() {
-        return "Policy Class: " + getPolicyCmptType().getName();
+        return Messages.PctEditor_title + getPolicyCmptType().getName();
     }
 }

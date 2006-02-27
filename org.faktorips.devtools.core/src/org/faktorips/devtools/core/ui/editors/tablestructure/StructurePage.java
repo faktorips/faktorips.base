@@ -11,10 +11,10 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  */
 public class StructurePage extends IpsObjectEditorPage {
 
-    final static String PAGE_ID = "Structure"; 
+    final static String PAGE_ID = "Structure";  //$NON-NLS-1$
 
     public StructurePage(TableStructureEditor editor) {
-        super(editor, PAGE_ID, "Structure");
+        super(editor, PAGE_ID, Messages.StructurePage_title);
     }
     
     TableStructureEditor getTableEditor() {

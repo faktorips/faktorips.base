@@ -28,7 +28,7 @@ public class TableContentsPage extends IpsObjectPage {
      * @throws JavaModelException
      */
     public TableContentsPage(IStructuredSelection selection) throws JavaModelException {
-        super(selection, "NewTable");
+        super(selection, Messages.TableContentsPage_title);
     }
     
     String getTableStructure() {
@@ -40,7 +40,7 @@ public class TableContentsPage extends IpsObjectPage {
      * @see org.faktorips.devtools.core.ui.wizards.IpsObjectPage#fillNameComposite(org.eclipse.swt.widgets.Composite, UIToolkit)
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
-        toolkit.createFormLabel(nameComposite, "Table Structure:");
+        toolkit.createFormLabel(nameComposite, Messages.TableContentsPage_labelStructure);
         structureControl = toolkit.createTableStructureRefControl(null, nameComposite);
         structureControl.addFocusListener(new FocusListener() {
 
@@ -48,7 +48,7 @@ public class TableContentsPage extends IpsObjectPage {
             }
 
             public void focusLost(FocusEvent e) {
-                if (getPdObjectName().equals("")) {
+                if (getPdObjectName().equals("")) { //$NON-NLS-1$
                     String structureName = structureField.getText();
                     setPdObjectName(StringUtil.unqualifiedName(structureName));
                 }
@@ -81,7 +81,7 @@ public class TableContentsPage extends IpsObjectPage {
             return;
         }
 	    if (structureControl.findTableStructure()==null) {
-	        setErrorMessage("Table structure " + structureControl.getText() + " does not exist.");
+	        setErrorMessage(Messages.TableContentsPage_msgMissingStructure + structureControl.getText() + Messages.TableContentsPage_4);
 	    }
         updatePageComplete();
     }

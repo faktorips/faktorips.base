@@ -52,7 +52,7 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
      * @param windowTitle
      */
     public MethodEditDialog(IMethod method, Shell parentShell) {
-        super(method, parentShell, "Edit IMethod", true);
+        super(method, parentShell, Messages.MethodEditDialog_title, true);
         this.method = method;
     }
 
@@ -64,11 +64,11 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         TabFolder folder = (TabFolder)parent;
         
         TabItem page = new TabItem(folder, SWT.NONE);
-        page.setText("Signature");
+        page.setText(Messages.MethodEditDialog_signatureTitle);
         page.setControl(createGeneralPage(folder));
         
         page = new TabItem(folder, SWT.NONE);
-        page.setText("Implementation");
+        page.setText(Messages.MethodEditDialog_implementationTitle);
         page.setControl(createBodyPage(folder));
         
         createDescriptionTabItem(folder);
@@ -84,24 +84,24 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         // method properties
         Composite propertyPane = uiToolkit.createLabelEditColumnComposite(workArea);
         
-        uiToolkit.createFormLabel(propertyPane, "Access Modifier:");
+        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
         Combo modifierCombo = uiToolkit.createCombo(propertyPane, Modifier.getEnumType());
         modifierCombo.setFocus();
 
-        uiToolkit.createFormLabel(propertyPane, "Abstract:");
+        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAbstract);
         Checkbox abstractCheckbox = uiToolkit.createCheckbox(propertyPane);
         
-        uiToolkit.createFormLabel(propertyPane, "Type:");
+        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelType);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(method.getIpsProject(), propertyPane);
         datatypeControl.setVoidAllowed(true);
         datatypeControl.setOnlyValueDatatypesAllowed(false);
         
 
-        uiToolkit.createFormLabel(propertyPane, "Name:");
+        uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelName);
         Text nameText = uiToolkit.createText(propertyPane);
         
         // parameters
-        parametersControl = new ChangeParametersControl(workArea, SWT.NONE, "Parameters", method.getIpsProject()) {
+        parametersControl = new ChangeParametersControl(workArea, SWT.NONE, Messages.MethodEditDialog_labelParameters, method.getIpsProject()) {
 
             public MessageList validate(int paramIndex) throws CoreException {
                 MessageList result = new MessageList();
@@ -182,7 +182,7 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         Parameter[] params = method.getParameters(); 
         for (int i=0; i<params.length; i++) {
             if (i>0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(params[i].getDatatype());
             buffer.append(' ');

@@ -52,7 +52,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
 	    Text text = uiToolkit.createMultilineText(c);
 	    descriptionField = new TextField(text);
 	    TabItem item = new TabItem(folder, SWT.NONE);
-	    item.setText("Description");	    
+	    item.setText(Messages.getString("IpsPartEditDialog.description"));	     //$NON-NLS-1$
 	    item.setControl(c);
 	    return item;
 	}
@@ -82,10 +82,10 @@ public abstract class IpsPartEditDialog extends EditDialog {
     protected String buildTitle() {
         IIpsObjectPart part = getIpsPart();
         if (part.getParent() instanceof IIpsObjectGeneration) {
-            return part.getIpsObject().getName() + " " 
-            	+ part.getParent().getName() + "." + part.getName();
+            return part.getIpsObject().getName() + " "  //$NON-NLS-1$
+            	+ part.getParent().getName() + "." + part.getName(); //$NON-NLS-1$
         }
-        return part.getIpsObject().getName() + "." + part.getName();
+        return part.getIpsObject().getName() + "." + part.getName(); //$NON-NLS-1$
     }
     
     protected void connectToModel() {

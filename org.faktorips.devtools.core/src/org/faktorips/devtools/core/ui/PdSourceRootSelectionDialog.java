@@ -22,8 +22,8 @@ public class PdSourceRootSelectionDialog extends ElementTreeSelectionDialog {
      */
     public PdSourceRootSelectionDialog(Shell parent, boolean onlySourceRoots) {
         super(parent, new DefaultLabelProvider(), new ContentProvider(onlySourceRoots));
-        setTitle("Select Source Folder");
-        setMessage("Select a source folder (?=any character, *=any string)");
+        setTitle(Messages.PdSourceRootSelectionDialog_title);
+        setMessage(Messages.PdSourceRootSelectionDialog_description);
         setAllowMultiple(false);
         setInput(IpsPlugin.getDefault().getIpsModel());
     }

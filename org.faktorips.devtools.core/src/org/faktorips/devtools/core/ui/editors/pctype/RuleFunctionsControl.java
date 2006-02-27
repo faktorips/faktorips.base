@@ -42,7 +42,7 @@ public class RuleFunctionsControl extends EditTableControl {
     public RuleFunctionsControl(
             IValidationRule rule,
             Composite parent) {
-        super(rule, parent, SWT.NONE, "Applied in the following business functions:");
+        super(rule, parent, SWT.NONE, Messages.RuleFunctionsControl_title);
         new MessageService(getTableViewer());
     }
     
@@ -84,7 +84,7 @@ public class RuleFunctionsControl extends EditTableControl {
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#getColumnPropertyNames()
      */
     protected String[] getColumnPropertyNames() {
-        return new String[]{"Message", "BusinessFunction"};
+        return new String[]{Messages.RuleFunctionsControl_titleColum1, Messages.RuleFunctionsControl_titleColumn2};
     }
     
     /** 
@@ -128,7 +128,7 @@ public class RuleFunctionsControl extends EditTableControl {
      * @see org.faktorips.devtools.core.ui.controls.EditTableControl#addElement()
      */
     public Object addElement() {
-        String newFct = "";
+        String newFct = ""; //$NON-NLS-1$
         getRule().addBusinessFunction(newFct);
         return newFct;
     }
@@ -170,7 +170,7 @@ public class RuleFunctionsControl extends EditTableControl {
 		
 		public String getColumnText(Object element, int columnIndex) {
 		    if (columnIndex==0) {
-		        return "";
+		        return ""; //$NON-NLS-1$
 		    }
 		    return element.toString();
 		}

@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class RangesSection extends SimpleIpsPartsSection {
 
     public RangesSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, "Ranges", toolkit);
+        super(table, parent, Messages.RangesSection_title, toolkit);
     }
     
     /**

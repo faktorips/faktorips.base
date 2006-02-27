@@ -110,7 +110,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 			return;
 		}
 		throw new IllegalArgumentException(
-				"The provided value is not one of the valid values for this field: "
+				"The provided value is not one of the valid values for this field: " //$NON-NLS-1$
 						+ newValue);
 	}
 }

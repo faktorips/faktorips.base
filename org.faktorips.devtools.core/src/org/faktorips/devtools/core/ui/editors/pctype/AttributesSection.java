@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class AttributesSection extends SimpleIpsPartsSection {
 
     public AttributesSection(IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
-        super(pcType, parent, "Attributes", toolkit);
+        super(pcType, parent, Messages.AttributesSection_title, toolkit);
     }
 
     /** 
@@ -48,8 +48,8 @@ public class AttributesSection extends SimpleIpsPartsSection {
             super.addDeleteListener(new IDeleteListener() {
 			
 				public void aboutToDelete(IIpsObjectPart part) {
-					String msg = "A rule is defined for this attribute to check the value against the value set. Should this rule also be deleted?";
-					boolean delete = MessageDialog.openQuestion(getShell(), "Delete Attribute", msg);
+					String msg = Messages.AttributesSection_deleteMessage;
+					boolean delete = MessageDialog.openQuestion(getShell(), Messages.AttributesSection_deleteTitle, msg);
 					IValidationRule rule = findValidationRule(part);
 					if (delete && rule != null) {
 						rule.delete();
@@ -130,7 +130,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
     	    
             public String getText(Object element) {
                 IAttribute a = (IAttribute)element;
-                return a.getName() + " : " + a.getDatatype();
+                return a.getName() + " : " + a.getDatatype(); //$NON-NLS-1$
             }
     	}
     }

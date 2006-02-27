@@ -30,10 +30,10 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ContentPage extends IpsObjectEditorPage {
     
-    final static String PAGE_ID = "Contents"; 
+    final static String PAGE_ID = "Contents";  //$NON-NLS-1$
 
     public ContentPage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, "Contents");
+        super(editor, PAGE_ID, Messages.ContentPage_title);
     }
     
     TableContentsEditor getTableEditor() {
@@ -118,7 +118,7 @@ public class ContentPage extends IpsObjectEditorPage {
                 row.setValue(columnIndex, (String)newValue);
                 return;
             }
-            throw new RuntimeException("Not implemented yet.");
+            throw new RuntimeException("Not implemented yet."); //$NON-NLS-1$
         }
 
         /** 

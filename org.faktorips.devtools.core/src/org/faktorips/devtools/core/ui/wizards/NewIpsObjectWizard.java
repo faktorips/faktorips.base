@@ -26,7 +26,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
     
     public NewIpsObjectWizard(IpsObjectType type) {
         ipsObjectType = type;
-        setWindowTitle("New " + ipsObjectType.getName());
+        setWindowTitle(Messages.NewIpsObjectWizard_title + ipsObjectType.getName());
     }
     
     /** 
