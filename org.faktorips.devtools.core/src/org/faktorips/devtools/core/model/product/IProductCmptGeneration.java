@@ -13,7 +13,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "PRODUCTCMPTGEN-";
+    public final static String MSGCODE_PREFIX = "PRODUCTCMPTGEN-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the generation contains less 
@@ -25,7 +25,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * The first one contains the generation and the second one the relation type as string.
      * In both cases the property part of the ObjectProperty is empty.
      */
-    public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations";
+    public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
 	//  TODO editor should show this error
     
     /**
@@ -38,14 +38,14 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * The first one contains the generation and the second one the relation type as string.
      * In both cases the property part of the ObjectProperty is empty.
      */
-    public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations";
+    public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
 	//  TODO editor should show this error
 
     /**
      * Validation message code to indicate that the template for the product this generation
      * is for could not be found.
      */
-    public final static String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate";
+    public final static String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
     
     /**
      * Returns the product component this generation belongs to.

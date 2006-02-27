@@ -7,9 +7,9 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  */
 public interface IColumnRange extends IIpsObjectPart, IKeyItem {
 
-    public final static String PROPERTY_RANGE_TYPE = "columnRangeType";
-    public final static String PROPERTY_FROM_COLUMN = "fromColumn";
-    public final static String PROPERTY_TO_COLUMN = "toColumn";
+    public final static String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
+    public final static String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$
+    public final static String PROPERTY_TO_COLUMN = "toColumn"; //$NON-NLS-1$
     
     /**
      * Returns the table structure this range belongs to.

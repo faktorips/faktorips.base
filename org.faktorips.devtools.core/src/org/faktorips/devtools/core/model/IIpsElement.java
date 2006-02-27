@@ -13,7 +13,7 @@ public interface IIpsElement {
     /**
      * The name of the name property.
      */
-    public final static String PROPERTY_NAME ="name";
+    public final static String PROPERTY_NAME ="name"; //$NON-NLS-1$
 
     /**
      * Returns the element's unqualified name.

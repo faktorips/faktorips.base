@@ -33,12 +33,12 @@ public interface IChangesOverTimeNamingConvention {
 	/**
 	 * The id of the VAA naming convention.
 	 */
-	public final static String VAA = "VAA";
+	public final static String VAA = "VAA"; //$NON-NLS-1$
 	
 	/**
 	 * The id of the product-manager naming convention.
 	 */
-	public final static String PM = "PM";
+	public final static String PM = "PM"; //$NON-NLS-1$
 
 	/**
 	 * Returns the conventions' identification.

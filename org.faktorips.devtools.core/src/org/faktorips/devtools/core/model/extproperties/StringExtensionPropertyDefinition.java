@@ -26,7 +26,7 @@ public class StringExtensionPropertyDefinition extends ExtensionPropertyDefiniti
     public Object getValueFromXml(Element valueElement) {
     	CDATASection cdata = XmlUtil.getFirstCDataSection(valueElement);
     	if (cdata==null) {
-    		return "";
+    		return ""; //$NON-NLS-1$
     	}
     	return cdata.getData();
     }

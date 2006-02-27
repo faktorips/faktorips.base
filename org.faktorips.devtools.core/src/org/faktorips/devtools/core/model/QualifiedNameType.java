@@ -43,7 +43,7 @@ public class QualifiedNameType {
             return null;
         }
 
-        String folderName = "";
+        String folderName = ""; //$NON-NLS-1$
         String unqualifiedName = qualifiedName;
         int index = qualifiedName.lastIndexOf(IIpsPackageFragment.SEPARATOR);
         if (index>0) {
@@ -71,7 +71,7 @@ public class QualifiedNameType {
     }
     
     public String toString() {
-        return type + ": " + qualifiedName;
+        return type + ": " + qualifiedName; //$NON-NLS-1$
     }
     
 

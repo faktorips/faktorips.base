@@ -35,13 +35,13 @@ public class DefaultLabelProvider extends LabelProvider {
                 return ((IIpsElement)element).getImage();
             }
             if (element instanceof Datatype) {
-                return IpsPlugin.getDefault().getImage("Datatype.gif");
+                return IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
             }
             if (element instanceof Parameter) {
-                return IpsPlugin.getDefault().getImage("Parameter.gif");
+                return IpsPlugin.getDefault().getImage("Parameter.gif"); //$NON-NLS-1$
             }
             if (element instanceof FlFunction) {
-                return IpsPlugin.getDefault().getImage("Function.gif");
+                return IpsPlugin.getDefault().getImage("Function.gif"); //$NON-NLS-1$
             }
             return super.getImage(element); 
         } catch (Exception e) {
@@ -56,15 +56,15 @@ public class DefaultLabelProvider extends LabelProvider {
      */
     public String getText(Object element) {
         if (element==null) {
-            return "null";
+            return "null"; //$NON-NLS-1$
         }
         if (!(element instanceof IIpsElement)) {
             return element.toString();
         }
         IIpsElement pdElement = (IIpsElement)element;
         if (element instanceof IIpsPackageFragment) {
-            if (pdElement.getName().equals("")) {
-                return "(default package)";
+            if (pdElement.getName().equals("")) { //$NON-NLS-1$
+                return "(default package)"; //$NON-NLS-1$
             }
         }
         if (element instanceof IMethod) {
@@ -79,7 +79,7 @@ public class DefaultLabelProvider extends LabelProvider {
         Parameter[] params = method.getParameters();
         for (int i=0; i<params.length; i++) {
             if (i>0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(params[i].getDatatype());
         }

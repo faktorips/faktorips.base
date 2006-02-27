@@ -30,10 +30,10 @@ public class ValueSetType extends DefaultEnumValue {
     private final static DefaultEnumType enumType; 
     
     static {
-        enumType = new DefaultEnumType("ValueSetType", ValueSetType.class);
-        ALL_VALUES = new ValueSetType(enumType, "allValues", "All values");
-        RANGE = new ValueSetType(enumType, "range", "Range");
-        ENUM = new ValueSetType(enumType, "enum", "Enumeration");
+        enumType = new DefaultEnumType("ValueSetType", ValueSetType.class); //$NON-NLS-1$
+        ALL_VALUES = new ValueSetType(enumType, "allValues", "All values"); //$NON-NLS-1$ //$NON-NLS-2$
+        RANGE = new ValueSetType(enumType, "range", "Range"); //$NON-NLS-1$ //$NON-NLS-2$
+        ENUM = new ValueSetType(enumType, "enum", "Enumeration"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public final static EnumType getEnumType() {
@@ -85,7 +85,7 @@ public class ValueSetType extends DefaultEnumValue {
         if (this==ALL_VALUES) {
             return ValueSet.ALL_VALUES;
         }
-        throw new RuntimeException("Can't create a new value set for type " + this);
+        throw new RuntimeException("Can't create a new value set for type " + this); //$NON-NLS-1$
     }
     
     private ValueSetType(DefaultEnumType type, String id, String name) {

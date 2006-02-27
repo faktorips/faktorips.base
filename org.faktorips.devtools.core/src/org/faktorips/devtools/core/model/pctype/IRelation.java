@@ -11,43 +11,43 @@ public interface IRelation extends IIpsObjectPart {
     
     // String constants for the relation class' properties according
     // to the Java beans standard.
-    public final static String PROPERTY_RELATIONTYPE = "relationType";
-    public final static String PROPERTY_TARGET = "target";
-    public final static String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular";
-    public final static String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural";
-    public final static String PROPERTY_MIN_CARDINALITY = "minCardinality";
-    public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality";
-    public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant";
-    public final static String PROPERTY_CONTAINER_RELATION = "containerRelation";
-    public final static String PROPERTY_REVERSE_RELATION = "reverseRelation";
-    public final static String PROPERTY_READONLY_CONTAINER = "readOnlyContainer";
+    public final static String PROPERTY_RELATIONTYPE = "relationType"; //$NON-NLS-1$
+    public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    public final static String PROPERTY_TARGET_ROLE_SINGULAR = "targetRoleSingular"; //$NON-NLS-1$
+    public final static String PROPERTY_TARGET_ROLE_PLURAL = "targetRolePlural"; //$NON-NLS-1$
+    public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
+    public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
+    public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
+    public final static String PROPERTY_CONTAINER_RELATION = "containerRelation"; //$NON-NLS-1$
+    public final static String PROPERTY_REVERSE_RELATION = "reverseRelation"; //$NON-NLS-1$
+    public final static String PROPERTY_READONLY_CONTAINER = "readOnlyContainer"; //$NON-NLS-1$
 
-    public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide";
-    public final static String PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE = "targetRolePluralProductSide";
-    public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide";
-    public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide";
+    public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
+    public final static String PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE = "targetRolePluralProductSide"; //$NON-NLS-1$
+    public final static String PROPERTY_MIN_CARDINALITY_PRODUCTSIDE = "minCardinalityProductSide"; //$NON-NLS-1$
+    public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide"; //$NON-NLS-1$
     
 
-	public static final String CARDINALITY_ONE = "1";
-	public static final String CARDINALITY_MANY = "*";
+	public static final String CARDINALITY_ONE = "1"; //$NON-NLS-1$
+	public static final String CARDINALITY_MANY = "*"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "PolicyCmptTypeRelation-";
+    public final static String MSGCODE_PREFIX = "PolicyCmptTypeRelation-"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that an relation implementing a container relation
      * must have the same value for the product relevant property as it's container relation.
      */
-    public final static String MSGCODE_IMPLEMENTATION_MUST_HAVE_SAME_PRODUCT_RELEVANT_VALUE = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue";
+    public final static String MSGCODE_IMPLEMENTATION_MUST_HAVE_SAME_PRODUCT_RELEVANT_VALUE = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue"; //$NON-NLS-1$
     // TODO implement, test case
 	
     /**
      * Validation message code to indicate that a reverse composition has a max cardinality greater
      * than 1 (it should be 1).
      */
-    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue";
+    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue"; //$NON-NLS-1$
     // TODO implement, test case
     
     /**

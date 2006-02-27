@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
  */
 public class UniqueKey extends Key implements IUniqueKey {
     
-    final static String TAG_NAME = "UniqueKey";
+    final static String TAG_NAME = "UniqueKey"; //$NON-NLS-1$
 
     public UniqueKey(TableStructure tableStructure, int id) {
         super(tableStructure, id);
@@ -35,7 +35,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         String[] items = getKeyItemNames();
         for (int i=0; i<items.length; i++) {
             if (i>0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(items[i]);
         }
@@ -64,8 +64,8 @@ public class UniqueKey extends Key implements IUniqueKey {
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
         if (getNumOfKeyItems()==0) {
-            String text = "Key must contain at least one item.";
-            list.add(new Message("", text, Message.ERROR, this));
+            String text = Messages.UniqueKey_msgTooLessItems;
+            list.add(new Message("", text, Message.ERROR, this)); //$NON-NLS-1$
         }
         String[] items = getKeyItemNames();
         for (int i=0; i<items.length; i++) {
@@ -82,8 +82,8 @@ public class UniqueKey extends Key implements IUniqueKey {
         if (range!=null) {
             return;
         }
-        String text = "The key item " + item + " does not identify a column or a range.";
-        list.add(new Message("", text, Message.ERROR, item));
+        String text = Messages.UniqueKey_msgKeyItemMismatch + item + Messages.UniqueKey_5;
+        list.add(new Message("", text, Message.ERROR, item)); //$NON-NLS-1$
         return;
     }
 
@@ -166,6 +166,6 @@ public class UniqueKey extends Key implements IUniqueKey {
 	 * {@inheritDoc}
 	 */
 	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType);
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 }

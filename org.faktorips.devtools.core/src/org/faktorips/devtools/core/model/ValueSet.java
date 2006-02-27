@@ -25,39 +25,39 @@ public abstract class ValueSet {
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "VALUESET-";
+    public final static String MSGCODE_PREFIX = "VALUESET-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value is not contained in the value set.
      */
-    public final static String MSGCODE_VALUE_NOT_CONTAINED = MSGCODE_PREFIX + "ValueNotContained";
+    public final static String MSGCODE_VALUE_NOT_CONTAINED = MSGCODE_PREFIX + "ValueNotContained"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value-subset is not of the correct type.
      */
-    public final static String MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING = MSGCODE_PREFIX + "TypeOfValueSetNotMatching";
+    public final static String MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING = MSGCODE_PREFIX + "TypeOfValueSetNotMatching"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value could not be parsed.
      */
-    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable";
+    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set. 
      */
-    public final static String MSGCODE_NOT_COMPARABLE = MSGCODE_PREFIX + "NotComparable";
+    public final static String MSGCODE_NOT_COMPARABLE = MSGCODE_PREFIX + "NotComparable"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set. 
      */
-    public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype";
+    public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
     
     /**
      * Name of the xml element used in the xml conversion.
      */
-    public final static String XML_TAG = "ValueSet";
+    public final static String XML_TAG = "ValueSet"; //$NON-NLS-1$
     
     /**
      * A value set instance representing all values.
@@ -80,7 +80,7 @@ public abstract class ValueSet {
         if (subclassEl.getNodeName().equals(AllValuesValueSet.XML_TAG)) {
             return ValueSet.ALL_VALUES;
         }
-        throw new RuntimeException("Unknown subclass element " + subclassEl.getNodeName());
+        throw new RuntimeException("Unknown subclass element " + subclassEl.getNodeName()); //$NON-NLS-1$
     }
     
     /**

@@ -8,8 +8,8 @@ package org.faktorips.devtools.core.model;
  */
 public interface IIpsObjectPart extends IIpsObjectPartContainer {
     
-    public final static String PROPERTY_DESCRIPTION = "description";
-    public final static String PROPERTY_ID = "id";
+    public final static String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
+    public final static String PROPERTY_ID = "id"; //$NON-NLS-1$
     
     /**
      * Returns the object this part belongs to.

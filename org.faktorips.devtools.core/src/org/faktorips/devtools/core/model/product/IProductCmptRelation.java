@@ -10,53 +10,53 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
  */
 public interface IProductCmptRelation extends IIpsObjectPart {
     
-    public final static String PROPERTY_TARGET = "target";
-    public final static String PROPERTY_PCTYPE_RELATION = "pcTypeRelation";
-    public final static String PROPERTY_MIN_CARDINALITY = "minCardinality";
-    public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality";
+    public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    public final static String PROPERTY_PCTYPE_RELATION = "pcTypeRelation"; //$NON-NLS-1$
+    public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
+    public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "PRODUCTCMPT_RELATION-";
+    public final static String MSGCODE_PREFIX = "PRODUCTCMPT_RELATION-"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the relation type in the model can't be found.
      */
-    public final static String MSGCODE_UNKNWON_RELATIONTYPE = MSGCODE_PREFIX + "UnknownRelationType";
+    public final static String MSGCODE_UNKNWON_RELATIONTYPE = MSGCODE_PREFIX + "UnknownRelationType"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the target product component does not exist.
      */
-    public final static String MSGCODE_UNKNWON_TARGET = MSGCODE_PREFIX + "UnknownTarget";
+    public final static String MSGCODE_UNKNWON_TARGET = MSGCODE_PREFIX + "UnknownTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is missing.
      */
-    public final static String MSGCODE_MISSING_MAX_CARDINALITY = MSGCODE_PREFIX + "MissingMaxCardinality";
+    public final static String MSGCODE_MISSING_MAX_CARDINALITY = MSGCODE_PREFIX + "MissingMaxCardinality"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than 1.
      */
-    public final static String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1 = MSGCODE_PREFIX + "MaxCardinalityIsLessThan1";
+    public final static String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1 = MSGCODE_PREFIX + "MaxCardinalityIsLessThan1"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality exceeds the 
      * maximum cardinality defined in the model.
      */
-    public final static String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = MSGCODE_PREFIX + "MaxCardinalityExceedsModelMax";
+    public final static String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = MSGCODE_PREFIX + "MaxCardinalityExceedsModelMax"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the minimum cardinality is less than 
      * the model defined min cardinality.
      */
-    public final static String MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN = MSGCODE_PREFIX + "MinCardinalityIsLessThanModelMin";
+    public final static String MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN = MSGCODE_PREFIX + "MinCardinalityIsLessThanModelMin"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than 
      * the min cardinality.
      */
-    public final static String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxCardinalityIsLessThanMin";
+    public final static String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxCardinalityIsLessThanMin"; //$NON-NLS-1$
     
     /**
      * Returns the product component generation this config element belongs to.

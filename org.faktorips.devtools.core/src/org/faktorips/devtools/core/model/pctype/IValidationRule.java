@@ -10,21 +10,21 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  */
 public interface IValidationRule extends IIpsObjectPart {
 
-	public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions";
+	public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
 
-	public final static String PROPERTY_APPLIED_IN_ALL_FUNCTIONS = "appliedInAllBusinessFunctions";
+	public final static String PROPERTY_APPLIED_IN_ALL_FUNCTIONS = "appliedInAllBusinessFunctions"; //$NON-NLS-1$
 
-	public final static String PROPERTY_MESSAGE_TEXT = "messageText";
+	public final static String PROPERTY_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
 
-	public final static String PROPERTY_MESSAGE_CODE = "messageCode";
+	public final static String PROPERTY_MESSAGE_CODE = "messageCode"; //$NON-NLS-1$
 
-	public final static String PROPERTY_MESSAGE_SEVERITY = "messageSeverity";
+	public final static String PROPERTY_MESSAGE_SEVERITY = "messageSeverity"; //$NON-NLS-1$
 
-	public final static String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes";
+	public final static String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes"; //$NON-NLS-1$
 
-	public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc";
+	public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
 
-	public final static String PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET = "validatesAttrValueAgainstValueSet";
+	public final static String PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET = "validatesAttrValueAgainstValueSet"; //$NON-NLS-1$
 	/**
 	 * Sets the rules name.
 	 */

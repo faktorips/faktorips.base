@@ -7,14 +7,14 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IMethod extends IMember {
 
-    public final static String PROPERTY_DATATYPE = "datatype";
-    public final static String PROPERTY_MODIFIER = "modifier";
-    public final static String PROPERTY_ABSTRACT = "abstract";
-    public final static String PROPERTY_PARAMETERS = "parameters";
-    public final static String PROPERTY_BODY = "body";
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
+    public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    public final static String PROPERTY_PARAMETERS = "parameters"; //$NON-NLS-1$
+    public final static String PROPERTY_BODY = "body"; //$NON-NLS-1$
     
-    public final static String PROPERTY_PARAM_NAME = "param.name";
-    public final static String PROPERTY_PARAM_DATATYPE = "param.datatype";
+    public final static String PROPERTY_PARAM_NAME = "param.name"; //$NON-NLS-1$
+    public final static String PROPERTY_PARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
     
     /**
      * Returns the policy component type this method belongs to.

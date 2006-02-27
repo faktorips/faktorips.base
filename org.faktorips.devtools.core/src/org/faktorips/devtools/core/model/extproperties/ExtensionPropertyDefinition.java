@@ -92,7 +92,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#isEditedInStandardExtensionArea()
      */
     public boolean isEditedInStandardExtensionArea() {
-        return !editedInStandardExtensionArea.equals("false");
+        return !editedInStandardExtensionArea.equals("false"); //$NON-NLS-1$
     }
 
     /**
@@ -192,7 +192,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
 
     public String toString() {
-        return "ExtendedType:" + extendedType.getName() + ", PropertyId: " + propertyId;
+        return "ExtendedType:" + extendedType.getName() + ", PropertyId: " + propertyId; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 	public String getEditedInStandardTextArea() {

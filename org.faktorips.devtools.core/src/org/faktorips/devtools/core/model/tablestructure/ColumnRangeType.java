@@ -20,10 +20,10 @@ public class ColumnRangeType extends DefaultEnumValue{
     private final static DefaultEnumType enumType;
     
     static{
-        enumType = new DefaultEnumType("ColumnRangeType", ColumnRangeType.class);
-        TWO_COLUMN_RANGE = new ColumnRangeType(enumType, "twoColumn", "Two columns");
-        ONE_COLUMN_RANGE_FROM = new ColumnRangeType(enumType, "oneColumnFrom", "From column only");
-        ONE_COLUMN_RANGE_TO = new ColumnRangeType(enumType, "oneColumnTo", "To column only");
+        enumType = new DefaultEnumType("ColumnRangeType", ColumnRangeType.class); //$NON-NLS-1$
+        TWO_COLUMN_RANGE = new ColumnRangeType(enumType, "twoColumn", "Two columns"); //$NON-NLS-1$ //$NON-NLS-2$
+        ONE_COLUMN_RANGE_FROM = new ColumnRangeType(enumType, "oneColumnFrom", "From column only"); //$NON-NLS-1$ //$NON-NLS-2$
+        ONE_COLUMN_RANGE_TO = new ColumnRangeType(enumType, "oneColumnTo", "To column only"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public static final DefaultEnumType getEnumType(){

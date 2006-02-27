@@ -23,7 +23,7 @@ public class IpsProjectPropertyPage extends PropertyPage {
      */
     protected Control createContents(Composite parent) {
         Label l = new Label(parent, SWT.NONE);
-        l.setText("Hello World!");
+        l.setText("Hello World!"); //$NON-NLS-1$
         return l;
     }
 

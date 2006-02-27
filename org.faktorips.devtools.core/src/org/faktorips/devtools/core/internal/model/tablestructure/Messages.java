@@ -68,4 +68,10 @@ public class Messages extends NLS {
 	public static String ForeignKey_37;
 
 	public static String ForeignKey_38;
+
+	public static String UniqueKey_msgTooLessItems;
+
+	public static String UniqueKey_msgKeyItemMismatch;
+
+	public static String UniqueKey_5;
 }

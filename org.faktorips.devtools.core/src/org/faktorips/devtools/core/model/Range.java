@@ -19,45 +19,45 @@ import org.w3c.dom.Element;
  */
 public class Range extends ValueSet {
 
-    final static String XML_TAG = "Range";
+    final static String XML_TAG = "Range"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "RANGE-";
+    public final static String MSGCODE_PREFIX = "RANGE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set. 
      */
-    public final static String MSGCODE_LBOUND_GREATER_UBOUND = MSGCODE_PREFIX + "LBoundGreaterUBound";
+    public final static String MSGCODE_LBOUND_GREATER_UBOUND = MSGCODE_PREFIX + "LBoundGreaterUBound"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that a step was only defined in this valueset, but not in the subset.
      */
-    public final static String MSGCODE_NO_STEP_DEFINED_IN_SUBSET = MSGCODE_PREFIX + "NoStepDefinedInSubset";
+    public final static String MSGCODE_NO_STEP_DEFINED_IN_SUBSET = MSGCODE_PREFIX + "NoStepDefinedInSubset"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the steps of the both value sets are not equal. 
      */
-    public final static String MSGCODE_STEP_MISMATCH = MSGCODE_PREFIX + "StepMismatch";
+    public final static String MSGCODE_STEP_MISMATCH = MSGCODE_PREFIX + "StepMismatch"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the upper bound of the subset is greater than the
      * upper bound of this value set. 
      */
-    public final static String MSGCODE_UPPER_BOUND_VIOLATION = MSGCODE_PREFIX + "UpperBoundViolation";
+    public final static String MSGCODE_UPPER_BOUND_VIOLATION = MSGCODE_PREFIX + "UpperBoundViolation"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set. 
      */
-    public final static String MSGCODE_LOWER_BOUND_VIOLATION = MSGCODE_PREFIX + "LowerBoundViolation";
+    public final static String MSGCODE_LOWER_BOUND_VIOLATION = MSGCODE_PREFIX + "LowerBoundViolation"; //$NON-NLS-1$
     
     
-    public final static String PROPERTY_UPPERBOUND = "upperBound";
-    public final static String PROPERTY_LOWERBOUND = "lowerBound";
-    public final static String PROPERTY_STEP = "step";
+    public final static String PROPERTY_UPPERBOUND = "upperBound"; //$NON-NLS-1$
+    public final static String PROPERTY_LOWERBOUND = "lowerBound"; //$NON-NLS-1$
+    public final static String PROPERTY_STEP = "step"; //$NON-NLS-1$
 
     /**
      * Creates a Range based on the data in the XML element. If element is <code>null</code> the method
@@ -81,9 +81,9 @@ public class Range extends ValueSet {
      * Creates an unbounded range with no step.
      */
     public Range() {
-        lowerBound = "";
-		upperBound = "";
-		step = "";
+        lowerBound = ""; //$NON-NLS-1$
+		upperBound = ""; //$NON-NLS-1$
+		step = ""; //$NON-NLS-1$
 	}
     
     /**
@@ -92,7 +92,7 @@ public class Range extends ValueSet {
     public Range(String lower, String upper) {
         lowerBound = lower;
         upperBound = upper;
-        step = "";
+        step = ""; //$NON-NLS-1$
     }
 
     /**
@@ -178,12 +178,12 @@ public class Range extends ValueSet {
             Comparable lower = (Comparable)datatype.getValue(getLowerBound());
             Comparable upper = (Comparable)datatype.getValue(getUpperBound());
             Comparable objectvalue = (Comparable)datatype.getValue(value);
-            if ((!getLowerBound().equals("") && ((Comparable)lower).compareTo(objectvalue) > 0)
-                    || (!getUpperBound().equals("") && ((Comparable)upper).compareTo(objectvalue) < 0)) {
+            if ((!getLowerBound().equals("") && ((Comparable)lower).compareTo(objectvalue) > 0) //$NON-NLS-1$
+                    || (!getUpperBound().equals("") && ((Comparable)upper).compareTo(objectvalue) < 0)) { //$NON-NLS-1$
             	if (list != null) {
-                    String text = "The value is not in the range " + lowerBound + " - " + upperBound;
+                    String text = Messages.Range_msgValueNotInRange + lowerBound + Messages.Range_17 + upperBound;
                     if (StringUtils.isNotEmpty(step)) {
-                        text = text + ", step " + step;
+                        text = text + Messages.Range_18 + step;
                     }
                     addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text + '.', invalidObject, invalidProperty);
             	}
@@ -205,7 +205,7 @@ public class Range extends ValueSet {
     	if (!(subset instanceof Range)) {
     		if (list != null) {
     			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING,
-						"The subset is not a range", invalidObject,
+						Messages.Range_msgTypeOfValuesetNotMatching, invalidObject,
 						invalidProperty);
     		}
     		return false;
@@ -213,10 +213,10 @@ public class Range extends ValueSet {
 
     	Range subRange = (Range)subset;
     	
-    	if (!getStep().equals("")) {
-    		if (subRange.getStep().equals("")) {
+    	if (!getStep().equals("")) { //$NON-NLS-1$
+    		if (subRange.getStep().equals("")) { //$NON-NLS-1$
     			if (list != null) {
-    				String msg = "Step defined in superset, but not in subset.";
+    				String msg = Messages.Range_msgNoStepDefinedInSubset;
     				addMsg(list, MSGCODE_NO_STEP_DEFINED_IN_SUBSET, msg,
 							invalidObject, invalidProperty);
     				return false;
@@ -233,7 +233,7 @@ public class Range extends ValueSet {
         	
         	if (step.compareTo(subStep) != 0) {
         		if (list != null) {
-        			String msg = NLS.bind("Step ({0}) not equal to subset step ({1})", getStep(), subRange.getStep());
+        			String msg = NLS.bind(Messages.Range_msgStepMismatch, getStep(), subRange.getStep());
         			addMsg(list, MSGCODE_STEP_MISMATCH, msg, invalidObject, invalidProperty);
         		}
         		return false;
@@ -244,7 +244,7 @@ public class Range extends ValueSet {
     	Comparable subLower = parse(subRange.getLowerBound(), datatype, list, invalidObject, invalidProperty);
     	if (lower.compareTo(subLower) > 0) {
     		if (list != null) {
-    			String msg = NLS.bind("Lower bound {0} is grater than lower bound of subset ({1}).", getLowerBound(), subRange.getLowerBound());
+    			String msg = NLS.bind(Messages.Range_msgLowerBoundViolation, getLowerBound(), subRange.getLowerBound());
     			addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, invalidProperty);
     		}
     		return false;
@@ -254,7 +254,7 @@ public class Range extends ValueSet {
     	Comparable subUpper = parse(subRange.getUpperBound(), datatype, list, invalidObject, invalidProperty);
     	if (upper.compareTo(subUpper) < 0) {
     		if (list != null) {
-    			String msg = NLS.bind("Upper bound ({0}) is less than upper bound of subset ({1}).", getUpperBound(), subRange.getUpperBound());
+    			String msg = NLS.bind(Messages.Range_msgUpperBoundViolation, getUpperBound(), subRange.getUpperBound());
     			addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, invalidProperty);
     		}
     		return false;
@@ -294,13 +294,13 @@ public class Range extends ValueSet {
 		} 
         catch (IllegalArgumentException e) {
 			if (list != null) {
-				String msg = NLS.bind("The value {0} is not parsable by the datatype {1}.", value, datatype.getName());
+				String msg = NLS.bind(Messages.Range_msgValueNotParsable, value, datatype.getName());
 				addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
 			}
 		}
 		catch (ClassCastException e) {
 			if (list != null) {
-				String msg = NLS.bind("The value returned by the datatype {0} does not implement java.lang.Comparable", datatype.getName());
+				String msg = NLS.bind(Messages.Range_msgValueNotComparable, datatype.getName());
 				addMsg(list, MSGCODE_NOT_COMPARABLE, msg, invalidObject, invalidProperty);
 			}
 		}
@@ -330,7 +330,7 @@ public class Range extends ValueSet {
      */
     public void validate(ValueDatatype datatype, MessageList list) {
         if (datatype==null) {
-            String text = "Can't parse lower bound, upper bound and step as the datatype is unknown!";
+            String text = Messages.Range_msgUnknownDatatype;
             list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this, 
                     new String[]{PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND, PROPERTY_STEP}));
             return;
@@ -345,7 +345,7 @@ public class Range extends ValueSet {
             return; // range is unbounded on one side
         }
         if (lowerValue.compareTo(upperValue)>0) {
-            String text = "The lowerbound is greater than the upperbound!";
+            String text = Messages.Range_msgLowerboundGreaterUpperbound;
             list.add(new Message(MSGCODE_LBOUND_GREATER_UBOUND, text, Message.WARNING, this, 
                     new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND}));
             return;
@@ -356,7 +356,7 @@ public class Range extends ValueSet {
         try {
             return datatype.getValue(value);
         } catch (IllegalArgumentException e) {
-        	String msg = NLS.bind("The {0} {1} is not a {2} .", new Object[] {property, value, datatype.getName()});
+        	String msg = NLS.bind(Messages.Range_msgPropertyValueNotParsable, new Object[] {property, value, datatype.getName()});
             list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, this, property));
             return null;
         }
@@ -374,9 +374,9 @@ public class Range extends ValueSet {
      */
     public String toString() {
         if (StringUtils.isNotEmpty(step)) {
-            return "[" + lowerBound + ";" + upperBound + "] by " + step;
+            return "[" + lowerBound + ";" + upperBound + "] by " + step; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
-        return "[" + lowerBound + ";" + upperBound + "]";
+        return "[" + lowerBound + ";" + upperBound + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
 }

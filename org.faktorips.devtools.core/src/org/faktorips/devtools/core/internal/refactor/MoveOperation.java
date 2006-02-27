@@ -63,7 +63,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	 */
 	public MoveOperation(IIpsElement[] sources, String[] targets) throws CoreException {
 		if (sources.length != targets.length) {
-			IpsStatus status = new IpsStatus("Number of source- and target-objects is not the same.");
+			IpsStatus status = new IpsStatus("Number of source- and target-objects is not the same."); //$NON-NLS-1$
 			throw new CoreException(status);
 		}
 		
@@ -88,8 +88,8 @@ public class MoveOperation implements IRunnableWithProgress {
 		this.targetNames = new String[sources.length];
 		
 		String prefix = target.getName();
-		if (!prefix.equals("")) {
-			prefix += ".";
+		if (!prefix.equals("")) { //$NON-NLS-1$
+			prefix += "."; //$NON-NLS-1$
 		}
 		for (int i = 0; i < sources.length; i++) {
 			if (sources[i] instanceof IIpsPackageFragment) {
@@ -128,18 +128,18 @@ public class MoveOperation implements IRunnableWithProgress {
 					
 					// first, find all products contained in this folder
 				    ArrayList files = new ArrayList();
-					getRelativeFileNames("", (IFolder)pack.getEnclosingResource(), files);
+					getRelativeFileNames("", (IFolder)pack.getEnclosingResource(), files); //$NON-NLS-1$
 					
 					// second, move them all
 					IIpsPackageFragmentRoot root = parent.getRoot();
 					for (Iterator iter = files.iterator(); iter.hasNext();) {
 						String[] fileInfos = (String[]) iter.next();
-						IIpsPackageFragment targetPackage = root.getIpsPackageFragment(buildPackageName("", newName, fileInfos[0]));
+						IIpsPackageFragment targetPackage = root.getIpsPackageFragment(buildPackageName("", newName, fileInfos[0])); //$NON-NLS-1$
 						if (!targetPackage.exists()) {
 							root.createPackageFragment(targetPackage.getName(), true, null);
 						}
 						IIpsSrcFile file = targetPackage.getIpsSrcFile(fileInfos[1]);
-						IProductCmpt cmpt = (IProductCmpt)root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])).getIpsSrcFile(fileInfos[1]).getIpsObject();
+						IProductCmpt cmpt = (IProductCmpt)root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])).getIpsSrcFile(fileInfos[1]).getIpsObject(); //$NON-NLS-1$
 						move(cmpt, file, monitor);
 					}
 
@@ -160,19 +160,19 @@ public class MoveOperation implements IRunnableWithProgress {
 	private String buildPackageName(String prefix, String middle, String postfix) {
 		String result = prefix;
 		
-		if (!result.equals("") && !middle.equals("")) {
-			result += ".";
+		if (!result.equals("") && !middle.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
+			result += "."; //$NON-NLS-1$
 		}
 		
-		if (!middle.equals("")) {
+		if (!middle.equals("")) { //$NON-NLS-1$
 			result += middle;
 		}
 		
-		if (!result.equals("") && !postfix.equals("")) {
-			result += ".";
+		if (!result.equals("") && !postfix.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
+			result += "."; //$NON-NLS-1$
 		}
 		
-		if (!postfix.equals("")) {
+		if (!postfix.equals("")) { //$NON-NLS-1$
 			result += postfix;
 			
 		}
@@ -186,7 +186,7 @@ public class MoveOperation implements IRunnableWithProgress {
 		IResource[] members = folder.members();
 		for (int i = 0; i < members.length; i++) {
 			if (members[i].getType() == IResource.FOLDER) {
-				getRelativeFileNames(path + "." + members[i].getName(), (IFolder)members[i], result);
+				getRelativeFileNames(path + "." + members[i].getName(), (IFolder)members[i], result); //$NON-NLS-1$
 			}
 			else if (members[i].getType() == IResource.FILE) {
 				result.add(new String[] {path, members[i].getName()});
@@ -199,7 +199,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * except the last one, segments seperated by dots). The name must not be a filename with extension.
 	 */
 	private String getPackageName(String qualifiedName) {
-		String result = "";
+		String result = ""; //$NON-NLS-1$
 		int index = qualifiedName.lastIndexOf('.');
 		if (index > -1) {
 			result = qualifiedName.substring(0, index);
@@ -245,7 +245,7 @@ public class MoveOperation implements IRunnableWithProgress {
 			source.getEnclosingResource().delete(true, monitor);
 		} catch (CoreException e) {
 			Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-			MessageDialog.openError(shell, "Operation aborted", "The operation was aborted due to an internal error. See error log for more details.");
+			MessageDialog.openError(shell, Messages.MoveOperation_titleAborted, Messages.MoveOperation_msgAborted);
 			IpsPlugin.log(e);
 		}		
 	}
@@ -287,7 +287,7 @@ public class MoveOperation implements IRunnableWithProgress {
 				IIpsPackageFragmentRoot root = product.getIpsPackageFragment().getRoot();
 				IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(targets[i]));
 				if (pack.getIpsSrcFile(getUnqualifiedName(targets[i])).exists()) {
-					IpsStatus status = new IpsStatus("Target file " + targets[i] + " allready exists.");
+					IpsStatus status = new IpsStatus("Target file " + targets[i] + " allready exists."); //$NON-NLS-1$ //$NON-NLS-2$
 					throw new CoreException(status);
 				}
 			}
@@ -296,7 +296,7 @@ public class MoveOperation implements IRunnableWithProgress {
 				IIpsPackageFragmentRoot root = sourcePack.getRoot();
 				IIpsPackageFragment pack = root.getIpsPackageFragment(targets[i]);
 				if (pack.exists()) {
-					IpsStatus status = new IpsStatus("Target package " + targets[i] + " allready exists.");
+					IpsStatus status = new IpsStatus("Target package " + targets[i] + " allready exists."); //$NON-NLS-1$ //$NON-NLS-2$
 					throw new CoreException(status);
 				}
 			}
@@ -319,26 +319,26 @@ public class MoveOperation implements IRunnableWithProgress {
 			if (toTest instanceof IProductCmpt) {
 				IProductCmpt product = (IProductCmpt)toTest;
 				if (!product.getIpsSrcFile().exists()) {
-					IpsStatus status = new IpsStatus("Source file " + getQualifiedSourceName(product) + " does not exist.");
+					IpsStatus status = new IpsStatus("Source file " + getQualifiedSourceName(product) + " does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
 					throw new CoreException(status);
 				}
 				
 				if (product.getIpsSrcFile().isDirty()) {
-					IpsStatus status = new IpsStatus("Source file " + getQualifiedSourceName(product) + " modified.");
+					IpsStatus status = new IpsStatus("Source file " + getQualifiedSourceName(product) + " modified."); //$NON-NLS-1$ //$NON-NLS-2$
 					throw new CoreException(status);
 				}
 			}
 			else if (toTest instanceof IIpsPackageFragment) {
 				IIpsPackageFragment pack = (IIpsPackageFragment)toTest;
 				if (!pack.exists()) {
-					IpsStatus status = new IpsStatus("Source package " + pack.getName() + " does not exist.");
+					IpsStatus status = new IpsStatus("Source package " + pack.getName() + " does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
 					throw new CoreException(status);
 				}
 				checkSources(pack.getChildren());
 			}
 			else {
 				
-				IpsStatus status = new IpsStatus("Object of type " + toTest.getName() + " not supported.");
+				IpsStatus status = new IpsStatus("Object of type " + toTest.getName() + " not supported."); //$NON-NLS-1$ //$NON-NLS-2$
 				throw new CoreException(status);
 			}
 		}
@@ -348,7 +348,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * Returns the qualified source-name (including file extension) for the given product.
 	 */
 	private String getQualifiedSourceName(IProductCmpt product) {
-		return product.getQualifiedName() + "." + product.getIpsObjectType().getFileExtension();
+		return product.getQualifiedName() + "." + product.getIpsObjectType().getFileExtension(); //$NON-NLS-1$
 	}
 	
 }

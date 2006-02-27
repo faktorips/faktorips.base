@@ -55,7 +55,7 @@ public class DatatypeCompletionProcessor implements IContentAssistProcessor, ISu
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
      */
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported.");
+        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
@@ -63,7 +63,7 @@ public class DatatypeCompletionProcessor implements IContentAssistProcessor, ISu
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
      */
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported.");
+        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
@@ -116,7 +116,7 @@ public class DatatypeCompletionProcessor implements IContentAssistProcessor, ISu
 			return null;
 		}
         if (ipsProject==null) {
-            errorMessage = "No project context available.";
+            errorMessage = Messages.DatatypeCompletionProcessor_msgNoProjectContext;
             return null;
         }
         List result = new ArrayList(100);
@@ -134,7 +134,7 @@ public class DatatypeCompletionProcessor implements IContentAssistProcessor, ISu
                 }
             }
         } catch (Exception e) {
-            errorMessage = "An internal error occured while searching. See the log file for details.";
+            errorMessage = Messages.DatatypeCompletionProcessor_msgInternalError;
             IpsPlugin.log(e);
             return null;
         }

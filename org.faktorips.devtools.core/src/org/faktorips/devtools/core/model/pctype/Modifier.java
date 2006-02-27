@@ -19,10 +19,10 @@ public class Modifier extends DefaultEnumValue {
     private final static DefaultEnumType enumType; 
     
     static {
-        enumType = new DefaultEnumType("Modifier", Modifier.class);
-        PUBLISHED = new Modifier(enumType, "published", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC);
-        PUBLIC = new Modifier(enumType, "public", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC);
-        PRIVATE = new Modifier(enumType, "private", Flags.AccPrivate, java.lang.reflect.Modifier.PRIVATE);
+        enumType = new DefaultEnumType("Modifier", Modifier.class); //$NON-NLS-1$
+        PUBLISHED = new Modifier(enumType, "published", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
+        PUBLIC = new Modifier(enumType, "public", Flags.AccPublic, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
+        PRIVATE = new Modifier(enumType, "private", Flags.AccPrivate, java.lang.reflect.Modifier.PRIVATE); //$NON-NLS-1$
     }
     
     public final static EnumType getEnumType() {

@@ -12,15 +12,15 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 public interface IAttribute extends IMember {
 
     // property names
-    public final static String PROPERTY_DATATYPE = "datatype";
-    public final static String PROPERTY_ATTRIBUTE_TYPE = "attributeType";
-    public final static String PROPERTY_MODIFIER = "modifier";
-    public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant";
-    public final static String PROPERTY_DEFAULT_VALUE = "defaultValue";
-    public final static String PROPERTY_FORMULA_PARAMETERS = "parameters";
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    public final static String PROPERTY_ATTRIBUTE_TYPE = "attributeType"; //$NON-NLS-1$
+    public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
+    public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
+    public final static String PROPERTY_DEFAULT_VALUE = "defaultValue"; //$NON-NLS-1$
+    public final static String PROPERTY_FORMULA_PARAMETERS = "parameters"; //$NON-NLS-1$
     
-    public final static String PROPERTY_FORMULAPARAM_NAME = "param.name";
-    public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype";
+    public final static String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
+    public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
     
     /**
      * Returns the attribute's datatype.

@@ -7,9 +7,9 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IForeignKey extends IKey {
     
-    public final static String PROPERTY_REF_TABLE_STRUCTURE = "referencedTableStructure";
+    public final static String PROPERTY_REF_TABLE_STRUCTURE = "referencedTableStructure"; //$NON-NLS-1$
     
-    public final static String PROPERTY_REF_UNIQUE_KEY = "referencedUniqueKey";
+    public final static String PROPERTY_REF_UNIQUE_KEY = "referencedUniqueKey"; //$NON-NLS-1$
     
 
     /**

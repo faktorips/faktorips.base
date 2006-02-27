@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
  */
 public class AllValuesValueSet extends ValueSet {
     
-    final static String XML_TAG = "AllValues";
+    final static String XML_TAG = "AllValues"; //$NON-NLS-1$
     
     /**
      * Overridden IMethod.
@@ -46,7 +46,7 @@ public class AllValuesValueSet extends ValueSet {
      * @see java.lang.Object#toString()
      */
     public String toString () {
-        return "AllValuesValueSet";
+        return "AllValuesValueSet"; //$NON-NLS-1$
     }
 
     /**

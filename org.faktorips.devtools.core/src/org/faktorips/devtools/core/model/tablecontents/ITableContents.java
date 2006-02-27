@@ -10,7 +10,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
  */
 public interface ITableContents extends ITimedIpsObject {
 
-    public final static String PROPERTY_TABLESTRUCTURE = "tableStructure";
+    public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
     
     /**
      * Returns the qualified name of the table structure this table contents

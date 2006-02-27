@@ -28,7 +28,7 @@ public class OverrideImageDescriptor extends CompositeImageDescriptor {
      */
     protected void drawCompositeImage(int width, int height) {
 		drawImage(baseImage.getImageData(), 0, 0);
-		drawImage(IpsPlugin.getDefault().getImage("OverrideIndicator.gif").getImageData(), 8, 8);
+		drawImage(IpsPlugin.getDefault().getImage("OverrideIndicator.gif").getImageData(), 8, 8); //$NON-NLS-1$
     }
 
     /** 

@@ -11,7 +11,7 @@ public class Parameter {
     private String datatype;
     
     public Parameter(int index) {
-        this(index, "", "");
+        this(index, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public Parameter(int index, String name, String datatype) {
@@ -41,7 +41,7 @@ public class Parameter {
     }
     
     public String toString() {
-        return index + " " + datatype + " " + name;
+        return index + " " + datatype + " " + name; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

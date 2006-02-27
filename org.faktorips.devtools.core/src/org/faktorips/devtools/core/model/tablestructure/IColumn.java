@@ -7,7 +7,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  */
 public interface IColumn extends IIpsObjectPart, IKeyItem {
     
-    public final static String PROPERTY_DATATYPE = "datatype";
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
     
     /**
      * Sets the column name.

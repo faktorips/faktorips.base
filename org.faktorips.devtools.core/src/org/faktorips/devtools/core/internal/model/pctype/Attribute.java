@@ -265,7 +265,7 @@ public class Attribute extends Member implements IAttribute {
     	super.validate(result);
         IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()) {
-            result.add(new Message("", Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-3$
+            result.add(new Message("", Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         Datatype datatypeObject = ValidationUtils.checkDatatypeReference(datatype, true, false, this,
                 PROPERTY_DATATYPE, result);

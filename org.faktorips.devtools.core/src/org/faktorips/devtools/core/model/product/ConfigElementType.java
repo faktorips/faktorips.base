@@ -20,10 +20,10 @@ public class ConfigElementType extends DefaultEnumValue {
     private final static DefaultEnumType enumType; 
     
     static {
-        enumType = new DefaultEnumType("ConfigElementType", ConfigElementType.class);
-        PRODUCT_ATTRIBUTE = new ConfigElementType(enumType, "productAttribute", "Product IAttribute");
-        POLICY_ATTRIBUTE = new ConfigElementType(enumType, "policyAttribute", "Policy IAttribute");
-        FORMULA = new ConfigElementType(enumType, "formula", "Formula");
+        enumType = new DefaultEnumType("ConfigElementType", ConfigElementType.class); //$NON-NLS-1$
+        PRODUCT_ATTRIBUTE = new ConfigElementType(enumType, "productAttribute", "Product IAttribute"); //$NON-NLS-1$ //$NON-NLS-2$
+        POLICY_ATTRIBUTE = new ConfigElementType(enumType, "policyAttribute", "Policy IAttribute"); //$NON-NLS-1$ //$NON-NLS-2$
+        FORMULA = new ConfigElementType(enumType, "formula", "Formula"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public final static EnumType getEnumType() {
@@ -40,16 +40,16 @@ public class ConfigElementType extends DefaultEnumValue {
 
 	public Image getImage() {
 		if (this.equals(PRODUCT_ATTRIBUTE)) {
-			return IpsPlugin.getDefault().getImage("ProductAttribute.gif");
+			return IpsPlugin.getDefault().getImage("ProductAttribute.gif"); //$NON-NLS-1$
 		}
 		else if (this.equals(POLICY_ATTRIBUTE)) {
-			return IpsPlugin.getDefault().getImage("PolicyAttribute.gif");
+			return IpsPlugin.getDefault().getImage("PolicyAttribute.gif"); //$NON-NLS-1$
 		}
 		else if (this.equals(FORMULA)) {
-			return IpsPlugin.getDefault().getImage("Formula.gif");
+			return IpsPlugin.getDefault().getImage("Formula.gif"); //$NON-NLS-1$
 		}
 		else {
-			return IpsPlugin.getDefault().getImage("<undefined>");
+			return IpsPlugin.getDefault().getImage("<undefined>"); //$NON-NLS-1$
 		}
 	}
     

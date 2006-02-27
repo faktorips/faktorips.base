@@ -21,7 +21,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	/**
 	 * The xml element name.
 	 */
-	public final static String XML_ELEMENT = "IpsArtefactBuilderSet";
+	public final static String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$
 
 	/**
 	 * Returns all IpsArtefactBuilders of this set.

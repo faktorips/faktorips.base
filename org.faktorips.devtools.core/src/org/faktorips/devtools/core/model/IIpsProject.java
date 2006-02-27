@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  */
 public interface IIpsProject extends IIpsElement, IProjectNature {
 
-    public final static String NATURE_ID = IpsPlugin.PLUGIN_ID + ".ipsnature";
+    public final static String NATURE_ID = IpsPlugin.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
     
     /**
      * Returns the corresponding platform project.

@@ -17,44 +17,44 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     /**
      * The name of the product component type property.
      */
-    public final static String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType";
+    public final static String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType"; //$NON-NLS-1$
 
 	/**
      * The name of the product component type property.
      */
-    public final static String PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE = "unqualifiedProductCmptType";
+    public final static String PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE = "unqualifiedProductCmptType"; //$NON-NLS-1$
 
     /**
      * The name of the supertype property.
      */
-    public final static String PROPERTY_SUPERTYPE = "supertype";
+    public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
     
     /**
      * The name of the abstract property.
      */
-    public final static String PROPERTY_ABSTRACT = "abstract";
+    public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
     
     /**
      * The name of the abstract property.
      */
-    public final static String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration";
+    public final static String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "POLICYCMPTTYPE-";
+    public final static String MSGCODE_PREFIX = "POLICYCMPTTYPE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an abstract method exists in the type's supertype
      * hierarchy that must be overriden in the conrete type.
      */
-    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod";
+    public final static String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that an abstract relation exists in the type's supertype
      * hierarchy that must be implemented, or the type must also be abstract.
      */
-    public final static String MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION = MSGCODE_PREFIX + "MustImplementAbstractRelation";
+    public final static String MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION = MSGCODE_PREFIX + "MustImplementAbstractRelation"; //$NON-NLS-1$
     // TODO implement, test case
     	
     /**

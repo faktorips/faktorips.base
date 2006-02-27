@@ -26,12 +26,12 @@ public class EnumValueSet extends ValueSet {
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "ENUMVALUESET-";
+    public final static String MSGCODE_PREFIX = "ENUMVALUESET-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a value in this value set is duplicate.
      */
-    public final static String MSGCODE_DUPLICATE_VALUE = MSGCODE_PREFIX + "DuplicateValue";
+    public final static String MSGCODE_DUPLICATE_VALUE = MSGCODE_PREFIX + "DuplicateValue"; //$NON-NLS-1$
 
     /**
      * Creates a new enum value set with all values from the given enum datatype.
@@ -48,10 +48,10 @@ public class EnumValueSet extends ValueSet {
 	}
 
     
-    public static final String XML_TAG = "Enum";
+    public static final String XML_TAG = "Enum"; //$NON-NLS-1$
     
-    private static final String XML_VALUE = "Value";
-    private static final String XML_ATTRIBUTEVALUE = "value";
+    private static final String XML_VALUE = "Value"; //$NON-NLS-1$
+    private static final String XML_ATTRIBUTEVALUE = "value"; //$NON-NLS-1$
 
     private ArrayList elements = new ArrayList();
 
@@ -127,7 +127,7 @@ public class EnumValueSet extends ValueSet {
     public boolean containsValue(String value, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
         if (!datatype.isParsable(value)) {
         	if (list != null) {
-        		String msg = "Value " + value + " is not parsable by datatype " + datatype.getName();
+        		String msg = Messages.EnumValueSet_msgValueNotParsable_relpaceMe + value + Messages.EnumValueSet_6 + datatype.getName();
         		addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
         	}
             return false;
@@ -144,7 +144,7 @@ public class EnumValueSet extends ValueSet {
             }
         }
         if (list != null) {
-        	String text = "The value is not included in the enumeration.";
+        	String text = Messages.EnumValueSet_msgValueNotInEnumeration;
         	addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, invalidProperty);
         }
         return false;
@@ -156,7 +156,7 @@ public class EnumValueSet extends ValueSet {
     public boolean containsValueSet(ValueSet subset, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
     	if (!(subset instanceof EnumValueSet)) {
     		if (list != null) {
-    			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, "The subset is not an enum value set", invalidObject, invalidProperty);
+    			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset, invalidObject, invalidProperty);
     		}
     		return false;
     	}
@@ -262,7 +262,7 @@ public class EnumValueSet extends ValueSet {
         for (int i = 0; i < numOfValues; i++) {
             String value = (String)elements.get(i);
             if (!datatype.isParsable(value)) {
-                String msg = NLS.bind("The value {0} is not a {1}.", value, datatype.getName());
+                String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
                 list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, value));
             }
         }
@@ -271,7 +271,7 @@ public class EnumValueSet extends ValueSet {
             for (int j = i + 1; j < numOfValues; j++) {
                 String valueOfj = (String)elements.get(j);
                 if (valueOfi.equals(valueOfj)) {
-                    String msg = NLS.bind("The value {0} is more than once in the value set.", valueOfi);
+                    String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, valueOfi);
                     list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, valueOfi));
                     list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, valueOfj));
                 }

@@ -18,10 +18,10 @@ public class RelationType extends DefaultEnumValue {
     private final static DefaultEnumType enumType; 
     
     static {
-        enumType = new DefaultEnumType("RelationType", RelationType.class);
-        COMPOSITION = new RelationType(enumType, "comp", "Composition");
-        REVERSE_COMPOSITION = new RelationType(enumType, "reverseComp", "Reverse Composition");
-        ASSOZIATION = new RelationType(enumType, "ass", "Assoziation");
+        enumType = new DefaultEnumType("RelationType", RelationType.class); //$NON-NLS-1$
+        COMPOSITION = new RelationType(enumType, "comp", "Composition"); //$NON-NLS-1$ //$NON-NLS-2$
+        REVERSE_COMPOSITION = new RelationType(enumType, "reverseComp", "Reverse Composition"); //$NON-NLS-1$ //$NON-NLS-2$
+        ASSOZIATION = new RelationType(enumType, "ass", "Assoziation"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     public final static EnumType getEnumType() {
@@ -29,7 +29,7 @@ public class RelationType extends DefaultEnumValue {
     }
     
     public final static RelationType getRelationType(String id) {
-        if (id.equals("agg")) {
+        if (id.equals("agg")) { //$NON-NLS-1$
             // renamed aggregation to composition (inkl the id!)
             return COMPOSITION;
         }

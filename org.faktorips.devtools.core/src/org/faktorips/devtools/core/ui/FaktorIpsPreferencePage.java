@@ -26,17 +26,17 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     protected void createFieldEditors() {
         StringFieldEditor workingDateField = new StringFieldEditor(
                 IpsPreferences.WORKING_DATE, 
-                "Product Changes Effective Date (YYYY-MM-DD):", getFieldEditorParent());
+                Messages.FaktorIpsPreferencePage_labelWorkingDate, getFieldEditorParent());
         addField(workingDateField);
 
         StringFieldEditor nullRepresentation = new StringFieldEditor(
                 IpsPreferences.NULL_REPRESENTATION_STRING, 
-                "String-Representation for NULL-Values:", getFieldEditorParent());
+                Messages.FaktorIpsPreferencePage_labelNullValue, getFieldEditorParent());
         addField(nullRepresentation);
         
         StringFieldEditor productCmptPostfixField = new StringFieldEditor(
                 IpsPreferences.DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, 
-                "Default Product Component Type Postfix:", getFieldEditorParent());
+                Messages.FaktorIpsPreferencePage_labelProductTypePostfix, getFieldEditorParent());
         addField(productCmptPostfixField);
 
         IChangesOverTimeNamingConvention[] conventions = IpsPlugin.getDefault().getIpsModel().getChangesOverTimeNamingConvention();
@@ -47,7 +47,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
 			nameValues[i][1] = conventions[i].getId();
 		}
         ComboFieldEditor changeOverTimeField = new ComboFieldEditor(IpsPreferences.CHANGES_OVER_TIME_NAMING_CONCEPT,
-        		"Naming scheme for changes over time:", nameValues, getFieldEditorParent());
+        		Messages.FaktorIpsPreferencePage_labelNamingScheme, nameValues, getFieldEditorParent());
         addField(changeOverTimeField);
     }
 

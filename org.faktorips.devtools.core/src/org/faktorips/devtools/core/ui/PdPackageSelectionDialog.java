@@ -16,8 +16,8 @@ public class PdPackageSelectionDialog extends ElementListSelectionDialog {
      */
     public PdPackageSelectionDialog(Shell parent) {
         super(parent, new DefaultLabelProvider());
-        setTitle("Select Package");
-        setMessage("Select a package (?=any character, *=any string)");
+        setTitle(Messages.PdPackageSelectionDialog_title);
+        setMessage(Messages.PdPackageSelectionDialog_description);
         setIgnoreCase(true);
         setMatchEmptyString(true);
         setMultipleSelection(false);

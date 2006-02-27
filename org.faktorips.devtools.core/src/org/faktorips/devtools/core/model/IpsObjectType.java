@@ -35,37 +35,37 @@ public final class IpsObjectType {
      * Type for Policy component type.
      */
     public final static IpsObjectType BUSINESS_FUNCTION = 
-        new IpsObjectType("BusinessFunction", "Business Function", "ipsbf", "BusinessFunction.gif");
+        new IpsObjectType("BusinessFunction", "Business Function", "ipsbf", "BusinessFunction.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
-        new IpsObjectType("PolicyCmptType", "Policy Class", "ipspct", "PolicyCmptType.gif");
+        new IpsObjectType("PolicyCmptType", "Policy Class", "ipspct", "PolicyCmptType.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for product component type.
      */
     public final static IpsObjectType PRODUCT_CMPT_TYPE = 
-        new IpsObjectType("ProductCmptType", "Product Class", "ipsproductcmpttype", "PolicyCmptType.gif");
+        new IpsObjectType("ProductCmptType", "Product Class", "ipsproductcmpttype", "PolicyCmptType.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for table structures.
      */
     public final static IpsObjectType TABLE_STRUCTURE = 
-        new IpsObjectType("TableStructure", "TableStructure", "ipstablestructure", "TableStructure.gif");
+        new IpsObjectType("TableStructure", "TableStructure", "ipstablestructure", "TableStructure.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for product components.
      */
     public final static IpsObjectType PRODUCT_CMPT = 
-        new IpsObjectType("ProductCmpt", "Product Component", "ipsproduct", "ProductCmpt.gif");
+        new IpsObjectType("ProductCmpt", "Product Component", "ipsproduct", "ProductCmpt.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     /**
      * Type for tables contents objects.
      */
     public final static IpsObjectType TABLE_CONTENTS = 
-        new IpsObjectType("TableContents", "TableContents", "ipstablecontents", "TableContents.gif");
+        new IpsObjectType("TableContents", "TableContents", "ipstablecontents", "TableContents.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     
     public final static IpsObjectType[] ALL_TYPES = new IpsObjectType[]
     	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS};
@@ -125,7 +125,7 @@ public final class IpsObjectType {
 	    if (this==TABLE_CONTENTS) {
 	        return new TableContents(file);
 	    }
-	    throw new RuntimeException("Can't create object for type " + this);
+	    throw new RuntimeException("Can't create object for type " + this); //$NON-NLS-1$
 	}
 
 	/**
@@ -169,7 +169,7 @@ public final class IpsObjectType {
 	 */
 	public final String getFileName(String pdObjectName) {
 		ArgumentCheck.notNull(pdObjectName);
-		return pdObjectName + "." + fileExtension;
+		return pdObjectName + "." + fileExtension; //$NON-NLS-1$
 	}
 	
 	/**

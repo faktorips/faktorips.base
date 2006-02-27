@@ -22,8 +22,8 @@ public class PdObjectSelectionDialog extends TwoPaneElementSelector {
         super(parent, new DefaultLabelProvider(), new QualifierLabelProvider());
         setTitle(title);
         setMessage(message);
-        setUpperListLabel("Matches:");
-        setLowerListLabel("Qualifier:");
+        setUpperListLabel(Messages.PdObjectSelectionDialog_labelMatches);
+        setLowerListLabel(Messages.PdObjectSelectionDialog_labelQualifier);
         setIgnoreCase(true);
         setMatchEmptyString(true);
     }
@@ -37,7 +37,7 @@ public class PdObjectSelectionDialog extends TwoPaneElementSelector {
         public String getText(Object element) {
             IIpsPackageFragment pck = ((IIpsObject)element).getIpsPackageFragment(); 
             return pck.getName()
-            	+ " - " + pck.getEnclosingResource().getFullPath().toString();
+            	+ " - " + pck.getEnclosingResource().getFullPath().toString(); //$NON-NLS-1$
         }
     }
 

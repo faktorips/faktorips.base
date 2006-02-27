@@ -22,4 +22,24 @@ public class Messages extends NLS {
 	public static String NewFolderActionDelegate_descriptionNewFolder;
 
 	public static String NewFolderActionDelegate_valueNewFolder;
+
+	public static String DatatypeCompletionProcessor_msgNoProjectContext;
+
+	public static String DatatypeCompletionProcessor_msgInternalError;
+
+	public static String PdPackageSelectionDialog_title;
+
+	public static String PdPackageSelectionDialog_description;
+
+	public static String FaktorIpsPreferencePage_labelWorkingDate;
+
+	public static String FaktorIpsPreferencePage_labelNullValue;
+
+	public static String FaktorIpsPreferencePage_labelProductTypePostfix;
+
+	public static String FaktorIpsPreferencePage_labelNamingScheme;
+
+	public static String PdObjectSelectionDialog_labelMatches;
+
+	public static String PdObjectSelectionDialog_labelQualifier;
 }

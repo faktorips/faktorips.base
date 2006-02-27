@@ -8,7 +8,7 @@ import java.util.GregorianCalendar;
  */
 public interface IIpsObjectGeneration extends IIpsObjectPart {
     
-    public final static String PROPERTY_VALID_FROM = "validFrom";
+    public final static String PROPERTY_VALID_FROM = "validFrom"; //$NON-NLS-1$
     
     /**
      * Returns the object this is a generation of.

@@ -17,65 +17,65 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IConfigElement extends IIpsObjectPart {
     
-	public final static String PROPERTY_TYPE = "type";
-    public final static String PROPERTY_PCTYPE_ATTRIBUTE = "pcTypeAttribute";
-    public final static String PROPERTY_VALUE = "value";
+	public final static String PROPERTY_TYPE = "type"; //$NON-NLS-1$
+    public final static String PROPERTY_PCTYPE_ATTRIBUTE = "pcTypeAttribute"; //$NON-NLS-1$
+    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "CONFIGELEMENT-";
+    public final static String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute the config element is based can't be found.
      */
-    public final static String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute";
+    public final static String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute's datatype can't be found and so the 
      * formula's datatype can't be checked against it.
      */
-    public final static String MSGCODE_UNKNOWN_DATATYPE_FORMULA = MSGCODE_PREFIX + "UnknownDatatypeFormula";
+    public final static String MSGCODE_UNKNOWN_DATATYPE_FORMULA = MSGCODE_PREFIX + "UnknownDatatypeFormula"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the attribute's datatype can't be found and so the 
      * value can't be parsed.
      */
-    public final static String MSGCODE_UNKNOWN_DATATYPE_VALUE = MSGCODE_PREFIX + "UnknownDatatypeValue";
+    public final static String MSGCODE_UNKNOWN_DATATYPE_VALUE = MSGCODE_PREFIX + "UnknownDatatypeValue"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the formula's datatype is not compatible with the 
      * one defined by the attribute.
      */
-    public final static String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype";
+    public final static String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the datatype is not a value datatype.
      */
-    public final static String MSGCODE_NOT_A_VALUEDATATYPE = MSGCODE_PREFIX + "NotAValudDatatype";
+    public final static String MSGCODE_NOT_A_VALUEDATATYPE = MSGCODE_PREFIX + "NotAValudDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the datatype is invalid. (E.g. the definition
      * of a dynamic datatype can be wrong.)
      */
-    public final static String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype";
+    public final static String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype"; //$NON-NLS-1$
     // TODO test case - untestable at the moment (20.02.2006) because no datatype implements validate()
 
     /**
      * Validation message code to indicate that the value can't be parsed, it is not an instance
      * of the datatype
      */
-    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable";
+    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value is not contained in the valueset.
      */
-    public final static String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet";
+    public final static String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that formula is missing.
      */
-    public final static String MSGCODE_MISSING_FORMULA = MSGCODE_PREFIX + "MissingFormula";
+    public final static String MSGCODE_MISSING_FORMULA = MSGCODE_PREFIX + "MissingFormula"; //$NON-NLS-1$
 
     /**
      * Returns the product component generation this config element belongs to.

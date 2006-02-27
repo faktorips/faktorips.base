@@ -21,19 +21,19 @@ public class MessageSeverity extends DefaultEnumValue {
     private final static DefaultEnumType enumType; 
     
     static {
-        enumType = new DefaultEnumType("MessageSeverity", MessageSeverity.class);
+        enumType = new DefaultEnumType("MessageSeverity", MessageSeverity.class); //$NON-NLS-1$
         JavaCodeFragment errorFragment = new JavaCodeFragment();
         errorFragment.appendClassName(Message.class);
-        errorFragment.append(".ERROR");
-        ERROR = new MessageSeverity(enumType, "error", errorFragment);
+        errorFragment.append(".ERROR"); //$NON-NLS-1$
+        ERROR = new MessageSeverity(enumType, "error", errorFragment); //$NON-NLS-1$
         JavaCodeFragment warningFragment = new JavaCodeFragment();
         warningFragment.appendClassName(Message.class);
-        warningFragment.append(".WARNING");
-        WARNING = new MessageSeverity(enumType, "warning", warningFragment);
+        warningFragment.append(".WARNING"); //$NON-NLS-1$
+        WARNING = new MessageSeverity(enumType, "warning", warningFragment); //$NON-NLS-1$
         JavaCodeFragment infoFragment = new JavaCodeFragment();
         infoFragment.appendClassName(Message.class);
-        infoFragment.append(".INFO");
-        INFO = new MessageSeverity(enumType, "info", infoFragment);
+        infoFragment.append(".INFO"); //$NON-NLS-1$
+        INFO = new MessageSeverity(enumType, "info", infoFragment); //$NON-NLS-1$
     }
     
     public final static EnumType getEnumType() {

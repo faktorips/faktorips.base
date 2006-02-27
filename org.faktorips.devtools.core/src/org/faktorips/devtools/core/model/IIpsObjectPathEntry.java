@@ -10,12 +10,12 @@ public interface IIpsObjectPathEntry {
     /**
      * Type constant indicating a source folder entry.
      */
-    public final static String TYPE_SRC_FOLDER = "src"; 
+    public final static String TYPE_SRC_FOLDER = "src";  //$NON-NLS-1$
     
     /**
      * Type constant indicating a project reference entry.
      */
-    public final static String TYPE_PROJECT_REFERENCE = "project";
+    public final static String TYPE_PROJECT_REFERENCE = "project"; //$NON-NLS-1$
     
     /**
      * Returns the object path this is an entry of.

@@ -47,11 +47,11 @@ public class AttributeType extends DefaultEnumValue {
     private final static DefaultEnumType enumType; 
     
     static {
-        enumType = new DefaultEnumType("AttributeType", AttributeType.class);
-        CHANGEABLE = new AttributeType(enumType, "changeable");
-        COMPUTED = new AttributeType(enumType, "computed");
-        CONSTANT = new AttributeType(enumType, "constant");
-        DERIVED = new AttributeType(enumType, "derived");
+        enumType = new DefaultEnumType("AttributeType", AttributeType.class); //$NON-NLS-1$
+        CHANGEABLE = new AttributeType(enumType, "changeable"); //$NON-NLS-1$
+        COMPUTED = new AttributeType(enumType, "computed"); //$NON-NLS-1$
+        CONSTANT = new AttributeType(enumType, "constant"); //$NON-NLS-1$
+        DERIVED = new AttributeType(enumType, "derived"); //$NON-NLS-1$
     }
     
     public final static EnumType getEnumType() {
@@ -59,7 +59,7 @@ public class AttributeType extends DefaultEnumValue {
     }
     
     public final static AttributeType getAttributeType(String id) {
-        if (id.equals("changable")) {
+        if (id.equals("changable")) { //$NON-NLS-1$
             return CHANGEABLE; // migration of old files
         }
         return (AttributeType)enumType.getEnumValue(id);

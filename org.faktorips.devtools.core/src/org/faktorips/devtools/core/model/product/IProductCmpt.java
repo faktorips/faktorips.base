@@ -15,7 +15,7 @@ public interface IProductCmpt extends ITimedIpsObject {
     /**
      * The name of the policy component type property
      */
-    public final static String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType";
+    public final static String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
     
     /**
      * Returns the qualified name of the policy component type this product component
