@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.ui.wizards.tablecontents;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
@@ -81,7 +82,7 @@ public class TableContentsPage extends IpsObjectPage {
             return;
         }
 	    if (structureControl.findTableStructure()==null) {
-	        setErrorMessage(Messages.TableContentsPage_msgMissingStructure + structureControl.getText() + Messages.TableContentsPage_4);
+	        setErrorMessage(NLS.bind(Messages.TableContentsPage_msgMissingStructure, structureControl.getText()));
 	    }
         updatePageComplete();
     }

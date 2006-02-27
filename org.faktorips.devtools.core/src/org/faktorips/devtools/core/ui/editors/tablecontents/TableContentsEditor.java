@@ -1,7 +1,9 @@
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.text.DateFormat;
+import java.util.Locale;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
@@ -41,13 +43,19 @@ public class TableContentsEditor extends TimedIpsObjectEditor {
      * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditor#getUniformPageTitle()
      */
     protected String getUniformPageTitle() {
-        ITableContentsGeneration generation = (ITableContentsGeneration)getPreferredGeneration();
-        String title = Messages.TableContentsEditor_title + getTableContents().getName();
-        if (generation==null) {
-            return title;
-        }
-        DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT);
-        return title + Messages.TableContentsEditor_1 + format.format(generation.getValidFrom().getTime());
+        ITableContentsGeneration generation = (ITableContentsGeneration) getPreferredGeneration();
+		String gen = IpsPlugin.getDefault().getIpsPreferences()
+				.getChangesOverTimeNamingConvention()
+				.getGenerationConceptNameSingular(Locale.getDefault());
+		DateFormat format = DateFormat.getDateInstance(DateFormat.DEFAULT);
+		String title = NLS
+				.bind(
+						Messages.TableContentsEditor_title,
+						new Object[] {
+								getTableContents().getName(),
+								gen,
+								generation == null ? "" : format.format(generation.getValidFrom().getTime()) }); //$NON-NLS-1$
+		return title;
     }
 
 }

@@ -11,6 +11,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Shell;
@@ -165,7 +166,7 @@ public class IpsPasteAction extends IpsAction {
     				suggestedName = Messages.IpsPasteAction_suggestedNamePrefixSimple + nameWithoutExtension;
     			}
     			else {
-    				suggestedName = Messages.IpsPasteAction_suggestedNamePrefixComplex + count + Messages.IpsPasteAction_6 + nameWithoutExtension; 
+    				suggestedName = NLS.bind(Messages.IpsPasteAction_suggestedNamePrefixComplex, new Integer(count), nameWithoutExtension); 
     			}
     		}
     		    		

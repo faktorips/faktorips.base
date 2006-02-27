@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -93,17 +94,13 @@ public abstract class AbstractParameterIdentifierResolver implements
 		try {
 			datatype = project.findDatatype(param.getDatatype());
 			if (datatype == null) {
-				String text = Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved + param.getDatatype()
-						+ Messages.AbstractParameterIdentifierResolver_3 + param.getName()
-						+ Messages.AbstractParameterIdentifierResolver_4;
+				String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved, param.getDatatype(), param.getName());
 				return new CompilationResultImpl(Message.newError(
 						ExprCompiler.UNDEFINED_IDENTIFIER, text));
 			}
 		} catch (Exception e) {
 			IpsPlugin.log(e);
-			String text = Messages.AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving
-					+ param.getDatatype() + Messages.AbstractParameterIdentifierResolver_6 + param.getName()
-					+ Messages.AbstractParameterIdentifierResolver_7;
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorParameterDatatypeResolving, param.getDatatype(), param.getName());
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
@@ -153,16 +150,12 @@ public abstract class AbstractParameterIdentifierResolver implements
 					attributeName);
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
-			String text = Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute
-					+ attributeName
-					+ Messages.AbstractParameterIdentifierResolver_11
-					+ pcType + Messages.AbstractParameterIdentifierResolver_12;
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute, attributeName, pcType);
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}
 		if (attribute == null) {
-			String text = Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute + param.getName() + Messages.AbstractParameterIdentifierResolver_14
-					+ pcType.getName() + Messages.AbstractParameterIdentifierResolver_15 + attributeName;
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoAttribute, new Object[] {param.getName(), pcType.getName(), attributeName});
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.UNDEFINED_IDENTIFIER, text));
 		}
@@ -171,9 +164,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 			Datatype datatype = attribute.getIpsProject().findDatatype(
 					attribute.getDatatype());
 			if (datatype == null) {
-				String text = Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute + attribute.getDatatype()
-						+ Messages.AbstractParameterIdentifierResolver_17 + attributeName
-						+ Messages.AbstractParameterIdentifierResolver_18;
+				String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute, attribute.getDatatype(), attributeName);
 				return new CompilationResultImpl(Message.newError(
 						ExprCompiler.UNDEFINED_IDENTIFIER, text));
 			}
@@ -183,9 +174,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 			return new CompilationResultImpl(code, datatype);
 		} catch (Exception e) {
 			IpsPlugin.log(e);
-			String text = Messages.AbstractParameterIdentifierResolver_msgErrorAttributeDatatypeResolving
-					+ attribute.getDatatype() + Messages.AbstractParameterIdentifierResolver_21
-					+ attributeName + Messages.AbstractParameterIdentifierResolver_22;
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorAttributeDatatypeResolving, attribute.getDatatype(), attributeName);
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}

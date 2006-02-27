@@ -1,27 +1,29 @@
 package org.faktorips.devtools.core.ui.editors;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class Messages {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.editors.messages"; //$NON-NLS-1$
-
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
+public class Messages extends NLS {
+	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.controls.spreadsheet.messages"; //$NON-NLS-1$
 
 	private Messages() {
 	}
 
-	public static String getString(String key) {
-		// TODO Auto-generated method stub
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
+
+	public static String IpsPartEditDialog_description;
+	public static String IpsPartsComposite_buttonNew;
+	public static String IpsPartsComposite_buttonEdit;
+	public static String IpsPartsComposite_buttonDelete;
+	public static String IpsPartsComposite_buttonUp;
+	public static String IpsPartsComposite_buttonDown;
+	public static String DescriptionPage_description;
+	public static String DescriptionSection_description;
+
 }

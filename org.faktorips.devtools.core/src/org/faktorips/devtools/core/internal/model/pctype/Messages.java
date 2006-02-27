@@ -27,8 +27,6 @@ public class Messages extends NLS {
 
 	public static String Relation_msgContainerRelNotInSupertype;
 
-	public static String Relation_27;
-
 	public static String Relation_msgNotMarkedAsContainerRel;
 
 	public static String Relation_msgNoTarget;
@@ -43,8 +41,6 @@ public class Messages extends NLS {
 
 	public static String Relation_msgRelationNotInTarget;
 
-	public static String Relation_26;
-
 	public static String Relation_msgReverseRelationNotSpecified;
 
 	public static String Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
@@ -57,11 +53,7 @@ public class Messages extends NLS {
 
 	public static String Method_msgTypeEmpty;
 
-	public static String Method_18;
-
 	public static String Method_abstractMethodError;
-
-	public static String Method_21;
 
 	public static String Method_msgNameEmpty;
 
@@ -70,8 +62,6 @@ public class Messages extends NLS {
 	public static String Method_msgDatatypeEmpty;
 
 	public static String Method_msgDatatypeNotFound;
-
-	public static String Method_30;
 
 	public static String ValidationRule_msgFunctionNotExists;
 
@@ -85,21 +75,11 @@ public class Messages extends NLS {
 
 	public static String Attribute_msgDefaultNotParsable_UnknownDatatype;
 
-	public static String Attribute_12;
-
 	public static String Attribute_msgValueNotParsable_InvalidDatatype;
-
-	public static String Attribute_15;
 
 	public static String Attribute_msgValueTypeMismatch;
 
-	public static String Attribute_18;
-
-	public static String Attribute_19;
-
 	public static String Attribute_msgDefaultNotInValueset;
-
-	public static String Attribute_23;
 
 	public static String Attribute_msgNoInputparams;
 
@@ -113,17 +93,11 @@ public class Messages extends NLS {
 
 	public static String Attribute_msgDatatypeNotFound;
 
-	public static String Attribute_36;
-
 	public static String PolicyCmptType_msgSupertypeNotFound;
-
-	public static String PolicyCmptType_10;
 
 	public static String PolicyCmptType_msgNameMissing;
 
 	public static String PolicyCmptType_msgAbstractMissmatch;
 
 	public static String PolicyCmptType_msgMustOverrideAbstractMethod;
-
-	public static String PolicyCmptType_17;
 }

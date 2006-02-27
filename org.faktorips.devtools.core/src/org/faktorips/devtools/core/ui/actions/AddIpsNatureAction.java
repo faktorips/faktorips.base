@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -59,7 +60,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 	public void runWithEvent(IAction action, Event event) {
 		IJavaProject javaProject = getJavaProject();
 		if (javaProject==null) {
-			IpsStatus status = new IpsStatus(IpsStatus.WARNING, 0, Messages.AddIpsNatureAction_noJavaProject + selection + Messages.AddIpsNatureAction_1, null);
+			IpsStatus status = new IpsStatus(IpsStatus.WARNING, 0, NLS.bind(Messages.AddIpsNatureAction_noJavaProject, selection), null);
 			ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_errorTitle, null, status);
 			return;
 		}

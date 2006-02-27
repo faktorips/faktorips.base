@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -191,9 +192,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		super.validate(list);
 		IAttribute attribute = findPcTypeAttribute();
 		if (attribute == null) {
-			String text = Messages.ConfigElement_msgAttrNotDefined + pcTypeAttribute
-					+ Messages.ConfigElement_5 + getProductCmpt().getPolicyCmptType()
-					+ Messages.ConfigElement_6;
+			String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, getProductCmpt().getPolicyCmptType());
 			list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
 			return;
 		}
@@ -237,9 +236,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 				result.getDatatype(), attributeDatatype)) {
 			return;
 		}
-		String text = Messages.ConfigElement_msgReturnTypeMissmatch + attributeDatatype.getName()
-				+ Messages.ConfigElement_10 + result.getDatatype().getName()
-				+ Messages.ConfigElement_11;
+		String text = NLS.bind(Messages.ConfigElement_msgReturnTypeMissmatch, attributeDatatype.getName(), result.getDatatype().getName());
 		list.add(new Message(IConfigElement.MSGCODE_WRONG_FORMULA_DATATYPE,
 				text, Message.ERROR, this, PROPERTY_VALUE));
 	}
@@ -277,8 +274,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 		if (StringUtils.isNotEmpty(value)) {
 			if (!valueDatatype.isParsable(value)) {
-				String text = Messages.ConfigElement_msgValueNotParsable + value + Messages.ConfigElement_16
-						+ valueDatatype.getName() + Messages.ConfigElement_17;
+				String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, value, valueDatatype.getName());
 				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
 						PROPERTY_VALUE));
 				return;
@@ -295,8 +291,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			}
 
 			if (!valueSet.containsValue(value, valueDatatype)) {
-				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, Messages.ConfigElement_msgValueNotInValueset + value
-						+ Messages.ConfigElement_19,
+				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(Messages.ConfigElement_msgValueNotInValueset, value),
 						Message.ERROR, this, PROPERTY_VALUE));
 			}
 		}

@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -86,7 +87,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
         setTitle(getPdObjectType().getName());
-        setMessage(Messages.IpsObjectPage_msgNew + getPdObjectType().getName() + Messages.IpsObjectPage_2); 
+        setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getPdObjectType().getName())); 
         
         parent.setLayout(new GridLayout(1, false));
         pageControl = new Composite(parent, SWT.NONE);
@@ -303,7 +304,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 		}
 		IStatus val= JavaConventions.validateJavaTypeName(name);
 		if (val.getSeverity() == IStatus.ERROR) {
-			setErrorMessage(Messages.IpsObjectPage_msgInvalidName + name + Messages.IpsObjectPage_13);
+			setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgInvalidName, name));
 			return;
 		} else if (val.getSeverity() == IStatus.WARNING) {
 			setMessage(Messages.IpsObjectPage_msgNameDiscouraged, IMessageProvider.WARNING); 

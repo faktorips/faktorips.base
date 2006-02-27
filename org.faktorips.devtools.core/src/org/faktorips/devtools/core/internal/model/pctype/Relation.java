@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
@@ -451,7 +452,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         IRelation relation = findContainerRelation();
         if (relation==null) {
-            String text = Messages.Relation_msgContainerRelNotInSupertype + containerRelation + Messages.Relation_27;
+            String text = NLS.bind(Messages.Relation_msgContainerRelNotInSupertype, containerRelation);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_CONTAINER_RELATION)); //$NON-NLS-1$
             return;
         }
@@ -498,7 +499,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         IRelation reverseRelationObj = findReverseRelation();
         if (reverseRelationObj==null) {
-            String text = Messages.Relation_msgRelationNotInTarget + reverseRelation + Messages.Relation_26 + target;
+            String text = NLS.bind(Messages.Relation_msgRelationNotInTarget, reverseRelation, target);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
             return;
         }

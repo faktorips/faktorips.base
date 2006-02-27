@@ -18,6 +18,4 @@ public class Messages extends NLS {
 	}
 
 	public static String TableContents_msgMissingTablestructure;
-
-	public static String TableContents_4;
 }

@@ -17,10 +17,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String EnumValueSet_msgValueNotParsable_relpaceMe;
-
-	public static String EnumValueSet_6;
-
 	public static String EnumValueSet_msgValueNotInEnumeration;
 
 	public static String EnumValueSet_msgNotAnEnumValueset;
@@ -30,10 +26,6 @@ public class Messages extends NLS {
 	public static String EnumValueSet_msgDuplicateValue;
 
 	public static String Range_msgValueNotInRange;
-
-	public static String Range_17;
-
-	public static String Range_18;
 
 	public static String Range_msgTypeOfValuesetNotMatching;
 

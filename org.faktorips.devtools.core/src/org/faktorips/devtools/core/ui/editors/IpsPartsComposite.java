@@ -178,7 +178,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
     }
     
     protected final void createNewButton(Composite buttons, UIToolkit toolkit) {
-		newButton = toolkit.createButton(buttons, Messages.getString("IpsPartsComposite.buttonNew")); //$NON-NLS-1$
+		newButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonNew);
 		newButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
 		newButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -194,7 +194,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
     }
     
     protected final void createEditButton(Composite buttons, UIToolkit toolkit) {
-		editButton = toolkit.createButton(buttons, Messages.getString("IpsPartsComposite.buttonEdit")); //$NON-NLS-1$
+		editButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonEdit);
 		editButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
 		editButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -210,7 +210,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
     }
     
     protected final void createDeleteButton(Composite buttons, UIToolkit toolkit) {
-		deleteButton = toolkit.createButton(buttons, Messages.getString("IpsPartsComposite.buttonDelete"));  //$NON-NLS-1$
+		deleteButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonDelete);
 		deleteButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
 		deleteButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -226,7 +226,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
     }
     
     protected final void createMoveButtons(Composite buttons, UIToolkit toolkit) {
-		upButton = toolkit.createButton(buttons, Messages.getString("IpsPartsComposite.buttonUp"));  //$NON-NLS-1$
+		upButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonUp);
 		upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
 		upButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -239,7 +239,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
-		downButton = toolkit.createButton(buttons, Messages.getString("IpsPartsComposite.buttonDown"));  //$NON-NLS-1$
+		downButton = toolkit.createButton(buttons, Messages.IpsPartsComposite_buttonDown);
 		downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
 		downButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {

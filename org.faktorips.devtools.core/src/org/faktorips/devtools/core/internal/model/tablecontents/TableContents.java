@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
@@ -132,7 +133,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if (findTableStructure() == null) {
-            String text = Messages.TableContents_msgMissingTablestructure + this.structure + Messages.TableContents_4;
+            String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); //$NON-NLS-1$
         }
     }

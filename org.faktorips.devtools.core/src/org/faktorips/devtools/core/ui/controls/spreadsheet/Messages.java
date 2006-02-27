@@ -1,27 +1,23 @@
 package org.faktorips.devtools.core.ui.controls.spreadsheet;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class Messages {
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.controls.spreadsheet.messages"; //$NON-NLS-1$
-
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
 
 	private Messages() {
 	}
 
-	public static String getString(String key) {
-		// TODO Auto-generated method stub
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
+
+	public static String SpreadsheetControl_menuDelete;
+
+	public static String SpreadsheetControl_menuSetNull;
 }

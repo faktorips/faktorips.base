@@ -19,13 +19,9 @@ public class Messages extends NLS {
 
 	public static String ValidationUtils_msgObjectDoesNotExist;
 
-	public static String ValidationUtils_2;
-
 	public static String ValidationUtils_msgDatatypeDoesNotExist;
 
 	public static String ValidationUtils_msgVoidNotAllowed;
 
 	public static String ValidationUtils_msgPropertyMissing;
-
-	public static String ValidationUtils_msgDatatypeNotExists;
 }

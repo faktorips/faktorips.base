@@ -164,7 +164,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
         IProductCmptTypeRelation relation = findProductCmptTypeRelation();
     	IRelation relType = null;
         if (relation==null) {
-            String text = Messages.ProductCmptRelation_msgNoRelationDefined + productCmptTypeRelation + Messages.ProductCmptRelation_6 + getProductCmpt().getPolicyCmptType() + Messages.ProductCmptRelation_7;
+            String text = NLS.bind(Messages.ProductCmptRelation_msgNoRelationDefined, productCmptTypeRelation, getProductCmpt().getPolicyCmptType());
             list.add(new Message(MSGCODE_UNKNWON_RELATIONTYPE, text, Message.ERROR, this, PROPERTY_PCTYPE_RELATION));
         }
         else {

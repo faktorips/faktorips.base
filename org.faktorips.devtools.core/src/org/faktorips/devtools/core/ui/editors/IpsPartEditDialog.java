@@ -52,7 +52,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
 	    Text text = uiToolkit.createMultilineText(c);
 	    descriptionField = new TextField(text);
 	    TabItem item = new TabItem(folder, SWT.NONE);
-	    item.setText(Messages.getString("IpsPartEditDialog.description"));	     //$NON-NLS-1$
+	    item.setText(Messages.IpsPartEditDialog_description);
 	    item.setControl(c);
 	    return item;
 	}

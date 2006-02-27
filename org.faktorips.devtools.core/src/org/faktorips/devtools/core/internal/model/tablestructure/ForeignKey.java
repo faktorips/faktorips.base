@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -123,7 +124,7 @@ public class ForeignKey extends Key implements IForeignKey {
             }
             IUniqueKey uk = structure.getUniqueKey(refUniqueKey);
             if (uk==null) {
-                String text = Messages.ForeignKey_msgMissingUniqueKey + refTableStructure + Messages.ForeignKey_6 + refUniqueKey + Messages.ForeignKey_7;
+                String text = NLS.bind(Messages.ForeignKey_msgMissingUniqueKey, refTableStructure, refUniqueKey);
                 list.add(new Message("", text, Message.ERROR, this, PROPERTY_REF_UNIQUE_KEY)); //$NON-NLS-1$
             } else {
                 if (uk.getNumOfKeyItems()!=this.getNumOfKeyItems()) {
@@ -151,7 +152,7 @@ public class ForeignKey extends Key implements IForeignKey {
             validateColumnItem(column, refStructure, refItem, list);
             return;
         }
-        String text = Messages.ForeignKey_msgInvalidKeyItem + fkItem + Messages.ForeignKey_12;
+        String text = NLS.bind(Messages.ForeignKey_msgInvalidKeyItem, fkItem);
         list.add(new Message("", text, Message.ERROR, fkItem)); //$NON-NLS-1$
         return;
     }
@@ -165,7 +166,7 @@ public class ForeignKey extends Key implements IForeignKey {
         }
         IColumnRange refRange = refStructure.getRange(refItem);
         if (refRange==null) {
-            String text = Messages.ForeignKey_msgNotARange + refItem + Messages.ForeignKey_17;
+            String text = NLS.bind(Messages.ForeignKey_msgNotARange, refItem);
             list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
@@ -184,11 +185,11 @@ public class ForeignKey extends Key implements IForeignKey {
             return;
         }
         if (!from.getDatatype().equals(refFrom.getDatatype())) {
-            String text = Messages.ForeignKey_msgForeignKeyDatatypeMismatch + from.getName() + Messages.ForeignKey_24 + refFrom + Messages.ForeignKey_25;
+            String text = NLS.bind(Messages.ForeignKey_msgForeignKeyDatatypeMismatch, from.getName(), refFrom);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
         }
         if (!to.getDatatype().equals(refTo.getDatatype())) {
-            String text = Messages.ForeignKey_msgColumnDatatypeMismatch + to.getName() + Messages.ForeignKey_28 + refTo + Messages.ForeignKey_29;
+            String text = NLS.bind(Messages.ForeignKey_msgColumnDatatypeMismatch, to.getName(), refTo);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
         }
     }
@@ -202,12 +203,12 @@ public class ForeignKey extends Key implements IForeignKey {
         }
         IColumn refColumn = refStructure.getColumn(refItem);
         if (refColumn==null) {
-            String text = Messages.ForeignKey_msgNotAColumn + refItem + Messages.ForeignKey_34;
+            String text = NLS.bind(Messages.ForeignKey_msgNotAColumn, refItem);
             list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
         if (!item.getDatatype().equals(refColumn.getDatatype())) {
-            String text = Messages.ForeignKey_msgKeyDatatypeMismatch + item.getName() + Messages.ForeignKey_37 + refItem + Messages.ForeignKey_38;
+            String text = NLS.bind(Messages.ForeignKey_msgKeyDatatypeMismatch, item.getName(), refItem);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
             return;
         }

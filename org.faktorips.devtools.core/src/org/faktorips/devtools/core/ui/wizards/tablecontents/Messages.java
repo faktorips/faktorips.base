@@ -22,6 +22,4 @@ public class Messages extends NLS {
 	public static String TableContentsPage_labelStructure;
 
 	public static String TableContentsPage_msgMissingStructure;
-
-	public static String TableContentsPage_4;
 }

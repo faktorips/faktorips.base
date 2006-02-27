@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -72,7 +73,7 @@ public class ValidationUtils {
             }
         }
         if (part.getIpsProject().findIpsObject(type, objectName)==null) {
-            String text = StringUtils.capitalise(propertyDisplayName) + Messages.ValidationUtils_msgObjectDoesNotExist + objectName + Messages.ValidationUtils_2;
+            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist, StringUtils.capitalise(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;
         }
@@ -106,7 +107,7 @@ public class ValidationUtils {
         }
         Datatype datatype = part.getIpsProject().findDatatype(datatypeName);
         if (datatype==null) {
-            String text = Messages.ValidationUtils_msgDatatypeDoesNotExist + datatypeName + Messages.ValidationUtils_msgDatatypeNotExists; //$NON-NLS-2$
+            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName); 
             list.add(new Message("", text, Message.ERROR, part, propertyName)); //$NON-NLS-1$
             return null;
         }
@@ -162,7 +163,7 @@ public class ValidationUtils {
             MessageList list)
     {
         if (StringUtils.isEmpty(propertyValue)) {
-            String text = StringUtils.capitalise(propertyDisplayName) + Messages.ValidationUtils_msgPropertyMissing;
+            String text = NLS.bind(Messages.ValidationUtils_msgPropertyMissing, StringUtils.capitalise(propertyDisplayName));
             list.add(new Message(msgCode, text, Message.ERROR, object, propertyName));
             return false;
         }

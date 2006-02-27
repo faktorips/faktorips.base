@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -554,7 +555,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         if (!supertype.equals("")) { //$NON-NLS-1$
             supertypeObj = (IPolicyCmptType)getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, supertype);
             if (supertypeObj==null) {
-                String text = Messages.PolicyCmptType_msgSupertypeNotFound + supertype + Messages.PolicyCmptType_10;
+                String text = NLS.bind(Messages.PolicyCmptType_msgSupertypeNotFound, supertype);
                 list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE)); //$NON-NLS-1$
             }
         }
@@ -583,8 +584,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         for (int i=0; i<methods.length; i++) {
             if (methods[i].isAbstract()) {
                 if (!isAbstractMethodImplemented(this, methods[i], hierarchy)) {
-                    String text = Messages.PolicyCmptType_msgMustOverrideAbstractMethod + methods[i].getName() + Messages.PolicyCmptType_17 
-                		+ methods[i].getPolicyCmptType().getQualifiedName();
+                    String text = NLS.bind(Messages.PolicyCmptType_msgMustOverrideAbstractMethod, methods[i].getName(), methods[i].getPolicyCmptType().getQualifiedName());
                     list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR, this));
                 }
             }

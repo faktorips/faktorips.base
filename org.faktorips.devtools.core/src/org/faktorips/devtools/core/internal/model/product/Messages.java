@@ -29,19 +29,11 @@ public class Messages extends NLS {
 
 	public static String ConfigElement_msgAttrNotDefined;
 
-	public static String ConfigElement_5;
-
-	public static String ConfigElement_6;
-
 	public static String ConfigElement_msgFormulaNotDefined;
 
 	public static String ConfigElement_msgDatatypeMissing;
 
 	public static String ConfigElement_msgReturnTypeMissmatch;
-
-	public static String ConfigElement_10;
-
-	public static String ConfigElement_11;
 
 	public static String ConfigElement_msgUndknownDatatype;
 
@@ -51,19 +43,9 @@ public class Messages extends NLS {
 
 	public static String ConfigElement_msgValueNotParsable;
 
-	public static String ConfigElement_16;
-
-	public static String ConfigElement_17;
-
 	public static String ConfigElement_msgValueNotInValueset;
 
-	public static String ConfigElement_19;
-
 	public static String ProductCmptRelation_msgNoRelationDefined;
-
-	public static String ProductCmptRelation_6;
-
-	public static String ProductCmptRelation_7;
 
 	public static String ProductCmptRelation_msgMalformedMaxCardinality;
 
@@ -76,8 +58,6 @@ public class Messages extends NLS {
 	public static String ProductCmptRelation_msgMinCardinalityIsLessThanModelMin;
 
 	public static String ProductCmpt_msgUnknownTemplate;
-
-	public static String ProductCmpt_2;
 
 	public static String DeepCopyOperation_taskTitle;
 }

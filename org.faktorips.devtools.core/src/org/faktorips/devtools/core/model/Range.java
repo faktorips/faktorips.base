@@ -181,10 +181,7 @@ public class Range extends ValueSet {
             if ((!getLowerBound().equals("") && ((Comparable)lower).compareTo(objectvalue) > 0) //$NON-NLS-1$
                     || (!getUpperBound().equals("") && ((Comparable)upper).compareTo(objectvalue) < 0)) { //$NON-NLS-1$
             	if (list != null) {
-                    String text = Messages.Range_msgValueNotInRange + lowerBound + Messages.Range_17 + upperBound;
-                    if (StringUtils.isNotEmpty(step)) {
-                        text = text + Messages.Range_18 + step;
-                    }
+                    String text = NLS.bind(Messages.Range_msgValueNotInRange, new Object[] {lowerBound, upperBound, step});
                     addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text + '.', invalidObject, invalidProperty);
             	}
                 return false;

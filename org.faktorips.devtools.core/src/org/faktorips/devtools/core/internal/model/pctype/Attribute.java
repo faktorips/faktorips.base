@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -271,14 +272,14 @@ public class Attribute extends Member implements IAttribute {
                 PROPERTY_DATATYPE, result);
         if (datatypeObject == null) {
             if (!StringUtils.isEmpty(defaultValue)) {
-                String text = Messages.Attribute_msgDefaultNotParsable_UnknownDatatype + defaultValue + Messages.Attribute_12;
+                String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);
                 result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
             } else {
             }
         } else {
             if (!datatypeObject.isValueDatatype()) {
                 if (!StringUtils.isEmpty(datatype)) {
-                    String text = Messages.Attribute_msgValueNotParsable_InvalidDatatype + defaultValue + Messages.Attribute_15;
+                    String text = NLS.bind(Messages.Attribute_msgValueNotParsable_InvalidDatatype, defaultValue);
                     result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                 } else {
                 }
@@ -286,14 +287,14 @@ public class Attribute extends Member implements IAttribute {
                 ValueDatatype valueDatatype = (ValueDatatype)datatypeObject;
                 if (StringUtils.isNotEmpty(defaultValue)) {
                     if (!valueDatatype.isParsable(defaultValue)) {
-                        String text = Messages.Attribute_msgValueTypeMismatch + defaultValue + Messages.Attribute_18 + datatype + Messages.Attribute_19;
+                        String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValue, datatype);
                         result.add(new Message("", text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                         return;
                     }
                     if (valueSet != null) {
                         if (valueSet.containsValue(defaultValue, valueDatatype) == false) {
-                            result.add(new Message("", Messages.Attribute_msgDefaultNotInValueset + defaultValue //$NON-NLS-1$
-                                    + Messages.Attribute_23, Message.ERROR, this,
+                            result.add(new Message("", NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
+                                    Message.ERROR, this,
                                     PROPERTY_DEFAULT_VALUE));
                         }
                     }
@@ -332,8 +333,8 @@ public class Attribute extends Member implements IAttribute {
             Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
             if (datatypeObject == null) {
                 result
-                        .add(new Message("", Messages.Attribute_msgDatatypeNotFound + param.getDatatype() //$NON-NLS-1$
-                                + Messages.Attribute_36, Message.ERROR, param,
+                        .add(new Message("", NLS.bind(Messages.Attribute_msgDatatypeNotFound, param.getDatatype()), //$NON-NLS-1$
+                                Message.ERROR, param,
                                 PROPERTY_FORMULAPARAM_DATATYPE));
             } else {
             	if (datatypeObject instanceof ValueDatatype) {

@@ -127,7 +127,7 @@ public class EnumValueSet extends ValueSet {
     public boolean containsValue(String value, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
         if (!datatype.isParsable(value)) {
         	if (list != null) {
-        		String msg = Messages.EnumValueSet_msgValueNotParsable_relpaceMe + value + Messages.EnumValueSet_6 + datatype.getName();
+        		String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
         		addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
         	}
             return false;

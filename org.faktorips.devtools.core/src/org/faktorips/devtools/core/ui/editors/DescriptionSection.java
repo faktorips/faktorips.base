@@ -30,7 +30,7 @@ public class DescriptionSection extends IpsSection {
         super(parent, Section.DESCRIPTION | Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.describedObj = described;
         initControls();
-        setText(Messages.getString("DescriptionSection.description")); //$NON-NLS-1$
+        setText(Messages.DescriptionSection_description);
     }
     
     public DescriptionSection(
@@ -41,7 +41,7 @@ public class DescriptionSection extends IpsSection {
         super(parent, style, GridData.FILL_BOTH, toolkit);
         this.describedObj = described;
         initControls();
-        setText(Messages.getString("DescriptionSection.description")); //$NON-NLS-1$
+        setText(Messages.DescriptionSection_description);
     }
     
     /** 

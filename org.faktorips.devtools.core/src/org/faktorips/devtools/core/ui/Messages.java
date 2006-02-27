@@ -47,8 +47,6 @@ public class Messages extends NLS {
 
 	public static String NewFolderActionDelegate_msgFolderAllreadyExists;
 
-	public static String NewFolderActionDelegate_2;
-
 	public static String DatatypeSelectionDialog_title;
 
 	public static String DatatypeSelectionDialog_description;

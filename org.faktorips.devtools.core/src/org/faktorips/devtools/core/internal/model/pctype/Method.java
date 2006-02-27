@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.Signature;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.faktorips.datatype.Datatype;
@@ -225,11 +226,11 @@ public class Method extends Member implements IMethod {
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(datatype);
             if (datatypeObject==null) {
-                result.add(new Message("", Messages.Method_msgDatatypeNotFound + datatype + Messages.Method_18, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
+                result.add(new Message("", NLS.bind(Messages.Method_msgDatatypeNotFound, datatype), Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
             }
         }
         if (isAbstract() && !getPolicyCmptType().isAbstract()) {
-            result.add(new Message("", Messages.Method_abstractMethodError + getName() + Messages.Method_21, Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
+            result.add(new Message("", NLS.bind(Messages.Method_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
         for (int i=0; i<parameters.length; i++) {
             validate(parameters[i], result);
@@ -250,7 +251,7 @@ public class Method extends Member implements IMethod {
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
             if (datatypeObject==null) {
-                result.add(new Message("", Messages.Method_msgDatatypeNotFound + param.getDatatype() + Messages.Method_30, Message.ERROR, param, PROPERTY_PARAM_DATATYPE)); //$NON-NLS-1$
+                result.add(new Message("", NLS.bind(Messages.Method_msgDatatypeNotFound, param.getDatatype()), Message.ERROR, param, PROPERTY_PARAM_DATATYPE)); //$NON-NLS-1$
             }
         }
     }

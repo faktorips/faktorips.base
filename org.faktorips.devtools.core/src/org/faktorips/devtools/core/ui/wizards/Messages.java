@@ -15,7 +15,6 @@ public class Messages extends NLS {
     public static String ProductStructureLabelProvider_undefined;
     public static String NewIpsObjectWizard_title;
     public static String IpsObjectPage_msgNew; 
-    public static String IpsObjectPage_2;
     public static String IpsObjectPage_labelSrcFolder;
     public static String IpsObjectPage_labelPackage;
     public static String IpsObjectPage_labelName;
@@ -25,7 +24,6 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgEmptyName;
     public static String IpsObjectPage_msgNameMustNotBeQualified;
     public static String IpsObjectPage_msgInvalidName;
-    public static String IpsObjectPage_13;
     public static String IpsObjectPage_msgNameDiscouraged;
     public static String IpsObjectPage_msgObjectAllreadyExists;
 }

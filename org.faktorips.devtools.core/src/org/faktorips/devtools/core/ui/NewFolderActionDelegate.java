@@ -9,6 +9,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
@@ -127,7 +128,7 @@ public class NewFolderActionDelegate implements IViewActionDelegate {
 		public String isValid(String newText) {
 			IFolder folder = getFolder(parent, newText);
 			if (folder.exists()) {
-				return Messages.NewFolderActionDelegate_msgFolderAllreadyExists + folder.getFullPath().toOSString() + Messages.NewFolderActionDelegate_2;
+				return NLS.bind(Messages.NewFolderActionDelegate_msgFolderAllreadyExists, folder.getFullPath().toOSString());
 			}
 			return null;
 		}

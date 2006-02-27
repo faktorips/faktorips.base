@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -70,7 +71,7 @@ public class ProductCmptPage extends IpsObjectPage {
         }
         IPolicyCmptType pcType = pcTypeControl.findPcType();
         if (pcType==null) {
-			setErrorMessage(Messages.ProductCmptPage_msgPolicyClassMissing + pcTypeControl.getText() + Messages.ProductCmptPage_3);
+			setErrorMessage(NLS.bind(Messages.ProductCmptPage_msgPolicyClassMissing, pcTypeControl.getText()));
 			return;
         }
         updatePageComplete();

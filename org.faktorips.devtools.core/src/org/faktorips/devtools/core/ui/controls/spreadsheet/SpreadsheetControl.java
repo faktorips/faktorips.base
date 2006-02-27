@@ -164,7 +164,7 @@ public class SpreadsheetControl extends Composite {
 		
 		MenuItem item = new MenuItem(popupMenu_, SWT.NONE);
 		item.setAccelerator(SWT.ALT | SWT.DEL);
-		item.setText(Messages.getString("SpreadsheetControl.menuDelete")); //$NON-NLS-1$
+		item.setText(Messages.SpreadsheetControl_menuDelete);
 		// TODO Image handling 
 		// item.setImage(PdfsPlugin.getPlugin().getImage("Delete.gif"));
 		item.setData("deleteRow"); //$NON-NLS-1$
@@ -184,7 +184,7 @@ public class SpreadsheetControl extends Composite {
 		
 		item = new MenuItem(popupMenu_, SWT.NONE);
 		item.setAccelerator(SWT.DEL);
-		item.setText(Messages.getString("SpreadsheetControl.menuSetNull")); //$NON-NLS-1$
+		item.setText(Messages.SpreadsheetControl_menuSetNull); 
 		// TODO image handling
 		//item.setImage(PdfsPlugin.getPlugin().getImage("Clear.gif"));
 		item.setData("clearCell"); //$NON-NLS-1$

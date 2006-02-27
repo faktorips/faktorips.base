@@ -19,7 +19,5 @@ public class Messages extends NLS {
 
 	public static String TableContentsEditor_title;
 
-	public static String TableContentsEditor_1;
-
 	public static String ContentPage_title;
 }

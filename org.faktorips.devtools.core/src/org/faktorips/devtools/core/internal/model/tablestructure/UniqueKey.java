@@ -1,6 +1,7 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
@@ -82,7 +83,7 @@ public class UniqueKey extends Key implements IUniqueKey {
         if (range!=null) {
             return;
         }
-        String text = Messages.UniqueKey_msgKeyItemMismatch + item + Messages.UniqueKey_5;
+        String text = NLS.bind(Messages.UniqueKey_msgKeyItemMismatch, item);
         list.add(new Message("", text, Message.ERROR, item)); //$NON-NLS-1$
         return;
     }

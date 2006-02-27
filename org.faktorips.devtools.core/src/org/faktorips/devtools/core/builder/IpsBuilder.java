@@ -113,10 +113,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             builderSet.initialize();
         } catch (Exception e) {
             buildStatus
-                    .add(new IpsStatus(
-                            Messages.IpsBuilder_msgErrorExceptionDuringBuild +
-                            Messages.IpsBuilder_5 +
-                            Messages.IpsBuilder_6));
+                    .add(new IpsStatus(Messages.IpsBuilder_msgErrorExceptionDuringBuild));
         }
         throw new CoreException(buildStatus);
     }
