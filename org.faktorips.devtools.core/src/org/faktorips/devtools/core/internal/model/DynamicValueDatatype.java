@@ -127,13 +127,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		return adaptedClass;
 	}
 
-	/*
-	 * Returns a classloader containing the project's output location and all
-	 * it's libraries (jars).
-	 */
-	private URLClassLoader getProjectClassloader(IJavaProject project)
-			throws JavaModelException, MalformedURLException {
-		List urlsList = new ArrayList();
+	private void accumulateClasspath(IJavaProject project, List urlsList) throws JavaModelException, MalformedURLException{
 		IPath root = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 		IPath output = root.append(project.getOutputLocation());
 		urlsList.add(output.toFile().toURL());
@@ -144,6 +138,23 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 				urlsList.add(libPath.toFile().toURL());
 			}
 		}
+
+		String[] requiredProjectNames = project.getRequiredProjectNames();
+		if(requiredProjectNames != null && requiredProjectNames.length > 0){
+			for (int i = 0; i < requiredProjectNames.length; i++) {
+				accumulateClasspath(project.getJavaModel().getJavaProject(requiredProjectNames[i]), urlsList);	
+			}
+		}
+	}
+	
+	/*
+	 * Returns a classloader containing the project's output location and all
+	 * it's libraries (jars).
+	 */
+	private URLClassLoader getProjectClassloader(IJavaProject project)
+			throws JavaModelException, MalformedURLException {
+		List urlsList = new ArrayList();
+		accumulateClasspath(project, urlsList);
 		URL[] urls = (URL[]) urlsList.toArray(new URL[urlsList.size()]);
 		return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
 	}
