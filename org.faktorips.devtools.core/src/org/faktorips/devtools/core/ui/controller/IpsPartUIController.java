@@ -11,7 +11,10 @@ import org.faktorips.util.message.MessageList;
 
 
 /**
- *
+ * A controller to link edit fields against the model and, in addition to 
+ * the <code>DefaultUIController</code>, does validation to the part created for.
+ * 
+ * @author Jan Ortmann
  */
 public class IpsPartUIController extends IpsObjectPartContainerUIController {
 

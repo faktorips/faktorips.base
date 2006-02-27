@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -21,10 +22,21 @@ public class EnumValueSetControl extends TextButtonControl {
 		super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
 		this.configElement = configElement;
 		this.shell = shell;
+		
+		// lock input, values are not editable.
+		super.getTextControl().setEnabled(false);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	protected void buttonClicked() {
-		new DefaultsAndRangesEditDialog(configElement, shell).open();
+		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell);
+		if (dialog.open() == Dialog.OK) {
+			super.getTextControl().setText(configElement.getValueSet().toString());
+		}
+		
+		
 	}
 
 }

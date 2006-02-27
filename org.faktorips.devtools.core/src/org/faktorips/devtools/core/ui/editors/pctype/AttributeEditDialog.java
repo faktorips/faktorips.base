@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -118,6 +119,12 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * on top (<code>true</code>) or not.
      */
     private boolean startWithRulePage = false;
+    
+    /**
+     * Controller to link the part-related input fields to the rule. The default ui-controller can not
+     * be used because the default ui-controller is for the attribute and not for the rule. 
+     */
+    private IpsPartUIController ruleUIController;
     
     /**
      * @param parentShell
@@ -364,18 +371,27 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     		rule.setValidatedAttrSpecifiedInSrc(false);
     		rule.setDescription("Automatically created rule to check the value of one attribute against the valueset of this attribute.");
 
-    		uiController.add(ruleNameField, rule, IValidationRule.PROPERTY_NAME);
-        	uiController.add(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
-        	uiController.add(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
-        	uiController.add(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+    		initRuleUIController();
+    		
+    		ruleUIController.add(ruleNameField, rule, IValidationRule.PROPERTY_NAME);
+    		ruleUIController.add(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
+    		ruleUIController.add(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
+    		ruleUIController.add(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
     	}
     	else if (rule != null){
-    		uiController.remove(ruleNameField);
-    		uiController.remove(msgCodeField);
-    		uiController.remove(msgTextField);
-    		uiController.remove(msgSeverityField);
+    		ruleUIController.remove(ruleNameField);
+    		ruleUIController.remove(msgCodeField);
+    		ruleUIController.remove(msgTextField);
+    		ruleUIController.remove(msgSeverityField);
+    		ruleUIController = null;
     		rule.delete();
     		rule = null;
+    	}
+    }
+    
+    private void initRuleUIController() {
+    	if (ruleUIController == null && rule != null) {
+    		ruleUIController = new IpsPartUIController(rule);
     	}
     }
     
@@ -407,10 +423,11 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiController.add(productRelevantField, IAttribute.PROPERTY_PRODUCT_RELEVANT);
 
         if (rule != null) {
-        	uiController.add(ruleNameField, rule, IValidationRule.PROPERTY_NAME);
-        	uiController.add(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
-        	uiController.add(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
-        	uiController.add(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+        	initRuleUIController();
+        	ruleUIController.add(ruleNameField, IValidationRule.PROPERTY_NAME);
+        	ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
+        	ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
+        	ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
         }
         
         extFactory.connectToModel(uiController);

@@ -20,6 +20,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -203,8 +204,13 @@ public class ProductAttributesSection extends IpsSection {
 		uiMasterController.add(controller);
 
 		try {
-			Datatype datatype = toDisplay.findPcTypeAttribute().findDatatype();
-			if (datatype.equals(Datatype.BOOLEAN)) {
+			IAttribute attr = toDisplay.findPcTypeAttribute();
+			Datatype datatype = null;
+			if (attr != null) {
+				datatype = attr.findDatatype();
+			}
+			
+			if (datatype != null && datatype.equals(Datatype.BOOLEAN)) {
 				Combo combo = toolkit.createCombo(rootPane);
 				combo.add(Messages.ProductAttributesSection_true);
 				combo.add(Messages.ProductAttributesSection_false);
@@ -213,7 +219,7 @@ public class ProductAttributesSection extends IpsSection {
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				editControls.add(combo);
 			}
-			else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
+			else if (datatype != null && datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
 				Combo combo = toolkit.createCombo(rootPane);
 				combo.add(Messages.ProductAttributesSection_true);
 				combo.add(Messages.ProductAttributesSection_false);
@@ -221,7 +227,7 @@ public class ProductAttributesSection extends IpsSection {
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				editControls.add(combo);
 			}
-			else if (datatype instanceof EnumDatatype) {
+			else if (datatype != null && datatype instanceof EnumDatatype) {
 				Combo combo = toolkit.createCombo(rootPane, (EnumDatatype)toDisplay.findPcTypeAttribute().findDatatype());
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		

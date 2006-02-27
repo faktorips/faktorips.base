@@ -128,7 +128,9 @@ public class DefaultsAndRangesSection extends IpsSection {
     		Datatype dataType = null;
     		try {
 				attribute = elements[i].findPcTypeAttribute();
-				dataType = attribute.findDatatype();
+				if (attribute != null) {
+					dataType = attribute.findDatatype();
+				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
@@ -164,7 +166,6 @@ public class DefaultsAndRangesSection extends IpsSection {
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
 	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell());
 	    			evc.setText(valueSet.toString());
-	    			this.editControls.add(evc.getTextControl());
         		}
     		}
     		else if (valueSet.isRange() || valueSet.isAllValues()) {

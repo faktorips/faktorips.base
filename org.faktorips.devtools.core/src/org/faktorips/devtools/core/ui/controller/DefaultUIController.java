@@ -28,6 +28,14 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 		super();
 	}
 
+	/**
+	 * Adds an edit-field to this controller. The property with the given name
+	 * has to be get- and setable at the given object.
+	 * 
+	 * @param field The field to link.
+	 * @param object The object to get and set the property
+	 * @param propertyName The name of the property
+	 */
 	public void add(EditField field, Object object, String propertyName) {
 		PropertyDescriptor property = null;
 		try {

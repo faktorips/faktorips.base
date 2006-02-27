@@ -1,7 +1,10 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,6 +32,12 @@ import org.faktorips.util.message.MessageList;
 public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements ValueSetChangeListener {
 
     private IConfigElement configElement;
+    
+    /**
+     * The value set created during this dialog is open. Set as new value set for the config
+     * element this dialog is created for if the dialog is closed with OK.
+     */
+    private ValueSet newValueSet;
 
     // edit fields
     private TextField defaultValueField;
@@ -41,7 +50,23 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
         super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.configElement = configElement;
     }
-
+    
+    protected Control createContents(Composite parent) {
+    	Control result = super.createContents(parent);
+        super.getButton(IDialogConstants.OK_ID).addSelectionListener(new SelectionListener() {
+		
+			public void widgetDefaultSelected(SelectionEvent e) {
+				configElement.setValueSet(newValueSet);
+			}
+		
+			public void widgetSelected(SelectionEvent e) {
+				configElement.setValueSet(newValueSet);
+			}
+		});
+    	
+    	return result;
+    }
+    
     /**
      * Overridden method.
      * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
@@ -77,13 +102,14 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
 
     private Composite createValueSetControl(Composite workArea) {
         try {
-            ValueSet valueSet = configElement.getValueSet();
+            ValueSet valueSet = configElement.getValueSet().copy();
             IAttribute attribute = configElement.findPcTypeAttribute();
             if (attribute!=null) {
                 if (valueSet.isAllValues()) {
                     valueSet = attribute.getValueSet().copy();
                 }
             }
+            
             if (valueSet.isRange()) {
                 RangeEditControl rangeEditControl = new RangeEditControl(workArea, uiToolkit, (Range)valueSet, uiController);
                 rangeEditControl.setValueSetChangeListener(this);
@@ -111,12 +137,10 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.ui.controls.ValueSetChangeListener#valueSetChanged(org.faktorips.devtools.core.model.ValueSet)
+     * {@inheritDoc}
      */
     public void valueSetChanged(ValueSet valueSet) {
-        configElement.setValueSet(valueSet);
-
+        newValueSet = valueSet;
     }
 
     private class ProductElementValidator implements TableElementValidator {
