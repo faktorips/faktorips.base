@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.EnumValueSet;
+import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -16,35 +19,46 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
 
-	private EnumValueSet valueSet;
+	private IConfigElement element;
+	private IAttribute attribute;
 
 	/**
 	 * Creates a new EnumValueSetField.
 	 * 
-	 * @param combo
-	 *            the control of this EditField
-	 * @param valueSet
-	 *            the value set which is displayed by this edit field
-	 * @param datatype
-	 *            the datatype the value set bases on
+	 * @param combo the control of this EditField
+	 * @param element the config element defining (in combination with the attribute) the value set to display.
+	 * @param attribute the attribute defining (in combination with the config element) the value set to display
+	 * @param datatype the datatype the value set bases on (used for name-id-mapping). Can be null, then no names
+	 * are used, only the ids given in the value set. 
 	 */
-	public EnumValueSetField(Combo combo, EnumValueSet valueSet,
+	public EnumValueSetField(Combo combo, IConfigElement element, IAttribute attribute,
 			EnumDatatype datatype) {
 		super(combo, datatype);
-		ArgumentCheck.notNull(valueSet, this);
-		this.valueSet = valueSet;
+		ArgumentCheck.notNull(element, this);
+		
+		this.element = element;
+		this.attribute = attribute;
+		
 		reInitInternal();
 	}
 
 	protected final void reInitInternal() {
-		String[] ids = valueSet.getValues();
+		ValueSet valueSet = element.getValueSet();
+		if (attribute != null && valueSet.isAllValues()) {
+			valueSet = attribute.getValueSet();
+		}
 
-		ArrayList names = new ArrayList(ids.length);
-		for (int i = 0; i < ids.length; i++) {
-			if (getEnumDatatype().isSupportingNames()) {
-				names.add(getEnumDatatype().getValueName(valueSet.getValue(i)));
+		EnumValueSet enumValueSet = (EnumValueSet)valueSet;
+
+		String[] ids = enumValueSet.getValues();
+
+		ArrayList names = new ArrayList();
+		if (getEnumDatatype().isSupportingNames()) {
+			for (int i = 0; i < ids.length; i++) {
+				names.add(getEnumDatatype().getValueName(enumValueSet.getValue(i)));
 			}
 		}
+	
 		initialize(ids, (String[]) names.toArray(new String[names.size()]));
 	}
 }

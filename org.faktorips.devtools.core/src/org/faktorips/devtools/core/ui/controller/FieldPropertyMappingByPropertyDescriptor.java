@@ -4,6 +4,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
 
 
 class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
@@ -73,10 +74,17 @@ class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
     public void setControlValue() {
         try {
             Object propertyValue = getPropertyValue();
+            
+            // if we have a field which maintans a list - update it.
+            if (field instanceof AbstractEnumDatatypeBasedField) {
+            	((AbstractEnumDatatypeBasedField)field).reInit();
+            }
+
             if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
                 return;
             }
             field.setValue(propertyValue, false);
+
         } catch (Exception e) {
             throw new RuntimeException("Error setting value in control for property " + property.getName(), e);
         }

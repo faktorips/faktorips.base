@@ -67,7 +67,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	protected final void initialize(String[] ids, String[] names) {
 
 		this.ids = ids;
-		if (names != null || names.length == 0) {
+		if (names != null && names.length > 0) {
 			getCombo().setItems(names);
 			return;
 		}

@@ -19,7 +19,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.Range;
 import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -29,7 +28,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
@@ -114,8 +112,6 @@ public class DefaultsAndRangesSection extends IpsSection {
      */
     private void createEditControls() {
     	uiMasterController = new CompositeUIController();
-    	IpsObjectUIController ctrl = new IpsObjectUIController(generation.getIpsObject());
-    	uiMasterController.add(ctrl);
     	
     	IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
     	
@@ -137,7 +133,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     		ValueSet valueSet = elements[i].getValueSet();
     		if (attribute != null) {
     			if (valueSet.isAllValues()) {
-    				valueSet = attribute.getValueSet().copy();
+    				valueSet = attribute.getValueSet();
     			}
     		}
     		toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
@@ -148,23 +144,26 @@ public class DefaultsAndRangesSection extends IpsSection {
     			Combo combo = toolkit.createCombo(rootPane);
     			EditField defaultField;
     			if (valueSet.isEnumValueSet()) {
-    				defaultField = new EnumValueSetField(combo, (EnumValueSet)valueSet, (EnumDatatype)dataType);
+//    				defaultField = new EnumValueSetField(combo, (EnumValueSet)valueSet, (EnumDatatype)dataType);
+    				defaultField = new EnumValueSetField(combo, elements[i], attribute, (EnumDatatype)dataType);
     			}
     			else {
     				defaultField = new EnumDatatypeField(combo, (EnumDatatype)dataType);
     			}
     			
     			this.editControls.add(combo);
-        		IpsPartUIController controller = new IpsPartUIController(elements[i]);
-        		controller.add(defaultField, elements[i], IConfigElement.PROPERTY_VALUE);
+        		
+    			IpsPartUIController controller = new IpsPartUIController(elements[i]);
         		uiMasterController.add(controller);
+
+        		controller.add(defaultField, elements[i], IConfigElement.PROPERTY_VALUE);
         		
         		if (!valueSet.isAllValues()) {
         			// only if the value set defined in the model is not an all values value set
         			// we can modify the content of the value set.
 	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
-	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell());
+	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell(), controller);
 	    			evc.setText(valueSet.toString());
         		}
     		}
@@ -204,6 +203,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         				controller.add(step, (Range) valueSet, Range.PROPERTY_STEP);
         			}
         		}
+        		
     		}
     		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
     		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());

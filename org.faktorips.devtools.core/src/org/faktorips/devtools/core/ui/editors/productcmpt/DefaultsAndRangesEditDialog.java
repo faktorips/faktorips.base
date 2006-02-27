@@ -49,6 +49,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
     public DefaultsAndRangesEditDialog(IConfigElement configElement, Shell parentShell) {
         super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.configElement = configElement;
+        
     }
     
     protected Control createContents(Composite parent) {
@@ -56,11 +57,15 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
         super.getButton(IDialogConstants.OK_ID).addSelectionListener(new SelectionListener() {
 		
 			public void widgetDefaultSelected(SelectionEvent e) {
-				configElement.setValueSet(newValueSet);
+				if (newValueSet != null) {
+					configElement.setValueSet(newValueSet);
+				}
 			}
 		
 			public void widgetSelected(SelectionEvent e) {
-				configElement.setValueSet(newValueSet);
+				if (newValueSet != null) {
+					configElement.setValueSet(newValueSet);
+				}
 			}
 		});
     	
