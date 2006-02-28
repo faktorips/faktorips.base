@@ -11,14 +11,30 @@ public class FunctionSignatureImpl implements FunctionSignature {
     private String name;
     private Datatype type;
     private Datatype[] argTypes;
+    private boolean hasVarArgs;
 
     /**
-     * Creates a new function.
+     * Creates a new function signature with a defined argument list.
      */
     public FunctionSignatureImpl(String name, Datatype type, Datatype[] argTypes) {
         this.name = name;
         this.type = type;
         this.argTypes = argTypes;
+        this.hasVarArgs = false;
+    }
+
+    /**
+     * Creates a new function signature with a variable argument list.
+     * 
+     * @param name the name of this function signature
+     * @param type the return type of this function signature
+     * @param argType defines the Datatype of the arguments in the variable argument list
+     */
+    public FunctionSignatureImpl(String name, Datatype type, Datatype argType) {
+        this.name = name;
+        this.type = type;
+        this.argTypes = new Datatype[]{argType};
+        this.hasVarArgs = true;
     }
 
     /** 
@@ -53,6 +69,14 @@ public class FunctionSignatureImpl implements FunctionSignature {
         if (!this.name.equals(name)) {
             return false;
         }
+        if(hasVarArgs()){
+            for (int i = 0; i < otherArgTypes.length; i++) {
+                if(!getArgTypes()[0].equals(otherArgTypes)){
+                    return false;
+                }
+            }
+            return true;
+        }
         if (this.argTypes.length!=otherArgTypes.length) {
             return false;
         }
@@ -71,6 +95,14 @@ public class FunctionSignatureImpl implements FunctionSignature {
     public boolean matchUsingConversion(String name, Datatype[] otherArgTypes, ConversionMatrix matrix) {
         if (!this.name.equals(name)) {
             return false;
+        }
+        if(hasVarArgs()){
+            for (int i = 0; i < otherArgTypes.length; i++) {
+                if(!matrix.canConvert(otherArgTypes[i], argTypes[0])){
+                    return false;
+                }
+            }
+            return true;
         }
         if (this.argTypes.length!=otherArgTypes.length) {
             return false;
@@ -109,6 +141,13 @@ public class FunctionSignatureImpl implements FunctionSignature {
         }
         buffer.append(')');
         return buffer.toString(); 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasVarArgs() {
+        return hasVarArgs;
     }
 
 }

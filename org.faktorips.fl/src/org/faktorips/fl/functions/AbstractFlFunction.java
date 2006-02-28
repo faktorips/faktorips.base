@@ -16,13 +16,26 @@ public abstract class AbstractFlFunction extends FunctionSignatureImpl implement
     private String description;
     
     /**
-     * Creates a new function.
+     * Creates a new function with a defined argument list.
      */
     public AbstractFlFunction(String name, String description, Datatype type, Datatype[] argTypes) {
         super(name, type, argTypes);
         this.description = description;
     }
 
+    /**
+     * Creates a new function signature with a variable argument list.
+     * 
+     * @param name the name of this function
+     * @param description a description of this function
+     * @param type the return type of this function
+     * @param argType defines the Datatype of the arguments in the variable argument list
+     */
+    public AbstractFlFunction(String name, String description, Datatype type, Datatype argType) {
+        super(name, type, argType);
+        this.description = description;
+    }
+    
     /**
      * Overridden Method.
      * @see org.faktorips.fl.FlFunction#setCompiler(org.faktorips.fl.ExprCompiler)

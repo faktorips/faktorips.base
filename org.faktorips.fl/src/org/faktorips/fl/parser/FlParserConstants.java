@@ -12,11 +12,9 @@ public interface FlParserConstants {
   int MONEY_LITERAL = 12;
   int LETTER = 13;
   int NULL_LITERAL = 14;
-  int AND = 15;
-  int OR = 16;
-  int IDENTIFIER = 17;
-  int LETTER_OR_UNDERSCORE_OR_DOT = 18;
-  int DIGIT = 19;
+  int IDENTIFIER = 15;
+  int LETTER_OR_UNDERSCORE_OR_DOT = 16;
+  int DIGIT = 17;
 
   int DEFAULT = 0;
 
@@ -36,8 +34,6 @@ public interface FlParserConstants {
     "<MONEY_LITERAL>",
     "<LETTER>",
     "<NULL_LITERAL>",
-    "\"and\"",
-    "\"or\"",
     "<IDENTIFIER>",
     "<LETTER_OR_UNDERSCORE_OR_DOT>",
     "<DIGIT>",

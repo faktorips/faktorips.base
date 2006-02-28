@@ -4,6 +4,7 @@
  */
 
 options {
+		BUILD_NODE_FILES=true;
 		MULTI = true; // generate a class for each node
 		IGNORE_CASE = true; 
 		STATIC = false;
@@ -84,24 +85,6 @@ TOKEN:
 
 }
 
-
-/****************************************************
- * Tokens for reserved word: and, or                *
- * They have to be defined as tokens to distinguish *
- * them from IDENTIFIER (see below)!                *
- ****************************************************/
-TOKEN:
-{
-    /*
-     * TOKENS for the reserved words: 
-     * 
-     */
-    <AND: "and">
-    |
-    <OR: "or">
-}
-
-
 /**********************************************************************
  * Token for identifiers.                                             *
  * A letter or underscore followed by letters, underscores and digits *
@@ -131,30 +114,8 @@ SimpleNode start() #Start:
 void expr() #void:
 {}
 {
-    arithmeticExpr()
+    equalsExpr()
 }
-
-
-void arithmeticExpr() #void:
-{}
-{
-    orExpr()
-}
-
-
-void orExpr() #void:
-{}
-{
-    andExpr() (<OR> andExpr() #OrNode(2))*
-}
-
-
-void andExpr() #void:
-{}
-{
-    equalsExpr() (<AND> equalsExpr() #AndNode(2))*
-}
-
 
 void equalsExpr() #void:
 {}

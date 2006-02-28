@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import org.faktorips.fl.functions.Abs;
+import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.If;
+import org.faktorips.fl.functions.Or;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.WholeNumber;
 import org.faktorips.util.LocalizedStringsSet;
@@ -33,6 +35,8 @@ public class ExcelFunctionsResolver extends DefaultFunctionResolver {
         localizedStrings = new LocalizedStringsSet("org.faktorips.fl.ExcelFunctions", getClass().getClassLoader());
         add(new Abs(getFctName("abs"), getFctDescription("abs")));
         add(new If(getFctName("if"), getFctDescription("if")));
+        add(new Or(getFctName("or"), getFctDescription("or")));
+        add(new And(getFctName("and"), getFctDescription("and")));
         add(new Round(getFctName("round"), getFctDescription("round"), BigDecimal.ROUND_HALF_UP));
         add(new Round(getFctName("roundup"), getFctDescription("roundup"), BigDecimal.ROUND_UP));
         add(new Round(getFctName("rounddown"), getFctDescription("rounddown"), BigDecimal.ROUND_UP));

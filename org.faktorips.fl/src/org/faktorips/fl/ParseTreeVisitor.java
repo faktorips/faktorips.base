@@ -7,7 +7,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.parser.ASTAddNode;
-import org.faktorips.fl.parser.ASTAndNode;
 import org.faktorips.fl.parser.ASTArgListNode;
 import org.faktorips.fl.parser.ASTBooleanNode;
 import org.faktorips.fl.parser.ASTDecimalNode;
@@ -26,7 +25,6 @@ import org.faktorips.fl.parser.ASTMultNode;
 import org.faktorips.fl.parser.ASTNotEQNode;
 import org.faktorips.fl.parser.ASTNotNode;
 import org.faktorips.fl.parser.ASTNullNode;
-import org.faktorips.fl.parser.ASTOrNode;
 import org.faktorips.fl.parser.ASTParenthesisNode;
 import org.faktorips.fl.parser.ASTPlusNode;
 import org.faktorips.fl.parser.ASTStart;
@@ -65,22 +63,6 @@ class ParseTreeVisitor implements FlParserVisitor {
     public Object visit(ASTStart node, Object data) {
 		SimpleNode childNode = (SimpleNode) node.jjtGetChild(0); 
 		return childNode.jjtAccept(this,data);
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTOrNode, java.lang.Object)
-     */
-    public Object visit(ASTOrNode node, Object data) {
-        return generateBinaryOperation("or", node, data);
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTAndNode, java.lang.Object)
-     */
-    public Object visit(ASTAndNode node, Object data) {
-        return generateBinaryOperation("and", node, data);
     }
 
     /** 
@@ -446,9 +428,11 @@ class ParseTreeVisitor implements FlParserVisitor {
         ConversionCodeGenerator conversionCg = compiler.getConversionCodeGenerator();        
         CompilationResultImpl[] convertedArgs = new CompilationResultImpl[argResults.length];
         for (int i=0; i<argResults.length; i++) {
+            
+            Datatype functionDatatype = flFunction.hasVarArgs() ? flFunction.getArgTypes()[0] : flFunction.getArgTypes()[i];
             JavaCodeFragment fragment = conversionCg.getConversionCode(
-                    argResults[i].getDatatype(), flFunction.getArgTypes()[i], argResults[i].getCodeFragment());
-            convertedArgs[i] = new CompilationResultImpl(fragment, flFunction.getArgTypes()[i]);
+                    argResults[i].getDatatype(), functionDatatype, argResults[i].getCodeFragment());
+            convertedArgs[i] = new CompilationResultImpl(fragment, functionDatatype);
             convertedArgs[i].addMessages(argResults[i].getMessages());
         }
         return convertedArgs;
