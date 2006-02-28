@@ -3,7 +3,7 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.productexplorer.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.productdefinitionexplorer.messages"; //$NON-NLS-1$
 
     private Messages() {
     }
