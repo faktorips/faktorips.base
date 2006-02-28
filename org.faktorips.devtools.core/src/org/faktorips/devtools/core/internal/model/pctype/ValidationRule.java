@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
@@ -196,7 +197,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 			if (StringUtils.isNotEmpty(function)) {
 				if (project.findIpsObject(IpsObjectType.BUSINESS_FUNCTION,
 						function) == null) {
-					String text = function + Messages.ValidationRule_msgFunctionNotExists;
+					String text = NLS.bind(Messages.ValidationRule_msgFunctionNotExists, function);
 					list.add(new Message("", text, Message.ERROR, function, //$NON-NLS-1$
 							"name")); //$NON-NLS-1$
 				} else {

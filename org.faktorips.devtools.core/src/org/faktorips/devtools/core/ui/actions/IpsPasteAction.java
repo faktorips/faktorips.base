@@ -170,7 +170,7 @@ public class IpsPasteAction extends IpsAction {
     			}
     		}
     		    		
-    		InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, Messages.IpsPasteAction_msgNamingConflict + nameWithoutExtension, suggestedName, validator);
+    		InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, NLS.bind(Messages.IpsPasteAction_msgNamingConflict, nameWithoutExtension), suggestedName, validator);
     		dialog.setBlockOnOpen(true);
     		doCopy = dialog.open();
     		nameWithoutExtension = dialog.getValue();

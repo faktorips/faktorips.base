@@ -39,8 +39,6 @@ public class Messages extends NLS {
 
 	public static String ForeignKey_msgForeignKeyDatatypeMismatch;
 
-	public static String ForeignKey_msgColumnDatatypeMismatch;
-
 	public static String ForeignKey_msgKeyMissmatch;
 
 	public static String ForeignKey_msgNotAColumn;

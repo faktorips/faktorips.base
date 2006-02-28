@@ -338,7 +338,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
 				if (file.exists()) {
 					message = new StringBuffer();
-					message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName).append("."); //$NON-NLS-2$
+					message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName).append("."); //$NON-NLS-1$
 					message.append(newName).append(Messages.ReferenceAndPreviewPage_msgFileAllreadyExists);
 					addMessage(toCopy[i], message.toString());
 				}

@@ -174,7 +174,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 			return new CompilationResultImpl(code, datatype);
 		} catch (Exception e) {
 			IpsPlugin.log(e);
-			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorAttributeDatatypeResolving, attribute.getDatatype(), attributeName);
+			String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute, attribute.getDatatype(), attributeName);
 			return new CompilationResultImpl(Message.newError(
 					ExprCompiler.INTERNAL_ERROR, text));
 		}

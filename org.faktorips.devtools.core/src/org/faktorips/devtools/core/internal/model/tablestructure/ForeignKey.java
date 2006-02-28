@@ -189,7 +189,7 @@ public class ForeignKey extends Key implements IForeignKey {
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
         }
         if (!to.getDatatype().equals(refTo.getDatatype())) {
-            String text = NLS.bind(Messages.ForeignKey_msgColumnDatatypeMismatch, to.getName(), refTo);
+            String text = NLS.bind(Messages.ForeignKey_msgForeignKeyDatatypeMismatch, to.getName(), refTo);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
         }
     }

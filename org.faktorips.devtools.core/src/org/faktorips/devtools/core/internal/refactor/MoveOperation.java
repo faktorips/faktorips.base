@@ -57,7 +57,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * 
 	 * @param sources An array containing <code>IProductCmpt</code> or <code>IIpsPackageFragement</code>
 	 * objects to move.
-	 * @param target An array of the new, qualified names for the objects to move. The names are object-names, 
+	 * @param targetRoot An array of the new, qualified names for the objects to move. The names are object-names, 
 	 * not filenames, so do not append any file extension to the name.
 	 * @throws CoreException if the both arrays are not of the same lenth.
 	 */

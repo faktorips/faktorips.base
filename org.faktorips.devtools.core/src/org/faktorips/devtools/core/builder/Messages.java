@@ -31,8 +31,6 @@ public class Messages extends NLS {
 
 	public static String AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute;
 
-	public static String AbstractParameterIdentifierResolver_msgErrorAttributeDatatypeResolving;
-
 	public static String JetJavaSourceFileBuilder_name;
 
 	public static String IpsBuilder_msgErrorExceptionDuringBuild;
