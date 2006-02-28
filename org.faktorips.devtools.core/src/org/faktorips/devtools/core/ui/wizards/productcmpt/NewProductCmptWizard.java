@@ -22,7 +22,7 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
     private ProductCmptPage productCmptPage;
     
     public NewProductCmptWizard() {
-        super(IpsObjectType.PRODUCT_CMPT);
+        super(IpsObjectType.PRODUCT_CMPT_TYPE);
     }
     
     /** 

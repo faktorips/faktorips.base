@@ -105,4 +105,8 @@ public class Messages extends NLS {
 
 	public static String ProductAttributesSection_false;
 
+	public static String RulesPage_title;
+
+	public static String RulesSection_title;
+
 }

@@ -46,4 +46,16 @@ public class Messages extends NLS {
 	public static String Range_msgLowerboundGreaterUpperbound;
 
 	public static String Range_msgPropertyValueNotParsable;
+
+	public static String IpsObjectType_nameBusinessFunction;
+
+	public static String IpsObjectType_namePolicyClass;
+
+	public static String IpsObjectType_nameProductClass;
+
+	public static String IpsObjectType_nameTableStructure;
+
+	public static String IpsObjectType_nameProductComponent;
+
+	public static String IpsObjectType_nameTableContents;
 }

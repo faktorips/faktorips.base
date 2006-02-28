@@ -32,6 +32,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     
     private PropertiesPage propertiesPage;
     private GenerationsPage generationsPage;
+    private RulesPage rulesPage;
     private DescriptionPage descriptionPage;
     private GregorianCalendar referenceDate;
 
@@ -68,10 +69,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         	propertiesPage = new PropertiesPage(this);
         	generationsPage = new GenerationsPage(this);
         	descriptionPage = new DescriptionPage(this);
+        	rulesPage = new RulesPage(this);
         	
             addPage(propertiesPage);
             addPage(generationsPage);
             addPage(descriptionPage);
+            addPage(rulesPage);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

@@ -29,8 +29,8 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="FaktorIPS New Object"
-            visible="true"
+            label="%org.faktorips.devtools.actions.NewObjectActionSet"
+            visible="false"
             id="org.faktorips.devtools.actions.NewObjectActionSet">
          <action
                label="New Policy Class"
@@ -39,14 +39,6 @@
                class="org.faktorips.devtools.core.ui.wizards.pctype.OpenNewPcTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
-         </action>
-         <action
-               label="New Product Component"
-               icon="icons/NewProductCmptWizard.gif"
-               tooltip="New Product Component"
-               class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
-               toolbarPath="org.faktorips.devtools"
-               id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction">
          </action>
          
          <action
@@ -58,6 +50,21 @@
                id="org.faktorips.devtools.actions.OpenNewTableStructureWizardAction">
          </action>
          
+         
+      </actionSet>
+      <actionSet
+            id="org.faktorips.devtools.actions.NewProductActionSet"
+            label="%org.faktorips.devtools.actions.NewProductActionSet"
+            visible="true">
+         <action
+               class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
+               icon="icons/NewProductCmptWizard.gif"
+               id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction"
+               label="New Product Component"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="New Product Component">
+         </action>
+            
          <action
                label="New Table Contents"
                icon="icons/NewTableContentsWizard.gif"
@@ -66,7 +73,6 @@
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewTableContentsWizardAction">
          </action>
-         
       </actionSet>
    </extension>
    
