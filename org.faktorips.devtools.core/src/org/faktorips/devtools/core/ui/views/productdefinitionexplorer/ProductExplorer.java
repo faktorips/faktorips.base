@@ -32,8 +32,6 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -60,17 +58,11 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.DummyRoot;
  * @author guenther
  *
  */
-public class ProductExplorer extends ViewPart implements IShowInTarget, ISelectionProvider, ContentsChangeListener {
+public class ProductExplorer extends ViewPart implements IShowInTarget, ISelectionProvider{
 
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
     private TreeViewer tree;
     
-	public ProductExplorer() {
-		super();
-        
-//        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-	}
-
     /**
      * Overridden.
      */
@@ -84,7 +76,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         tree.setInput(IpsPlugin.getDefault().getIpsModel());
         tree.addDoubleClickListener(new DefaultDoubleclickListener(tree));
         tree.addDragSupport(DND.DROP_LINK, new Transfer[] {TextTransfer.getInstance()}, new ProductCmptDragListener(tree));
-
+        tree.setSorter(new Sorter());
         
         IWorkbenchPartSite site = getSite();
         site.setSelectionProvider(this);
@@ -259,9 +251,5 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 
     public ISelection getSelection() {
         return tree.getSelection();
-    }
-
-    public void contentsChanged(ContentChangeEvent event) {
-        tree.refresh();
     }
 }

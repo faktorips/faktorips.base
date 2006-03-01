@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class FolderPropertiesPage extends PropertyPage implements IWorkbenchPropertyPage, ModifyListener {
 
+	public static final QualifiedName SORTING_ORDER_PROPERTY = new QualifiedName(IpsPlugin.PLUGIN_ID, "FolderOrderNumber");
+	
 	/**
 	 * The input field for the order value
 	 */
@@ -40,10 +42,9 @@ public class FolderPropertiesPage extends PropertyPage implements IWorkbenchProp
 		label.setText("Sorting order number: ");
 		orderValue = new Text(root, SWT.BORDER);
 		orderValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		QualifiedName name = new QualifiedName(IpsPlugin.PLUGIN_ID, "FolderOrderNumber");
 		String value = null;;
 		try {
-			value = ((IFolder)super.getElement()).getPersistentProperty(name);
+			value = ((IFolder)super.getElement()).getPersistentProperty(SORTING_ORDER_PROPERTY);
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
@@ -55,6 +56,7 @@ public class FolderPropertiesPage extends PropertyPage implements IWorkbenchProp
 		orderValue.setText(value);
 		
 		orderValue.addModifyListener(this);
+		
 		return root;
 	}
 
@@ -70,5 +72,25 @@ public class FolderPropertiesPage extends PropertyPage implements IWorkbenchProp
 		}
 		
 	}
+
+	protected void performDefaults() {
+		orderValue.setText("0");
+		super.performDefaults();
+	}
+
+	public boolean okToLeave() {
+		return super.getMessage() == null;
+	}
+
+	public boolean performOk() {
+		try {
+			((IFolder)super.getElement()).setPersistentProperty(SORTING_ORDER_PROPERTY, orderValue.getText());
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+		return true;
+	}
+	
+	
 
 }

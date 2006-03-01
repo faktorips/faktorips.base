@@ -87,10 +87,11 @@ public class ProductContentProvider implements ITreeContentProvider {
         }
 
         files = result.toArray();
-        
+
         IIpsElement all[] = new IIpsElement[folders.length + files.length];
         System.arraycopy(folders, 0, all, 0, folders.length);
         System.arraycopy(files, 0, all, folders.length, files.length);                    
+        
         
         return all;
     }
@@ -173,6 +174,6 @@ public class ProductContentProvider implements ITreeContentProvider {
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+    	// nothing to do
     }
-
 }
