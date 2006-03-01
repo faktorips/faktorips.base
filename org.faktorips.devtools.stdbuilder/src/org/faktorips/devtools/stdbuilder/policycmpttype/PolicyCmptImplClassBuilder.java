@@ -370,6 +370,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if (!relation.isReadOnlyContainer()) {
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
+            generateMethodGetRefObjectForNoneContainerRelation(relation, methodsBuilder);
         }
         PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
                 this);
@@ -380,7 +381,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        
         if (!relation.isReadOnlyContainer()) {
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);
@@ -490,7 +490,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetAllRefObjectsForContainerRelation(
+    protected void generateMethodGetAllRefObjectsForContainerRelationImplementation(
             IRelation relation,
             List subRelations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -530,6 +530,63 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage getCoverage() {
+     *     return coverage;
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectForNoneContainerRelation(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
+        String field = getFieldNameForRelation(relation);
+        methodsBuilder.openBracket();
+        methodsBuilder.appendln("return " + field + ";");
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage getCoverage() {
+     *     if(getNumOfTplCoverage() > 0) { 
+     *         return getTplCoverage(); 
+     *     } 
+     *     if (getNumOfCollisionCoverage() > 0) { 
+     *         return getCollisionCoverage(); 
+     *     } 
+     *     return null;
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetRefObjectForContainerRelationImplementation(
+            IRelation relation,
+            List subRelations,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
+        methodsBuilder.openBracket();
+        for (int i = 0; i < subRelations.size(); i++) {
+            methodsBuilder.append("if(");
+            IRelation subrel = (IRelation)subRelations.get(i);
+            methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(subrel));
+            methodsBuilder.append("() > 0)");
+            methodsBuilder.openBracket();
+            methodsBuilder.append("return ");
+            methodsBuilder.append(interfaceBuilder.getMethodNameGetRefObject(subrel));
+            methodsBuilder.append("();");
+            methodsBuilder.closeBracket();
+        }
+        methodsBuilder.append("return null;");
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
      * Returns the name of field/member var for the relation.
      */
     public String getFieldNameForRelation(IRelation relation) throws CoreException {
@@ -538,19 +595,23 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             return getJavaNamingConvention().getMemberVarName(relation.getTargetRoleSingular());
         }
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void generateCodeForContainerRelationImplementation(
             IRelation containerRelation,
             List relations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        
+
         generateMethodGetNumOfForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
-        generateMethodGetAllRefObjectsForContainerRelation(containerRelation, relations, methodsBuilder);
-        
-        
+        if (containerRelation.is1ToMany()) {
+            generateMethodGetAllRefObjectsForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
+        } else {
+            generateMethodGetRefObjectForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
+        }
         PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
             this);
         relationBuilder.buildContainerRelation(memberVarsBuilder, methodsBuilder, containerRelation, relations);

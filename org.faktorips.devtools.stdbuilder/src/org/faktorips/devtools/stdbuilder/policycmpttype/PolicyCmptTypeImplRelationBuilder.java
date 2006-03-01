@@ -58,7 +58,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             createRelationField(memberVarsBuilder, relation, target);
             createRelationSetterMethodImplementation(methodsBuilder, relation, target);
         }
-        createRelationGetterMethodImplementation(methodsBuilder, relation, target, subRelations);
     }
 
     void build1ToManyRelation(JavaCodeFragmentBuilder memberVarsBuilder,
@@ -186,56 +185,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             new String[] { getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                     .getQualifiedClassName(target.getIpsSrcFile()) }, body, javaDoc,
                     JavaSourceFileBuilder.ANNOTATION_GENERATED);
-    }
-
-    private void createRelationGetAllMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
-            IRelation relation,
-            IPolicyCmptType target,
-            List subRelations) throws CoreException {
-        String methodName = getGetAllMethod(relation);
-        String classname = getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
-                .getQualifiedClassName(target.getIpsSrcFile());
-        String fieldname = getField(relation);
-        JavaCodeFragment code;
-        if (subRelations == null) {
-            code = getGetAllMethodBody(relation, classname, fieldname);
-        } else {
-            code = getContainerRelationGetAllMethodBody(relation, classname, subRelations);
-        }
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation,
-            RELATION_IMPLEMENTATION_GETALL_JAVADOC, relation.getTargetRoleSingular());
-
-        methodsBuilder.method(Modifier.PUBLIC, classname + "[]",
-            methodName, new String[0], new String[0], code, javaDoc,
-            JavaSourceFileBuilder.ANNOTATION_GENERATED);
-    }
-
-    private void createRelationGetterMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
-            IRelation relation,
-            IPolicyCmptType target,
-            List subRelations) throws CoreException {
-        String methodName = getGetterMethod(relation);
-        String classname = getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
-                .getQualifiedClassName(target.getIpsSrcFile());
-        JavaCodeFragment body;
-        if (subRelations == null) {
-            body = new JavaCodeFragment();
-            body.append("return ");
-            if (relation.isReadOnlyContainer()) {
-                body.append("null");
-            } else {
-                body.append(getField(relation));
-            }
-            body.append(";");
-        } else {
-            body = getContainerRelationGetterMethodBody(relation, subRelations);
-        }
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation, 
-            RELATION_IMPLEMENTATION_GETTER_JAVADOC, relation.getTargetRoleSingular());
-
-        methodsBuilder.method(Modifier.PUBLIC, classname, methodName,
-            new String[0], new String[0], body, javaDoc,
-            JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
     private String getPolicyCmptImplRemoveMethodName(IRelation r) {
