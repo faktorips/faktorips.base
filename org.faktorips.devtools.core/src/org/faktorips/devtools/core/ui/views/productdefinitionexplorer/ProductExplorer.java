@@ -68,7 +68,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 	public ProductExplorer() {
 		super();
         
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+//        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
 	}
 
     /**

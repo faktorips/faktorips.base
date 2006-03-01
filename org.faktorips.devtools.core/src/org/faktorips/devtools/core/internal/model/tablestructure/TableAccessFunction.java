@@ -16,6 +16,9 @@ public class TableAccessFunction extends IpsObjectPart implements ITableAccessFu
     private String type;
     private String[] argTypes = new String[0];
     
+    // hides field in supertype. Done to avoid update-events fired on description changes.
+    private String description; 
+    
     public TableAccessFunction(IIpsObject parent, int id) {
         super(parent, id);
     }
@@ -99,4 +102,24 @@ public class TableAccessFunction extends IpsObjectPart implements ITableAccessFu
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+	/**
+	 * Overridden to avoid change-notifications on description changes. This method is neccessary, 
+	 * because we hide the field holding the description in supertype.
+	 * {@inheritDoc}
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Overridden to avoid change-notifications on description changes. 
+	 * {@inheritDoc}
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+    
+
 }

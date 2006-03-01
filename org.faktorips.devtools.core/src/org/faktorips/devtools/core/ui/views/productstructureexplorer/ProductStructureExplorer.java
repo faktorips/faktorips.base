@@ -87,7 +87,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * @throws CoreException 
      */
     public void showStructure(IIpsSrcFile file) throws CoreException {
-    	this.file = file;
     	showStructure((IProductCmpt)file.getIpsObject());
     }
 
@@ -95,18 +94,23 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * Displays the structure of the given product component.
      */
     public void showStructure(IProductCmpt product) {
+    	this.file = product.getIpsSrcFile();
         tree.setInput(product.getStructure());
         tree.expandAll();
     }
     
     public void contentsChanged(ContentChangeEvent event) {
+    	if (file == null) {
+    		// no contents set - nothing to refresh.
+    		return;
+    	}
+    	
     	Object input = tree.getInput();
     	if (input instanceof IProductCmptStructure) {
     		((IProductCmptStructure)input).refresh();
     	}
     	
     	tree.refresh();
-
     	if (event.getPdSrcFile().equals(file)) {
     		tree.refresh();
     		System.err.println("refreshed tree2"); //$NON-NLS-1$
