@@ -491,11 +491,11 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-
         generateMethodGetNumOfRefObjects(relation, methodsBuilder);
         generateMethodGetRefObject(relation, methodsBuilder);
-        PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
-        relationBuilder.build1To1Relation(methodsBuilder, relation);
+        if (!relation.isReadOnlyContainer()) {
+            generateMethodSetObject(relation, methodsBuilder);
+        }
     }
 
     /**
@@ -504,7 +504,10 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         generateMethodGetNumOfRefObjects(relation, methodsBuilder);
         generateMethodGetAllRefObjects(relation, methodsBuilder);
-        
+        generateMethodContainsObject(relation, methodsBuilder);
+        if (!relation.isReadOnlyContainer()) {
+            generateMethodAddRefObject(relation, methodsBuilder);
+        }
         PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
         relationBuilder.build1ToManyRelation(methodsBuilder, relation);
     }
@@ -625,6 +628,150 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return getLocalizedText(relation, "METHOD_GET_REF_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void addCoverage(ICoverage coverage);
+     * </pre>
+     */
+    protected void generateMethodAddRefObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_ADD_REF_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        generateSignatureAddRefObject(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public void addCoverage()
+     * </pre>
+     */
+    public void generateSignatureAddRefObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String methodName = getMethodNameAddRefObject(relation);
+        String className = getQualifiedClassName(relation.findTarget());
+        String paramName = getParamNameForAddRefObject(relation);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{className});
+    }
+    
+    /**
+     * Returns the name of the method adding an object to a multi-value relation,
+     * e.g. getCoverage()
+     */
+    public String getMethodNameAddRefObject(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_ADD_REF_OBJECT_NAME", relation.getTargetRoleSingular());
+    }
+
+    /**
+     * Returns the name of the paramter for the method adding an object to a multi-value relation,
+     * e.g. objectToAdd
+     */
+    public String getParamNameForAddRefObject(IRelation relation) {
+        return getLocalizedText(relation, "PARAM_OBJECT_TO_ADD_NAME", relation.getTargetRoleSingular());
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public boolean containsCoverage(ICoverage objectToTest);
+     * </pre>
+     */
+    protected void generateMethodContainsObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_CONTAINS_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        generateSignatureContainsObject(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public boolean containsCoverage(ICoverage objectToTest)
+     * </pre>
+     */
+    public void generateSignatureContainsObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String methodName = getMethodNameContainsObject(relation);
+        String paramClass = getQualifiedClassName(relation.findTarget());
+        String paramName = getParamNameForContainsObject(relation);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "boolean", methodName, new String[]{paramName}, new String[]{paramClass});
+    }
+    
+    /**
+     * Returns the name of the method returning the number of referenced objects,
+     * e.g. getNumOfCoverages()
+     */
+    public String getMethodNameContainsObject(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_CONTAINS_OBJECT_NAME", relation.getTargetRoleSingular());
+    }
+
+    /**
+     * Returns the name of the paramter for the method that tests if an object is references in a multi-value relation,
+     * e.g. objectToTest
+     */
+    public String getParamNameForContainsObject(IRelation relation) {
+        return getLocalizedText(relation, "PARAM_OBJECT_TO_TEST_NAME", relation.getTargetRoleSingular());
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void setCoverage(ICoverage newObject);
+     * </pre>
+     */
+    protected void generateMethodSetObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_SET_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        generateSignatureSetObject(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public void setCoverage(ICoverage objectToTest)
+     * </pre>
+     */
+    public void generateSignatureSetObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String methodName = getMethodNameSetObject(relation);
+        String paramClass = getQualifiedClassName(relation.findTarget());
+        String paramName = getParamNameForSetObject(relation);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{paramClass});
+    }
+    
+    /**
+     * Returns the name of the method setting the referenced object.
+     * e.g. setCoverage(ICoverage newObject)
+     */
+    public String getMethodNameSetObject(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_SET_OBJECT_NAME", relation.getTargetRoleSingular());
+    }
+
+    /**
+     * Returns the name of the paramter for the method that tests if an object is references in a multi-value relation,
+     * e.g. objectToTest
+     */
+    public String getParamNameForSetObject(IRelation relation) {
+        return getLocalizedText(relation, "PARAM_OBJECT_TO_SET_NAME", relation.getTargetRoleSingular());
+    }
+    
     /**
      * Empty implementation.
      * 

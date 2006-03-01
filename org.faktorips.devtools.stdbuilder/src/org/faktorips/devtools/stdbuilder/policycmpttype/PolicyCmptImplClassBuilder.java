@@ -587,6 +587,59 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void addCoverage(ICoverage objectToAdd) {
+     *     if(objectToAdd == null) { 
+     *         throw new IllegalArgumentException("Can't add null to ...");
+     *     }
+     *     if (coverages.contains(objectToAdd)) { 
+     *         return; 
+     *     }
+     *     coverages.add(objectToAdd);
+     * }
+     * </pre>
+     */
+    protected void generateMethodAddObject (
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureAddRefObject(relation, methodsBuilder);
+        String field = getFieldNameForRelation(relation);
+        methodsBuilder.openBracket();
+        methodsBuilder.closeBracket();
+    }
+    
+    private JavaCodeFragment synchronizeReverseRelation(
+            String fieldname,
+            IRelation relation,
+            IRelation reverseRelation) throws CoreException {
+        JavaCodeFragment code = new JavaCodeFragment();
+        code.append("if(");
+        if (!relation.is1ToMany()) {
+            code.append("refObject != null && ");
+        }
+        if (reverseRelation.is1ToMany()) {
+            code.append("! refObject.");
+            code.append(interfaceBuilder.getMethodNameContainsObject(reverseRelation) + "(this)");
+        } else {
+            code.append("refObject.");
+            code.append(interfaceBuilder.getMethodNameGetRefObject(reverseRelation));
+            code.append("() != this");
+        }
+        code.append(") {");
+        code.append("refObject.");
+        if (reverseRelation.is1ToMany()) {
+            code.append(interfaceBuilder.getMethodNameAddRefObject(reverseRelation));
+        } else {
+            // TODO. body.append(interfaceBuilder.getMethodName(reverseRelation));
+        }
+        code.append("(this); }");
+        return code;
+    }
+
+    /**
      * Returns the name of field/member var for the relation.
      */
     public String getFieldNameForRelation(IRelation relation) throws CoreException {
