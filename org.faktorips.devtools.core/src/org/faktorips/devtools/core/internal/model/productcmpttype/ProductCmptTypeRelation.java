@@ -153,7 +153,7 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	/**
 	 * Overridden.
 	 */
-	public String getMaxCardinality() {
+	public int getMaxCardinality() {
 		return relation.getMaxCardinalityProductSide();
 	}
 
@@ -161,13 +161,13 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	 * Overridden.
 	 */
 	public boolean is1ToMany() {
-		return "*".equals(getMaxCardinality()); //$NON-NLS-1$
+		return getMaxCardinality() == CARDINALITY_MANY;
 	}
 
 	/**
 	 * Overridden.
 	 */
-	public void setMaxCardinality(String newValue) {
+	public void setMaxCardinality(int newValue) {
 		relation.setMaxCardinalityProductSide(newValue);
 	}
 

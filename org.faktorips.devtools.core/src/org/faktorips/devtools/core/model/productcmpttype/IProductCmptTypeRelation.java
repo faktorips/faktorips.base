@@ -12,6 +12,8 @@ import org.faktorips.devtools.core.model.pctype.RelationType;
  */
 public interface IProductCmptTypeRelation extends IIpsObjectPart {
 
+	public static final int CARDINALITY_MANY = IRelation.CARDINALITY_MANY;
+	
     /**
      * Returns the product component type this relation belongs to.
      */
@@ -105,9 +107,9 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
     
     /**
      * Returns the maxmium number of target instances allowed in this relation.
-     * If the number is not limited an asterix ('*') is returned. 
+     * If the number is not limited CARDINALITY_MANY is returned. 
      */
-    public String getMaxCardinality();
+    public int getMaxCardinality();
     
     /**
      * Returns true if this is a 1 to many relation. This is the case if
@@ -117,9 +119,9 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
     
     /**
      * Sets the maxmium number of target instances allowed in this relation.
-     * An unlimited number is represented by an asterix ('*'). 
+     * An unlimited number is represented by CARDINALITY_MANY. 
      */
-    public void setMaxCardinality(String newValue);
+    public void setMaxCardinality(int newValue);
     
 	
 	

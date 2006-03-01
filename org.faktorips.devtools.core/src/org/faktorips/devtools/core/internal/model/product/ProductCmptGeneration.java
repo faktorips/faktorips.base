@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
@@ -372,18 +371,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 				list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
 			}
 			
-			String maxCardinality = relationTypes[i].getMaxCardinality();
-			if (!StringUtils.isEmpty(maxCardinality) && !maxCardinality.equals("*")) { //$NON-NLS-1$
-				int max = Integer.parseInt(maxCardinality);
-				
-				if (max < relations.length) {
-					Object[] params = {new Integer(relations.length), maxCardinality, relationTypes[i].getTargetRoleSingularProductSide()};
-					String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
-					ObjectProperty prop1 = new ObjectProperty(this, null);
-					ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
-					list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
-				}
+			int maxCardinality = relationTypes[i].getMaxCardinality();
+			if (maxCardinality < relations.length) {
+				Object[] params = {new Integer(relations.length), ""+maxCardinality, relationTypes[i].getTargetRoleSingularProductSide()};
+				String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
+				ObjectProperty prop1 = new ObjectProperty(this, null);
+				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
+				list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
 			}
+			
 		}
     }
     

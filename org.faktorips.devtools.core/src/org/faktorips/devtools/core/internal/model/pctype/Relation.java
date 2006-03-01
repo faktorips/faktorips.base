@@ -31,7 +31,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     private String targetRoleSingular = ""; //$NON-NLS-1$
     private String targetRolePlural = ""; //$NON-NLS-1$
     private int minCardinality = 0;
-    private String maxCardinality = "1"; //$NON-NLS-1$
+    private int maxCardinality = 1; //$NON-NLS-1$
     private boolean productRelevant = true;
     private String containerRelation = ""; //$NON-NLS-1$
     private String reverseRelation = ""; //$NON-NLS-1$
@@ -39,7 +39,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     private String targetRoleSingularProductSide = ""; //$NON-NLS-1$
     private String targetRolePluralProductSide = ""; //$NON-NLS-1$
     private int minCardinalityProductSide = 0;
-    private String maxCardinalityProductSide = "1"; //$NON-NLS-1$
+    private int maxCardinalityProductSide = 1;
 
     public Relation(IPolicyCmptType pcType, int id) {
         super(pcType, id);
@@ -195,37 +195,19 @@ public class Relation extends IpsObjectPart implements IRelation {
     /** 
      * Overridden.
      */
-    public String getMaxCardinality() {
+    public int getMaxCardinality() {
         return maxCardinality;
-    }
-    
-    /**
-     * Returns the maximum cardinality as <code>Integer</code>. If the String value of max cardinality can't be parsed
-     * to an int, <code>null</code> is returned. Returns <code>Integer.MAXVALUE</code> if max cardinality
-     * equals <code>*</code>.
-     * @return
-     */
-    public Integer getMaxCardinalityAsInteger() {
-        if ("*".equals(maxCardinality.trim())) { //$NON-NLS-1$
-            return new Integer(Integer.MAX_VALUE);
-        }
-        try {
-            return Integer.valueOf(maxCardinality);
-        } catch (Exception e) {
-            return null;
-        }
     }
     
     /**
      * Overridden.
      */
     public boolean is1ToMany() {
-        if (maxCardinality.equals("*")) { //$NON-NLS-1$
+        if (maxCardinality == Integer.MAX_VALUE) { 
             return true;
         }
         try {
-            int max = Integer.parseInt(maxCardinality);
-            return max>1; 
+            return maxCardinality>1; 
         } catch (NumberFormatException e) {
             return false;
         }
@@ -234,8 +216,8 @@ public class Relation extends IpsObjectPart implements IRelation {
     /**
      * Overridden.
      */ 
-    public void setMaxCardinality(String newValue) {
-        String oldValue = maxCardinality;
+    public void setMaxCardinality(int newValue) {
+        int oldValue = maxCardinality;
         maxCardinality = newValue;
         valueChanged(oldValue, newValue);
     }
@@ -308,15 +290,15 @@ public class Relation extends IpsObjectPart implements IRelation {
 	/**
 	 * Overridden.
 	 */
-	public String getMaxCardinalityProductSide() {
+	public int getMaxCardinalityProductSide() {
 		return maxCardinalityProductSide;
 	}
 
 	/**
 	 * Overridden.
 	 */
-	public void setMaxCardinalityProductSide(String newMax) {
-		String oldMax = maxCardinalityProductSide;
+	public void setMaxCardinalityProductSide(int newMax) {
+		int oldMax = maxCardinalityProductSide;
 		maxCardinalityProductSide = newMax;
 		valueChanged(oldMax, newMax);
 	}
@@ -424,31 +406,18 @@ public class Relation extends IpsObjectPart implements IRelation {
         super.validate(list);
         ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this, PROPERTY_TARGET, list); //$NON-NLS-1$
         ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR, list); //$NON-NLS-1$
-        if (ValidationUtils.checkStringPropertyNotEmpty(maxCardinality, "maximum cardinality", this, PROPERTY_MAX_CARDINALITY, list)) { //$NON-NLS-1$
-            int max = -1;
-            if (maxCardinality.trim().equals("*")) { //$NON-NLS-1$
-                max = Integer.MAX_VALUE;
-            } else {
-                try {
-                    max = Integer.parseInt(maxCardinality);
-                } catch (NumberFormatException e) {
-                    String text = Messages.Relation_msgErrorMaxCardinalityMalformed;
-                    list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
-                }
-            }
-            if (max==0) {
-                String text = Messages.Relation_msgMaxCardinalityMustBeAtLeast1;
-                list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
-            } else if (max==1 && isReadOnlyContainer() && getRelationType() != RelationType.REVERSE_COMPOSITION) {
-                String text = Messages.Relation_msgMaxCardinalityForContainerRelationTooLow;
-                list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
-            } else if (max!=-1) {
-                if (minCardinality > max) {
-                    String text = Messages.Relation_msgMinCardinalityGreaterThanMaxCardinality;
-                    list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
-                }
-            }
+
+        if (maxCardinality == 0) {
+        	String text = Messages.Relation_msgMaxCardinalityMustBeAtLeast1;
+        	list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
+        } else if (maxCardinality == 1 && isReadOnlyContainer() && getRelationType() != RelationType.REVERSE_COMPOSITION) {
+        	String text = Messages.Relation_msgMaxCardinalityForContainerRelationTooLow;
+        	list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
+        } else if (minCardinality > maxCardinality) {
+        	String text = Messages.Relation_msgMinCardinalityGreaterThanMaxCardinality;
+        	list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         }
+        
         validateContainerRelation(list);
         validateReverseRelation(list);
     }
@@ -571,7 +540,17 @@ public class Relation extends IpsObjectPart implements IRelation {
         } catch (NumberFormatException e) {
         	minCardinality = 0;
         }
-        maxCardinality = element.getAttribute(PROPERTY_MAX_CARDINALITY);
+        String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
+        if (max.equals("*")) {
+        	maxCardinality = CARDINALITY_MANY;
+        }
+        else {
+        	try {
+        		maxCardinality = Integer.parseInt(max);
+        	} catch (NumberFormatException e) {
+        		maxCardinality = 0;
+        	}
+        }
         containerRelation = element.getAttribute(PROPERTY_CONTAINER_RELATION);
         reverseRelation = element.getAttribute(PROPERTY_REVERSE_RELATION);
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
@@ -582,7 +561,17 @@ public class Relation extends IpsObjectPart implements IRelation {
         } catch (NumberFormatException e) {
         	minCardinalityProductSide = 0;
         }
-        maxCardinalityProductSide = element.getAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
+        String maxPS = element.getAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
+        if (maxPS.equals("*")) {
+        	maxCardinalityProductSide = CARDINALITY_MANY;
+        }
+        else {
+        	try {
+        		maxCardinalityProductSide = Integer.parseInt(maxPS);
+        	} catch (NumberFormatException e) {
+        		maxCardinalityProductSide = 0;
+        	}
+        }
     }
     
     /**
@@ -596,14 +585,27 @@ public class Relation extends IpsObjectPart implements IRelation {
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);
         newElement.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_MAX_CARDINALITY, maxCardinality);
+        
+        if (maxCardinality == CARDINALITY_MANY) {
+            newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "*"); //$NON-NLS-1$
+        }
+        else {
+            newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "" + maxCardinality); //$NON-NLS-1$
+        }
+        
         newElement.setAttribute(PROPERTY_CONTAINER_RELATION, containerRelation);
         newElement.setAttribute(PROPERTY_REVERSE_RELATION, reverseRelation);
         newElement.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE, targetRoleSingularProductSide);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE, targetRolePluralProductSide);
         newElement.setAttribute(PROPERTY_MIN_CARDINALITY_PRODUCTSIDE, "" + minCardinalityProductSide); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, maxCardinalityProductSide);
+        
+        if (maxCardinalityProductSide == CARDINALITY_MANY) {
+            newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, "*"); //$NON-NLS-1$
+        }
+        else {
+            newElement.setAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE, "" + maxCardinalityProductSide); //$NON-NLS-1$
+        }
     }
     
 	public IIpsObjectPart newPart(Class partType) {

@@ -40,7 +40,7 @@ public abstract class AbstractPcImplementationBuilder extends
 			throw new CoreException(new IpsStatus("FEEEEEEHHHLER")); //$NON-NLS-1$
 		}
 	
-		if (relation.getMaxCardinality().equals(IRelation.CARDINALITY_ONE)) {
+		if (relation.getMaxCardinality() == IRelation.CARDINALITY_ONE) {
 			/* get */
 	
 			policyInterfaceBuilder.generateCodeForRelationGetOneSignature(relation,memberVarsBuilder,methodsBuilder);

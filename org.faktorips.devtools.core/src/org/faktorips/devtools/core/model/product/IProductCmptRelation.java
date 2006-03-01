@@ -1,7 +1,9 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ui.texteditor.IReadOnlyDependent;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 
@@ -14,6 +16,8 @@ public interface IProductCmptRelation extends IIpsObjectPart {
     public final static String PROPERTY_PCTYPE_RELATION = "pcTypeRelation"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
+    
+    public final static int CARDINALITY_MANY = IRelation.CARDINALITY_MANY;
     
     /**
      * Prefix for all message codes of this class.
@@ -96,15 +100,15 @@ public interface IProductCmptRelation extends IIpsObjectPart {
     
     /**
      * Returns the maxmium number of target instances allowed in this relation.
-     * If the number is not limited an asterix ('*') is returned. 
+     * If the number is not limited CARDINALITY_MANY is returned. 
      */
-    public String getMaxCardinality();
+    public int getMaxCardinality();
     
     /**
      * Sets the maxmium number of target instances allowed in this relation.
-     * An unlimited number is represented by an asterix ('*'). 
+     * An unlimited number is represented by CARDINALITY_MANY. 
      */
-    public void setMaxCardinality(String newValue);
+    public void setMaxCardinality(int newValue);
     
     /**
      * Finds the corresponding relation in the product component type this

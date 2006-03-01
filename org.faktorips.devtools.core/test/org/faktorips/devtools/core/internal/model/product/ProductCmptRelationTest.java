@@ -72,7 +72,7 @@ public class ProductCmptRelationTest extends IpsPluginTest {
         relation = generation.newRelation("coverage");
         relation.setTarget("newTarget");
         relation.setMinCardinality(2);
-        relation.setMaxCardinality("3");
+        relation.setMaxCardinality(3);
         Element element = relation.toXml(newDocument());
         
         IProductCmptRelation copy = new ProductCmptRelation();
@@ -81,7 +81,7 @@ public class ProductCmptRelationTest extends IpsPluginTest {
         assertEquals("newTarget", copy.getTarget());
         assertEquals("coverage", copy.getProductCmptTypeRelation());
         assertEquals(2, copy.getMinCardinality());
-        assertEquals("3", copy.getMaxCardinality());
+        assertEquals(3, copy.getMaxCardinality());
     }
 
     public void testInitFromXml() {
@@ -90,7 +90,7 @@ public class ProductCmptRelationTest extends IpsPluginTest {
         assertEquals("FullCoverage", relation.getProductCmptTypeRelation());
         assertEquals("FullCoveragePlus", relation.getTarget());
         assertEquals(2, relation.getMinCardinality());
-        assertEquals("3", relation.getMaxCardinality());
+        assertEquals(3, relation.getMaxCardinality());
     }
 
     /**
@@ -123,16 +123,12 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_UNKNWON_TARGET));
     	
-    	relation.setMaxCardinality("");
-    	ml = relation.validate();
-    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MISSING_MAX_CARDINALITY));
-
-    	relation.setMaxCardinality("0");
+    	relation.setMaxCardinality(0);
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MISSING_MAX_CARDINALITY));
     	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
 
-    	relation.setMaxCardinality("1");
+    	relation.setMaxCardinality(1);
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
     	
@@ -140,7 +136,7 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     	ml = relation.validate();
     	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
     	
-    	relation.setMaxCardinality("3");
+    	relation.setMaxCardinality(3);
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
     	
@@ -152,11 +148,11 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN));
     	
-    	rel.setMaxCardinality("1");
+    	rel.setMaxCardinality(1);
     	ml = relation.validate();
     	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
-    	rel.setMaxCardinality("3");
+    	rel.setMaxCardinality(3);
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }

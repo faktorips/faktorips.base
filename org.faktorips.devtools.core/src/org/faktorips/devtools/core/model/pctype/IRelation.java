@@ -28,8 +28,8 @@ public interface IRelation extends IIpsObjectPart {
     public final static String PROPERTY_MAX_CARDINALITY_PRODUCTSIDE = "maxCardinalityProductSide"; //$NON-NLS-1$
     
 
-	public static final String CARDINALITY_ONE = "1"; //$NON-NLS-1$
-	public static final String CARDINALITY_MANY = "*"; //$NON-NLS-1$
+	public static final int CARDINALITY_ONE = 1;
+	public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
 
     /**
      * Prefix for all message codes of this class.
@@ -129,9 +129,9 @@ public interface IRelation extends IIpsObjectPart {
     
     /**
      * Returns the maxmium number of target instances allowed in this relation.
-     * If the number is not limited an asterix ('*') is returned. 
+     * If the number is not limited, CARDINALITY_MANY is returned. 
      */
-    public String getMaxCardinality();
+    public int getMaxCardinality();
     
     /**
      * Returns true if this is a 1 to many relation. This is the case if
@@ -141,9 +141,9 @@ public interface IRelation extends IIpsObjectPart {
     
     /**
      * Sets the maxmium number of target instances allowed in this relation.
-     * An unlimited number is represented by an asterix ('*'). 
+     * An unlimited number is represented by CARDINALITY_MANY.
      */
-    public void setMaxCardinality(String newValue);
+    public void setMaxCardinality(int newValue);
     
     /**
      * Returns true if this relation is can be customized during product definition.
@@ -262,7 +262,7 @@ public interface IRelation extends IIpsObjectPart {
     
     /**
      * Returns the maxmium number of product components allowed in this relation.
-     * If the number is not limited an asterix ('*') is returned. 
+     * If the number is not limited CARDINALITY_MANY is returned. 
      * <p>
      * Note that the maximum cardinality on the product side needn't be the same as the
      * one on the policy side. If the max cardinality on the policy side is 1, the
@@ -278,13 +278,13 @@ public interface IRelation extends IIpsObjectPart {
      * included but they must all be based on the same coverage type. In this case the max
      * cardinality on the policy side is * but 1 on the product side.
      */
-    public String getMaxCardinalityProductSide();
+    public int getMaxCardinalityProductSide();
     
     /**
      * Sets the maxmium number of target instances allowed in this relation.
-     * An unlimited number is represented by an asterix ('*'). 
+     * An unlimited number is represented by CARDINALITY_MANY. 
      */
-    public void setMaxCardinalityProductSide(String newValue);
+    public void setMaxCardinalityProductSide(int newValue);
     
     
 }

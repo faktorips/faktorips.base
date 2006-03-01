@@ -42,7 +42,6 @@ public class AttributesTable extends ViewPart {
         tableViewer.setLabelProvider(new AttributeLabelProvider());
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        tableViewer.setCellModifier(new AttributesTableCellModifier(tableViewer));
 
         // create column for product-name
         TableColumn col = new TableColumn(table, SWT.LEAD);

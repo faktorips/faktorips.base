@@ -219,13 +219,13 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         IRelation relation = type.getRelation("Vehicle");
         
         assertEquals(0, relation.getMinCardinality());
-        assertEquals("1", relation.getMaxCardinality());
+        assertEquals(1, relation.getMaxCardinality());
         
         MessageList ml = generation.validate();
         
         assertTrue(ml.isEmpty());
         
-        relation.setMaxCardinality("2");
+        relation.setMaxCardinality(2);
         relation.setMinCardinality(2);
         
         type.getIpsSrcFile().save(true, null);
@@ -240,7 +240,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         
         // test too many relations
         relation.setMinCardinality(0);
-        relation.setMaxCardinality("1");
+        relation.setMaxCardinality(1);
         type.getIpsSrcFile().save(true, null);
 
         ml = generation.validate();

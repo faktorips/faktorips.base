@@ -50,14 +50,14 @@ public class RelationTest extends IpsObjectTestCase {
         assertEquals("PolicyPart", relation.getTargetRoleSingular());
         assertEquals("PolicyParts", relation.getTargetRolePlural());
         assertEquals(1, relation.getMinCardinality());
-        assertEquals("*", relation.getMaxCardinality());
+        assertEquals(Integer.MAX_VALUE, relation.getMaxCardinality());
         assertFalse(relation.isProductRelevant());
         assertEquals("Policy.Parts", relation.getContainerRelation());
         assertEquals("Part.Policy", relation.getReverseRelation());
         assertEquals("PolicyPartType", relation.getTargetRoleSingularProductSide());
         assertEquals("PolicyPartTypes", relation.getTargetRolePluralProductSide());
         assertEquals(2, relation.getMinCardinalityProductSide());
-        assertEquals("3", relation.getMaxCardinalityProductSide());
+        assertEquals(3, relation.getMaxCardinalityProductSide());
     }
 
     /*
@@ -74,12 +74,12 @@ public class RelationTest extends IpsObjectTestCase {
         relation.setContainerRelation("super");
         relation.setReverseRelation("reverse");
         relation.setMinCardinality(2);
-        relation.setMaxCardinality("3");
+        relation.setMaxCardinality(3);
         relation.setDescription("blabla");
         relation.setTargetRoleSingularProductSide("targetRoleSingularProductSide");
         relation.setTargetRolePluralProductSide("targetRolePluralProductSide");
         relation.setMinCardinalityProductSide(4);
-        relation.setMaxCardinalityProductSide("5");
+        relation.setMaxCardinalityProductSide(5);
         
         Element element = relation.toXml(this.newDocument());
         
@@ -94,14 +94,14 @@ public class RelationTest extends IpsObjectTestCase {
         assertEquals("super", copy.getContainerRelation());
         assertEquals("reverse", copy.getReverseRelation());
         assertEquals(2, copy.getMinCardinality());
-        assertEquals("3", copy.getMaxCardinality());
+        assertEquals(3, copy.getMaxCardinality());
         assertFalse(copy.isProductRelevant());
         assertEquals("blabla", copy.getDescription());
         
         assertEquals("targetRoleSingularProductSide", copy.getTargetRoleSingularProductSide());
         assertEquals("targetRolePluralProductSide", copy.getTargetRolePluralProductSide());
         assertEquals(4, copy.getMinCardinalityProductSide());
-        assertEquals("5", copy.getMaxCardinalityProductSide());        
+        assertEquals(5, copy.getMaxCardinalityProductSide());        
     }
     
     /**
