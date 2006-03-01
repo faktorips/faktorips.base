@@ -104,4 +104,11 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
         return thisFct.matchUsingConversion(name, argTypes, matrix);
     }
 
+    /**
+     * Returns false;
+     */
+	public boolean hasVarArgs() {
+		return false;
+	}
+
 }
