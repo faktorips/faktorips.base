@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
  * <p>
  * In the message "The sum insured must be at least {0}." the sum insured
  * must be inserted at runtime depending on the chosen product. 
- */
+ */ 
 public class LocalizedStringsSet {
 
     // the qualified name, see above
