@@ -38,9 +38,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             JavaCodeFragmentBuilder methodsBuilder,
             IRelation containerRelation,
             List subRelations) throws CoreException {
-        if (containerRelation == null) {
-            throw new CoreException(new IpsStatus("container relation is null"));
-        }
         if (containerRelation.is1ToMany()) {
             build1ToManyRelation(memberVarsBuilder, methodsBuilder, containerRelation, subRelations);
         } else {
@@ -77,9 +74,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             }
         }
         createRelationContainsMethodImplementation(methodsBuilder, relation, target);
-        if (relation.isReadOnlyContainer()) {
-            createRelationGetAllMethodImplementation(methodsBuilder, relation, target, subRelations);
-        }
     }
 
     private void createRelationField(JavaCodeFragmentBuilder methodsBuilder,

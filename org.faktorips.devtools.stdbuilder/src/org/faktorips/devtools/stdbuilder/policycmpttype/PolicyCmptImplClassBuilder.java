@@ -383,8 +383,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         
         if (!relation.isReadOnlyContainer()) {
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
-            generateMethodGetAllReferencedObjectsForNoneContainerRelation(relation, methodsBuilder);
-        }
+            generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);
+        } 
         
         PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
                 this);
@@ -402,7 +402,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodGetNumOfForNoneContainerRelation(IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetNumOf(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetNumOfRefObjects(relation, methodsBuilder);
         methodsBuilder.openBracket();
         String field = getFieldNameForRelation(relation);
         if (relation.is1ToMany()) {
@@ -430,14 +430,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             List implRelations,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetNumOf(containerRelation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetNumOfRefObjects(containerRelation, methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("int num = 0;");
         for (int i = 0; i < implRelations.size(); i++) {
             methodsBuilder.appendln();
             IRelation relation = (IRelation)implRelations.get(i);
             methodsBuilder.append("num += ");
-            methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOf(relation));
+            methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(relation));
             methodsBuilder.append("();");
         }
         methodsBuilder.append("return num;");
@@ -453,9 +453,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateMethodGetAllReferencedObjectsForNoneContainerRelation(IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateMethodGetAllRefObjectsForNoneContainerRelation(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetAllReferencedObjects(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetAllRefObjects(relation, methodsBuilder);
         String className = getQualifiedClassName(relation.findTarget());
         String field = getFieldNameForRelation(relation);
         methodsBuilder.openBracket();
@@ -476,15 +478,54 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * <pre>
      * [Javadoc]
      * public ICoverage[] getCoverages() {
-     *     return (ICoverage[])coverages.toArray(new ICoverage[coverages.size()]);
+     *     ICoverage[] result = new ICoverage[getNumOfCoverages()];
+     *     ICoverage[] elements;
+     *     counter = 0;
+     *     elements = getTplCoverages();
+     *     for (int i = 0; i < elements.length; i++) {
+     *         result[counter] = elements[i];
+     *         counter++;
+     *     }
+     *     return result;
      * }
      * </pre>
      */
-    protected void generateMethodGetAllReferencedObjectsForContainerRelation(IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateMethodGetAllRefObjectsForContainerRelation(
+            IRelation relation,
+            List subRelations,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetAllReferencedObjects(relation, methodsBuilder);
-        String className = getQualifiedClassName(relation.findTarget()) + "[]";
+        interfaceBuilder.generateSignatureGetAllRefObjects(relation, methodsBuilder);
+        String classname = interfaceBuilder.getQualifiedClassName(relation.findTarget());
+        
         methodsBuilder.openBracket();
+        methodsBuilder.appendClassName(classname);
+        methodsBuilder.append("[] result = new ");       
+        methodsBuilder.appendClassName(classname);
+        methodsBuilder.append("[" + interfaceBuilder.getMethodNameGetNumOfRefObjects(relation) + "()];");       
+        
+        methodsBuilder.appendClassName(classname);   
+        methodsBuilder.append("[] elements;");
+        
+        methodsBuilder.append("int counter = 0;");
+        for (int i = 0; i < subRelations.size(); i++) {
+            IRelation subrel = (IRelation)subRelations.get(i);
+            if (subrel.is1ToMany()) {
+                methodsBuilder.append("elements = ");
+                methodsBuilder.append(interfaceBuilder.getMethodNameGetAllRefObjects(subrel));
+                methodsBuilder.append("();");
+                methodsBuilder.append("for(int i=0; i<elements.length; i++) {");
+                methodsBuilder.append("result[counter++] = elements[i]; }");
+            } else {
+                methodsBuilder.append("if(");
+                methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(subrel));
+                methodsBuilder.append("() > 0) {");
+                methodsBuilder.append("result[counter++] = ");
+                methodsBuilder.append(interfaceBuilder.getMethodNameGetRefObject(subrel));
+                methodsBuilder.append("();}");    
+            }
+        }
+        methodsBuilder.append("return result;");
         methodsBuilder.closeBracket();
     }
     
@@ -507,6 +548,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         
         generateMethodGetNumOfForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
+        generateMethodGetAllRefObjectsForContainerRelation(containerRelation, relations, methodsBuilder);
         
         
         PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(

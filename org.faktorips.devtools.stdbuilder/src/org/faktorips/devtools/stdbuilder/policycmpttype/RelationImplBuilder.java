@@ -104,25 +104,5 @@ public abstract class RelationImplBuilder {
         return body;
     }
     
-    protected JavaCodeFragment getContainerRelationGetNumOfMethodBody(IRelation containerRelation, 
-            List subRelations) throws CoreException{
-        /*
-         * int num = 0; 
-         * num += getNumOfHausratvertrag(); 
-         * num += getNumOfGlasvertrag();
-         * return num;
-         */
-        JavaCodeFragment body = new JavaCodeFragment(); 
-        body.append("int num = 0;");
-        for (int i = 0; i < subRelations.size(); i++) {
-            body.appendln();
-            IRelation subrel = (IRelation)subRelations.get(i);
-            body.append("num += ");
-            body.append(getNumOfMethod(subrel));
-            body.append("();");
-        }
-        body.append("return num;");
-        return body;
-    }
 
 }

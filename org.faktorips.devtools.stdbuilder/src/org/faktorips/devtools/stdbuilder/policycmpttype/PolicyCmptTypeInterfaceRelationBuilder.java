@@ -36,7 +36,6 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
 
     void build1To1Relation(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
         IPolicyCmptType target = relation.getIpsProject().findPolicyCmptType(relation.getTarget());
-        createRelationGetterMethodDeclaration(methodsBuilder, relation, target);
         if (!relation.isReadOnlyContainer()) {
             createRelationSetterMethodDeclaration(methodsBuilder, relation, target);
         }

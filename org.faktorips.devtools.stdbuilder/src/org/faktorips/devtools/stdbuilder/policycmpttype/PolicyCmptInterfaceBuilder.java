@@ -492,7 +492,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        generateMethodGetNumOf(relation, methodsBuilder);
+        generateMethodGetNumOfRefObjects(relation, methodsBuilder);
+        generateMethodGetRefObject(relation, methodsBuilder);
         PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
         relationBuilder.build1To1Relation(methodsBuilder, relation);
     }
@@ -501,8 +502,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        generateMethodGetNumOf(relation, methodsBuilder);
-        generateMethodGetAllReferencedObjects(relation, methodsBuilder);
+        generateMethodGetNumOfRefObjects(relation, methodsBuilder);
+        generateMethodGetAllRefObjects(relation, methodsBuilder);
         
         PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
         relationBuilder.build1ToManyRelation(methodsBuilder, relation);
@@ -515,12 +516,12 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public int getNumOfCoverages();
      * </pre>
      */
-    protected void generateMethodGetNumOf(
+    protected void generateMethodGetNumOfRefObjects(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_GET_NUM_OF", relation.getTargetRolePlural(), relation, methodsBuilder);
-        generateSignatureGetNumOf(relation, methodsBuilder);
+        generateSignatureGetNumOfRefObjects(relation, methodsBuilder);
         methodsBuilder.appendln(";");
     }
 
@@ -530,11 +531,11 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public int getNumOfCoverages()
      * </pre>
      */
-    public void generateSignatureGetNumOf(
+    public void generateSignatureGetNumOfRefObjects(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String methodName = getMethodNameGetNumOf(relation);
+        String methodName = getMethodNameGetNumOfRefObjects(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "int", methodName, new String[]{}, new String[]{});
     }
     
@@ -542,7 +543,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the number of referenced objects,
      * e.g. getNumOfCoverages()
      */
-    public String getMethodNameGetNumOf(IRelation relation) {
+    public String getMethodNameGetNumOfRefObjects(IRelation relation) {
         return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", relation.getTargetRolePlural());
     }
 
@@ -553,12 +554,12 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public ICoverage[] getCoverages();
      * </pre>
      */
-    protected void generateMethodGetAllReferencedObjects(
+    protected void generateMethodGetAllRefObjects(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         appendLocalizedJavaDoc("METHOD_GET_ALL_REF_OBJECTS", relation.getTargetRolePlural(), relation, methodsBuilder);
-        generateSignatureGetAllReferencedObjects(relation, methodsBuilder);
+        generateSignatureGetAllRefObjects(relation, methodsBuilder);
         methodsBuilder.appendln(";");
     }
 
@@ -568,11 +569,11 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public ICoverage[] getCoverages()
      * </pre>
      */
-    public void generateSignatureGetAllReferencedObjects(
+    public void generateSignatureGetAllRefObjects(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String methodName = getMethodNameGetAllReferencedObjects(relation);
+        String methodName = getMethodNameGetAllRefObjects(relation);
         String returnType = getQualifiedClassName(relation.findTarget()) + "[]";
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
     }
@@ -581,8 +582,47 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method returning the referenced objects,
      * e.g. getCoverages()
      */
-    public String getMethodNameGetAllReferencedObjects(IRelation relation) {
+    public String getMethodNameGetAllRefObjects(IRelation relation) {
         return getLocalizedText(relation, "METHOD_GET_ALL_REF_OBJECTS_NAME", relation.getTargetRolePlural());
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage getCoverage();
+     * </pre>
+     */
+    protected void generateMethodGetRefObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        generateSignatureGetRefObject(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public ICoverage getCoverage()
+     * </pre>
+     */
+    public void generateSignatureGetRefObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String methodName = getMethodNameGetRefObject(relation);
+        String returnType = getQualifiedClassName(relation.findTarget());
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
+    }
+    
+    /**
+     * Returns the name of the method returning the single referenced object.
+     * e.g. getCoverage()
+     */
+    public String getMethodNameGetRefObject(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_GET_REF_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
     /**
