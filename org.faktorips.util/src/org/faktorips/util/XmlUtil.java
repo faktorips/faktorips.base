@@ -43,7 +43,7 @@ public class XmlUtil {
         int date = calendar.get(GregorianCalendar.DATE);
         return calendar.get(GregorianCalendar.YEAR)
         	+ "-" + (month<10?"0"+month:""+month)
-        	+ "-" + (date<10?"0"+date:""+date);
+        	+ "-" + (date<10?"0"+date:""+date); 
     }
     
     /**
