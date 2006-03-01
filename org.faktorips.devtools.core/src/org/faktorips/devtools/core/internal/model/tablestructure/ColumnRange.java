@@ -3,6 +3,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -31,7 +32,8 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     private String from = ""; //$NON-NLS-1$
     private String to = ""; //$NON-NLS-1$
     private ColumnRangeType rangeType = ColumnRangeType.TWO_COLUMN_RANGE;
-    
+    private String parameterName = "";
+
     public ColumnRange(TableStructure parent, int id) {
         super(parent, id);
     }
@@ -145,6 +147,11 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
                 list.add(new Message("", text, Message.ERROR, this, PROPERTY_TO_COLUMN)); //$NON-NLS-1$
             }
         }
+        
+        if (StringUtils.isEmpty(parameterName)) {
+        	String text = "The parameter name attribute must not be empty.";
+        	list.add(new Message("", text, Message.ERROR, this, PROPERTY_PARAMETER_NAME));
+        }
     }
 
     /**
@@ -187,21 +194,25 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         }
         return null;
     }
-
+    
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getAssignmentParameterName()
+     * @see org.faktorips.devtools.core.model.tablestructure.IColumnRange#getParameterName()
      */
-    public String getAssignmentParameterName() {
-        if(rangeType.isOneColumnFrom() || rangeType.isTwoColumn()){
-            return from;
-        }
-        if(rangeType.isOneColumnTo()){
-            return to;
-        }
-        throw new IllegalStateException("The range type is not specified."); //$NON-NLS-1$
+    public String getParameterName() {
+    	return parameterName;
     }
+
+	/**
+	 * @param parameterName Sets the parameterName
+	 */
+	public void setParameterName(String parameterName) {
+		ArgumentCheck.notNull(parameterName);
+		String oldParameterName = this.parameterName;
+		this.parameterName = parameterName;
+		valueChanged(oldParameterName, parameterName);
+	}
 
     /**
      * Overridden IMethod.
@@ -222,6 +233,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         rangeType = ColumnRangeType.getValueById(element.getAttribute(PROPERTY_RANGE_TYPE));
         from = element.getAttribute(PROPERTY_FROM_COLUMN);
         to = element.getAttribute(PROPERTY_TO_COLUMN);
+        parameterName = element.getAttribute(PROPERTY_PARAMETER_NAME);
     }
     
     /**
@@ -234,6 +246,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         element.setAttribute(PROPERTY_RANGE_TYPE, rangeType.getId());
         element.setAttribute(PROPERTY_FROM_COLUMN, from);
         element.setAttribute(PROPERTY_TO_COLUMN, to);
+        element.setAttribute(PROPERTY_PARAMETER_NAME, parameterName);
     }
 
     /**

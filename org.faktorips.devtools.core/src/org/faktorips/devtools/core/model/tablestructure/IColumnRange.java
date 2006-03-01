@@ -10,6 +10,7 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
     public final static String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
     public final static String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$
     public final static String PROPERTY_TO_COLUMN = "toColumn"; //$NON-NLS-1$
+    public final static String PROPERTY_PARAMETER_NAME = "parameterName";
     
     /**
      * Returns the table structure this range belongs to.
@@ -75,5 +76,5 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
      * The name is supposed to be used in generated code for a variable or parameter that 
      * specifies a value assigned to this range. 
      */
-    public String getAssignmentParameterName();
+    public String getParameterName();
 }

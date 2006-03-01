@@ -153,7 +153,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                     }
 
                     IColumnRange range = getTableStructure().getRange(keyItems[j]);
-                    keyName.append(StringUtils.capitalise(range.getAssignmentParameterName()));
+                    keyName.append(StringUtils.capitalise(range.getParameterName()));
                 }
                 findMethodNames[i] = keyName.toString();
                 continue;
@@ -214,7 +214,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                 }
 
                 IColumnRange range = getTableStructure().getRange(keyItems[j]);
-                parameters.add(range.getAssignmentParameterName());
+                parameters.add(range.getParameterName());
             }
 
             if (isColumn) {

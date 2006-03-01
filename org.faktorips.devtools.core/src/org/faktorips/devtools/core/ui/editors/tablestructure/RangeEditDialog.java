@@ -42,6 +42,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
     private TextField fromField;
     private TextField toField;
     private EnumValueField rangeTypeField;
+    private TextField parameterNameField;
     private Button toLeft;
     private Button toRight;
     private Button toLeft2;
@@ -84,8 +85,11 @@ public class RangeEditDialog extends IpsPartEditDialog {
 				    public void valueChanged(FieldValueChangedEvent e) {
 				        adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue());
 				    }
-				    
 				});
+				uiToolkit.createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
+				Text parameterNameText = uiToolkit.createText(rangeTypeArea);
+				parameterNameField = new TextField(parameterNameText);
+				
 				Composite container = uiToolkit.createGridComposite(c, 3, false, false);
 				
 				Composite left = uiToolkit.createGridComposite(container, 1, false, true);
@@ -159,8 +163,6 @@ public class RangeEditDialog extends IpsPartEditDialog {
     }
     
     private void createButtons(Composite middle) {
-        Control spacer1 = uiToolkit.createVerticalSpacer(middle, 10);
-        
         toLeft = uiToolkit.createButton(middle, ""); //$NON-NLS-1$
         toLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
         toLeft.setImage(IpsPlugin.getDefault().getImage("ArrowLeft.gif")); //$NON-NLS-1$
@@ -254,6 +256,7 @@ public class RangeEditDialog extends IpsPartEditDialog {
         uiController.add(rangeTypeField, IColumnRange.PROPERTY_RANGE_TYPE);
         uiController.add(fromField, IColumnRange.PROPERTY_FROM_COLUMN);
         uiController.add(toField, IColumnRange.PROPERTY_TO_COLUMN);
+        uiController.add(parameterNameField, IColumnRange.PROPERTY_PARAMETER_NAME);
     }
     
     private void selectColumn(TextField field) {

@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -7,6 +8,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -127,6 +129,30 @@ public class ColumnRangeImplTest extends IpsObjectTestCase {
 			fail();
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
+		}
+    }
+    
+    /**
+     * Tests if validate correctly signals an error for the missing parameter name of a newly created
+     * range. Also tests if a correctly assigned parameter name does not raise an error on validate().
+     *
+     */
+    public void testValidate() {
+    	try {
+			// the empty range will signal an error for the missing parameter name
+    		MessageList list = range.validate().getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
+			if (list.isEmpty() || !list.containsErrorMsg()) {
+				fail();
+			}
+			
+			// an assigned parameter name must not signal an error message for the parameter name property
+			range.setParameterName("test");
+			list = range.validate().getMessagesFor(range, IColumnRange.PROPERTY_PARAMETER_NAME);
+			if (list.containsErrorMsg()) {
+				fail();
+			}
+		} catch (CoreException e) {
+			fail();
 		}
     }
 }
