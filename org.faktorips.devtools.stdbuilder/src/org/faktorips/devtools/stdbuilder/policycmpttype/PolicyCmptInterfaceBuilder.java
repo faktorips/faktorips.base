@@ -491,8 +491,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        generateMethodGetNumOf(relation, methodsBuilder);
 
+        generateMethodGetNumOf(relation, methodsBuilder);
         PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
         relationBuilder.build1To1Relation(methodsBuilder, relation);
     }
@@ -502,6 +502,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         generateMethodGetNumOf(relation, methodsBuilder);
+        generateMethodGetAllReferencedObjects(relation, methodsBuilder);
         
         PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
         relationBuilder.build1ToManyRelation(methodsBuilder, relation);
@@ -514,7 +515,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public int getNumOfCoverages();
      * </pre>
      */
-    void generateMethodGetNumOf(
+    protected void generateMethodGetNumOf(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
@@ -529,7 +530,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public int getNumOfCoverages()
      * </pre>
      */
-    void generateSignatureGetNumOf(
+    public void generateSignatureGetNumOf(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
@@ -543,6 +544,45 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     public String getMethodNameGetNumOf(IRelation relation) {
         return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", relation.getTargetRolePlural());
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage[] getCoverages();
+     * </pre>
+     */
+    protected void generateMethodGetAllReferencedObjects(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_GET_ALL_REF_OBJECTS", relation.getTargetRolePlural(), relation, methodsBuilder);
+        generateSignatureGetAllReferencedObjects(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public ICoverage[] getCoverages()
+     * </pre>
+     */
+    public void generateSignatureGetAllReferencedObjects(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String methodName = getMethodNameGetAllReferencedObjects(relation);
+        String returnType = getQualifiedClassName(relation.findTarget()) + "[]";
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
+    }
+    
+    /**
+     * Returns the name of the method returning the referenced objects,
+     * e.g. getCoverages()
+     */
+    public String getMethodNameGetAllReferencedObjects(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_GET_ALL_REF_OBJECTS_NAME", relation.getTargetRolePlural());
     }
 
     /**

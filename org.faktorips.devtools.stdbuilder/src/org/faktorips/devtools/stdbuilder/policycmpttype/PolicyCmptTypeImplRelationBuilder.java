@@ -24,7 +24,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
     private final static String RELATION_IMPLEMENTATION_CONTAINS_JAVADOC = "RELATION_CONTAINS_JAVADOC";
     private final static String RELATION_IMPLEMENTATION_GETALL_JAVADOC = "RELATION_IMPLEMENTATION_GETALL_JAVADOC";
     private final static String RELATION_IMPLEMENTATION_GETTER_JAVADOC = "RELATION_IMPLEMENTATION_GETTER_JAVADOC";
-    private final static String RELATION_IMPLEMENTATION_NUMOF_JAVADOC = "RELATION_IMPLEMENTATION_NUMOF_JAVADOC";
     private final static String RELATION_IMPLEMENTATION_REMOVE_JAVADOC = "RELATION_IMPLEMENTATION_REMOVE_JAVADOC";
     private final static String RELATION_IMPLEMENTATION_SETTER_JAVADOC = "RELATION_IMPLEMENTATION_SETTER_JAVADOC";
 
@@ -43,7 +42,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             throw new CoreException(new IpsStatus("container relation is null"));
         }
         if (containerRelation.is1ToMany()) {
-            createRelationGetNumOfMethodImplementation(methodsBuilder, containerRelation, subRelations);
             build1ToManyRelation(memberVarsBuilder, methodsBuilder, containerRelation, subRelations);
         } else {
             build1To1Relation(memberVarsBuilder, methodsBuilder, containerRelation, subRelations);
@@ -64,7 +62,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             createRelationSetterMethodImplementation(methodsBuilder, relation, target);
         }
         createRelationGetterMethodImplementation(methodsBuilder, relation, target, subRelations);
-        createRelationGetNumOfMethodImplementation(methodsBuilder, relation, subRelations);
     }
 
     void build1ToManyRelation(JavaCodeFragmentBuilder memberVarsBuilder,
@@ -80,7 +77,9 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             }
         }
         createRelationContainsMethodImplementation(methodsBuilder, relation, target);
-        createRelationGetAllMethodImplementation(methodsBuilder, relation, target, subRelations);
+        if (relation.isReadOnlyContainer()) {
+            createRelationGetAllMethodImplementation(methodsBuilder, relation, target, subRelations);
+        }
     }
 
     private void createRelationField(JavaCodeFragmentBuilder methodsBuilder,
@@ -217,36 +216,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
 
-    private void createRelationGetNumOfMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
-            IRelation relation,
-            List subRelations) throws CoreException {
-        String methodName = getNumOfMethod(relation);
-        JavaCodeFragment body;
-        if (subRelations == null) {
-            body = new JavaCodeFragment();
-            body.append("return ");
-            if (relation.isReadOnlyContainer()) {
-                body.append('0');
-            } else {
-                body.append(getField(relation));
-                if (relation.is1ToMany()) {
-                    body.append(".size()");
-                } else {
-                    body.append(" == null ? 0 : 1");
-                }
-            }
-            body.append(";");
-        } else {
-            body = getContainerRelationGetNumOfMethodBody(relation, subRelations);
-        }
-        String javaDoc = getPolicyCmptTypeImplBuilder().getLocalizedText(relation, 
-            RELATION_IMPLEMENTATION_NUMOF_JAVADOC, relation.getTargetRoleSingular());
-
-        methodsBuilder.method(Modifier.PUBLIC,
-            Datatype.PRIMITIVE_INT.getJavaClassName(), methodName, new String[0], new String[0],
-            body, javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-    }
-
     private void createRelationGetterMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
             IRelation relation,
             IPolicyCmptType target,
@@ -374,19 +343,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             Datatype.VOID.getJavaClassName(), methodName, new String[] { "refObject" },
             new String[] { classname }, body, javaDoc,
             JavaSourceFileBuilder.ANNOTATION_GENERATED);
-    }
-
-    protected void buildRelation(JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder,
-            IRelation relation) throws CoreException {
-        if (relation.isReadOnlyContainer()) {
-            return;
-        }
-        if (relation.is1ToMany()) {
-            build1ToManyRelation(memberVarsBuilder, methodsBuilder, relation, null);
-        } else {
-            build1To1Relation(memberVarsBuilder, methodsBuilder, relation, null);
-        }
     }
 
     private String getContainsMethodName(IRelation relation) {

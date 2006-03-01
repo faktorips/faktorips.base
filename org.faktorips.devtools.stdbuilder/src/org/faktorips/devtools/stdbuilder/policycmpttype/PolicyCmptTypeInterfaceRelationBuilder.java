@@ -44,7 +44,6 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
 
     void build1ToManyRelation(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
         IPolicyCmptType target = relation.getIpsProject().findPolicyCmptType(relation.getTarget());
-        createRelationGetAllMethodDeclaration(methodsBuilder, relation, target);
         createRelationContainsMethodDeclaration(methodsBuilder, relation, target);
         if (!relation.isReadOnlyContainer()) {
             createRelationAddMethodDeclaration(methodsBuilder, relation, target);
@@ -87,29 +86,6 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
             new String[] { getPolicyCmptTypeInterfaceBuilder().getQualifiedClassName(
                 target.getIpsSrcFile()) }, javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         methodsBuilder.appendln(";");
-    }
-
-    private String getPolicyCmptTypeInterfaceGetAllPcTypeMethodName(IRelation r) {
-        return "get" + StringUtils.capitalise(r.getTargetRolePlural());
-    }
-
-    private void createRelationGetAllMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation, IPolicyCmptType target)
-            throws CoreException {
-
-        String methodName = getPolicyCmptTypeInterfaceGetAllPcTypeMethodName(relation);
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_GETALL_JAVADOC,
-            relation.getTargetRoleSingular());
-        String returnType = getPolicyCmptTypeInterfaceBuilder().getQualifiedClassName(
-            target.getIpsSrcFile())
-                + "[]";
-        methodsBuilder.methodBegin(
-            Modifier.PUBLIC | Modifier.ABSTRACT, returnType, methodName, new String[0],
-            new String[0], javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        methodsBuilder.appendln(";");
-    }
-
-    private String getPolicyCmptTypeInterfaceGetNumOfMethodName(IRelation r) {
-        return "getAnzahl" + StringUtils.capitalise(r.getTargetRolePlural());
     }
 
     private String getPolicyCmptTypeInterfaceGetMethod(IRelation r) {
