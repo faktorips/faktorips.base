@@ -466,5 +466,13 @@
                menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor/basic"/>
       </viewerContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="org.faktorips.devtools.core.ui.FolderPropertiesPage"
+            id="org.faktorips.devtools.core.folderProperties"
+            name="%org.faktorips.devtools.core.folderProperties"
+            objectClass="org.eclipse.core.resources.IFolder"/>
+   </extension>
 
 </plugin>
