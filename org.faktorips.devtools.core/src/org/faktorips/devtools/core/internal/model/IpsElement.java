@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -12,7 +13,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 /**
  *
  */
-public abstract class IpsElement implements IIpsElement {
+public abstract class IpsElement implements IIpsElement, IAdaptable {
 
     protected String name;
     protected IIpsElement parent;
@@ -30,7 +31,21 @@ public abstract class IpsElement implements IIpsElement {
     IpsElement() {
     }
 
-    /** 
+    /**
+     * This method does not query any <code>AdapterManager</code>s to get the 
+     * adapter - if the requested adapter is an <code>IResource</code>, the
+     * enclosing resource is returned.
+     * 
+     * {@inheritDoc}
+     */
+    public Object getAdapter(Class adapter) {
+    	if (adapter.equals(IResource.class)) {
+    		return this.getEnclosingResource();
+    	}
+		return null;
+	}
+
+	/** 
      * Overridden.
      */
     public String getName() {

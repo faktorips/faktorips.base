@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class FolderPropertiesPage extends PropertyPage implements IWorkbenchPropertyPage, ModifyListener {
 
-	public static final QualifiedName SORTING_ORDER_PROPERTY = new QualifiedName(IpsPlugin.PLUGIN_ID, "FolderOrderNumber");
+	public static final QualifiedName SORTING_ORDER_PROPERTY = new QualifiedName(IpsPlugin.PLUGIN_ID, "FolderOrderNumber"); //$NON-NLS-1$
 	
 	/**
 	 * The input field for the order value
@@ -39,7 +39,7 @@ public class FolderPropertiesPage extends PropertyPage implements IWorkbenchProp
 		root.setLayout(new GridLayout(2, false));
 		root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		Label label = new Label(root, SWT.LEFT);
-		label.setText("Sorting order number: ");
+		label.setText(Messages.FolderPropertiesPage_labelSortNumber);
 		orderValue = new Text(root, SWT.BORDER);
 		orderValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		String value = null;;
@@ -50,7 +50,7 @@ public class FolderPropertiesPage extends PropertyPage implements IWorkbenchProp
 		}
 		
 		if (value == null) {
-			value = "0";
+			value = "0"; //$NON-NLS-1$
 		}
 		
 		orderValue.setText(value);
@@ -68,13 +68,13 @@ public class FolderPropertiesPage extends PropertyPage implements IWorkbenchProp
 			Integer.valueOf(orderValue.getText());
 			super.setMessage(null);
 		} catch (NumberFormatException e1) {
-			super.setMessage("The sorting oder number has to be a valid integer.", ERROR);
+			super.setMessage(Messages.FolderPropertiesPage_msgSortNumberInvalid, ERROR);
 		}
 		
 	}
 
 	protected void performDefaults() {
-		orderValue.setText("0");
+		orderValue.setText("0"); //$NON-NLS-1$
 		super.performDefaults();
 	}
 

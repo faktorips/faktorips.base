@@ -404,69 +404,6 @@
             searchResultClass="org.faktorips.devtools.core.ui.search.ReferencesToProductSearchResult"/>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <viewerContribution
-            id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu"
-            targetID="org.faktorips.devtools.core.ui.views.productDefinitionExplorer">
-         <menu
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team">
-            <separator name="team"/>
-         </menu>
-         <action
-               class="org.faktorips.devtools.core.team.CommitActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.commit"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.commit"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
-         <action
-               class="org.faktorips.devtools.core.team.CompareActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.compare"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.compare"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
-         <action
-               class="org.faktorips.devtools.core.team.ReplaceActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.replace"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.replace"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
-         <action
-               class="org.faktorips.devtools.core.team.UpdateActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.update"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team.update"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.team/team"/>
-         <menu
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new">
-            <separator name="system"/>
-            <separator name="product"/>
-         </menu>
-         <action
-               class="org.faktorips.devtools.core.ui.NewFolderActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.folder"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.folder"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new/system"/>
-         <action
-               class="org.faktorips.devtools.core.ui.NewProductCmptActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.product"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new.product"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.new/product"/>
-         <menu
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor">
-            <separator name="basic"/>
-         </menu>
-         <action
-               class="org.faktorips.devtools.core.internal.refactor.actions.RenameActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.rename"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.rename"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor/basic"/>
-         <action
-               class="org.faktorips.devtools.core.internal.refactor.actions.MoveActionDelegate"
-               id="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.move"
-               label="%org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor.move"
-               menubarPath="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.popupMenu.refactor/basic"/>
-      </viewerContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.propertyPages">
       <page
             class="org.faktorips.devtools.core.ui.FolderPropertiesPage"

@@ -35,37 +35,37 @@ public final class IpsObjectType {
      * Type for Policy component type.
      */
     public final static IpsObjectType BUSINESS_FUNCTION = 
-        new IpsObjectType("BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", "BusinessFunction.gif"); //$NON-NLS-1$  //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", "BusinessFunction.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     /**
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
-        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
 
     /**
      * Type for product component type.
      */
     public final static IpsObjectType PRODUCT_CMPT_TYPE = 
-        new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
 
     /**
      * Type for table structures.
      */
     public final static IpsObjectType TABLE_STRUCTURE = 
-        new IpsObjectType("TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", "TableStructure.gif"); //$NON-NLS-1$  //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", "TableStructure.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     /**
      * Type for product components.
      */
     public final static IpsObjectType PRODUCT_CMPT = 
-        new IpsObjectType("ProductCmpt", Messages.IpsObjectType_nameProductComponent, "ipsproduct", "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("ProductCmpt", Messages.IpsObjectType_nameProductComponent, "ipsproduct", "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     /**
      * Type for tables contents objects.
      */
     public final static IpsObjectType TABLE_CONTENTS = 
-        new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", "TableContents.gif"); //$NON-NLS-1$  //$NON-NLS-3$ //$NON-NLS-4$
+        new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", "TableContents.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     public final static IpsObjectType[] ALL_TYPES = new IpsObjectType[]
     	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS};

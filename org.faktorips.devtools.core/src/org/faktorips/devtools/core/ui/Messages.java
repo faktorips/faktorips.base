@@ -62,4 +62,10 @@ public class Messages extends NLS {
 	public static String AbstractCompletionProcessor_msgNoProject;
 
 	public static String AbstractCompletionProcessor_msgInternalError;
+
+	public static String FolderPropertiesPage_labelSortNumber;
+
+	public static String FolderPropertiesPage_msgSortNumberInvalid;
+
+	public static String NewFolderAction_name;
 }

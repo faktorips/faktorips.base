@@ -295,12 +295,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         active.getButton().addSelectionListener(new SelectionListener() {
 		
 			public void widgetDefaultSelected(SelectionEvent e) {
-				System.out.println("defSel"); //$NON-NLS-1$
-				
+				//nothing to do
 			}
 		
 			public void widgetSelected(SelectionEvent e) {
-				
 				enableCheckValueAgainstValueSetRule(((Button)e.getSource()).getSelection());
 			}
 		
@@ -371,6 +369,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     		rule.setCheckValueAgainstValueSetRule(true);
     		rule.setValidatedAttrSpecifiedInSrc(false);
     		rule.setDescription(Messages.AttributeEditDialog_descriptionContent);
+    		rule.setName(ruleNameField.getText());
 
     		initRuleUIController();
     		

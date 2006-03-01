@@ -18,7 +18,7 @@ import org.osgi.framework.Bundle;
 public class FaktorIpsClasspathVariableInitializer extends
 		ClasspathVariableInitializer {
 	
-	public final static String VARNAME_UTIL_BIN = "FAKTORIPS_UTIL"; //$NON-NLS-1
+	public final static String VARNAME_UTIL_BIN = "FAKTORIPS_UTIL"; //$NON-NLS-1$
 	public final static String VARNAME_UTIL_SRC = "FAKTORIPS_UTIL_SRC"; //$NON-NLS-1$
 	public final static String VARNAME_VALUETYPES_BIN = "FAKTORIPS_VALUETYPES"; //$NON-NLS-1$
 	public final static String VARNAME_VALUETYPES_SRC = "FAKTORIPS_VALUETYPES_SRC"; //$NON-NLS-1$

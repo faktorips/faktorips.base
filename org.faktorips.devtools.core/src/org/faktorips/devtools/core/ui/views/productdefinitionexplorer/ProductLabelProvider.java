@@ -13,7 +13,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 public class ProductLabelProvider implements ILabelProvider {
 
 	private List listeners = new ArrayList();
-
+	
     /**
      * Overridden
      */
@@ -46,30 +46,28 @@ public class ProductLabelProvider implements ILabelProvider {
      * Overridden
      */
 	public Image getImage(Object element) {
+		Image image = null;
         if (element instanceof IIpsPackageFragment) {
-            return IpsPlugin.getDefault().getImage("folder_open.gif"); //$NON-NLS-1$
+            image = IpsPlugin.getDefault().getImage("folder_open.gif"); //$NON-NLS-1$
         }
         else if (element instanceof IIpsElement) {
-			return ((IIpsElement)element).getImage();
+			image = ((IIpsElement)element).getImage();
 		}
-		else {
-		    return null;
-		}
+        
+        return image;
 	}
 
     /**
      * Overridden
      */
 	public String getText(Object element) {
+		String text = null;
         if (element instanceof IIpsPackageFragment) {
-            return ((IIpsPackageFragment)element).getFolderName();
-        }
-		if (element instanceof IIpsElement) {
-			return ((IIpsElement)element).getName();
+            text = ((IIpsPackageFragment)element).getFolderName();
+        } else if (element instanceof IIpsElement) {
+			text = ((IIpsElement)element).getName();
 		}
-		else {
-		    return null;
-		}
-	}
-
+		
+		return text;
+	}	
 }

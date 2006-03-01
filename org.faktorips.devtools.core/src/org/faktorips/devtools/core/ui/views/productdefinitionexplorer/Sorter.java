@@ -42,10 +42,10 @@ public class Sorter extends ViewerSorter {
 			String o2Value = f2.getPersistentProperty(FolderPropertiesPage.SORTING_ORDER_PROPERTY);
 			
 			if (o1Value == null) {
-				o1Value = "0";
+				o1Value = "0"; //$NON-NLS-1$
 			}
 			if (o2Value == null) {
-				o2Value = "0";
+				o2Value = "0"; //$NON-NLS-1$
 			}
 			
 			Integer o1Order = Integer.valueOf(o1Value);

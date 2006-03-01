@@ -1,63 +1,41 @@
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.ui.views.productdefinitionexplorer.ProductExplorer;
+import org.faktorips.devtools.core.ui.Messages;
 
 /**
- * Open a simple Dialog to ask the user for the name of a new folder. The parent for the new folder
- * is examined by asking the product definition explorer for the current selection. If this selection
- * does not lead to a valid IFolder-Resource, an Error-Dialog is opened and no folder is created. 
- * 
- * This action does only work if invoked on the product definition explorer.
+ * Create a new Folder
  * 
  * @author Thorsten Guenther
  */
-public class NewFolderActionDelegate implements IViewActionDelegate {
+public class NewFolderAction extends IpsAction {
 
-	/**
-	 * The product explorer this action will work on.
-	 */
-	private ProductExplorer pe;
+	private Shell shell;
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void init(IViewPart view) {
-		if (view instanceof ProductExplorer) {
-			pe = (ProductExplorer)view;
-		}
-
+	public NewFolderAction(Shell shell, ISelectionProvider selectionProvider) {
+		super(selectionProvider);
+		this.shell = shell;
+		setText(Messages.NewFolderAction_name);
 	}
 
-	/**
-	 * Tries to find a <code>IResource</code> as parent of the currently selected item. If this is not possible,
-	 * no folder could be created and an error dialog is shown to the user. 
-	 * 
+	/** 
 	 * {@inheritDoc}
 	 */
-	public void run(IAction action) {
-		if (pe == null) {
-			return;
-		}
-		
+	public void run(IStructuredSelection selection) {
 		try {
-			Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-			Object selected = ((IStructuredSelection)pe.getSelection()).getFirstElement();
+			Object selected  = selection.getFirstElement();
 			IResource res = null;
 			
 			if (selected instanceof IIpsProject) {
@@ -94,13 +72,6 @@ public class NewFolderActionDelegate implements IViewActionDelegate {
 			IpsPlugin.log(e);
 			return;
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		// nothing to do
 	}
 
 	/**

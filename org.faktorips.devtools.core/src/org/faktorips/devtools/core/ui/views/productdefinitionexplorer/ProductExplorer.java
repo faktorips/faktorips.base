@@ -43,9 +43,14 @@ import org.faktorips.devtools.core.ui.actions.IpsCutAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
+import org.faktorips.devtools.core.ui.actions.MoveAction;
+import org.faktorips.devtools.core.ui.actions.NewFolderAction;
+import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
+import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
@@ -71,7 +76,10 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 		tree.setContentProvider(new ProductContentProvider());
         
         ProductLabelProvider labelProvider = new ProductLabelProvider();
-		tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
+       
+        DecoratingLabelProvider decoratingLabelProvider = new DecoratingLabelProvider(labelProvider, IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator());
+        decoratingLabelProvider = new DecoratingLabelProvider(decoratingLabelProvider, new IpsProblemsLabelDecorator());
+		tree.setLabelProvider(decoratingLabelProvider);
 
         tree.setInput(IpsPlugin.getDefault().getIpsModel());
         tree.addDoubleClickListener(new DefaultDoubleclickListener(tree));
@@ -80,7 +88,9 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         
         IWorkbenchPartSite site = getSite();
         site.setSelectionProvider(this);
-        
+
+        // Create the menu completely manually because we dont wont any other actions 
+        // provided by other plugins put in here...
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
 
@@ -90,27 +100,49 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), new IpsDeleteAction(this));
         
         menumanager.add(new OpenEditorAction(tree));
+        menumanager.add(new IpsDeepCopyAction(this.getSite().getShell(), tree));
+        
+        MenuManager subMm = new MenuManager(Messages.ProductExplorer_submenuNew);
+        subMm.add(new NewFolderAction(this.getSite().getShell(), tree));
+        subMm.add(new NewProductComponentAction(this.getSite().getWorkbenchWindow()));
+        menumanager.add(subMm);
+
+
         menumanager.add(new Separator());
         menumanager.add(ActionFactory.CUT.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(ActionFactory.COPY.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(ActionFactory.PASTE.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(ActionFactory.DELETE.create(this.getSite().getWorkbenchWindow()));
-        menumanager.add(new IpsDeepCopyAction(this.getSite().getShell(), tree));
         menumanager.add(new Separator());
         menumanager.add(new ShowStructureAction());
         menumanager.add(new FindReferenceAction());
         menumanager.add(new ShowAttributesAction());
         menumanager.add(new Separator());
+
+        
+        subMm = new MenuManager(Messages.ProductExplorer_submenuRefactor);
+        subMm.add(new RenameAction(this.getSite().getShell(), tree));
+        subMm.add(new MoveAction(this.getSite().getShell(), tree));
+        menumanager.add(subMm);
+
+        subMm = new MenuManager(Messages.ProductExplorer_submenuTeam);
+        subMm.setRemoveAllWhenShown(false);
+        
+        subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionCommit, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.commit")); //$NON-NLS-2$ //$NON-NLS-1$
+        subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionUpdate, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.update")); //$NON-NLS-2$ //$NON-NLS-1$
+        subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionReplace, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replace")); //$NON-NLS-2$ //$NON-NLS-1$
+        subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionAdd, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.add")); //$NON-NLS-2$ //$NON-NLS-1$
+        menumanager.add(subMm);
         
         menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
         menumanager.add(new Separator());
 
         Menu menu = menumanager.createContextMenu(tree.getControl());
-
         tree.getControl().setMenu(menu);
 
-        site.registerContextMenu(menumanager, site.getSelectionProvider());
+        // Dont register this context menu to avoid menu-items contributed by other plugins.
+        // site.registerContextMenu(menumanager, site.getSelectionProvider());
     
         ResourcesPlugin.getWorkspace().addResourceChangeListener(new IpsResourceChangeListener(tree), IResourceChangeEvent.POST_CHANGE);
 

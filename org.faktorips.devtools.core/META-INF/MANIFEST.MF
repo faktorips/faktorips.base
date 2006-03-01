@@ -24,7 +24,9 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.dtflcommon;visibility:=reexport,
  org.faktorips.valuetypes,
  org.eclipse.search,
- org.eclipse.pde.ui
+ org.eclipse.pde.ui,
+ org.eclipse.team.cvs.ui,
+ org.eclipse.team.ui
 Eclipse-AutoStart: true
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,

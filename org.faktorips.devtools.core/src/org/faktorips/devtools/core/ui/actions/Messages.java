@@ -36,4 +36,7 @@ public class Messages extends NLS {
 	public static String AddIpsNatureAction_msgSourceInProjectImpossible;
 	public static String AddIpsNatureAction_msgErrorCreatingIPSProject;
 	public static String AddIpsNatureAction_titleAddFaktorIpsNature;
+	public static String NewProductComponentAction_name;
+	public static String RenameAction_name;
+	public static String MoveAction_name;
 }
