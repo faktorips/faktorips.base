@@ -44,7 +44,7 @@ public class XmlUtil {
         return calendar.get(GregorianCalendar.YEAR)
         	+ "-" + (month<10?"0"+month:""+month)
         	+ "-" + (date<10?"0"+date:""+date); 
-    }
+    } 
     
     /**
      * Parses the given xml String to a Gregorian calendar.
