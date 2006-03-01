@@ -73,8 +73,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         	
             addPage(propertiesPage);
             addPage(generationsPage);
-            addPage(descriptionPage);
             addPage(rulesPage);
+            addPage(descriptionPage);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

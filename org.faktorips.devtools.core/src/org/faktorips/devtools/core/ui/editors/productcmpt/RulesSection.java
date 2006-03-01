@@ -1,24 +1,19 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -71,17 +66,6 @@ public class RulesSection extends SimpleIpsPartsSection {
         /**
          * {@inheritDoc}
          */
-        protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
-        	Tree tree = toolkit.getFormToolkit().createTree(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
-        	TreeViewer viewer = new TreeViewer(tree);
-    		viewer.setContentProvider(createContentProvider());
-    		ILabelProvider lp = createLabelProvider();
-    		viewer.setLabelProvider(new MessageCueLabelProvider(lp));
-        	return viewer;
-        }
-        /**
-         * {@inheritDoc}
-         */
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
@@ -101,19 +85,19 @@ public class RulesSection extends SimpleIpsPartsSection {
         }
     	
     	
-    	private class ContentProvider implements ITreeContentProvider {
+    	private class ContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
     			ArrayList result = new ArrayList();
     			try {
 					IPolicyCmptType type = page.getProductCmpt().findPolicyCmptType();
 					while (type != null) {
-						result.add(type);
+						result.addAll(Arrays.asList(type.getRules()));
 						type = type.findSupertype();
 					}
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
 				}
-    			return (IPolicyCmptType[])result.toArray(new IPolicyCmptType[result.size()]);
+    			return (IValidationRule[])result.toArray(new IValidationRule[result.size()]);
     		}
     		
     		public void dispose() {
@@ -124,32 +108,6 @@ public class RulesSection extends SimpleIpsPartsSection {
     			// nothing todo
     		}
 
-			/**
-			 * {@inheritDoc}
-			 */
-			public Object[] getChildren(Object parentElement) {
-				if (parentElement instanceof IPolicyCmptType) {
-					return ((IPolicyCmptType)parentElement).getRules();
-				}
-				return new Object[0];
-			}
-
-			/**
-			 * {@inheritDoc}
-			 */
-			public Object getParent(Object element) {
-				if (element instanceof IValidationRule) {
-					return ((IValidationRule)element).getParent();
-				}
-				return null;
-			}
-
-			/**
-			 * {@inheritDoc}
-			 */
-			public boolean hasChildren(Object element) {
-				return getChildren(element).length > 0;
-			}
     	}
 
     }
