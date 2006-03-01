@@ -126,13 +126,6 @@ public class ProductCmptTypeRelation implements IProductCmptTypeRelation {
 	}
 
 	/**
-	 * Overridden.
-	 */
-	public boolean hasContainerRelation() {
-		return relation.hasContainerRelation();
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public IProductCmptTypeRelation findContainerRelation() throws CoreException {

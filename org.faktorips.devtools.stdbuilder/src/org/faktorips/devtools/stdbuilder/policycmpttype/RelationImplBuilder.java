@@ -1,6 +1,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -23,19 +25,10 @@ public abstract class RelationImplBuilder {
         this.pcType = pcType; 
     }
     
-    private IPolicyCmptType getPcType(){
-        return pcType;
-    }
-    
     protected JavaCodeFragment getContainerRelationGetAllMethodBody(IRelation container,
             String classname,
-            IRelation[] subRelations) throws CoreException {
+            List subRelations) throws CoreException {
         /*
-         * elements = super.getCoveragesRole(); 
-         * for (int i = 0; i < elements.length; i++) { 
-         *     result[i+count] = elements[i];
-         * 	   count++; 
-         * } 
          * elements = getPNCCoveragesRole(); 
          * for (int i = 0; i < elements.length; i++) { 
          *     result[i+count] = elements[i]; 
@@ -45,16 +38,9 @@ public abstract class RelationImplBuilder {
          */
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("int num = 0;");
-        if (StringUtils.isNotEmpty(getPcType().getSupertype()) && container.getPolicyCmptType()!= getPcType()) {
-            // if the container relation is not defined in this type, it must be defined somewhere up in the
-            // supertype hierarchy, so the Java type's supertype must also implement the method
-            code.append("num += super.");
-            code.append(getNumOfMethod(container));
-            code.append("();");
-        }
-        for (int i = 0; i < subRelations.length; i++) {
+        for (int i = 0; i < subRelations.size(); i++) {
             code.appendln();
-            IRelation subrel = subRelations[i];
+            IRelation subrel = (IRelation)subRelations.get(i);
             code.append("num += ");
             code.append(getNumOfMethod(subrel));
             code.append("();");
@@ -66,16 +52,8 @@ public abstract class RelationImplBuilder {
         code.appendClassName(classname);   
         code.append("[] elements;");
         code.append("num = 0;");
-        if (StringUtils.isNotEmpty(getPcType().getSupertype()) && container.getPolicyCmptType()!= getPcType()) {
-            // if the container relation is not defined in this type, it must be defined somewhere up in the
-            // supertype hierarchy, so the Java type's supertype must also implement the method
-            code.append("elements = super.");
-            code.append(getGetAllMethod(container));
-            code.append("();");
-            code.append("for(int i=0;i<elements.length;i++) { result[i] = elements[i]; num++;}");
-        }
-        for (int i = 0; i < subRelations.length; i++) {
-            IRelation subrel = subRelations[i];
+        for (int i = 0; i < subRelations.size(); i++) {
+            IRelation subrel = (IRelation)subRelations.get(i);
             if (is1ToMany(subrel)) {
                 code.append("elements = ");
                 code.append(getGetAllMethod(subrel));
@@ -101,28 +79,16 @@ public abstract class RelationImplBuilder {
      * @param body
      * @throws CoreException
      */
-    protected JavaCodeFragment getContainerRelationGetterMethodBody(IRelation container, IRelation[] subRelations)
+    protected JavaCodeFragment getContainerRelationGetterMethodBody(IRelation container, List subRelations)
             throws CoreException {
         /*
          * if(getNumOfGlasvertrag() > 0) { return getGlasvertrag(); } if(getNumOfHausratvertrag() > 0) { return
          * getHausratvertrag(); } return null;
          */
         JavaCodeFragment body = new JavaCodeFragment();
-        if (StringUtils.isNotEmpty(getPcType().getSupertype()) && container.getPolicyCmptType()!= getPcType()) {
-            // if the container relation is not defined in this type, it must be defined somewhere up in the
-            // supertype hierarchy, so the Java type's supertype must also implement the method
-            body.append("if(super.");
-            body.append(getNumOfMethod(container));
-            body.append("() > 0) ");
-            body.appendOpenBracket();
-            body.append("return super.");
-            body.append(getGetterMethod(container));
-            body.append("();");
-            body.appendCloseBracket();
-        }        
-        for (int i = 0; i < subRelations.length; i++) {
+        for (int i = 0; i < subRelations.size(); i++) {
             body.append("if(");
-            IRelation subrel = subRelations[i];
+            IRelation subrel = (IRelation)subRelations.get(i);
             if (subrel.is1ToMany()) {
                 throw new CoreException(new IpsStatus("Subrelation \"zu n\" unzulaessig, falls Superrelation \"zu 1\""));
             }
@@ -137,24 +103,20 @@ public abstract class RelationImplBuilder {
         body.append("return null;");
         return body;
     }
+    
     protected JavaCodeFragment getContainerRelationGetNumOfMethodBody(IRelation containerRelation, 
-            IRelation[] subRelations) throws CoreException{
+            List subRelations) throws CoreException{
         /*
-         * int num = 0; num+= super.getSuperrelation(); num += getNumOfHausratvertrag(); i = i + getNumOfGlasvertrag();
+         * int num = 0; 
+         * num += getNumOfHausratvertrag(); 
+         * num += getNumOfGlasvertrag();
          * return num;
          */
         JavaCodeFragment body = new JavaCodeFragment(); 
         body.append("int num = 0;");
-        if (StringUtils.isNotEmpty(getPcType().getSupertype()) && containerRelation.getPolicyCmptType()!= getPcType()) {
-            // if the container relation is not defined in this type, it must be defined somewhere up in the
-            // supertype hierarchy, so the Java type's supertype must also implement the method
-            body.append("num += super.");
-            body.append(getNumOfMethod(containerRelation));
-            body.append("();");
-        }
-        for (int i = 0; i < subRelations.length; i++) {
+        for (int i = 0; i < subRelations.size(); i++) {
             body.appendln();
-            IRelation subrel = subRelations[i];
+            IRelation subrel = (IRelation)subRelations.get(i);
             body.append("num += ");
             body.append(getNumOfMethod(subrel));
             body.append("();");

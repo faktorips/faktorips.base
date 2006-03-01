@@ -152,14 +152,14 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
             codeBuilder.classBegin(getClassModifier(), getUnqualifiedClassName(), getSuperclass(),
                 getExtendedInterfaces());
         }
-        JavaCodeFragmentBuilder memberVarCodeBuilder = new JavaCodeFragmentBuilder();
+        JavaCodeFragmentBuilder fieldCodeBuilder = new JavaCodeFragmentBuilder();
         JavaCodeFragmentBuilder methodCodeBuilder = new JavaCodeFragmentBuilder();
 
-        generateCodeForAttributes(memberVarCodeBuilder, methodCodeBuilder);
-        generateCodeForRelations(memberVarCodeBuilder, methodCodeBuilder);
-        generateOtherCode(memberVarCodeBuilder, methodCodeBuilder);
+        generateCodeForAttributes(fieldCodeBuilder, methodCodeBuilder);
+        generateCodeForRelations(fieldCodeBuilder, methodCodeBuilder);
+        generateOtherCode(fieldCodeBuilder, methodCodeBuilder);
 
-        codeBuilder.append(memberVarCodeBuilder.getFragment());
+        codeBuilder.append(fieldCodeBuilder.getFragment());
         generateConstructors(codeBuilder);
         codeBuilder.append(methodCodeBuilder.getFragment());
 
@@ -179,7 +179,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * methods.
      */
     protected abstract void generateOtherCode(
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     /**
@@ -206,7 +206,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * Loops over the attributes and generates code for an attribute if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForAttributes(JavaCodeFragmentBuilder memberVarsBuilder,
+    private void generateCodeForAttributes(JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IAttribute[] attributes = getProductCmptType().findPolicyCmptyType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
@@ -221,7 +221,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
                     if (helper == null) {
                         throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype));            
                     }
-                    generateCodeForAttribute(a, helper, memberVarsBuilder, methodsBuilder);
+                    generateCodeForAttribute(a, helper, fieldsBuilder, methodsBuilder);
                 } catch (Exception e) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "Error building attribute " + attributes[i].getName() + " of "
@@ -239,20 +239,20 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * 
      * @param attribute The attribute sourcecode should be generated for.
      * @param datatypeHelper The datatype code generation helper for the attribute's datatype.
-     * @param memberVarsBuilder The code fragment builder to build the memeber variabales section.
-     * @param memberVarsBuilder The code fragment builder to build the method section.
+     * @param fieldsBuilder The code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder The code fragment builder to build the method section.
      */
     protected void generateCodeForAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         if (attribute.isChangeable()) {
-            generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+            generateCodeForChangeableAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else if (attribute.getAttributeType()==AttributeType.CONSTANT) {
-            generateCodeForConstantAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+            generateCodeForConstantAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else if (attribute.isDerivedOrComputed()) {
-            generateCodeForComputedAndDerivedAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+            generateCodeForComputedAndDerivedAttribute(attribute, datatypeHelper, fieldsBuilder, methodsBuilder);
         } else {
             throw new RuntimeException("Attribute " + attribute +" has an unknown type " + attribute.getAttributeType());
         }
@@ -261,26 +261,26 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
     protected abstract void generateCodeForChangeableAttribute(
             IAttribute a, 
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     protected abstract void generateCodeForConstantAttribute(
             IAttribute a, 
             DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
     
     protected abstract void generateCodeForComputedAndDerivedAttribute(
             IAttribute a, 
             DatatypeHelper datatypeHelper, 
-            JavaCodeFragmentBuilder memberVarsBuilder, 
+            JavaCodeFragmentBuilder fieldsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     /*
      * Loops over the relations and generates code for a relation if it is valid.
      * Takes care of proper exception handling.
      */
-    private void generateCodeForRelations(JavaCodeFragmentBuilder memberVarsBuilder,
+    private void generateCodeForRelations(JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         HashMap containerRelations = new HashMap();
@@ -291,9 +291,9 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
                     continue;
                 }
                 if (relations[i].isAbstractContainer()) {
-                    generateCodeForContainerRelationDefinition(relations[i], memberVarsBuilder, methodsBuilder);
+                    generateCodeForContainerRelationDefinition(relations[i], fieldsBuilder, methodsBuilder);
                 } else {
-                    generateCodeForNoneContainerRelation(relations[i], memberVarsBuilder, methodsBuilder);                
+                    generateCodeForNoneContainerRelation(relations[i], fieldsBuilder, methodsBuilder);                
                 }
                 if (relations[i].implementsContainerRelation()) {
                     IProductCmptTypeRelation containerRel = relations[i].findContainerRelation();
@@ -310,7 +310,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        generateCodeForContainerRelationImplementation(getProductCmptType(), containerRelations, memberVarsBuilder, methodsBuilder);
+        generateCodeForContainerRelationImplementation(getProductCmptType(), containerRelations, fieldsBuilder, methodsBuilder);
     }
     
     /**
@@ -320,7 +320,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
     private void generateCodeForContainerRelationImplementation(
             IProductCmptType type,
             HashMap containerImplMap, 
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         IProductCmptTypeRelation[] relations = type.getRelations();
@@ -329,7 +329,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
                 try {
                     List implRelations = (List)containerImplMap.get(relations[i]);
                     if (implRelations!=null) {
-                        generateCodeForContainerRelationImplementation(relations[i], implRelations, memberVarsBuilder, methodsBuilder);
+                        generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
                     }
                 } catch (Exception e) {
                     addToBuildStatus(new IpsStatus("Error building container relation implementation. "
@@ -340,18 +340,17 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
         }
         IProductCmptType supertype = type.findSupertype();
         if (supertype!=null) {
-            generateCodeForContainerRelationImplementation(supertype, containerImplMap, memberVarsBuilder, methodsBuilder);
+            generateCodeForContainerRelationImplementation(supertype, containerImplMap, fieldsBuilder, methodsBuilder);
         }
     }
     
     /**
-     * Subclasses may provide an implementation generating methods and attributes based on the
-     * provided relation. This method is called for every valid relation instance assigned to the
-     * ProductCmptType object held by this builder.
+     * Generates the code for a none-container relation definition. The method is called for every 
+     * valid none-container relation defined in the product component type we currently build sourcecode for.
      * 
      * @param relation the relation source code should be generated for
-     * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
-     * @param memberVarsBuilder the code fragment builder to build the method section.
+     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder the code fragment builder to build the method section.
      * @throws Exception implementations of this method don't have to take care about rising checked
      *             exceptions. An exception that had been thrown leads to an interruption of the
      *             current build cycle of this builder. Alternatively it is possible to catch an
@@ -361,7 +360,7 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
     protected abstract void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
 
@@ -370,14 +369,13 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * valid container relation defined in the product component type we currently build sourcecode for.
      * 
      * @param containerRelation the container relation source code should be generated for.
-     * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
-     * @param memberVarsBuilder the code fragment builder to build the method section.
+     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder the code fragment builder to build the method section.
      */
     protected abstract void generateCodeForContainerRelationDefinition(
             IProductCmptTypeRelation containerRelation,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
-
 
     /**
      * Generates code for a container relation implementation. 
@@ -387,13 +385,13 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      * 
      * @param containerRelation the container relation source code should be generated for.
      * @param implementationRelations the relation implementing the container relation.
-     * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
-     * @param memberVarsBuilder the code fragment builder to build the method section.
+     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param methodsBuilder the code fragment builder to build the method section.
      */
     protected abstract void generateCodeForContainerRelationImplementation(
             IProductCmptTypeRelation containerRelation,
             List implementationRelations, 
-            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
 

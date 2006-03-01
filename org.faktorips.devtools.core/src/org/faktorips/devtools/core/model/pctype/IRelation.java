@@ -209,6 +209,11 @@ public interface IRelation extends IIpsObjectPart {
     public IRelation findReverseRelation() throws CoreException;
     
     /**
+     * Returns <code>true</code> if this relation implements a container relation, otherwise <code>false</code>.
+     */
+    public boolean implementsContainerRelation() throws CoreException;
+
+    /**
      * Searches the reverse relation and returns its container relation, if it exists and is of type reverse composition. 
      * Returns <code>null</code> otherwise.
      * 

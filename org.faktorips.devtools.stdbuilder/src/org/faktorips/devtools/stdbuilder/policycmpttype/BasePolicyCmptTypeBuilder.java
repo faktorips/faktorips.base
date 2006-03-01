@@ -1,12 +1,15 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -66,5 +69,34 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if (relation.is1ToMany()) {
+            generateCodeFor1ToManyRelation(relation, fieldsBuilder, methodsBuilder);
+        } else {
+            generateCodeFor1To1Relation(relation, fieldsBuilder, methodsBuilder);
+        }
+    }
+
+    /**
+     * Generates the code for a 1-to-many relation. The method is called for every 
+     * valid relation defined in the policy component type we currently build sourcecode for.
+     */
+    protected abstract void generateCodeFor1ToManyRelation(
+            IRelation relation,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception;
+
+    /**
+     * Generates the code for a 1-to-many relation. The method is called for every 
+     * valid relation defined in the policy component type we currently build sourcecode for.
+     */
+    protected abstract void generateCodeFor1To1Relation(
+            IRelation relation,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception;
     
 }

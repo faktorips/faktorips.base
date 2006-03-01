@@ -34,31 +34,21 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
         return cuBuilder;
     }
 
-    private void build1To1Relation(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
+    void build1To1Relation(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
         IPolicyCmptType target = relation.getIpsProject().findPolicyCmptType(relation.getTarget());
         createRelationGetterMethodDeclaration(methodsBuilder, relation, target);
-        createRelationGetNumOfMethodDeclaration(methodsBuilder, relation);
         if (!relation.isReadOnlyContainer()) {
             createRelationSetterMethodDeclaration(methodsBuilder, relation, target);
         }
     }
 
-    private void build1ToManyRelation(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
+    void build1ToManyRelation(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
         IPolicyCmptType target = relation.getIpsProject().findPolicyCmptType(relation.getTarget());
-        createRelationGetNumOfMethodDeclaration(methodsBuilder, relation);
         createRelationGetAllMethodDeclaration(methodsBuilder, relation, target);
         createRelationContainsMethodDeclaration(methodsBuilder, relation, target);
         if (!relation.isReadOnlyContainer()) {
             createRelationAddMethodDeclaration(methodsBuilder, relation, target);
             createRelationRemoveMethodDeclaration(methodsBuilder, relation, target);
-        }
-    }
-
-    protected void buildRelation(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
-        if (relation.is1ToMany()) {
-            build1ToManyRelation(methodsBuilder, relation);
-        } else {
-            build1To1Relation(methodsBuilder, relation);
         }
     }
 
@@ -120,17 +110,6 @@ public class PolicyCmptTypeInterfaceRelationBuilder {
 
     private String getPolicyCmptTypeInterfaceGetNumOfMethodName(IRelation r) {
         return "getAnzahl" + StringUtils.capitalise(r.getTargetRolePlural());
-    }
-
-    private void createRelationGetNumOfMethodDeclaration(JavaCodeFragmentBuilder methodsBuilder, IRelation relation) throws CoreException {
-        String javaDoc = getPolicyCmptTypeInterfaceBuilder().getLocalizedText(relation, RELATION_INTERFACE_NUMOF_JAVADOC,
-            relation.getTargetRoleSingular());
-
-        methodsBuilder.methodBegin(
-            Modifier.PUBLIC | Modifier.ABSTRACT, Integer.TYPE,
-            getPolicyCmptTypeInterfaceGetNumOfMethodName(relation), new String[0], new Class[0],
-            javaDoc, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        methodsBuilder.appendln(";");
     }
 
     private String getPolicyCmptTypeInterfaceGetMethod(IRelation r) {

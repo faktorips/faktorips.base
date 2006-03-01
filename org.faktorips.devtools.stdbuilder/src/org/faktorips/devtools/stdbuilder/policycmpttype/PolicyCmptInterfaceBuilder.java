@@ -1,5 +1,7 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -485,22 +487,72 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
                         | java.lang.reflect.Modifier.STATIC, dataTypeValueSet, fieldName, initialValueExpression);
     }
 
-    
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        generateMethodGetNumOf(relation, methodsBuilder);
 
-    protected void generateCodeForRelation(IRelation relation,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
-        relationBuilder.buildRelation(methodsBuilder, relation);
+        relationBuilder.build1To1Relation(methodsBuilder, relation);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        generateMethodGetNumOf(relation, methodsBuilder);
+        
+        PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
+        relationBuilder.build1ToManyRelation(methodsBuilder, relation);
     }
     
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public int getNumOfCoverages();
+     * </pre>
+     */
+    void generateMethodGetNumOf(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_GET_NUM_OF", relation.getTargetRolePlural(), relation, methodsBuilder);
+        generateSignatureGetNumOf(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public int getNumOfCoverages()
+     * </pre>
+     */
+    void generateSignatureGetNumOf(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String methodName = getMethodNameGetNumOf(relation);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "int", methodName, new String[]{}, new String[]{});
+    }
+    
+    /**
+     * Returns the name of the method returning the number of referenced objects,
+     * e.g. getNumOfCoverages()
+     */
+    public String getMethodNameGetNumOf(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", relation.getTargetRolePlural());
+    }
+
     /**
      * Empty implementation.
      * 
      * overidden
      */
-    protected void generateCodeForContainerRelations(IRelation containerRelation,
-            IRelation[] subRelations,
+    protected void generateCodeForContainerRelationImplementation(
+            IRelation containerRelation,
+            List subRelations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     }

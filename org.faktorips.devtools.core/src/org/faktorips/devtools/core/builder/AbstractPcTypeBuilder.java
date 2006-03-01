@@ -245,9 +245,74 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
     /*
+     * Loops over the relations and generates code for a relation if it is valid.
+     * Takes care of proper exception handling.
+     */
+    private void generateCodeForRelations(JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        HashMap containerRelations = new HashMap();
+        IRelation[] relations = getPcType().getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            try {
+                if (relations[i].validate().containsErrorMsg()) {
+                    continue;
+                }
+                generateCodeForRelation(relations[i], fieldsBuilder, methodsBuilder);                
+                if (relations[i].implementsContainerRelation()) {
+                    IRelation containerRel = relations[i].findContainerRelation();
+                    List implementationRelations = (List)containerRelations.get(containerRel);
+                    if (implementationRelations==null) {
+                        implementationRelations = new ArrayList();
+                        containerRelations.put(containerRel, implementationRelations);
+                    }
+                    implementationRelations.add(relations[i]);
+                }
+            } catch (Exception e) {
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation "
+                        + relations[i].getName() + " of "
+                        + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
+            }
+        }
+        generateCodeForContainerRelationImplementation(getPcType(), containerRelations, fieldsBuilder, methodsBuilder);
+    }
+    
+    /*
+     * Generates the code for container relation implementation for all container relations defined
+     * in the indicated type and it's supertypes.
+     */
+    private void generateCodeForContainerRelationImplementation(
+            IPolicyCmptType type,
+            HashMap containerImplMap, 
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        IRelation[] relations = type.getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            if (relations[i].isReadOnlyContainer()) {
+                try {
+                    List implRelations = (List)containerImplMap.get(relations[i]);
+                    if (implRelations!=null) {
+                        generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
+                    }
+                } catch (Exception e) {
+                    addToBuildStatus(new IpsStatus("Error building container relation implementation. "
+                        + "ContainerRelation: " + relations[i]
+                        + "Implementing Type: " + getPcType()));
+                }
+            }
+        }
+        IPolicyCmptType supertype = type.findSupertype();
+        if (supertype!=null) {
+            generateCodeForContainerRelationImplementation(supertype, containerImplMap, fieldsBuilder, methodsBuilder);
+        }
+    }
+    
+    
+    /*
      * Generates the code for all relations.
      */
-    private void generateCodeForRelations(JavaCodeFragmentBuilder memberVarsBuilder,
+    private void generateCodeForRelations2(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         createContainerRelationToSubRelationsMap();
         IRelation[] relations = getPcType().getRelations();
@@ -256,7 +321,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
             if (!relations[i].validate().containsErrorMsg()) {
 
                 try {
-                    generateCodeForRelation(relations[i], memberVarsBuilder, methodsBuilder);
+                	generateCodeForRelation(relations[i], memberVarsBuilder, methodsBuilder);
                 } catch (Exception e) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation " //$NON-NLS-1$
                             + relations[i].getName() + " of " //$NON-NLS-1$
@@ -271,8 +336,8 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
             IRelation[] subRelations = (IRelation[])subRelationList
                     .toArray(new IRelation[subRelationList.size()]);
             try {
-                generateCodeForContainerRelations(containerRelation, subRelations,
-                    memberVarsBuilder, methodsBuilder);
+//                generateCodeForContainerRelationImplementation(containerRelation, subRelations,
+//                    memberVarsBuilder, methodsBuilder);
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
                         "Error building container relation " + containerRelation.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
@@ -289,7 +354,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
         for (int i = 0; i < relations.length; i++) {
             if (!relations[i].validate().containsErrorMsg()) {
 
-                if (relations[i].hasContainerRelation()) {
+                if (relations[i].implementsContainerRelation()) {
                     addToContainerRelationMap(containerRelationNameToSubRelationMap, relations[i],
                         relations[i].getContainerRelation());
                 } else {
@@ -353,32 +418,26 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     }
 
     /**
-     * Subclasses may provide an implementation generating methods and attributes based on the
-     * provided IRelation. This method is called for every IRelation instance assigned to the
-     * ProductCmptType object hold by this builder.
+     * Generates the code for a relation. The method is called for every 
+     * valid relation defined in the policy component type we currently build sourcecode for.
      * 
      * @param relation the relation source code should be generated for
-     * @param memberVarsBuilder the code fragment builder to build the memeber variabales section.
-     * @param memberVarsBuilder the code fragment builder to build the method section.
-     * @throws Exception implementations of this method don't have to take care about rising checked
-     *             exceptions. An exception that had been thrown leads to an interruption of the
+     * @param fieldsBuilder the code fragment builder to build the memeber variabales section.
+     * @param fieldsBuilder the code fragment builder to build the method section.
+     * @throws Exception Any exception thrown leads to an interruption of the
      *             current build cycle of this builder. Alternatively it is possible to catch an
      *             exception and log it by means of the addToBuildStatus() method of the super
      *             class.
      * @see JavaSourceFileBuilder#addToBuildStatus(CoreException)
      * @see JavaSourceFileBuilder#addToBuildStatus(IStatus)
      */
-    protected abstract void generateCodeForRelation(IRelation relation,
-            JavaCodeFragmentBuilder memberVarsBuilder,
+    protected abstract void generateCodeForRelation(
+    		IRelation relation,
+            JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * The generateCodeForRelation() method is called for each relation assigned to the policy
-     * component type instance hold by an instance of this class. This method is called for each
-     * group of relations that have the same container relation. A group is provided to this method
-     * as an array of relations. This method is called the first time after the method
-     * generateCodeForRelation() was called for all relation instances of the policy component type
-     * instance.
+     * Generates the code for the implementation of an abstract container relation.
      * 
      * @param containerRelation the container relation that is common for the relations in the group
      * @param subRelations a group of relation instances that have the same container relation
@@ -390,8 +449,9 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
      *             exception and log it by means of the addToBuildStatus() methods of the super
      *             class.
      */
-    protected abstract void generateCodeForContainerRelations(IRelation containerRelation,
-            IRelation[] subRelations,
+    protected abstract void generateCodeForContainerRelationImplementation(
+    		IRelation containerRelation,
+            List subRelations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 

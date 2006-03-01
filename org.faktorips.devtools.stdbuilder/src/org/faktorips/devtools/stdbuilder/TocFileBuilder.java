@@ -35,8 +35,6 @@ import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
-import org.faktorips.runtime.ClassloaderRuntimeRepository;
-import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.TocEntryGeneration;
 import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.runtime.internal.DateTime;

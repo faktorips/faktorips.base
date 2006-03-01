@@ -2,6 +2,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.text.MessageFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -117,23 +118,70 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     "One of the builders this builder depends on is not set: " + builderName);
         }
     }
-
+    
     /**
      * Overriden.
+     */
+    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
+        generateConstructorWithoutProductCmptArg(builder);
+        if (getPcType().isConfigurableByProductCmptType()) {
+            generateConstructorWithProductCmptArg(builder);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean generatesInterface() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected String getSuperclass() throws CoreException {
+        String javaSupertype = DefaultPolicyComponent.class.getName();
+        if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
+            IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(
+                getPcType().getSupertype());
+            if (supertype != null) {
+                javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
+            }
+        }
+        return javaSupertype;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
+        return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+        String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
+        return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalise(name));
+    }
+
+    /**
+     * {@inheritDoc}
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) {
         builder.javaDoc(null, ANNOTATION_GENERATED);
     }
 
     /**
-     * Overriden.
+     * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
         return new String[] { getInterfaceName() };
     }
 
     /**
-     * Overriden.
+     * {@inheritDoc}
      */
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -317,30 +365,64 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /**
-     * Open up visibility for relation builder. Might get removed after the builders have been cleaned up.
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.builder.AbstractPcTypeBuilder#isContainerRelation(org.faktorips.devtools.core.model.pctype.IRelation)
+     * {@inheritDoc}
      */
-    public boolean isContainerRelation(IRelation relation) {
-        return super.isContainerRelation(relation);
+    protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
+                this);
+        relationBuilder.buildRelation(fieldsBuilder, methodsBuilder, relation);
     }
 
     /**
-     * Overriden.
+     * {@inheritDoc}
      */
-    protected void generateCodeForRelation(IRelation relation,
-            JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        //TODO needs to be refactored
+    protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
+        if (!relation.isReadOnlyContainer()) {
+            generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
+        }
+        
         PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
                 this);
-        relationBuilder.buildRelation(memberVarsBuilder, methodsBuilder, relation);
-
+        relationBuilder.buildRelation(fieldsBuilder, methodsBuilder, relation);
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public int getNumOfCoverages() {
+     *     return coverages.size();
+     * }
+     * </pre>
+     */
+    protected void generateMethodGetNumOfForNoneContainerRelation(IRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetNumOf(relation, methodsBuilder);
+        methodsBuilder.openBracket();
+        String field = getFieldNameForRelation(relation);
+        if (relation.is1ToMany()) {
+            methodsBuilder.appendln("return " + field + ".size();");
+        } else {
+            methodsBuilder.appendln("return " + field + "==null ? 0 : 1;");
+        }
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Returns the name of field/member var for the relation.
+     */
+    public String getFieldNameForRelation(IRelation relation) throws CoreException {
+        if (relation.is1ToMany()) {
+            return getJavaNamingConvention().getMemberVarName(relation.getTargetRolePlural());
+        } else {
+            return getJavaNamingConvention().getMemberVarName(relation.getTargetRoleSingular());
+        }
+        
     }
 
-    protected void generateCodeForContainerRelations(IRelation containerRelation,
-            IRelation[] relations,
+    protected void generateCodeForContainerRelationImplementation(IRelation containerRelation,
+            List relations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 //      TODO needs to be refactored
@@ -348,47 +430,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             this);
         relationBuilder.buildContainerRelation(memberVarsBuilder, methodsBuilder, containerRelation, relations);
 
-    }
-
-    /**
-     * Overriden.
-     */
-    protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
-        generateConstructorWithoutProductCmptArg(builder);
-        if (getPcType().isConfigurableByProductCmptType()) {
-            generateConstructorWithProductCmptArg(builder);
-        }
-    }
-
-    /**
-     * Overriden.
-     */
-    protected boolean generatesInterface() {
-        return false;
-    }
-
-    /**
-     * Overriden.
-     */
-    protected String getSuperclass() throws CoreException {
-        String javaSupertype = DefaultPolicyComponent.class.getName();
-        if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
-            IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(
-                getPcType().getSupertype());
-            if (supertype != null) {
-                javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
-            }
-        }
-        return javaSupertype;
-    }
-
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
-        return IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
-    }
-
-    public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-        return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalise(name));
     }
 
     private void buildValidation(JavaCodeFragmentBuilder builder) throws CoreException {

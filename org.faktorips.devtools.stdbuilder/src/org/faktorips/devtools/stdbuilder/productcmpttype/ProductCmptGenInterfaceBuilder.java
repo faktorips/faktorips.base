@@ -25,7 +25,6 @@ import org.faktorips.util.StringUtil;
  */
 public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuilder {
 
-    private ProductCmptGenImplClassBuilder implementationBuilder;
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
     
     public ProductCmptGenInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
@@ -33,16 +32,6 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         setMergeEnabled(true);
     }
     
-    /**
-     * Sets the implementation builder.
-     * The implementation builder is needed, as it defines the property names vor vualues and 
-     * default values. This can't be done in the interface builder, as only published attributes 
-     * are generated in the published interface.
-     */
-    public void setImplementationBuilder(ProductCmptGenImplClassBuilder implementationBuilder) {
-        this.implementationBuilder = implementationBuilder;
-    }
-
     /**
      * @param productCmptTypeInterfaceBuilder The productCmptTypeInterfaceBuilder to set.
      */

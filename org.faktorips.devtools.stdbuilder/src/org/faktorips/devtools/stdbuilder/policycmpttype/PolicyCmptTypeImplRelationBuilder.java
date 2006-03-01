@@ -38,11 +38,12 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
     protected void buildContainerRelation(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder,
             IRelation containerRelation,
-            IRelation[] subRelations) throws CoreException {
+            List subRelations) throws CoreException {
         if (containerRelation == null) {
             throw new CoreException(new IpsStatus("container relation is null"));
         }
         if (containerRelation.is1ToMany()) {
+            createRelationGetNumOfMethodImplementation(methodsBuilder, containerRelation, subRelations);
             build1ToManyRelation(memberVarsBuilder, methodsBuilder, containerRelation, subRelations);
         } else {
             build1To1Relation(memberVarsBuilder, methodsBuilder, containerRelation, subRelations);
@@ -53,10 +54,10 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         return policyCmptTypeImplCuBuilder;
     }
 
-    private void build1To1Relation(JavaCodeFragmentBuilder memberVarsBuilder,
+    void build1To1Relation(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder,
             IRelation relation,
-            IRelation[] subRelations) throws CoreException {
+            List subRelations) throws CoreException {
         IPolicyCmptType target = relation.getIpsProject().findPolicyCmptType(relation.getTarget());
         if (subRelations == null && !relation.isReadOnlyContainer()) {
             createRelationField(memberVarsBuilder, relation, target);
@@ -66,10 +67,10 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         createRelationGetNumOfMethodImplementation(methodsBuilder, relation, subRelations);
     }
 
-    private void build1ToManyRelation(JavaCodeFragmentBuilder memberVarsBuilder,
+    void build1ToManyRelation(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder,
             IRelation relation,
-            IRelation[] subRelations) throws CoreException {
+            List subRelations) throws CoreException {
         IPolicyCmptType target = relation.getIpsProject().findPolicyCmptType(relation.getTarget());
         if (subRelations == null) {
             if (!relation.isReadOnlyContainer()) {
@@ -79,7 +80,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
             }
         }
         createRelationContainsMethodImplementation(methodsBuilder, relation, target);
-        createRelationGetNumOfMethodImplementation(methodsBuilder, relation, subRelations);
         createRelationGetAllMethodImplementation(methodsBuilder, relation, target, subRelations);
     }
 
@@ -198,7 +198,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
     private void createRelationGetAllMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
             IRelation relation,
             IPolicyCmptType target,
-            IRelation[] subRelations) throws CoreException {
+            List subRelations) throws CoreException {
         String methodName = getGetAllMethod(relation);
         String classname = getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                 .getQualifiedClassName(target.getIpsSrcFile());
@@ -219,7 +219,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
 
     private void createRelationGetNumOfMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
             IRelation relation,
-            IRelation[] subRelations) throws CoreException {
+            List subRelations) throws CoreException {
         String methodName = getNumOfMethod(relation);
         JavaCodeFragment body;
         if (subRelations == null) {
@@ -250,7 +250,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
     private void createRelationGetterMethodImplementation(JavaCodeFragmentBuilder methodsBuilder,
             IRelation relation,
             IPolicyCmptType target,
-            IRelation[] subRelations) throws CoreException {
+            List subRelations) throws CoreException {
         String methodName = getGetterMethod(relation);
         String classname = getPolicyCmptTypeImplBuilder().getInterfaceBuilder()
                 .getQualifiedClassName(target.getIpsSrcFile());
@@ -379,7 +379,7 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
     protected void buildRelation(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder,
             IRelation relation) throws CoreException {
-        if (getPolicyCmptTypeImplBuilder().isContainerRelation(relation)) {
+        if (relation.isReadOnlyContainer()) {
             return;
         }
         if (relation.is1ToMany()) {

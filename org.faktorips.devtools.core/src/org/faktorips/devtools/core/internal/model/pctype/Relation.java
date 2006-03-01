@@ -355,7 +355,14 @@ public class Relation extends IpsObjectPart implements IRelation {
         return null;
     }
     
-    /** 
+    /**
+	 * {@inheritDoc}
+	 */
+	public boolean implementsContainerRelation() throws CoreException {
+		return StringUtils.isNotEmpty(containerRelation);
+	}
+
+	/** 
      * Overridden.
      */
     public void setContainerRelation(String newRelation) {

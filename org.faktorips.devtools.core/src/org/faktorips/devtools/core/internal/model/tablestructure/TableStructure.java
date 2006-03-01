@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -360,7 +361,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
     
     private ITableAccessFunction createFunction(int id, IUniqueKey key, IColumn column) {
-        TableAccessFunction fct = new TableAccessFunction(this, id);
+    	TableAccessFunction fct = new TableAccessFunction(this, id);
         fct.setAccessedColumn(column.getName());
         fct.setName(getName() + "." + column.getName()); //$NON-NLS-1$
         fct.setType(column.getDatatype());
