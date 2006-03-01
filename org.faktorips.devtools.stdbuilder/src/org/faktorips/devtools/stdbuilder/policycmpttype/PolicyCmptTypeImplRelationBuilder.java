@@ -68,7 +68,6 @@ public class PolicyCmptTypeImplRelationBuilder extends RelationImplBuilder {
         if (subRelations == null) {
             if (!relation.isReadOnlyContainer()) {
                 createRelationField(memberVarsBuilder, relation, target);
-                createRelationAddMethodImplementation(methodsBuilder, relation, target);
                 createRelationRemoveMethodImplementation(methodsBuilder, relation, target);
             }
         }

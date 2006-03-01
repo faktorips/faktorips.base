@@ -384,6 +384,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (!relation.isReadOnlyContainer()) {
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);
+            generateMethodAddObject(relation, methodsBuilder);
         } 
         
         PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
@@ -606,34 +607,48 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureAddRefObject(relation, methodsBuilder);
-        String field = getFieldNameForRelation(relation);
+        String fieldname = getFieldNameForRelation(relation);
+        String paramName = interfaceBuilder.getParamNameForAddObject(relation);
+        IRelation reverseRelation = relation.findReverseRelation();
         methodsBuilder.openBracket();
+        methodsBuilder.append("if (" + paramName + " == null) {");
+        methodsBuilder.append("throw new ");
+        methodsBuilder.appendClassName(NullPointerException.class);
+        methodsBuilder.append("(\"Can't add null to relation " + relation.getName() + " of \" + this); }");
+        methodsBuilder.append("if(");
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(".contains(" + paramName + ")) { return; }");
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(".add(" + paramName + ");");
+        if (reverseRelation != null) {
+            methodsBuilder.append(synchronizeReverseRelation(paramName, relation, reverseRelation));
+        }
         methodsBuilder.closeBracket();
     }
     
     private JavaCodeFragment synchronizeReverseRelation(
-            String fieldname,
+            String paramName,
             IRelation relation,
             IRelation reverseRelation) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("if(");
         if (!relation.is1ToMany()) {
-            code.append("refObject != null && ");
+            code.append(paramName + " != null && ");
         }
         if (reverseRelation.is1ToMany()) {
-            code.append("! refObject.");
+            code.append("! " + paramName + ".");
             code.append(interfaceBuilder.getMethodNameContainsObject(reverseRelation) + "(this)");
         } else {
-            code.append("refObject.");
+            code.append(paramName + ".");
             code.append(interfaceBuilder.getMethodNameGetRefObject(reverseRelation));
             code.append("() != this");
         }
         code.append(") {");
-        code.append("refObject.");
+        code.append(paramName + ".");
         if (reverseRelation.is1ToMany()) {
             code.append(interfaceBuilder.getMethodNameAddRefObject(reverseRelation));
         } else {
-            // TODO. body.append(interfaceBuilder.getMethodName(reverseRelation));
+            code.append(interfaceBuilder.getMethodNameSetObject(reverseRelation));
         }
         code.append("(this); }");
         return code;

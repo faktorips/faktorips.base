@@ -656,7 +656,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         
         String methodName = getMethodNameAddRefObject(relation);
         String className = getQualifiedClassName(relation.findTarget());
-        String paramName = getParamNameForAddRefObject(relation);
+        String paramName = getParamNameForAddObject(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{className});
     }
     
@@ -672,7 +672,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the paramter for the method adding an object to a multi-value relation,
      * e.g. objectToAdd
      */
-    public String getParamNameForAddRefObject(IRelation relation) {
+    public String getParamNameForAddObject(IRelation relation) {
         return getLocalizedText(relation, "PARAM_OBJECT_TO_ADD_NAME", relation.getTargetRoleSingular());
     }
     
