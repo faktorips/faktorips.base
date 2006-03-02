@@ -13,9 +13,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
-import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
+import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 
@@ -29,8 +28,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
     
     // edit fields
     private TextButtonField targetField;
-    private IntegerField minCardinalityField;
-    private TextField maxCardinalityField;
+    private CardinalityField minCardinalityField;
+    private CardinalityField maxCardinalityField;
 
     /**
      * @param parentShell
@@ -78,8 +77,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
         
         // create fields
         targetField = new TextButtonField(targetControl);
-        minCardinalityField = new IntegerField(minCardinalityText);
-        maxCardinalityField = new TextField(maxCardinalityText);
+        minCardinalityField = new CardinalityField(minCardinalityText);
+        maxCardinalityField = new CardinalityField(maxCardinalityText);
 
         return c;
     }

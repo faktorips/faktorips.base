@@ -32,7 +32,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     private String from = ""; //$NON-NLS-1$
     private String to = ""; //$NON-NLS-1$
     private ColumnRangeType rangeType = ColumnRangeType.TWO_COLUMN_RANGE;
-    private String parameterName = "";
+    private String parameterName = ""; //$NON-NLS-1$
 
     public ColumnRange(TableStructure parent, int id) {
         super(parent, id);
@@ -149,8 +149,8 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         }
         
         if (StringUtils.isEmpty(parameterName)) {
-        	String text = "The parameter name attribute must not be empty.";
-        	list.add(new Message("", text, Message.ERROR, this, PROPERTY_PARAMETER_NAME));
+        	String text = Messages.ColumnRange_msgParameterEmpty;
+        	list.add(new Message("", text, Message.ERROR, this, PROPERTY_PARAMETER_NAME)); //$NON-NLS-1$
         }
     }
 

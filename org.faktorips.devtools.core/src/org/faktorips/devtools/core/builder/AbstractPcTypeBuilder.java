@@ -269,8 +269,8 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
                     implementationRelations.add(relations[i]);
                 }
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation "
-                        + relations[i].getName() + " of "
+                throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation " //$NON-NLS-1$
+                        + relations[i].getName() + " of " //$NON-NLS-1$
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
@@ -296,9 +296,9 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
                         generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
                     }
                 } catch (Exception e) {
-                    addToBuildStatus(new IpsStatus("Error building container relation implementation. "
-                        + "ContainerRelation: " + relations[i]
-                        + "Implementing Type: " + getPcType()));
+                    addToBuildStatus(new IpsStatus("Error building container relation implementation. " //$NON-NLS-1$
+                        + "ContainerRelation: " + relations[i] //$NON-NLS-1$
+                        + "Implementing Type: " + getPcType())); //$NON-NLS-1$
                 }
             }
         }

@@ -19,9 +19,9 @@ import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
+import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
-import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -42,16 +42,16 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private TextButtonField targetField;
     private TextField targetRoleSingularField;
     private TextField targetRolePluralField;
-    private IntegerField minCardinalityField;
-    private TextField maxCardinalityField;
+    private CardinalityField minCardinalityField;
+    private CardinalityField maxCardinalityField;
     private CheckboxField productRelevantField;
     private TextField containerRelationField;
     private TextField reverseRelationField;
 
     private TextField targetRoleSingularProductSideField;
     private TextField targetRolePluralProductSideField;
-    private IntegerField minCardinalityProductSideField;
-    private TextField maxCardinalityProductSideField;
+    private CardinalityField minCardinalityProductSideField;
+    private CardinalityField maxCardinalityProductSideField;
     
     private ExtensionPropertyControlFactory extFactory;
     
@@ -150,8 +150,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
         targetField = new TextButtonField(targetControl);
         targetRoleSingularField = new TextField(targetRoleSingularText);
         targetRolePluralField = new TextField(targetRolePluralText);
-        minCardinalityField = new IntegerField(minCardinalityText);
-        maxCardinalityField = new TextField(maxCardinalityText);
+        minCardinalityField = new CardinalityField(minCardinalityText);
+        maxCardinalityField = new CardinalityField(maxCardinalityText);
         productRelevantField = new CheckboxField(productRelevantCheckbox);
         containerRelationField = new TextField(containerRelationText);
         reverseRelationField = new TextField(reverseRelationText);
@@ -181,8 +181,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
         // create fields
         targetRoleSingularProductSideField = new TextField(targetRoleSingularText);
         targetRolePluralProductSideField = new TextField(targetRolePluralText);
-        minCardinalityProductSideField = new IntegerField(minCardinalityText);
-        maxCardinalityProductSideField = new TextField(maxCardinalityText);
+        minCardinalityProductSideField = new CardinalityField(minCardinalityText);
+        maxCardinalityProductSideField = new CardinalityField(maxCardinalityText);
         
         return c;
     }

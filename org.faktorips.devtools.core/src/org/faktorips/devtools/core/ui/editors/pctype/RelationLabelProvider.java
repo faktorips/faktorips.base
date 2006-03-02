@@ -21,9 +21,18 @@ public class RelationLabelProvider extends DefaultLabelProvider {
         if (pos>0) {
             targetName = targetName.substring(pos+1);
         }
+        
+        String maxC;
+        if (relation.getMaxCardinality() == Integer.MAX_VALUE) {
+        	maxC = "*"; //$NON-NLS-1$
+        }
+        else {
+        	maxC = ""+relation.getMaxCardinality(); //$NON-NLS-1$
+        }
+        
         return relation.getTargetRoleSingular() +
             " : " + targetName +  //$NON-NLS-1$
         	" [" + relation.getMinCardinality() + //$NON-NLS-1$
-        	".." + relation.getMaxCardinality() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        	".." + maxC + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

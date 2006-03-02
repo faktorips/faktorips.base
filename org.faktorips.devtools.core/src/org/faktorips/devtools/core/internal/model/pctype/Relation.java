@@ -541,7 +541,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         	minCardinality = 0;
         }
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
-        if (max.equals("*")) {
+        if (max.equals("*")) { //$NON-NLS-1$
         	maxCardinality = CARDINALITY_MANY;
         }
         else {
@@ -562,7 +562,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         	minCardinalityProductSide = 0;
         }
         String maxPS = element.getAttribute(PROPERTY_MAX_CARDINALITY_PRODUCTSIDE);
-        if (maxPS.equals("*")) {
+        if (maxPS.equals("*")) { //$NON-NLS-1$
         	maxCardinalityProductSide = CARDINALITY_MANY;
         }
         else {

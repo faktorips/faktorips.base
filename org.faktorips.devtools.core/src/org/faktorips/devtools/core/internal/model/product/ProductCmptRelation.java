@@ -183,7 +183,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
                     try {
 						int maxType = relType.getMaxCardinality();
 						if (maxCardinality > maxType) {
-							String text = NLS.bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax, ""+maxCardinality, ""+relType.getMaxCardinality());
+							String text = NLS.bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax, ""+maxCardinality, ""+relType.getMaxCardinality()); //$NON-NLS-1$ //$NON-NLS-2$
 							list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY));
 						}
 					} catch (NumberFormatException e) {
@@ -222,7 +222,7 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
 			minCardinality = 0;
 		}
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
-        if (max.equals("*")) {
+        if (max.equals("*")) { //$NON-NLS-1$
         	maxCardinality = CARDINALITY_MANY;
         }
         else {

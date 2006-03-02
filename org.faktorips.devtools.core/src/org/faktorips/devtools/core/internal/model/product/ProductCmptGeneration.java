@@ -373,7 +373,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			
 			int maxCardinality = relationTypes[i].getMaxCardinality();
 			if (maxCardinality < relations.length) {
-				Object[] params = {new Integer(relations.length), ""+maxCardinality, relationTypes[i].getTargetRoleSingularProductSide()};
+				Object[] params = {new Integer(relations.length), ""+maxCardinality, relationTypes[i].getTargetRoleSingularProductSide()}; //$NON-NLS-1$
 				String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
 				ObjectProperty prop1 = new ObjectProperty(this, null);
 				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);

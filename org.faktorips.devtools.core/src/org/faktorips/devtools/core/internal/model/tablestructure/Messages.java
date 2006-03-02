@@ -48,4 +48,6 @@ public class Messages extends NLS {
 	public static String UniqueKey_msgTooLessItems;
 
 	public static String UniqueKey_msgKeyItemMismatch;
+
+	public static String ColumnRange_msgParameterEmpty;
 }

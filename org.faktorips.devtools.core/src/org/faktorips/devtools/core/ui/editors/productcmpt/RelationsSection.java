@@ -50,12 +50,13 @@ import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsCutAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
+import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
-import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.memento.Memento;
 
 
 /**
@@ -68,8 +69,8 @@ public class RelationsSection extends IpsSection {
 	private IProductCmptGeneration generation;
 	private Text kardMin;
 	private Text kardMax;
-	private IntegerField kardMinField;
-	private TextField kardMaxField;
+	private CardinalityField kardMinField;
+	private CardinalityField kardMaxField;
 	private TreeViewer treeViewer;
 	private IEditorSite site;
 	private boolean fGenerationDirty;
@@ -163,6 +164,8 @@ public class RelationsSection extends IpsSection {
 		site.getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(), new IpsPasteAction(treeViewer, site.getShell()));
 		site.getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), new IpsDeleteAction(treeViewer));
 
+		menumanager.add(new NewProductCmptRelationAction(site.getShell(), treeViewer, this));
+		
         menumanager.add(ActionFactory.CUT.create(site.getWorkbenchWindow()));
         menumanager.add(ActionFactory.COPY.create(site.getWorkbenchWindow()));
         menumanager.add(ActionFactory.PASTE.create(site.getWorkbenchWindow()));
@@ -219,6 +222,27 @@ public class RelationsSection extends IpsSection {
         return (String[])result.toArray(new String[result.size()]);
     }
 
+    public IProductCmptRelation newRelation(IProductCmptTypeRelation relationType) {
+    	return generation.newRelation(relationType.getName());
+    }
+    
+    private Memento syncpoint;
+    private boolean isDirty = true;
+    
+    public void setSyncpoint() {
+    	syncpoint = generation.newMemento();
+    	isDirty = generation.getIpsObject().getIpsSrcFile().isDirty();
+    }
+    
+    public void reset() {
+    	if (syncpoint != null) {
+        	generation.setState(syncpoint);
+    	}
+    	if (!isDirty) {
+    		generation.getIpsObject().getIpsSrcFile().markAsClean();
+    	}
+    }
+    
     /**
      * Creates a new relation which connects the currently displayed generation with the given target.
      * The max cardinality for the new relation is set to the max cardinality of the given type.
@@ -271,8 +295,8 @@ public class RelationsSection extends IpsSection {
 				kardMin.setEnabled(true);
 				kardMax.setEnabled(true);	    		
 
-	    		kardMinField = new IntegerField(kardMin);
-	    		kardMaxField = new TextField(kardMax);
+	    		kardMinField = new CardinalityField(kardMin);
+	    		kardMaxField = new CardinalityField(kardMax);
 	    		
 				uiController.add(kardMinField, rel, Relation.PROPERTY_MIN_CARDINALITY);
 				uiController.add(kardMaxField, rel, Relation.PROPERTY_MAX_CARDINALITY);
