@@ -48,9 +48,15 @@ public class AttributesSection extends SimpleIpsPartsSection {
             super.addDeleteListener(new IDeleteListener() {
 			
 				public void aboutToDelete(IIpsObjectPart part) {
+					IValidationRule rule = findValidationRule(part);
+
+					if (rule == null) {
+						// nothing to do if no special rule is defined.
+						return;
+					}
+					
 					String msg = Messages.AttributesSection_deleteMessage;
 					boolean delete = MessageDialog.openQuestion(getShell(), Messages.AttributesSection_deleteTitle, msg);
-					IValidationRule rule = findValidationRule(part);
 					if (delete && rule != null) {
 						rule.delete();
 					}
