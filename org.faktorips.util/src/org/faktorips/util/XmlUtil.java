@@ -30,7 +30,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * A collection of utility methods for xml handling.
- * 
+ *  
  * @author Jan Ortmann
  */
 public class XmlUtil {
