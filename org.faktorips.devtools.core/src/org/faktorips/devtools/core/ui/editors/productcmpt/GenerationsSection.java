@@ -3,11 +3,13 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.Locale;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
@@ -17,6 +19,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
@@ -81,6 +84,10 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     	}
     }
     
+    private IProductCmptGeneration getActiveGeneration() {
+    	return (IProductCmptGeneration)page.getProductCmptEditor().getActiveGeneration();
+    }
+    
     /**
      * A composite that shows a policy component's attributes in a viewer and 
      * allows to edit attributes in a dialog, create new attributes and delete attributes.
@@ -113,8 +120,15 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
-
+        
         /**
+         * {@inheritDoc}
+         */
+        protected ILabelProvider createLabelProvider() {
+			return new LabelProvider();
+		}
+
+		/**
          * Overridden method.
          * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
          */ 
@@ -141,6 +155,37 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     			// nothing todo
     		}
+    	}
+    	
+    	private class LabelProvider extends DefaultLabelProvider  {
+
+			public String getText(Object element) {
+				if (!(element instanceof IProductCmptGeneration)) {
+					return super.getText(element);
+				}
+				
+				if (element.equals(getActiveGeneration())) {
+					return super.getText(element) + Messages.GenerationsSection_displayPostfix;
+				}
+				
+				return super.getText(element);
+			}
+
+			public Image getImage(Object element) {
+				if (element instanceof IProductCmptGeneration) {
+					IProductCmptGeneration generation = (IProductCmptGeneration)element;
+					IProductCmptGeneration activeGen = (IProductCmptGeneration)generation.getProductCmpt().findGenerationEffectiveOn(IpsPreferences.getWorkingDate()); 
+					if (generation.equals(activeGen)) {
+						return super.getImage(element);
+					}
+					else {
+						return IpsPlugin.getDefault().getImage("GenerationDisabled.gif"); //$NON-NLS-1$
+					}
+				}
+				else {
+					return super.getImage(element);
+				}
+			}
     	}
 
     }

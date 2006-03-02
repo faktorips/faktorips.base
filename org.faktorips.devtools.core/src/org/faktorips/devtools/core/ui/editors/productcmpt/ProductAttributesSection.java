@@ -124,7 +124,7 @@ public class ProductAttributesSection extends IpsSection {
 			validToString = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().format(date.getTime());
 		}
 
-		validRange += " - " + validToString;
+		validRange += " - " + validToString; //$NON-NLS-1$
 		this.generationText = toolkit.createText(rootPane);
 		this.generationText.setText(validRange);
 		this.generationText.setEnabled(false);
@@ -147,7 +147,7 @@ public class ProductAttributesSection extends IpsSection {
 		try {
 			controller.add(new TextField(pcTypeText), generation.getProductCmpt().findProductCmptType(), IProductCmptType.PROPERTY_NAME);
 		} catch (CoreException e) {
-			pcTypeText.setText("<not found>");
+			pcTypeText.setText(Messages.ProductAttributesSection_noProductCmptType);
 		}
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();

@@ -109,4 +109,8 @@ public class Messages extends NLS {
 
 	public static String RulesSection_title;
 
+	public static String GenerationsSection_displayPostfix;
+
+	public static String ProductAttributesSection_noProductCmptType;
+
 }
