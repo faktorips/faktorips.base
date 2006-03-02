@@ -100,10 +100,14 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
 	 */
 	public IProductCmptTypeRelation findProductCmptTypeRelation() throws CoreException {
 		IProductCmptType productCmptType = getProductCmpt().findProductCmptType();
-		if (productCmptType==null) {
-			return null;
+		IProductCmptTypeRelation relation = null;
+		
+		while (productCmptType != null && relation == null) {
+			relation = productCmptType.getRelation(productCmptTypeRelation);
+			productCmptType = productCmptType.findSupertype();
 		}
-		return productCmptType.getRelation(productCmptTypeRelation);
+		
+		return relation;
 	}
 
 	void setProductCmptTypeRelation(String newRelation) {

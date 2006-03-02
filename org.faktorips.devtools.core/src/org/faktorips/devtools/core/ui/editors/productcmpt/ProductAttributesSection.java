@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -8,7 +9,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -23,8 +23,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
@@ -111,16 +111,10 @@ public class ProductAttributesSection extends IpsSection {
 		// create label and text for the currently displayed generation
 		String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()); 
 		toolkit.createLabel(rootPane, generationConceptName);
-		this.generationText = toolkit.createText(rootPane);
-		this.generationText.setText(this.generation.getName());
-		this.generationText.setEnabled(false);
-		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
-		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		
+		DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+		String validRange = format.format(this.generation.getValidFrom().getTime());
 
-		// Create label and text to display the valid-to date
-		String text = NLS.bind(Messages.ProductAttributesSection_labelGenerationValidTo, generationConceptName);
-		toolkit.createLabel(rootPane, text);
-		Text validTo = toolkit.createText(rootPane);
 		GregorianCalendar date = generation.getValidTo();
 		String validToString;
 		if (date == null) {
@@ -129,12 +123,14 @@ public class ProductAttributesSection extends IpsSection {
 		else {
 			validToString = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().format(date.getTime());
 		}
-		validTo.setText(validToString);
-		validTo.setEnabled(false);
+
+		validRange += " - " + validToString;
+		this.generationText = toolkit.createText(rootPane);
+		this.generationText.setText(validRange);
+		this.generationText.setEnabled(false);
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 
-		
 		// create label and text control for the policy component type
 		// this product component is based on.
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
@@ -148,9 +144,12 @@ public class ProductAttributesSection extends IpsSection {
 		createEditControls();
 		
 		IpsObjectUIController controller = new IpsObjectUIController(generation.getIpsObject());
-		controller.add(new TextField(pcTypeText), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
+		try {
+			controller.add(new TextField(pcTypeText), generation.getProductCmpt().findProductCmptType(), IProductCmptType.PROPERTY_NAME);
+		} catch (CoreException e) {
+			pcTypeText.setText("<not found>");
+		}
 		uiMasterController.add(controller);
-		
 		uiMasterController.updateUI();
 	}
 
