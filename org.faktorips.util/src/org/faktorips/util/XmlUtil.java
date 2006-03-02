@@ -116,7 +116,7 @@ public class XmlUtil {
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
-            public void fatalError(SAXParseException e) throws SAXException {
+            public void fatalError(SAParseException e) throws SAXException {
                 throw e;
             }
             public void warning(SAXParseException e) throws SAXException {
