@@ -1,5 +1,5 @@
 package org.faktorips.fl;
-
+ 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
 
