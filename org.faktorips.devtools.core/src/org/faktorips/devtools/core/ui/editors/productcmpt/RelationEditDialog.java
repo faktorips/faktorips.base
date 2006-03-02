@@ -63,8 +63,10 @@ public class RelationEditDialog extends IpsPartEditDialog {
         ProductCmptRefControl targetControl = new ProductCmptRefControl(relation.getIpsProject(), workArea, uiToolkit);
         try {
             IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation();
-            String targetPolicyCmptType = typeRelation.findTarget().findPolicyCmptyType().getQualifiedName();
-            targetControl.setPolicyCmptType(targetPolicyCmptType, true);
+            if (typeRelation != null) {
+            	String targetPolicyCmptType = typeRelation.findTarget().findPolicyCmptyType().getQualifiedName();
+            	targetControl.setPolicyCmptType(targetPolicyCmptType, true);
+            }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
