@@ -1,6 +1,7 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.BuilderHelper;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -369,29 +372,52 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if (!relation.isReadOnlyContainer()) {
+            IPolicyCmptType target = relation.findTarget();
+            generateFieldForRelation(relation, target, methodsBuilder);
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetRefObjectForNoneContainerRelation(relation, methodsBuilder);
+            generateMethodSetRefObject(relation, methodsBuilder);
         }
-        PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
-                this);
-        relationBuilder.build1To1Relation(fieldsBuilder, methodsBuilder, relation, null);
     }
 
     /**
      * {@inheritDoc}
      */
     protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if (!relation.isReadOnlyContainer()) {
+        IPolicyCmptType target = relation.findTarget();
+        if (relation.isReadOnlyContainer()) {
+            generateMethodContainsObjectForContainerRelation(relation, methodsBuilder);
+        } else {
+            generateFieldForRelation(relation, target, methodsBuilder);
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
+            generateMethodContainsObjectForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);
             generateMethodAddObject(relation, methodsBuilder);
-        } 
-        
-        PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
-                this);
-        relationBuilder.build1ToManyRelation(fieldsBuilder, methodsBuilder, relation, null);
+            generateMethodRemoveObject(relation, methodsBuilder);
+        }
     }
     
+    protected void generateFieldForRelation(
+            IRelation relation,
+            IPolicyCmptType target,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String javaClassname = relation.is1ToMany() ? List.class.getName()
+                : getQualifiedClassName(target);
+        JavaCodeFragment initialValueExpression = new JavaCodeFragment();
+        if (relation.is1ToMany()) {
+            initialValueExpression.append("new ");
+            initialValueExpression.appendClassName(ArrayList.class);
+            initialValueExpression.append("()");
+        } else {
+            initialValueExpression.append("null");
+        }
+        String comment = getLocalizedText(relation, "FIELD_RELATION_JAVADOC", relation.getName());
+        methodsBuilder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        methodsBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, javaClassname, getFieldNameForRelation(relation),
+            initialValueExpression);
+    }
+
     /**
      * Code sample:
      * <pre>
@@ -442,6 +468,64 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append("();");
         }
         methodsBuilder.append("return num;");
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public boolean containsCoverage(ICoverage objectToTest) {
+     *     return coverages.contains(objectToTest);
+     * }
+     * </pre>
+     */
+    protected void generateMethodContainsObjectForNoneContainerRelation(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
+        String paramName = interfaceBuilder.getParamNameForContainsObject(relation);
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureContainsObject(relation, methodsBuilder);
+        
+        methodsBuilder.openBracket();
+        String field = getFieldNameForRelation(relation);
+        methodsBuilder.appendln("return " + field + ".contains(" + paramName + ");");
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public boolean containsCoverage(ICoverage objectToTest) {
+     *     ICoverage[] targets = getCoverages();
+     *     for (int i = 0; i < targets.length; i++) {
+     *         if (targets[i] == objectToTest)
+     *             return true;
+     *     }
+     * return false;
+     * }
+     * </pre>
+     */
+    protected void generateMethodContainsObjectForContainerRelation(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
+        String paramName = interfaceBuilder.getParamNameForContainsObject(relation);
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureContainsObject(relation, methodsBuilder);
+        
+        methodsBuilder.openBracket();
+        methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(relation.findTarget()));
+        methodsBuilder.append("[] targets = ");
+        methodsBuilder.append(interfaceBuilder.getMethodNameGetAllRefObjects(relation));
+        methodsBuilder.append("();");
+        methodsBuilder.append("for(int i=0;i < targets.length;i++) {");
+        methodsBuilder.append("if(targets[i] == " + paramName + ") return true; }");
+        methodsBuilder.append("return false;");
         methodsBuilder.closeBracket();
     }
     
@@ -604,9 +688,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodAddObject (
             IRelation relation, 
-            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureAddRefObject(relation, methodsBuilder);
+        interfaceBuilder.generateSignatureAddObject(relation, methodsBuilder);
         String fieldname = getFieldNameForRelation(relation);
         String paramName = interfaceBuilder.getParamNameForAddObject(relation);
         IRelation reverseRelation = relation.findReverseRelation();
@@ -622,6 +706,103 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(".add(" + paramName + ");");
         if (reverseRelation != null) {
             methodsBuilder.append(synchronizeReverseRelation(paramName, relation, reverseRelation));
+        }
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void removeMotorCoverage(IMotorCoverage objectToRemove) {
+     *     if (objectToRemove == null) {
+     *          return;
+     *      }
+     *      if (motorCoverages.remove(objectToRemove)) {
+     *          objectToRemove.setMotorPolicy(null);
+     *      }
+     *  }
+     * </pre>
+     */
+    protected void generateMethodRemoveObject(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        String fieldname = getFieldNameForRelation(relation);
+        String paramName = interfaceBuilder.getParamNameForRemoveObject(relation);
+        IRelation reverseRelation = relation.findReverseRelation();
+
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureRemoveObject(relation, methodsBuilder);
+
+        methodsBuilder.openBracket();
+        methodsBuilder.append("if(" + paramName + "== null) {return;}");
+        
+        if (reverseRelation != null) {
+            methodsBuilder.append("if(");
+        }
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(".remove(" + paramName + ")");
+        if (reverseRelation != null) {
+            methodsBuilder.append(") {");
+            methodsBuilder.append(cleanupOldReference(relation, reverseRelation));
+            methodsBuilder.append(" }");
+        } else {
+            methodsBuilder.append(';');
+        }
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void setCoverage(ICoverage newObject) {
+     *     if (refObject == homeContract)
+     *         return;
+     *     IHomeContract oldRefObject = homeContract;
+     *     homeContract = null;
+     *     if (oldRefObject != null) {
+     *          oldRefObject.setHomePolicy(null);
+     *     }
+     *     homeContract = (HomeContract) refObject;
+     *     if (refObject != null && refObject.getHomePolicy() != this) {
+     *         refObject.setHomePolicy(this);
+     *     }
+     * }
+     * </pre>
+     */
+    protected void generateMethodSetRefObject(
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        
+        String fieldname = getFieldNameForRelation(relation);
+        String paramName = interfaceBuilder.getParamNameForSetObject(relation);
+        IPolicyCmptType target = relation.findTarget();
+        IRelation reverseRelation = relation.findReverseRelation();
+
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureSetObject(relation, methodsBuilder);
+        
+        methodsBuilder.openBracket();
+        methodsBuilder.append("if(" + paramName + " == ");
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(") return;");
+        if (reverseRelation != null) {
+            methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
+            methodsBuilder.append(" oldRefObject = ");
+            methodsBuilder.append(fieldname);
+            methodsBuilder.append(';');
+            methodsBuilder.append(fieldname);
+            methodsBuilder.append(" = null;");
+            methodsBuilder.append(cleanupOldReference(relation, reverseRelation));
+        }
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(" = (");
+        methodsBuilder.appendClassName(getQualifiedClassName(target));
+        methodsBuilder.append(")" + paramName +";");
+        if (reverseRelation != null) {
+            methodsBuilder.append(synchronizeReverseRelation(fieldname, relation, reverseRelation));
         }
         methodsBuilder.closeBracket();
     }
@@ -646,12 +827,31 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         code.append(") {");
         code.append(paramName + ".");
         if (reverseRelation.is1ToMany()) {
-            code.append(interfaceBuilder.getMethodNameAddRefObject(reverseRelation));
+            code.append(interfaceBuilder.getMethodNameAddObject(reverseRelation));
         } else {
             code.append(interfaceBuilder.getMethodNameSetObject(reverseRelation));
         }
         code.append("(this); }");
         return code;
+    }
+    
+    private JavaCodeFragment cleanupOldReference(IRelation relation, IRelation reverseRelation) throws CoreException {
+        JavaCodeFragment body = new JavaCodeFragment();
+        String param = interfaceBuilder.getParamNameForRemoveObject(relation);
+        if (relation.is1ToMany()) {
+            body.append(param + ".");
+        } else {
+            body.append("if(oldRefObject != null) { oldRefObject.");
+        }
+        if (reverseRelation.is1ToMany()) {
+            body.append(interfaceBuilder.getMethodNameRemoveObject(reverseRelation) + "(this);");
+        } else {
+            body.append(interfaceBuilder.getMethodNameSetObject(reverseRelation) + "(null);");
+        }
+        if (!relation.is1ToMany()) {
+            body.append(" }");
+        }
+        return body;
     }
 
     /**
@@ -680,10 +880,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             generateMethodGetRefObjectForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
         }
-        PolicyCmptTypeImplRelationBuilder relationBuilder = new PolicyCmptTypeImplRelationBuilder(
-            this);
-        relationBuilder.buildContainerRelation(memberVarsBuilder, methodsBuilder, containerRelation, relations);
-
     }
 
     private void buildValidation(JavaCodeFragmentBuilder builder) throws CoreException {
@@ -764,8 +960,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         /*
          * public void validateSelf(MessageList ml) { super.validateSelf(ml); }
          */
-
-        // TODO Methodenname von pcType holen
         String methodName = "validateSelf";
         String javaDoc = getLocalizedText(getIpsObject(), VALIDATESELF_IMPLEMENTATION_JAVADOC, getPcType()
                 .getName());

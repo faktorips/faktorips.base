@@ -506,10 +506,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         generateMethodGetAllRefObjects(relation, methodsBuilder);
         generateMethodContainsObject(relation, methodsBuilder);
         if (!relation.isReadOnlyContainer()) {
-            generateMethodAddRefObject(relation, methodsBuilder);
+            generateMethodAddObject(relation, methodsBuilder);
+            generateMethodRemoveObject(relation, methodsBuilder);
         }
-        PolicyCmptTypeInterfaceRelationBuilder relationBuilder = new PolicyCmptTypeInterfaceRelationBuilder(this);
-        relationBuilder.build1ToManyRelation(methodsBuilder, relation);
     }
     
     /**
@@ -632,29 +631,29 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Code sample:
      * <pre>
      * [Javadoc]
-     * public void addCoverage(ICoverage coverage);
+     * public void addCoverage(ICoverage objectToAdd);
      * </pre>
      */
-    protected void generateMethodAddRefObject(
+    protected void generateMethodAddObject(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        appendLocalizedJavaDoc("METHOD_ADD_REF_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
-        generateSignatureAddRefObject(relation, methodsBuilder);
+        appendLocalizedJavaDoc("METHOD_ADD_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        generateSignatureAddObject(relation, methodsBuilder);
         methodsBuilder.appendln(";");
     }
 
     /**
      * Code sample:
      * <pre>
-     * public void addCoverage()
+     * public void addCoverage(ICoverage objectToAdd)
      * </pre>
      */
-    public void generateSignatureAddRefObject(
+    public void generateSignatureAddObject(
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String methodName = getMethodNameAddRefObject(relation);
+        String methodName = getMethodNameAddObject(relation);
         String className = getQualifiedClassName(relation.findTarget());
         String paramName = getParamNameForAddObject(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{className});
@@ -664,8 +663,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * Returns the name of the method adding an object to a multi-value relation,
      * e.g. getCoverage()
      */
-    public String getMethodNameAddRefObject(IRelation relation) {
-        return getLocalizedText(relation, "METHOD_ADD_REF_OBJECT_NAME", relation.getTargetRoleSingular());
+    public String getMethodNameAddObject(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_ADD_OBJECT_NAME", relation.getTargetRoleSingular());
     }
 
     /**
@@ -674,6 +673,54 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     public String getParamNameForAddObject(IRelation relation) {
         return getLocalizedText(relation, "PARAM_OBJECT_TO_ADD_NAME", relation.getTargetRoleSingular());
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void removeCoverage(ICoverage objectToRemove);
+     * </pre>
+     */
+    protected void generateMethodRemoveObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_REMOVE_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        generateSignatureRemoveObject(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * public void removeCoverage(ICoverage objectToRemove)
+     * </pre>
+     */
+    public void generateSignatureRemoveObject(
+            IRelation relation,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        String methodName = getMethodNameRemoveObject(relation);
+        String className = getQualifiedClassName(relation.findTarget());
+        String paramName = getParamNameForRemoveObject(relation);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName, new String[]{paramName}, new String[]{className});
+    }
+    
+    /**
+     * Returns the name of the method removing an object from a multi-value relation,
+     * e.g. removeCoverage()
+     */
+    public String getMethodNameRemoveObject(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_REMOVE_OBJECT_NAME", relation.getTargetRoleSingular());
+    }
+
+    /**
+     * Returns the name of the paramter for the method removing an object from a multi-value relation,
+     * e.g. objectToRemove
+     */
+    public String getParamNameForRemoveObject(IRelation relation) {
+        return getLocalizedText(relation, "PARAM_OBJECT_TO_REMOVE_NAME", relation.getTargetRoleSingular());
     }
     
     /**
