@@ -137,6 +137,27 @@
         	<delete file="${temp_jarfile}"/>
         	
         </target>
+	
+	
+	<!-- build jarfile -->
+    <target name="buildjarWithoutTest" depends="compile">
+    	
+		<!-- create a temp-jarfile and move it after successful creation to right place -->
+    	
+    	<jar destfile="${temp_jarfile}" >
+			<fileset dir="${classes}" >
+				<patternset>
+					<exclude name="**/*.java"/>
+					<exclude name="**/*Test*"/>
+				</patternset>
+			</fileset>
+    	</jar>
+    		
+    	<delete file="${jarfile}" />
+    	<copy file="${temp_jarfile}" tofile="${jarfile}"/>
+    	<delete file="${temp_jarfile}"/>
+    	
+    </target>
 
 	
 </project>
