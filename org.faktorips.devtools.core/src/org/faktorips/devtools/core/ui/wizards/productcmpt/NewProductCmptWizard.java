@@ -15,20 +15,18 @@ import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
 
 /**
- *
+ * Wizard to create a new product component.
  */
 public class NewProductCmptWizard extends NewIpsObjectWizard {
     
     private ProductCmptPage productCmptPage;
     
     public NewProductCmptWizard() {
-        super(IpsObjectType.PRODUCT_CMPT_TYPE);
+        super(IpsObjectType.PRODUCT_CMPT);
     }
     
     /** 
-     * Overridden method.
-     * @throws JavaModelException
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createFirstPage()
+     * {@inheritDoc}
      */
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         productCmptPage = new ProductCmptPage(selection);
@@ -36,17 +34,15 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createAdditionalPages()
+     * {@inheritDoc}
      */
     protected void createAdditionalPages() {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#finishPdObject(org.faktorips.devtools.core.model.IIpsObject)
+     * {@inheritDoc}
      */
-    protected void finishPdObject(IIpsObject pdObject) throws CoreException {
+    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)pdObject;
         productCmpt.setPolicyCmptType(productCmptPage.getPolicyCmptType());
         GregorianCalendar date = IpsPreferences.getWorkingDate();
