@@ -97,20 +97,18 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	/**
 	 * Sets the value that is to display in the Control of this EditField. It
 	 * expectes the values that are contained in the EnumValueSet this EditField
-	 * was initialized with. Other values cause a RuntimeException to be thrown.
+	 * was initialized with. Other values are ignored.
 	 */
 	public void setValue(Object newValue) {
+
+		if (!datatype.isParsable((String) newValue)) {
+			return;
+		}
 
 		if (datatype.isSupportingNames()) {
 			super.setValue(getEnumDatatype().getValueName((String) newValue));
 			return;
 		}
-		if (datatype.isParsable((String) newValue)) {
-			super.setValue(newValue);
-			return;
-		}
-		throw new IllegalArgumentException(
-				"The provided value is not one of the valid values for this field: " //$NON-NLS-1$
-						+ newValue);
+		super.setValue(newValue);
 	}
 }

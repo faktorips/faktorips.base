@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -457,11 +458,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (includeVoid) {
             result.add(Datatype.VOID);
         }
-        ((IpsModel)getIpsModel()).getValueDatatypes(this, result);
+        getValueDatatypes(this, result, new HashSet());
+    }
+    
+    private void getValueDatatypes(IIpsProject ipsProject, Set result, Set visitedProjects){
         try {
-            IIpsProject[] projects = getIpsObjectPath().getReferencedIpsProjects();
+            ((IpsModel)getIpsModel()).getValueDatatypes(ipsProject, result);
+            IIpsProject[] projects = ipsProject.getIpsObjectPath().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
-                ((IpsModel)getIpsModel()).getValueDatatypes(projects[i], result);
+                if(!visitedProjects.contains(projects[i])){
+                	visitedProjects.add(projects[i]);
+                	getValueDatatypes(projects[i], result, visitedProjects);
+                }
             }
         } catch (CoreException e) {
             IpsPlugin.log(e);

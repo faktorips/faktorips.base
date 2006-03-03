@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueTextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -227,8 +228,8 @@ public class ProductAttributesSection extends IpsSection {
 				editControls.add(combo);
 			}
 			else if (datatype != null && datatype instanceof EnumDatatype) {
-				Combo combo = toolkit.createCombo(rootPane, (EnumDatatype)toDisplay.findPcTypeAttribute().findDatatype());
-				ComboField field = new ComboField(combo);
+				Combo combo = toolkit.createCombo(rootPane);
+				EnumDatatypeField field = new EnumDatatypeField(combo, (EnumDatatype)datatype);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				editControls.add(combo);
 			}
