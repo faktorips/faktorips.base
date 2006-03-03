@@ -20,4 +20,18 @@ public class Messages extends NLS {
 	public static String MoveOperation_titleAborted;
 
 	public static String MoveOperation_msgAborted;
+
+	public static String MoveOperation_msgFileExists;
+
+	public static String MoveOperation_msgPackageExists;
+
+	public static String MoveOperation_msgSourceMissing;
+
+	public static String MoveOperation_msgSourceModified;
+
+	public static String MoveOperation_msgPackageMissing;
+
+	public static String MoveOperation_msgUnsupportedType;
+
+	public static String MoveOperation_msgMoveBetweenProjectsNotSupported;
 }

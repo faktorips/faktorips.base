@@ -401,6 +401,11 @@ public class RelationsSection extends IpsSection {
 			}
 			
 			IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+			
+			if (!element.exists()) {
+				return;
+			}
+			
 			if (element instanceof IIpsSrcFile && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
 				try {
 					insert(((IProductCmpt)((IIpsSrcFile)element).getIpsObject()).getQualifiedName(), insertAt);

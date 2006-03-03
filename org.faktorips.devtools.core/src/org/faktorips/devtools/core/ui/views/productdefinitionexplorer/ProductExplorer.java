@@ -2,15 +2,21 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -19,7 +25,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -32,8 +40,12 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.refactor.MoveOperation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -52,9 +64,9 @@ import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
-import org.faktorips.devtools.core.ui.views.ProductCmptDragListener;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.DummyRoot;
 
 /**
@@ -83,7 +95,8 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 
         tree.setInput(IpsPlugin.getDefault().getIpsModel());
         tree.addDoubleClickListener(new DefaultDoubleclickListener(tree));
-        tree.addDragSupport(DND.DROP_LINK, new Transfer[] {TextTransfer.getInstance()}, new ProductCmptDragListener(tree));
+        tree.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new IpsElementDragListener(tree));
+        tree.addDropSupport(DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new DropListener());
         tree.setSorter(new Sorter());
         
         IWorkbenchPartSite site = getSite();
@@ -284,4 +297,113 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
     public ISelection getSelection() {
         return tree.getSelection();
     }
+    
+    private class DropListener implements DropTargetListener {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void dragEnter(DropTargetEvent event) {
+			if (event.detail == DND.DROP_NONE) {
+				event.detail = DND.DROP_MOVE;
+			}
+			event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void dragLeave(DropTargetEvent event) {
+			// nothing to do
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void dragOperationChanged(DropTargetEvent event) {
+			// nothing to do
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void dragOver(DropTargetEvent event) {
+			// nothing to do
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void drop(DropTargetEvent event) {
+			if (!FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+				return;
+			}
+			try {
+				IIpsPackageFragment target = getTarget(event);
+				if (target == null) {
+					return;
+				}
+				
+				String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
+				ArrayList elements = new ArrayList();
+				for (int i = 0; i < filenames.length; i++) {
+					Path path = new Path(filenames[i]);
+					
+					// first, we assume that the given path leads to a file
+					IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+					IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+					if (element.exists()) {
+						elements.add(element);
+					}
+					else {
+						// the ipselement created from the file does not exist - so try it with an 
+						// container...
+						IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
+						element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
+						if (element.exists()) {
+							elements.add(element);
+						}
+					}
+				}
+				IIpsElement[] sources = (IIpsElement[])elements.toArray(new IIpsElement[elements.size()]);
+				MoveOperation moveOp = new MoveOperation(sources, target);
+				ProgressMonitorDialog dialog = new ProgressMonitorDialog(ProductExplorer.this.getSite().getShell());
+				dialog.run(false, false, moveOp);
+			} catch (CoreException e) {
+				IStatus status = e.getStatus();
+				if (status instanceof IpsStatus) {
+					MessageDialog.openError(ProductExplorer.this.getSite().getShell(), Messages.ProductExplorer_title, ((IpsStatus)status).getMessage());
+				}
+				else {
+					IpsPlugin.log(e);
+				}
+			} catch (InvocationTargetException e) {
+				IpsPlugin.log(e);
+			} catch (InterruptedException e) {
+				IpsPlugin.log(e);
+			}
+			
+		}
+
+		private IIpsPackageFragment getTarget(DropTargetEvent event) throws CoreException {
+			Object dropTarget = event.item.getData();
+			IIpsPackageFragment target = null; 
+			if (dropTarget instanceof IIpsPackageFragment) {
+				target = (IIpsPackageFragment)dropTarget;
+			}
+			else if (dropTarget instanceof IIpsProject) {
+				target = ((IIpsProject)dropTarget).getIpsPackageFragmentRoots()[0].getIpsDefaultPackageFragment();
+			}
+			return target;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		public void dropAccept(DropTargetEvent event) {
+			// nothing to do
+		}
+    	
+    }
+    
 }

@@ -21,4 +21,5 @@ public class Messages extends NLS {
 	public static String ProductExplorer_actionUpdate;
 	public static String ProductExplorer_actionReplace;
 	public static String ProductExplorer_actionAdd;
+	public static String ProductExplorer_title;
 }
