@@ -78,7 +78,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return new AbstractParameterIdentifierResolver(){
 
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                return policyCmptInterfaceBuilder.getAttributeGetterMethodName(attribute, datatype);    
+                return policyCmptInterfaceBuilder.getMethodNameGetPropertyValue(attribute, datatype);    
             }
             
         };

@@ -97,8 +97,8 @@ public final class IpsObjectType {
     
 	/**
 	 * Returns the IpsObjectType that has the given name.
-	 * Returns null, if no type with the given name exists or the given
-	 * name is null.
+	 * Returns <code>null</code>, if no type with the given name exists or the given
+	 * name is <code>null</code>.
 	 */
 	public final static IpsObjectType getTypeForName(String name) {
 		for (int i=0; i<ALL_TYPES.length; i++) {
@@ -189,7 +189,7 @@ public final class IpsObjectType {
     	ArgumentCheck.notNull(xmlElementName);
 		ArgumentCheck.notNull(name);
 		ArgumentCheck.notNull(fileExtension);
-		ArgumentCheck.notNull(fileExtension);
+		ArgumentCheck.notNull(image);
 		
         this.xmlElementName = xmlElementName;
         this.name = name;

@@ -87,8 +87,6 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private Control createFirstPage(TabFolder folder) {
         
     	Composite c = createTabItemComposite(folder, 1, false);
-
-    	
     	Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         

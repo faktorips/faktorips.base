@@ -83,7 +83,7 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
         assertTrue(result.successfull());
         assertEquals(Datatype.DECIMAL, result.getDatatype());
         String expected = "policy."
-                + getPolicyCmptInterfaceBuilder().getAttributeGetterMethodName(attribute, result.getDatatype()) + "()";
+                + getPolicyCmptInterfaceBuilder().getMethodNameGetPropertyValue(attribute, result.getDatatype()) + "()";
         assertEquals(expected, result.getCodeFragment().getSourcecode());
 
         // unkown parameter

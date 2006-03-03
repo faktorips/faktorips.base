@@ -39,7 +39,7 @@ public class UniqueKeysSection extends SimpleIpsPartsSection {
         }
         
         public ITableStructure getTableStructure() {
-            return (ITableStructure)getPdObject();
+            return (ITableStructure)getIpsObject();
         }
         
         /**

@@ -27,8 +27,6 @@ import org.faktorips.util.StringUtil;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
-    private final static String ATTRIBUTE_FIELD_COMMENT = "ATTRIBUTE_FIELD_COMMENT";
-
     private final static String JAVA_GETTER_METHOD_MAX_VALUESET = "JAVA_GETTER_METHOD_MAX_VALUESET";
     private final static String JAVA_GETTER_METHOD_VALUESET = "JAVA_GETTER_METHOD_VALUESET";
 
@@ -301,12 +299,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
      
         if (attribute.isProductRelevant()) {
-            String javaDoc = null; // TODO getLocalizedText(null, a.getName());
-            methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-            generateSignatureAttributeGetter(attribute, datatypeHelper, methodsBuilder);
-            methodsBuilder.appendln(";");
+            generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
         } else {
-            generateStaticAttributeVariable(attribute, datatypeHelper, memberVarsBuilder);
+            generateFieldConstPropertyValue(attribute, datatypeHelper, memberVarsBuilder);
         }
     }
 
@@ -318,15 +313,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String javaDoc = null;
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureAttributeGetter(attribute, datatypeHelper, methodsBuilder);
-        methodsBuilder.appendln(";");
-        
-        javaDoc = getLocalizedText(attribute, "ATTRIBUTE_INTERFACE_SETTER_JAVADOC", attribute.getName());
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureAttributeSetter(attribute, datatypeHelper, methodsBuilder);
-        methodsBuilder.appendln(";");
+        generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
+        generateMethodSetPropertyValue(attribute, datatypeHelper, methodsBuilder);
     }
     
     /**
@@ -337,10 +325,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String javaDoc = null;
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureAttributeGetter(attribute, datatypeHelper, methodsBuilder);
-        methodsBuilder.appendln(";");
+        generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
     }
     
     /**
@@ -351,18 +336,16 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        String javaDoc = getLocalizedText(attribute, "ATTRIBUTE_INTERFACE_GETTER_JAVADOC", attribute.getName());
-        methodsBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        generateSignatureAttributeGetter(attribute, datatypeHelper, methodsBuilder);
-        methodsBuilder.appendln(";");
+        generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
 
     }
     
-    void generateStaticAttributeVariable(
+    void generateFieldConstPropertyValue(
             IAttribute a,
             DatatypeHelper helper,
             JavaCodeFragmentBuilder memberVarsBuilder) throws CoreException {
-        String comment = getLocalizedText(a, ATTRIBUTE_FIELD_COMMENT, a.getName());
+        
+        String comment = getLocalizedText(a, "FIELD_VALUE_JAVADOC", a.getName());
         memberVarsBuilder.javaDoc(comment, ANNOTATION_GENERATED);
         String varName = getJavaNamingConvention().getMemberVarName(a.getName());
         int modifier = java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL | java.lang.reflect.Modifier.STATIC; 
@@ -370,28 +353,86 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         memberVarsBuilder.varDeclaration(modifier, helper.getJavaClassName(), varName, initialValueExpression);
     }
     
-    public String getAttributeGetterMethodName(IAttribute a, Datatype datatype){
-        return getJavaNamingConvention().getGetterMethodName(a.getName(), datatype);
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public Money getPremium();
+     * </pre>
+     */
+    public void generateMethodGetPropertyValue(
+            IAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_GETVALUE", a.getName(), a, methodsBuilder);
+        generateSignatureGetPropertyValue(a, datatypeHelper, methodsBuilder);
+        methodsBuilder.appendln(";");
     }
-    
-    void generateSignatureAttributeGetter(
+        
+    /**
+     * Code sample:
+     * <pre>
+     * public Money getPremium()
+     * </pre>
+     */
+    public void generateSignatureGetPropertyValue(
             IAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         int modifier = java.lang.reflect.Modifier.PUBLIC;
-        String methodName = getAttributeGetterMethodName(a, datatypeHelper.getDatatype());
+        String methodName = getMethodNameGetPropertyValue(a, datatypeHelper.getDatatype());
         methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(), methodName, new String[0], new String[0]);
     }
     
-    void generateSignatureAttributeSetter(
+    /**
+     * Returns the getter method to access a property/attribute value.
+     */
+    public String getMethodNameGetPropertyValue(IAttribute a, Datatype datatype){
+        return getJavaNamingConvention().getGetterMethodName(a.getName(), datatype);
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void setPremium(Money newValue);
+     * </pre>
+     */
+    public void generateMethodSetPropertyValue(
+            IAttribute a,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        appendLocalizedJavaDoc("METHOD_SETVALUE", a.getName(), a, methodsBuilder);
+        generateSignatureSetPropertyValue(a, datatypeHelper, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * public void setPremium(Money newValue)
+     * </pre>
+     */
+    public void generateSignatureSetPropertyValue(
             IAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         int modifier = java.lang.reflect.Modifier.PUBLIC;
         String methodName = getJavaNamingConvention().getSetterMethodName(a.getName(), datatypeHelper.getDatatype());
-        methodsBuilder.signature(modifier, "void", methodName, new String[]{"newValue"}, new String[]{datatypeHelper.getJavaClassName()});
+        String paramName = getParamNameForSetPropertyValue(a);
+        methodsBuilder.signature(modifier, "void", methodName, new String[]{paramName}, new String[]{datatypeHelper.getJavaClassName()});
+    }
+    
+    /**
+     * Returns the name of the parameter in the setter method for a property,
+     * e.g. newValue.
+     */
+    public String getParamNameForSetPropertyValue(IAttribute a) {
+        return getLocalizedText(a, "PARAM_NEWVALUE_NAME", a.getName());
     }
     
     private String getPolicyCmptInterfaceGetMaxValueSetMethodName(IAttribute a) {
@@ -479,8 +520,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             }
             initialValueExpression.append(" }");
         }
-        String comment = getLocalizedText(a, ATTRIBUTE_FIELD_COMMENT, a.getName());
-
+        String comment = getLocalizedText(a, "FIELD_VALUESET_JAVADOC", a.getName());
         memberVarsBuilder.javaDoc(comment, ANNOTATION_GENERATED);
         memberVarsBuilder.varDeclaration(
                 java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL

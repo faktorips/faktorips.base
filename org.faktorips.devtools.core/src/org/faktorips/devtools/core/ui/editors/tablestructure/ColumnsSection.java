@@ -40,7 +40,7 @@ public class ColumnsSection extends SimpleIpsPartsSection {
         }
         
         public ITableStructure getTable() {
-            return (ITableStructure)getPdObject();
+            return (ITableStructure)getIpsObject();
         }
 
         /** 

@@ -148,6 +148,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
         }
         initFromXml(((XmlMemento)memento).getState());
+        updateSrcFile();
     }
 
     /**

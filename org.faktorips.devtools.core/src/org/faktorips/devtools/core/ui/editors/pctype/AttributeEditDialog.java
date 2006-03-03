@@ -134,12 +134,11 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
-        extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
-        
         this.rule = findValidationRule();
+        extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
     }
     
-    /**
+    /*
      * Returns the default validation rule bound to this attribute or null if no such rule is found.
      */
     private IValidationRule findValidationRule() {
@@ -154,7 +153,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 				}
 			}
 		}
-    	
     	return null;
     }
     
@@ -181,6 +179,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         page.setControl(createValidationRulePage(folder));
         if (startWithRulePage) {
         	folder.setSelection(3);
+        	ruleNameField.getControl().setFocus();
+        } else {
+        	folder.setSelection(0);
+        	nameField.getControl().setFocus();
         }
 
         createDescriptionTabItem(folder);
@@ -201,11 +203,10 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        extFactory.createControls(workArea,uiToolkit,(IpsObjectPartContainer)attribute);
+        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)attribute);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(workArea);
-        nameText.setFocus();
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
         datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);

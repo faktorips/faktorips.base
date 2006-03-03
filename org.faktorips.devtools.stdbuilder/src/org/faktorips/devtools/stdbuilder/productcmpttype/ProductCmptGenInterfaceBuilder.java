@@ -124,6 +124,14 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
                 methodName, new String[0], new String[0]);
     }
     
+    /**
+     * Returns the name of the method that returns the default value for the indicated
+     * attribute.
+     */
+    public String getMethodNameGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper) {
+        return getJavaNamingConvention().getGetterMethodName(getPropertyNameDefaultValue(a), datatypeHelper.getDatatype());        
+    }
+    
     String getPropertyNameDefaultValue(IAttribute a) {
         return getLocalizedText(a, "PROPERTY_DEFAULTVALUE_NAME", StringUtils.capitalise(a.getName()));
     }

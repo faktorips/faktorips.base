@@ -165,7 +165,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return nameText;
     }
     
-    public String getPdObjectName() {
+    public String getIpsObjectName() {
         return nameField.getText();
     }
     
@@ -209,7 +209,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         sourceFolderControl.setPdPckFragmentRoot(root);
     }
     
-    public IIpsPackageFragment getPdPackageFragment() {
+    public IIpsPackageFragment getIpsPackageFragment() {
         return packageControl.getPdPackageFragment();
     }
     

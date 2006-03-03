@@ -427,8 +427,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     }
     
     public void testValidate_MustOverrideAbstractMethod() throws CoreException {
-        MessageList list = pcType.validate();
-        assertEquals(0, list.getNoOfMessages());
+        int numOfMsg = pcType.validate().getNoOfMessages();
         
         // a supertype with a method and connect the pctype to it
         IPolicyCmptType superType = this.newPolicyCmptType(root, "Supertype");
@@ -437,21 +436,20 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         superMethod.setName("calc");
 
         // method is not abstract so no error message should be returned.
-        list = pcType.validate();
-        assertEquals(0, list.getNoOfMessages());
+        MessageList list = pcType.validate();
+        assertEquals(numOfMsg, list.getNoOfMessages());
 
         // set method to abstract, now the error should be reported
         superMethod.setAbstract(true);
         list = pcType.validate();
-        assertEquals(1, list.getNoOfMessages());
-        Message msg = list.getMessage(0);
-        assertEquals(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, msg.getCode());
+        assertTrue(list.getNoOfMessages() > numOfMsg);
+        Message msg = list.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD);
         assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
 
         // "implement" the method in pcType => error should no be reported anymore
         pcType.override(new IMethod[]{superMethod});
         list = pcType.validate();
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(numOfMsg, list.getNoOfMessages());
         
         // create another level in the supertype hierarchy with an abstract method on the new supersupertype.
         // an error should be reported
@@ -461,15 +459,14 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         supersuperMethod.setName("calc2");
         supersuperMethod.setAbstract(true);
         list = pcType.validate();
-        assertEquals(1, list.getNoOfMessages());
-        msg = list.getMessage(0);
-        assertEquals(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, msg.getCode());
+        assertTrue(list.getNoOfMessages()>numOfMsg);
+        msg = list.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD);
         assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
         
         // "implement" the method in the supertype => error should no be reported anymore
         superType.override(new IMethod[]{supersuperMethod});
         list = pcType.validate();
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(numOfMsg, list.getNoOfMessages());
         
     }
     

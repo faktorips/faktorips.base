@@ -33,20 +33,20 @@
             label="%org.faktorips.devtools.actions.ModellingActionSet"
             visible="false">
          <action
-               label="New Policy Class"
-               icon="icons/NewPolicyCmptTypeWizard.gif"
-               tooltip="New Policy Class"
-               class="org.faktorips.devtools.core.ui.wizards.pctype.OpenNewPcTypeWizardAction"
-               toolbarPath="org.faktorips.devtools"
-               id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
-         </action>
-         <action
                label="New Table Structure"
                icon="icons/NewTableStructureWizard.gif"
                tooltip="New Table Structure"
                class="org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructureWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewTableStructureWizardAction">
+         </action>
+         <action
+               label="New Policy Class"
+               icon="icons/NewPolicyCmptTypeWizard.gif"
+               tooltip="New Policy Class"
+               class="org.faktorips.devtools.core.ui.wizards.pctype.OpenNewPcTypeWizardAction"
+               toolbarPath="org.faktorips.devtools"
+               id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
          </action>
       </actionSet>
 
@@ -55,21 +55,20 @@
             label="%org.faktorips.devtools.actions.ProductDefinitionActionSet"
             visible="true">
          <action
-               class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
-               icon="icons/NewProductCmptWizard.gif"
-               id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction"
-               label="New Product Component"
-               toolbarPath="org.faktorips.devtools"
-               tooltip="New Product Component">
-         </action>
-            
-         <action
                label="New Table Contents"
                icon="icons/NewTableContentsWizard.gif"
                tooltip="New Table Contents"
                class="org.faktorips.devtools.core.ui.wizards.tablecontents.OpenNewTableContentsWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewTableContentsWizardAction">
+         </action>
+         <action
+               class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
+               icon="icons/NewProductCmptWizard.gif"
+               id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction"
+               label="New Product Component"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="New Product Component">
          </action>
       </actionSet>
    </extension>

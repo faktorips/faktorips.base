@@ -54,7 +54,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
         }
         
         public IPolicyCmptType getPcType() {
-            return (IPolicyCmptType)getPdObject();
+            return (IPolicyCmptType)getIpsObject();
         }
         
         /** 

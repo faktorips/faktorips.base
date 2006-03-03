@@ -57,9 +57,9 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
      */
     public final boolean performFinish() {
         try {
-            IIpsPackageFragment pack = objectPage.getPdPackageFragment();
-            IIpsSrcFile file = pack.createIpsFile(ipsObjectType, objectPage.getPdObjectName(), true, null);
-            finishPdObject(file.getIpsObject());
+            IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
+            IIpsSrcFile file = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
+            finishIpsObject(file.getIpsObject());
             file.save(true, null);
             IpsPlugin.getDefault().openEditor(file);
         } catch (Exception e) {
@@ -68,7 +68,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
         return true;
     }
     
-    protected abstract void finishPdObject(IIpsObject pdObject) throws CoreException;
+    protected abstract void finishIpsObject(IIpsObject ipsObject) throws CoreException;
 
     /** 
      * Overridden method.

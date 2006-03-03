@@ -110,7 +110,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         }
         
         public ITimedIpsObject getTimedPdObject() {
-            return (ITimedIpsObject)getPdObject();
+            return (ITimedIpsObject)getIpsObject();
         }
         
         /**

@@ -83,7 +83,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
         
         public IPolicyCmptType getPcType() {
-            return (IPolicyCmptType)getPdObject();
+            return (IPolicyCmptType)getIpsObject();
         }
         
         protected ILabelProvider createLabelProvider() {

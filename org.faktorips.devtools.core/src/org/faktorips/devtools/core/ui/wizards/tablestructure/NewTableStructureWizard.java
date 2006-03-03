@@ -36,9 +36,9 @@ public class NewTableStructureWizard extends NewIpsObjectWizard {
 
     /** 
      * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#finishPdObject(org.faktorips.devtools.core.model.IIpsObject)
+     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#finishIpsObject(org.faktorips.devtools.core.model.IIpsObject)
      */
-    protected void finishPdObject(IIpsObject pdObject) throws CoreException {
+    protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
     }
 
 }

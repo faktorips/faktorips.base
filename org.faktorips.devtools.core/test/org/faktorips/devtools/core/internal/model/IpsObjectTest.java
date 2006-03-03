@@ -12,6 +12,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.memento.Memento;
 
 
@@ -20,48 +21,54 @@ import org.faktorips.util.memento.Memento;
  */
 public class IpsObjectTest extends IpsPluginTest implements ContentsChangeListener {
 
-    private IIpsProject pdProject;
+    private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot rootFolder;
     private IIpsSrcFile srcFile;
-    private IIpsObject pdObject;
+    private IIpsObject ipsObject;
     private ContentChangeEvent lastEvent;
     
     protected void setUp() throws Exception {
         super.setUp();
-        pdProject = this.newIpsProject("TestProject");
-        rootFolder = pdProject.getIpsPackageFragmentRoots()[0];
+        ipsProject = this.newIpsProject("TestProject");
+        rootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment folder = rootFolder.getIpsPackageFragment("folder");
         srcFile = new IpsSrcFile(folder, IpsObjectType.POLICY_CMPT_TYPE.getFileName("TestProduct"));
-        pdObject = new PolicyCmptType(srcFile);
-        IpsPlugin.getDefault().getManager().putSrcFileContents(srcFile, new IpsSourceFileContents(srcFile, "", pdProject.getProject().getDefaultCharset()));
+        ipsObject = new PolicyCmptType(srcFile);
+        IpsPlugin.getDefault().getManager().putSrcFileContents(srcFile, new IpsSourceFileContents(srcFile, "", ipsProject.getProject().getDefaultCharset()));
     }
     
     public void testGetQualifiedName() throws CoreException {
-        assertEquals("folder.TestProduct", pdObject.getQualifiedName());
+        assertEquals("folder.TestProduct", ipsObject.getQualifiedName());
         IIpsPackageFragment defaultFolder = rootFolder.getIpsPackageFragment("");
         IIpsSrcFile file = defaultFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestProduct", true, null);
         assertEquals("TestProduct", file.getIpsObject().getQualifiedName());
     }
     
     public void testSetDescription() {
-        pdObject.getIpsModel().addChangeListener(this);
-        pdObject.setDescription("new description");
-        assertEquals("new description", pdObject.getDescription());
+        ipsObject.getIpsModel().addChangeListener(this);
+        ipsObject.setDescription("new description");
+        assertEquals("new description", ipsObject.getDescription());
         assertTrue(srcFile.isDirty());
         assertEquals(srcFile, lastEvent.getPdSrcFile());
     }
     
     public void testNewMemento() {
-        Memento memento = pdObject.newMemento();
-        assertEquals(pdObject, memento.getOriginator());        
+        Memento memento = ipsObject.newMemento();
+        assertEquals(ipsObject, memento.getOriginator());        
     }
     
-    public void testSetState() {
-        pdObject.setDescription("blabla");
-        Memento memento = pdObject.newMemento();
-        pdObject.setDescription("newDescription");
-        pdObject.setState(memento);
-        assertEquals("blabla", pdObject.getDescription());
+    public void testSetState() throws CoreException {
+        ipsObject.setDescription("blabla");
+        Memento memento = ipsObject.newMemento();
+        ipsObject.setDescription("newDescription");
+        ipsObject.setState(memento);
+        assertEquals("blabla", ipsObject.getDescription());
+        
+        // test if new parts are removed when the state is restored from the memento
+        ((IPolicyCmptType)ipsObject).newAttribute();
+        assertEquals(1, ipsObject.getChildren().length);
+        ipsObject.setState(memento);
+        assertEquals(0, ipsObject.getChildren().length);
         
         IpsSrcFile file2 = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
         IIpsObject pdObject2 = new PolicyCmptType(file2);

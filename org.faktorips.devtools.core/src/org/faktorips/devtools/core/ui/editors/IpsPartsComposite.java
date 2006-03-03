@@ -40,7 +40,7 @@ import org.faktorips.util.message.MessageList;
 public abstract class IpsPartsComposite extends ViewerButtonComposite {
 
     // the object the parts belong to.
-    private IIpsObject pdObject;
+    private IIpsObject ipsObject;
 
     // buttons
 	protected Button newButton;
@@ -84,7 +84,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
             boolean showEditButton,
             UIToolkit toolkit) {
         super(parent);
-        this.pdObject = pdObject;
+        this.ipsObject = pdObject;
         this.canCreate = canCreate;
         this.canEdit = canEdit;
         this.canDelete = canDelete;
@@ -97,8 +97,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
     /**
      * Returns the IpsObject the parts belong to.
      */
-    public IIpsObject getPdObject() {
-        return pdObject;
+    public IIpsObject getIpsObject() {
+        return ipsObject;
     }
 
     /** 
@@ -287,14 +287,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
     
     private void newPart() {
         try {
-            IIpsSrcFile file = pdObject.getIpsSrcFile();
+            IIpsSrcFile file = ipsObject.getIpsSrcFile();
             boolean dirty = file.isDirty();
-            Memento memento = pdObject.newMemento();
+            Memento memento = ipsObject.newMemento();
             IIpsObjectPart newPart = newIpsPart();
             EditDialog dialog = createEditDialog(newPart, getShell());
             dialog.open();
             if (dialog.getReturnCode()==Window.CANCEL) {
-                pdObject.setState(memento);
+                ipsObject.setState(memento);
                 if (!dirty) {
                     file.markAsClean();
                 }
@@ -310,7 +310,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
             return;
         }
         try {
-            IIpsSrcFile file = pdObject.getIpsSrcFile();
+            IIpsSrcFile file = ipsObject.getIpsSrcFile();
             boolean dirty = file.isDirty();
             IIpsObjectPart part = getSelectedPart();
             Memento memento = part.newMemento();

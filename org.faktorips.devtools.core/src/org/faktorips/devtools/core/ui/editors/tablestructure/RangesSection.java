@@ -39,7 +39,7 @@ public class RangesSection extends SimpleIpsPartsSection {
         }
 
         public ITableStructure getTableStructure() {
-            return (ITableStructure)getPdObject();
+            return (ITableStructure)getIpsObject();
         }
         
         /**
