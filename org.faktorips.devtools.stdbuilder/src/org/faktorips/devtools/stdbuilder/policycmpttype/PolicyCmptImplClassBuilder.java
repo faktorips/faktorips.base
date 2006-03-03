@@ -1048,7 +1048,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String[] paramTypes = new String[] { 
                 productCmptInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile()),
                 Calendar.class.getName()};
-        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, "void", getUnqualifiedClassName(),
+        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 paramNames, paramTypes);
         builder.append("super(productCmpt, effectiveDate);");
         builder.append("initialize();");
@@ -1072,7 +1072,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String[] paramTypes = new String[] {Calendar.class.getName()};
         String[] paramNames = new String[] {"effectiveDate"};
         
-        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, "void", getUnqualifiedClassName(),
+        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 paramNames, paramTypes);
         builder.append("super(effectiveDate);");
         builder.append("initialize();");
