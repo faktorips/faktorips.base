@@ -8,14 +8,36 @@
 				<file name="junit.jar"/>
 		</filelist>
 
-
 		<!-- eclipse libraries -->
 		<fileset dir="/usr/lib/eclipse-3.1/">
 			<patternset>
-					<include name="plugins/**/*.jar" />
+					<include name="plugins/org.eclipse.jface*.jar" />
+					<include name="plugins/org.eclipse.text*.jar" />
+					<include name="plugins/org.eclipse.jdt*.jar" />
+ 					<include name="plugins/org.eclipse.emf*codegen*.jar" />
+					<include name="plugins/org.eclipse.core*.jar" />
+					<include name="plugins/org.eclipse.osgi*.jar" />
+					<include name="plugins/org.eclipse.swt*.jar" />
+					<include name="plugins/org.eclipse.ui*.jar" />
+					<include name="plugins/org.eclipse.search*.jar" />
 			</patternset>
 		</fileset>
 		
+		<!-- devtools.stdbuilder depends on org.faktorips.devtools.core -->
+		<fileset dir="../../org.faktorips.devtools.core/" >
+		    <patternset>
+		    		<include name="lib/*.jar" /> 
+		    		<include name="build/results/*.jar" />
+		    </patternset>
+		</fileset>
+
+		<!-- devtools.stdbuilder depends on org.faktorips.fl -->
+		<fileset dir="../../org.faktorips.fl/" >
+		    <patternset>
+		    		<include name="lib/*.jar" /> 
+		    		<include name="build/results/*.jar" />
+		    </patternset>
+		</fileset>
 		
 		<!-- devtools.stdbuilder depends on org.faktorips.valuetypes -->
 		<fileset dir="../../org.faktorips.valuetypes/" >
@@ -40,20 +62,22 @@
 		    </patternset>
 		</fileset>
 		
-		<!-- devtools.stdbuilder depends on org.faktorips.devtools.core -->
-		<fileset dir="../../org.faktorips.devtools.core/" >
+		<!-- devtools.stdbuilder depends on org.faktorips.runtime -->
+		<fileset dir="../../org.faktorips.runtime/" >
 		    <patternset>
 		    		<include name="lib/*.jar" /> 
 		    		<include name="build/results/*.jar" />
 		    </patternset>
 		</fileset>
 		
+
+
 	</path>
 	
 	<!-- calls default-target of template-buildfile -->
 	<target name="buildjar"  >
 
-		<ant antfile="../../org.faktorips.build/build.xml" target="buildjar">
+		<ant antfile="../../org.faktorips.build/build.xml" target="buildjarWithoutTest">
 			<property name="projectname" value="devtools.stdbuilder" />
 			<reference refid="classpath" torefid="classpath"/>
 		</ant>
