@@ -252,18 +252,18 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
      * is asked to create one. 
      */
     private void checkGeneration() {
-    	if (this.referenceDate != null && this.referenceDate.equals(IpsPreferences.getWorkingDate())) {
-    		// check happned before and user decided not to create a new generation - dont bother 
-    		// the user with repeating questions.
-    		return;
-    	}
-    	
-    	this.referenceDate = IpsPreferences.getWorkingDate();
     	
 		IProductCmpt prod = getProductCmpt();
 		IProductCmptGeneration generation  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
 
 		if (generation == null) {
+	    	if (this.referenceDate != null && this.referenceDate.equals(IpsPreferences.getWorkingDate())) {
+	    		// check happned before and user decided not to create a new generation - dont bother 
+	    		// the user with repeating questions.
+	    		return;
+	    	}
+	    	
+	    	this.referenceDate = IpsPreferences.getWorkingDate();
 			// no generation for the _exact_ current working date.
 			String message = Messages.bind(Messages.ProductCmptEditor_msg_GenerationMissmatch, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
 			String title = Messages.bind(Messages.ProductCmptEditor_title_GenerationMissmatch, getProductCmpt().getName());
@@ -273,31 +273,27 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				// create a new generation and set it active
 				IProductCmptGeneration newGen = (IProductCmptGeneration)prod.newGeneration(IpsPreferences.getWorkingDate());
 				this.setActiveGeneration(newGen);
-				setPropertiesEnabled(true);
 			}
 			else {
 				// no new generation - disable editing
 				this.setActiveGeneration(this.getPreferredGeneration());
-				setPropertiesEnabled(false);
 			}
 		}
 		else if (!generation.equals(getActiveGeneration())) {
 			// we found a generation matching the working date, but the found one is not active,
 			// so make it active.
 			this.setActiveGeneration(generation);
-			setPropertiesEnabled(true);
-			refreshStructure();
 		}
 		else {
-			setPropertiesEnabled(true);
+			setPropertiesEnabled((IProductCmptGeneration)getActiveGeneration());
 		}
-		
     }
     
     /**
      * Enable or disable the properties page.
      */
-    public void setPropertiesEnabled(boolean enabled) {
+    private void setPropertiesEnabled(IProductCmptGeneration generation) {
+    	boolean enabled = isEditableGeneration(generation);
     	if (enabled) {
     		this.setTitleImage(enabledImage);
     	}
@@ -317,12 +313,20 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     private class WorkingDateChangeListener implements IPropertyChangeListener {
 
 		public void propertyChange(PropertyChangeEvent event) {
-			if (event.getProperty().equals(IpsPreferences.WORKING_DATE) && active) {
+			if (!active) {
+				return;
+			}
+			
+			String property = event.getProperty();
+			if (property.equals(IpsPreferences.WORKING_DATE)) {
 				checkGeneration();
+			}
+			else if (property.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
+					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
+				setPropertiesEnabled((IProductCmptGeneration)getActiveGeneration());
 			}
 
 		}
-    	
     }
     
     /**
@@ -338,9 +342,36 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
     	}
 
     	super.setActiveGeneration(generation);
-		IProductCmpt prod = getProductCmpt();
-		IProductCmptGeneration editableGeneration  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
     	refreshStructure();
-	    setPropertiesEnabled(generation.equals(editableGeneration));
+	    setPropertiesEnabled((IProductCmptGeneration)generation);
+    }
+    
+    /**
+     * Checks whether the given generation can be edited respecting the preferences 
+     */
+    private boolean isEditableGeneration(IProductCmptGeneration generation) {
+
+    	// if generation does not match the current set working date, no editing will ever
+    	// be possible, so return false immediate
+    	if (!generation.equals(this.getProductCmpt().getGenerationByEffectiveDate(IpsPreferences.getWorkingDate()))) {
+    		return false;
+    	}
+    	
+    	GregorianCalendar validFrom = generation.getValidFrom();
+    	GregorianCalendar now = new GregorianCalendar();
+    	boolean editable = true;
+
+    	if (now.after(validFrom)) {
+    		editable = IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration();
+    	}
+    	
+    	IIpsObjectGeneration[] generations = this.getProductCmpt().getGenerations();    	
+    	for (int i = 0; i < generations.length; i++) {
+			if (generations[i].getValidFrom().after(validFrom)) {
+				return IpsPlugin.getDefault().getIpsPreferences().canEditGenerationsWithSuccesor() && editable;
+			}
+		}
+    	
+    	return editable;
     }
 }

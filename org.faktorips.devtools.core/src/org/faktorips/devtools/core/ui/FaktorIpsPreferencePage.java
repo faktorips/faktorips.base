@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -30,7 +31,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				Messages.FaktorIpsPreferencePage_labelWorkingDate,
 				getFieldEditorParent());
 		addField(workingDateField);
-
+        
 		StringFieldEditor nullRepresentation = new StringFieldEditor(
 				IpsPreferences.NULL_REPRESENTATION_STRING,
 				Messages.FaktorIpsPreferencePage_labelNullValue,
@@ -56,6 +57,22 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				Messages.FaktorIpsPreferencePage_labelNamingScheme, nameValues,
 				getFieldEditorParent());
 		addField(changeOverTimeField);
+
+        String label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditRecentGenerations, IpsPlugin.getDefault()
+				.getIpsPreferences().getChangesOverTimeNamingConvention()
+				.getGenerationConceptNamePlural(Locale.getDefault()));
+		BooleanFieldEditor editRecentGernations = new BooleanFieldEditor(
+				IpsPreferences.EDIT_RECENT_GENERATION, label, BooleanFieldEditor.SEPARATE_LABEL,
+				getFieldEditorParent());
+		addField(editRecentGernations);
+
+		label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditGenerationsWithSuccessor, IpsPlugin.getDefault()
+				.getIpsPreferences().getChangesOverTimeNamingConvention()
+				.getGenerationConceptNamePlural(Locale.getDefault()));
+		BooleanFieldEditor editGernationsWithSuccessor = new BooleanFieldEditor(
+				IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR, label, BooleanFieldEditor.SEPARATE_LABEL,
+				getFieldEditorParent());
+		addField(editGernationsWithSuccessor);
 
 		BooleanFieldEditor enableGeneratingField = new BooleanFieldEditor(
 				IpsPreferences.ENABLE_GENERATING,

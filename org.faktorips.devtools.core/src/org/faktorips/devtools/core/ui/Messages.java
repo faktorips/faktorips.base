@@ -70,4 +70,8 @@ public class Messages extends NLS {
 	public static String FolderPropertiesPage_msgSortNumberInvalid;
 
 	public static String NewFolderAction_name;
+
+	public static String FaktorIpsPreferencePage_labelEditRecentGenerations;
+
+	public static String FaktorIpsPreferencePage_labelEditGenerationsWithSuccessor;
 }

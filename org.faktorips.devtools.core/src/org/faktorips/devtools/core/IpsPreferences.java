@@ -20,7 +20,16 @@ public class IpsPreferences {
      */
     public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate"; //$NON-NLS-1$
 	
+    /**
+     * Constant identifying the preference for null-value representation
+     */
     public static final String NULL_REPRESENTATION_STRING = IpsPlugin.PLUGIN_ID + ".nullRepresentationString"; //$NON-NLS-1$
+    
+    /**
+     * Constant identifiying the preference for editing genrations with
+     * valid-from-dates in the past.
+     */
+    public static final String EDIT_RECENT_GENERATION = IpsPlugin.PLUGIN_ID + ".editRecentGeneration"; //$NON-NLS-1$
 
     /**
      * Constant identifying the changes over time naming concept preference.
@@ -32,6 +41,12 @@ public class IpsPreferences {
      */
     public final static String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID + ".defaultProductCmptTypePostfix"; //$NON-NLS-1$
 
+    /**
+     * Contant identifying the preference for editing generations with succesors
+     * (regardless whether the valid-from-date of the generation lies in the past or not).
+     */
+    public final static String EDIT_GENERATION_WITH_SUCCESSOR = IpsPlugin.PLUGIN_ID + ".editGenerationWithSuccessor"; //$NON-NLS-1$
+    
     /**
      * Constant identifying the enable generating preference.
      */
@@ -58,6 +73,7 @@ public class IpsPreferences {
     	prefStore.setDefault(NULL_REPRESENTATION_STRING, "<null>"); //$NON-NLS-1$
     	prefStore.setDefault(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(new GregorianCalendar()));
     	prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.VAA);
+    	prefStore.setDefault(EDIT_RECENT_GENERATION, false);
     	if (Locale.getDefault().getLanguage().equals(Locale.GERMAN.getLanguage())) {
         	prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Typ"); //$NON-NLS-1$
     	} else {
@@ -104,6 +120,19 @@ public class IpsPreferences {
     	return getValidFromFormat().format(getWorkingDate().getTime());
     }
     
+    /**
+     * Returns whether generations with valid-from-date in the past can be edited or not.
+     */
+    public boolean canEditRecentGeneration() {
+    	return prefStore.getBoolean(EDIT_RECENT_GENERATION);
+    }
+    
+    /**
+     * Returns whether generations with succesor generations can be edited.
+     */
+    public boolean canEditGenerationsWithSuccesor() {
+    	return prefStore.getBoolean(EDIT_GENERATION_WITH_SUCCESSOR);
+    }
     /**
      * Returns the value of the enable generating preference.
      */
