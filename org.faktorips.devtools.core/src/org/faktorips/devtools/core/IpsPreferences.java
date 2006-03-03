@@ -33,6 +33,11 @@ public class IpsPreferences {
     public final static String DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX = IpsPlugin.PLUGIN_ID + ".defaultProductCmptTypePostfix"; //$NON-NLS-1$
 
     /**
+     * Constant identifying the enable generating preference.
+     */
+    public final static String ENABLE_GENERATING = IpsPlugin.PLUGIN_ID + ".enableGenerating"; //$NON-NLS-1$
+    
+    /**
      * Returns the working date preference.
      */
     // TODO static Zugriff entfernen
@@ -58,6 +63,7 @@ public class IpsPreferences {
     	} else {
     		prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Type"); //$NON-NLS-1$
     	}
+    	prefStore.setDefault(ENABLE_GENERATING, true);
     }
 
     /**
@@ -98,4 +104,10 @@ public class IpsPreferences {
     	return getValidFromFormat().format(getWorkingDate().getTime());
     }
     
+    /**
+     * Returns the value of the enable generating preference.
+     */
+    public boolean getEnableGenerating(){
+    	return prefStore.getBoolean(ENABLE_GENERATING); 
+    }
 }

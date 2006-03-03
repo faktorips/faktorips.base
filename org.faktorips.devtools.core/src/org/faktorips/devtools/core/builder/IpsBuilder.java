@@ -54,7 +54,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
     private MultiStatus applyBuildCommand(MultiStatus buildStatus, BuildCommand command)
             throws CoreException {
-
+    	//if generating is disabled in the faktor ips preferences interrupted generating here
+    	//validation of the modell class instances and marker updating of the regarfing resource
+    	//still takes place
+    	if(!IpsPlugin.getDefault().getIpsPreferences().getEnableGenerating()){
+    		return buildStatus;
+    	}
         IIpsArtefactBuilderSet currentBuilderSet = getIpsProject().getCurrentArtefactBuilderSet();
         IIpsArtefactBuilder[] artefactBuilders = currentBuilderSet.getArtefactBuilders();
         for (int i = 0; i < artefactBuilders.length; i++) {
@@ -93,6 +98,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             lastBuildWasCancelled = false;
             return null;
         }
+        
         buildStatus = applyBuildCommand(buildStatus, new BeforeBuildProcessCommand(kind));
         if (kind == IncrementalProjectBuilder.FULL_BUILD
                 || kind == IncrementalProjectBuilder.CLEAN_BUILD || getDelta(getProject()) == null) {
