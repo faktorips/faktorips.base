@@ -1,5 +1,8 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -200,20 +203,20 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean is1ToMany() {
-        if (maxCardinality == Integer.MAX_VALUE) { 
-            return true;
-        }
-        try {
-            return maxCardinality>1; 
-        } catch (NumberFormatException e) {
-            return false;
-        }
+    	return maxCardinality > 1;
     }
     
     /**
+	 * {@inheritDoc}
+	 */
+	public boolean is1To1() {
+		return maxCardinality == 1;
+	}
+
+	/**
      * Overridden.
      */ 
     public void setMaxCardinality(int newValue) {
@@ -373,7 +376,10 @@ public class Relation extends IpsObjectPart implements IRelation {
      * Overridden.
      */
     public IRelation findReverseRelation() throws CoreException {
-        if (StringUtils.isEmpty(reverseRelation)) {
+        if (type.isComposition() && implementsContainerRelation()) {
+        	return findReverseRelationOfImplementationRelation();
+        }
+    	if (StringUtils.isEmpty(reverseRelation)) {
             return null;
         }
         IPolicyCmptType target = findTarget();
@@ -383,6 +389,28 @@ public class Relation extends IpsObjectPart implements IRelation {
         IRelation[] relations = target.getRelations();
         for (int i=0; i<relations.length; i++) {
             if (relations[i].getName().equals(reverseRelation)) {
+                return relations[i];
+            }
+        }
+        return null;
+    }
+    
+    private IRelation findReverseRelationOfImplementationRelation() throws CoreException {
+        IRelation containerRel = findContainerRelation();
+        if (containerRel==null) {
+        	return null;
+        }
+        String reverseContainerRel = containerRel.getReverseRelation();
+        if (StringUtils.isEmpty(reverseContainerRel)) {
+        	return null;
+        }
+        IPolicyCmptType target = findTarget();
+        if (target==null) {
+            return null;
+        }
+        IRelation[] relations = target.getRelations();
+        for (int i=0; i<relations.length; i++) {
+            if (relations[i].getContainerRelation().equals(reverseContainerRel)) {
                 return relations[i];
             }
         }
@@ -611,4 +639,5 @@ public class Relation extends IpsObjectPart implements IRelation {
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
 }

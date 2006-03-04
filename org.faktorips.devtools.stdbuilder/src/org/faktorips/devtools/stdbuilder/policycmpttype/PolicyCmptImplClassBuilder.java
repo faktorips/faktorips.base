@@ -361,7 +361,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if (!relation.isReadOnlyContainer()) {
             IPolicyCmptType target = relation.findTarget();
-            generateFieldForRelation(relation, target, methodsBuilder);
+            generateFieldForRelation(relation, target, fieldsBuilder);
             generateMethodGetRefObjectForNoneContainerRelation(relation, methodsBuilder);
             generateMethodSetRefObject(relation, methodsBuilder);
         }
@@ -375,7 +375,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (relation.isReadOnlyContainer()) {
             generateMethodContainsObjectForContainerRelation(relation, methodsBuilder);
         } else {
-            generateFieldForRelation(relation, target, methodsBuilder);
+            generateFieldForRelation(relation, target, fieldsBuilder);
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
             generateMethodContainsObjectForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);

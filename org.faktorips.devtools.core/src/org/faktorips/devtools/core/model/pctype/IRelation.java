@@ -134,10 +134,16 @@ public interface IRelation extends IIpsObjectPart {
     public int getMaxCardinality();
     
     /**
-     * Returns true if this is a 1 to many relation. This is the case if
+     * Returns true if this is a 1 (or 0) to many relation. This is the case if
      * the max cardinality is greater than 1.
      */
     public boolean is1ToMany();
+    
+    /**
+     * Returns true if this is a 1 (or 0) to 1 relation. This is the case if
+     * the max cardinality is 1.
+     */
+    public boolean is1To1();
     
     /**
      * Sets the maxmium number of target instances allowed in this relation.
@@ -285,6 +291,5 @@ public interface IRelation extends IIpsObjectPart {
      * An unlimited number is represented by CARDINALITY_MANY. 
      */
     public void setMaxCardinalityProductSide(int newValue);
-    
     
 }
