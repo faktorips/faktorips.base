@@ -362,7 +362,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (!relation.isReadOnlyContainer()) {
             IPolicyCmptType target = relation.findTarget();
             generateFieldForRelation(relation, target, methodsBuilder);
-            generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetRefObjectForNoneContainerRelation(relation, methodsBuilder);
             generateMethodSetRefObject(relation, methodsBuilder);
         }
@@ -434,8 +433,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * [Javadoc]
      * public int getNumOfCoverages() {
      *     int num = 0; 
-     *     num += getNumOfHausratvertrag(); 
-     *     num += getNumOfGlasvertrag();
+     *     num += getNumOfCollisionsCoverages(); 
+     *     num += tplCoverage==null ? 0 : 1;
      *     return num;
      * }
      * </pre>
@@ -452,8 +451,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.appendln();
             IRelation relation = (IRelation)implRelations.get(i);
             methodsBuilder.append("num += ");
-            methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(relation));
-            methodsBuilder.append("();");
+            if (relation.is1ToMany()) {
+                methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(relation) + "();");
+            } else {
+                String field = getFieldNameForRelation(relation);
+                methodsBuilder.append(field + "==null ? 0 : 1;");
+            }
         }
         methodsBuilder.append("return num;");
         methodsBuilder.closeBracket();
@@ -576,26 +579,27 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("[] result = new ");       
         methodsBuilder.appendClassName(classname);
         methodsBuilder.append("[" + interfaceBuilder.getMethodNameGetNumOfRefObjects(relation) + "()];");       
-        
-        methodsBuilder.appendClassName(classname);   
-        methodsBuilder.append("[] elements;");
-        
+
+        boolean elementsVarDefined = false;
         methodsBuilder.append("int counter = 0;");
         for (int i = 0; i < subRelations.size(); i++) {
             IRelation subrel = (IRelation)subRelations.get(i);
             if (subrel.is1ToMany()) {
-                methodsBuilder.append("elements = ");
-                methodsBuilder.append(interfaceBuilder.getMethodNameGetAllRefObjects(subrel));
-                methodsBuilder.append("();");
-                methodsBuilder.append("for(int i=0; i<elements.length; i++) {");
-                methodsBuilder.append("result[counter++] = elements[i]; }");
+                if (!elementsVarDefined) {
+                    methodsBuilder.appendClassName(classname);   
+                    methodsBuilder.append("[] ");
+                    elementsVarDefined = true;
+                }
+                String method = interfaceBuilder.getMethodNameGetAllRefObjects(subrel);
+                methodsBuilder.appendln("elements = " + method + "();");
+                methodsBuilder.appendln("for (int i=0; i<elements.length; i++) {");
+                methodsBuilder.appendln("result[counter++] = elements[i];");
+                methodsBuilder.appendln("}");
             } else {
-                methodsBuilder.append("if(");
-                methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(subrel));
-                methodsBuilder.append("() > 0) {");
-                methodsBuilder.append("result[counter++] = ");
-                methodsBuilder.append(interfaceBuilder.getMethodNameGetRefObject(subrel));
-                methodsBuilder.append("();}");    
+                String method = interfaceBuilder.getMethodNameGetRefObject(subrel);
+                methodsBuilder.appendln("if (" + method + "()!=null) {");
+                methodsBuilder.appendln("result[counter++] = " + method + "();");
+                methodsBuilder.appendln("}");    
             }
         }
         methodsBuilder.append("return result;");
@@ -645,15 +649,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         interfaceBuilder.generateSignatureGetRefObject(relation, methodsBuilder);
         methodsBuilder.openBracket();
         for (int i = 0; i < subRelations.size(); i++) {
-            methodsBuilder.append("if(");
             IRelation subrel = (IRelation)subRelations.get(i);
-            methodsBuilder.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(subrel));
-            methodsBuilder.append("() > 0)");
-            methodsBuilder.openBracket();
-            methodsBuilder.append("return ");
-            methodsBuilder.append(interfaceBuilder.getMethodNameGetRefObject(subrel));
-            methodsBuilder.append("();");
-            methodsBuilder.closeBracket();
+            String field = getFieldNameForRelation(subrel);
+            methodsBuilder.appendln("if (" + field + "!=null) {");
+            methodsBuilder.appendln("return " + field + ";");
+            methodsBuilder.appendln("}");
         }
         methodsBuilder.append("return null;");
         methodsBuilder.closeBracket();
@@ -693,7 +693,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(fieldname);
         methodsBuilder.append(".add(" + paramName + ");");
         if (reverseRelation != null) {
-            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, relation, reverseRelation));
+            String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
+            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, targetClass, relation, reverseRelation));
         }
         methodsBuilder.closeBracket();
     }
@@ -733,7 +734,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(".remove(" + paramName + ")");
         if (reverseRelation != null) {
             methodsBuilder.append(") {");
-            methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation));
+            methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation, paramName));
             methodsBuilder.append(" }");
         } else {
             methodsBuilder.append(';');
@@ -777,65 +778,81 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(fieldname);
         methodsBuilder.append(") return;");
         if (reverseRelation != null) {
-            methodsBuilder.appendClassName(interfaceBuilder.getQualifiedClassName(target));
+            methodsBuilder.appendClassName(getQualifiedClassName(target));
             methodsBuilder.append(" oldRefObject = ");
             methodsBuilder.append(fieldname);
             methodsBuilder.append(';');
             methodsBuilder.append(fieldname);
             methodsBuilder.append(" = null;");
-            methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation));
+            methodsBuilder.append(generateCodeToCleanupOldReference(relation, reverseRelation, "oldRefObject"));
         }
         methodsBuilder.append(fieldname);
         methodsBuilder.append(" = (");
         methodsBuilder.appendClassName(getQualifiedClassName(target));
         methodsBuilder.append(")" + paramName +";");
         if (reverseRelation != null) {
-            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(fieldname, relation, reverseRelation));
+            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(fieldname, 
+                    getQualifiedClassName(target), relation, reverseRelation));
         }
         methodsBuilder.closeBracket();
     }
     
     private JavaCodeFragment generateCodeToSynchronizeReverseRelation(
-            String paramName,
+            String varName,
+            String varClassName,
             IRelation relation,
             IRelation reverseRelation) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
         code.append("if(");
         if (!relation.is1ToMany()) {
-            code.append(paramName + " != null && ");
+            code.append(varName + " != null && ");
         }
         if (reverseRelation.is1ToMany()) {
-            code.append("! " + paramName + ".");
+            code.append("! " + varName + ".");
             code.append(interfaceBuilder.getMethodNameContainsObject(reverseRelation) + "(this)");
         } else {
-            code.append(paramName + ".");
+            code.append(varName + ".");
             code.append(interfaceBuilder.getMethodNameGetRefObject(reverseRelation));
             code.append("() != this");
         }
         code.append(") {");
-        code.append(paramName + ".");
         if (reverseRelation.is1ToMany()) {
-            code.append(interfaceBuilder.getMethodNameAddObject(reverseRelation));
+            code.append(varName + "." + interfaceBuilder.getMethodNameAddObject(reverseRelation));
         } else {
+            String targetClass = getQualifiedClassName(relation.findTarget());
+            if (!varClassName.equals(targetClass)) {
+                code.append("((");
+                code.appendClassName(targetClass);
+                code.append(")" + varName + ").");
+            } else {
+                code.append(varName + ".");
+            }
             code.append(interfaceBuilder.getMethodNameSetObject(reverseRelation));
         }
-        code.append("(this); }");
+        code.appendln("(this);");
+        code.appendln("}");
         return code;
     }
     
     
-    private JavaCodeFragment generateCodeToCleanupOldReference(IRelation relation, IRelation reverseRelation) throws CoreException {
+    private JavaCodeFragment generateCodeToCleanupOldReference(
+            IRelation relation, 
+            IRelation reverseRelation,
+            String varToCleanUp) throws CoreException {
+        
         JavaCodeFragment body = new JavaCodeFragment();
-        String param = interfaceBuilder.getParamNameForRemoveObject(relation);
-        if (relation.is1ToMany()) {
-            body.append(param + ".");
-        } else {
-            body.append("if(oldRefObject != null) { oldRefObject.");
+        if (!relation.is1ToMany()) {
+            body.append("if (" + varToCleanUp + "!=null) {");
         }
         if (reverseRelation.is1ToMany()) {
-            body.append(interfaceBuilder.getMethodNameRemoveObject(reverseRelation) + "(this);");
+            String removeMethod = interfaceBuilder.getMethodNameRemoveObject(reverseRelation);
+            body.append(varToCleanUp + "." + removeMethod + "(this);");
         } else {
-            body.append(interfaceBuilder.getMethodNameSetObject(reverseRelation) + "(null);");
+            String targetClass = getQualifiedClassName(relation.findTarget());
+            String setMethod = interfaceBuilder.getMethodNameSetObject(reverseRelation);
+            body.append("((");
+            body.appendClassName(targetClass);
+            body.append(")" + varToCleanUp + ")." + setMethod + "(null);");
         }
         if (!relation.is1ToMany()) {
             body.append(" }");
@@ -863,8 +880,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
 
-        generateMethodGetNumOfForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
         if (containerRelation.is1ToMany()) {
+            generateMethodGetNumOfForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
             generateMethodGetAllRefObjectsForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
         } else {
             generateMethodGetRefObjectForContainerRelationImplementation(containerRelation, relations, methodsBuilder);
@@ -899,7 +916,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
          * ml.add(GetRelationTo1().validate()); } }
          */
 
-        // TODO Methodenname von pcType holen
         String methodName = "validateDependants";
         IRelation[] relations = getPcType().getRelations();
 
@@ -926,11 +942,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                         body.append("for (int i = 0; i < rels.length; i++)");
                         body.append("{ ml.add(rels[i].validate()); } }");
                     } else {
-                        body.append("if(");
-                        body.append(getPolicyCmptImplGetNumOfMethodName(r));
-                        body.append("() > 0) { ml.add(");
-                        body.append(getPolicyCmptImplGetMethodName(r));
-                        body.append("().validate()); }");
+                        String field = getFieldNameForRelation(r);
+                        body.append("if (" + field + "!=null) {");
+                        body.append("ml.add(" + field + ".validate());");
+                        body.append("}");
                     }
                 }
             }
