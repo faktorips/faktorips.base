@@ -3,9 +3,6 @@ package org.faktorips.devtools.core.builder;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 
 /**

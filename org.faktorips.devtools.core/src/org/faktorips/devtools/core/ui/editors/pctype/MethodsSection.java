@@ -24,8 +24,6 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
  */
 public class MethodsSection extends SimpleIpsPartsSection {
     
-    private MethodsComposite methodsComposite;
-
     public MethodsSection(
             IPolicyCmptType pcType, 
             Composite parent, 

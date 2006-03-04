@@ -2,11 +2,8 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
@@ -34,8 +31,6 @@ import org.faktorips.util.StringUtil;
  * @author Jan Ortmann
  */
 public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
-
-    private Map containerRelationToSubRelationMap;
 
     public AbstractPcTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet stringsSet) {
@@ -73,7 +68,6 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
      */
     public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
         super.afterBuild(ipsSrcFile);
-        containerRelationToSubRelationMap = null;
     }
     
     /**
@@ -308,115 +302,6 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
         }
     }
     
-    
-    /*
-     * Generates the code for all relations.
-     */
-    private void generateCodeForRelations2(JavaCodeFragmentBuilder memberVarsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        createContainerRelationToSubRelationsMap();
-        IRelation[] relations = getPcType().getRelations();
-
-        for (int i = 0; i < relations.length; i++) {
-            if (!relations[i].validate().containsErrorMsg()) {
-
-                try {
-                	generateCodeForRelation(relations[i], memberVarsBuilder, methodsBuilder);
-                } catch (Exception e) {
-                    throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building relation " //$NON-NLS-1$
-                            + relations[i].getName() + " of " //$NON-NLS-1$
-                            + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
-                }
-            }
-        }
-
-        for (Iterator it = containerRelationToSubRelationMap.keySet().iterator(); it.hasNext();) {
-            IRelation containerRelation = (IRelation)it.next();
-            List subRelationList = (List)containerRelationToSubRelationMap.get(containerRelation);
-            IRelation[] subRelations = (IRelation[])subRelationList
-                    .toArray(new IRelation[subRelationList.size()]);
-            try {
-//                generateCodeForContainerRelationImplementation(containerRelation, subRelations,
-//                    memberVarsBuilder, methodsBuilder);
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus(IStatus.ERROR,
-                        "Error building container relation " + containerRelation.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
-                                + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
-            }
-
-        }
-    }
-
-    private void createContainerRelationToSubRelationsMap() throws CoreException {
-        IRelation[] relations = getPcType().getRelations();
-        Map containerRelationNameToSubRelationMap = new HashMap();
-
-        for (int i = 0; i < relations.length; i++) {
-            if (!relations[i].validate().containsErrorMsg()) {
-
-                if (relations[i].implementsContainerRelation()) {
-                    addToContainerRelationMap(containerRelationNameToSubRelationMap, relations[i],
-                        relations[i].getContainerRelation());
-                } else {
-                    IRelation reverseComposition = relations[i]
-                            .findContainerRelationOfTypeReverseComposition();
-                    if (reverseComposition != null) {
-                        addToContainerRelationMap(containerRelationNameToSubRelationMap,
-                            relations[i], reverseComposition.getName());
-                    }
-                }
-            }
-        }
-
-        containerRelationToSubRelationMap = new HashMap(containerRelationNameToSubRelationMap
-                .size());
-        for (Iterator it = containerRelationNameToSubRelationMap.keySet().iterator(); it.hasNext();) {
-            String name = (String)it.next();
-            List subRelations = (List)containerRelationNameToSubRelationMap.get(name);
-            IRelation containerRelation = findContainerRelation(getPcType(), name);
-            containerRelationToSubRelationMap.put(containerRelation, subRelations);
-        }
-    }
-
-    private IRelation findContainerRelation(IPolicyCmptType pcType, String containerRelationName)
-            throws CoreException {
-        if (StringUtils.isEmpty(containerRelationName)) {
-            return null;
-        }
-        IRelation containerRelation = pcType.getRelation(containerRelationName);
-        if (containerRelation != null) {
-            return containerRelation;
-        }
-        IPolicyCmptType supertype = pcType.findSupertype();
-        if (supertype == null) {
-            return null;
-        }
-        return findContainerRelation(supertype, containerRelationName);
-    }
-
-    /**
-     * This method can be called within implementations of the generateCodeForRelation() method to
-     * distinguish relations that are part of the container relations hold by the policy component
-     * type instance of this builder. Calls to this method outside the generateCodeForRelation()
-     * might cause a runtime exception.
-     * 
-     * @param relation the relation to check
-     */
-    protected boolean isContainerRelation(IRelation relation) {
-        return containerRelationToSubRelationMap.containsKey(relation);
-    }
-
-    private void addToContainerRelationMap(Map containerRelationToSubRelationMap,
-            IRelation rel,
-            String containerRelationName) {
-        List subRelations = (List)containerRelationToSubRelationMap.get(containerRelationName);
-        if (subRelations == null) {
-            subRelations = new ArrayList();
-        }
-        subRelations.add(rel);
-        containerRelationToSubRelationMap.put(containerRelationName, subRelations);
-    }
-
     /**
      * Generates the code for a relation. The method is called for every 
      * valid relation defined in the policy component type we currently build sourcecode for.

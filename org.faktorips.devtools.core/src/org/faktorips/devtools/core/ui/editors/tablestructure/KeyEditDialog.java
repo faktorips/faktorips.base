@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -401,7 +400,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
         
         public Image getImage(Object element) {
             String item = (String)element;
-            IColumn column = key.getTableStructure().getColumn(item);
+            key.getTableStructure().getColumn(item);
             Image image;
             IColumnRange range = key.getTableStructure().getRange(item); 
             if (range!=null) {

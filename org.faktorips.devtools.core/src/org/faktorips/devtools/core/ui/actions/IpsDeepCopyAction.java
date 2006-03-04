@@ -7,10 +7,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.views.IViewDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.ui.views.productdefinitionexplorer.ProductExplorer;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 

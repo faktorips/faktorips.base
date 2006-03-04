@@ -1,7 +1,6 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -195,14 +194,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      */
     public boolean isExtensionCompilationUnitGenerated();
     
-    /**
-     * If an extension compilation unit is generated for this policy component type, the extension type (defined
-     * in the compilation unit) is returned. Otherwise the base implementation type is returned.
-     * @deprecated
-     * @throws CoreException if an error occurs while accesing the Java type.
-     */
-    public IType getJavaImplementationType() throws CoreException;
-
     /**
      * Returns the type's attributes.
      */

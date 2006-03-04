@@ -328,19 +328,6 @@ public class SpreadsheetControl extends Composite {
         cursor.setSelection(row, column);
     }
     
-    private ColumnInfo getColumnInfo(String columnName) {
-        for (int i=0; i<columnInfos.length; i++) {
-            if (columnInfos[i].columnName.equals(columnName)) {
-                return columnInfos[i];
-            }
-        }
-        throw new RuntimeException("Unkown column " + columnName); //$NON-NLS-1$
-    }
-    
-    private ColumnInfo getColumnInfo(int index) {
-        return columnInfos[index];
-    }
-    
     TableCursor getTableCursor() {
         return cursor;
     }
@@ -569,19 +556,17 @@ public class SpreadsheetControl extends Composite {
 		
 		// check scroll right
 		if (cursorBounds.x < clientArea.x) {
-		    System.out.println("Scroll right"); //$NON-NLS-1$
 			//TODO: This hack should be replaced in version 3.0 of swt
 			//      by the showColumn method of the table control. 
-			int dx = cursorBounds.x - clientArea.x;			
-			//obsolete OS.SendMessage(table.handle, OS.LVM_SCROLL, dx, 0);
+			// int dx = cursorBounds.x - clientArea.x;			
+			// obsolete OS.SendMessage(table.handle, OS.LVM_SCROLL, dx, 0);
 			cursor.setSelection(table.getSelectionIndex(), cursor.getInternalColumn());
 		} else if (cursorBounds.x + cursorBounds.width > clientArea.x + clientArea.width) {
 			//TODO: This hack should be replaced in version 3.0 of swt
 			//      by the showColumn method of the table control. 
-			int dx = cursorBounds.x + cursorBounds.width - (clientArea.x + clientArea.width);
+			//int dx = cursorBounds.x + cursorBounds.width - (clientArea.x + clientArea.width);
 			//obsolete OS.SendMessage (table.handle, OS. LVM_SCROLL, dx, 0);
 			cursor.setSelection(table.getSelectionIndex(), cursor.getInternalColumn());
-		    System.out.println("Scroll left"); //$NON-NLS-1$
 		}
 	}
 
@@ -781,7 +766,6 @@ public class SpreadsheetControl extends Composite {
 			{
 				case SWT.Show:
 				case SWT.Move:
-					TableItem[] items = table.getSelection();
 					boolean disable = (tableEvent_ && item_ == null); 
 					MenuItem mitems[] = popupMenu_.getItems();
 					for (int i = 0; i < mitems.length; i++)
