@@ -62,16 +62,14 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				.getIpsPreferences().getChangesOverTimeNamingConvention()
 				.getGenerationConceptNamePlural(Locale.getDefault()));
 		BooleanFieldEditor editRecentGernations = new BooleanFieldEditor(
-				IpsPreferences.EDIT_RECENT_GENERATION, label, BooleanFieldEditor.SEPARATE_LABEL,
-				getFieldEditorParent());
+				IpsPreferences.EDIT_RECENT_GENERATION, label, getFieldEditorParent());
 		addField(editRecentGernations);
 
 		label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditGenerationsWithSuccessor, IpsPlugin.getDefault()
 				.getIpsPreferences().getChangesOverTimeNamingConvention()
 				.getGenerationConceptNamePlural(Locale.getDefault()));
 		BooleanFieldEditor editGernationsWithSuccessor = new BooleanFieldEditor(
-				IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR, label, BooleanFieldEditor.SEPARATE_LABEL,
-				getFieldEditorParent());
+				IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR, label, getFieldEditorParent());
 		addField(editGernationsWithSuccessor);
 
 		BooleanFieldEditor enableGeneratingField = new BooleanFieldEditor(
