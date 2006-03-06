@@ -51,6 +51,14 @@ public interface IRelation extends IIpsObjectPart {
     // TODO implement, test case
     
     /**
+     * Validation message code to indicate that a relation can't be product relevant
+     * if the type is configurable by product.
+     */
+    public final static String MSGCODE_RELATION_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = 
+    	MSGCODE_PREFIX + "RelationCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
+    // TODO implement, test case
+
+    /**
      * Returns the policy component type this relation belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();

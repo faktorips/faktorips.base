@@ -23,6 +23,19 @@ public interface IAttribute extends IMember {
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "ATTRIBUTE-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an attribute can't be product relevant
+     * if the type is configurable by product.
+     */
+    public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = 
+    	MSGCODE_PREFIX + "AttributeCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
+    // TODO implement, test case
+    
+    /**
      * Returns the attribute's datatype.
      */
     public String getDatatype();

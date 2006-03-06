@@ -175,12 +175,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
     	Element propertiesEl = properties.toXml(doc);
         IFile file = getIpsProjectPropertiesFile();
-        String charset;
-        if (file.exists()) {
-            charset = file.getCharset();
-        } else {
-            charset = getProject().getDefaultCharset();
-        }
+        String charset = getXmlFileCharset();
         String contents;
         try {
             contents = XmlUtil.nodeToString(propertiesEl, charset);

@@ -40,8 +40,7 @@ public class PrimitiveBooleanHelper extends AbstractDatatypeHelper implements Pr
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.codegen.PrimitiveDatatypeHelper#toWrapper(org.faktorips.codegen.JavaCodeFragment)
+     * {@inheritDoc}
      */
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -52,17 +51,17 @@ public class PrimitiveBooleanHelper extends AbstractDatatypeHelper implements Pr
         return fragment;
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
+	/**
+     * {@inheritDoc}
 	 */
 	protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append(expression); 
+        fragment.append("Boolean.valueOf(" + expression + ").booleanValue()");
         return fragment;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
+	/**
+     * {@inheritDoc}
 	 */
 	public JavaCodeFragment nullExpression() {
 		// TODO oder doch ne Exception werfen

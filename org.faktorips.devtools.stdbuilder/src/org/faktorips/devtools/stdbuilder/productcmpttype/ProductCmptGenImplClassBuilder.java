@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -187,7 +188,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             builder.appendln("\");");
             builder.append("if (configElement != null) ");
             builder.openBracket();
-            builder.appendln("value = configElement.getAttribute(\"value\");");
+            builder.append("value = ");
+            builder.appendClassName(ValueToXmlHelper.class);
+            builder.append(".getValueFromElement(configElement, \"Value\");");
             builder.append(memberVarName);
             builder.append(" = ");
             builder.append(helper.newInstanceFromExpression("value"));
