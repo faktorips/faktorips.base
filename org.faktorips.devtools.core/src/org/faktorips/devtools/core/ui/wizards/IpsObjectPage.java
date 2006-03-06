@@ -75,7 +75,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         } else if (selection.getFirstElement() instanceof IIpsElement) {
         	selectedResource = ((IIpsElement)selection.getFirstElement()).getCorrespondingResource();
         } else {
-            throw new RuntimeException("Unknown selection element " + selection.getFirstElement().getClass()); //$NON-NLS-1$
+            selectedResource = null;
         }
     }
     
