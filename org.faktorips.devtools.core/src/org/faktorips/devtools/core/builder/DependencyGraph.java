@@ -37,6 +37,14 @@ public class DependencyGraph {
         init();
     }
 
+    public IIpsProject getIpsProject(){
+    	return ipsProject;
+    }
+    
+    public void reInit() throws CoreException{
+    	init();
+    }
+    
     private void init() throws CoreException {
         dependantsForMap = new HashMap();
         dependsOnMap = new HashMap();

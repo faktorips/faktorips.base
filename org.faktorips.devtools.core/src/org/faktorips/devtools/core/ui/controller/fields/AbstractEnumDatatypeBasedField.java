@@ -46,23 +46,22 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
 	/**
 	 * Implementations of this edit field should provide a reinitialization of
-	 * the field within this method. In cases where the provided EnumDatatype
-	 * changes its values dynamically this edit field can adjust to the value
-	 * changes. The initialized() method is supposed to be used to set the
-	 * values for the combo.
+	 * the field within this method. In cases where the provided
+	 * <code>EnumDatatype</code> changes its values dynamically this edit
+	 * field can adjust to the value changes by means of this method. The
+	 * <code>initialized(String[], String[])</code> method is supposed to be
+	 * used to set the values of the combo within implementations of
+	 * <code>reInitInternal()</code>.
 	 */
 	protected abstract void reInitInternal();
 
 	/**
 	 * Initializes the combo either with the ids of the enumeration values or
-	 * with the value names if the EnumDatatype supports names. The ids a kept
-	 * during the life time of this EditField or until the reInit() method has
-	 * been called. They are used to by the getValue method. So implementations
-	 * of the reInitInteral() method need to call this method to initialize this
-	 * edit field correctly.
-	 * 
-	 * @param ids
-	 * @param names
+	 * with the value names if the EnumDatatype supports names. The ids are kept
+	 * during the life time of this EditField or until the reInit() method is
+	 * called. They are used to by the <code>getValue()</code> method.
+	 * Implementations of the <code>reInitInteral()</code> method need to call
+	 * this method to initialize this edit field correctly.
 	 */
 	protected final void initialize(String[] ids, String[] names) {
 
@@ -82,9 +81,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	}
 
 	/**
-	 * Returns the value of the currently selected index. Returns the value
-	 * (which is the id of the enumeration value) Returns null if no value is
-	 * selected.
+	 * Returns the value of the currently selected index (which is the id of the
+	 * enumeration value). Returns null if no value is selected.
 	 */
 	public Object getValue() {
 

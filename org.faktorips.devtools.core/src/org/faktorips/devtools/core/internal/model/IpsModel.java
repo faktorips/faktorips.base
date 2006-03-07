@@ -37,6 +37,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Util;
+import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -96,10 +97,13 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	// extension properties (as list) per ips object (or part) type, e.g.
 	// IAttribute.
 	private Map typeExtensionPropertiesMap = null; // null as long as they
-													// haven't been looked up.
+
+	// haven't been looked up.
 
 	// map containg all changes in time naming conventions by id.
 	private Map changesOverTimeNamingConventionMap = null;
+
+	private Map dependencyGraphForProjectsMap = new HashMap();
 
 	IpsModel() {
 		super(null, "IpsModel"); //$NON-NLS-1$
@@ -275,10 +279,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 								.next();
 						listener.contentsChanged(event);
 					} catch (Exception e) {
-						IpsPlugin
-								.log(new IpsStatus(
-										"Error notifying IPS model change listener", //$NON-NLS-1$
-										e));
+						IpsPlugin.log(new IpsStatus(
+								"Error notifying IPS model change listener", //$NON-NLS-1$
+								e));
 					}
 				}
 			}
@@ -360,6 +363,35 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					+ " in the set of registered builder sets.")); //$NON-NLS-1$
 		}
 		return new EmptyBuilderSet();
+	}
+
+	/**
+	 * Returns the <code>DependencyGraph</code> of the provided
+	 * <code>IpsProject</code>. If the provided IpsProject doesn't exist or
+	 * if it isn't a valid <code>IpsProject</code> <code>null</code> will be
+	 * returned by this method. This method is not part of the published interface.
+	 * 
+	 * @throws CoreException will be thrown if an error occures while trying to validated the provided
+	 * 			IpsProject.
+	 * @throws NullPointerException if the argument is null
+	 */
+	//TODO the resource change listener method of this IpsModel needs to update the dependencyGraphForProjectsMap 
+	public DependencyGraph getDependencyGraph(IIpsProject ipsProject)
+			throws CoreException {
+		ArgumentCheck.notNull(ipsProject, this);
+		DependencyGraph graph = (DependencyGraph) dependencyGraphForProjectsMap
+				.get(ipsProject);
+		if (graph == null) {
+			IIpsProject[] ipsProjects = getIpsProjects();
+			for (int i = 0; i < ipsProjects.length; i++) {
+				if (ipsProject.equals(ipsProjects[i])) {
+					graph = new DependencyGraph(ipsProject);
+					dependencyGraphForProjectsMap.put(ipsProject, graph);
+					return graph;
+				}
+			}
+		}
+		return graph;
 	}
 
 	/**
@@ -800,15 +832,15 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
 				"datatypeDefinition"); //$NON-NLS-1$
 		IExtension[] extensions = point.getExtensions();
-		
-		// first, get all datatypes defined by the ips-plugin itself 
+
+		// first, get all datatypes defined by the ips-plugin itself
 		// to get them at top of the list...
 		for (int i = 0; i < extensions.length; i++) {
 			if (extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
 				createDatatypeDefinition(extensions[i]);
 			}
 		}
-		
+
 		// and second, get the rest.
 		for (int i = 0; i < extensions.length; i++) {
 			if (!extensions[i].getNamespace().equals(IpsPlugin.PLUGIN_ID)) {
@@ -914,7 +946,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 */
 	public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention(
 			String id) {
-		
+
 		initChangesOverTimeNamingConventionIfNeccessary();
 		IChangesOverTimeNamingConvention convention = (IChangesOverTimeNamingConvention) changesOverTimeNamingConventionMap
 				.get(id);
@@ -930,19 +962,23 @@ public class IpsModel extends IpsElement implements IIpsModel,
 							+ IChangesOverTimeNamingConvention.VAA, null));
 			return convention;
 		}
-		IpsPlugin.log(new IpsStatus(
-				"Unknown changes in time naming convention " + id //$NON-NLS-1$
-						+ ". Default convention " //$NON-NLS-1$
-						+ IChangesOverTimeNamingConvention.VAA + " not found!")); //$NON-NLS-1$
+		IpsPlugin
+				.log(new IpsStatus(
+						"Unknown changes in time naming convention " + id //$NON-NLS-1$
+								+ ". Default convention " //$NON-NLS-1$
+								+ IChangesOverTimeNamingConvention.VAA
+								+ " not found!")); //$NON-NLS-1$
 		return new ChangesOverTimeNamingConvention("VAA"); //$NON-NLS-1$
 	}
 
 	public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
-		initChangesOverTimeNamingConventionIfNeccessary();		
-		IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap.size()];
-		int i=0;
-		for (Iterator it=changesOverTimeNamingConventionMap.values().iterator(); it.hasNext(); ) {
-			conventions[i++] = (IChangesOverTimeNamingConvention)it.next();
+		initChangesOverTimeNamingConventionIfNeccessary();
+		IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
+				.size()];
+		int i = 0;
+		for (Iterator it = changesOverTimeNamingConventionMap.values()
+				.iterator(); it.hasNext();) {
+			conventions[i++] = (IChangesOverTimeNamingConvention) it.next();
 		}
 		return conventions;
 	}

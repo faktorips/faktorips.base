@@ -61,7 +61,13 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      */
     public final static String MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION = MSGCODE_PREFIX + "MustImplementAbstractRelation"; //$NON-NLS-1$
     // TODO implement, test case
-    	
+    
+    /**
+     * Validation message code to indicate that there exists an error within the type hierarchy of this type.
+     */
+    //TODO not implemented yet
+    public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierarchy"; //$NON-NLS-1$
+    
     /**
      * Validation message code to indicate that the relation is marked as container relation
      * but the reverse relation is not, or vice versa.
