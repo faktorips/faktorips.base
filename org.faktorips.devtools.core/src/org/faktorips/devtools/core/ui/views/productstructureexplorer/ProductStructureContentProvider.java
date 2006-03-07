@@ -113,4 +113,12 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         
         structure = (IProductCmptStructure)newInput;
     }
+    
+    public boolean isRelationTypeShowing() {
+    	return fShowRelationType;
+    }
+    
+    public void setRelationTypeShowing(boolean showRelationType) {
+    	fShowRelationType = showRelationType;
+    }
 }

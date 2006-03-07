@@ -1,9 +1,14 @@
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
+import org.faktorips.devtools.core.internal.model.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.internal.model.product.ConfigElement;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 import org.faktorips.values.EnumType;
 import org.faktorips.values.EnumValue;
+import org.w3c.dom.Element;
 
 /**
  * The kind of value set.
@@ -31,9 +36,9 @@ public class ValueSetType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("ValueSetType", ValueSetType.class); //$NON-NLS-1$
-        ALL_VALUES = new ValueSetType(enumType, "allValues", "All values"); //$NON-NLS-1$ //$NON-NLS-2$
-        RANGE = new ValueSetType(enumType, "range", "Range"); //$NON-NLS-1$ //$NON-NLS-2$
-        ENUM = new ValueSetType(enumType, "enum", "Enumeration"); //$NON-NLS-1$ //$NON-NLS-2$
+        ALL_VALUES = new ValueSetType(enumType, "allValues", "All values"); //$NON-NLS-1$
+        RANGE = new ValueSetType(enumType, "range", "Range"); //$NON-NLS-1$ 
+        ENUM = new ValueSetType(enumType, "enum", "Enumeration"); //$NON-NLS-1$ 
     }
     
     public final static EnumType getEnumType() {
@@ -72,25 +77,45 @@ public class ValueSetType extends DefaultEnumValue {
         return types;
     }
     
-    /**
-     * Creates a new value set of this type.
-     */
-    public ValueSet newValueSet() {
-        if (this==RANGE) {
-            return new Range();
-        } 
-        if (this==ENUM) {
-            return new EnumValueSet();
-        }
-        if (this==ALL_VALUES) {
-            return ValueSet.ALL_VALUES;
-        }
-        throw new RuntimeException("Can't create a new value set for type " + this); //$NON-NLS-1$
-    }
-    
     private ValueSetType(DefaultEnumType type, String id, String name) {
         super(type, id, name);
     }
 
-    
+
+	/**
+	 * Creates a new value set of the type this method is invoked on.
+	 */
+	public IValueSet newValueSet(IIpsObjectPart parent, int id) {
+		if (this == ALL_VALUES) {
+			return new AllValuesValueSet(parent, id);
+		}
+		else if (this == ENUM) {
+			return new EnumValueSet(parent, id);
+		}
+		else if (this == RANGE) {
+			return new RangeValueSet(parent, id);
+		}
+		return null;
+	}
+
+	/**
+	 * Creates a new ValueSet - the type of the ValueSet is examined from the given XML-Element.
+	 *  
+	 * @param valueSetNode The node describing the ValueSet.
+	 * @param parent The parent for the new value set.
+	 * @param id The IpsObjectPart-ID for the new value set.
+	 */
+	public static IValueSet newValueSet(Element valueSetNode, IIpsObjectPart parent, int id) {
+		String tagName = valueSetNode.getNodeName();
+		if (tagName.equals(EnumValueSet.XML_TAG)) {
+			return new EnumValueSet(parent, id);
+		}
+		else if (tagName.equals(RangeValueSet.XML_TAG)) {
+			return new RangeValueSet(parent, id);
+		}
+		else if (tagName.equals(AllValuesValueSet.XML_TAG)) {
+			return new AllValuesValueSet(parent, id);
+		}
+		return null;
+	}
 }

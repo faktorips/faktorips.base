@@ -79,7 +79,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
     private TreeViewer tree;
-    
+        
     /**
      * Overridden.
      */

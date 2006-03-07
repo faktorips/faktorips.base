@@ -3,7 +3,11 @@ package org.faktorips.devtools.core.model;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.util.XmlAbstractTestCase;
+import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.internal.model.EnumValueSet;
+import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DefaultEnumType;
@@ -13,26 +17,32 @@ import org.w3c.dom.Element;
 
 /**
  */
-public class EnumValueSetTest extends XmlAbstractTestCase {
+public class EnumValueSetTest extends IpsPluginTest {
     
     private DefaultEnumType gender;
+    private IConfigElement ce;
 
-    protected void setUp() {
+    protected void setUp() throws Exception {
+    	super.setUp();
         gender = new DefaultEnumType("Gender", DefaultEnumValue.class);
         new DefaultEnumValue(gender, "male");
         new DefaultEnumValue(gender, "female");
+        
+        DefaultTestContent content = new DefaultTestContent();
+        IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
+        ce = gen.newConfigElement();
     }
 
-    public void testEnumValueSet() {
-        EnumValueSet set = new EnumValueSet(gender);
-        String[] elements = set.getValues();
-        assertEquals(2, elements.length);
-        assertEquals("male", elements[0]);
-        assertEquals("female", elements[1]);
-    }
+//    public void testEnumValueSet() {
+//        IEnumValueSet set = new EnumValueSet(ce, gender);
+//        String[] elements = set.getValues();
+//        assertEquals(2, elements.length);
+//        assertEquals("male", elements[0]);
+//        assertEquals("female", elements[1]);
+//    }
 
     public void testContainsValue() {
-        EnumValueSet set = new EnumValueSet();
+        EnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("10EUR");
         set.addValue("20EUR");
         set.addValue("30EUR");
@@ -59,12 +69,12 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
     }
     
     public void testContainsValueSet() {
-    	EnumValueSet superset = new EnumValueSet();
+    	EnumValueSet superset = new EnumValueSet(ce, 1);
     	superset.addValue("1");
     	superset.addValue("2");
     	superset.addValue("3");
     	
-    	EnumValueSet subset = new EnumValueSet();
+    	EnumValueSet subset = new EnumValueSet(ce, 1);
     	assertTrue(superset.containsValueSet(subset, Datatype.INTEGER));
     	
     	subset.addValue("1");
@@ -96,7 +106,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
     }
 
     public void testAddValue() {
-        EnumValueSet set = new EnumValueSet();
+        IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
         assertEquals(2, set.getValues().length);
@@ -104,7 +114,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
     }
 
     public void testRemoveValue() {
-        EnumValueSet set = new EnumValueSet();
+        IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
         assertEquals(2, set.getValues().length);
@@ -113,7 +123,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
     }
 
     public void testGetValue() {
-        EnumValueSet set = new EnumValueSet();
+        IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -124,7 +134,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
     }
 
     public void testSetValue() {
-        EnumValueSet set = new EnumValueSet();
+        IEnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
@@ -136,7 +146,8 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
         Element element = XmlUtil.getFirstElement(root);
-        EnumValueSet set = (EnumValueSet)EnumValueSet.createFromXml(element);
+        IEnumValueSet set = new EnumValueSet(ce, 1);
+        set.initFromXml(element);
         assertEquals("one", set.getValue(0));
         assertEquals("two", set.getValue(1));
         assertEquals("three", set.getValue(2));
@@ -144,12 +155,13 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
     }
 
     public void testToXml() {
-        EnumValueSet set = new EnumValueSet();
+        EnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
         Element element = set.toXml(this.newDocument());
-        EnumValueSet set2 = (EnumValueSet)EnumValueSet.createFromXml(element);
+        IEnumValueSet set2 = new EnumValueSet(ce, 1);
+        set2.initFromXml(element);
         assertEquals("one", set2.getValue(0));
         assertEquals("two", set2.getValue(1));
         assertEquals("two", set2.getValue(2));
@@ -157,7 +169,7 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
     }
 
     public void testValidate() {
-        EnumValueSet set = new EnumValueSet();
+        EnumValueSet set = new EnumValueSet(ce, 1);
         MessageList list = new MessageList();
         set.validate(Datatype.DECIMAL, list);
         assertEquals(0, list.getNoOfMessages());
@@ -176,16 +188,16 @@ public class EnumValueSetTest extends XmlAbstractTestCase {
         list.clear();
         set.validate(Datatype.STRING, list);
         assertEquals(2, list.getNoOfMessages());
-        assertEquals(list.getMessage(0).getCode(), EnumValueSet.MSGCODE_DUPLICATE_VALUE);
+        assertEquals(list.getMessage(0).getCode(), IEnumValueSet.MSGCODE_DUPLICATE_VALUE);
     }
 
-    public void testCreateFromEnumDatatype() {
-    	EnumValueSet set = EnumValueSet.createFromEnumDatatype(new EnumDatatypePaymentMode());
-        String[] elements = set.getValues();
-        assertEquals(2, elements.length);
-        assertEquals("annual", elements[0]);
-        assertEquals("monthly", elements[1]);
-    }
+//    public void testCreateFromEnumDatatype() {
+//    	IEnumValueSet set = EnumValueSet.createFromEnumDatatype(ce, new EnumDatatypePaymentMode());
+//        String[] elements = set.getValues();
+//        assertEquals(2, elements.length);
+//        assertEquals("annual", elements[0]);
+//        assertEquals("monthly", elements[1]);
+//    }
 
     
     class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDatatype {

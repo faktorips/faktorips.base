@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -106,7 +107,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         elements = delta.getElementsWithValueSetMismatch();
         for (int i = 0; i < elements.length; i++) {
             IAttribute a = elements[i].findPcTypeAttribute();
-            elements[i].setValueSet(a.getValueSet().copy());
+            elements[i].setValueSetCopy(a.getValueSet());
         }
         IProductCmptRelation[] relations = delta.getRelationsWithMissingPcTypeRelations();
         for (int i = 0; i < relations.length; i++) {
@@ -305,7 +306,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#newPart(java.lang.String, int)
      */
-    protected IIpsObjectPart newPart(String xmlTagName, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    	String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(ConfigElement.TAG_NAME)) {
             return newConfigElementInternal(id);
         } else if (xmlTagName.equals(ProductCmptRelation.TAG_NAME)) {

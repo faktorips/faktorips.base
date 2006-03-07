@@ -1,5 +1,6 @@
 package org.faktorips.datatype.classtypes;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueClassDatatype;
 
 /**
@@ -29,8 +30,8 @@ public class DoubleDatatype extends ValueClassDatatype {
      * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
      */
     public Object getValue(String s) {
-        if (s.equals("")) {
-            return Double.valueOf("0");
+        if (StringUtils.isEmpty(s)) {
+            return null;
         }
 		return Double.valueOf(s);
     }

@@ -2,35 +2,55 @@ package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.XmlAbstractTestCase;
+import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class RangeTest extends XmlAbstractTestCase {
+public class RangeTest extends IpsPluginTest {
 
+	private IConfigElement ce;
+	
+	public void setUp() throws Exception {
+		super.setUp();
+        DefaultTestContent content = new DefaultTestContent();
+        IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
+        ce = gen.newConfigElement();
+	}
+	
 	public void testCreateFromXml() throws CoreException {
 		Document doc = getTestDocument();
 		Element root = doc.getDocumentElement();
 		Element element = XmlUtil.getFirstElement(root);
-		Range range = (Range)Range.createFromXml(element);
+		IRangeValueSet range = new RangeValueSet(ce, 1);
+		range.initFromXml(element);
 		assertEquals("42", range.getLowerBound());
 		assertEquals("trulala", range.getUpperBound());
 		assertEquals("4",range.getStep());
 	}
 
 	public void testToXml() {
-		Range range = new Range("10", "100", "10");
+		IRangeValueSet range = new RangeValueSet(ce, 1);
+		range.setLowerBound("10");
+		range.setUpperBound("100");
+		range.setStep("10");
 		Element element = range.toXml(this.newDocument());
-		Range r2 = (Range)Range.createFromXml(element);
+		IRangeValueSet r2 = new RangeValueSet(ce, 1);
+		r2.initFromXml(element);
 		assertEquals(range.getLowerBound(), r2.getLowerBound());
 		assertEquals(range.getUpperBound(), r2.getUpperBound());
 		assertEquals(range.getStep(), r2.getStep());
 	}
 	
 	public void testContainsValue() {
-	    Range range = new Range ("20", "25");
+	    RangeValueSet range = new RangeValueSet (ce, 1);
+		range.setLowerBound("20");
+		range.setUpperBound("25");
 	    assertTrue(range.containsValue("20", Datatype.DECIMAL));
 	    assertTrue(range.containsValue("22", Datatype.DECIMAL));
 	    assertTrue(range.containsValue("25", Datatype.DECIMAL));
@@ -51,9 +71,15 @@ public class RangeTest extends XmlAbstractTestCase {
  	}
 	
 	public void testContainsValueSet() {
-		Range range = new Range("10", "20", "2");
+		RangeValueSet range = new RangeValueSet(ce, 1);
+		range.setLowerBound("10");
+		range.setUpperBound("20");
+		range.setStep("2");
 		
-		Range subRange = new Range("10", "20", "2");
+		RangeValueSet subRange = new RangeValueSet(ce, 1);
+		subRange.setLowerBound("10");
+		subRange.setUpperBound("20");
+		subRange.setStep("2");
 		assertTrue(range.containsValueSet(subRange, Datatype.INTEGER));
 		
 		subRange.setStep("3");
@@ -91,21 +117,24 @@ public class RangeTest extends XmlAbstractTestCase {
 	}
 	
 	public void testValidate () {
-	    Range range = new Range ("20", "25");
+	    RangeValueSet range = new RangeValueSet (ce, 1);
+	    range.setLowerBound("20");
+	    range.setUpperBound("25");
 	    MessageList list = new MessageList();
 	    range.validate(Datatype.DECIMAL, list);
 	    assertTrue(list.isEmpty());
 	    
-	    range = new Range ( "blabla", "25");
+	    range.setLowerBound("blabla");
 	    range.validate(Datatype.DECIMAL, list);
 	    assertFalse(list.isEmpty());
 	    
-	    range = new Range ("22", "blabla");
+	    range.setLowerBound("22");
+	    range.setUpperBound("blabla");
 	    list.clear();
 	    range.validate(Datatype.DECIMAL, list);
 	    assertFalse(list.isEmpty());
 	    
-	    range = new Range("22", "12");
+	    range.setUpperBound("12");
 	    list.clear();
 	    range.validate(Datatype.DECIMAL, list);
 	    assertFalse(list.isEmpty());
@@ -114,7 +143,8 @@ public class RangeTest extends XmlAbstractTestCase {
 	    range.validate(null, list);
 	    assertFalse(list.isEmpty());
 
-        range = new Range("", "");
+	    range.setLowerBound("");
+	    range.setUpperBound("");
         list.clear();
         range.validate(Datatype.MONEY, list);
         assertFalse(list.containsErrorMsg());

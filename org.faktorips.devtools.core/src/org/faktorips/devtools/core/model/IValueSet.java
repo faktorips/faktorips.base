@@ -1,11 +1,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.util.XmlUtil;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A ValueSet is the specification of a set of values. It is asumed that all values in a ValueSet are of the same
@@ -17,10 +13,10 @@ import org.w3c.dom.Element;
  * string values remain. The user can switch back the datatype to Decimal and the range is valid again. 
  * This works also when the attribute's datatype is unkown.
  * 
- * @author Andy Roesch
+ * @author Thorsten Guenther
  * @author Jan Ortmann
  */
-public abstract class ValueSet {
+public interface IValueSet extends IIpsObjectPart {
     
     /**
      * Prefix for all message codes of this class.
@@ -55,66 +51,10 @@ public abstract class ValueSet {
     public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
     
     /**
-     * Name of the xml element used in the xml conversion.
-     */
-    public final static String XML_TAG = "ValueSet"; //$NON-NLS-1$
-    
-    /**
-     * A value set instance representing all values.
-     */
-    public final static ValueSet ALL_VALUES = new AllValuesValueSet();
-
-    /**
-     * Returns the value set represented by the indicated value set element.
-     * 
-     * @param valueSetElement The ValueSet xml element.
-     */
-    public final static ValueSet createFromXml(Element valueSetElement) {
-        Element subclassEl = XmlUtil.getFirstElement(valueSetElement);
-        if (subclassEl.getNodeName().equals(Range.XML_TAG)) {
-            return Range.createRangeFromXml(subclassEl);
-        }
-        if (subclassEl.getNodeName().equals(EnumValueSet.XML_TAG)) {
-            return EnumValueSet.createEnumFromXml(subclassEl);
-        }
-        if (subclassEl.getNodeName().equals(AllValuesValueSet.XML_TAG)) {
-            return ValueSet.ALL_VALUES;
-        }
-        throw new RuntimeException("Unknown subclass element " + subclassEl.getNodeName()); //$NON-NLS-1$
-    }
-    
-    /**
-     * Return a copy of the value set.
-     */
-    public abstract ValueSet copy();
-    
-    /**
      * Returns the type of the value set.
      */
-    public abstract ValueSetType getValueSetType();
+    public ValueSetType getValueSetType();
     
-    /**
-     * Returns <code>true</code> if this is the value set containg all values, otherwise <code>false</code>.
-     */
-    public final boolean isAllValues() {
-        return getValueSetType()==ValueSetType.ALL_VALUES;
-    }
-    
-    /**
-     * Returns <code>true</code> if this is value set is a range, otherwise <code>false</code>.
-     */
-    public final boolean isRange() {
-        return getValueSetType()==ValueSetType.RANGE;
-    }
-    
-    /**
-     * Returns <code>true</code> if this is an EnumValueSet you can safely cast it to EnumValueSet,
-     * otherwise <code>false</code>.
-     */
-    public final boolean isEnumValueSet() {
-        return getValueSetType()==ValueSetType.ENUM;
-    }
-
     /**
      * Returns <code>true</code> if the value set contains the indicated value, otherwise <code>false</code>.
      * 
@@ -123,7 +63,7 @@ public abstract class ValueSet {
      * 
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
-    public abstract boolean containsValue(String value, ValueDatatype datatype);
+    public boolean containsValue(String value, ValueDatatype datatype);
 
     /**
      * Returns <code>true</code> it the value set contains the indicated value, otherwise <code>false</code>.
@@ -139,7 +79,7 @@ public abstract class ValueSet {
      *                        Can be <code>null</code> itself.
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
-    public abstract boolean containsValue(String value, ValueDatatype datatype,
+    public boolean containsValue(String value, ValueDatatype datatype,
 			MessageList list, Object invalidObject, String invalidProperty);
     
     /**
@@ -150,7 +90,7 @@ public abstract class ValueSet {
      * 
      * @throws NullPointerException if subset or datatype is <code>null</code>. 
      */
-    public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype);
+    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype);
     
     /**
      * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
@@ -166,7 +106,7 @@ public abstract class ValueSet {
      * 
      * @throws NullPointerException if subset or datatype is <code>null</code>. 
      */
-    public abstract boolean containsValueSet(ValueSet subset, ValueDatatype datatype, 
+    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype, 
     		MessageList list, Object invalidObject, String invalidProperty);
 
     /**
@@ -175,42 +115,24 @@ public abstract class ValueSet {
      * @param datatype The value datatype to parse the set's string values to 'real' values.
      * @param list Message collection paramter.
      */
-    public abstract void validate(ValueDatatype datatype, MessageList list);
-
-    /**
-     * Creates an xml element representing the value set.
-     */
-    public final Element toXml(Document doc) {
-        Element element = doc.createElement(XML_TAG);
-        element.appendChild(createSubclassElement(doc));
-        return element;
-    }
+    public void validate(ValueDatatype datatype, MessageList list);
     
-    protected abstract Element createSubclassElement(Document doc);
+    /**
+     * Creates a copy of this value set (type and values, parent and id are set
+     * to the given values).
+     */
+    public IValueSet copy(IIpsObjectPart parent, int id);
 
     /**
-     * Creates a new message with severity ERROR and adds the new message to the given message list.
-     * 
-     * @param list The message list to add the new message to 
-     * @param id The message code
-     * @param text The message text
-     * @param invalidObject The object this message is for. Can be null if no relation to an object exists.
-     * @param invalidProperty The name of the property the message is created for. Can be null.
+     * Copy all values (not the parent or the id) of the given target to this value set.
+     * @throws IllegalArgumentException if the given target is not the same type
+     * this method is invoked.
      */
-    protected void addMsg(MessageList list, String id, String text, Object invalidObject, String invalidProperty) {
-    	Message msg;
-    	int severity = Message.ERROR;
-    	
-    	if (invalidObject == null) {
-    		msg = new Message(id, text, severity);
-    	}
-    	else if (invalidProperty == null) {
-    		msg = new Message(id, text, severity, invalidObject);
-    	}
-    	else {
-    		msg = new Message(id, text, severity, invalidObject, invalidProperty);
-    	}
-    	
-    	list.add(msg);
-    }
+    public void setValuesOf(IValueSet source);
+    
+    /**
+     * Returns the unqulified, human readable representation of this value set.
+     */
+    public String toShortString();
+    
 }

@@ -8,14 +8,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.EnumValueSet;
-import org.faktorips.devtools.core.model.Range;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 import org.faktorips.values.DefaultEnumType;
@@ -28,10 +28,14 @@ public class ValueSetEditControl extends ControlComposite {
     private Combo validTypesCombo;
     private RangeEditControl rangeControl;
     private EnumValueSetEditControl enumControl;
-    private ValueSetChangeListener valueSetChangeListener;
+    private Composite allValuesControl;
     private ValueDatatype datatype; // The datatype the values in the set are values of.
 
     private Composite valueSetArea; // is used to change the layout
+    private IAttribute attribute;
+    private UIToolkit toolkit;
+    private DefaultUIController uiController;
+    private TableElementValidator validator;
 
     /**
      * Generates a new control which contains a combo box and depending on the value of the box a EnumValueSetEditControl
@@ -39,9 +43,14 @@ public class ValueSetEditControl extends ControlComposite {
      * the following general layout is used. the main layout is a gridlayout with one collom. in the first row there is
      * a composite with a gridlayout with 2 columns generated. In the second row there is a stacklayout used . 
      */
-    public ValueSetEditControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController, ValueSet valueSet,
+    public ValueSetEditControl(Composite parent, UIToolkit toolkit, DefaultUIController uiController, IAttribute attribute,
             TableElementValidator tableElementValidator) {
         super(parent, SWT.NONE);
+        this.attribute = attribute;
+        this.toolkit = toolkit;
+        this.uiController = uiController;
+        this.validator = tableElementValidator;
+        
         initLayout();
         Composite parentArea;
         if (toolkit.getFormToolkit() == null) {
@@ -56,22 +65,37 @@ public class ValueSetEditControl extends ControlComposite {
         parentArea.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         createValidTypesCombo(toolkit, parentArea);
         valueSetArea = createValueCntrlArea(toolkit, parentArea);
-        if (valueSet.isEnumValueSet()) {
-            enumControl = new EnumValueSetEditControl((EnumValueSet)valueSet, valueSetArea, tableElementValidator);
-            rangeControl = new RangeEditControl(valueSetArea, toolkit, new Range(), uiController);
-        } else if (valueSet.isRange()) {
-            enumControl = new EnumValueSetEditControl(new EnumValueSet(), valueSetArea, tableElementValidator);
-            rangeControl = new RangeEditControl(valueSetArea, toolkit, (Range)valueSet, uiController);
-        } else {
-            enumControl = new EnumValueSetEditControl(new EnumValueSet(), valueSetArea, tableElementValidator);
-            rangeControl = new RangeEditControl(valueSetArea, toolkit, new Range(), uiController);
-        }
+        IValueSet valueSet = attribute.getValueSet();
+        getControlForValueSet(valueSet);
         validTypesCombo.setText(valueSet.getValueSetType().getName());
         if (toolkit.getFormToolkit() != null) {
             toolkit.getFormToolkit().adapt(this); // has to be done after the text control is created!
         }
     }
 
+    private Composite getControlForValueSet(IValueSet valueSet) {
+    	Composite retValue;
+    	if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+    		if (enumControl == null) {
+    			enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, valueSetArea, validator);
+    		}
+    		enumControl.setValueSet(valueSet);
+    		retValue = enumControl;
+    	} else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
+    		if (rangeControl == null) {
+    			rangeControl = new RangeEditControl(valueSetArea, toolkit, (RangeValueSet)valueSet, uiController);
+    		}
+    		rangeControl.setValueSet(valueSet);
+    		retValue = rangeControl;
+    	} else {
+    		if (allValuesControl == null) {
+    			allValuesControl = toolkit.createComposite(valueSetArea);
+    		}
+    		retValue = allValuesControl;
+    	}
+        return retValue;
+    }
+    
     private void initLayout() {
         GridLayout mainAreaLayout = new GridLayout(2, false);
         mainAreaLayout.marginHeight = 0;
@@ -100,50 +124,11 @@ public class ValueSetEditControl extends ControlComposite {
             validTypesCombo.add(types[i].getName());
         }
 
-        validTypesCombo.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                if (valueSetChangeListener == null) {
-                    return;
-                }
-                Control topControl = ((StackLayout)valueSetArea.getLayout()).topControl; 
-                String selectedText = validTypesCombo.getText();
-                if (selectedText.equals(ValueSetType.RANGE.getName())) {
-                    topControl = rangeControl;
-                    valueSetChangeListener.valueSetChanged(rangeControl.getRange()); // fires a change event
-                } else {
-                    if (selectedText.equals(ValueSetType.ENUM.getName())) {
-                        if (topControl==null && datatype!=null && datatype instanceof DefaultEnumType && enumControl.getEnumValueSet().getNumOfValues()==0) {
-                            // until now the value set was AllValues, now the user has selected enumeration
-                            // the datatype itself is an enum type
-                            // => so default the enum value set with the values from the type.
-                            enumControl.setValueSet(EnumValueSet.createFromEnumDatatype((EnumDatatype)datatype));
-                        }
-                        topControl = enumControl;
-                        valueSetChangeListener.valueSetChanged(enumControl.getEnumValueSet()); // fires a change event
-                    } else {
-                        if (selectedText.equals(ValueSetType.ALL_VALUES.getName())) {
-                            valueSetChangeListener.valueSetChanged(ValueSet.ALL_VALUES); // fires a change event
-                        }
-                    }
-                }
-                ((StackLayout)valueSetArea.getLayout()).topControl = topControl;
-                valueSetArea.layout(); // Displaying the changes
-            }
-        });
+        validTypesCombo.addModifyListener(new TypeModifyListener());
     }
 
     public boolean setFocus() {
         return validTypesCombo.setFocus();
-    }
-
-    /**
-     * Sets the ValueSetChangeListener to the two controls which change the valueset
-     */
-    public void setValueSetChangelistener(ValueSetChangeListener valuesetchangelistener) {
-        rangeControl.setValueSetChangeListener(valuesetchangelistener);
-        enumControl.setValueSetChangeListener(valuesetchangelistener);
-        this.valueSetChangeListener = valuesetchangelistener;
     }
 
     /**
@@ -171,5 +156,38 @@ public class ValueSetEditControl extends ControlComposite {
      */
     public ValueSetType getValueSetType() {
         return ValueSetType.getValueSetTypeByName(validTypesCombo.getText());
+    }
+    
+    private class TypeModifyListener implements ModifyListener {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void modifyText(ModifyEvent e) {
+            String selectedText = validTypesCombo.getText();
+            IValueSet oldValueSet = attribute.getValueSet();
+            if (selectedText.equals(ValueSetType.RANGE.getName())) {
+            	attribute.setValueSetType(ValueSetType.RANGE);
+            	if (oldValueSet.getValueSetType() == ValueSetType.RANGE) {
+            		attribute.getValueSet().setValuesOf(oldValueSet);
+            	}
+            } else if (selectedText.equals(ValueSetType.ENUM.getName())) {
+        		attribute.setValueSetType(ValueSetType.ENUM);
+        		IEnumValueSet valueSet = (IEnumValueSet)attribute.getValueSet();
+            	if (oldValueSet.getValueSetType() == ValueSetType.ENUM) {
+            		valueSet.setValuesOf(oldValueSet);
+            	}
+            	if (datatype instanceof DefaultEnumType && valueSet.size() == 0) {
+            		valueSet.addValuesFromDatatype((EnumDatatype)datatype);
+            		enumControl.setValueSet(valueSet);
+            	}
+            } else if (selectedText.equals(ValueSetType.ALL_VALUES.getName())) {
+            	attribute.setValueSetType(ValueSetType.ALL_VALUES);
+            }
+            ((StackLayout)valueSetArea.getLayout()).topControl = getControlForValueSet(attribute.getValueSet());
+
+            valueSetArea.layout(); // show the new top control
+            valueSetArea.getParent().getParent().layout(); // parent has to resize
+		}
     }
 }

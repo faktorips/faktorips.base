@@ -8,11 +8,15 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -43,16 +47,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 	private String pcTypeAttribute = ""; //$NON-NLS-1$
 
-	private ValueSet valueSet = ValueSet.ALL_VALUES;
+	private IValueSet valueSet;
 
 	private String value = ""; //$NON-NLS-1$
 
 	public ConfigElement(ProductCmptGeneration parent, int id) {
 		super(parent, id);
-	}
-
-	public ConfigElement() {
-		super();
+		valueSet = new AllValuesValueSet(this, getNextPartId());
 	}
 
 	/**
@@ -292,7 +293,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 				return;
 			}
 			
-			ValueSet modelValueSet = attribute.getValueSet();
+			IValueSet modelValueSet = attribute.getValueSet();
+			modelValueSet.validate(valueDatatype, list);
+			if (list.containsErrorMsg()) {
+				return;
+			}
+			
 			if (!modelValueSet.containsValueSet(valueSet, valueDatatype, list, this, null)) {
 				return;
 			}
@@ -307,19 +313,30 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	/**
 	 * Overridden.
 	 */
-	public ValueSet getValueSet() {
+	public IValueSet getValueSet() {
 		return valueSet;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
-	public void setValueSet(ValueSet set) {
-		ValueSet oldset = valueSet;
-		valueSet = set;
-		valueChanged(oldset, set);
+	public void setValueSetType(ValueSetType type) {
+		IValueSet oldset = valueSet;
+		valueSet = type.newValueSet(this, getNextPartId());
+		valueChanged(oldset, valueSet);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setValueSetCopy(IValueSet source) {
+		IValueSet oldset = valueSet;
+
+		valueSet = source.copy(this, getNextPartId());
+				
+		valueChanged(oldset, valueSet);
+	}
+	
 	/**
 	 * Overridden.
 	 */
@@ -327,7 +344,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		return doc.createElement(TAG_NAME);
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    protected void reAddPart(IIpsObjectPart part) {
+    	valueSet = (IValueSet)part;
+    }
+    
+    /**
 	 * Overridden.
 	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
@@ -355,12 +379,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 		pcTypeAttribute = element.getAttribute(PROPERTY_PCTYPE_ATTRIBUTE);
 		name = pcTypeAttribute;
-		Element valueSetEl = XmlUtil.getFirstElement(element, ValueSet.XML_TAG);
-		if (valueSetEl == null) {
-			valueSet = ValueSet.ALL_VALUES;
-		} else {
-			valueSet = ValueSet.createFromXml(valueSetEl);
-		}
 	}
 
 	/**
@@ -371,10 +389,37 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		element.setAttribute(PROPERTY_TYPE, type.getId());
 		element.setAttribute(PROPERTY_PCTYPE_ATTRIBUTE, pcTypeAttribute);
 		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
-		element.appendChild(valueSet.toXml(element.getOwnerDocument()));
+//		element.appendChild(valueSet.toXml(element.getOwnerDocument()));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsElement[] getChildren() {
+		if (valueSet != null) {
+			return new IIpsElement[] {valueSet};
+		}
+		else {
+			return new IIpsElement[0];
+		}
+    }
+	
+	/**
+	 * {@inheritDoc}
+	 */
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    	if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
+    		Element valueSetNode = XmlUtil.getFirstElement(xmlTag);
+    		valueSet = ValueSetType.newValueSet(valueSetNode, this, id);
+    		return valueSet;
+    	}
+        return null;
+    }
 }

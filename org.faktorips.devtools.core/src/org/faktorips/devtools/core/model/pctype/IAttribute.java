@@ -2,7 +2,8 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 
 
@@ -132,11 +133,13 @@ public interface IAttribute extends IMember {
     /**
      * Returns the set of allowed values.
      */
-    public ValueSet getValueSet();
+    public IValueSet getValueSet();
 
     /**
-     * Sets the set of allowed values.
+     * Sets the type of the value set defining the values valid for this attribute.
+     * If the type of the currently existing value set is the same as the one to set, all
+     * old informations (e.g. bounds and step for a range value set) are removed.
      */
-    public void setValueSet(ValueSet set);
+    public void setValueSetType(ValueSetType type);
     
 }

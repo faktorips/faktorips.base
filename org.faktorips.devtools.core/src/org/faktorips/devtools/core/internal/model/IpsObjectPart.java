@@ -183,11 +183,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#newPart(java.lang.String, int)
+     * {@inheritDoc}
      */
-    protected IIpsObjectPart newPart(String xmlTagName, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
         return null;
     }
     

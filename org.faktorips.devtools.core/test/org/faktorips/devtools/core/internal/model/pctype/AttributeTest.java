@@ -3,14 +3,16 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.model.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.Range;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -136,8 +138,11 @@ public class AttributeTest extends IpsPluginTest {
         params[0] = new Parameter(0, "policy", "MotorPolicy");
         params[1] = new Parameter(1, "vehicle", "Vehicle");
         attribute.setFormulaParameters(params);
-        ValueSet set = new Range("unten","oben", "step");
-        attribute.setValueSet(set);
+        attribute.setValueSetType(ValueSetType.RANGE);
+        RangeValueSet set = (RangeValueSet)attribute.getValueSet();
+        set.setLowerBound("unten");
+        set.setUpperBound("oben");
+        set.setStep("step");
         Element element = attribute.toXml(this.newDocument());
         
         Attribute copy = new Attribute();
@@ -154,9 +159,9 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("MotorPolicy", paramsCopy[0].getDatatype());
         assertEquals("vehicle", paramsCopy[1].getName());
         assertEquals("Vehicle", paramsCopy[1].getDatatype());
-        assertEquals("unten",((Range)copy.getValueSet()).getLowerBound());
-        assertEquals("oben",((Range)copy.getValueSet()).getUpperBound());
-        assertEquals("step",((Range)copy.getValueSet()).getStep());
+        assertEquals("unten",((IRangeValueSet)copy.getValueSet()).getLowerBound());
+        assertEquals("oben",((IRangeValueSet)copy.getValueSet()).getUpperBound());
+        assertEquals("step",((IRangeValueSet)copy.getValueSet()).getStep());
 
         // Nun ein Attribut mit GenericEnumvalueset testen.
         attribute.setName("age");
@@ -168,12 +173,12 @@ public class AttributeTest extends IpsPluginTest {
         params[0] = new Parameter(0, "policy", "MotorPolicy");
         params[1] = new Parameter(1, "vehicle", "Vehicle");
         attribute.setFormulaParameters(params);
-        EnumValueSet set2 = new EnumValueSet();
+        attribute.setValueSetType(ValueSetType.ENUM);
+        EnumValueSet set2 = (EnumValueSet)attribute.getValueSet();
         set2.addValue("a");
         set2.addValue("b");
         set2.addValue("x");
         
-        attribute.setValueSet(set2);
         element = attribute.toXml(this.newDocument());
         copy = new Attribute();
         copy.initFromXml(element);
@@ -188,7 +193,7 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("MotorPolicy", paramsCopy[0].getDatatype());
         assertEquals("vehicle", paramsCopy[1].getName());
         assertEquals("Vehicle", paramsCopy[1].getDatatype());
-        String [] vekt = ((EnumValueSet)copy.getValueSet()).getValues();
+        String [] vekt = ((IEnumValueSet)copy.getValueSet()).getValues();
         assertEquals("a", vekt[0]);
         assertEquals("b", vekt[1]);
         assertEquals("x", vekt[2]);

@@ -1,9 +1,15 @@
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IRangeValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.Messages;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -17,47 +23,9 @@ import org.w3c.dom.Element;
  *
  * @author Jan Ortmann
  */
-public class Range extends ValueSet {
+public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
-    final static String XML_TAG = "Range"; //$NON-NLS-1$
-
-    /**
-     * Prefix for all message codes of this class.
-     */
-    public final static String MSGCODE_PREFIX = "RANGE-"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the lower bound of the subset is less than the lower
-     * bound of this value set. 
-     */
-    public final static String MSGCODE_LBOUND_GREATER_UBOUND = MSGCODE_PREFIX + "LBoundGreaterUBound"; //$NON-NLS-1$
-    
-    /**
-     * Validation message code to indicate that a step was only defined in this valueset, but not in the subset.
-     */
-    public final static String MSGCODE_NO_STEP_DEFINED_IN_SUBSET = MSGCODE_PREFIX + "NoStepDefinedInSubset"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the steps of the both value sets are not equal. 
-     */
-    public final static String MSGCODE_STEP_MISMATCH = MSGCODE_PREFIX + "StepMismatch"; //$NON-NLS-1$
-    
-    /**
-     * Validation message code to indicate that the upper bound of the subset is greater than the
-     * upper bound of this value set. 
-     */
-    public final static String MSGCODE_UPPER_BOUND_VIOLATION = MSGCODE_PREFIX + "UpperBoundViolation"; //$NON-NLS-1$
-    
-    /**
-     * Validation message code to indicate that the lower bound of the subset is less than the lower
-     * bound of this value set. 
-     */
-    public final static String MSGCODE_LOWER_BOUND_VIOLATION = MSGCODE_PREFIX + "LowerBoundViolation"; //$NON-NLS-1$
-    
-    
-    public final static String PROPERTY_UPPERBOUND = "upperBound"; //$NON-NLS-1$
-    public final static String PROPERTY_LOWERBOUND = "lowerBound"; //$NON-NLS-1$
-    public final static String PROPERTY_STEP = "step"; //$NON-NLS-1$
+    public final static String XML_TAG = "Range"; //$NON-NLS-1$
 
     /**
      * Creates a Range based on the data in the XML element. If element is <code>null</code> the method
@@ -65,13 +33,13 @@ public class Range extends ValueSet {
      * 
      * @throws IllegalArgumentException if the element's name is not Range.
      */
-    static final Range createRangeFromXml(Element element) {
-        ArgumentCheck.nodeName(element, XML_TAG);
-        String lb = element.getAttribute(PROPERTY_LOWERBOUND);
-        String ub = element.getAttribute(PROPERTY_UPPERBOUND);
-        String stp = element.getAttribute(PROPERTY_STEP);
-        return new Range(lb, ub, stp);
-    }
+//    static final IRangeValueSet createRangeFromXml(Element element) {
+//        ArgumentCheck.nodeName(element, XML_TAG);
+//        String lb = element.getAttribute(PROPERTY_LOWERBOUND);
+//        String ub = element.getAttribute(PROPERTY_UPPERBOUND);
+//        String stp = element.getAttribute(PROPERTY_STEP);
+//        return new RangeValueSet(lb, ub, stp);
+//    }
 
     private String lowerBound;
     private String upperBound;
@@ -80,37 +48,20 @@ public class Range extends ValueSet {
     /**
      * Creates an unbounded range with no step.
      */
-    public Range() {
-        lowerBound = ""; //$NON-NLS-1$
-		upperBound = ""; //$NON-NLS-1$
-		step = ""; //$NON-NLS-1$
+    public RangeValueSet(IIpsObjectPart parent, int partId) {
+    	this(parent, partId, "", "", "");
 	}
-    
-    /**
-     * Creates ar range with the given bounds and no step.
-     */
-    public Range(String lower, String upper) {
-        lowerBound = lower;
-        upperBound = upper;
-        step = ""; //$NON-NLS-1$
-    }
 
     /**
      * Creates a range with the given bounds and and step.
      */
-    public Range(String lower, String upper, String step) {
+    public RangeValueSet(IIpsObjectPart parent, int partId, String lower, String upper, String step) {
+    	super(ValueSetType.RANGE, parent, partId);
         lowerBound = lower;
         upperBound = upper;
         this.step = step;
     }
     
-    /**
-     * Copy constructor.
-     */
-    public Range(Range range) {
-        this(range.lowerBound, range.upperBound, range.step);
-    }
-
     /**
      * Sets the lower bound. An empty string means that the range is unbouned.
      * 
@@ -118,7 +69,10 @@ public class Range extends ValueSet {
      */
     public void setLowerBound(String lowerBound) {
         ArgumentCheck.notNull(lowerBound);
+        String oldBound = this.lowerBound;
         this.lowerBound = lowerBound;
+        
+        valueChanged(oldBound, lowerBound);
     }
 
     /**
@@ -129,7 +83,9 @@ public class Range extends ValueSet {
      */
     public void setStep(String step) {
         ArgumentCheck.notNull(step);
+        String oldStep = this.step;
         this.step = step;
+        valueChanged(oldStep, step);
     }
 
     /**
@@ -139,7 +95,9 @@ public class Range extends ValueSet {
      */
     public void setUpperBound(String upperBound) {
         ArgumentCheck.notNull(upperBound);
+        String oldBound = this.upperBound;
         this.upperBound = upperBound;
+        valueChanged(oldBound, upperBound);
     }
 
     /**
@@ -178,6 +136,9 @@ public class Range extends ValueSet {
             Comparable lower = (Comparable)datatype.getValue(getLowerBound());
             Comparable upper = (Comparable)datatype.getValue(getUpperBound());
             Comparable objectvalue = (Comparable)datatype.getValue(value);
+            if (objectvalue == null) {
+            	return true;
+            }
             if ((!getLowerBound().equals("") && ((Comparable)lower).compareTo(objectvalue) > 0) //$NON-NLS-1$
                     || (!getUpperBound().equals("") && ((Comparable)upper).compareTo(objectvalue) < 0)) { //$NON-NLS-1$
             	if (list != null) {
@@ -197,9 +158,9 @@ public class Range extends ValueSet {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValueSet(ValueSet subset, ValueDatatype datatype,
+    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype,
 			MessageList list, Object invalidObject, String invalidProperty) {
-    	if (!(subset instanceof Range)) {
+    	if (!(subset instanceof RangeValueSet)) {
     		if (list != null) {
     			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING,
 						Messages.Range_msgTypeOfValuesetNotMatching, invalidObject,
@@ -208,7 +169,7 @@ public class Range extends ValueSet {
     		return false;
     	}
 
-    	Range subRange = (Range)subset;
+    	IRangeValueSet subRange = (IRangeValueSet)subset;
     	
     	if (!getStep().equals("")) { //$NON-NLS-1$
     		if (subRange.getStep().equals("")) { //$NON-NLS-1$
@@ -266,7 +227,7 @@ public class Range extends ValueSet {
     /**
      * {@inheritDoc}
      */
-	public boolean containsValueSet(ValueSet subset, ValueDatatype datatype) {
+	public boolean containsValueSet(IValueSet subset, ValueDatatype datatype) {
 		return containsValueSet(subset, datatype, null, null, null);
 	}
 
@@ -304,26 +265,8 @@ public class Range extends ValueSet {
 		return retValue;
     }
     
-	/**
-     * Overridden.
-     */
-    protected Element createSubclassElement(Document doc) {
-        Element tagElement = doc.createElement(XML_TAG);
-        tagElement.setAttribute(PROPERTY_LOWERBOUND, lowerBound);
-        tagElement.setAttribute(PROPERTY_UPPERBOUND, upperBound);
-        tagElement.setAttribute(PROPERTY_STEP, step);
-        return tagElement;
-    }
-    
     /**
-     * Overridden.
-     */
-    public ValueSet copy() {
-        return new Range(this);
-    }
-    
-    /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void validate(ValueDatatype datatype, MessageList list) {
         if (datatype==null) {
@@ -360,20 +303,83 @@ public class Range extends ValueSet {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public ValueSetType getValueSetType() {
         return ValueSetType.RANGE;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String toString() {
+    	return super.toString() + ":" + toShortString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toShortString() {
         if (StringUtils.isNotEmpty(step)) {
             return "[" + lowerBound + ";" + upperBound + "] by " + step; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         return "[" + lowerBound + ";" + upperBound + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
+    /**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void initPropertiesFromXml(Element element, Integer id) {
+		super.initPropertiesFromXml(element, id);
+		Element el = XmlUtil.getFirstElement(element);
+		lowerBound = el.getAttribute(PROPERTY_LOWERBOUND);
+		upperBound = el.getAttribute(PROPERTY_UPPERBOUND);
+		step = el.getAttribute(PROPERTY_STEP);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void propertiesToXml(Element element) {
+		super.propertiesToXml(element);
+		Document doc = element.getOwnerDocument();
+        Element tagElement = doc.createElement(XML_TAG);
+        tagElement.setAttribute(PROPERTY_LOWERBOUND, lowerBound);
+        tagElement.setAttribute(PROPERTY_UPPERBOUND, upperBound);
+        tagElement.setAttribute(PROPERTY_STEP, step);
+        element.appendChild(tagElement);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IValueSet copy(IIpsObjectPart parent, int id) {
+		RangeValueSet retValue = new RangeValueSet(parent, id);
+		
+		retValue.lowerBound = lowerBound;
+		retValue.upperBound = upperBound;
+		retValue.step = step;
+		
+		return retValue;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setValuesOf(IValueSet target) {
+		if (!(target instanceof RangeValueSet)) {
+			throw new IllegalArgumentException("The given value set is not a range value set");
+		}
+		RangeValueSet set = (RangeValueSet)target;
+		lowerBound = set.lowerBound;
+		upperBound = set.upperBound;
+		step = set.step;
+	}
 }

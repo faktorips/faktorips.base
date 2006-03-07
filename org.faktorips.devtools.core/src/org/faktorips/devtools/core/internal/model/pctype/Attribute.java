@@ -13,9 +13,13 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.ValueSet;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -47,7 +51,7 @@ public class Attribute extends Member implements IAttribute {
     private String defaultValue = null;
     private Modifier modifier = Modifier.PUBLISHED;
     private Parameter[] parameters = new Parameter[0];
-    private ValueSet valueSet = ValueSet.ALL_VALUES;
+    private IValueSet valueSet;
 
     /**
      * Creates a new attribute.
@@ -57,12 +61,14 @@ public class Attribute extends Member implements IAttribute {
      */
     Attribute(PolicyCmptType pcType, int id) {
         super(pcType, id);
+        valueSet = new AllValuesValueSet(this, getNextPartId());
     }
 
     /**
      * Constructor for testing purposes.
      */
     Attribute() {
+        valueSet = new AllValuesValueSet(this, getNextPartId());
     }
 
     PolicyCmptType getPolicyCmptType() {
@@ -191,16 +197,16 @@ public class Attribute extends Member implements IAttribute {
     /**
      * Overridden.
      */
-    public ValueSet getValueSet() {
+    public IValueSet getValueSet() {
         return valueSet;
     }
 
     /**
      * Overridden.
      */
-    public void setValueSet(ValueSet valueSet) {
-        this.valueSet = valueSet;
-        updateSrcFile();
+    public void setValueSetType(ValueSetType type) {
+    	valueSet = type.newValueSet(this, getNextPartId());
+    	updateSrcFile();
     }
 
     /**
@@ -359,7 +365,7 @@ public class Attribute extends Member implements IAttribute {
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
-    
+   
     /**
      * Overridden.
      */
@@ -370,12 +376,7 @@ public class Attribute extends Member implements IAttribute {
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
-        Element valueSetEl = XmlUtil.getFirstElement(element, ValueSet.XML_TAG);
-        if (valueSetEl == null) {
-            valueSet = ValueSet.ALL_VALUES;
-        } else {
-            valueSet = ValueSet.createFromXml(valueSetEl);
-        }
+
         // get the nodes with the parameter information
         NodeList nl = element.getElementsByTagName(TAG_PROPERTY_PARAMETER);
         List params = new ArrayList();
@@ -404,7 +405,6 @@ public class Attribute extends Member implements IAttribute {
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
         Document doc = element.getOwnerDocument();
-        element.appendChild(valueSet.toXml(doc));
         for (int i = 0; i < parameters.length; i++) {
             Element newParamElement = doc.createElement(TAG_PROPERTY_PARAMETER);
             newParamElement.setAttribute(TAG_PARAM_NAME, parameters[i].getName());
@@ -413,7 +413,42 @@ public class Attribute extends Member implements IAttribute {
         }
     }
    
+    /**
+     * {@inheritDoc}
+     */
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+	/**
+     * {@inheritDoc}
+     */
+    protected void reAddPart(IIpsObjectPart part) {
+    	valueSet = (IValueSet)part;
+    }
+    
+	/**
+	 * {@inheritDoc}
+	 */
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    	if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
+    		Element valueSetNode = XmlUtil.getFirstElement(xmlTag);
+    		valueSet = ValueSetType.newValueSet(valueSetNode, this, id);
+    		return valueSet;
+    	}
+        return null;
+    }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsElement[] getChildren() {
+		if (valueSet != null) {
+			return new IIpsElement[] {valueSet};
+		}
+		else {
+			return new IIpsElement[0];
+		}
+    }
+
 }

@@ -20,9 +20,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.model.EnumValueSet;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.message.MessageList;
 
@@ -36,8 +37,6 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
 
     private EnumValueSet valueSet;
 
-    private ValueSetChangeListener valueSetChangeListener;
-
     private TableElementValidator tableElementValidator;
 
     
@@ -45,7 +44,7 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the value set is of the
      * wrong type, a new EnumValueEnumSet is created
      */
-    public EnumValueSetEditControl(EnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator, String label) {
+    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator, String label) {
         super(valueSet, parent, SWT.NONE, label);
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
@@ -57,7 +56,7 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the value set is of the
      * wrong type, a new EnumValueEnumSet is created. Labels the control with default-text ("Values") in english.
      */
-    public EnumValueSetEditControl(EnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator) {
+    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent, TableElementValidator tableElementValidator) {
     	this(valueSet, parent, tableElementValidator, Messages.EnumValueSetEditControl_titleValues);
     }
 
@@ -79,16 +78,16 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
      *
      * @see org.faktorips.devtools.core.ui.controls.InternalValueSetEditControl#getValueSet()
      */
-    public ValueSet getValueSet() {
+    public IValueSet getValueSet() {
         return valueSet;
     }
 
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.ui.controls.InternalValueSetEditControl#setValueSet(org.faktorips.devtools.core.model.ValueSet)
+     * @see org.faktorips.devtools.core.ui.controls.InternalValueSetEditControl#setValueSet(org.faktorips.devtools.core.model.IValueSet)
      */
-    public void setValueSet(ValueSet valueSet) {
+    public void setValueSet(IValueSet valueSet) {
         setEnumValueSet((EnumValueSet)valueSet);
     }
 
@@ -161,9 +160,6 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
     public Object addElement() {
         String newValue = ""; //$NON-NLS-1$
         valueSet.addValue(newValue);
-        if (valueSetChangeListener != null) {
-            valueSetChangeListener.valueSetChanged(valueSet);
-        }
         return newValue;
     }
 
@@ -174,9 +170,6 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
     public void removeElement(int index) {
         valueSet.removeValue(index);
         getTableViewer().refresh();
-        if (valueSetChangeListener != null) {
-            valueSetChangeListener.valueSetChanged(valueSet);
-        }
     }
 
     protected void swapElements(int index1, int index2) {
@@ -253,9 +246,6 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
             IndexValueWrapper wrapper = (IndexValueWrapper)element;
             wrapper.setValueName((String)value);
             getTableViewer().update(element, null);
-            if (valueSetChangeListener != null) {
-                valueSetChangeListener.valueSetChanged(valueSet);
-            }
         }
     }
 
@@ -301,12 +291,4 @@ public class EnumValueSetEditControl extends EditTableControl implements Interna
         }
 
     }
-
-    /**
-     * sets a valueSetChangeListener which listens to changes of a valueset
-     */
-    public void setValueSetChangeListener(ValueSetChangeListener valuesetchangelistener) {
-        this.valueSetChangeListener = valuesetchangelistener;
-    }
-
 }

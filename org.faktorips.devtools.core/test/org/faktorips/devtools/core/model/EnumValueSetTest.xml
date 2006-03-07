@@ -3,9 +3,15 @@
 <TestCases>
 	<ValueSet>
 		<Enum> 
-			<Value value="one"/>
-			<Value value="two"/>
-			<Value value="three"/>
+			<Value>
+			     <Data><![CDATA[one]]></Data>
+			</Value>
+			<Value>
+			     <Data><![CDATA[two]]></Data>
+			</Value>
+			<Value>
+			     <Data><![CDATA[three]]></Data>
+			</Value>
 		</Enum>
 	</ValueSet>
 </TestCases>

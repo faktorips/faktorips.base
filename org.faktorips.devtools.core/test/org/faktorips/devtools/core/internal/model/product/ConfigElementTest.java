@@ -2,11 +2,13 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.model.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.EnumValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.Range;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -186,16 +188,21 @@ public class ConfigElementTest extends IpsPluginTest {
     }
     
     public void testValidate_InvalidValueset() throws CoreException {
+    	IAttribute attr = policyCmptType.newAttribute();
+    	attr.setName("valueTest");
+    	attr.setAttributeType(AttributeType.CONSTANT);
+    	attr.setDatatype("Decimal");
+    	attr.setValueSetType(ValueSetType.RANGE);
+    	IRangeValueSet valueSet = (IRangeValueSet)attr.getValueSet();
+    	valueSet.setLowerBound("a");
+    	valueSet.setUpperBound("b");
+
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
-    	ce.setValueSet(new Range("a", "b"));
-    	IAttribute attr = policyCmptType.newAttribute();
-    	attr.setName("valueTest");
+    	ce.setValueSetCopy(valueSet);
     	
-    	attr.setAttributeType(AttributeType.CONSTANT);
-    	attr.setDatatype("Decimal");
 
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
@@ -206,8 +213,16 @@ public class ConfigElementTest extends IpsPluginTest {
     	// of the value set.
     	assertTrue(ml.getNoOfMessages() > 0); 
     	
-    	ce.setValueSet(new Range("0", "100"));
+    	valueSet = (IRangeValueSet)ce.getValueSet();
+    	valueSet.setLowerBound("0");
+    	valueSet.setUpperBound("100");
+    	
+    	valueSet = (IRangeValueSet)attr.getValueSet();
+    	valueSet.setLowerBound("0");
+    	valueSet.setUpperBound("100");
+    	
     	policyCmptType.getIpsSrcFile().save(true, null);
+    	productCmpt.getIpsSrcFile().save(true, null);
 
     	ml = ce.validate();
     	assertEquals(0, ml.getNoOfMessages());
@@ -218,7 +233,11 @@ public class ConfigElementTest extends IpsPluginTest {
     	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
-    	ce.setValueSet(new Range("10", "20"));
+    	ce.setValueSetType(ValueSetType.RANGE);
+    	IRangeValueSet valueSet = (IRangeValueSet)ce.getValueSet();
+    	valueSet.setLowerBound("10");
+    	valueSet.setUpperBound("20");
+
     	IAttribute attr = policyCmptType.newAttribute();
     	attr.setName("valueTest");
     	
@@ -238,17 +257,22 @@ public class ConfigElementTest extends IpsPluginTest {
     }
     
     public void testValidate_ValueSetNotASubset() throws CoreException {
+    	IAttribute attr = policyCmptType.newAttribute();
+    	attr.setName("valueTest");
+    	attr.setValueSetType(ValueSetType.RANGE);
+    	IRangeValueSet valueSet = (IRangeValueSet)attr.getValueSet();
+    	valueSet.setLowerBound("10");
+    	valueSet.setUpperBound("15");
+    	attr.setAttributeType(AttributeType.CONSTANT);
+    	attr.setDatatype("Decimal");
+
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
     	ce.setValue("12");
     	ce.setPcTypeAttribute("valueTest");
-    	ce.setValueSet(new Range("10", "20"));
-    	IAttribute attr = policyCmptType.newAttribute();
-    	attr.setName("valueTest");
-    	attr.setValueSet(new Range("10", "15"));
-    	
-    	attr.setAttributeType(AttributeType.CONSTANT);
-    	attr.setDatatype("Decimal");
+    	ce.setValueSetCopy(valueSet);
+    	IRangeValueSet valueSet2 = (IRangeValueSet)ce.getValueSet();
+    	valueSet2.setUpperBound("20");
 
     	policyCmptType.getIpsSrcFile().save(true, null);
     	productCmpt.getIpsSrcFile().save(true, null);
@@ -258,7 +282,7 @@ public class ConfigElementTest extends IpsPluginTest {
     	// of the value set.
     	assertTrue(ml.getNoOfMessages() > 0); 
     	
-    	attr.setValueSet(new Range("10", "20"));
+    	valueSet.setUpperBound("20");
     	policyCmptType.getIpsSrcFile().save(true, null);
 
     	ml = ce.validate();
@@ -288,29 +312,33 @@ public class ConfigElementTest extends IpsPluginTest {
     public void testToXmlDocument() {
         IConfigElement cfgElement = generation.newConfigElement();
         cfgElement.setValue("value");
-        cfgElement.setValueSet(new Range("22", "33", "4"));
+        cfgElement.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet valueSet = (IRangeValueSet)cfgElement.getValueSet(); 
+        valueSet.setLowerBound("22");
+        valueSet.setUpperBound("33");
+        valueSet.setStep("4");
         Element xmlElement = cfgElement.toXml(getTestDocument());
 
         IConfigElement newCfgElement = generation.newConfigElement();
         newCfgElement.initFromXml(xmlElement);
         assertEquals("value", newCfgElement.getValue());
-        assertEquals("22", ((Range)newCfgElement.getValueSet()).getLowerBound());
-        assertEquals("33", ((Range)newCfgElement.getValueSet()).getUpperBound());
-        assertEquals("4", ((Range)newCfgElement.getValueSet()).getStep());
+        assertEquals("22", ((IRangeValueSet)newCfgElement.getValueSet()).getLowerBound());
+        assertEquals("33", ((IRangeValueSet)newCfgElement.getValueSet()).getUpperBound());
+        assertEquals("4", ((IRangeValueSet)newCfgElement.getValueSet()).getStep());
 
-        EnumValueSet enumValueSet = new EnumValueSet();
+        cfgElement.setValueSetType(ValueSetType.ENUM);
+        EnumValueSet enumValueSet = (EnumValueSet)cfgElement.getValueSet();
         enumValueSet.addValue("one");
         enumValueSet.addValue("two");
         enumValueSet.addValue("three");
         enumValueSet.addValue("four");
 
-        cfgElement.setValueSet(enumValueSet);
         xmlElement = cfgElement.toXml(getTestDocument());
-        assertEquals(4, ((EnumValueSet)cfgElement.getValueSet()).getValues().length);
-        assertEquals("one", ((EnumValueSet)cfgElement.getValueSet()).getValues()[0]);
-        assertEquals("two", ((EnumValueSet)cfgElement.getValueSet()).getValues()[1]);
-        assertEquals("three", ((EnumValueSet)cfgElement.getValueSet()).getValues()[2]);
-        assertEquals("four", ((EnumValueSet)cfgElement.getValueSet()).getValues()[3]);
+        assertEquals(4, ((IEnumValueSet)cfgElement.getValueSet()).getValues().length);
+        assertEquals("one", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[0]);
+        assertEquals("two", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[1]);
+        assertEquals("three", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[2]);
+        assertEquals("four", ((IEnumValueSet)cfgElement.getValueSet()).getValues()[3]);
         
         cfgElement.setValue(null);
         xmlElement = cfgElement.toXml(getTestDocument());

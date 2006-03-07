@@ -175,7 +175,9 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * Overridden.
      */
-    protected final IIpsObjectPart newPart(String xmlTagName, int id) {
+    protected final IIpsObjectPart newPart(Element xmlTag, int id) {
+    	String xmlTagName = xmlTag.getNodeName();
+
         if (xmlTagName.equals(IpsObjectGeneration.TAG_NAME)) {
             return newGenerationInternal(id);
         }

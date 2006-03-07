@@ -3,7 +3,9 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
@@ -11,6 +13,8 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
@@ -39,6 +43,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private TreeViewer tree; 
     private IIpsSrcFile file;
+    private ProductStructureContentProvider contentProvider;
     
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
@@ -47,11 +52,32 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public void init(IViewSite site) throws PartInitException {
+    	super.init(site);
+    	
+    	site.getActionBars().getToolBarManager().add(new Action("", Action.AS_CHECK_BOX) {
+
+    		public ImageDescriptor getImageDescriptor() {
+    			return IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif");
+    		}
+    		
+			public void run() {
+				contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
+				tree.refresh();
+		        tree.expandAll();
+			}
+		});
+    }
+    
+    /**
      * Overridden
      */
 	public void createPartControl(Composite parent) {
 		tree = new TreeViewer(parent);
-		tree.setContentProvider(new ProductStructureContentProvider(false));
+		contentProvider = new ProductStructureContentProvider(false);
+		tree.setContentProvider(contentProvider);
 
         ProductStructureLabelProvider labelProvider = new ProductStructureLabelProvider();
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));

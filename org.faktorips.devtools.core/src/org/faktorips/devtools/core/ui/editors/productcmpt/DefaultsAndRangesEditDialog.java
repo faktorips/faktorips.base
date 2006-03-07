@@ -1,10 +1,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -13,32 +10,26 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.EnumValueSet;
-import org.faktorips.devtools.core.model.Range;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.EnumValueSetEditControl;
 import org.faktorips.devtools.core.ui.controls.RangeEditControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
-import org.faktorips.devtools.core.ui.controls.ValueSetChangeListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.message.MessageList;
 
 /**
  *
  */
-public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements ValueSetChangeListener {
+public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
 
     private IConfigElement configElement;
     
-    /**
-     * The value set created during this dialog is open. Set as new value set for the config
-     * element this dialog is created for if the dialog is closed with OK.
-     */
-    private ValueSet newValueSet;
-
     // edit fields
     private TextField defaultValueField;
 
@@ -49,27 +40,6 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
     public DefaultsAndRangesEditDialog(IConfigElement configElement, Shell parentShell) {
         super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
         this.configElement = configElement;
-        
-    }
-    
-    protected Control createContents(Composite parent) {
-    	Control result = super.createContents(parent);
-        super.getButton(IDialogConstants.OK_ID).addSelectionListener(new SelectionListener() {
-		
-			public void widgetDefaultSelected(SelectionEvent e) {
-				if (newValueSet != null) {
-					configElement.setValueSet(newValueSet);
-				}
-			}
-		
-			public void widgetSelected(SelectionEvent e) {
-				if (newValueSet != null) {
-					configElement.setValueSet(newValueSet);
-				}
-			}
-		});
-    	
-    	return result;
     }
     
     /**
@@ -107,23 +77,21 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
 
     private Composite createValueSetControl(Composite workArea) {
         try {
-            ValueSet valueSet = configElement.getValueSet().copy();
+            IValueSet valueSet = configElement.getValueSet();
             IAttribute attribute = configElement.findPcTypeAttribute();
             if (attribute!=null) {
-                if (valueSet.isAllValues()) {
-                    valueSet = attribute.getValueSet().copy();
+                if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
+                    valueSet = attribute.getValueSet();
                 }
             }
             
-            if (valueSet.isRange()) {
-                RangeEditControl rangeEditControl = new RangeEditControl(workArea, uiToolkit, (Range)valueSet, uiController);
-                rangeEditControl.setValueSetChangeListener(this);
+            if (valueSet.getValueSetType() == ValueSetType.RANGE) {
+                RangeEditControl rangeEditControl = new RangeEditControl(workArea, uiToolkit, (RangeValueSet)valueSet, uiController);
                 return rangeEditControl;
             } 
-            if (valueSet.isEnumValueSet()) {
-                EnumValueSetEditControl valueSetControl = new EnumValueSetEditControl((EnumValueSet)valueSet,
+            if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+                EnumValueSetEditControl valueSetControl = new EnumValueSetEditControl((IEnumValueSet)valueSet,
                         workArea, new ProductElementValidator());
-                valueSetControl.setValueSetChangeListener(this);
                 return valueSetControl;
             } 
         } catch (CoreException e) {
@@ -144,8 +112,8 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog implements Va
     /**
      * {@inheritDoc}
      */
-    public void valueSetChanged(ValueSet valueSet) {
-        newValueSet = valueSet;
+    public void valueSetChanged(IValueSet valueSet) {
+    	configElement.setValueSetCopy(valueSet);
     }
 
     private class ProductElementValidator implements TableElementValidator {

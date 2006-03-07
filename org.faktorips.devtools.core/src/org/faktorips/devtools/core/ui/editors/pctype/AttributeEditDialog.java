@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -38,7 +37,6 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueTextField;
@@ -46,7 +44,6 @@ import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TableElementValidator;
-import org.faktorips.devtools.core.ui.controls.ValueSetChangeListener;
 import org.faktorips.devtools.core.ui.controls.ValueSetEditControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.message.Message;
@@ -56,8 +53,7 @@ import org.faktorips.util.message.ObjectProperty;
 /**
  *  
  */
-public class AttributeEditDialog extends IpsPartEditDialog implements ParameterListChangeListener,
-        ValueSetChangeListener {
+public class AttributeEditDialog extends IpsPartEditDialog implements ParameterListChangeListener {
 
     //private final static String PROPERTY_PM_PROPERTY_NAME_ID = "de.bbv.faktorips.attribute.pmPropertyName";
     	
@@ -243,8 +239,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
     private Control createValueSetPage(TabFolder folder) {
         Composite pageControl = createTabItemComposite(folder, 1, false);
-        valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute.getValueSet(), new PcTypeValidator());
-        valueSetEditControl.setValueSetChangelistener(this);
+        valueSetEditControl = new ValueSetEditControl(pageControl, uiToolkit, uiController, attribute, new PcTypeValidator());
         return pageControl;
     }
 
@@ -459,15 +454,6 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         attribute.setFormulaParameters(params);
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-    public void valueSetChanged(ValueSet valueSet) {
-        FieldValueChangedEvent e = new FieldValueChangedEvent(null);
-        attribute.setValueSet(valueSet);
-        uiController.valueChanged(e);
-    }
-    
     private class PcTypeValidator implements TableElementValidator {
 
         public MessageList validate(String element) {

@@ -19,8 +19,11 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.Range;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IRangeValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -130,22 +133,21 @@ public class DefaultsAndRangesSection extends IpsSection {
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
-    		ValueSet valueSet = elements[i].getValueSet();
+    		IValueSet valueSet = elements[i].getValueSet();
     		if (attribute != null) {
-    			if (valueSet.isAllValues()) {
+    			if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
     				valueSet = attribute.getValueSet();
     			}
     		}
     		toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
     		toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 
-    		if ((valueSet.isAllValues() && dataType instanceof EnumDatatype) || valueSet.isEnumValueSet()) {
+    		if ((valueSet.getValueSetType() == ValueSetType.ALL_VALUES && dataType instanceof EnumDatatype) || valueSet.getValueSetType() == ValueSetType.ENUM) {
     			
     			Combo combo = toolkit.createCombo(rootPane);
     			EditField defaultField;
-    			if (valueSet.isEnumValueSet()) {
-//    				defaultField = new EnumValueSetField(combo, (EnumValueSet)valueSet, (EnumDatatype)dataType);
-    				defaultField = new EnumValueSetField(combo, elements[i], attribute, (EnumDatatype)dataType);
+    			if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+    				defaultField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, (EnumDatatype)dataType);
     			}
     			else {
     				defaultField = new EnumDatatypeField(combo, (EnumDatatype)dataType);
@@ -158,16 +160,16 @@ public class DefaultsAndRangesSection extends IpsSection {
 
         		controller.add(defaultField, elements[i], IConfigElement.PROPERTY_VALUE);
         		
-        		if (!valueSet.isAllValues()) {
+        		if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES) {
         			// only if the value set defined in the model is not an all values value set
         			// we can modify the content of the value set.
 	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
 	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell(), controller);
-	    			evc.setText(valueSet.toString());
+	    			evc.setText(valueSet.toShortString());
         		}
     		}
-    		else if (valueSet.isRange() || valueSet.isAllValues()) {
+    		else if (valueSet.getValueSetType() == ValueSetType.RANGE || valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
         		IpsPartUIController controller = new IpsPartUIController(elements[i]);
 
     			Text text = toolkit.createText(rootPane);    			
@@ -176,7 +178,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
         		uiMasterController.add(controller);
 
-        		if (!valueSet.isAllValues() && !attribute.getDatatype().equals(Datatype.STRING.getName())) {
+        		if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES && !attribute.getDatatype().equals(Datatype.STRING.getName())) {
         			// only if the value set defined in the model is not an all values value set
         			// and the datatype is not a string we can modify the ranges of the value set.
         			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
@@ -194,13 +196,13 @@ public class DefaultsAndRangesSection extends IpsSection {
         			Text step = toolkit.createText(rootPane);
         			this.editControls.add(step);
         			
-        			if (valueSet.isAllValues()) {
+        			if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
         				new RangeChangedListener(upper, lower, step, elements[i], controller);
         			}
         			else {
-        				controller.add(upper, (Range) valueSet, Range.PROPERTY_UPPERBOUND);
-        				controller.add(lower, (Range) valueSet, Range.PROPERTY_LOWERBOUND);
-        				controller.add(step, (Range) valueSet, Range.PROPERTY_STEP);
+        				controller.add(upper, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
+        				controller.add(lower, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
+        				controller.add(step, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_STEP);
         			}
         		}
         		
@@ -268,12 +270,12 @@ public class DefaultsAndRangesSection extends IpsSection {
 			lower.removeModifyListener(this);
 			step.removeModifyListener(this);
 			
-			Range range = new Range();
-			element.setValueSet(range);
+			element.setValueSetType(ValueSetType.RANGE);
+			RangeValueSet range = (RangeValueSet)element.getValueSet();
 
-			controller.add(upper, range, Range.PROPERTY_UPPERBOUND);
-			controller.add(lower, range, Range.PROPERTY_LOWERBOUND);
-			controller.add(step, range, Range.PROPERTY_STEP);
+			controller.add(upper, range, IRangeValueSet.PROPERTY_UPPERBOUND);
+			controller.add(lower, range, IRangeValueSet.PROPERTY_LOWERBOUND);
+			controller.add(step, range, IRangeValueSet.PROPERTY_STEP);
 		}
 		
 	}

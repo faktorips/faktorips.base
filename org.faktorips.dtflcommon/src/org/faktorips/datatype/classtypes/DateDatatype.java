@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueClassDatatype;
 
 
@@ -38,7 +39,7 @@ public class DateDatatype extends ValueClassDatatype {
      */
     public Object getValue(String value) {
         
-        if(value == null){
+        if (StringUtils.isEmpty(value)) {
             return null;
         }
         

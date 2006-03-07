@@ -522,7 +522,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    protected IIpsObjectPart newPart(String xmlTagName, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    	String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Attribute.TAG_NAME)) {
             return newAttributeInternal(id);
         } else if (xmlTagName.equals(Relation.TAG_NAME)) {

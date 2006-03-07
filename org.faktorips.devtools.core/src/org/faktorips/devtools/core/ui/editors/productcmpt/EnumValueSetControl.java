@@ -7,6 +7,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
+import org.faktorips.util.memento.Memento;
 
 /**
  * Control to edit the values of an enum. A textfeld followed by a button is provided.
@@ -16,10 +17,42 @@ import org.faktorips.devtools.core.ui.controls.TextButtonControl;
  */
 public class EnumValueSetControl extends TextButtonControl {
 
-	IConfigElement configElement;
-	Shell shell;
-	IpsPartUIController controller; 
+	/**
+	 * The config element which is based on the enum value set to modify.
+	 */
+	private IConfigElement configElement;
 	
+	/**
+	 * The shell to details dialog within.
+	 */
+	private Shell shell;
+	
+	/**
+	 * The controller to notify if detail modifiation has finished.
+	 */
+	private IpsPartUIController controller; 
+	
+	/**
+	 * The state of the config element before opening the detail edit dialog. Used to handle the
+	 * cancel button properly
+	 */
+	private Memento state;
+	
+	/**
+	 * The state of the ips source file before opening the detail edit dialog. Used to handle the
+	 * cancel button properly
+	 */
+	private boolean dirty;
+	
+	/**
+	 * Creates a new control to edit an enum value.
+	 * 
+	 * @param parent The parent composite to add this control to.
+	 * @param toolkit The toolkit to use for the creation of the controls.
+	 * @param configElement The config element which is based on the enum value set to modify.
+	 * @param shell The shell to open the details edit dialog within.
+	 * @param controller The controller to notify uppon changes to update the ui.
+	 */
 	public EnumValueSetControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell, IpsPartUIController controller) {
 		super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
 		this.configElement = configElement;
@@ -34,12 +67,40 @@ public class EnumValueSetControl extends TextButtonControl {
 	 * {@inheritDoc}
 	 */
 	protected void buttonClicked() {
+		preserveState();
 		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell);
 		if (dialog.open() == Dialog.OK) {
-			super.getTextControl().setText(configElement.getValueSet().toString());
+			super.getTextControl().setText(configElement.getValueSet().toShortString());
+			controller.updateUI();
+		} 
+		else {
+			resetState();
+		}		
+	}
+	
+	/**
+	 * Stores the current state of the config element and the underlying sourcefile for 
+	 * later recovery.
+	 */
+	private void preserveState() {
+		dirty = configElement.getIpsObject().getIpsSrcFile().isDirty();
+		state = configElement.newMemento();
+	}
+	
+	/**
+	 * Recovers an old state preserved by calling preserveState. If no state was
+	 * preserved before calling this method, nothing is done.
+	 */
+	private void resetState() {
+		if (state == null) {
+			// no state was preserved, so dont do anything.
+			return;
 		}
-		controller.updateUI();
 		
+		configElement.setState(state);
+		if (!dirty) {
+			configElement.getIpsObject().getIpsSrcFile().markAsClean();
+		}
 	}
 
 }

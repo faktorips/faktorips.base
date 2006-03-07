@@ -4,14 +4,13 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.model.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.Range;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -170,12 +169,15 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends IpsPluginTest 
         
         IAttribute a1 = pcType.newAttribute();
         a1.setName("a1");
-        a1.setValueSet(new Range("10", "20"));
+        a1.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet valueSet = (IRangeValueSet)a1.getValueSet();
+        valueSet.setLowerBound("10");
+        valueSet.setUpperBound("20");
         
         IConfigElement ce1 = generation.newConfigElement();
         ce1.setPcTypeAttribute("a1");
         ce1.setType(ConfigElementType.POLICY_ATTRIBUTE);
-        ce1.setValueSet(new EnumValueSet());
+        ce1.setValueSetType(ValueSetType.ENUM);
         
         // value set mismatch between a1 (range), ce1 (enum)
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
@@ -184,25 +186,28 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends IpsPluginTest 
         assertEquals(1, elements.length);
         assertEquals(ce1, elements[0]);
 
-        // a1=enum, ce1=enum => no mismatch  
-        a1.setValueSet(new EnumValueSet());
+        // a1=enum, ce1=enum => no mismatch
+        a1.setValueSetType(ValueSetType.ENUM);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
-        // a1=allvalue, ce1=enum => no mismatch  
-        a1.setValueSet(ValueSet.ALL_VALUES);
+        // a1=allvalue, ce1=enum => no mismatch
+        a1.setValueSetType(ValueSetType.ALL_VALUES);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
         // a1=range, ce1=allvalues=> no mismatch
-        a1.setValueSet(new Range("10", "20"));
-        ce1.setValueSet(ValueSet.ALL_VALUES);
+        a1.setValueSetType(ValueSetType.RANGE);
+        valueSet = (IRangeValueSet)a1.getValueSet();
+        valueSet.setLowerBound("10");
+        valueSet.setUpperBound("20");
+        ce1.setValueSetType(ValueSetType.ALL_VALUES);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
         // value set mismatch between a1 (range), ce1 (enum),
         // but corresponding attribute is not product relevant => this is not a mismatch as this reported otherwise
-        ce1.setValueSet(new EnumValueSet());
+        ce1.setValueSetType(ValueSetType.ENUM);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertFalse(delta.isEmpty()); // make sure there is an errror
         a1.setProductRelevant(false);
@@ -213,11 +218,15 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends IpsPluginTest 
         // does it work along the pctype hierarchy?
         IAttribute a2 = supertype.newAttribute();
         a2.setName("a2");
-        a2.setValueSet(new Range("10", "20"));
+        a2.setValueSetType(ValueSetType.RANGE);
+        valueSet = (IRangeValueSet)a2.getValueSet();
+        valueSet.setLowerBound("10");
+        valueSet.setUpperBound("20");
+
         IConfigElement ce2 = generation.newConfigElement();
         ce2.setPcTypeAttribute("a2");
         ce2.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
-        ce2.setValueSet(new EnumValueSet());
+        ce2.setValueSetType(ValueSetType.ENUM);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertFalse(delta.isEmpty());
         assertEquals(1, delta.getElementsWithValueSetMismatch().length);

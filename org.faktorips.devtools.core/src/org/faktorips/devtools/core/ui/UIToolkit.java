@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.model.EnumValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -396,11 +396,11 @@ public class UIToolkit {
 	 * value ids are to display in the Combo null can be specified for the
 	 * EnumDatatype parameter.
 	 */
-	public Combo createCombo(Composite parent, EnumValueSet enumValueSet,
+	public Combo createCombo(Composite parent, IEnumValueSet enumValueSet,
 			EnumDatatype dataType) {
 		Combo newCombo = createCombo(parent);
 
-		String[] values = new String[enumValueSet.getNumOfValues()];
+		String[] values = new String[enumValueSet.size()];
 		for (int i = 0; i < values.length; i++) {
 			if (dataType != null && dataType.isSupportingNames()) {
 				values[i] = dataType.getValueName(enumValueSet.getValue(i));

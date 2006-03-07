@@ -1,6 +1,6 @@
 package org.faktorips.devtools.core.ui.controls;
 
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
 
 /**
  * 
@@ -8,8 +8,8 @@ import org.faktorips.devtools.core.model.ValueSet;
  */
 public interface InternalValueSetEditControl {
 
-    public ValueSet getValueSet();
+    public IValueSet getValueSet();
     
-    public void setValueSet(ValueSet valueSet);
+    public void setValueSet(IValueSet valueSet);
     
 }

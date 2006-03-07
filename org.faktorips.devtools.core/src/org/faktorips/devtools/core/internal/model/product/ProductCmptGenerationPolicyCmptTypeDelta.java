@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -77,7 +78,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
                 if (attribute.getConfigElementType()!=elements[i].getType()) {
                     typeMismatchs.add(elements[i]);
                 }
-                if (!attribute.getValueSet().isAllValues() && !elements[i].getValueSet().isAllValues()) {
+                if (!(attribute.getValueSet().getValueSetType() == ValueSetType.ALL_VALUES) && !(elements[i].getValueSet().getValueSetType() == ValueSetType.ALL_VALUES)) {
                     if (!attribute.getValueSet().getValueSetType().equals(elements[i].getValueSet().getValueSetType())) {
                         valueSetMismatchs.add(elements[i]);
                     }

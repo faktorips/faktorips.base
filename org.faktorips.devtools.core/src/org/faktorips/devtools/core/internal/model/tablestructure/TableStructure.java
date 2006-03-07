@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -456,7 +455,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObject#newPart(java.lang.String, int)
      */
-    protected IIpsObjectPart newPart(String xmlTagName, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    	String xmlTagName = xmlTag.getNodeName();
+
         if (xmlTagName.equals(Column.TAG_NAME)) {
             return newColumnInternal(id);
         } else if (xmlTagName.equals(ColumnRange.TAG_NAME)) {

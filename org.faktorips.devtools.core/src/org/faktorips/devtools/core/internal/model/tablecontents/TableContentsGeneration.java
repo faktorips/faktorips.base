@@ -111,7 +111,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      *
      * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#newPart(java.lang.String, int)
      */
-    protected IIpsObjectPart newPart(String xmlTagName, int id) {
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+    	String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(Row.TAG_NAME)) {
             return newRowInternal(id);
         }

@@ -2,7 +2,8 @@ package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.MessageList;
@@ -124,12 +125,14 @@ public interface IConfigElement extends IIpsObjectPart {
     /**
      * Returns the set of allowed values.
      */
-    public ValueSet getValueSet();
+    public IValueSet getValueSet();
 
     /**
-     * Sets the set of allowed values.
+     * Sets the type of the value set defining the values valid for this config element.
+     * If the type of the currently existing value set is the same as the one to set, all
+     * old informations (e.g. bounds and step for a range value set) are removed.
      */
-    public void setValueSet(ValueSet set);
+    public void setValueSetType(ValueSetType type);
 
     /**
      * Returns an expression compiler that can be used to compile the formula.
@@ -154,5 +157,9 @@ public interface IConfigElement extends IIpsObjectPart {
     */
    public MessageList validate() throws CoreException;
     
+   /**
+    * Creates a copy of the given value set and aplies this copy to this config element.
+    */
+   public void setValueSetCopy(IValueSet source);
     
 }

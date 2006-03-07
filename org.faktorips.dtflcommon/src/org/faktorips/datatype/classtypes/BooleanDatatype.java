@@ -22,6 +22,9 @@ public class BooleanDatatype extends ValueClassDatatype {
 	 * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
 	 */
 	public Object getValue(String s) {
+        if (s == null) {
+            return null;
+        }
 		return Boolean.valueOf(s);
 	}
 
