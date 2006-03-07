@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -353,7 +355,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			((ProductCmptRelation)relations.get(i)).validate(list);
 		}
         
-        IPolicyCmptType type = getProductCmpt().findPolicyCmptType();
+        IProductCmptType type = getProductCmpt().findProductCmptType();
         
         // no type information available, so no further validation possible
         if (type == null) {
@@ -361,24 +363,24 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
         	return;
         }
         
-		IRelation[] relationTypes = type.getRelations();
+		IProductCmptTypeRelation[] relationTypes = type.getRelations();
 		for (int i = 0; i < relationTypes.length; i++) {
-			IProductCmptRelation[] relations = getRelations(relationTypes[i].getTargetRoleSingularProductSide());
+			IProductCmptRelation[] relations = getRelations(relationTypes[i].getTargetRoleSingular());
 			
 			if (relationTypes[i].getMinCardinality() > relations.length) {
-				Object[] params = {new Integer(relations.length), relationTypes[i].getTargetRoleSingularProductSide(), new Integer(relationTypes[i].getMinCardinality())};
+				Object[] params = {new Integer(relations.length), relationTypes[i].getTargetRoleSingular(), new Integer(relationTypes[i].getMinCardinality())};
 				String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
 				ObjectProperty prop1 = new ObjectProperty(this, null);
-				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
+				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null);
 				list.add(new Message(MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
 			}
 			
 			int maxCardinality = relationTypes[i].getMaxCardinality();
 			if (maxCardinality < relations.length) {
-				Object[] params = {new Integer(relations.length), ""+maxCardinality, relationTypes[i].getTargetRoleSingularProductSide()}; //$NON-NLS-1$
+				Object[] params = {new Integer(relations.length), ""+maxCardinality, relationTypes[i].getTargetRoleSingular()}; //$NON-NLS-1$
 				String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
 				ObjectProperty prop1 = new ObjectProperty(this, null);
-				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingularProductSide(), null);
+				ObjectProperty prop2 = new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null);
 				list.add(new Message(MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR, new ObjectProperty[] {prop1, prop2}));
 			}
 			

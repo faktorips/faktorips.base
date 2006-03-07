@@ -209,6 +209,9 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         msgList = aProductGen.validate();
         assertNotNull(msgList.getMessageByCode(ExprCompiler.UNDEFINED_IDENTIFIER));
         
+    }
+    
+    public void testNotEnougthRelations() throws Exception {
         // test too less relations
         DefaultTestContent content = new DefaultTestContent();
         
@@ -218,43 +221,65 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
         IRelation relation = type.getRelation("Vehicle");
         
-        assertEquals(0, relation.getMinCardinality());
-        assertEquals(1, relation.getMaxCardinality());
+        assertEquals(0, relation.getMinCardinalityProductSide());
+        assertEquals(1, relation.getMaxCardinalityProductSide());
         
         MessageList ml = generation.validate();
         
         assertTrue(ml.isEmpty());
         
-        relation.setMaxCardinality(2);
-        relation.setMinCardinality(2);
+        relation.setMaxCardinalityProductSide(2);
+        relation.setMinCardinalityProductSide(2);
         
         type.getIpsSrcFile().save(true, null);
         
         ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
 
-        IProductCmptRelation newRel = generation.newRelation(relation.getTargetRoleSingularProductSide());
         
+        generation.newRelation(relation.getTargetRoleSingularProductSide());
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
+    }
+    
+    public void testTooManyRelations() throws Exception {
         // test too many relations
-        relation.setMinCardinality(0);
-        relation.setMaxCardinality(1);
+        DefaultTestContent content = new DefaultTestContent();
+        
+        IProductCmpt product = content.getComfortMotorProduct();
+        IPolicyCmptType type = product.findPolicyCmptType();
+        
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
+        IRelation relation = type.getRelation("Vehicle");
+        
+        IProductCmptRelation newRel = generation.newRelation(relation.getTargetRoleSingularProductSide());
+
+        assertEquals(0, relation.getMinCardinalityProductSide());
+        assertEquals(1, relation.getMaxCardinalityProductSide());
         type.getIpsSrcFile().save(true, null);
 
-        ml = generation.validate();
+
+        MessageList ml = generation.validate();
         assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
         
         newRel.delete();
+        product.getIpsSrcFile().save(true, null);
+        
         ml = generation.validate();
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
-        
-        generation.getProductCmpt().setPolicyCmptType("");
-        ml = generation.validate();
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
-        
     }
+    
+    public void testNoTemplate() throws Exception {
+        DefaultTestContent content = new DefaultTestContent();        
+        IProductCmpt product = content.getComfortMotorProduct();
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
+    	
+        generation.getProductCmpt().setPolicyCmptType("");
+        MessageList ml = generation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
+    }
+    
 
     public void testNewPart() {
     	try {
