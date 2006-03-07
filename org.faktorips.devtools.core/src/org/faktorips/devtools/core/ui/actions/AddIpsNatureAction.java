@@ -94,6 +94,8 @@ public class AddIpsNatureAction extends ActionDelegate {
 			}
 			addIpsRuntimeLibraries(javaProject);
 			IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
+			ipsProject.setProductDefinitionProject(true);
+			ipsProject.setModelProject(true);
 			ipsProject.setValueDatatypes(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
 			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model"); //$NON-NLS-1$
 			if (!ipsModelFolder.exists()) {
