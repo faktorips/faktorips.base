@@ -25,19 +25,19 @@ import org.w3c.dom.NodeList;
  */
 public class AttributeTest extends IpsPluginTest {
     
-    private IIpsPackageFragmentRoot pdRootFolder;
-    private IIpsPackageFragment pdFolder;
-    private IIpsSrcFile pdSrcFile;
+    private IIpsPackageFragmentRoot ipsRootFolder;
+    private IIpsPackageFragment ipsFolder;
+    private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
     private IAttribute attribute;
     
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject pdProject = this.newIpsProject("TestProject");
-        pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
-        pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
-        pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
-        pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
+        ipsRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
+        ipsFolder = ipsRootFolder.createPackageFragment("products.folder", true, null);
+        ipsSrcFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
+        pcType = (PolicyCmptType)ipsSrcFile.getIpsObject();
         attribute = pcType.newAttribute();
     }
     
@@ -62,19 +62,19 @@ public class AttributeTest extends IpsPluginTest {
     public void testRemove() {
         attribute.delete();
         assertEquals(0, pcType.getAttributes().length);
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testSetDatatype() {
         attribute.setDatatype("Money");
         assertEquals("Money", attribute.getDatatype());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testSetComputed() {
         attribute.setProductRelevant(true);
         assertEquals(true, attribute.isProductRelevant());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testSetParameters() {
@@ -82,7 +82,7 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals(1, attribute.getFormulaParameters().length);
         assertEquals("p", attribute.getFormulaParameters()[0].getName());
         assertEquals("int", attribute.getFormulaParameters()[0].getDatatype());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testGetParameters() {
@@ -120,8 +120,6 @@ public class AttributeTest extends IpsPluginTest {
         assertNull(attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
         assertEquals(EnumValueSet.class,attribute.getValueSet().getClass());
-        
-        
     }
 
     /*

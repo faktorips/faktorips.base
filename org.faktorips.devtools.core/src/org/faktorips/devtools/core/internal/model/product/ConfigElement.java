@@ -272,14 +272,21 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		} catch (Exception e) {
 			throw new CoreException(new IpsStatus(e));
 		}
-		if (StringUtils.isNotEmpty(value)) {
-			if (!valueDatatype.isParsable(value)) {
-				String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, value, valueDatatype.getName());
-				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
-						PROPERTY_VALUE));
-				return;
-			}
+
+		if (!valueDatatype.isParsable(value)) {
+        	String valueInMsg = value;
+        	if (value==null) {
+        		valueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        	} else if (value.equals("")){ //$NON-NLS-1$
+        		valueInMsg = Messages.ConfigElement_msgValueIsEmptyString;
+        	}
+			String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
+			list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
+					PROPERTY_VALUE));
+			return;
+		}
 			
+		if (StringUtils.isNotEmpty(value)) {
 			valueSet.validate(valueDatatype, list);
 			if (list.containsErrorMsg()) {
 				return;

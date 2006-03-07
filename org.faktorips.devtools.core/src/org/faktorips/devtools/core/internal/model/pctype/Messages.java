@@ -100,4 +100,6 @@ public class Messages extends NLS {
 	public static String PolicyCmptType_msgAbstractMissmatch;
 
 	public static String PolicyCmptType_msgMustOverrideAbstractMethod;
+
+	public static String Attribute_msgDefaultValueIsEmptyString;
 }

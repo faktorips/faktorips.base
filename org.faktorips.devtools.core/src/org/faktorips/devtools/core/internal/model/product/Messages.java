@@ -60,4 +60,7 @@ public class Messages extends NLS {
 	public static String ProductCmpt_msgUnknownTemplate;
 
 	public static String DeepCopyOperation_taskTitle;
+
+	public static String ConfigElement_msgValueIsEmptyString;
+
 }

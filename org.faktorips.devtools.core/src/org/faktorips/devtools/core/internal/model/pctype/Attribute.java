@@ -231,7 +231,6 @@ public class Attribute extends Member implements IAttribute {
         } else {
             return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
         }
-
     }
 
     /**
@@ -285,18 +284,22 @@ public class Attribute extends Member implements IAttribute {
                 }
             } else {
                 ValueDatatype valueDatatype = (ValueDatatype)datatypeObject;
-                if (StringUtils.isNotEmpty(defaultValue)) {
-                    if (!valueDatatype.isParsable(defaultValue)) {
-                        String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValue, datatype);
-                        result.add(new Message("", text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
-                        return;
-                    }
-                    if (valueSet != null) {
-                        if (valueSet.containsValue(defaultValue, valueDatatype) == false) {
-                            result.add(new Message("", NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
-                                    Message.ERROR, this,
-                                    PROPERTY_DEFAULT_VALUE));
-                        }
+                if (!valueDatatype.isParsable(defaultValue)) {
+                	String defaultValueInMsg = defaultValue;
+                	if (defaultValue==null) {
+                		defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                	} else if (defaultValue.equals("")) { //$NON-NLS-1$
+                		defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
+                	}
+                    String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, datatype);
+                    result.add(new Message("", text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+                    return;
+                }
+                if (valueSet != null) {
+                    if (valueSet.containsValue(defaultValue, valueDatatype) == false) {
+                        result.add(new Message("", NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
+                                Message.ERROR, this,
+                                PROPERTY_DEFAULT_VALUE));
                     }
                 }
                 valueSet.validate(valueDatatype, result);
