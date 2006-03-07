@@ -29,7 +29,7 @@
          point="org.eclipse.ui.actionSets">
 
       <actionSet
-            id="org.faktorips.devtools.actions.ModellingActionSet"
+            id="org.faktorips.devtools.actions.ModelingActionSet"
             label="%org.faktorips.devtools.actions.ModellingActionSet"
             visible="false">
          <action
@@ -53,7 +53,7 @@
       <actionSet
             id="org.faktorips.devtools.actions.ProductDefinitionActionSet"
             label="%org.faktorips.devtools.actions.ProductDefinitionActionSet"
-            visible="true">
+            visible="false">
          <action
                label="New Table Contents"
                icon="icons/NewTableContentsWizard.gif"
@@ -82,7 +82,7 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <actionSet
-               id="org.faktorips.devtools.actions.ModellingActionSet">
+               id="org.faktorips.devtools.actions.ModelingActionSet">
          </actionSet>
          <actionSet
                id="org.faktorips.devtools.actions.ProductDefinitionActionSet">
@@ -344,6 +344,9 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.faktorips.devtools.core.productDefinitionPerspective">
+         <actionSet
+               id="org.faktorips.devtools.actions.ProductDefinitionActionSet">
+         </actionSet>
          <view
                closeable="false"
                id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
@@ -375,26 +378,6 @@
       <perspectiveExtension targetID="org.faktorips.devtools.core.departmentPerspective">
          <showInPart id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"/>
       </perspectiveExtension>
-   </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.faktorips.devtools.department.productActionSet"
-            label="%org.faktorips.devtools.department.productActionSet"
-            visible="false">
-         <action
-               class="org.faktorips.devtools.core.ui.views.productstructureexplorer.OpenInStructureExplorerActionDelegate"
-               id="org.faktorips.devtools.department.showStructure"
-               label="%org.faktorips.devtools.department.showStructure"
-               style="push"
-               tooltip="%org.faktorips.devtools.department.showStructure.tooltip"/>
-         <action
-               class="org.faktorips.devtools.core.ui.views.attrtable.ShowAttributesActionDelegate"
-               id="org.faktorips.devtools.department.showAttributes"
-               label="%org.faktorips.devtools.department.showAttributes"
-               style="push"
-               tooltip="%org.faktorips.devtools.department.showAttributes.tooltip"/>
-      </actionSet>
    </extension>
    <extension
          point="org.eclipse.search.searchResultViewPages">
