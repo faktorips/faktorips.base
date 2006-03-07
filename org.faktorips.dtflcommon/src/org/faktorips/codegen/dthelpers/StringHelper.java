@@ -36,23 +36,19 @@ public class StringHelper extends AbstractDatatypeHelper {
 			return nullExpression();
 		}
 		JavaCodeFragment fragment = new JavaCodeFragment();
-		fragment.appendQuoted(value);
+		fragment.appendQuoted(StringUtils.escape(value));
 		return fragment;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.faktorips.codegen.DatatypeHelper#newInstanceFromExpression(java.lang.String)
+	/**
+     * {@inheritDoc}
 	 */
 	public JavaCodeFragment newInstanceFromExpression(String expression) {
 		return valueOfExpression(expression);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
+	/**
+     * {@inheritDoc}
 	 */
 	protected JavaCodeFragment valueOfExpression(String expression) {
 		if (StringUtils.isEmpty(expression)) {
@@ -63,10 +59,8 @@ public class StringHelper extends AbstractDatatypeHelper {
 		return fragment;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
+	/**
+     * {@inheritDoc}
 	 */
 	public JavaCodeFragment nullExpression() {
 		return new JavaCodeFragment("null");

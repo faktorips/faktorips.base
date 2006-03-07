@@ -1,14 +1,13 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.PrimitiveDatatypeHelper;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 
 
 /**
  *
  */
-public class PrimitiveBooleanHelper extends AbstractDatatypeHelper implements PrimitiveDatatypeHelper {
+public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
 
     /**
      * Constructs a new helper.

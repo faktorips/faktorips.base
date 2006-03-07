@@ -69,6 +69,7 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 		IpsPlugin.getDefault().reinitModel();
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
+				waitForIndexer();
 				IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
 						.getProjects();
 				for (int i = 0; i < projects.length; i++) {

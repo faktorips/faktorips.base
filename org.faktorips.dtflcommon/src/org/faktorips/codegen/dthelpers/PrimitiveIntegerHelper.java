@@ -1,14 +1,13 @@
 package org.faktorips.codegen.dthelpers;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.PrimitiveDatatypeHelper;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 
 
 /**
  * DatatypeHelper for datatype PrimitiveInteger. 
  */
-public class PrimitiveIntegerHelper extends AbstractDatatypeHelper implements PrimitiveDatatypeHelper {
+public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
 
     /**
      * Constructs a new helper.
@@ -26,7 +25,7 @@ public class PrimitiveIntegerHelper extends AbstractDatatypeHelper implements Pr
         super(datatype);
     }
     
-    /** 
+    /**
      * {@inheritDoc}
      */
     public JavaCodeFragment newInstance(String value) {
@@ -59,8 +58,7 @@ public class PrimitiveIntegerHelper extends AbstractDatatypeHelper implements Pr
      * {@inheritDoc}
 	 */
 	public JavaCodeFragment nullExpression() {
-		// TODO oder doch ne Exception werfen
-		return new JavaCodeFragment("0");
+		throw new RuntimeException("Primitive datatype does not support null.");
 	}
 	
 }
