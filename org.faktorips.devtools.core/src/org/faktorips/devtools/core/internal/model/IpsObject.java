@@ -29,8 +29,6 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.XmlUtil;
-import org.faktorips.util.memento.Memento;
-import org.faktorips.util.memento.XmlMemento;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -149,25 +147,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         }
     }
     
-    /**
-     * Overridden.
-     */
-    public Memento newMemento() {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-        return new XmlMemento(this, toXml(doc));
-    }
-    
-    /**
-     * Overridden.
-     */
-    public void setState(Memento memento) {
-        if (!memento.getOriginator().equals(this)) {
-            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        initFromXml(((XmlMemento)memento).getState());
-        updateSrcFile();
-    }
-
     /**
      * Overridden.
      */

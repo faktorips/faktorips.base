@@ -52,6 +52,7 @@ public class NewProductCmptRelationAction extends IpsAction {
 			}
 		
 		});
+		
 	}
 
 	/** 
@@ -63,6 +64,7 @@ public class NewProductCmptRelationAction extends IpsAction {
 			parent.setSyncpoint();
 			IProductCmptRelation relation = parent.newRelation((IProductCmptTypeRelation)selected);
 			RelationEditDialog dialog = new RelationEditDialog(relation, shell);
+			dialog.setProductCmptsToExclude(parent.getRelationTargetsFor((IProductCmptTypeRelation)selected));
 			if (dialog.open() == Dialog.CANCEL) {
 				parent.reset();
 			}

@@ -21,15 +21,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.memento.Memento;
-import org.faktorips.util.memento.XmlMemento;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
@@ -109,27 +105,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         valueChanged(oldDescription, newDescription);
     }
 
-    /**
-     * Overridden method.
-     * @see org.faktorips.util.memento.MementoSupport#newMemento()
-     */
-    public Memento newMemento() {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-        return new XmlMemento(this, toXml(doc));
-    }
-    
-    /**
-     * Overridden method.
-     * @see org.faktorips.util.memento.MementoSupport#setState(org.faktorips.util.memento.Memento)
-     */
-    public void setState(Memento memento) {
-        if (!memento.getOriginator().equals(this)) {
-            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        initFromXml(((XmlMemento)memento).getState());
-    }
-    
-    
     protected void updateSrcFile() {
         ((IpsObject)getIpsObject()).updateSrcFile();
     }

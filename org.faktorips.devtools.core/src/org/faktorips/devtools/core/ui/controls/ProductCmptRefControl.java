@@ -17,10 +17,15 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 
@@ -31,6 +36,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
 
     private String qualifiedTypeName;
     private boolean includeCmptsForSubtypes = true;
+    private IProductCmpt[] toExclude = new IProductCmpt[0];
     
     
     public ProductCmptRefControl(
@@ -54,7 +60,22 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
      * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
-        return getPdProject().findProductCmpts(qualifiedTypeName, includeCmptsForSubtypes);
+    	IProductCmpt[] cmpts = getPdProject().findProductCmpts(qualifiedTypeName, includeCmptsForSubtypes);
+
+    	List cmptList = new ArrayList();
+    	cmptList.addAll(Arrays.asList(cmpts));
+    	for (int i = 0; i < toExclude.length; i++) {
+			cmptList.remove(toExclude[i]);
+		}
+    	
+        return (IIpsObject[])cmptList.toArray(new IIpsObject[cmptList.size()]);
     }
+
+	/**
+	 * @param cmpts
+	 */
+	public void setProductCmptsToExclude(IProductCmpt[] cmpts) {
+		toExclude = cmpts;
+	}
 
 }

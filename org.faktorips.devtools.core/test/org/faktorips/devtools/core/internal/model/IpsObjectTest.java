@@ -29,8 +29,6 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.util.memento.Memento;
 
 
 /**
@@ -67,33 +65,6 @@ public class IpsObjectTest extends IpsPluginTest implements ContentsChangeListen
         assertEquals("new description", ipsObject.getDescription());
         assertTrue(srcFile.isDirty());
         assertEquals(srcFile, lastEvent.getPdSrcFile());
-    }
-    
-    public void testNewMemento() {
-        Memento memento = ipsObject.newMemento();
-        assertEquals(ipsObject, memento.getOriginator());        
-    }
-    
-    public void testSetState() throws CoreException {
-        ipsObject.setDescription("blabla");
-        Memento memento = ipsObject.newMemento();
-        ipsObject.setDescription("newDescription");
-        ipsObject.setState(memento);
-        assertEquals("blabla", ipsObject.getDescription());
-        
-        // test if new parts are removed when the state is restored from the memento
-        ((IPolicyCmptType)ipsObject).newAttribute();
-        assertEquals(1, ipsObject.getChildren().length);
-        ipsObject.setState(memento);
-        assertEquals(0, ipsObject.getChildren().length);
-        
-        IpsSrcFile file2 = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
-        IIpsObject pdObject2 = new PolicyCmptType(file2);
-        try {
-            pdObject2.setState(memento);
-            fail();
-        } catch(IllegalArgumentException e) {
-        }
     }
     
     /** 

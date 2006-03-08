@@ -17,12 +17,20 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.XmlUtil;
+import org.faktorips.util.memento.Memento;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -193,6 +201,37 @@ public class IpsObjectPartContainerTest extends IpsPluginTest {
         model.addIpsObjectExtensionProperty(newProp);
         container.initFromXml(docEl);
         assertEquals("defaultValue", container.getExtPropertyValue("org.foo.newProp"));
+    }
+    
+    public void testNewMemento() {
+        Memento memento = container.newMemento();
+        assertEquals(container, memento.getOriginator());        
+    }
+    
+    public void testSetState() throws CoreException {
+    	container.setDescription("blabla");
+        Memento memento = container.newMemento();
+        container.setDescription("newDescription");
+        container.setState(memento);
+        assertEquals("blabla", container.getDescription());
+        
+        // test if new parts are removed when the state is restored from the memento
+        IIpsProject ipsProject = this.newIpsProject("TestProject");
+        IIpsPackageFragmentRoot rootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
+        IPolicyCmptType type = this.newPolicyCmptType(rootFolder, "folder.TestProduct");
+        memento = type.newMemento();
+        type.newAttribute();
+        assertEquals(1, type.getChildren().length);
+        type.setState(memento);
+        assertEquals(0, type.getChildren().length);
+        
+        IpsSrcFile file2 = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
+        IIpsObject pdObject2 = new PolicyCmptType(file2);
+        try {
+            pdObject2.setState(memento);
+            fail();
+        } catch(IllegalArgumentException e) {
+        }
     }
 
     class TestIpsObjectPartContainer extends IpsObjectPart {

@@ -22,12 +22,15 @@ import java.util.HashMap;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.util.XmlUtil;
+import org.faktorips.util.memento.Memento;
+import org.faktorips.util.memento.XmlMemento;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -394,6 +397,25 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         		ml.add(newList);
         	}
         }
+    }
+
+    /**
+     * Overridden.
+     */
+    public Memento newMemento() {
+        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        return new XmlMemento(this, toXml(doc));
+    }
+    
+    /**
+     * Overridden.
+     */
+    public void setState(Memento memento) {
+        if (!memento.getOriginator().equals(this)) {
+            throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        initFromXml(((XmlMemento)memento).getState());
+        updateSrcFile();
     }
 
 }

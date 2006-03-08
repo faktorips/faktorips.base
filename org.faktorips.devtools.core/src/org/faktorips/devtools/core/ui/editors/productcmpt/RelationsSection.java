@@ -480,5 +480,23 @@ public class RelationsSection extends IpsSection {
 		}
     	
     }
+
+	/**
+	 * @param relation
+	 * @return
+	 */
+	public IProductCmpt[] getRelationTargetsFor(IProductCmptTypeRelation relation) {
+		IProductCmptRelation[] relations = generation.getRelations(relation.getName());
+		
+		IProductCmpt[] targets = new IProductCmpt[relations.length];
+		for (int i = 0; i < relations.length; i++) {
+			try {
+				targets[i] = (IProductCmpt)generation.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, relations[i].getTarget());
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+		}
+		return targets;
+	}
 }
 

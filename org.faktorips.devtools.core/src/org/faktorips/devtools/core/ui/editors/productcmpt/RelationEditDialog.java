@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
@@ -48,6 +49,9 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private CardinalityField minCardinalityField;
     private CardinalityField maxCardinalityField;
 
+    private ProductCmptRefControl targetControl;
+    private IProductCmpt[] toExclude;
+    
     /**
      * @param parentShell
      * @param title
@@ -77,7 +81,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_target);
-        ProductCmptRefControl targetControl = new ProductCmptRefControl(relation.getIpsProject(), workArea, uiToolkit);
+        targetControl = new ProductCmptRefControl(relation.getIpsProject(), workArea, uiToolkit);
         try {
             IProductCmptTypeRelation typeRelation = relation.findProductCmptTypeRelation();
             if (typeRelation != null) {
@@ -87,6 +91,8 @@ public class RelationEditDialog extends IpsPartEditDialog {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        
+        targetControl.setProductCmptsToExclude(this.toExclude);
         
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_cardinalityMin);
         Text minCardinalityText = uiToolkit.createText(workArea);
@@ -110,5 +116,14 @@ public class RelationEditDialog extends IpsPartEditDialog {
         uiController.add(targetField, IRelation.PROPERTY_TARGET);
         uiController.add(minCardinalityField, IRelation.PROPERTY_MIN_CARDINALITY);
         uiController.add(maxCardinalityField, IRelation.PROPERTY_MAX_CARDINALITY);
+    }
+    
+    public void setProductCmptsToExclude(IProductCmpt[] toExclude) {
+    	if (targetControl != null) {
+    		targetControl.setProductCmptsToExclude(toExclude);
+    	}
+    	else {
+    		this.toExclude = toExclude;
+    	}
     }
 }
