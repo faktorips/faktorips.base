@@ -148,6 +148,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     public boolean isParsable(String value) {
+        if (value==null) {
+            return true;
+        }
         getIsParsableMethod();
         if (isParsableMethod!=null) {
             try {
@@ -184,6 +187,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     public Object getValue(String value) {
+        if (value==null && specialNullValue==null) {
+            return null;
+        }
         try {
             return getValueOfMethod().invoke(null, new Object[]{value});
         } catch (Exception e) {

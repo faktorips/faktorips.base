@@ -54,6 +54,14 @@ public class GenericValueDatatypeTest extends TestCase {
         datatype.setIsParsableMethodName("isParsable");
         assertTrue(datatype.isParsable(PaymentMode.ANNUAL.getId()));
         assertFalse(datatype.isParsable("unknownId"));
+        assertTrue(datatype.isParsable(null));
+        
+        datatype = new DefaultGenericValueDatatype(TestValueClass.class);
+        datatype.setValueOfMethodName("getInteger");
+        datatype.setIsParsableMethodName("isInteger");
+        assertTrue(datatype.isParsable("42"));
+        assertTrue(datatype.isParsable(null));
+        assertFalse(datatype.isParsable("abc"));
     }
 
     /*
@@ -75,6 +83,11 @@ public class GenericValueDatatypeTest extends TestCase {
     public void testGetValue() {
         datatype.setValueOfMethodName("getPaymentMode");
         assertEquals(PaymentMode.ANNUAL, datatype.getValue(PaymentMode.ANNUAL.getId()));
+
+        datatype = new DefaultGenericValueDatatype(TestValueClass.class);
+        datatype.setValueOfMethodName("getInteger");
+        assertEquals(new Integer(42), datatype.getValue("42"));
+        assertNull(datatype.getValue(null));
     }
 
     /*
@@ -138,4 +151,5 @@ public class GenericValueDatatypeTest extends TestCase {
         }
         
     }
+    
 }
