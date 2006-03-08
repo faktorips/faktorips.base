@@ -348,7 +348,7 @@
                id="org.faktorips.devtools.actions.ProductDefinitionActionSet">
          </actionSet>
          <view
-               closeable="false"
+               closeable="true"
                id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
                moveable="true"
                relationship="left"
