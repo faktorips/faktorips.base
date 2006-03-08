@@ -1,6 +1,7 @@
 package org.faktorips.sourcecode;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import junit.framework.TestCase;
 
@@ -60,14 +61,23 @@ public class JavaCodeFragmentTest extends TestCase
 	    assertEquals(expected, fragment.getSourcecode());
 	}
 	
-	public void testAppendClassName() {
-	    JavaCodeFragment fragment = new JavaCodeFragment();
-	    fragment.appendClassName(List.class);
-	    assertEquals("List", fragment.getSourcecode());
-	    assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
-	    assertTrue(fragment.getImportDeclaration().isCovered(List.class));
-	}
-	
+    public void testAppendClassName() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(List.class);
+        assertEquals("List", fragment.getSourcecode());
+        assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
+        assertTrue(fragment.getImportDeclaration().isCovered(List.class));
+    }
+    
+    public void testAppendInnerClassName() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendInnerClassName(Entry.class);
+        assertEquals("Entry", fragment.getSourcecode());
+        assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
+        assertTrue(fragment.getImportDeclaration()
+                .isCovered(Entry.class.getName().replaceAll("\\$", "\\.")));
+    }
+    
 	public void testAppend_Fragment() {
 		JavaCodeFragmentBuilder builder1 = new JavaCodeFragmentBuilder();
 		builder1.openBracket();

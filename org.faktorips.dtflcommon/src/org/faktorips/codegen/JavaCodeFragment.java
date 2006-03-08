@@ -173,8 +173,28 @@ public class JavaCodeFragment {
 	public void appendClassName(Class clazz) {
 	    appendClassName(clazz.getName());
 	}
+    
+    /**
+     * Appends the unqualified class name of an public inner class to the sourcecode 
+     * and updates the import declaration (if neccessary).
+     * 
+     * @throws NullPointerException if clazz is null.
+     */
+    public void appendInnerClassName(Class clazz) {
+        appendInnerClassName(clazz.getName());
+    }
 	
-	/**
+    /**
+     * Appends the unqualified class name of an public inner class to the sourcecode 
+     * and updates the import declaration (if neccessary).
+     * 
+     * @throws NullPointerException if clazz is null.
+     */
+	public void appendInnerClassName(String qualifiedClassName) {
+	    appendClassName(qualifiedClassName.replaceAll("\\$", "\\."));
+    }
+    
+    /**
 	 * Appends the unqualified class name to the sourcecode and updates the import 
 	 * declaration (if neccessary).
 	 * 
