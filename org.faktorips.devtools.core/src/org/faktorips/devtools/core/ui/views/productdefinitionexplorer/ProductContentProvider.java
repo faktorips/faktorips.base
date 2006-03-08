@@ -12,6 +12,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
@@ -137,7 +138,7 @@ public class ProductContentProvider implements ITreeContentProvider {
             if (ipsElement instanceof IIpsPackageFragment) {
                 return getPackageFragmentContent((IIpsPackageFragment)element).length > 0;
             }
-            else if (ipsElement instanceof IProductCmpt) {
+            else if (ipsElement instanceof ITimedIpsObject) {
                 return false;
             }
             else {
