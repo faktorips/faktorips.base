@@ -50,6 +50,9 @@ public class FormulaEditControl extends TextButtonControl {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setEnabled(boolean enabled) {
 		super.getTextControl().setEnabled(enabled);
 	}

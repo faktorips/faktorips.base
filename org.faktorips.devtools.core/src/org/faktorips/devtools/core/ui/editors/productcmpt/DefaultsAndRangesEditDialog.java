@@ -50,15 +50,22 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
     // edit fields
     private TextField defaultValueField;
 
+    private boolean viewOnly;
+    
     /**
      * @param parentShell
      * @param title
      */
     public DefaultsAndRangesEditDialog(IConfigElement configElement, Shell parentShell) {
-        super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
-        this.configElement = configElement;
+        this(configElement, parentShell, false);
     }
     
+    public DefaultsAndRangesEditDialog(IConfigElement configElement, Shell parentShell, boolean viewOnly) {
+        super(configElement, parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
+        this.configElement = configElement;
+        this.viewOnly = viewOnly;
+    }
+
     /**
      * Overridden method.
      * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
@@ -71,6 +78,8 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         firstPage.setControl(createFirstPage(folder));
 
         createDescriptionTabItem(folder);
+        super.setEnabledDescription(!viewOnly);
+        
         return folder;
     }
 
@@ -81,6 +90,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         uiToolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
         Text defaultValueText = uiToolkit.createText(workArea);
+        defaultValueText.setEnabled(!viewOnly);
 
         defaultValueField = new TextField(defaultValueText);
         Control valueSetControl = createValueSetControl(workArea);
@@ -89,6 +99,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
             valueSetGridData.horizontalSpan = 2;
             valueSetControl.setLayoutData(valueSetGridData);
         }
+        valueSetControl.setEnabled(!viewOnly);
         return c;
     }
 
@@ -109,6 +120,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
             if (valueSet.getValueSetType() == ValueSetType.ENUM) {
                 EnumValueSetEditControl valueSetControl = new EnumValueSetEditControl((IEnumValueSet)valueSet,
                         workArea, new ProductElementValidator());
+                
                 return valueSetControl;
             } 
         } catch (CoreException e) {

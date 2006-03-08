@@ -92,6 +92,22 @@ public class RelationsSection extends IpsSection {
 	private IEditorSite site;
 	private boolean fGenerationDirty;
     private IProductCmptRelation toMove;
+    
+    /**
+     * <code>true</code> if this section is enabled, <code>false</code> otherwise.
+     * This flag is used to control the enablement-state of the contained controlls.
+     */
+    private boolean fEnabled;
+    
+    /**
+     * The popup-Menu for the treeview if enabled.
+     */
+    private Menu treePopup;
+    
+    /**
+     * Empty popup-Menu.
+     */
+    private Menu emptyMenu;
 
 	/**
 	 * Creates a new RelationsSection which displays relations for the given generation.
@@ -106,6 +122,7 @@ public class RelationsSection extends IpsSection {
 		this.generation = generation;
 		this.site = site;
 		fGenerationDirty = true;
+		fEnabled = true;
 		
 		initControls();
 		
@@ -193,12 +210,15 @@ public class RelationsSection extends IpsSection {
         menumanager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
         menumanager.add(new Separator());
 		
-		Menu menu = menumanager.createContextMenu(treeViewer.getControl());
+		treePopup = menumanager.createContextMenu(treeViewer.getControl());
 
-		treeViewer.getControl().setMenu(menu);
+		treeViewer.getControl().setMenu(treePopup);
 
 		// Dont register context menu to avoid population with debug etc.
         // site.registerContextMenu("productCmptEditor.relations", menumanager, treeViewer); //$NON-NLS-1$
+		
+		// create empty menu for later use
+		emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
 	}
 	
 	/**
@@ -207,7 +227,6 @@ public class RelationsSection extends IpsSection {
 	protected void performRefresh() {	
 		if (fGenerationDirty && treeViewer != null) {
 			treeViewer.setInput(generation);
-//			treeViewer.refresh();
 			treeViewer.expandAll();
 
 		}
@@ -309,8 +328,10 @@ public class RelationsSection extends IpsSection {
 		    		uiController = new IpsPartUIController(rel);
 				}
 				
-				kardMin.setEnabled(true);
-				kardMax.setEnabled(true);	    		
+	    		// enable the fields for cardinality only, if this section
+	    		// is enabled.
+				kardMin.setEnabled(fEnabled);
+				kardMax.setEnabled(fEnabled);	    		
 
 	    		kardMinField = new CardinalityField(kardMin);
 	    		kardMaxField = new CardinalityField(kardMax);
@@ -335,6 +356,11 @@ public class RelationsSection extends IpsSection {
     private class DropListener implements DropTargetListener {
 
 		public void dragEnter(DropTargetEvent event) {
+			if (!fEnabled) {
+				event.detail = DND.DROP_NONE;
+				return;
+			}
+			
 			if (event.detail == 0) {
 				event.detail = DND.DROP_LINK;
 			}
@@ -455,6 +481,11 @@ public class RelationsSection extends IpsSection {
 		}
     }
     
+    /**
+     * Listener to handle the move of relations.
+     * 
+     * @author Thorsten Guenther
+     */
     private class DragListener implements DragSourceListener {
     	ISelectionProvider selectionProvider;
     	
@@ -482,8 +513,9 @@ public class RelationsSection extends IpsSection {
     }
 
 	/**
-	 * @param relation
-	 * @return
+	 * Returns all targets for all relations defined with the given product component relation type.
+	 * 
+	 * @param relation The type of the relations to find.
 	 */
 	public IProductCmpt[] getRelationTargetsFor(IProductCmptTypeRelation relation) {
 		IProductCmptRelation[] relations = generation.getRelations(relation.getName());
@@ -497,6 +529,25 @@ public class RelationsSection extends IpsSection {
 			}
 		}
 		return targets;
+	}
+	
+	/**
+	 * To get access to the informations which depend on the selections that can be made
+	 * in this section, only some parts can be disabled, other parts need special handling.
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void setEnabled(boolean enabled) {
+		this.fEnabled = enabled;
+
+		if (enabled) {
+			treeViewer.getTree().setMenu(this.treePopup);
+		}
+		else {
+			treeViewer.getTree().setMenu(emptyMenu);
+		}
+		kardMin.setEnabled(enabled);
+		kardMax.setEnabled(enabled);
 	}
 }
 

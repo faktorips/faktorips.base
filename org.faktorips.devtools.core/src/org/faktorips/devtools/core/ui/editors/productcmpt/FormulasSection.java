@@ -174,8 +174,6 @@ public class FormulasSection extends IpsSection {
 	 * {@inheritDoc}
 	 */
 	public void setEnabled(boolean enabled) {
-//		super.setEnabled(enabled);
-
 		// to get the disabled look, we have to disable all the input-fields
 		// manually :-(
 		for (Iterator iter = editControls.iterator(); iter.hasNext();) {

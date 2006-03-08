@@ -85,7 +85,7 @@ public class EnumValueSetControl extends TextButtonControl {
 	 */
 	protected void buttonClicked() {
 		preserveState();
-		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell);
+		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell, !super.getTextControl().isEnabled());
 		if (dialog.open() == Dialog.OK) {
 			super.getTextControl().setText(configElement.getValueSet().toShortString());
 			controller.updateUI();
@@ -118,6 +118,13 @@ public class EnumValueSetControl extends TextButtonControl {
 		if (!dirty) {
 			configElement.getIpsObject().getIpsSrcFile().markAsClean();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setEnabled(boolean enabled) {
+		super.getTextControl().setEnabled(enabled);
 	}
 
 }
