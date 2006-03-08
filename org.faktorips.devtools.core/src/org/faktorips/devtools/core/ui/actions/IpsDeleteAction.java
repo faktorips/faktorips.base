@@ -9,8 +9,10 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 
 public class IpsDeleteAction extends IpsAction {
@@ -27,13 +29,11 @@ public class IpsDeleteAction extends IpsAction {
 
             if (selected instanceof IIpsObjectPart) {
                 ((IIpsObjectPart)selected).delete();
-            }
-            else if (selected instanceof IIpsElement) {
+            } else if (selected instanceof IIpsElement) {
                 IResource res;
-                if (selected instanceof IProductCmpt) {
-                    res = ((IProductCmpt)selected).getEnclosingResource();
-                }
-                else {
+                if (selected instanceof IProductCmpt || selected instanceof ITableContents) {
+                    res = ((IIpsObject)selected).getEnclosingResource();
+                } else {
                     res = ((IIpsElement)selected).getCorrespondingResource();
                 }
                 if (res != null) {
