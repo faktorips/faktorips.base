@@ -67,6 +67,10 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
             return false;
         }
         if (getCorrespondingResource()==null) {
+        	// if no corresponding resource exists, the EnclosingResource.exists() is handled
+        	// by calling getParent().exists() above. So if we have arrived here, we have
+        	// to return true (the parent exists) to avoid a NullPointerException in the
+        	// rest of the code.
             return true;    
         }
         return getCorrespondingResource().exists();

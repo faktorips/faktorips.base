@@ -3,12 +3,13 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import java.util.ArrayList;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
+import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
@@ -21,7 +22,7 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
  */
 public class SourcePage extends WizardPage implements ICheckStateListener {
 	private IProductCmptStructure structure;
-	private ContainerCheckedTreeViewer tree;
+	private CheckboxTreeViewer tree;
 	
 	private static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
@@ -42,15 +43,25 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 	 */
 	public void createControl(Composite parent) {
 
-		tree = new ContainerCheckedTreeViewer(parent);
+		tree = new CheckboxTreeViewer(parent);
 		
 		tree.setLabelProvider(new ProductStructureLabelProvider());
 		tree.setContentProvider(new ProductStructureContentProvider(true));
 		tree.setInput(this.structure);
 		tree.expandAll();
+		setCheckedAll(tree.getTree().getItems(), true);
 		tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		tree.addCheckStateListener(this);		
+		tree.addCheckStateListener(new CheckStateListener(null));
 		this.setControl(tree.getControl());
+	}
+
+	private void setCheckedAll(TreeItem[] items, boolean checked) {
+		for (int i = 0; i < items.length; i++) {
+			items[i].setChecked(checked);
+			setCheckedAll(items[i].getItems(), checked);
+		}
+		setPageComplete();
 	}
 
 	/**

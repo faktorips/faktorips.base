@@ -3,7 +3,6 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -28,8 +27,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -49,7 +46,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -395,23 +391,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * Overridden.
 	 */
 	public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException {
-		String packName = StringUtil.getPackageName(qualifiedName);
-		String name = StringUtil.unqualifiedName(qualifiedName);
-		IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-		for (int i = 0; i < roots.length; i++) {
-			IpsPackageFragment pack = (IpsPackageFragment)roots[i].getIpsPackageFragment(packName);
-			if (pack.exists()) {
-				List result = new ArrayList();
-				pack.findPdObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
-				for (Iterator it = result.iterator(); it.hasNext();) {
-					PolicyCmptType policyCmptType = (PolicyCmptType) it.next();
-					if (policyCmptType.getUnqualifiedProductCmptType().equals(name)) {
-						return new ProductCmptType(policyCmptType);
-					}
-				}
-			}
-		}
-		return null;
+		return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
 	}
 
 	/**
@@ -437,7 +417,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Finds all ips objects of the given type in the project and adds them to the result.
      */
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, type, result);
+    	((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, type, result);
     }
 
     /**

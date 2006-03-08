@@ -74,11 +74,11 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     /**
      * Returns the IPS object with the indicated type and qualified name.
      */
-    public IIpsObject getIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
 
     /**
      * Returns the IPS object with the indicated qualified name type.
      */
-    public IIpsObject getIpsObject(QualifiedNameType nameType) throws CoreException;
+    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException;
 
 }

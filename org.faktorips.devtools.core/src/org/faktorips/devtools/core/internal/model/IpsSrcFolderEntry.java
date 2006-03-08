@@ -169,14 +169,14 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * Overridden.
      */
     public IIpsObject findIpsObject(IIpsProject ipsProject, IpsObjectType type, String qualifiedName) throws CoreException {
-        return getIpsPackageFragmentRoot(ipsProject).getIpsObject(type, qualifiedName);
+        return getIpsPackageFragmentRoot(ipsProject).findIpsObject(type, qualifiedName);
     }
 
     /**
      * Overridden.
      */
     public IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException {
-        return getIpsPackageFragmentRoot(ipsProject).getIpsObject(nameType);
+        return getIpsPackageFragmentRoot(ipsProject).findIpsObject(nameType);
     }
 
     /**

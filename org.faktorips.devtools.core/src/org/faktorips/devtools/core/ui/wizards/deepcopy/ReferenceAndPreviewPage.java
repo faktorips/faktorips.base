@@ -12,8 +12,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -28,7 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
+import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
@@ -66,7 +65,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	/**
 	 * The viewer to display the products to copy
 	 */
-	private ContainerCheckedTreeViewer tree;
+	private CheckboxTreeViewer tree;
 	
 	/**
 	 * A list of selected objects to restore the state of the ceckboxes from.
@@ -87,7 +86,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * Control for replace text
 	 */
 	private Text replaceInput;
-
+	
 	/**
 	 * Collection of error messages indexed by product components.
 	 */
@@ -147,11 +146,12 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		replaceInput.setText("$1_" + getDateString());  //$NON-NLS-1$
 		replaceInput.addModifyListener(listener);
 
-		tree = new ContainerCheckedTreeViewer(root);
+		tree = new CheckboxTreeViewer(root);
 		tree.setLabelProvider(new LabelProvider(tree));
 		tree.setContentProvider(new ContentProvider());
-		tree.addCheckStateListener(listener);		
 		tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		tree.addCheckStateListener(new CheckStateListener(this));
 	}
 	
 	/**
@@ -175,11 +175,19 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		if (visible) {
 			tree.setInput(sourcePage.getCheckedProducts());
 			tree.expandAll();
+			setCheckedAll(tree.getTree().getItems(), true);
 			restoreCheckState();
 			setPageComplete();
 		}
 	}
 
+	private void setCheckedAll(TreeItem[] items, boolean checked) {
+		for (int i = 0; i < items.length; i++) {
+			items[i].setChecked(checked);
+			setCheckedAll(items[i].getItems(), checked);
+		}
+	}
+	
 	/**
 	 * Due to a bug in ContainerCheckedTreeViewer, we have to set only the leaves
 	 * checked.
@@ -200,14 +208,16 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	/**
 	 * Checks for errors in the user input and sets page complete if no error was found.
 	 */
-	private void setPageComplete() {
+	void setPageComplete() {
 		if (isValid()) {
 			super.setPageComplete(true);
 			super.setMessage(null);
 		}
 		else {
 			super.setPageComplete(false);
-			super.setMessage(Messages.ReferenceAndPreviewPage_msgCopyNotPossible, ERROR);
+			if (getMessage() == null) {
+				super.setMessage(Messages.ReferenceAndPreviewPage_msgCopyNotPossible, ERROR);
+			}
 		}
 		
 		checkState = tree.getCheckedElements();
@@ -276,6 +286,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				ignore = tmpIgnore;
 			}
 		}
+
 		return ignore;
 	}
 	
@@ -313,6 +324,12 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 */
 	private boolean isValid() {
 		checkForErrors();
+		
+		if (getProductsToCopy().length == 0) {
+			setMessage("Please select at least one product to copy.", WARNING);
+			return false; 
+		}
+		
 		return errorElements.isEmpty();
 	}
 
@@ -369,7 +386,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 			newMessage.append(oldMessage);
 		}
 		newMessage.append(msg);
-		
+
 		errorElements.put(product, newMessage.toString());
 	}
 
@@ -460,9 +477,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * @author Thorsten Guenther
 	 */
 	private class LabelProvider implements ILabelProvider {
-		private ContainerCheckedTreeViewer tree;
+		private CheckboxTreeViewer tree;
 		
-		public LabelProvider(ContainerCheckedTreeViewer tree) {
+		public LabelProvider(CheckboxTreeViewer tree) {
 			this.tree = tree;
 		}
 		
@@ -579,7 +596,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * 
 	 * @author Thorsten Guenther
 	 */
-	private class ChangeListener implements ModifyListener, ICheckStateListener {
+	private class ChangeListener implements ModifyListener {
 		private ReferenceAndPreviewPage page;
 
 		public ChangeListener(ReferenceAndPreviewPage page) {
@@ -589,10 +606,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		public void modifyText(ModifyEvent e) {
 			page.setPageComplete(); 
 		}
-
-		public void checkStateChanged(CheckStateChangedEvent event) {
-			page.setPageComplete(); 
-		}		
 	}
+	
 }
 

@@ -27,7 +27,9 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
@@ -226,13 +228,22 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 	/**
      * Searches all objects of the given type and adds them to the result. 
      */
-    void findPdObjects(IpsObjectType type, List result) throws CoreException {
+    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
         for (int i=0; i<members.length; i++) {
             if (members[i].getType()==IResource.FILE) {
                 IFile file = (IFile)members[i];
-                if (type.getFileExtension().equals(file.getFileExtension())) {
+                if (type == IpsObjectType.PRODUCT_CMPT_TYPE && file.getFileExtension().equals(IpsObjectType.POLICY_CMPT_TYPE.getFileExtension())) {
+                    IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
+                    if (srcFile.getIpsObject()!=null) {
+                    	IPolicyCmptType policyCmptType = (IPolicyCmptType)srcFile.getIpsObject();
+                    	IProductCmptType productCmptType = policyCmptType.findProductCmptType();
+                    	if (productCmptType != null) {
+                            result.add(productCmptType);    
+                    	}
+                    }
+                } else if (type.getFileExtension().equals(file.getFileExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject()!=null) {
                         result.add(srcFile.getIpsObject());    

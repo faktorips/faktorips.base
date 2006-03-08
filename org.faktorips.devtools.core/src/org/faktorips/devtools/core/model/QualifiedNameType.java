@@ -1,6 +1,14 @@
 package org.faktorips.devtools.core.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 
 public class QualifiedNameType {
@@ -38,7 +46,7 @@ public class QualifiedNameType {
         return type;
     }
     
-    public IIpsObject getIpsObject(IIpsPackageFragmentRoot root) throws CoreException{
+    public IIpsObject findIpsObject(IIpsPackageFragmentRoot root) throws CoreException{
         if(root == null || !root.exists()){
             return null;
         }
@@ -51,6 +59,12 @@ public class QualifiedNameType {
             unqualifiedName = qualifiedName.substring(index+1);
         }
         IIpsPackageFragment pack = root.getIpsPackageFragment(folderName);
+        if (!pack.exists()) {
+        	return null;
+        }
+        if (type==IpsObjectType.PRODUCT_CMPT_TYPE) {
+        	return findProductCmptType((IpsPackageFragment)pack, unqualifiedName);
+        }
         IIpsSrcFile file = pack.getIpsSrcFile(type.getFileName(unqualifiedName));
         if (!file.exists()) {
             return null;
@@ -58,6 +72,17 @@ public class QualifiedNameType {
         return file.getIpsObject();
     }
     
+    private IProductCmptType findProductCmptType(IpsPackageFragment pack, String productCmptTypeName) throws CoreException {
+		List result = new ArrayList();
+		pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
+		for (Iterator it = result.iterator(); it.hasNext();) {
+			PolicyCmptType policyCmptType = (PolicyCmptType) it.next();
+			if (policyCmptType.getUnqualifiedProductCmptType().equals(productCmptTypeName)) {
+				return new ProductCmptType(policyCmptType);
+			}
+		}
+		return null;
+	}
     
     private void calculateHashCode(){
         int result = 17;

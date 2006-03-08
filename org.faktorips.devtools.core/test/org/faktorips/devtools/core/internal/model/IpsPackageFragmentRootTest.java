@@ -114,11 +114,11 @@ public class IpsPackageFragmentRootTest extends IpsPluginTest {
     public void testGetPdObject() throws CoreException {
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("a.b", true, null);
         IIpsSrcFile file = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Test", true, null);
-        IIpsObject pdObject = ipsRoot.getIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
+        IIpsObject pdObject = ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
         assertNotNull(pdObject);
         assertEquals(file.getIpsObject(), pdObject);
         
-        assertNull(ipsRoot.getIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c.Unknown"));
+        assertNull(ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c.Unknown"));
     }
     
     public void testFindProductCmpts() throws CoreException {

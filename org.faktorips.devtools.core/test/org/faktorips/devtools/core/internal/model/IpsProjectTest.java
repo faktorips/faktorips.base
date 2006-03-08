@@ -52,6 +52,14 @@ public class IpsProjectTest extends IpsPluginTest {
     	assertNotNull(productCmptType);
     	assertEquals("motor.MotorProduct", productCmptType.getQualifiedName());
     	assertEquals(policyCmptType, productCmptType.findPolicyCmptyType());
+    	
+    	IIpsProject prj2 = this.newIpsProject("TestProject2");
+    	IIpsObjectPath path = prj2.getIpsObjectPath();
+    	path.newIpsProjectRefEntry(ipsProject);
+    	prj2.setIpsObjectPath(path);
+    	productCmptType = prj2.findProductCmptType("motor.MotorProduct");
+    	assertNotNull(productCmptType);
+    	
     }
 
     public void testGetValueDatatypes() throws CoreException {
@@ -185,8 +193,19 @@ public class IpsProjectTest extends IpsPluginTest {
         
         result = ipsProject.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals(3, result.length);
+
+        IPolicyCmptType pct = (IPolicyCmptType)result[1]; 
         
         result = ipsProject.findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
+        assertEquals(1, result.length);
+        
+        result = ipsProject.findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
+        assertEquals(0, result.length);
+
+        pct.setConfigurableByProductCmptType(true);
+        pct.setUnqualifiedProductCmptType("productCmptTypeName");
+
+        result = ipsProject.findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
         assertEquals(1, result.length);
     }
     

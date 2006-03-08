@@ -199,19 +199,19 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
 
     /** 
      * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getIpsObject(org.faktorips.devtools.core.model.IpsObjectType, java.lang.String)
+     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#findIpsObject(org.faktorips.devtools.core.model.IpsObjectType, java.lang.String)
      */
-    public IIpsObject getIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        return new QualifiedNameType(qualifiedName, type).getIpsObject(this);
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
+        return new QualifiedNameType(qualifiedName, type).findIpsObject(this);
     }
 
     /**
      * Overridden IMethod.
      *
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getIpsObject(org.faktorips.devtools.core.model.QualifiedNameType)
+     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#findIpsObject(org.faktorips.devtools.core.model.QualifiedNameType)
      */
-    public IIpsObject getIpsObject(QualifiedNameType nameType) throws CoreException {
-        return nameType.getIpsObject(this);
+    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
+        return nameType.findIpsObject(this);
     }
 
     /**
@@ -222,9 +222,9 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         if (!exists()) {
             return;
         }
-        IIpsPackageFragment[] folders = this.getIpsPackageFragments();
-        for (int i=0; i<folders.length; i++) {
-            ((IpsPackageFragment)folders[i]).findPdObjects(type, result);
+        IIpsPackageFragment[] packs = this.getIpsPackageFragments();
+        for (int i=0; i<packs.length; i++) {
+            ((IpsPackageFragment)packs[i]).findIpsObjects(type, result);
         }
     }
     
