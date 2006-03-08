@@ -212,14 +212,6 @@ public class ProductCmptRelation extends IpsObjectPart implements IProductCmptRe
 					}
                 }
         }
-        if (relType != null) {
-            if (minCardinality < relType.getMinCardinality()) {
-            	Integer min = new Integer(minCardinality);
-            	Integer modelMin = new Integer(relType.getMinCardinality());
-            	String text = NLS.bind(Messages.ProductCmptRelation_msgMinCardinalityIsLessThanModelMin, min, modelMin);
-            	list.add(new Message(MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN, text, Message.ERROR, this, PROPERTY_MIN_CARDINALITY));
-            }
-        }
     }
 
     /**

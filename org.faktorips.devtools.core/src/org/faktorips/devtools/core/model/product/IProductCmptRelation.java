@@ -67,12 +67,6 @@ public interface IProductCmptRelation extends IIpsObjectPart {
     public final static String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = MSGCODE_PREFIX + "MaxCardinalityExceedsModelMax"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the minimum cardinality is less than 
-     * the model defined min cardinality.
-     */
-    public final static String MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN = MSGCODE_PREFIX + "MinCardinalityIsLessThanModelMin"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the maximum cardinality is less than 
      * the min cardinality.
      */

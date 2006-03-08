@@ -157,14 +157,6 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     	ml = relation.validate();
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
     	
-    	rel.setMinCardinality(3);
-    	ml = relation.validate();
-    	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN));
-
-    	rel.setMinCardinality(0);
-    	ml = relation.validate();
-    	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_MODEL_MIN));
-    	
     	rel.setMaxCardinality(1);
     	ml = relation.validate();
     	assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
