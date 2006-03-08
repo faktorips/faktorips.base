@@ -266,32 +266,31 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_MODIFIABLE);
         interfaceBuilder.generateSignatureGetPropertyValue(a, datatypeHelper, builder);
         builder.openBracket();
-        builder.appendln("// TODO Belegung der Berechnungsparameter implementieren");
-        JavaCodeFragment paramFragment = new JavaCodeFragment();
-
-        paramFragment.append('(');
-        for (int i = 0; i < paramNames.length; i++) {
-            builder.appendClassName(paramTypes[i]);
-            builder.append(' ');
-            builder.append(paramNames[i]);
-            builder.append(" = ");
-            Datatype paramDataype = a.getIpsProject().findDatatype(parameters[i].getDatatype());
-            DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(paramDataype);
-            if (helper != null) {
-                JavaCodeFragment nullExpressionFragment = helper.nullExpression();
-                builder.append(nullExpressionFragment);
-            } else {
-                builder.append("null");
-            }
-            builder.appendln(";");
-            if (i > 0) {
-                paramFragment.append(", ");
-            }
-            paramFragment.append(paramNames[i]);
-        }
-        paramFragment.append(")");
 
         if (a.isProductRelevant()) {
+            builder.appendln("// TODO Belegung der Berechnungsparameter implementieren");
+            JavaCodeFragment paramFragment = new JavaCodeFragment();
+            paramFragment.append('(');
+            for (int i = 0; i < paramNames.length; i++) {
+                builder.appendClassName(paramTypes[i]);
+                builder.append(' ');
+                builder.append(paramNames[i]);
+                builder.append(" = ");
+                Datatype paramDataype = a.getIpsProject().findDatatype(parameters[i].getDatatype());
+                DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(paramDataype);
+                if (helper != null) {
+                    JavaCodeFragment nullExpressionFragment = helper.nullExpression();
+                    builder.append(nullExpressionFragment);
+                } else {
+                    builder.append("null");
+                }
+                builder.appendln(";");
+                if (i > 0) {
+                    paramFragment.append(", ");
+                }
+                paramFragment.append(paramNames[i]);
+            }
+            paramFragment.append(")");
             builder.append(" return ((");
             builder.appendClassName(productCmptGenImplBuilder.getQualifiedClassName(getIpsSrcFile()));
             builder.append(')');
@@ -300,6 +299,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.append(productCmptGenImplBuilder.getMethodNameComputeValue(a));
             builder.append(paramFragment);
             builder.append(";");
+        } else {
+            builder.appendln("return " + datatypeHelper.newInstance(a.getDefaultValue()) + ";");
         }
         builder.closeBracket();
     }
