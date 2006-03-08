@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+Â * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+Â *
+Â * Alle Rechte vorbehalten.
+Â *
+Â * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+Â * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
+Â * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+Â * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+Â * Â  http://www.faktorips.org/legal/cl-v01.html
+Â * eingesehen werden kann.
+Â *
+Â * Mitwirkende:
+Â * Â  Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+Â *
+Â *******************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.table;
 
@@ -603,11 +603,11 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                     fragment.append("KEY_IS_TWO_COLUMN_KEY"); 
                 }
                 if (range.getColumnRangeType().isOneColumnFrom()) {
-                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); // TODO mï¿½glicherweise ï¿½ber
+                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); // TODO mÃ¯Â¿Â½glicherweise Ã¯Â¿Â½ber
                     // reflection
                 }
                 if (range.getColumnRangeType().isOneColumnTo()) {
-                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL"); // TODO mï¿½glicherweise ï¿½ber
+                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL"); // TODO mÃ¯Â¿Â½glicherweise Ã¯Â¿Â½ber
                     // reflection
                 }
             }
