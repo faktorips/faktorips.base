@@ -108,4 +108,9 @@ public class ProductCmptStructureTest extends IpsPluginTest {
     	
     	assertEquals(1, relationtypes.length);
     }
+    
+    public void testNoGeneration() {
+    	productCmpt.getGenerations()[0].delete();
+    	structure.refresh();
+    }
 }

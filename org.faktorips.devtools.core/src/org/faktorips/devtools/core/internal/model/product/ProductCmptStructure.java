@@ -157,6 +157,12 @@ public class ProductCmptStructure implements IProductCmptStructure {
 		if (element instanceof IProductCmpt) {
 			IProductCmpt cmpt = ((IProductCmpt)element);
 			IProductCmptGeneration activeGeneration = (IProductCmptGeneration)cmpt.findGenerationEffectiveOn(IpsPreferences.getWorkingDate());
+			
+			if (activeGeneration == null) {
+				// no active generation found, so no nodes can be returned.
+				return new Node[0];
+			}
+			
 			IProductCmptRelation[] relations = activeGeneration.getRelations();
 			
 			// Sort relations by type
