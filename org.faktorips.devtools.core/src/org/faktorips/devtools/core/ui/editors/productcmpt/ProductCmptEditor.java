@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -46,349 +47,376 @@ import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
  *
  */
 public class ProductCmptEditor extends TimedIpsObjectEditor {
-    
-    private PropertiesPage propertiesPage;
-    private GenerationsPage generationsPage;
-    private RulesPage rulesPage;
-    private DescriptionPage descriptionPage;
-    private GregorianCalendar referenceDate;
 
-    /**
-     * Flag that indicates whether this editor is currently active or not.
-     */
-    private boolean active = false;
-    
-    /**
-     * Image used in editor titlebar if editor is enabled
-     */
-    private Image enabledImage;
+	private PropertiesPage propertiesPage;
 
-    /**
-     * Image used in editor titlebar if editor is disabled
-     */
-    private Image disabledImage;
+	private GenerationsPage generationsPage;
 
-    /**
-     * Creates a new editor for product components.
-     */
-    public ProductCmptEditor() {
-        super();
-        IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new WorkingDateChangeListener());
-        enabledImage = IpsPlugin.getDefault().getImage("ProductCmpt.gif"); //$NON-NLS-1$
-        disabledImage = IpsPlugin.getDefault().getImage("lockedProductCmpt.gif"); //$NON-NLS-1$
-    }
+	private RulesPage rulesPage;
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void addPages() {
-        try {
-        	propertiesPage = new PropertiesPage(this);
-        	generationsPage = new GenerationsPage(this);
-        	descriptionPage = new DescriptionPage(this);
-        	rulesPage = new RulesPage(this);
-        	
-            addPage(propertiesPage);
-            addPage(generationsPage);
-            addPage(rulesPage);
-            addPage(descriptionPage);
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void init(IEditorSite site, IEditorInput input)
-            throws PartInitException {
-        super.init(site, input);
-        setActiveGeneration(getPreferredGeneration());
-    }
-    
-    /**
-     * Returns the product component for the sourcefile edited with this editor.
-     */
-    IProductCmpt getProductCmpt() {
-        try {
-            return (IProductCmpt)getPdSrcFile().getIpsObject();
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            throw new RuntimeException(e);
-        }
-    }
+	private DescriptionPage descriptionPage;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void partActivated(IWorkbenchPart part) {
-        if (part!=this) {
-            return;
-        }
+	private GregorianCalendar referenceDate;
 
-        active = true;
-        
-        checkGeneration();
-        
-        checkForInconsistenciesBetweenAttributeAndConfigElements();
-    }
+	/**
+	 * Flag that indicates whether this editor is currently active or not.
+	 */
+	private boolean active = false;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void partDeactivated(IWorkbenchPart part) {
-    	active = false;
-    }
+	/**
+	 * Image used in editor titlebar if editor is enabled
+	 */
+	private Image enabledImage;
 
-    /**
-     * Does what the methodname says :-)
-     */
-    private void checkForInconsistenciesBetweenAttributeAndConfigElements() {
-        IProductCmptGeneration generation = (IProductCmptGeneration)getActiveGeneration();
-        if (generation==null) {
-            return;
-        }
-        IProductCmptGenerationPolicyCmptTypeDelta delta;
-        try {
-            delta = generation.computeDeltaToPolicyCmptType();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return;
-        }
-        if (delta == null || delta.isEmpty()) {
-            return;
-        }
-        
-        try {
-            StringBuffer msg = new StringBuffer();
-	        IAttribute[] newAttributes = delta.getAttributesWithMissingConfigElements();
-	        if (newAttributes.length > 0) {
-	        	msg.append(Messages.ProductCmptEditor_msgNotContainingAttributes);
-	            msg.append(SystemUtils.LINE_SEPARATOR);
-	            for (int i=0; i<newAttributes.length; i++) {
-	                msg.append(" - "); //$NON-NLS-1$
-	                msg.append(newAttributes[i].getName());
-	                msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        }
-	        IConfigElement[] elements = delta.getConfigElementsWithMissingAttributes();
-	        if (elements.length > 0) {
-	            if (msg.toString().length()>0) {
-		            msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        	msg.append(Messages.ProductCmptEditor_msgAttributesNotFound);
-	            msg.append(SystemUtils.LINE_SEPARATOR);
-	            for (int i=0; i<elements.length; i++) {
-	                msg.append(" - "); //$NON-NLS-1$
-	                msg.append(elements[i].getName());
-	                msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        }
-	        elements = delta.getTypeMismatchElements();
-	        if (elements.length > 0) {
-	            if (msg.toString().length()>0) {
-		            msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        	msg.append(Messages.ProductCmptEditor_msgTypeMismatch);
-	            msg.append(SystemUtils.LINE_SEPARATOR);
-	            for (int i=0; i<elements.length; i++) {
-	                msg.append(" - "); //$NON-NLS-1$
-	                msg.append(elements[i].getName());
-	                msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        }
-	        elements = delta.getElementsWithValueSetMismatch();
-	        if (elements.length > 0) {
-	            if (msg.toString().length()>0) {
-		            msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        	msg.append(Messages.ProductCmptEditor_msgValueAttributeMismatch);
-	            msg.append(SystemUtils.LINE_SEPARATOR);
-	            for (int i=0; i<elements.length; i++) {
-	                msg.append(" - "); //$NON-NLS-1$
-	                msg.append(elements[i].getName());
-	                msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        }
-	        IProductCmptRelation[] relations = delta.getRelationsWithMissingPcTypeRelations();
-	        if (relations.length > 0) {
-	            if (msg.toString().length()>0) {
-		            msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        	msg.append(Messages.ProductCmptEditor_msgNoRelationDefined);
-	            msg.append(SystemUtils.LINE_SEPARATOR);
-	            for (int i=0; i<relations.length; i++) {
-	                msg.append(" - "); //$NON-NLS-1$
-	                msg.append(relations[i].getName());
-	                msg.append(SystemUtils.LINE_SEPARATOR);
-	            }
-	        }
-	        
-            msg.append(SystemUtils.LINE_SEPARATOR);
-            msg.append(Messages.ProductCmptEditor_msgFixIt);
-            boolean fix = MessageDialog.openConfirm(getContainer().getShell(), getPartName(), msg.toString());
-            if (fix) {
-                IIpsModel model = getProductCmpt().getIpsModel();
-                model.removeChangeListener(this);
-                try {
-                    generation.fixDifferences(delta);
-                    setDirty(getPdSrcFile().isDirty());
-                    refreshStructure();
-                    refresh();
-                    getContainer().update();
-                } finally {
-                    model.addChangeListener(this);
-                }
-            }
-	        
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
-    }
+	/**
+	 * Image used in editor titlebar if editor is disabled
+	 */
+	private Image disabledImage;
 
-    /**
-     * Triggers a refresh for sturcturals changes. 
-     */
-    private void refreshStructure() {
-    	if (this.propertiesPage != null) {
-    		this.propertiesPage.refreshStructure();
-    	}
+	/**
+	 * Creates a new editor for product components.
+	 */
+	public ProductCmptEditor() {
+		super();
+		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(
+				new WorkingDateChangeListener());
+		enabledImage = IpsPlugin.getDefault().getImage("ProductCmpt.gif"); //$NON-NLS-1$
+		disabledImage = IpsPlugin.getDefault()
+				.getImage("lockedProductCmpt.gif"); //$NON-NLS-1$
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    protected String getUniformPageTitle() {
-    	checkGeneration();
-        return Messages.ProductCmptEditor_productComponent + getProductCmpt().getName();
-    }
-    
-    /**
-     * Checks if the currently active generations valid-from-date matches exactly the currently set
-     * working date. If not so, a search for a matching geneartion is started. If nothing found, the user
-     * is asked to create one. 
-     */
-    private void checkGeneration() {
-    	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void addPages() {
+		try {
+			propertiesPage = new PropertiesPage(this);
+			generationsPage = new GenerationsPage(this);
+			descriptionPage = new DescriptionPage(this);
+			rulesPage = new RulesPage(this);
+
+			addPage(propertiesPage);
+			addPage(generationsPage);
+			addPage(rulesPage);
+			addPage(descriptionPage);
+		} catch (Exception e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
+		super.init(site, input);
+		setActiveGeneration(getPreferredGeneration());
+	}
+
+	/**
+	 * Returns the product component for the sourcefile edited with this editor.
+	 */
+	IProductCmpt getProductCmpt() {
+		try {
+			return (IProductCmpt) getPdSrcFile().getIpsObject();
+		} catch (Exception e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partActivated(IWorkbenchPart part) {
+		if (part != this) {
+			return;
+		}
+
+		active = true;
+
+		checkGeneration();
+
+		checkForInconsistenciesBetweenAttributeAndConfigElements();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partDeactivated(IWorkbenchPart part) {
+		active = false;
+	}
+
+	/**
+	 * Does what the methodname says :-)
+	 */
+	private void checkForInconsistenciesBetweenAttributeAndConfigElements() {
+		IProductCmptGeneration generation = (IProductCmptGeneration) getActiveGeneration();
+		if (generation == null) {
+			return;
+		}
+		IProductCmptGenerationPolicyCmptTypeDelta delta;
+		try {
+			delta = generation.computeDeltaToPolicyCmptType();
+		} catch (CoreException e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+			return;
+		}
+		if (delta == null || delta.isEmpty()) {
+			return;
+		}
+
+		try {
+			StringBuffer msg = new StringBuffer();
+			IAttribute[] newAttributes = delta
+					.getAttributesWithMissingConfigElements();
+			if (newAttributes.length > 0) {
+				msg
+						.append(Messages.ProductCmptEditor_msgNotContainingAttributes);
+				msg.append(SystemUtils.LINE_SEPARATOR);
+				for (int i = 0; i < newAttributes.length; i++) {
+					msg.append(" - "); //$NON-NLS-1$
+					msg.append(newAttributes[i].getName());
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+			}
+			IConfigElement[] elements = delta
+					.getConfigElementsWithMissingAttributes();
+			if (elements.length > 0) {
+				if (msg.toString().length() > 0) {
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+				msg.append(Messages.ProductCmptEditor_msgAttributesNotFound);
+				msg.append(SystemUtils.LINE_SEPARATOR);
+				for (int i = 0; i < elements.length; i++) {
+					msg.append(" - "); //$NON-NLS-1$
+					msg.append(elements[i].getName());
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+			}
+			elements = delta.getTypeMismatchElements();
+			if (elements.length > 0) {
+				if (msg.toString().length() > 0) {
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+				msg.append(Messages.ProductCmptEditor_msgTypeMismatch);
+				msg.append(SystemUtils.LINE_SEPARATOR);
+				for (int i = 0; i < elements.length; i++) {
+					msg.append(" - "); //$NON-NLS-1$
+					msg.append(elements[i].getName());
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+			}
+			elements = delta.getElementsWithValueSetMismatch();
+			if (elements.length > 0) {
+				if (msg.toString().length() > 0) {
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+				msg
+						.append(Messages.ProductCmptEditor_msgValueAttributeMismatch);
+				msg.append(SystemUtils.LINE_SEPARATOR);
+				for (int i = 0; i < elements.length; i++) {
+					msg.append(" - "); //$NON-NLS-1$
+					msg.append(elements[i].getName());
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+			}
+			IProductCmptRelation[] relations = delta
+					.getRelationsWithMissingPcTypeRelations();
+			if (relations.length > 0) {
+				if (msg.toString().length() > 0) {
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+				msg.append(Messages.ProductCmptEditor_msgNoRelationDefined);
+				msg.append(SystemUtils.LINE_SEPARATOR);
+				for (int i = 0; i < relations.length; i++) {
+					msg.append(" - "); //$NON-NLS-1$
+					msg.append(relations[i].getName());
+					msg.append(SystemUtils.LINE_SEPARATOR);
+				}
+			}
+
+			msg.append(SystemUtils.LINE_SEPARATOR);
+			msg.append(Messages.ProductCmptEditor_msgFixIt);
+			boolean fix = MessageDialog.openConfirm(getContainer().getShell(),
+					getPartName(), msg.toString());
+			if (fix) {
+				IIpsModel model = getProductCmpt().getIpsModel();
+				model.removeChangeListener(this);
+				try {
+					generation.fixDifferences(delta);
+					setDirty(getPdSrcFile().isDirty());
+					refreshStructure();
+					refresh();
+					getContainer().update();
+				} finally {
+					model.addChangeListener(this);
+				}
+			}
+
+		} catch (Exception e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+		}
+	}
+
+	/**
+	 * Triggers a refresh for sturcturals changes. 
+	 */
+	private void refreshStructure() {
+		if (this.propertiesPage != null) {
+			this.propertiesPage.refreshStructure();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected String getUniformPageTitle() {
+		checkGeneration();
+		return Messages.ProductCmptEditor_productComponent
+				+ getProductCmpt().getName();
+	}
+
+	/**
+	 * Checks if the currently active generations valid-from-date matches exactly the currently set
+	 * working date. If not so, a search for a matching geneartion is started. If nothing found, the user
+	 * is asked to create one. 
+	 */
+	private void checkGeneration() {
+
 		IProductCmpt prod = getProductCmpt();
-		IProductCmptGeneration generation  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
+		IProductCmptGeneration generation = (IProductCmptGeneration) prod
+				.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
 
 		if (generation == null) {
-	    	if (this.referenceDate != null && this.referenceDate.equals(IpsPreferences.getWorkingDate())) {
-	    		// check happned before and user decided not to create a new generation - dont bother 
-	    		// the user with repeating questions.
-	    		return;
-	    	}
-	    	
-	    	this.referenceDate = IpsPreferences.getWorkingDate();
+			if (this.referenceDate != null
+					&& this.referenceDate.equals(IpsPreferences
+							.getWorkingDate())) {
+				// check happned before and user decided not to create a new generation - dont bother 
+				// the user with repeating questions.
+				return;
+			}
+
+			this.referenceDate = IpsPreferences.getWorkingDate();
 			// no generation for the _exact_ current working date.
-			String message = Messages.bind(Messages.ProductCmptEditor_msg_GenerationMissmatch, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
-			String title = Messages.bind(Messages.ProductCmptEditor_title_GenerationMissmatch, getProductCmpt().getName());
-			boolean ok = MessageDialog.openConfirm(getContainer().getShell(), title, message);
-			
+			IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+			String gen = prefs.getChangesOverTimeNamingConvention()
+					.getGenerationConceptNameSingular(Locale.getDefault());
+			String message = Messages.bind(
+					Messages.ProductCmptEditor_msg_GenerationMissmatch, prefs
+							.getFormattedWorkingDate(), gen);
+			String title = Messages.bind(
+					Messages.ProductCmptEditor_title_GenerationMissmatch,
+					getProductCmpt().getName(), gen);
+			boolean ok = MessageDialog.openConfirm(getContainer().getShell(),
+					title, message);
+
 			if (ok) {
 				// create a new generation and set it active
-				IProductCmptGeneration newGen = (IProductCmptGeneration)prod.newGeneration(IpsPreferences.getWorkingDate());
+				IProductCmptGeneration newGen = (IProductCmptGeneration) prod
+						.newGeneration(IpsPreferences.getWorkingDate());
 				this.setActiveGeneration(newGen);
-			}
-			else {
+			} else {
 				// no new generation - disable editing
 				this.setActiveGeneration(this.getPreferredGeneration());
 			}
-		}
-		else if (!generation.equals(getActiveGeneration())) {
+		} else if (!generation.equals(getActiveGeneration())) {
 			// we found a generation matching the working date, but the found one is not active,
 			// so make it active.
 			this.setActiveGeneration(generation);
+		} else {
+			setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
 		}
-		else {
-			setPropertiesEnabled((IProductCmptGeneration)getActiveGeneration());
-		}
-    }
-    
-    /**
-     * Enable or disable the properties page.
-     */
-    private void setPropertiesEnabled(IProductCmptGeneration generation) {
-    	boolean enabled = isEditableGeneration(generation);
-    	if (enabled) {
-    		this.setTitleImage(enabledImage);
-    	}
-    	else {
+	}
+
+	/**
+	 * Enable or disable the properties page.
+	 */
+	private void setPropertiesEnabled(IProductCmptGeneration generation) {
+		boolean enabled = isEditableGeneration(generation);
+		if (enabled) {
+			this.setTitleImage(enabledImage);
+		} else {
 			this.setTitleImage(disabledImage);
-    	}
-    	if (propertiesPage != null) {
-    		propertiesPage.setEnabled(enabled);
-    	}
-    }
-            
-    /**
-     * Listener to the working-date-property. If changes occur, check if correct generation is displayed.
-     * 
-     * @author Thorsten Guenther
-     */
-    private class WorkingDateChangeListener implements IPropertyChangeListener {
+		}
+		if (propertiesPage != null) {
+			propertiesPage.setEnabled(enabled);
+		}
+	}
+
+	/**
+	 * Listener to the working-date-property. If changes occur, check if correct generation is displayed.
+	 * 
+	 * @author Thorsten Guenther
+	 */
+	private class WorkingDateChangeListener implements IPropertyChangeListener {
 
 		public void propertyChange(PropertyChangeEvent event) {
 			if (!active) {
 				return;
 			}
-			
+
 			String property = event.getProperty();
 			if (property.equals(IpsPreferences.WORKING_DATE)) {
 				checkGeneration();
-			}
-			else if (property.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
+			} else if (property
+					.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
 					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
-				setPropertiesEnabled((IProductCmptGeneration)getActiveGeneration());
+				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
 			}
 
 		}
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void setActiveGeneration(IIpsObjectGeneration generation) {
-    	if (generation == null) {
-    		return;
-    	}
-    	
-    	if (getActiveGeneration() != null && getActiveGeneration().equals(generation)) {
-    		return;
-    	}
+	}
 
-    	super.setActiveGeneration(generation);
-    	refreshStructure();
-	    setPropertiesEnabled((IProductCmptGeneration)generation);
-    }
-    
-    /**
-     * Checks whether the given generation can be edited respecting the preferences 
-     */
-    private boolean isEditableGeneration(IProductCmptGeneration generation) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setActiveGeneration(IIpsObjectGeneration generation) {
+		if (generation == null) {
+			return;
+		}
 
-    	// if generation does not match the current set working date, no editing will ever
-    	// be possible, so return false immediate
-    	if (!generation.equals(this.getProductCmpt().getGenerationByEffectiveDate(IpsPreferences.getWorkingDate()))) {
-    		return false;
-    	}
-    	
-    	GregorianCalendar validFrom = generation.getValidFrom();
-    	GregorianCalendar now = new GregorianCalendar();
-    	boolean editable = true;
+		if (getActiveGeneration() != null
+				&& getActiveGeneration().equals(generation)) {
+			return;
+		}
 
-    	if (now.after(validFrom)) {
-    		editable = IpsPlugin.getDefault().getIpsPreferences().canEditRecentGeneration();
-    	}
-    	
-    	IIpsObjectGeneration[] generations = this.getProductCmpt().getGenerations();    	
-    	for (int i = 0; i < generations.length; i++) {
+		super.setActiveGeneration(generation);
+		refreshStructure();
+		setPropertiesEnabled((IProductCmptGeneration) generation);
+	}
+
+	/**
+	 * Checks whether the given generation can be edited respecting the preferences 
+	 */
+	private boolean isEditableGeneration(IProductCmptGeneration generation) {
+
+		// if generation does not match the current set working date, no editing will ever
+		// be possible, so return false immediate
+		if (!generation.equals(this.getProductCmpt()
+				.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate()))) {
+			return false;
+		}
+
+		GregorianCalendar validFrom = generation.getValidFrom();
+		GregorianCalendar now = new GregorianCalendar();
+		boolean editable = true;
+
+		if (now.after(validFrom)) {
+			editable = IpsPlugin.getDefault().getIpsPreferences()
+					.canEditRecentGeneration();
+		}
+
+		IIpsObjectGeneration[] generations = this.getProductCmpt()
+				.getGenerations();
+		for (int i = 0; i < generations.length; i++) {
 			if (generations[i].getValidFrom().after(validFrom)) {
-				return IpsPlugin.getDefault().getIpsPreferences().canEditGenerationsWithSuccesor() && editable;
+				return IpsPlugin.getDefault().getIpsPreferences()
+						.canEditGenerationsWithSuccesor()
+						&& editable;
 			}
 		}
-    	
-    	return editable;
-    }
+
+		return editable;
+	}
 }
