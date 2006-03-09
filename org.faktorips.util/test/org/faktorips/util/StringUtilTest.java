@@ -84,4 +84,13 @@ public class StringUtilTest extends TestCase {
 	public void testGetSystemLineseparator(){
 	    assertEquals(System.getProperty("line.separator"), StringUtil.getSystemLineSeparator());
 	}
+    
+    public void testGetFileExtension(){
+        String ext = StringUtil.getFileExtension("readme.txt");
+        assertEquals("txt", ext);
+
+        ext = StringUtil.getFileExtension("readme");
+        assertNull(ext);
+
+    }
 }

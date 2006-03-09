@@ -50,7 +50,12 @@ import org.faktorips.util.StringUtil;
 public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     
     IpsSrcFile(IIpsElement parent, String name) {
-        super(parent, name);
+
+    	super(parent, name);
+    	if(IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name)) == null){
+    		throw new IllegalArgumentException("The provided file name is not a valid file name for an "
+    				+  StringUtil.unqualifiedName(IpsSrcFile.class.getName()));
+    	}
     }
 
     /**

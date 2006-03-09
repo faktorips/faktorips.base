@@ -498,7 +498,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 				throws CoreException {
 			IIpsElement element = IpsPlugin.getDefault().getIpsModel()
 					.getIpsElement(resource);
-			if (!element.exists()) { // not on classpath?
+			if (element == null || !element.exists()) { // not on classpath?
 				return true;
 			}
 			if (!(element instanceof IIpsSrcFile)) {

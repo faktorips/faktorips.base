@@ -143,6 +143,16 @@ public class StringUtil
 		return filename.substring(0, index);
 	}
 	
+    public static String getFileExtension(String fileName){
+        int index = fileName.lastIndexOf('.');
+        if (index==-1)
+        {
+            return null;
+        }
+        return fileName.substring(index + 1, fileName.length());
+        
+    }
+    
 	/**
 	 * Returns the lines of the given text as array. Each array item represents
 	 * one line. The lines don't contains the line separator.

@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -357,7 +358,7 @@ public class MoveOperation implements IRunnableWithProgress {
 				IProductCmpt product = (IProductCmpt)toTest;
 				IIpsPackageFragmentRoot root = product.getIpsPackageFragment().getRoot();
 				IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(targets[i]));
-				if (pack.getIpsSrcFile(getUnqualifiedName(targets[i])).exists()) {
+				if (pack.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(getUnqualifiedName(targets[i]))).exists()) {
 					String msg = NLS.bind(Messages.MoveOperation_msgFileExists, targets[i]);
 					IpsStatus status = new IpsStatus(msg);
 					throw new CoreException(status);

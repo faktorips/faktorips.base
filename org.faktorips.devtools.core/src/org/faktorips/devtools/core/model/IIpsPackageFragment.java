@@ -59,7 +59,9 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IPath getRelativePath();
     
     /**
-     * Returns a handle to the IPS source file with the given name.  
+     * Returns a handle to the IPS source file with the given name. If the provided 
+     * name doesn't have a file extension that fits to an IpsSrcFile null will 
+     * be returned.  
      */
     public IIpsSrcFile getIpsSrcFile(String name);
     
@@ -120,7 +122,7 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * <li> The name is not a valid object name
 	 * </ul>
      */
-    public IIpsSrcFile createIpsFile(IpsObjectType type, String pdObjectName, boolean force, IProgressMonitor monitor) throws CoreException;
+    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor) throws CoreException;
 
     /**
      * Creates a new IpsSrcFile based on a given template. The filename is constructed by 

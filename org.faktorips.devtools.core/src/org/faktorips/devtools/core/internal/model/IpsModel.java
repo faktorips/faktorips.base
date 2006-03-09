@@ -259,9 +259,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			folderName.append(resource.getName());
 			return root.getIpsPackageFragment(folderName.toString());
 		}
-		IIpsPackageFragment pdFolder = root.getIpsPackageFragment(folderName
+		IIpsPackageFragment ipsFolder = root.getIpsPackageFragment(folderName
 				.toString());
-		return pdFolder.getIpsSrcFile(resource.getName());
+		return ipsFolder.getIpsSrcFile(resource.getName());
 	}
 
 	/**

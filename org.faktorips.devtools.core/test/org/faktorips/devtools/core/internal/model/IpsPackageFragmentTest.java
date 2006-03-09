@@ -128,9 +128,10 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
         assertEquals(1, pack.getChildren().length);
     }
 
-    public void testGetPdSrcFile() {
-        IIpsSrcFile file = pack.getIpsSrcFile("file");
-        assertEquals("file", file.getName());
+    public void testGetIpsSrcFile() {
+    	String fileName = "file." +  IpsObjectType.POLICY_CMPT_TYPE.getFileExtension();
+        IIpsSrcFile file = pack.getIpsSrcFile(fileName);
+        assertEquals(fileName, file.getName());
         assertEquals(pack, file.getParent());
     }
 
@@ -138,7 +139,8 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
      * Class under test for IpsSrcFile createPdFile(String, String, boolean, IProgressMonitor)
      */
     public void testCreatePdFileStringStringbooleanIProgressMonitor() throws CoreException, IOException {
-        IIpsSrcFile file = pack.createIpsFile("file", "blabla", true, null);
+        IIpsSrcFile file = pack.createIpsFile("file." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()
+        		, "blabla", true, null);
         assertTrue(file.exists());
         InputStream is = file.getCorrespondingFile().getContents();
         String contents = StringUtil.readFromInputStream(is, StringUtil.CHARSET_ISO_8859_1);

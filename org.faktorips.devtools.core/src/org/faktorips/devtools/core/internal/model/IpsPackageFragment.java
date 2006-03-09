@@ -161,7 +161,12 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      * Overridden.
      */
     public IIpsSrcFile getIpsSrcFile(String name) {
-        return new IpsSrcFile(this, name);
+    	
+    	IpsObjectType type = IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
+    	if(type != null){
+    		return new IpsSrcFile(this, name);
+    	}
+        return null;
     }
 
     /** 
@@ -191,8 +196,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      * Overridden method.
      * @see org.faktorips.devtools.core.model.IIpsPackageFragment#createIpsFile(org.faktorips.devtools.core.model.IpsObjectType, java.lang.String, boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public IIpsSrcFile createIpsFile(IpsObjectType type, String pdObjectName, boolean force, IProgressMonitor monitor) throws CoreException {
-        String filename = type.getFileName(pdObjectName);
+    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor) throws CoreException {
+        String filename = type.getFileName(ipsObjectName);
         IIpsObject pdObject = type.newObject(getIpsSrcFile(filename));
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         Element element = pdObject.toXml(doc);

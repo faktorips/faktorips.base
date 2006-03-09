@@ -182,11 +182,11 @@ public final class IpsObjectType {
 	 * Returns the name of a file (including the extension) that stores a IpsObject
 	 * with the given name.
 	 * 
-	 * @throws IllegalArgumentException if pdObjectName is null.
+	 * @throws IllegalArgumentException if ipsObjectName is null.
 	 */
-	public final String getFileName(String pdObjectName) {
-		ArgumentCheck.notNull(pdObjectName);
-		return pdObjectName + "." + fileExtension; //$NON-NLS-1$
+	public final String getFileName(String ipsObjectName) {
+		ArgumentCheck.notNull(ipsObjectName);
+		return ipsObjectName + "." + fileExtension; //$NON-NLS-1$
 	}
 	
 	/**

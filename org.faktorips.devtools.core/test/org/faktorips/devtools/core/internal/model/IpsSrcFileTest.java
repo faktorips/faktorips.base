@@ -40,9 +40,9 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListener {
     
-    private IIpsProject pdProject;
-    private IIpsPackageFragmentRoot pdRootFolder;
-    private IIpsPackageFragment pdFolder;
+    private IIpsProject ipsProject;
+    private IIpsPackageFragmentRoot ipsRootFolder;
+    private IIpsPackageFragment ipsFolder;
     private IIpsSrcFile parsableFile; // file with parsable contents
     private IIpsSrcFile unparsableFile; // file with unparsable contents
     
@@ -53,11 +53,11 @@ public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListe
      */
     protected void setUp() throws Exception {
         super.setUp();
-        pdProject = this.newIpsProject("TestProject");
-        pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
-        pdFolder = pdRootFolder.createPackageFragment("folder", true, null);
-        parsableFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "ParsableFile", true, null);
-        unparsableFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("UnparsableFile"), "blabla", true, null);
+        ipsProject = this.newIpsProject("TestProject");
+        ipsRootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
+        ipsFolder = ipsRootFolder.createPackageFragment("folder", true, null);
+        parsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "ParsableFile", true, null);
+        unparsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("UnparsableFile"), "blabla", true, null);
     }
 
     /*
@@ -65,6 +65,17 @@ public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListe
      */
     protected void tearDown() throws Exception {
         super.tearDown();
+    }
+    
+    public void testConstructor(){
+    	
+    	try{
+    		new IpsSrcFile(ipsFolder, "readme.txt");
+    		fail();
+    	}
+    	catch(Exception e){
+    		//expected to fail
+    	}
     }
     
     public void testGetCorrespondingResource() {
@@ -135,7 +146,7 @@ public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListe
         parsableFile.getIpsModel().addChangeListener(this);
         parsableFile.save(true, null);
         IFile file = parsableFile.getCorrespondingFile();
-        String contents = StringUtil.readFromInputStream(file.getContents(), pdProject.getXmlFileCharset());
+        String contents = StringUtil.readFromInputStream(file.getContents(), ipsProject.getXmlFileCharset());
         assertEquals("new contents with german umlaut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", contents);
         assertFalse(parsableFile.isDirty());
         assertEquals(parsableFile, lastEvent.getPdSrcFile());
