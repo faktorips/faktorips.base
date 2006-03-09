@@ -49,22 +49,34 @@ public class MessageCueLabelProvider extends LabelProvider {
      */
     public Image getImage(Object element) {
         MessageList list = null;
-        if (element instanceof IIpsObjectPart) {
-            try {
-                list = ((IIpsObjectPart)element).validate();    
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return baseProvider.getImage(element);
-            }
-        } else {
-            return baseProvider.getImage(element);
+        try {
+        	list = getMessages(element);    
+        } catch (CoreException e) {
+        	IpsPlugin.log(e);
+        	return baseProvider.getImage(element);
         }
-		Image image = baseProvider.getImage(element);
-		if (list.getSeverity()==Message.NONE) {
-		    return baseProvider.getImage(element);
+
+        Image image = baseProvider.getImage(element);
+		
+        if (list.getSeverity()==Message.NONE) {
+		    return image;
 		}
+        
 		ProblemImageDescriptor descriptor = new ProblemImageDescriptor(image, list.getSeverity());
 		return IpsPlugin.getDefault().getImage(descriptor);
+    }
+
+    /**
+     * Returns the message list applying to the given element.
+
+     * @throws CoreException if an error occurs during the creation of the message list.
+     */
+    protected MessageList getMessages(Object element) throws CoreException {
+        if (element instanceof IIpsObjectPart) {
+            return ((IIpsObjectPart)element).validate();    
+        } else {
+            return new MessageList();
+        }
     }
     
     /** 

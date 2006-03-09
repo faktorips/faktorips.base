@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -28,11 +29,15 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -45,15 +50,15 @@ public abstract class TableMessageHoverService {
     
     private Hover hover;
     private MouseTrackListener mouseTrackListener; 
-    private final TableViewer tableViewer;
-    private final Table table;
+    private final StructuredViewer viewer;
+    private final Control viewerControl;
 
-    public TableMessageHoverService(TableViewer viewer) {
-        this.tableViewer = viewer;
-        table = tableViewer.getTable();
+    public TableMessageHoverService(StructuredViewer viewer) {
+        this.viewer = viewer;
+        viewerControl = viewer.getControl();
         mouseTrackListener = new TableMouseTrackListener();
-        table.addMouseTrackListener(mouseTrackListener);
-        table.addDisposeListener(new DisposeListener() {
+        viewerControl.addMouseTrackListener(mouseTrackListener);
+        viewerControl.addDisposeListener(new DisposeListener() {
 
             public void widgetDisposed(DisposeEvent e) {
                 dispose();
@@ -71,8 +76,8 @@ public abstract class TableMessageHoverService {
             hover.dispose();
             hover = null;
         }
-        if (mouseTrackListener!=null && table!=null && !table.isDisposed()) {
-            table.removeMouseTrackListener(mouseTrackListener);
+        if (mouseTrackListener!=null && viewerControl!=null && !viewerControl.isDisposed()) {
+            viewerControl.removeMouseTrackListener(mouseTrackListener);
             mouseTrackListener = null;
         }
     }
@@ -97,12 +102,32 @@ public abstract class TableMessageHoverService {
         }
 
         public void mouseHover(MouseEvent e) {
-            TableItem item = table.getItem(new Point(e.x, e.y));
-            if (item==null) {
-                hideHover();
-                return;
-            }
-            Object element = tableViewer.getElementAt(tableViewer.getTable().indexOf(item));
+        	Object element = null;
+        	Rectangle itemBounds = null;
+        	if (viewerControl instanceof Table) {
+        		Table table = (Table) viewerControl;
+        		TableItem item = table.getItem(new Point(e.x, e.y));
+        		if (item==null) {
+        			hideHover();
+        			return;
+        		}
+        		TableViewer tableViewer = (TableViewer)viewer;
+        		element = tableViewer.getElementAt(table.indexOf(item));
+        		itemBounds = item.getBounds(0);
+        	} else if (viewerControl instanceof Tree) {
+        		Tree tree = (Tree)viewerControl;
+        		TreeItem item = tree.getItem(new Point(e.x, e.y));
+        		if (item == null) {
+        			hideHover();
+        			return;
+        		}
+        		element = item.getData();
+        		itemBounds = item.getBounds();
+        	} else {
+        		hideHover();
+        		return;
+        	}
+        	
             MessageList list;
             try {
                 list = getMessagesFor(element);
@@ -114,16 +139,14 @@ public abstract class TableMessageHoverService {
                 hideHover();
                 return;
             }
-            showHover(item, list.getText());
+            showHover(itemBounds, list.getText());
         }
         
-        private void showHover(TableItem item, String text) {
+        private void showHover(Rectangle itemBounds, String text) {
             if (hover==null) {
-                hover = new Hover(table.getShell());
+                hover = new Hover(viewerControl.getShell());
             }
-            int itemX = item.getBounds(0).x;
-            int itemY = item.getBounds(0).y;
-            Point hoverPos = table.toDisplay(itemX, itemY);
+            Point hoverPos = viewerControl.toDisplay(itemBounds.x, itemBounds.y);
             hover.setText(text);
             hover.setLocation(hoverPos);
             hover.setVisible(true);

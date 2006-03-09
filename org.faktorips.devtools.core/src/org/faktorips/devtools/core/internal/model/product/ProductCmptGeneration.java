@@ -442,8 +442,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 										target);
 					}
 					list.add(new Message(MSGCODE_DUPLICATE_RELATION_TARGET,
-							msg, Message.ERROR, relations[j],
-							IProductCmptRelation.PROPERTY_TARGET));
+							msg, Message.ERROR, relationTypes[i].getTargetRoleSingular()));
 				} else {
 					targets.put(target, target);
 				}
