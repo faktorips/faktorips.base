@@ -225,10 +225,31 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         bAttribute.setName("cAttribute");
         msgList = aProductGen.validate();
         assertNotNull(msgList.getMessageByCode(ExprCompiler.UNDEFINED_IDENTIFIER));
+    }
+    
+    public void testValidateDuplicateRelationTarget() throws Exception {
+    	DefaultTestContent content = new DefaultTestContent();
+    	
+        IProductCmpt product = content.getComfortMotorProduct();
+        IPolicyCmptType type = product.findPolicyCmptType();
+        IRelation relationType = type.getRelation("Vehicle");
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
+
+        MessageList ml = generation.validate();
+        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
+        
+        IProductCmptRelation rel = generation.newRelation(relationType.getTargetRoleSingularProductSide());
+        rel.setTarget(content.getStandardVehicle().getQualifiedName());
+        
+        product.getIpsSrcFile().save(true, null);
+        
+        ml = generation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_DUPLICATE_RELATION_TARGET));
+    
         
     }
     
-    public void testNotEnougthRelations() throws Exception {
+    public void testValidateNotEnougthRelations() throws Exception {
         // test too less relations
         DefaultTestContent content = new DefaultTestContent();
         
@@ -260,7 +281,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         
     }
     
-    public void testTooManyRelations() throws Exception {
+    public void testValidateTooManyRelations() throws Exception {
         // test too many relations
         DefaultTestContent content = new DefaultTestContent();
         
@@ -287,7 +308,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_TOO_MANY_RELATIONS));
     }
     
-    public void testNoTemplate() throws Exception {
+    public void testValidateNoTemplate() throws Exception {
         DefaultTestContent content = new DefaultTestContent();        
         IProductCmpt product = content.getComfortMotorProduct();
         IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];

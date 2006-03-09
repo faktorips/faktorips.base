@@ -43,7 +43,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * In both cases the property part of the ObjectProperty is empty.
      */
     public final static String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
-	//  TODO editor should show this error
     
     /**
      * Validation message code to indicate that the generation contains more 
@@ -56,7 +55,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * In both cases the property part of the ObjectProperty is empty.
      */
     public final static String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
-	//  TODO editor should show this error
 
     /**
      * Validation message code to indicate that the template for the product this generation
@@ -64,6 +62,11 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      */
     public final static String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
     
+    /**
+     * Validation message code to indicate that more than one relation of a specific type have the same target.
+     */
+    public final static String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
+
     /**
      * Returns the product component this generation belongs to.
      */
