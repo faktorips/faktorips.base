@@ -138,7 +138,7 @@ public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListe
         assertEquals("new contents", parsableFile.getContents());
         assertFalse(parsableFile.isContentParsable());
         assertTrue(parsableFile.isDirty());
-        assertEquals(parsableFile, lastEvent.getPdSrcFile());
+        assertEquals(parsableFile, lastEvent.getIpsSrcFile());
     }
 
     public void testSave() throws IOException, CoreException {
@@ -149,7 +149,7 @@ public class IpsSrcFileTest extends IpsPluginTest implements ContentsChangeListe
         String contents = StringUtil.readFromInputStream(file.getContents(), ipsProject.getXmlFileCharset());
         assertEquals("new contents with german umlaut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", contents);
         assertFalse(parsableFile.isDirty());
-        assertEquals(parsableFile, lastEvent.getPdSrcFile());
+        assertEquals(parsableFile, lastEvent.getIpsSrcFile());
     }
     
     public void testNewMemento() throws CoreException {

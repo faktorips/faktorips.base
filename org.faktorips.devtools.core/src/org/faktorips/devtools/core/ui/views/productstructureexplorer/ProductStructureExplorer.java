@@ -154,7 +154,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     	}
     	
     	tree.refresh();
-    	if (event.getPdSrcFile().equals(file)) {
+    	if (event.getIpsSrcFile().equals(file)) {
     		tree.refresh();
     		System.err.println("refreshed tree2"); //$NON-NLS-1$
     	}

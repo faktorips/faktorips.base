@@ -30,15 +30,12 @@ public class DatatypeConverter implements ConversionMatrix {
      */
     public DatatypeConverter() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.ConversionMatrix#canConvert(org.faktorips.datatype.Datatype, org.faktorips.datatype.Datatype)
+     * {@inheritDoc}
      */
     public boolean canConvert(Datatype from, Datatype to) {
-        // TODO Auto-generated method stub
         return false;
     }
 

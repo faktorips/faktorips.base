@@ -57,9 +57,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#getExtendedType()
+     * {@inheritDoc}
      */
     public Class getExtendedType() {
         return extendedType;
@@ -71,9 +69,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#getPropertyId()
+     * {@inheritDoc}
      */
     public String getPropertyId() {
         return propertyId;
@@ -84,9 +80,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#getDefaultValue()
+     * {@inheritDoc}
      */
     public Object getDefaultValue() {
         return defaultValue;
@@ -119,10 +113,12 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         this.editedInStandardExtensionArea = editedInStandardExtensionArea;
     }
     
+	public String getEditedInStandardTextArea() {
+		return editedInStandardExtensionArea;
+	}
+    
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#getDisplayName()
+     * {@inheritDoc}
      */
     public String getDisplayName() {
         return displayName;
@@ -133,9 +129,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#getSortOrder()
+     * {@inheritDoc}
      */
     public int getSortOrder() {
         return sortOrder;
@@ -149,9 +143,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IExtensionPropertyDefinition#valueToXml(org.w3c.dom.Element, java.lang.Object)
+     * {@inheritDoc}
      */
     public void valueToXml(Element valueElement, Object value) {
         CDATASection valueSection = valueElement.getOwnerDocument().createCDATASection(value.toString());
@@ -161,7 +153,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * Default implementation returns <code>null</code>.
      * 
-     * Overridden IMethod.
+     * Overridden Method.
      */
     public MessageList validate(IpsObjectPartContainer ipsObjectPart, Object value) throws CoreException {
 		return null;
@@ -170,15 +162,15 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     /**
      * Default implementation doesn nothing.
      * 
-     * Overridden IMethod.
+     * Overridden Method.
      */
 	public void afterSetValue(IpsObjectPartContainer ipsObjectPart, Object value) {
     }
 
     /**
-     * Default implementation doesn nothing.
+     * Default implementation does nothing.
      * 
-     * Overridden IMethod.
+     * Overridden Method.
      */
     public boolean beforeSetValue(IpsObjectPartContainer ipsObjectPart, Object value) {
         return true;
@@ -196,9 +188,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * {@inheritDoc}
      */
     public int compareTo(Object o) {
         IExtensionPropertyDefinition other = (IExtensionPropertyDefinition)o;
@@ -212,8 +202,4 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
         return "ExtendedType:" + extendedType.getName() + ", PropertyId: " + propertyId; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-	public String getEditedInStandardTextArea() {
-		// TODO Auto-generated method stub
-		return editedInStandardExtensionArea;
-	}
 }

@@ -42,7 +42,7 @@ public abstract class IpsObjectEditor extends FormEditor
 	implements ContentsChangeListener, IPartListener {
 
     // the file that's being edited (if any)
-    private IIpsSrcFile pdSrcFile;
+    private IIpsSrcFile ipsSrcFile;
     
     // dirty flag
     private boolean dirty = false;
@@ -54,13 +54,13 @@ public abstract class IpsObjectEditor extends FormEditor
         super();
     }
     
-    protected IIpsSrcFile getPdSrcFile() {
-        return pdSrcFile;
+    protected IIpsSrcFile getIpsSrcFile() {
+        return ipsSrcFile;
     }
     
     public IIpsObject getIpsObject() {
         try {
-            return getPdSrcFile().getIpsObject();
+            return getIpsSrcFile().getIpsObject();
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
@@ -82,9 +82,9 @@ public abstract class IpsObjectEditor extends FormEditor
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-            pdSrcFile = (IIpsSrcFile)model.getIpsElement(file);
+            ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
             model.addChangeListener(this);
-            setPartName(pdSrcFile.getName());
+            setPartName(ipsSrcFile.getName());
             site.getPage().addPartListener(this);
         }
     }
@@ -111,7 +111,8 @@ public abstract class IpsObjectEditor extends FormEditor
     protected void refresh() {
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
-        	((IpsObjectEditorPage)editor).refresh();
+        	IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
+        	page.refresh();
         }
     }
     
@@ -121,10 +122,10 @@ public abstract class IpsObjectEditor extends FormEditor
      * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)
      */
     public void contentsChanged(ContentChangeEvent event) {
-        if (!pdSrcFile.equals(event.getPdSrcFile())) {
+        if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
             return;
         }
-        setDirty(pdSrcFile.isDirty());
+        setDirty(ipsSrcFile.isDirty());
         refresh();
     }
     
@@ -149,7 +150,7 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     public void doSave(IProgressMonitor monitor) {
         try {
-            pdSrcFile.save(true, monitor);    
+            ipsSrcFile.save(true, monitor);    
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -175,7 +176,7 @@ public abstract class IpsObjectEditor extends FormEditor
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(IWorkbenchPart part) {
-        // nothing to do
+        refresh();
     }
     
     /** 
@@ -192,7 +193,7 @@ public abstract class IpsObjectEditor extends FormEditor
      */
     public void partClosed(IWorkbenchPart part) {
         if (part==this) {
-            pdSrcFile.discardChanges();
+            ipsSrcFile.discardChanges();
             part.getSite().getPage().removePartListener(this);
         }
     }

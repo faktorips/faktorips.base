@@ -124,7 +124,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertSame(pcType, a.getIpsObject());
         assertEquals(1, pcType.getNumOfAttributes());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getPdSrcFile());
+        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         assertEquals(0, a.getId());
 
         IMethod m = pcType.newMethod();
@@ -166,7 +166,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertSame(pcType, m.getIpsObject());
         assertEquals(1, pcType.getNumOfMethods());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getPdSrcFile());
+        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
 
         IMethod m2 = pcType.newMethod();
         assertEquals(1, m2.getId());    
@@ -191,7 +191,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertSame(pcType, r.getIpsObject());
         assertEquals(1, pcType.getNumOfRules());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getPdSrcFile());
+        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         
         IValidationRule r2 = pcType.newRule();
         assertEquals(1, r2.getId());    
@@ -216,7 +216,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertSame(pcType, r.getIpsObject());
         assertEquals(1, pcType.getNumOfRelations());
         assertTrue(sourceFile.isDirty());
-        assertEquals(sourceFile, lastEvent.getPdSrcFile());
+        assertEquals(sourceFile, lastEvent.getIpsSrcFile());
         
         IRelation r2 = pcType.newRelation();
         assertEquals(1, r2.getId());    

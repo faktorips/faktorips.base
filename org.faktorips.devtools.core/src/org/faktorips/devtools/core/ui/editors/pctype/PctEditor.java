@@ -48,7 +48,7 @@ public class PctEditor extends IpsObjectEditor {
 
     IPolicyCmptType getPolicyCmptType() {
         try {
-            return (IPolicyCmptType)getPdSrcFile().getIpsObject();
+            return (IPolicyCmptType)getIpsSrcFile().getIpsObject();
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);

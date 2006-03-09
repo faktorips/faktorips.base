@@ -110,17 +110,33 @@ public class RelationEditDialog extends IpsPartEditDialog {
         extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)relation, "top"); //$NON-NLS-1$
                 
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelType);
-        Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
+        final Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
         typeCombo.setFocus();
+        typeCombo.addFocusListener(new FocusAdapter() {
+            
+            public void focusLost(FocusEvent e) {
+                int i = typeCombo.getSelectionIndex();
+                if (i==-1) {
+                    return;
+                }
+                RelationType type = RelationType.getRelationType(i);
+                if (type!=null) {
+                	setDefaults(type);
+                }
+            }
+        });
         
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelReadOnlyContainer);
         Checkbox abstractContainerCheckbox = uiToolkit.createCheckbox(workArea);
 
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTarget);
         PcTypeRefControl targetControl = uiToolkit.createPcTypeRefControl(relation.getIpsProject(), workArea);
-        targetControl.addFocusListener(new FocusAdapter() {
+
+        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
+        final Text targetRoleSingularText = uiToolkit.createText(workArea);
+        targetRoleSingularText.addFocusListener(new FocusAdapter() {
             
-            public void focusLost(FocusEvent e) {
+            public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRoleSingularField.getText())) {
                     String targetName = targetField.getText();
                     int pos = targetName.lastIndexOf('.');
@@ -132,11 +148,16 @@ public class RelationEditDialog extends IpsPartEditDialog {
             }
         });
         
-        uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
-        Text targetRoleSingularText = uiToolkit.createText(workArea);
-        
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRolePlural);
         Text targetRolePluralText = uiToolkit.createText(workArea);
+        targetRolePluralText.addFocusListener(new FocusAdapter() {
+            
+            public void focusGained(FocusEvent e) {
+                if (StringUtils.isEmpty(targetRolePluralField.getText())) {
+                    targetRolePluralField.setText(targetRoleSingularText.getText());
+                }
+            }
+        });
         
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelMinCardinality);
         Text minCardinalityText = uiToolkit.createText(workArea);
@@ -175,7 +196,26 @@ public class RelationEditDialog extends IpsPartEditDialog {
         return c;
     }
     
-    private Control createProductSidePage(TabFolder folder) {
+    /**
+	 * @param type
+	 */
+	protected void setDefaults(RelationType type) {
+		if (type.isComposition()) {
+			relation.setMaxCardinality(Integer.MAX_VALUE);
+		} else if (type.isReverseComposition()) {
+			relation.setMinCardinality(1);
+			relation.setMaxCardinality(1);
+			relation.setProductRelevant(false);
+			relation.setTargetRolePluralProductSide("");
+			relation.setTargetRoleSingularProductSide("");
+		} else if (type.isAssoziation()) {
+			relation.setContainerRelation("");
+			relation.setReadOnlyContainer(false);
+		}
+		this.uiController.updateUI();
+	}
+
+	private Control createProductSidePage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);

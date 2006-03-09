@@ -135,8 +135,7 @@ public abstract class TextButtonControl extends ControlComposite{
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.swt.widgets.Widget#addListener(int, org.eclipse.swt.widgets.Listener)
+     * {@inheritDoc}
      */
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);

@@ -22,17 +22,17 @@ package org.faktorips.devtools.core.model;
  */
 public class ContentChangeEvent {
 
-    private IIpsSrcFile pdSrcFile;
+    private IIpsSrcFile ipsSrcFile;
     
-    public ContentChangeEvent(IIpsSrcFile pdSrcFile) {
-        this.pdSrcFile = pdSrcFile;
+    public ContentChangeEvent(IIpsSrcFile ipsSrcFile) {
+        this.ipsSrcFile = ipsSrcFile;
     }
 
     /**
      * Returns the source file which contents has changed.
      */
-    public IIpsSrcFile getPdSrcFile() {
-        return pdSrcFile;
+    public IIpsSrcFile getIpsSrcFile() {
+        return ipsSrcFile;
     }
     
 }

@@ -17,7 +17,6 @@
 
 package org.faktorips.datatype.classtypes;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueClassDatatype;
 import org.faktorips.values.Money;
 

@@ -118,7 +118,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	IProductCmpt getProductCmpt() {
 		try {
-			return (IProductCmpt) getPdSrcFile().getIpsObject();
+			return (IProductCmpt) getIpsSrcFile().getIpsObject();
 		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 			throw new RuntimeException(e);
@@ -245,7 +245,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				model.removeChangeListener(this);
 				try {
 					generation.fixDifferences(delta);
-					setDirty(getPdSrcFile().isDirty());
+					setDirty(getIpsSrcFile().isDirty());
 					refreshStructure();
 					refresh();
 					getContainer().update();

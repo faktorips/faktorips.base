@@ -17,9 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;

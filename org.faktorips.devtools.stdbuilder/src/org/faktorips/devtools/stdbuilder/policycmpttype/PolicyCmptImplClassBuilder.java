@@ -211,7 +211,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        generateMemberVarForAttribute(attribute, datatypeHelper, memberVarsBuilder);
+        generateFieldForAttribute(attribute, datatypeHelper, memberVarsBuilder);
         generateMethodAttributeGetterFromMemberVar(attribute, datatypeHelper, methodsBuilder);
         generateMethodAttributeSetter(attribute, datatypeHelper, methodsBuilder);
     }
@@ -235,7 +235,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        generateMemberVarForAttribute(attribute, datatypeHelper, memberVarsBuilder);
+        generateFieldForAttribute(attribute, datatypeHelper, memberVarsBuilder);
         generateMethodAttributeGetterFromMemberVar(attribute, datatypeHelper, methodsBuilder);
     }
     
@@ -256,7 +256,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.closeBracket();
     }
     
-    protected void generateMemberVarForAttribute(            
+    protected void generateFieldForAttribute(            
             IAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilders) throws CoreException {
@@ -317,7 +317,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.append(paramFragment);
             builder.append(";");
         } else {
-            builder.appendln("return " + datatypeHelper.newInstance(a.getDefaultValue()) + ";");
+            builder.append("return ");
+            builder.append(datatypeHelper.newInstance(a.getDefaultValue()));
+            builder.appendln(";");
         }
         builder.closeBracket();
     }
@@ -1109,7 +1111,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 paramNames, paramTypes);
         builder.append("super(effectiveDate);");
-        builder.append("initialize();");
         builder.methodEnd();
     }
 

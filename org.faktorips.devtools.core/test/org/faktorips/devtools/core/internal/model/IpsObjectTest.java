@@ -64,7 +64,7 @@ public class IpsObjectTest extends IpsPluginTest implements ContentsChangeListen
         ipsObject.setDescription("new description");
         assertEquals("new description", ipsObject.getDescription());
         assertTrue(srcFile.isDirty());
-        assertEquals(srcFile, lastEvent.getPdSrcFile());
+        assertEquals(srcFile, lastEvent.getIpsSrcFile());
     }
     
     /** 

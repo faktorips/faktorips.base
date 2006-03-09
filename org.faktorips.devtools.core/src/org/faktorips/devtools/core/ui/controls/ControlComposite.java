@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -26,11 +27,15 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * A composite that is used to build complex controls.
+ * A composite that is used to build complex controls. Provides the <code>listenToControl()</code>
+ * method that complex controls use to register their primitive controls so that events clients
+ * of the complex control have registered for are broadcastet. 
+ * 
+ * @author Jan Ortmann
  */
 public abstract class ControlComposite extends Composite {
 
-    private  java.util.List listeningInfo = null;
+    private List listeningInfo = null;
     private BroadcastListener broadcastListener = null;
 
     

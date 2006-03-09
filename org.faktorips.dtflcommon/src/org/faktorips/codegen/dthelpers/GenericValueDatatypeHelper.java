@@ -58,6 +58,9 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
     }
 
     public JavaCodeFragment newInstance(String value) {
+        if (value==null) {
+            return nullExpression();
+        }
         return valueOfExpression('"' + value + '"');
     }
 

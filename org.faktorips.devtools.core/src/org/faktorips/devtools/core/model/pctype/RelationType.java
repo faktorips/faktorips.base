@@ -45,6 +45,10 @@ public class RelationType extends DefaultEnumValue {
         return enumType;
     }
     
+    public final static RelationType getRelationType(int i) {
+    	return (RelationType)enumType.getEnumValue(i);
+    }
+    
     public final static RelationType getRelationType(String id) {
         if (id.equals("agg")) { //$NON-NLS-1$
             // renamed aggregation to composition (inkl the id!)
