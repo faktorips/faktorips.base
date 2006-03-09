@@ -15,7 +15,24 @@
  * ${tags}
  */</template><template autoinsert="false" context="overridecomment_context" deleted="false" description="Comment for overriding methods" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.overridecomment" name="overridecomment">/**
  * {@inheritDoc}
- */</template><template autoinsert="true" context="newtype_context" deleted="false" description="Newly created files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.newtype" name="newtype">${package_declaration}
+ */</template><template autoinsert="false" context="newtype_context" deleted="false" description="Newly created files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.newtype" name="newtype">/*******************************************************************************
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ *
+ * Alle Rechte vorbehalten.
+ *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ *   http://www.faktorips.org/legal/cl-v01.html
+ * eingesehen werden kann.
+ *
+ * Mitwirkende:
+ *   Faktor Zehn GmbH - initial API and implementation 
+ *
+ *******************************************************************************/
+
+${package_declaration}
 
 ${typecomment}
 ${type_declaration}</template><template autoinsert="true" context="catchblock_context" deleted="false" description="Code in new catch blocks" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.catchblock" name="catchblock">// ${todo} Auto-generated catch block
