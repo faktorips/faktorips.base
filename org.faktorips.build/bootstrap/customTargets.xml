@@ -13,6 +13,7 @@
 	
 
 	<ant antfile="${genericTargets}" target="${target}" >
+		<echo message="HALLO WELT" />
 		<property name="type" value="feature" />
 		<property name="id" value="org.faktorips.feature-tests" />
 	</ant>
