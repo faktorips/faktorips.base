@@ -1,7 +1,7 @@
 #echo using RDT_BUILD_HOME: ${RDT_BUILD_HOME:?must be set}
 eclipseDir=/usr/lib/eclipse-3.1
 pdeBuildPluginVersion=3.1.0
-buildDirectory=/home/senf/faktorips/
+buildDirectory=/home/senf/work/
 bootstrapDir=${buildDirectory}/org.faktorips.build/bootstrap
 verboseAnt=true
 #eclipseAutomatedTestHome=${RDT_BUILD_HOME}/eclipse-testing
