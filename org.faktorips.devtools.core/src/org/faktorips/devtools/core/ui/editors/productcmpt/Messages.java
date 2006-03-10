@@ -130,4 +130,10 @@ public class Messages extends NLS {
 
 	public static String ProductAttributesSection_noProductCmptType;
 
+	public static String CardinalityPanel_labelOptional;
+
+	public static String CardinalityPanel_labelMandatory;
+
+	public static String CardinalityPanel_labelOther;
+
 }

@@ -436,7 +436,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 					if (msg == null) {
 						msg = NLS
 								.bind(
-										"The relation of type {0} is defined more than once for the target {1}.",
+										Messages.ProductCmptGeneration_msgDuplicateTarget,
 										relationTypes[i]
 												.getTargetRoleSingular(),
 										target);

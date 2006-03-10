@@ -343,7 +343,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		checkForErrors();
 		
 		if (getProductsToCopy().length == 0) {
-			setMessage("Please select at least one product to copy.", WARNING);
+			setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, WARNING);
 			return false; 
 		}
 		

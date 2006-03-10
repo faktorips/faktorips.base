@@ -53,9 +53,9 @@ public class ValueSetType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("ValueSetType", ValueSetType.class); //$NON-NLS-1$
-        ALL_VALUES = new ValueSetType(enumType, "allValues", "All values"); //$NON-NLS-1$
-        RANGE = new ValueSetType(enumType, "range", "Range"); //$NON-NLS-1$ 
-        ENUM = new ValueSetType(enumType, "enum", "Enumeration"); //$NON-NLS-1$ 
+        ALL_VALUES = new ValueSetType(enumType, "allValues", Messages.ValueSetType__allValues); //$NON-NLS-1$
+        RANGE = new ValueSetType(enumType, "range", Messages.ValueSetType_range); //$NON-NLS-1$ 
+        ENUM = new ValueSetType(enumType, "enum", Messages.ValueSetType_enumeration); //$NON-NLS-1$ 
     }
     
     public final static EnumType getEnumType() {

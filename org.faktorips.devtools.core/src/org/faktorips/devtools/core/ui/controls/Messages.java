@@ -75,4 +75,8 @@ public class Messages extends NLS {
 	public static String ProductCmptRefControl_description;
 
 	public static String IpsObjectRefControl_title;
+
+	public static String ProductCmptTypeRefControl_title;
+
+	public static String ProductCmptTypeRefControl_description;
 }

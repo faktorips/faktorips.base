@@ -45,12 +45,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
@@ -70,7 +68,7 @@ import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
-import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
+import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
@@ -84,22 +82,36 @@ import org.faktorips.util.message.MessageList;
  */
 public class RelationsSection extends IpsSection {
 
+	/**
+	 * the generation the displayed informations are based on.
+	 */
 	private IProductCmptGeneration generation;
 
-	private Text kardMin;
+	private CardinalityPanel cardinalityPanel;
+	
+	private CardinalityPaneEditField kardMinField;
 
-	private Text kardMax;
+	private CardinalityPaneEditField kardMaxField;
 
-	private CardinalityField kardMinField;
-
-	private CardinalityField kardMaxField;
-
+	/**
+	 * The tree viewer displaying all the relations.
+	 */
 	private TreeViewer treeViewer;
 
+	/**
+	 * The site this editor is related to (e.g. for menu and toolbar handling)
+	 */
 	private IEditorSite site;
 
+	/**
+	 * Flag to indicate that the generation this informations are based on has changed (<code>true</code>)
+	 */
 	private boolean fGenerationDirty;
 
+	/**
+	 * Field to store the product component relation that should be moved using 
+	 * drag and drop.
+	 */
 	private IProductCmptRelation toMove;
 
 	/**
@@ -184,38 +196,9 @@ public class RelationsSection extends IpsSection {
 
 			buildContextMenu();
 
-			Composite kardinalityRootPane = toolkit
-					.createComposite(relationRootPane);
-			layout = new GridLayout(1, false);
-			layout.marginHeight = 1;
-			kardinalityRootPane.setLayout(layout);
-			layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
-			kardinalityRootPane.setLayoutData(layoutData);
-
-			Composite kardinalityPane = toolkit
-					.createLabelEditColumnComposite(kardinalityRootPane);
-			layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
-			layoutData.verticalAlignment = SWT.TOP;
-			kardinalityPane.setLayoutData(layoutData);
-			layoutData = ((GridData) toolkit.createLabel(kardinalityPane,
-					Messages.RelationsSection_cardinality).getLayoutData());
-			layoutData.horizontalSpan = 2;
-			layoutData.horizontalAlignment = SWT.CENTER;
-			toolkit.createFormLabel(kardinalityPane,
-					Messages.PolicyAttributesSection_minimum);
-			kardMin = toolkit.createText(kardinalityPane);
-			toolkit.createFormLabel(kardinalityPane,
-					Messages.PolicyAttributesSection_maximum);
-			kardMax = toolkit.createText(kardinalityPane);
-			toolkit.createVerticalSpacer(kardinalityPane, 3).setBackground(
-					kardinalityPane.getBackground());
+			cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
 
 			toolkit.getFormToolkit().paintBordersFor(relationRootPane);
-
-			kardinalityPane.setData(FormToolkit.KEY_DRAW_BORDER,
-					FormToolkit.TREE_BORDER);
-			toolkit.getFormToolkit().paintBordersFor(kardinalityRootPane);
-
 		}
 	}
 
@@ -354,8 +337,7 @@ public class RelationsSection extends IpsSection {
 				if (rel.isDeleted()) {
 					uiController.remove(kardMinField);
 					uiController.remove(kardMaxField);
-					kardMin.setEnabled(false);
-					kardMax.setEnabled(false);
+					cardinalityPanel.setEnabled(false);
 					return;
 				}
 
@@ -371,11 +353,10 @@ public class RelationsSection extends IpsSection {
 
 				// enable the fields for cardinality only, if this section
 				// is enabled.
-				kardMin.setEnabled(fEnabled);
-				kardMax.setEnabled(fEnabled);
+				cardinalityPanel.setEnabled(fEnabled);
 
-				kardMinField = new CardinalityField(kardMin);
-				kardMaxField = new CardinalityField(kardMax);
+				kardMinField = new CardinalityPaneEditField(cardinalityPanel, true);
+				kardMaxField = new CardinalityPaneEditField(cardinalityPanel, false);
 
 				uiController.add(kardMinField, rel,
 						Relation.PROPERTY_MIN_CARDINALITY);
@@ -383,8 +364,7 @@ public class RelationsSection extends IpsSection {
 						Relation.PROPERTY_MAX_CARDINALITY);
 				uiController.updateUI();
 			} else {
-				kardMin.setEnabled(false);
-				kardMax.setEnabled(false);
+				cardinalityPanel.setEnabled(false);
 			}
 
 		}
@@ -602,8 +582,8 @@ public class RelationsSection extends IpsSection {
 		} else {
 			treeViewer.getTree().setMenu(emptyMenu);
 		}
-		kardMin.setEnabled(enabled);
-		kardMax.setEnabled(enabled);
+//		kardMin.setEnabled(enabled);
+//		kardMax.setEnabled(enabled);
 	}
 
 	private MessageList validate(Object element) throws CoreException {

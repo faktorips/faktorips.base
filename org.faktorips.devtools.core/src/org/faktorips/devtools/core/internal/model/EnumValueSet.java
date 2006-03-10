@@ -202,7 +202,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     public String toString() {
-        return super.toString() + ":" + elements.toString();
+        return super.toString() + ":" + elements.toString(); //$NON-NLS-1$
     }
 
     public String toShortString() {
@@ -228,9 +228,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 		
 		for(int i = 0; i < children.getLength();i++) {
 			Element valueEl = (Element)children.item(i);
-			String value = ValueToXmlHelper.getValueFromElement(valueEl, "Data");
+			String value = ValueToXmlHelper.getValueFromElement(valueEl, "Data"); //$NON-NLS-1$
 			if (value == null) {
-				value = valueEl.getAttribute("value");
+				value = valueEl.getAttribute("value"); //$NON-NLS-1$
 			}
 			elements.add(value);
 		}
@@ -247,7 +247,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             Element valueElement = doc.createElement(XML_VALUE);
             tagElement.appendChild(valueElement);
             String value = (String) iter.next();
-	        ValueToXmlHelper.addValueToElement(value, valueElement, "Data");
+	        ValueToXmlHelper.addValueToElement(value, valueElement, "Data"); //$NON-NLS-1$
 		}
         element.appendChild(tagElement);
 	}
@@ -278,7 +278,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 	 */
 	public void setValuesOf(IValueSet target) {
 		if (!(target instanceof EnumValueSet)) {
-			throw new IllegalArgumentException("The given value set is not an enum value set");
+			throw new IllegalArgumentException("The given value set is not an enum value set"); //$NON-NLS-1$
 		}
 		
 		elements.clear();

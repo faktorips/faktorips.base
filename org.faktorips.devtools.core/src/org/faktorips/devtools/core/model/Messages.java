@@ -75,4 +75,10 @@ public class Messages extends NLS {
 	public static String IpsObjectType_nameProductComponent;
 
 	public static String IpsObjectType_nameTableContents;
+
+	public static String ValueSetType__allValues;
+
+	public static String ValueSetType_range;
+
+	public static String ValueSetType_enumeration;
 }

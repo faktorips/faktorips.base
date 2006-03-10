@@ -60,7 +60,7 @@ public class ProductCmptPage extends IpsObjectPage {
     }
     
     String getPolicyCmptType() {
-    	String policyCmptTypeName = "";
+    	String policyCmptTypeName = ""; //$NON-NLS-1$
     	try {
         	String productCmptTypeName = productCmptRefControl.getText();
 			IProductCmptType type = productCmptRefControl.getPdProject().findProductCmptType(productCmptTypeName);

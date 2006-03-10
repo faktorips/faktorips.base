@@ -80,4 +80,6 @@ public class Messages extends NLS {
 
 	public static String ConfigElement_msgValueIsEmptyString;
 
+	public static String ProductCmptGeneration_msgDuplicateTarget;
+
 }

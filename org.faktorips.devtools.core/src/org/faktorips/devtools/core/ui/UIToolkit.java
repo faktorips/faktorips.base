@@ -317,6 +317,15 @@ public class UIToolkit {
 		return newButton;
 	}
 
+	public Button createRadioButton(Composite parent, String text) {
+		if (formToolkit != null) {
+			return formToolkit.createButton(parent, text, SWT.RADIO);
+		}
+		Button newButton = new Button(parent, SWT.RADIO);
+		newButton.setText(text);
+		return newButton;
+	}
+	
 	/**
 	 * Creates a new package fragment reference control.
 	 */
@@ -435,9 +444,9 @@ public class UIToolkit {
 	}
 
 	public Group createGroup(Composite parent, int style, String text) {
-		if (formToolkit != null) {
-			throw new RuntimeException("Not implemented for forms!"); //$NON-NLS-1$
-		}
+//		if (formToolkit != null) {
+//			throw new RuntimeException("Not implemented for forms!"); //$NON-NLS-1$
+//		}
 		Group newGroup = new Group(parent, style);
 		if (text != null) {
 			newGroup.setText(text);

@@ -34,14 +34,14 @@ public interface IProductCmpt extends ITimedIpsObject {
      */
     public final static String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
     
-    public final static String MSGCODE_PREFIX = "PRODUCT_CMPT-";
+    public final static String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
     
     /**
      * Validation message code that indicates if an error exists in the type hierarchy of the
      * policy cmpt type that is referenced by this product component.
      */
     //TODO not implemented yet
-    public final static String MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistencyInPolicyCmptTypeHierarchy";
+    public final static String MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistencyInPolicyCmptTypeHierarchy"; //$NON-NLS-1$
     
     /**
      * Returns the qualified name of the policy component type this product component

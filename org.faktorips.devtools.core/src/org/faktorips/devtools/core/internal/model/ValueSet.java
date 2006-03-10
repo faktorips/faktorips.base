@@ -96,7 +96,7 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
      * {@inheritDoc}
      */
 	public void delete() {
-		throw new UnsupportedOperationException("ValueSet can not be deleted");		
+		throw new UnsupportedOperationException("ValueSet can not be deleted");		 //$NON-NLS-1$
 	}
 
 	/**
@@ -117,7 +117,7 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
 	 * {@inheritDoc}
 	 */
 	public Image getImage() {
-		return IpsPlugin.getDefault().getImage("ValueSet.gif");
+		return IpsPlugin.getDefault().getImage("ValueSet.gif"); //$NON-NLS-1$
 	}
 	
 	/**

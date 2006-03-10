@@ -66,7 +66,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * Creates an unbounded range with no step.
      */
     public RangeValueSet(IIpsObjectPart parent, int partId) {
-    	this(parent, partId, "", "", "");
+    	this(parent, partId, "", "", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
     /**
@@ -330,7 +330,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * {@inheritDoc}
      */
     public String toString() {
-    	return super.toString() + ":" + toShortString();
+    	return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }
 
     /**
@@ -392,7 +392,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 	 */
 	public void setValuesOf(IValueSet target) {
 		if (!(target instanceof RangeValueSet)) {
-			throw new IllegalArgumentException("The given value set is not a range value set");
+			throw new IllegalArgumentException("The given value set is not a range value set"); //$NON-NLS-1$
 		}
 		RangeValueSet set = (RangeValueSet)target;
 		lowerBound = set.lowerBound;

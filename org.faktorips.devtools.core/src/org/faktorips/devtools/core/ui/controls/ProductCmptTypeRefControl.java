@@ -34,7 +34,7 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
             IIpsProject project, 
             Composite parent, 
             UIToolkit toolkit) {
-        super(project, parent, toolkit, "Product Component Type Selection", "Select a component (?=any character, *=any string)");
+        super(project, parent, toolkit, Messages.ProductCmptTypeRefControl_title, Messages.ProductCmptTypeRefControl_description);
     }
     
     /** 
