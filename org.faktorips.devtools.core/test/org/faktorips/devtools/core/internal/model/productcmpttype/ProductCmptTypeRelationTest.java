@@ -46,7 +46,6 @@ public class ProductCmptTypeRelationTest extends IpsPluginTest {
 		relation = new ProductCmptTypeRelation(policyCmptTypeRelation);
 	}
 
-
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeRelation.findContainerRelation()'
 	 */

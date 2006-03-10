@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -54,12 +55,12 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     private IIpsSrcFile sourceFile;
     private PolicyCmptType pcType;
     private ContentChangeEvent lastEvent;
-    private IIpsProject pdProject;
+    private IIpsProject ipsProject;
     
     protected void setUp() throws Exception {
         super.setUp();
-        pdProject = this.newIpsProject("TestProject");
-        root = pdProject.getIpsPackageFragmentRoots()[0];
+        ipsProject = this.newIpsProject("TestProject");
+        root = ipsProject.getIpsPackageFragmentRoots()[0];
         pack = root.createPackageFragment("products.folder", true, null);
         sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)sourceFile.getIpsObject();
@@ -335,7 +336,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         
         Element element = pcType.toXml(this.newDocument());
         
-        PolicyCmptType copy = (PolicyCmptType)newIpsObject(pdProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
+        PolicyCmptType copy = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
         copy.setConfigurableByProductCmptType(false);
         copy.initFromXml(element);
         assertTrue(copy.isConfigurableByProductCmptType());
@@ -523,5 +524,31 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    public void testIsAggregateRoot() throws CoreException {
+    	assertTrue(pcType.isAggregateRoot());
+    	
+    	pcType.newRelation().setRelationType(RelationType.ASSOZIATION);
+    	assertTrue(pcType.isAggregateRoot());
+
+    	pcType.newRelation().setRelationType(RelationType.COMPOSITION);
+    	assertTrue(pcType.isAggregateRoot());
+    	
+    	pcType.newRelation().setRelationType(RelationType.REVERSE_COMPOSITION);
+    	assertFalse(pcType.isAggregateRoot());
+    	
+    	// create a supertype
+    	IPolicyCmptType subtype = newPolicyCmptType(ipsProject, "Subtype");
+    	IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+    	subtype.setSupertype(supertype.getQualifiedName());
+    	subtype.getIpsSrcFile().save(true, null);
+    	
+    	supertype.newRelation().setRelationType(RelationType.ASSOZIATION);
+    	assertTrue(subtype.isAggregateRoot());
+    	supertype.newRelation().setRelationType(RelationType.COMPOSITION);
+    	assertTrue(subtype.isAggregateRoot());
+    	supertype.newRelation().setRelationType(RelationType.REVERSE_COMPOSITION);
+    	assertFalse(subtype.isAggregateRoot());
     }
 }

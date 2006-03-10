@@ -142,6 +142,9 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * value to be edited.
      */
     public boolean isEditedInStandardExtensionArea();
+
+    // TODO document and change name
+	public String getEditedInStandardTextArea();
     
     /**
      * Returns the property's name used to present it to the user.

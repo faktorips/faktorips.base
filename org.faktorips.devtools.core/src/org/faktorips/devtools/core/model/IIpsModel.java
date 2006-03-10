@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 
 /**
  * The IPS model is the top of the IpsElement hierarchy (like the Java model is  the top of the Java element
@@ -109,7 +108,7 @@ public interface IIpsModel extends IIpsElement {
      * @param <code>true</code> if not only the extension properties defined for for the type itself
      * should be returned, but also the ones registered for it's supertype(s) and it's interfaces.
      */
-    public ExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class type, boolean includeSupertypesAndInterfaces);
+    public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class type, boolean includeSupertypesAndInterfaces);
     
     /**
      * Returns the extension property with the given id that belongs to the given type. Returns <code>null</code>

@@ -227,4 +227,20 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertNull(hierarchy.findRelation(pcType, "unkown"));
     }
     
+    public void testGetAllRelations() throws CoreException {
+        // create the supetype relations
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+
+        IRelation r1 = pcType.newRelation();
+        IRelation r2 = supertype.newRelation();
+        IRelation r3 = supersupertype.newRelation();
+        TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
+        IRelation[] relations = hierarchy.getAllRelations(pcType);
+        assertEquals(3, relations.length);
+        assertEquals(r1, relations[0]);
+        assertEquals(r2, relations[1]);
+        assertEquals(r3, relations[2]);
+    }
+
 }

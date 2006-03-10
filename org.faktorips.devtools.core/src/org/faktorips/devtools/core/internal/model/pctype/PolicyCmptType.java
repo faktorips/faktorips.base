@@ -153,8 +153,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     public String getSupertype() {
         return supertype;
     }
-
+    
     /**
+	 * {@inheritDoc}
+	 */
+	public boolean hasSupertype() {
+		return StringUtils.isNotEmpty(supertype);
+	}
+
+	/**
      * {@inheritDoc}
      */
     public IPolicyCmptType findSupertype() throws CoreException {
@@ -282,8 +289,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return mover.move(indexes, up);
     }
     
-    /**
+    /*
      * Returns the list holding the attributes as a reference. 
+     * Package private for use in TypeHierarchy.  
      */
     List getAttributeList() {
         return attributes;
@@ -314,8 +322,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         return m;
     }
     
-    /**
+    /*
      * Returns the list holding the methods as a reference. 
+     * Package private for use in TypeHierarchy.  
      */
     List getMethodList() {
         return methods;
@@ -362,12 +371,39 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
     
     /**
+	 * {@inheritDoc}
+	 * 
+     * @throws CoreException 
+	 */
+	public boolean isAggregateRoot() throws CoreException {
+		for (Iterator it = relations.iterator(); it.hasNext();) {
+			IRelation each = (IRelation) it.next();
+			if (each.getRelationType().isReverseComposition()) {
+				return false;
+			}
+		}
+		IPolicyCmptType supertype = findSupertype();
+		if (supertype!=null) {
+			return supertype.isAggregateRoot();
+		}
+		return true;
+	}
+
+	/**
      * {@inheritDoc}
      */
     public IRelation[] getRelations() {
         IRelation[] r = new IRelation[relations.size()];
         relations.toArray(r);
         return r;
+    }
+    
+    /*
+     * Returns the list holding the relations as a reference.
+     * Package private for use in TypeHierarchy.  
+     */
+    List getRelationList() {
+        return relations;
     }
     
     /**

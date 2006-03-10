@@ -36,16 +36,6 @@ public class BusinessFunctionImpl extends IpsObject implements
         super(file);
     }
 
-    // TODO remove temporay constructor
-    public BusinessFunctionImpl(String name) {
-        this.name = name;
-    }
-    
-
-    public BusinessFunctionImpl() {
-        super();
-    }
-    
     /** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.IIpsObject#getIpsObjectType()

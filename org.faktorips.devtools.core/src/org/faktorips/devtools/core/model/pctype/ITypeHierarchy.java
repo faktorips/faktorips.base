@@ -74,6 +74,12 @@ public interface ITypeHierarchy {
     public IMethod[] getAllMethods(IPolicyCmptType type);
     
     /**
+     * Returns all relations of the given type either defined in the type itself
+     * or any of it's supertyes found in the hierarchy.
+     */
+    public IRelation[] getAllRelations(IPolicyCmptType type);
+
+    /**
      * Returns the attribute with the given name if either the type or one of
      * it's supertypes contains an attribute with that name. Returns <code>null</code>
      * if no attribute with the given name is found.  

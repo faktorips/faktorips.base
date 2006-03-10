@@ -240,7 +240,19 @@ public class TypeHierarchy implements ITypeHierarchy {
         return (IMethod[])methods.toArray(new IMethod[methods.size()]);
     }
     
-    /** 
+    /**
+	 * {@inheritDoc}
+	 */
+	public IRelation[] getAllRelations(IPolicyCmptType type) {
+        List relations = new ArrayList();
+        IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
+        for (int i=0; i<types.length; i++) {
+            relations.addAll(((PolicyCmptType)types[i]).getRelationList());
+        }
+        return (IRelation[])relations.toArray(new IRelation[relations.size()]);
+	}
+
+	/** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#findAttribute(org.faktorips.devtools.core.model.pctype.IPolicyCmptType, java.lang.String)
      */

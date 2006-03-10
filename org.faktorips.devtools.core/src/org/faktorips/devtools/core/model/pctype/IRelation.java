@@ -54,6 +54,31 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "PolicyCmptTypeRelation-"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the target does not exist.
+     */
+    public final static String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "TargetDoesNotExists"; //$NON-NLS-1$
+    // TODO test case
+
+    /**
+     * Validation message code to indicate that the target role singular must be set and it's not.
+     */
+    public final static String MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET = MSGCODE_PREFIX + "TargetRoleSingularMustBeSet"; //$NON-NLS-1$
+    // TODO test case
+
+    /**
+     * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
+     */
+    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX + "MaxCardinalityMustBeAtLeast1"; //$NON-NLS-1$
+    // TODO test case
+
+    /**
+     * Validation message code to indicate that the max cardinality is less than min, but it must be
+     * greater or equal than min.
+     */
+    public final static String MSGCODE_MAX_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxIsLessThanMin"; //$NON-NLS-1$
+    // TODO test case
+
+    /**
      * Validation message code to indicate that an relation implementing a container relation
      * must have the same value for the product relevant property as it's container relation.
      */
@@ -61,18 +86,23 @@ public interface IRelation extends IIpsObjectPart {
     // TODO implement, test case
 	
     /**
-     * Validation message code to indicate that a reverse composition has a max cardinality greater
-     * than 1 (it should be 1).
+     * Validation message code to indicate that a reverse composition's max cardinality is not 1.
      */
     public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue"; //$NON-NLS-1$
     // TODO implement, test case
     
     /**
-     * Validation message code to indicate that a relation can't be product relevant
+     * Validation message code to indicate that a reverse composition cant be marked as product relevant..
+     */
+    public final static String MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT = MSGCODE_PREFIX + "ReverseCompositionCantBeMarkedAsProductRelevant"; //$NON-NLS-1$
+    // TODO implement, test case
+
+    /**
+     * Validation message code to indicate that a relation can only be product relevant
      * if the type is configurable by product.
      */
-    public final static String MSGCODE_RELATION_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = 
-    	MSGCODE_PREFIX + "RelationCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
+    public final static String MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS = 
+    	MSGCODE_PREFIX + "RelationCanBeProductRelevantOnlyIfTheTypeIs"; //$NON-NLS-1$
     // TODO implement, test case
 
     /**

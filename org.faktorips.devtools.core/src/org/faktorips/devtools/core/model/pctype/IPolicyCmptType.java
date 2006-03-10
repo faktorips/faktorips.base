@@ -163,6 +163,13 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public String getSupertype();
     
     /**
+     * Returns <code>true</code> if this type has a supertype, otherwise <code>false</code>.
+     * This method also returns <code>true</code> if the type refers to a supertype but the 
+     * supertype does not exist.
+     */
+    public boolean hasSupertype();
+    
+    /**
      * Returns the type's supertype if the type is based on a supertype and the supertype can be found
      * on the project's ips object path. Returns <code>null</code> if either this type is not based on
      * a supertype or the supertype can't be found on the project's ips object path. 
@@ -354,6 +361,19 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      */
     public int[] moveRules(int[] indexes, boolean up);
 
+    /**
+     * Returns <code>true</code> if this class represents the root of a complex aggregate,
+     * otherwise <code>false</code>. For example an insurance policy is complex aggregate that
+     * consist of a policy class itself but also of coverages, insured persons, etc. In this
+     * case the policy class is the root of the complex policy aggregate.
+     * <p>
+     * A policy component type is considered an aggregate root if it and it's supertypes 
+     * havn't got a reverse composite relation. 
+     * 
+     * @throws CoreException if an error occurs while searching the supertype hierarchy. 
+     */
+    public boolean isAggregateRoot() throws CoreException;
+    
     /**
      * Returns the type's relations.
      */

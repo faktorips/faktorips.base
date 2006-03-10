@@ -26,7 +26,7 @@ package org.faktorips.datatype.classtypes;
 public class GregorianCalendarAsDateDatatype extends GregorianCalendarDatatype {
 
     /**
-     * Constructs a new instance with the name "date".
+     * Constructs a new instance with the name "GregorianCalendar".
      */
     public GregorianCalendarAsDateDatatype() {
         this("GregorianCalendar");

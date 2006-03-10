@@ -31,6 +31,8 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
 
 	public static final int CARDINALITY_MANY = IRelation.CARDINALITY_MANY;
 	
+	
+	
     /**
      * Returns the product component type this relation belongs to.
      */
@@ -140,7 +142,5 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
      */
     public void setMaxCardinality(int newValue);
     
-	
-	
 	
 }

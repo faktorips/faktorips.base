@@ -684,7 +684,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	/**
 	 * Overridden.
 	 */
-	public ExtensionPropertyDefinition[] getExtensionPropertyDefinitions(
+	public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(
 			Class type, boolean includeSupertypesAndInterfaces) {
 		if (typeExtensionPropertiesMap == null) {
 			initExtensionPropertiesFromConfiguration();
@@ -692,8 +692,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		ArrayList result = new ArrayList();
 		getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces,
 				result);
-		return (ExtensionPropertyDefinition[]) result
-				.toArray(new ExtensionPropertyDefinition[result.size()]);
+		return (IExtensionPropertyDefinition[]) result.toArray(new IExtensionPropertyDefinition[result.size()]);
 	}
 
 	/**

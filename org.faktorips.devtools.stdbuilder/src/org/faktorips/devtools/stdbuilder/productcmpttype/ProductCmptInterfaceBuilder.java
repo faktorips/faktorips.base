@@ -160,14 +160,12 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * Code sample:
      * <pre>
      * [javadoc]
-     * public IPolicy createPolicy(Calendar effectiveDate);
+     * public IPolicy createPolicy();
      * </pre>
      */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(getIpsSrcFile()); 
-        IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
-        String effectiveDateConceptName = convention.getEffectiveDateConceptName(getLanguageUsedInGeneratedSourceCode(getIpsObject()));
-        appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptConceptName, effectiveDateConceptName}, getIpsObject(), methodsBuilder);
+        String policyCmptTypeName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(getIpsSrcFile()); 
+        appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptTypeName}, getIpsObject(), methodsBuilder);
         generateSignatureCreatePolicyCmpt(getIpsSrcFile(), methodsBuilder);
         methodsBuilder.append(';');
     }
@@ -175,15 +173,14 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     /**
      * Code sample:
      * <pre>
-     * public IPolicy createPolicy(Calendar effectiveDate)
+     * public IPolicy createPolicy()
      * </pre>
      */
     void generateSignatureCreatePolicyCmpt(IIpsSrcFile ipsSrcFile, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(ipsSrcFile); 
         String returnType =policyCmptTypeInterfaceBuilder.getQualifiedClassName(ipsSrcFile);
         String methodName = getLocalizedText(ipsSrcFile, "METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
-        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, 
-                new String[]{getVarNameEffectiveDate(ipsSrcFile)}, new String[]{Calendar.class.getName()});
+        methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
     }
     
     /**

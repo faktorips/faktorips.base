@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
-import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIController;
 
@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIControl
  */
 public class ExtensionPropertyControlFactory   {
 
-	private ExtensionPropertyDefinition[] extensionProperties;
+	private IExtensionPropertyDefinition[] extensionProperties;
 	private EditField[] extensionEditFields;
 	
 	public ExtensionPropertyControlFactory(Class extensionClass) {

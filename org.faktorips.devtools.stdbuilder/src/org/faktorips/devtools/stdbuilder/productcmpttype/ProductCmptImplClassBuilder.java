@@ -145,14 +145,12 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     }
     
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", getIpsObject(), methodsBuilder);
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureCreatePolicyCmpt(getIpsSrcFile(), methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
         methodsBuilder.appendClassName(policyCmptImplClassBuilder.getQualifiedClassName(getIpsSrcFile()));
-        methodsBuilder.appendln("(this, ");
-        methodsBuilder.append(getVarNameEffectiveDate(getIpsObject()));
-        methodsBuilder.append(");");
+        methodsBuilder.appendln("(this);");
         methodsBuilder.closeBracket();
     }
 

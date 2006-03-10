@@ -112,7 +112,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
     public void setEditedInStandardExtensionArea(String editedInStandardExtensionArea) {
         this.editedInStandardExtensionArea = editedInStandardExtensionArea;
     }
-    
+
 	public String getEditedInStandardTextArea() {
 		return editedInStandardExtensionArea;
 	}

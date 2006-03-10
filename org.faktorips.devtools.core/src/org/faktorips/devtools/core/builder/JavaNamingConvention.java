@@ -114,4 +114,8 @@ public class JavaNamingConvention {
     public int getModifierForPublicInterfaceMethod() {
     	return Modifier.PUBLIC;
     }
+    
+    public String getToDoMarker() {
+    	return "TODO";
+    }
 }

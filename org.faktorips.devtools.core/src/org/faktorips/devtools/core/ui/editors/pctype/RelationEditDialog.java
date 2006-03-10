@@ -202,6 +202,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
 	protected void setDefaults(RelationType type) {
 		if (type.isComposition()) {
 			relation.setMaxCardinality(Integer.MAX_VALUE);
+			relation.setProductRelevant(relation.getPolicyCmptType().isConfigurableByProductCmptType());
 		} else if (type.isReverseComposition()) {
 			relation.setMinCardinality(1);
 			relation.setMaxCardinality(1);

@@ -446,18 +446,20 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
-        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this, PROPERTY_TARGET, list); //$NON-NLS-1$
-        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR, list); //$NON-NLS-1$
+        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this, 
+        		PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
+        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR, 
+        		MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list); //$NON-NLS-1$
 
         if (maxCardinality == 0) {
         	String text = Messages.Relation_msgMaxCardinalityMustBeAtLeast1;
-        	list.add(new Message("", text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
+        	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
         } else if (maxCardinality == 1 && isReadOnlyContainer() && getRelationType() != RelationType.REVERSE_COMPOSITION) {
         	String text = Messages.Relation_msgMaxCardinalityForContainerRelationTooLow;
         	list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         } else if (minCardinality > maxCardinality) {
         	String text = Messages.Relation_msgMinCardinalityGreaterThanMaxCardinality;
-        	list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
+        	list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         }
         
         validateContainerRelation(list);

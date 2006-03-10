@@ -50,9 +50,10 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.Util;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
-import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
-import org.faktorips.runtime.internal.DefaultPolicyComponent;
+import org.faktorips.runtime.IPolicyComponent;
+import org.faktorips.runtime.internal.AbstractPolicyComponent;
+import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -73,7 +74,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     private PolicyCmptInterfaceBuilder interfaceBuilder;
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
-    private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
@@ -88,10 +88,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     PolicyCmptInterfaceBuilder getInterfaceBuilder() {
         return interfaceBuilder;
-    }
-
-    public void setProductCmptImplBuilder(ProductCmptImplClassBuilder productCmptImplBuilder) {
-        this.productCmptImplBuilder = productCmptImplBuilder;
     }
 
     public void setProductCmptInterfaceBuilder(ProductCmptInterfaceBuilder productCmptInterfaceBuilder) {
@@ -128,7 +124,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String getSuperclass() throws CoreException {
-        String javaSupertype = DefaultPolicyComponent.class.getName();
+        String javaSupertype = getPcType().isAggregateRoot() ? 
+                AbstractPolicyComponent.class.getName() : AbstractPolicyComponentPart.class.getName();
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(
                 getPcType().getSupertype());
@@ -182,7 +179,53 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodGetProductCmptGeneration(methodsBuilder);
             generateMethodSetProductCmpt(methodsBuilder);
         }
+        if (getPcType().isAggregateRoot()) {
+            generateGetEffectiveFrom(methodsBuilder);
+        } else {
+            generateMethodGetParentIfNeccessary(methodsBuilder);
+        }
         buildValidation(methodsBuilder);
+    }
+    
+    protected void generateGetEffectiveFrom(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_MODIFIABLE);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, "getEffectiveFrom", new String[0], new Class[0]);
+        String todoText = getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO");
+        methodsBuilder.appendln("return null; // " + getJavaNamingConvention().getToDoMarker() + " " + todoText);
+        methodsBuilder.methodEnd();
+    }
+    
+    protected void generateMethodGetParentIfNeccessary(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        int counter=0;
+        IRelation reverseComp = null;
+        IRelation[] relations = getPcType().getSupertypeHierarchy().getAllRelations(getPcType());
+        for (int i = 0; i < relations.length; i++) {
+            if (relations[i].getRelationType().isReverseComposition()) {
+                if ("Parent".equals(relations[i].getTargetRoleSingular())) {
+                    return; // there is a reverse relation with the name parent, so getParent() is generated through
+                            // the default sourcecode generation for relations.
+                }
+                reverseComp = relations[i];
+                counter++;
+            }
+        }
+        // otherwise we implement getParent() by delegating to the reverse composition(s)
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, IPolicyComponent.class, "getParent", new String[0], new Class[0]);
+        
+        if (counter==1) {
+            methodsBuilder.appendln("return " + interfaceBuilder.getMethodNameGetRefObject(reverseComp) + "();");
+            methodsBuilder.methodEnd();
+            return;
+        }
+        for (int i = 0; i < relations.length; i++) {
+            String method = interfaceBuilder.getMethodNameGetRefObject(relations[i]);
+            methodsBuilder.appendln("if (" + method + "()!=null) {");
+            methodsBuilder.appendln("return " + method + "();");
+            methodsBuilder.appendln("}");
+        }
+        methodsBuilder.append("return null;");
+        methodsBuilder.methodEnd();
     }
 
     /**
@@ -1079,18 +1122,33 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateConstructorWithProductCmptArg(JavaCodeFragmentBuilder builder)
             throws CoreException {
 
+        // constructor without parent
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
-        String[] paramNames = new String[] { "productCmpt", "effectiveDate"};
+        String[] paramNames = new String[] { "productCmpt" };
         String[] paramTypes = new String[] { 
-                productCmptInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile()),
-                Calendar.class.getName()};
+                productCmptInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile())};
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 paramNames, paramTypes);
-        builder.append("super(productCmpt, effectiveDate);");
+        builder.append("super(productCmpt);");
         builder.append("initialize();");
         builder.methodEnd();
+        
+        // constructor with parent if this is an aggregate part
+//        if (!getPcType().isAggregateRoot()) {
+//            
+//            appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
+//            paramNames = new String[] { "parent", "productCmpt" };
+//            paramTypes = new String[] { 
+//                    getQualifiedClassName()
+//                    productCmptInterfaceBuilder.getQualifiedClassName(getPcType().getIpsSrcFile())};
+//            builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
+//                    paramNames, paramTypes);
+//            builder.append("super(productCmpt);");
+//            builder.append("initialize();");
+//            builder.methodEnd();
+//        }
     }
-
+    
     /**
      * Code sample:
      * <pre>
@@ -1105,12 +1163,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         throws CoreException {
 
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
-        String[] paramTypes = new String[] {Calendar.class.getName()};
-        String[] paramNames = new String[] {"effectiveDate"};
         
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
-                paramNames, paramTypes);
-        builder.append("super(effectiveDate);");
+                new String[0], new String[0]);
+        builder.append("super();");
         builder.methodEnd();
     }
 

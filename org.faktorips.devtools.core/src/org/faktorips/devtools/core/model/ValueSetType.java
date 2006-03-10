@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.model;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
-import org.faktorips.devtools.core.internal.model.product.ConfigElement;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 import org.faktorips.values.EnumType;
