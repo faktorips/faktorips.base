@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -211,6 +212,7 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 				.setCurrentArtefactBuilderSet("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
 		ipsProject.setValueDatatypes(new String[] { "Decimal", "Money", "Integer", 
 				"String", "Boolean" });
+		ipsProject.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
 	}
 
 	private void addSystemLibraries(IJavaProject javaProject)

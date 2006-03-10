@@ -260,7 +260,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
     	return properties.getJavaSrcLanguage();
     }
-    
+
+    /**
+     * Sets the generated java source code documentation language. 
+     */
+    public void setGeneratedJavaSourcecodeDocumentationLanguage(Locale locale) {
+    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	properties.setJavaSrcLanguage(locale);
+    }
+
     /**
      * {@inheritDoc}
      */

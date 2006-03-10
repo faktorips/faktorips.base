@@ -102,6 +102,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage();
     
     /**
+     * Sets the language (as a locale) in that the generated Java sourcecode
+     * is documented. 
+     */
+    public void setGeneratedJavaSourcecodeDocumentationLanguage(Locale locale);
+    
+    /**
      * Returns the naming convention for changes over time used in the generated Java sourcecode.
      */
     public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode();
