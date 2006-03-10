@@ -55,7 +55,7 @@
         <cvs
                 cvsroot="${cvsRoot}"
                 dest="${buildDirectory}/maps"
-                command="export -r ${mapVersionTag} org.faktorips.build/map"
+                command="export -r ${mapVersionTag} org.faktorips.build/maps"
         />
 
 </target>
