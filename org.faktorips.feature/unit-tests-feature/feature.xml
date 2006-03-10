@@ -1,0 +1,31 @@
+<feature
+      id="org.faktorips.feature-tests"
+      label="FaktorIPS"
+      version="0.0.0"
+      provider-name="FaktorZehn GmbH">
+
+  <install-handler/>
+
+     <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.emf.codegen"/>
+   </requires>
+
+   <plugin
+         id="org.faktorips.devtools.stdbuilder.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+</feature>
