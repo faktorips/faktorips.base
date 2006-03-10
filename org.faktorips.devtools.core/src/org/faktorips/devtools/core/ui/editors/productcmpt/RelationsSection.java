@@ -576,14 +576,17 @@ public class RelationsSection extends IpsSection {
 	 */
 	public void setEnabled(boolean enabled) {
 		this.fEnabled = enabled;
-
+		if (treeViewer == null) {
+			// no relations defined, so no tree to disable.
+			return;
+		}
+		
 		if (enabled) {
 			treeViewer.getTree().setMenu(this.treePopup);
 		} else {
 			treeViewer.getTree().setMenu(emptyMenu);
 		}
-//		kardMin.setEnabled(enabled);
-//		kardMax.setEnabled(enabled);
+		cardinalityPanel.setEnabled(enabled);
 	}
 
 	private MessageList validate(Object element) throws CoreException {
