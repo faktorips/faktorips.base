@@ -6,3 +6,4 @@ plugin@org.faktorips.fl=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.runtime=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.util=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.valuetypes=HEAD,/usr/local/cvsroot
+plugin@org.faktorips.devtools.stdbuilder.test=HEAD,/usr/local/cvsroot
