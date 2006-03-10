@@ -20,3 +20,8 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.valuetypes,
  org.faktorips.dtflcommon
 Eclipse-AutoStart: true
+Export-Package: org.faktorips.devtools.stdbuilder,
+ org.faktorips.devtools.stdbuilder.policycmpttype,
+ org.faktorips.devtools.stdbuilder.productcmpt,
+ org.faktorips.devtools.stdbuilder.productcmpttype,
+ org.faktorips.devtools.stdbuilder.table
