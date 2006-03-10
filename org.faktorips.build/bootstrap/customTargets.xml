@@ -5,15 +5,17 @@
 <!-- Add on <ant> task for each top level element being built. -->
 <!-- ===================================================================== -->
 <target name="allElements">
-
+	<echo message="HALLO WELT" />
+	
+	
 	<ant antfile="${genericTargets}" target="${target}" >
 		<property name="type" value="feature" />
 		<property name="id" value="org.faktorips.feature" />
 	</ant>
-	
+	<echo message="HALLO WELT - nach build" />
 
 	<ant antfile="${genericTargets}" target="${target}" >
-		<echo message="HALLO WELT" />
+		
 		<property name="type" value="feature" />
 		<property name="id" value="org.faktorips.feature-tests" />
 	</ant>
