@@ -30,6 +30,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -299,5 +300,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a Java code fragment that gives access to the FaktorIPS runtime repository.
      */
     public JavaCodeFragment getCodeToGetTheRuntimeRepository() throws CoreException;
+
+	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
     
 }

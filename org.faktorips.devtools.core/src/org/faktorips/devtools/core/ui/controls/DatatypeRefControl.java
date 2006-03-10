@@ -81,7 +81,7 @@ public class DatatypeRefControl extends TextButtonControl {
             if (dialog.open()==Window.OK) {
                 if (dialog.getResult().length>0) {
                     Datatype datatype = (Datatype)dialog.getResult()[0];
-                    text.setText(datatype.getName());
+                    text.setText(datatype.getQualifiedName());
                 } else {
                     text.setText(""); //$NON-NLS-1$
                 }

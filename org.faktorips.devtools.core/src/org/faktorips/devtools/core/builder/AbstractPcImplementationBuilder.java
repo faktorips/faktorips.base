@@ -100,7 +100,7 @@ public abstract class AbstractPcImplementationBuilder extends
 	abstract protected void generateCodeForMemberVariable(IAttribute attribute,
 			DatatypeHelper datatypeHelper,
 			JavaCodeFragmentBuilder memberVarsBuilder,
-			JavaCodeFragmentBuilder methodsBuilder);
+			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 	
 	abstract protected void generateGetterForAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 	abstract protected void generateSetterForAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException;

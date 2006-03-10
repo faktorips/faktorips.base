@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
@@ -144,10 +145,15 @@ public class IpsProjectProperties {
 			datatypeEl.setAttribute("id", predefinedDatatypesUsed[i]); //$NON-NLS-1$
             predefinedTypesEl.appendChild(datatypeEl);
 		}
+		Element definedDatatypesEl = doc.createElement("DatatypeDefinitions"); //$NON-NLS-1$
+		datatypesEl.appendChild(definedDatatypesEl);
+		writeDefinedDataTypesToXML(doc, definedDatatypesEl);
 		
 		return projectEl;
 	}
 	
+	
+
 	public void initFromXml(IIpsProject ipsProject, Element element) {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
@@ -204,6 +210,15 @@ public class IpsProjectProperties {
             definedDatatypes[i] = DynamicValueDatatype.createFromXml(ipsProject, (Element)nl.item(i));
         }
     }
+    
+    private void writeDefinedDataTypesToXML(Document doc, Element parent) {
+		for (int i=0; i<definedDatatypes.length; i++) {
+			Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
+			definedDatatypes[i].writeToXml(datatypeEl);
+			parent.appendChild(datatypeEl);
+		}
+		
+	}
 
     static Locale getLocale(String s) {
     	StringTokenizer tokenzier = new StringTokenizer(s, "_"); //$NON-NLS-1$
@@ -221,4 +236,21 @@ public class IpsProjectProperties {
     	String variant = tokenzier.nextToken();
     	return new Locale(language, country, variant);
     }
+
+	public void addDefinedDataType(DynamicValueDatatype newDatatype) {
+		DynamicValueDatatype [] oldValue = definedDatatypes;
+		int i;
+		/* replace, if Datatype already registered */
+		for (i = 0; i < definedDatatypes.length; i++) {
+			if(definedDatatypes[i].getAdaptedClassName().equals(newDatatype.getAdaptedClassName())) {
+				definedDatatypes[i] = newDatatype;
+				return;
+			}
+		}
+		definedDatatypes = new DynamicValueDatatype [oldValue.length + 1];
+		for (i = 0; i < oldValue.length; i++) {
+			definedDatatypes[i]=oldValue[i];
+		}
+		definedDatatypes[i]=newDatatype;
+	}
 }

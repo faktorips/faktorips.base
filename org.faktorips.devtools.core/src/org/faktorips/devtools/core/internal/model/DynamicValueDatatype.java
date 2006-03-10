@@ -75,17 +75,59 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 
 		datatype.setAdaptedClassName(element.getAttribute("valueClass")); //$NON-NLS-1$
 		datatype.setQualifiedName(element.getAttribute("id")); //$NON-NLS-1$
+		if(element.hasAttribute("valueOfMethod")) {
 		datatype.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
-		datatype.setIsParsableMethodName(element
-				.getAttribute("isParsableMethod")); //$NON-NLS-1$
+		}
+		else {
+			datatype.setValueOfMethodName(null);
+		}
+		if(element.hasAttribute("isParseableMethod")) {//$NON-NLS-1$
+			datatype.setIsParsableMethodName(element
+					.getAttribute("isParsableMethod")); //$NON-NLS-1$
+			}
+		else {
+			datatype.setIsParsableMethodName(null);
+		}
+		if(element.hasAttribute("valueToStringValue")) {//$NON-NLS-1$
 		datatype.setToStringMethodName(element
 				.getAttribute("valueToStringMethod")); //$NON-NLS-1$
+		}
+		else {
+			datatype.setToStringMethodName(null);
+		}
 		if (element.hasAttribute("specialNullValue")) { //$NON-NLS-1$
 			datatype.setSpecialNullValue(element
 					.getAttribute("specialNullValue")); //$NON-NLS-1$
 		}
 		datatype.getAdaptedClass();
 		return datatype;
+	}
+	
+	public void writeToXml(Element element) {
+		// TODO Auto-generated method stub
+		
+		if (getAdaptedClassName() != null) {
+			element.setAttribute("valueClass", getAdaptedClassName()); //$NON-NLS-1$
+		}
+		if (getQualifiedName() != null) {
+			element.setAttribute("id", getQualifiedName()); //$NON-NLS-1$
+		}
+		if (getValueOfMethodName() != null) {
+			element.setAttribute(
+					"valueOfMethod", getValueOfMethodName()); //$NON-NLS-1$
+		}
+		if (getIsParsableMethodName() != null) {
+			element.setAttribute(
+					"isParsableMethod", getIsParsableMethodName()); //$NON-NLS-1$
+		}
+		if (getToStringMethodName() != null) {
+			element.setAttribute(
+					"valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
+		}
+		if (getSpecialNullValue() != null) {
+			element.setAttribute(
+					"specialNullValue", getSpecialNullValue());  //$NON-NLS-1$			
+		}
 	}
 
 	private IIpsProject ipsProject;
@@ -208,4 +250,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 			removeCachedData();
 		}
 	}
+
+	
 }

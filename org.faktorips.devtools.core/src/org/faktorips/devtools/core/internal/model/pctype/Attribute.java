@@ -348,8 +348,7 @@ public class Attribute extends Member implements IAttribute {
         } else {
             IStatus status = JavaConventions.validateIdentifier(param.getName());
             if (!status.isOK()) {
-                result
-                        .add(new Message("", Messages.Attribute_msgInvalidParamName, Message.ERROR, param, //$NON-NLS-1$
+                result.add(new Message("", Messages.Attribute_msgInvalidParamName, Message.ERROR, param, //$NON-NLS-1$
                                 PROPERTY_FORMULAPARAM_NAME));
             }
         }
@@ -358,8 +357,7 @@ public class Attribute extends Member implements IAttribute {
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
             if (datatypeObject == null) {
-                result
-                        .add(new Message("", NLS.bind(Messages.Attribute_msgDatatypeNotFound, param.getDatatype()), //$NON-NLS-1$
+                result.add(new Message("", NLS.bind(Messages.Attribute_msgDatatypeNotFound, param.getDatatype()), //$NON-NLS-1$
                                 Message.ERROR, param,
                                 PROPERTY_FORMULAPARAM_DATATYPE));
             } else {

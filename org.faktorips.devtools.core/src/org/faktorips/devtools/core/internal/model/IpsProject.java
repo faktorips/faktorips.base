@@ -664,6 +664,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		result.toArray(resultArray);
 		return resultArray;
 	}
+
+	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException  {
+		getProperties().addDefinedDataType(newDatatype);
+		saveProjectProperties(getProperties());
+	}
     
     
 }
