@@ -100,6 +100,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public boolean containsValueSet(IValueSet subset, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
+    	
+    	if (subset instanceof AllValuesValueSet) {
+    		// if the subset is an all values valueset, it is allways contained in this valueset.
+    		return true;
+    	}
+    	
     	if (!(subset instanceof EnumValueSet)) {
     		if (list != null) {
     			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset, invalidObject, invalidProperty);

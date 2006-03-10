@@ -23,8 +23,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -36,7 +34,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
@@ -150,12 +147,18 @@ public class DefaultsAndRangesSection extends IpsSection {
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
+			
     		IValueSet valueSet = elements[i].getValueSet();
-    		if (attribute != null) {
-    			if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
-    				valueSet = attribute.getValueSet();
-    			}
+    		
+    		// if the config element has an all values valueset, the valueset
+    		// is changed to a copy of the underlying attribute valueset. This is
+    		// because all value valuesets onyl apply on datatypes, not on other
+    		// valuesets.
+    		if (attribute != null && valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
+    			elements[i].setValueSetCopy(attribute.getValueSet());
+    			valueSet = elements[i].getValueSet();
     		}
+
     		toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
     		toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 
@@ -213,14 +216,9 @@ public class DefaultsAndRangesSection extends IpsSection {
         			Text step = toolkit.createText(rootPane);
         			this.editControls.add(step);
         			
-        			if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
-        				new RangeChangedListener(upper, lower, step, elements[i], controller);
-        			}
-        			else {
-        				controller.add(upper, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
-        				controller.add(lower, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
-        				controller.add(step, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_STEP);
-        			}
+        			controller.add(upper, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
+        			controller.add(lower, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
+        			controller.add(step, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_STEP);
         		}
         		
     		}
@@ -253,46 +251,4 @@ public class DefaultsAndRangesSection extends IpsSection {
 		rootPane.layout(true);
 		rootPane.redraw();
 	}
-
-	/**
-	 * Listener for changes in text-fields which are related to a all-values-valueset. To avoid the creation 
-	 * of empty ranges, the new <code>Range</code>-object has to be created if one of the values (min, max, step) 
-	 * are modified. 
-	 * 
-	 * @author Thorsten Guenther
-	 */
-	private class RangeChangedListener implements ModifyListener {
-		private Text upper;
-		private Text lower;
-		private Text step;
-		IConfigElement element;
-		IpsPartUIController controller;
-		
-		public RangeChangedListener(Text upper, Text lower, Text step, IConfigElement element, IpsPartUIController controller) {
-			this.upper = upper;
-			this.lower = lower;
-			this.step = step;
-			this.element = element;
-			this.controller = controller;
-			
-			this.upper.addModifyListener(this);
-			this.lower.addModifyListener(this);
-			this.step.addModifyListener(this);
-		}
-
-		public void modifyText(ModifyEvent e) {
-			upper.removeModifyListener(this);
-			lower.removeModifyListener(this);
-			step.removeModifyListener(this);
-			
-			element.setValueSetType(ValueSetType.RANGE);
-			RangeValueSet range = (RangeValueSet)element.getValueSet();
-
-			controller.add(upper, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-			controller.add(lower, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-			controller.add(step, range, IRangeValueSet.PROPERTY_STEP);
-		}
-		
-	}
-	
 }

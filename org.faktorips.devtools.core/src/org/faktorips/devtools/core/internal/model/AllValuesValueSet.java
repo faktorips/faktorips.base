@@ -73,7 +73,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
      * {@inheritDoc}
      */
     public boolean containsValue(String value, ValueDatatype datatype) {
-        return true;
+        return containsValue(value, datatype, null, null, null);
     }
 
     /**

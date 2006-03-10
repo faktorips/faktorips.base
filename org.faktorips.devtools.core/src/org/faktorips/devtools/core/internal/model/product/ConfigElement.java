@@ -316,7 +316,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 				return;
 			}
 			
-			if (!modelValueSet.containsValueSet(valueSet, valueDatatype, list, this, null)) {
+			if (!modelValueSet.containsValueSet(valueSet, valueDatatype, list, valueSet, null)) {
 				return;
 			}
 

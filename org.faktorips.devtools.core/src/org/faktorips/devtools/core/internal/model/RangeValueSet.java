@@ -177,6 +177,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      */
     public boolean containsValueSet(IValueSet subset, ValueDatatype datatype,
 			MessageList list, Object invalidObject, String invalidProperty) {
+    	
+    	if (subset instanceof AllValuesValueSet) {
+    		// if the subset is an all values valueset, it is allways contained in this valueset.
+    		return true;
+    	}
+
     	if (!(subset instanceof RangeValueSet)) {
     		if (list != null) {
     			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING,
@@ -193,7 +199,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     			if (list != null) {
     				String msg = Messages.Range_msgNoStepDefinedInSubset;
     				addMsg(list, MSGCODE_NO_STEP_DEFINED_IN_SUBSET, msg,
-							invalidObject, invalidProperty);
+							invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
     				return false;
     			}
     		}
@@ -209,7 +215,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         	if (step.compareTo(subStep) != 0) {
         		if (list != null) {
         			String msg = NLS.bind(Messages.Range_msgStepMismatch, getStep(), subRange.getStep());
-        			addMsg(list, MSGCODE_STEP_MISMATCH, msg, invalidObject, invalidProperty);
+        			addMsg(list, MSGCODE_STEP_MISMATCH, msg, invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
         		}
         		return false;
         	}
@@ -220,7 +226,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	if (lower.compareTo(subLower) > 0) {
     		if (list != null) {
     			String msg = NLS.bind(Messages.Range_msgLowerBoundViolation, getLowerBound(), subRange.getLowerBound());
-    			addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, invalidProperty);
+    			addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_LOWERBOUND));
     		}
     		return false;
     	}
@@ -230,7 +236,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	if (upper.compareTo(subUpper) < 0) {
     		if (list != null) {
     			String msg = NLS.bind(Messages.Range_msgUpperBoundViolation, getUpperBound(), subRange.getUpperBound());
-    			addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, invalidProperty);
+    			addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_UPPERBOUND));
     		}
     		return false;
     	}
@@ -240,6 +246,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	
         return true;
 	}
+    
+    private String getProperty(String original, String alternative) {
+    	if (original == null) {
+    		return alternative;
+    	}
+    	return original;
+    }
 
     /**
      * {@inheritDoc}
