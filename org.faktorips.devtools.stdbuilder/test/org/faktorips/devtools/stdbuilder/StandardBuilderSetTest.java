@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.util.Locale;
+
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -41,6 +43,7 @@ public class StandardBuilderSetTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
+        project.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
         type = newPolicyCmptType(project, "Policy");
         IAttribute a = type.newAttribute();
         a.setAttributeType(AttributeType.COMPUTED);

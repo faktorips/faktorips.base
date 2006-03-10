@@ -52,6 +52,7 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         pdProject = this.newIpsProject("TestProject");
+        pdProject.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
         pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
@@ -75,7 +76,7 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
     }
 
     public void testCompile() throws Exception {
-        Locale locale = Locale.getDefault();
+        Locale locale = Locale.GERMAN;
 
         // no parameter registered => undefined identifier
         CompilationResult result = resolver.compile("identifier", locale);

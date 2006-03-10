@@ -18,6 +18,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -48,6 +49,7 @@ public class ProductCmptBuilderTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
+        project.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
         type = newPolicyCmptType(project, "Policy");
         IAttribute a = type.newAttribute();
         a.setAttributeType(AttributeType.COMPUTED);
