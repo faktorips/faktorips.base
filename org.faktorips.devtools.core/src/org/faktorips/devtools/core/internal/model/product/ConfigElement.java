@@ -315,10 +315,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			if (list.containsErrorMsg()) {
 				return;
 			}
-			
-			if (!modelValueSet.containsValueSet(valueSet, valueDatatype, list, valueSet, null)) {
-				return;
-			}
+
+			// validate valuset containment.
+			modelValueSet.containsValueSet(valueSet, valueDatatype, list, valueSet, null);
 
 			if (!valueSet.containsValue(value, valueDatatype)) {
 				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(Messages.ConfigElement_msgValueNotInValueset, value),

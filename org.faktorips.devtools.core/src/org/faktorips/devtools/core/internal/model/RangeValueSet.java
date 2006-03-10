@@ -193,32 +193,33 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	}
 
     	IRangeValueSet subRange = (IRangeValueSet)subset;
-    	
+    	boolean isSubset = true;
     	if (!getStep().equals("")) { //$NON-NLS-1$
     		if (subRange.getStep().equals("")) { //$NON-NLS-1$
     			if (list != null) {
     				String msg = Messages.Range_msgNoStepDefinedInSubset;
     				addMsg(list, MSGCODE_NO_STEP_DEFINED_IN_SUBSET, msg,
 							invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
-    				return false;
+    				isSubset = false;
+    			}
+    		} else {
+    			
+    			Comparable step = parse(getStep(), datatype, list, invalidObject, invalidProperty);
+    			Comparable subStep = parse(subRange.getStep(), datatype, list, invalidObject, invalidProperty);
+    			
+    			// TODO if subStep is an integer multiple of step (if possible for the datatype...)
+    			// the step and subStep can be non-equal, anyway the subSet can be a real subset of this
+    			// range. This is only possible to test if the values have to implement another
+    			// interface then Comparable...
+    			
+    			if (step.compareTo(subStep) != 0) {
+    				if (list != null) {
+    					String msg = NLS.bind(Messages.Range_msgStepMismatch, getStep(), subRange.getStep());
+    					addMsg(list, MSGCODE_STEP_MISMATCH, msg, invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
+    				}
+    				isSubset = false;
     			}
     		}
-    		
-        	Comparable step = parse(getStep(), datatype, list, invalidObject, invalidProperty);
-        	Comparable subStep = parse(subRange.getStep(), datatype, list, invalidObject, invalidProperty);
-        	
-        	// TODO if subStep is an integer multiple of step (if possible for the datatype...)
-        	// the step and subStep can be non-equal, anyway the subSet can be a real subset of this
-        	// range. This is only possible to test if the values have to implement another
-        	// interface then Comparable...
-        	
-        	if (step.compareTo(subStep) != 0) {
-        		if (list != null) {
-        			String msg = NLS.bind(Messages.Range_msgStepMismatch, getStep(), subRange.getStep());
-        			addMsg(list, MSGCODE_STEP_MISMATCH, msg, invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
-        		}
-        		return false;
-        	}
     	}
     	
     	Comparable lower = parse(getLowerBound(), datatype, list, invalidObject, invalidProperty);
@@ -228,7 +229,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     			String msg = NLS.bind(Messages.Range_msgLowerBoundViolation, getLowerBound(), subRange.getLowerBound());
     			addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_LOWERBOUND));
     		}
-    		return false;
+    		isSubset = false;
     	}
     	
     	Comparable upper = parse(getUpperBound(), datatype, list, invalidObject, invalidProperty);
@@ -238,13 +239,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     			String msg = NLS.bind(Messages.Range_msgUpperBoundViolation, getUpperBound(), subRange.getUpperBound());
     			addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_UPPERBOUND));
     		}
-    		return false;
+    		isSubset = false;
     	}
 
     	// TODO if step != "", the lower and upper bound of the subset must be divisible without remainder
     	// by this step. Not until values and step can calculate...
     	
-        return true;
+        return isSubset;
 	}
     
     private String getProperty(String original, String alternative) {
