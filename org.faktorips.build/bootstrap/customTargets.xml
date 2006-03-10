@@ -34,13 +34,13 @@
 		<property name="zipargs" value="" />
 	</ant>
 </target>
-<!--
-<target name="assemble.org.rubypeople.rdt-tests">
+	
+<target name="assemble.org.faktorips.feature-tests">
 	<ant antfile="${assembleScriptName}" dir="${buildDirectory}">
 		<property name="zipargs" value="" />
 	</ant>
 </target>
--->
+
 <!-- ===================================================================== -->
 <!-- Check out map files from correct repository -->
 <!-- Replace values for cvsRoot, package and mapVersionTag as desired. -->
