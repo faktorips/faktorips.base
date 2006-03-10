@@ -51,7 +51,7 @@
 </target>
 
 <target name="getMapFilesWithExtSshMethod" unless="usePserver">
-        <property name="cvsRoot" value=":ext:erzberger:faktorips.org:/usr/local/cvsroot" />
+        <property name="cvsRoot" value="-d /usr/local/cvsroot" />
         <cvs
                 cvsroot="${cvsRoot}"
                 dest="${buildDirectory}/maps"
