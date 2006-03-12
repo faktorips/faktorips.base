@@ -54,6 +54,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBui
 import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.runtime.internal.AbstractPolicyComponent;
 import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
+import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -182,16 +183,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodSetProductCmpt(methodsBuilder);
         }
         if (getPcType().isAggregateRoot()) {
-            generateGetEffectiveFrom(methodsBuilder);
+            generateGetEffectiveFromAsCalendar(methodsBuilder);
         } else {
             generateMethodGetParentIfNeccessary(methodsBuilder);
         }
         buildValidation(methodsBuilder);
     }
     
-    protected void generateGetEffectiveFrom(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_MODIFIABLE);
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, "getEffectiveFrom", new String[0], new Class[0]);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
         String todoText = getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO");
         methodsBuilder.appendln("return null; // " + getJavaNamingConvention().getToDoMarker() + " " + todoText);
         methodsBuilder.methodEnd();
@@ -1273,7 +1274,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * <pre>
      * [Javadoc]
      * public IProductGen getProductGen() {
-     *     return (IProductGen) getProduct().getProductGen(getEffectiveFrom());
+     *     return (IProductGen) getProduct().getProductGen(getEffectiveFromAsCalendar());
      * }
      * </pre>
      */
@@ -1292,7 +1293,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.append("().");
         builder.append(productCmptInterfaceBuilder.getMethodNameGetGeneration(getPolicyCmptType().findProductCmptType()));
         builder.append('(');
-        builder.append(getEffectiveDateMethodName());
+        builder.append(MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR);
         builder.appendln("());");
         builder.closeBracket();
     }

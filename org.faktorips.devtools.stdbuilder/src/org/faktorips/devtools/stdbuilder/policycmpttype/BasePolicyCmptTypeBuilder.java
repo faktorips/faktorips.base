@@ -38,10 +38,6 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         super(builderSet, kindId, stringsSet);
     }
     
-    protected String getEffectiveDateMethodName() {
-        return "getEffectiveFrom";
-    }
-
     /**
      * {@inheritDoc}
      */
