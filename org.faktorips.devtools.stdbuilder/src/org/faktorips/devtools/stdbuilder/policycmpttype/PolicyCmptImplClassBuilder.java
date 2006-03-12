@@ -185,7 +185,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (getPcType().isAggregateRoot()) {
             generateGetEffectiveFromAsCalendar(methodsBuilder);
         } else {
-            generateMethodGetParentIfNeccessary(methodsBuilder);
+            if (!getPcType().isAbstract()) {
+                generateMethodGetParent(methodsBuilder);
+            }
         }
         buildValidation(methodsBuilder);
     }
@@ -198,23 +200,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
     
-    protected void generateMethodGetParentIfNeccessary(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodGetParent(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         int counter=0;
         IRelation reverseComp = null;
         IRelation[] relations = getPcType().getSupertypeHierarchy().getAllRelations(getPcType());
         for (int i = 0; i < relations.length; i++) {
-            if (relations[i].getRelationType().isReverseComposition()) {
-                if ("Parent".equals(relations[i].getTargetRoleSingular())) {
-                    return; // there is a reverse relation with the name parent, so getParent() is generated through
-                            // the default sourcecode generation for relations.
-                }
+            if (relations[i].getRelationType().isReverseComposition() && !relations[i].isReadOnlyContainer()) {
                 reverseComp = relations[i];
                 counter++;
             }
         }
-        // otherwise we implement getParent() by delegating to the reverse composition(s)
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, IPolicyComponent.class, "getParent", new String[0], new Class[0]);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, IPolicyComponent.class, MethodNames.GET_PARENT_POLICY_COMPONENT, new String[0], new Class[0]);
         
         if (counter==1) {
             methodsBuilder.appendln("return " + interfaceBuilder.getMethodNameGetRefObject(reverseComp) + "();");
