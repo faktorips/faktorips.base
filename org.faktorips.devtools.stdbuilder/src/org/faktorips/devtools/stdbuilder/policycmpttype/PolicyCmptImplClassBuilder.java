@@ -162,9 +162,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
-        generateConstructorWithoutProductCmptArg(builder);
+        generateConstructorDefault(builder);
+        generateConstructorsWithParent(false, builder);
         if (getPcType().isConfigurableByProductCmptType()) {
             generateConstructorWithProductCmptArg(builder);
+            generateConstructorsWithParent(true, builder);
         }
     }
 
@@ -1129,12 +1131,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 paramNames, paramTypes);
         builder.append("super(productCmpt);");
         builder.methodEnd();
-        
-        // constructors with parent and product component
+    }
+    
+    private void generateConstructorsWithParent(boolean generateProductCmptArg, JavaCodeFragmentBuilder builder) throws CoreException {
         IRelation[] relations = getPcType().getRelations();
         for (int i = 0; i < relations.length; i++) {
             if (relations[i].getRelationType().isReverseComposition() && !relations[i].isReadOnlyContainer()) {
-                generateConstructorWithProductCmptAndParent(relations[i], builder);
+                generateConstructorWithParent(relations[i], generateProductCmptArg, builder);
             }
         }
     }
@@ -1150,18 +1153,35 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    private void generateConstructorWithProductCmptAndParent(IRelation reverseComp, JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateConstructorWithParent(
+            IRelation reverseComp, 
+            boolean generateProductCmptArg, 
+            JavaCodeFragmentBuilder builder) throws CoreException {
+        
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
         IPolicyCmptType target = reverseComp.findTarget();
-        String[] paramNames = new String[] { "parent", "productCmpt" };
-        String[] paramTypes = new String[] { 
-                getQualifiedClassName(target), 
-                productCmptInterfaceBuilder.getQualifiedClassName(getPcType())};
+        String targetInterface = interfaceBuilder.getQualifiedClassName(target);
+        String[] paramNames, paramTypes;
+        if (generateProductCmptArg) {
+            paramNames = new String[] { "parent", "productCmpt" };
+            paramTypes = new String[] { 
+                    targetInterface, 
+                    productCmptInterfaceBuilder.getQualifiedClassName(getPcType())};
+        } else {
+            paramNames = new String[] { "parent" };
+            paramTypes = new String[] { targetInterface }; 
+        }
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 paramNames, paramTypes);
-        builder.appendln("super(productCmpt);");
+        if (generateProductCmptArg) {
+            builder.appendln("super(productCmpt);");
+        } else {
+            builder.appendln("super();");
+        }
         builder.appendln(interfaceBuilder.getMethodNameSetObject(reverseComp) + "(parent);");
-        builder.appendln("initialize();");
+        if (generateProductCmptArg) {
+            builder.appendln("initialize();");
+        }
         builder.methodEnd();
     }
     
@@ -1175,17 +1195,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    protected void generateConstructorWithoutProductCmptArg(JavaCodeFragmentBuilder builder)
+    protected void generateConstructorDefault(JavaCodeFragmentBuilder builder)
         throws CoreException {
 
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
-        
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 new String[0], new String[0]);
         builder.append("super();");
         builder.methodEnd();
     }
-
+    
     /**
      * Code sample:
      * <pre>
@@ -1203,6 +1222,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 "initialize", new String[0], new String[0]);
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super.initialize();");
+        }
+        if (!getPcType().isConfigurableByProductCmptType()) {
+            builder.methodEnd();
+            return;
         }
         String method = interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType());
         builder.appendln("if (" + method + "()==null) {");
