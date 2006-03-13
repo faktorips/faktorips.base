@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.wizards.move;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -28,6 +29,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -39,7 +41,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Thorsten Guenther
  */
-public class RenamePage extends WizardPage implements  ModifyListener {
+public class RenamePage extends WizardPage implements ModifyListener {
 	
 	/**
 	 * The input field holding the new name.
@@ -83,7 +85,14 @@ public class RenamePage extends WizardPage implements  ModifyListener {
 
 		toolkit.createLabel(inputRoot, Messages.RenamePage_newName);
 		newName = toolkit.createText(inputRoot);
+		if (renameObject instanceof IpsPackageFragment) {
+			newName.setText(((IIpsPackageFragment)renameObject).getCorrespondingResource().getName());
+		}
+		else {
+			newName.setText(renameObject.getName());
+		}
 		newName.addModifyListener(this);
+		setPageComplete();
 	}
 
 	/**
@@ -144,7 +153,8 @@ public class RenamePage extends WizardPage implements  ModifyListener {
 		else if (renameObject instanceof IIpsPackageFragment){
 			pack = (IIpsPackageFragment)renameObject;
 			IFolder folder = (IFolder)pack.getCorrespondingResource();
-			IFolder newFolder = folder.getFolder(newName.getText());
+			IFolder newFolder = folder.getParent().getFolder(new Path(newName.getText()));
+			
 			if (newFolder.exists()) {
 				setMessage(Messages.RenamePage_errorFolderExists, ERROR);
 				return;
