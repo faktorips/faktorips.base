@@ -61,6 +61,8 @@ public class EnumValueSetControl extends TextButtonControl {
 	 */
 	private boolean dirty;
 	
+	private boolean enabled = true;
+	
 	/**
 	 * Creates a new control to edit an enum value.
 	 * 
@@ -85,7 +87,7 @@ public class EnumValueSetControl extends TextButtonControl {
 	 */
 	protected void buttonClicked() {
 		preserveState();
-		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell, !super.getTextControl().isEnabled());
+		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell, !enabled);
 		if (dialog.open() == Dialog.OK) {
 			super.getTextControl().setText(configElement.getValueSet().toShortString());
 			controller.updateUI();
@@ -124,7 +126,7 @@ public class EnumValueSetControl extends TextButtonControl {
 	 * {@inheritDoc}
 	 */
 	public void setEnabled(boolean enabled) {
-		super.getTextControl().setEnabled(enabled);
+		this.enabled = enabled;
 	}
 
 }

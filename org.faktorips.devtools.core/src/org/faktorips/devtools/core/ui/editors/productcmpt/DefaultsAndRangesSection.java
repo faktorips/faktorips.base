@@ -187,6 +187,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
 	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell(), controller);
 	    			evc.setText(valueSet.toShortString());
+	    			this.editControls.add(evc);
         		}
     		}
     		else if (valueSet.getValueSetType() == ValueSetType.RANGE || valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
