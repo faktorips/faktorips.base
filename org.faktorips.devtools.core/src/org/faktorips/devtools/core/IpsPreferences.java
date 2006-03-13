@@ -82,6 +82,15 @@ public class IpsPreferences {
         }
     }
 
+    /**
+	 * Set the working date to the given one.
+	 */
+	public final static void setWorkingDate(GregorianCalendar newDate) {
+		IpsPlugin.getDefault().getIpsPreferences().prefStore
+				.setValue(WORKING_DATE, XmlUtil
+						.gregorianCalendarToXmlDateString(newDate));
+	}
+    
     private IPreferenceStore prefStore;
     
     public IpsPreferences(IPreferenceStore prefStore) {
@@ -156,4 +165,5 @@ public class IpsPreferences {
     public boolean getEnableGenerating(){
     	return prefStore.getBoolean(ENABLE_GENERATING); 
     }
+    
 }

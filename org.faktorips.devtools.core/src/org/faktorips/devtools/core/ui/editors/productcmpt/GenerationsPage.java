@@ -74,4 +74,13 @@ public class GenerationsPage extends IpsObjectEditorPage {
 		    
 		});
     }
+    
+    /**
+     * Made public to get refresh from editor.
+     * 
+     * {@inheritDoc}
+     */
+    public void refresh() {
+    	super.refresh();
+    }
 }

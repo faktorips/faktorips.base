@@ -24,10 +24,12 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -102,8 +104,11 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     }
     
     private IProductCmptGeneration getActiveGeneration() {
+    	
     	return (IProductCmptGeneration)page.getProductCmptEditor().getActiveGeneration();
     }
+
+    
     
     /**
      * A composite that shows a policy component's attributes in a viewer and 
@@ -191,12 +196,13 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 			public Image getImage(Object element) {
 				if (element instanceof IProductCmptGeneration) {
 					IProductCmptGeneration generation = (IProductCmptGeneration)element;
-					IProductCmptGeneration activeGen = (IProductCmptGeneration)generation.getProductCmpt().findGenerationEffectiveOn(IpsPreferences.getWorkingDate()); 
-					if (generation.equals(activeGen)) {
-						return super.getImage(element);
+
+					Image image = super.getImage(element); 
+					if (((ProductCmptEditor)page.getEditor()).isEditableGeneration(generation)) {
+						return image;
 					}
 					else {
-						return IpsPlugin.getDefault().getImage("GenerationDisabled.gif"); //$NON-NLS-1$
+						return new Image(Display.getDefault(), image, SWT.IMAGE_DISABLE);
 					}
 				}
 				else {

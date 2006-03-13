@@ -359,6 +359,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			String property = event.getProperty();
 			if (property.equals(IpsPreferences.WORKING_DATE)) {
 				checkGeneration();
+				generationsPage.refresh();
 			} else if (property
 					.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
 					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
@@ -389,7 +390,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * Checks whether the given generation can be edited respecting the preferences 
 	 */
-	private boolean isEditableGeneration(IProductCmptGeneration generation) {
+	protected boolean isEditableGeneration(IProductCmptGeneration generation) {
 
 		// if generation does not match the current set working date, no editing will ever
 		// be possible, so return false immediate

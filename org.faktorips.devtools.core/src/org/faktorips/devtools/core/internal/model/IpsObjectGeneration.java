@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -45,17 +46,15 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     protected IpsObjectGeneration() {
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectGeneration#getIpsObject()
+    /**
+     * {@inheritDoc}
      */
     public ITimedIpsObject getTimedIpsObject() {
         return (ITimedIpsObject)getIpsObject();
     }
     
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectGeneration#getGenerationNo()
+     * {@inheritDoc}
      */
     public int getGenerationNo() {
         IIpsObjectGeneration[] generations = ((ITimedIpsObject)getIpsObject()).getGenerations();
@@ -82,17 +81,15 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         return format.format(validFrom.getTime());
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectGeneration#getValidFrom()
+    /**
+     * {@inheritDoc}
      */
     public GregorianCalendar getValidFrom() {
         return validFrom;
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectGeneration#setValidFrom(java.util.GregorianCalendar)
+    /**
+     * {@inheritDoc}
      */
     public void setValidFrom(GregorianCalendar validFrom) {
         GregorianCalendar oldValue = this.validFrom;
@@ -100,9 +97,8 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         valueChanged(oldValue, validFrom);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
+    /**
+     * {@inheritDoc}
      */
     public void delete() {
         ((TimedIpsObject)getTimedIpsObject()).removeGeneration(this);
@@ -120,27 +116,22 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+    /**
+     * {@inheritDoc}
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("Generation.gif"); //$NON-NLS-1$
+    	return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptImage(Locale.getDefault());
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -148,9 +139,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);

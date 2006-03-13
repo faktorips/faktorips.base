@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.model;
 
 import java.util.Locale;
 
+import org.eclipse.swt.graphics.Image;
+
 /**
  * Naming convention for product changes over time. 
  * <p>
@@ -92,6 +94,15 @@ public interface IChangesOverTimeNamingConvention {
 	public String getGenerationConceptNameAbbreviation(Locale locale);
 
 	/**
+	 * Returns an image that can be used to represent an item of the
+	 * genration concept.
+	 * 
+	 * @param locale The locale that determines the langugage to use. This
+	 * is neccessary because chars can be contained in the image.
+	 */
+	public Image getGenerationConceptImage(Locale locale);
+	
+	/**
 	 * Returns the name for the version concept in singular.
 	 * 
 	 * @param locale The locale that determines the language in which
@@ -115,6 +126,15 @@ public interface IChangesOverTimeNamingConvention {
 	 */
 	public String getVersionConceptNameAbbreviation(Locale locale);
 	
+	/**
+	 * Returns an image that can be used to represent an item of the
+	 * version concept.
+	 * 
+	 * @param locale The locale that determines the langugage to use. This
+	 * is neccessary because chars can be contained in the image.
+	 */
+	public Image getVersionConceptImage(Locale locale);
+
 	/**
 	 * Returns the name for the effective date concept. E.g. in some
 	 * cases this might be called validFrom.

@@ -147,19 +147,32 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @param name The image name, e.g. <code>IpsProject.gif</code>
      */
     public Image getImage(String name) {
+    	return getImage(name, false);
+    }
+
+    /**
+     * Returns the image with the indicated name form the <code>icons</code> folder. If no
+     * image is found and <code>returnNull</code> is true, null is returned. Otherwise
+     * (no image found, but <code>returnNull</code> is true), the missing image is returned.
+     * 
+     * @param name The name of the image.
+     * @param returnNull <code>true</code> to get null as return value if the image is not found,
+     * <code>false</code> to get the missing image in this case.
+     */
+    public Image getImage(String name, boolean returnNull) {
         Image image = getImageRegistry().get(name);
         if (image == null) {
             URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
-            ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
-            if (descriptor == null) {
-                descriptor = ImageDescriptor.getMissingImageDescriptor();
+            if (url == null && returnNull) {
+            	return null;
             }
+            ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
             getImageRegistry().put(name, descriptor);
             image = getImageRegistry().get(name);
         }
         return image;
     }
-
+    
     public Image getImage(ImageDescriptor descriptor) {
         return getImageDescriptorRegistry().get(descriptor);
     }
