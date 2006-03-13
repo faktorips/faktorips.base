@@ -147,6 +147,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     /**
+	 * {@inheritDoc}
+	 */
+	public void removeValue(String string) {
+		elements.remove(string);
+        updateSrcFile();
+	}
+
+    /**
      * {@inheritDoc}
      */
     public String getValue(int index) {
@@ -290,5 +298,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 		elements.clear();
 		elements.addAll(((EnumValueSet)target).elements);
 	}
+
 	
 }

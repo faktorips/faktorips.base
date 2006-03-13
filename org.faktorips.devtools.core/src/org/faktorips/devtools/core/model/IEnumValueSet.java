@@ -55,6 +55,12 @@ public interface IEnumValueSet extends IValueSet {
 	public void removeValue(int index);
 
 	/**
+	 * Removes the given value. If the value is not contained, nothing happens.
+	 */
+	public void removeValue(String string);
+
+
+	/**
 	 * Retrieves the value at the given index.
 	 * @throws IndexOutOfBoundsException if the given index is out of bounds.
 	 */

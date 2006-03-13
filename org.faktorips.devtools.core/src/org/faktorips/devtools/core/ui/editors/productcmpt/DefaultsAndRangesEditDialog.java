@@ -34,11 +34,9 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controls.EnumValueSetEditControl;
+import org.faktorips.devtools.core.ui.controls.EnumValueSetChooser;
 import org.faktorips.devtools.core.ui.controls.RangeEditControl;
-import org.faktorips.devtools.core.ui.controls.TableElementValidator;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
-import org.faktorips.util.message.MessageList;
 
 /**
  *
@@ -106,10 +104,12 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
     private Composite createValueSetControl(Composite workArea) {
         try {
             IValueSet valueSet = configElement.getValueSet();
+            IValueSet attrValueSet = null;
             IAttribute attribute = configElement.findPcTypeAttribute();
             if (attribute!=null) {
+                attrValueSet = attribute.getValueSet();
                 if (valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
-                    valueSet = attribute.getValueSet();
+                    valueSet = attrValueSet;
                 }
             }
             
@@ -118,10 +118,8 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
                 return rangeEditControl;
             } 
             if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-                EnumValueSetEditControl valueSetControl = new EnumValueSetEditControl((IEnumValueSet)valueSet,
-                        workArea, new ProductElementValidator());
-                
-                return valueSetControl;
+            	EnumValueSetChooser chooser = new EnumValueSetChooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet, (IEnumValueSet)valueSet, uiController);
+                return chooser;
             } 
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -137,29 +135,4 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         super.connectToModel();
         uiController.add(defaultValueField, IConfigElement.PROPERTY_VALUE);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void valueSetChanged(IValueSet valueSet) {
-    	configElement.setValueSetCopy(valueSet);
-    }
-
-    private class ProductElementValidator implements TableElementValidator {
-
-        /**
-         * Overridden IMethod.
-         * @see org.faktorips.devtools.core.ui.controls.TableElementValidator#validate(java.lang.Object)
-         */
-        public MessageList validate(String element) {
-            MessageList list = new MessageList();
-            try {
-                list = configElement.validate();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-            return list.getMessagesFor(element);
-        }
-    }
-
 }
