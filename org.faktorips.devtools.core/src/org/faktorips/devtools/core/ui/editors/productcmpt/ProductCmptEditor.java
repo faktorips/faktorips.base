@@ -294,6 +294,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 							.getWorkingDate())) {
 				// check happned before and user decided not to create a new generation - dont bother 
 				// the user with repeating questions.
+				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
+
 				return;
 			}
 
@@ -377,13 +379,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			return;
 		}
 
-		if (getActiveGeneration() != null
-				&& getActiveGeneration().equals(generation)) {
-			return;
+		if (getActiveGeneration() == null
+				|| !getActiveGeneration().equals(generation)) {
+			super.setActiveGeneration(generation);
+			refreshStructure();
 		}
 
-		super.setActiveGeneration(generation);
-		refreshStructure();
 		setPropertiesEnabled((IProductCmptGeneration) generation);
 	}
 
