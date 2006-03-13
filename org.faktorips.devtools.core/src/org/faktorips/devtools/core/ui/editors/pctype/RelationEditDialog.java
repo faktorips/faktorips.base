@@ -207,10 +207,10 @@ public class RelationEditDialog extends IpsPartEditDialog {
 			relation.setMinCardinality(1);
 			relation.setMaxCardinality(1);
 			relation.setProductRelevant(false);
-			relation.setTargetRolePluralProductSide("");
-			relation.setTargetRoleSingularProductSide("");
+			relation.setTargetRolePluralProductSide(""); //$NON-NLS-1$
+			relation.setTargetRoleSingularProductSide(""); //$NON-NLS-1$
 		} else if (type.isAssoziation()) {
-			relation.setContainerRelation("");
+			relation.setContainerRelation(""); //$NON-NLS-1$
 			relation.setReadOnlyContainer(false);
 		}
 		this.uiController.updateUI();

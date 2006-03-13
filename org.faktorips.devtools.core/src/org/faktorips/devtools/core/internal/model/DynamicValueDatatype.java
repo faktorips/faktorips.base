@@ -75,7 +75,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 
 		datatype.setAdaptedClassName(element.getAttribute("valueClass")); //$NON-NLS-1$
 		datatype.setQualifiedName(element.getAttribute("id")); //$NON-NLS-1$
-		if(element.hasAttribute("valueOfMethod")) {
+		if(element.hasAttribute("valueOfMethod")) { //$NON-NLS-1$
 		datatype.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
 		}
 		else {

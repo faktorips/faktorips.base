@@ -181,7 +181,7 @@ public class MovePage extends WizardPage implements ModifyListener {
 			String text = null;
 			if (element instanceof IIpsPackageFragment) {
 				if (((IIpsPackageFragment) element).isDefaultPacakge()) {
-					return "(default package)";
+					return Messages.MovePage_labelDefaultPackage;
 				}
 				text = ((IIpsPackageFragment) element).getFolderName();
 			} else if (element instanceof IIpsElement) {

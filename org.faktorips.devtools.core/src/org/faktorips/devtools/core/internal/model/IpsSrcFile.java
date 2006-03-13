@@ -53,7 +53,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
 
     	super(parent, name);
     	if(IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name)) == null){
-    		throw new IllegalArgumentException("The provided file name is not a valid file name for an "
+    		throw new IllegalArgumentException("The provided file name is not a valid file name for an " //$NON-NLS-1$
     				+  StringUtil.unqualifiedName(IpsSrcFile.class.getName()));
     	}
     }

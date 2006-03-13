@@ -64,7 +64,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 	 * {@inheritDoc}
 	 */
 	public void run(IAction action) {
-		InputDialog dialog = new InputDialog(shell, "Change WorkingDate", "Please enter the new working date as YYYY-MM-DD.", IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate(), new Validator());
+		InputDialog dialog = new InputDialog(shell, Messages.ChangeWorkingDateAction_title, Messages.ChangeWorkingDateAction_description, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate(), new Validator());
 
 		if (dialog.open() == InputDialog.OK) {
 			try {
@@ -108,9 +108,9 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 					pattern = ((SimpleDateFormat)format).toLocalizedPattern();
 				}
 				else {
-					pattern = "to be parsed as date.";
+					pattern = Messages.ChangeWorkingDateAction_errorFallbackMessageParameter;
 				}
-				String msg = NLS.bind("The value is not in the form {0}. ", pattern);
+				String msg = NLS.bind(Messages.ChangeWorkingDateAction_errorPrefix, pattern);
 				return msg;
 			}
 

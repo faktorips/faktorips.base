@@ -446,9 +446,9 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
-        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this, 
+        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this,  //$NON-NLS-1$
         		PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
-        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR, 
+        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR,  //$NON-NLS-1$
         		MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list); //$NON-NLS-1$
 
         if (maxCardinality == 0) {

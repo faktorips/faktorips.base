@@ -73,4 +73,6 @@ public class Messages extends NLS {
 	public static String RenamePage_errorFileExists;
 
 	public static String RenamePage_errorFolderExists;
+
+	public static String MovePage_labelDefaultPackage;
 }

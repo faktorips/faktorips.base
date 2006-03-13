@@ -116,6 +116,6 @@ public class JavaNamingConvention {
     }
     
     public String getToDoMarker() {
-    	return "TODO";
+    	return "TODO"; //$NON-NLS-1$
     }
 }

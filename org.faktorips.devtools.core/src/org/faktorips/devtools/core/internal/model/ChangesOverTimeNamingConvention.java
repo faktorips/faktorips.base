@@ -36,8 +36,8 @@ public class ChangesOverTimeNamingConvention implements
 	
 	private final static String pack = StringUtil.getPackageName(ChangesOverTimeNamingConvention.class.getName());
 	private final static String unqalifiedClassName = StringUtil.unqualifiedName(ChangesOverTimeNamingConvention.class.getName());
-	private final static String GENERATION_IMAGE_BASE = "Generation";
-	private final static String VERSION_IMAGE_BASE = "Version";
+	private final static String GENERATION_IMAGE_BASE = "Generation"; //$NON-NLS-1$
+	private final static String VERSION_IMAGE_BASE = "Version"; //$NON-NLS-1$
 
 	
 	private String id;
@@ -161,20 +161,20 @@ public class ChangesOverTimeNamingConvention implements
 		Image image = null;
 		// first we try to load the image with the full locale, i.e. de_DE
 		if (localeString.length() > 0) {
-			image = plugin.getImage(id + "_" + baseName + "_" + locale.toString() + ".gif", true);
+			image = plugin.getImage(id + "_" + baseName + "_" + locale.toString() + ".gif", true); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		
 		// if the locale has a country code (e.g. DE), we now ignore this and try
 		// to load the image only with the language code (e.g. de).
 		if (image == null && locale.getCountry().length() != 0) {
-			image = plugin.getImage(id + "_" + baseName + "_" + locale.getLanguage(), true);
+			image = plugin.getImage(id + "_" + baseName + "_" + locale.getLanguage(), true); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		// neither for full locale nor for only language code an image was found,
 		// so try to load the base image and let the missing image descriptor be
 		// returned if not found.
 		if (image == null) {
-			image = plugin.getImage(id + "_" + baseName + ".gif");
+			image = plugin.getImage(id + "_" + baseName + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
 		return image;
