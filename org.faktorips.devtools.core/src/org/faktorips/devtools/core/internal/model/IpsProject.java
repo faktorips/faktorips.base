@@ -652,6 +652,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		
 		for (int i = 0; i < allProductCmpts.length; i++) {
 			IProductCmptGeneration generation = (IProductCmptGeneration)((IProductCmpt)allProductCmpts[i]).findGenerationEffectiveOn(IpsPreferences.getWorkingDate());
+			if (generation == null) {
+				// it is possible have the working date set to a date in the past
+				// where no generation exists for a product cmpt. In this case,
+				// we ignore this product cmpt.
+				continue;
+			}
 			IProductCmptRelation[] relations = generation.getRelations();
 			for (int j = 0; j < relations.length; j++) {
 				if (relations[j].getTarget().equals(qualifiedProductCmptName)) {
