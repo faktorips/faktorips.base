@@ -58,7 +58,6 @@ public class IpsProjectTest extends IpsPluginTest {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
-        newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     }
     
     public void testFindProductCmptType() throws CoreException {
@@ -320,6 +319,7 @@ public class IpsProjectTest extends IpsPluginTest {
     }
 
     public void testFindEnumDatatypes() throws CoreException{
+    	newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     	EnumDatatype[] dataType = ipsProject.findEnumDatatypes();
     	assertEquals(1, dataType.length);
     	assertEquals("TestEnumType", dataType[0].getQualifiedName());
@@ -327,6 +327,7 @@ public class IpsProjectTest extends IpsPluginTest {
     }
     
     public void testFindEnumDatatype() throws CoreException{
+    	newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     	EnumDatatype dataType = ipsProject.findEnumDatatype("TestEnumType");
     	assertEquals("TestEnumType", dataType.getQualifiedName());
     }
