@@ -17,11 +17,14 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 
@@ -42,7 +45,14 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
      * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
-        return getPdProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
+    	IIpsObject[] allProductCmptTypes = getPdProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
+    	ArrayList result = new ArrayList();
+    	for (int i = 0; i < allProductCmptTypes.length; i++) {
+			if (!((IProductCmptType)allProductCmptTypes[i]).isAbstract()) {
+				result.add(allProductCmptTypes[i]);
+			}
+		}
+        return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
     }
 
 }
