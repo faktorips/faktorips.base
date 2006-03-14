@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.ModifyEvent;
@@ -26,8 +27,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
@@ -35,7 +38,6 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
-import org.faktorips.values.DefaultEnumType;
 
 /**
  * A control to define the type of value set and edit a value set. 
@@ -44,7 +46,7 @@ public class ValueSetEditControl extends ControlComposite {
 
     private Combo validTypesCombo;
     private RangeEditControl rangeControl;
-    private EnumValueSetEditControl enumControl;
+    private EnumValueSetChooser enumControl;
     private Composite allValuesControl;
     private ValueDatatype datatype; // The datatype the values in the set are values of.
 
@@ -52,7 +54,6 @@ public class ValueSetEditControl extends ControlComposite {
     private IAttribute attribute;
     private UIToolkit toolkit;
     private DefaultUIController uiController;
-    private TableElementValidator validator;
 
     /**
      * Generates a new control which contains a combo box and depending on the value of the box a EnumValueSetEditControl
@@ -66,7 +67,6 @@ public class ValueSetEditControl extends ControlComposite {
         this.attribute = attribute;
         this.toolkit = toolkit;
         this.uiController = uiController;
-        this.validator = tableElementValidator;
         
         initLayout();
         Composite parentArea;
@@ -93,10 +93,16 @@ public class ValueSetEditControl extends ControlComposite {
     private Composite getControlForValueSet(IValueSet valueSet) {
     	Composite retValue;
     	if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-    		if (enumControl == null) {
-    			enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, valueSetArea, validator);
-    		}
-    		enumControl.setValueSet(valueSet);
+    		EnumDatatype enumType = null;
+    		try {
+				Datatype type = this.attribute.findDatatype();
+				if (type instanceof EnumDatatype) {
+					enumType = (EnumDatatype)type;
+				}
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+   			enumControl = new EnumValueSetChooser(valueSetArea, toolkit, null, (IEnumValueSet)valueSet, enumType, uiController);
     		retValue = enumControl;
     	} else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
     		if (rangeControl == null) {
@@ -155,9 +161,6 @@ public class ValueSetEditControl extends ControlComposite {
         this.datatype = datatype;
         ValueSetType oldType = getValueSetType();
         ValueSetType newType = valueSetTypes[0];
-        if (((StackLayout)valueSetArea.getLayout()).topControl == enumControl) {
-            enumControl.refresh();
-        }
         validTypesCombo.removeAll();
         for (int i = 0; i < valueSetTypes.length; i++) {
             validTypesCombo.add(valueSetTypes[i].getName());
@@ -194,9 +197,9 @@ public class ValueSetEditControl extends ControlComposite {
             	if (oldValueSet.getValueSetType() == ValueSetType.ENUM) {
             		valueSet.setValuesOf(oldValueSet);
             	}
-            	if (datatype instanceof DefaultEnumType && valueSet.size() == 0) {
+            	if (datatype instanceof EnumDatatype && valueSet.size() == 0) {
             		valueSet.addValuesFromDatatype((EnumDatatype)datatype);
-            		enumControl.setValueSet(valueSet);
+            		enumControl = (EnumValueSetChooser)getControlForValueSet(valueSet);
             	}
             } else if (selectedText.equals(ValueSetType.ALL_VALUES.getName())) {
             	attribute.setValueSetType(ValueSetType.ALL_VALUES);

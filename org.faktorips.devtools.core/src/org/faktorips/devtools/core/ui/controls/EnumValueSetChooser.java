@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 
 /**
  * Control to select values from one enum value set to be added to another.
@@ -39,11 +40,10 @@ public class EnumValueSetChooser extends ListChooser {
 	 * The value set to modify 
 	 */
 	private IEnumValueSet target;
-	
 	/**
 	 * The controller to notify of changes to the target value set
 	 */
-	private IpsPartUIController uiController;
+	private DefaultUIController uiController;
 	
 	/**
 	 * Mapping of human representation names to value ids.
@@ -60,7 +60,7 @@ public class EnumValueSetChooser extends ListChooser {
 	public EnumValueSetChooser(Composite parent, UIToolkit toolkit,
 			IEnumValueSet source, IEnumValueSet target,
 			EnumDatatype type,
-			IpsPartUIController uiController) {
+			DefaultUIController uiController) {
 		super(parent, toolkit);
 		super.setTargetContent(getTargetValues(target, type));
 		super.setSourceContent(getSourceValues(source, target, type));
@@ -135,7 +135,21 @@ public class EnumValueSetChooser extends ListChooser {
 	 * @return
 	 */
 	private String[] getSourceValues(IEnumValueSet sourceSet, IEnumValueSet targetSet, EnumDatatype type) {
-		String[] ids = targetSet.getValuesNotContained(sourceSet);
+		String[] ids = new String[0];
+		if (sourceSet == null && type != null) {
+			List targetIds = Arrays.asList(targetSet.getValues());
+			String[] allIds = type.getAllValueIds();
+			List result = new ArrayList();
+			for (int i = 0; i < allIds.length; i++) {
+				if (!targetIds.contains(allIds[i])) {
+					result.add(allIds[i]);
+				}
+			}
+			ids = (String[])result.toArray(new String[result.size()]);
+			
+		} else {
+			ids = targetSet.getValuesNotContained(sourceSet);
+		}
 		return mapIds2Names(ids, type);
 	}
 	
