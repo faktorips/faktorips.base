@@ -558,8 +558,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         try {
             IIpsProject[] projects = getIpsObjectPath().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
-                helper = ((IpsModel)getIpsModel()).getDatatypeHelper(projects[i],
-                    (ValueDatatype)datatype);
+                //helper = ((IpsModel)getIpsModel()).getDatatypeHelper(projects[i],
+                 //   (ValueDatatype)datatype);
+            	helper = projects[i].getDatatypeHelper(datatype);
                 if (helper != null) {
                     return helper;
                 }
