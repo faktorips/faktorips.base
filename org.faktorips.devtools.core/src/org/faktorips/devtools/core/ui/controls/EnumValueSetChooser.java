@@ -17,7 +17,13 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
@@ -29,8 +35,20 @@ import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
  */
 public class EnumValueSetChooser extends ListChooser {
 
+	/**
+	 * The value set to modify 
+	 */
 	private IEnumValueSet target;
+	
+	/**
+	 * The controller to notify of changes to the target value set
+	 */
 	private IpsPartUIController uiController;
+	
+	/**
+	 * Mapping of human representation names to value ids.
+	 */
+	private Map id2name = new Hashtable();
 	
 	/**
 	 * @param parent The parent control
@@ -41,8 +59,11 @@ public class EnumValueSetChooser extends ListChooser {
 	 */
 	public EnumValueSetChooser(Composite parent, UIToolkit toolkit,
 			IEnumValueSet source, IEnumValueSet target,
+			EnumDatatype type,
 			IpsPartUIController uiController) {
-		super(parent, toolkit, target.getValuesNotContained(source), target.getValues());
+		super(parent, toolkit);
+		super.setTargetContent(getTargetValues(target, type));
+		super.setSourceContent(getSourceValues(source, target, type));
 		this.target = target;
 		this.uiController = uiController;
 	}
@@ -52,7 +73,7 @@ public class EnumValueSetChooser extends ListChooser {
 	 */
 	public void valuesAdded(String[] values) {
 		for (int i = 0; i < values.length; i++) {
-			target.addValue(values[i]);
+			target.addValue(getIdForName(values[i]));
 		}
 		uiController.updateUI();
 	}
@@ -62,7 +83,7 @@ public class EnumValueSetChooser extends ListChooser {
 	 */
 	public void valuesRemoved(String[] values) {
 		for (int i = 0; i < values.length; i++) {
-			target.removeValue(values[i]);
+			target.removeValue(getIdForName(values[i]));
 		}
 		uiController.updateUI();
 	}
@@ -79,7 +100,69 @@ public class EnumValueSetChooser extends ListChooser {
 		}
 		String old = target.getValue(newIndex);
 		target.setValue(newIndex, value);
-		target.setValue(index, old);
+		target.setValue(index, getIdForName(old));
 
 	}	
+	
+	/**
+	 * Returns the value id for the given human readable name.
+	 */
+	private String getIdForName(String name) {
+		return (String)id2name.get(name);
+	}
+
+	/**
+	 * Returns an array of human readable strings representing all values contained in the
+	 * given valueset. The names are requested from the given datatype. If the type is <code>null</code>
+	 * or does not suppert value names, the ids are returned as names.
+	 * 
+	 * @param valueSet The valueset to get the names for.
+	 * @param type The datatype to get the names from. Can be <code>null</code>.
+	 */
+	private String[] getTargetValues(IEnumValueSet valueSet, EnumDatatype type) {
+		String[] ids = valueSet.getValues();
+		return mapIds2Names(ids, type);
+	}
+	
+	/**
+	 * Returns an array of human readable strings representing all values contained in 
+	 * sourceSet but not in targetSet. The names are requested from the given datatype. If the 
+	 * type is <code>null</code> or does not support value names, the ids are returned as names.
+	 * 
+	 * @param sourceSet The set to get the values from.
+	 * @param targetSet All values in this set are excluded from the result.
+	 * @param type The type to get the names from. Can be <code>null</code>.
+	 * @return
+	 */
+	private String[] getSourceValues(IEnumValueSet sourceSet, IEnumValueSet targetSet, EnumDatatype type) {
+		String[] ids = targetSet.getValuesNotContained(sourceSet);
+		return mapIds2Names(ids, type);
+	}
+	
+	/**
+	 * Maps all given ids to names returned by the given datatype. If the
+	 * datatype is <code>null</code> or does not support value names, the
+	 * ids are returned without name.
+	 * 
+	 * @param ids The ids to map to names.
+	 * @param type The type to use to find the names.
+	 * @return An array of human readable names. The names can be mapped back to ids
+	 * using the method getIdForName().
+	 */
+	private String[] mapIds2Names(String[] ids, EnumDatatype type) {
+		List result = new ArrayList();
+		for (int i = 0; i < ids.length; i++) {
+			String name;
+			if (type != null && type.isSupportingNames()) {
+				name = type.getValueName(ids[i]) + " (" + ids[i] + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+			} else {
+				name = ids[i];
+			}
+
+			id2name.put(name, ids[i]);
+			result.add(name);
+		}
+
+		return (String[]) result.toArray(new String[result.size()]);
+	}
 }

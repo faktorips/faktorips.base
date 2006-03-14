@@ -183,7 +183,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionUpdate, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.update")); //$NON-NLS-2$ //$NON-NLS-1$
         subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionReplace, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replace")); //$NON-NLS-2$ //$NON-NLS-1$
         subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionAdd, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.add")); //$NON-NLS-2$ //$NON-NLS-1$
-        subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionShowHistory, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory")); //$NON-NLS-2$ //$NON-NLS-3$
+        subMm.add(new WrapperAction(tree, Messages.ProductExplorer_actionShowHistory, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory"));  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         
         menumanager.add(subMm);
         

@@ -121,9 +121,13 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		}
 
 		if (datatype.isSupportingNames()) {
-			super.setValue(getEnumDatatype().getValueName((String) newValue));
+			super.setValue(getValueName((String) newValue));
 			return;
 		}
 		super.setValue(newValue);
+	}
+	
+	protected String getValueName(String id) {
+		return getEnumDatatype().getValueName(id) + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

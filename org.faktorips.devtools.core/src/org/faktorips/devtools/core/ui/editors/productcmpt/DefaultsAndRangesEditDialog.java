@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
@@ -118,7 +120,12 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
                 return rangeEditControl;
             } 
             if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-            	EnumValueSetChooser chooser = new EnumValueSetChooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet, (IEnumValueSet)valueSet, uiController);
+            	Datatype type = attribute.findDatatype();
+            	EnumDatatype enumType = null;
+            	if (type instanceof EnumDatatype) {
+            		enumType = (EnumDatatype)type;
+            	}
+            	EnumValueSetChooser chooser = new EnumValueSetChooser(workArea, uiToolkit, (IEnumValueSet)attrValueSet, (IEnumValueSet)valueSet, enumType, uiController);
                 return chooser;
             } 
         } catch (CoreException e) {

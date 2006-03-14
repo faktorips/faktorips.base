@@ -79,4 +79,12 @@ public class Messages extends NLS {
 	public static String ProductCmptTypeRefControl_title;
 
 	public static String ProductCmptTypeRefControl_description;
+
+	public static String ListChooser_labelAvailableValues;
+
+	public static String ListChooser_lableChoosenValues;
+
+	public static String ListChooser_buttonUp;
+
+	public static String ListChooser_buttonDown;
 }

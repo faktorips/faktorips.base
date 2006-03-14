@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IEnumValueSet;
@@ -84,7 +85,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             String each = (String)it.next();
             if (datatype.isParsable(each)) {
                 Object eachVal = datatype.getValue(each);
-                if (eachVal.equals(val)) {
+                if (eachVal == null && val == null) {
+                	return true;
+                }
+                else if (eachVal != null && eachVal.equals(val)) {
                     return true;
                 }
             }
@@ -219,7 +223,15 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return super.toString() + ":" + elements.toString(); //$NON-NLS-1$
     }
 
-    public String toShortString() {
+    public String toShortString(Datatype type) {
+    	if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
+    		List result = new ArrayList(elements.size());
+    		for (Iterator iter = elements.iterator(); iter.hasNext();) {
+    			String id = (String) iter.next();
+				result.add(((EnumDatatype)type).getValueName(id) + " (" + id + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+    		return result.toString();
+    	}
     	return elements.toString();
     }
     

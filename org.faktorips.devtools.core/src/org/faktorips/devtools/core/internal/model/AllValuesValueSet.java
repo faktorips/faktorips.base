@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IAllValuesValueSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -57,7 +58,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     /**
      * {@inheritDoc}
      */
-    public String toShortString () {
+    public String toShortString (Datatype type) {
         return "AllValuesValueSet"; //$NON-NLS-1$
     }
 

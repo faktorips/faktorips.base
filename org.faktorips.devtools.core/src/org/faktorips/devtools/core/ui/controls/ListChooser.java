@@ -59,16 +59,16 @@ public abstract class ListChooser extends Composite {
 	 * @param sourceContent All values which should show up in the source list.
 	 * @param targetContent All values which should show up in the target list.
 	 */
-	public ListChooser(Composite parent, UIToolkit toolkit, String[] sourceContent, String[] targetContent) {
+	public ListChooser(Composite parent, UIToolkit toolkit) {
 		super(parent, SWT.NONE);
 		this.toolkit = toolkit;
 		
 		this.setLayout(new GridLayout(4, false));
 		
-		toolkit.createLabel(this, "available values");
-		toolkit.createLabel(this, "");
-		toolkit.createLabel(this, "choosen values");
-		toolkit.createLabel(this, "");
+		toolkit.createLabel(this, Messages.ListChooser_labelAvailableValues);
+		toolkit.createLabel(this, ""); //$NON-NLS-1$
+		toolkit.createLabel(this, Messages.ListChooser_lableChoosenValues);
+		toolkit.createLabel(this, ""); //$NON-NLS-1$
 		
 		source = new List(this, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		source.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -81,10 +81,20 @@ public abstract class ListChooser extends Composite {
 		removeSelected.addSelectionListener(new ChooseListener(target, source, false));
 		addAll.addSelectionListener(new ChooseListener(source, target, true));
 		removeAll.addSelectionListener(new ChooseListener(target, source, true));
+	}
 
-		source.setItems(sourceContent);
+	/**
+	 * Set the content of the source-list.
+	 */
+	protected void setSourceContent(String[] srcContent) {
+		source.setItems(srcContent);
+	}
+
+	/**
+	 * Set the content of the target-list.
+	 */
+	protected void setTargetContent(String[] targetContent) {
 		target.setItems(targetContent);
-
 	}
 
 	/**
@@ -103,10 +113,10 @@ public abstract class ListChooser extends Composite {
 		root.setLayout(new GridLayout(1, false));
 		root.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
 		
-		addSelected = toolkit.createButton(root, ">");
-		removeSelected = toolkit.createButton(root, "<");
-		addAll = toolkit.createButton(root, ">>");
-		removeAll = toolkit.createButton(root, "<<");
+		addSelected = toolkit.createButton(root, ">"); //$NON-NLS-1$
+		removeSelected = toolkit.createButton(root, "<"); //$NON-NLS-1$
+		addAll = toolkit.createButton(root, ">>"); //$NON-NLS-1$
+		removeAll = toolkit.createButton(root, "<<"); //$NON-NLS-1$
 
 		addSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		removeSelected.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -122,8 +132,8 @@ public abstract class ListChooser extends Composite {
 		root.setLayout(new GridLayout(1, false));
 		root.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
 		
-		up = toolkit.createButton(root, "Up");
-		down = toolkit.createButton(root, "Down");
+		up = toolkit.createButton(root, Messages.ListChooser_buttonUp);
+		down = toolkit.createButton(root, Messages.ListChooser_buttonDown);
 		
 		up.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		down.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));

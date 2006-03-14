@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.message.MessageList;
 
@@ -149,7 +150,9 @@ public interface IValueSet extends IIpsObjectPart {
     
     /**
      * Returns the unqulified, human readable representation of this value set.
+     * If a datatype is provided and it supports named values, the names provided
+     * from the datatype are used to build the value-representations.
      */
-    public String toShortString();
+    public String toShortString(Datatype type);
     
 }

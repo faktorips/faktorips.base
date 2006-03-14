@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IRangeValueSet;
@@ -43,20 +44,6 @@ import org.w3c.dom.Element;
 public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     public final static String XML_TAG = "Range"; //$NON-NLS-1$
-
-    /**
-     * Creates a Range based on the data in the XML element. If element is <code>null</code> the method
-     * returns <code>null</code>.
-     * 
-     * @throws IllegalArgumentException if the element's name is not Range.
-     */
-//    static final IRangeValueSet createRangeFromXml(Element element) {
-//        ArgumentCheck.nodeName(element, XML_TAG);
-//        String lb = element.getAttribute(PROPERTY_LOWERBOUND);
-//        String ub = element.getAttribute(PROPERTY_UPPERBOUND);
-//        String stp = element.getAttribute(PROPERTY_STEP);
-//        return new RangeValueSet(lb, ub, stp);
-//    }
 
     private String lowerBound;
     private String upperBound;
@@ -344,13 +331,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * {@inheritDoc}
      */
     public String toString() {
-    	return super.toString() + ":" + toShortString(); //$NON-NLS-1$
+    	return super.toString() + ":" + toShortString(null); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
-    public String toShortString() {
+    public String toShortString(Datatype type) {
         if (StringUtils.isNotEmpty(step)) {
             return "[" + lowerBound + ";" + upperBound + "] by " + step; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
