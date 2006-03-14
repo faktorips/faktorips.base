@@ -309,7 +309,8 @@ public class RelationsSection extends IpsSection {
 		IProductCmptRelation prodRelation = generation.newRelation(relation
 				.getName());
 		prodRelation.setTarget(target);
-		prodRelation.setMaxCardinality(relation.getMaxCardinality());
+		prodRelation.setMaxCardinality(1);
+		prodRelation.setMinCardinality(relation.getMinCardinality());
 	}
 
 	/**
@@ -318,8 +319,10 @@ public class RelationsSection extends IpsSection {
 	 */
 	private void newRelation(String target, IProductCmptTypeRelation relation,
 			IProductCmptRelation insertBefore) {
-		generation.newRelation(relation.getName(), insertBefore).setTarget(
-				target);
+		IProductCmptRelation prodRelation = generation.newRelation(relation.getName(), insertBefore);
+		prodRelation.setTarget(target);
+		prodRelation.setMaxCardinality(1);
+		prodRelation.setMinCardinality(relation.getMinCardinality());
 	}
 
 	/**

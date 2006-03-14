@@ -68,6 +68,8 @@ public class NewProductCmptRelationAction extends IpsAction {
 		if (selected instanceof IProductCmptTypeRelation) {
 			setSyncpoint();
 			IProductCmptRelation relation = parent.newRelation((IProductCmptTypeRelation)selected);
+			relation.setMaxCardinality(1);
+			relation.setMinCardinality(((IProductCmptTypeRelation)selected).getMinCardinality());
 			RelationEditDialog dialog = new RelationEditDialog(relation, shell);
 			dialog.setProductCmptsToExclude(parent.getRelationTargetsFor((IProductCmptTypeRelation)selected));
 			if (dialog.open() == Dialog.CANCEL) {
