@@ -52,6 +52,7 @@ public class DefaultTestContent {
 		copy(res, "motor", "TplCoverage.ipspct");
 		copy(res, "motor", "MotorContract.ipspct");
 		copy(res, "motor", "Vehicle.ipspct");
+		copy(res, "motor", "Bike.ipsct");
 		copy(res, "products", "BasicCollisionCoverage.ipsproduct");
 		copy(res, "products", "BasicMotorProduct.ipsproduct");
 		copy(res, "products", "ComfortCollisionCoverageA.ipsproduct");
@@ -59,6 +60,7 @@ public class DefaultTestContent {
 		copy(res, "products", "ComfortMotorProduct.ipsproduct");
 		copy(res, "products", "StandardTplCoverage.ipsproduct");
 		copy(res, "products", "StandardVehicle.ipsproduct");
+		copy(res, "products", "StandardBike.ipsproduct");
 	}
 	
 	private void copy(IFolder target, String pack, String filename) throws SAXException, IOException, ParserConfigurationException, CoreException {
@@ -105,6 +107,10 @@ public class DefaultTestContent {
 		return (IProductCmpt)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "products.StandardVehicle");
 	}
 	
+	public IProductCmpt getStandardBike() throws CoreException {
+		return (IProductCmpt)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "products.StandardBike");
+	}
+	
 	public IPolicyCmptType getContract() throws CoreException {
 		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "independant.Contract");
 	}
@@ -127,5 +133,9 @@ public class DefaultTestContent {
 
 	public IPolicyCmptType getVehicle() throws CoreException {
 		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.Vehicle");
+	}
+
+	public IPolicyCmptType getBike() throws CoreException {
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.Bike");
 	}
 }

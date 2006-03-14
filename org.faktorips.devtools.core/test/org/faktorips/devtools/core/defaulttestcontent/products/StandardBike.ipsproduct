@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductCmpt description="" policyCmptType="motor.Bike">
+    <Generation id="0" description="" validFrom="2003-08-01">
+        <ConfigElement id="0" description="" type="formula" pcTypeAttribute="motorPower">
+            <Value isNull="false"><![CDATA[WENN(age<21;20;100)]]></Value>
+            <ValueSet id="0" description="">
+                <AllValues/>
+            </ValueSet>
+        </ConfigElement>
+    </Generation>
+</ProductCmpt>
+

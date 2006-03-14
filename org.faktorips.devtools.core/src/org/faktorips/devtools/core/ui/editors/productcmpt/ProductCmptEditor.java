@@ -323,8 +323,15 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			String title = Messages.bind(
 					Messages.ProductCmptEditor_title_GenerationMissmatch,
 					getProductCmpt().getName(), gen);
-			boolean ok = MessageDialog.openConfirm(getContainer().getShell(),
-					title, message);
+			
+			boolean ok;
+			if (IpsPlugin.getDefault().isTestMode()) {
+				ok = IpsPlugin.getDefault().getTestAnswerProvider().getBooleanAnswer();
+			}
+			else {
+				ok = MessageDialog.openConfirm(getContainer().getShell(),
+						title, message);
+			}
 
 			if (ok) {
 				// create a new generation and set it active

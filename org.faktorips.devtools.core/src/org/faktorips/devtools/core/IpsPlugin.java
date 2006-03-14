@@ -39,6 +39,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsModelManager;
+import org.faktorips.devtools.core.internal.test.ITestAnswerProvider;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
@@ -52,6 +53,9 @@ import org.osgi.framework.BundleContext;
 public class IpsPlugin extends AbstractUIPlugin {
 
     public final static String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
+    
+    private boolean testMode = false;
+    private ITestAnswerProvider testAnswerProvider; 
 
     /**
      * Returns the full extension id. This is the plugin's id plus the plugin
@@ -268,7 +272,49 @@ public class IpsPlugin extends AbstractUIPlugin {
         return manager;
     }
     
+    /**
+     * Returns preferences for this plugin.
+     */
     public IpsPreferences getIpsPreferences() {
     	return preferences;
+    }
+
+    /**
+     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * <p>
+     * Activate or deactivate test mode.
+     */
+    public void setTestMode(boolean testMode) {
+    	this.testMode = testMode;
+    }
+
+    /**
+     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * <p>
+     * Returns <code>true</code> when test mode is active. If so,
+     * the method getTestAnswerProvider must not return null 
+     * (which means that setTestAnswerProvider has to be called
+     * with a non-null value).
+     */
+    public boolean isTestMode() {
+    	return testMode;
+    }
+
+    /**
+     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * <p>
+     * Returns the answer provider for testing purpose.
+     */
+    public ITestAnswerProvider getTestAnswerProvider() {
+    	return testAnswerProvider;
+    }
+
+    /**
+     * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
+     * <p>
+     * Returns the answer provider for testing purpose.
+     */
+    public void setTestAnswerProvider(ITestAnswerProvider testAnswerProvider) {
+    	this.testAnswerProvider = testAnswerProvider;
     }
 }
