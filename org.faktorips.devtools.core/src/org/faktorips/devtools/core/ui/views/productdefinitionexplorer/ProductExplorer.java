@@ -30,7 +30,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -50,12 +49,14 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.RefreshAction;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
@@ -107,15 +108,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
     public void init(IViewSite site) throws PartInitException {
     	super.init(site);
     	
-    	site.getActionBars().getToolBarManager().add(new Action("") { //$NON-NLS-1$
-    		public ImageDescriptor getImageDescriptor() {
-    			return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
-    		}
-    		
-			public void run() {
-				tree.refresh();
-			}
-		});
+    	site.getActionBars().getToolBarManager().add(new PERefreshAction(site.getShell()));
     }
 
     /**
@@ -444,6 +437,25 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 			// nothing to do
 		}
     	
+    }
+    
+    private class PERefreshAction extends RefreshAction {
+
+		/**
+		 * @param shell
+		 */
+		public PERefreshAction(Shell shell) {
+			super(shell);
+		}
+    	
+		public void run() {
+			super.run();
+			tree.refresh();
+		}
+
+		public ImageDescriptor getImageDescriptor() {
+			return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+		}
     }
     
 }

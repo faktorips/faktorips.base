@@ -18,7 +18,13 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -39,7 +45,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
  *
  */
 public abstract class IpsObjectEditor extends FormEditor 
-	implements ContentsChangeListener, IPartListener {
+	implements ContentsChangeListener, IPartListener, IResourceChangeListener {
 
     // the file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
@@ -83,9 +89,12 @@ public abstract class IpsObjectEditor extends FormEditor
             IFile file = ((IFileEditorInput)input).getFile();
             IIpsModel model = IpsPlugin.getDefault().getIpsModel();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
+
             model.addChangeListener(this);
             setPartName(ipsSrcFile.getName());
             site.getPage().addPartListener(this);
+            
+            ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         }
     }
     
@@ -176,7 +185,11 @@ public abstract class IpsObjectEditor extends FormEditor
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(IWorkbenchPart part) {
-        refresh();
+    	if (part != this) {
+    		return;
+    	}
+
+    	refresh();
     }
     
     /** 
@@ -184,7 +197,28 @@ public abstract class IpsObjectEditor extends FormEditor
      * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IWorkbenchPart)
      */
     public void partBroughtToTop(IWorkbenchPart part) {
-        // nothing to do
+    	if (part != this) {
+    		return;
+    	}
+
+    	if (!ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE)) {
+    		String msg = NLS.bind("The resource {0} is out of sync with the file system.", ipsSrcFile.getName());
+    		if (isDirty()) {
+    			msg += " You can close the editor and discard your changes or let the editor open and discard the changes made on the file outside of FaktorIPS. Close the editor and discard the canges?";	
+        		boolean ok = MessageDialog.openQuestion(super.getSite().getShell(), "Resource out of sync", msg);
+        		if (ok) {
+            		this.close(false);
+        		} else {
+        			doSave(null);
+        		}
+    		}
+    		else {
+    			msg += "The editor will be closed.";
+    			MessageDialog.openError(super.getSite().getShell(), "Resource out of sync", msg);
+    			this.close(false);
+    		}
+    		
+    	}
     }
     
     /** 
@@ -213,4 +247,23 @@ public abstract class IpsObjectEditor extends FormEditor
     public void partOpened(IWorkbenchPart part) {
         // nothing to do
     }
+
+    /**
+     * We have to close the editor if the underlying resource is removed.
+     * {@inheritDoc}
+     */
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (!ipsSrcFile.exists()) {
+			this.close(false);
+		}
+	}
+
+	/**
+	 * Returns <code>true</code> if the <code>IIpsSrcFile</code> this editor is based on exists
+	 * and is in sync.
+	 */
+	protected boolean isSrcFileUsable() {
+		return ipsSrcFile.exists() && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
+	}
+
 }

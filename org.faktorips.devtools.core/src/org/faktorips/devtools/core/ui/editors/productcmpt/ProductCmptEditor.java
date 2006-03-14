@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -90,15 +91,21 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	protected void addPages() {
 		try {
-			propertiesPage = new PropertiesPage(this);
-			generationsPage = new GenerationsPage(this);
-			descriptionPage = new DescriptionPage(this);
-			rulesPage = new RulesPage(this);
-
-			addPage(propertiesPage);
-			addPage(generationsPage);
-			addPage(rulesPage);
-			addPage(descriptionPage);
+			if (isSrcFileUsable()) {
+				propertiesPage = new PropertiesPage(this);
+				generationsPage = new GenerationsPage(this);
+				descriptionPage = new DescriptionPage(this);
+				rulesPage = new RulesPage(this);
+				
+				addPage(propertiesPage);
+				addPage(generationsPage);
+				addPage(rulesPage);
+				addPage(descriptionPage);
+			}
+			else {
+				MissingResourcePage page = new MissingResourcePage(this, getIpsSrcFile());
+				addPage(page);
+			}
 		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}
@@ -110,7 +117,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-		setActiveGeneration(getPreferredGeneration());
+		
+		if (isSrcFileUsable()) {
+			setActiveGeneration(getPreferredGeneration());
+		} 
 	}
 
 	/**
@@ -129,7 +139,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * {@inheritDoc}
 	 */
 	public void partActivated(IWorkbenchPart part) {
-		if (part != this) {
+		if (part != this || !isSrcFileUsable()) {
 			return;
 		}
 
@@ -272,6 +282,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * {@inheritDoc}
 	 */
 	protected String getUniformPageTitle() {
+		if (!isSrcFileUsable()) {
+			return NLS.bind("File {0} not found or out of sync.", getIpsSrcFile().getName());
+		}
 		checkGeneration();
 		return Messages.ProductCmptEditor_productComponent
 				+ getProductCmpt().getName();

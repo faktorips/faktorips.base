@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -83,7 +85,12 @@ public class ProductContentProvider implements ITreeContentProvider {
      * @return see above.
      * @throws CoreException
      */
-    private Object[] getPackageFragmentContent(IIpsPackageFragment parentElement) throws CoreException {        
+    private Object[] getPackageFragmentContent(IIpsPackageFragment parentElement) throws CoreException {     
+    	
+    	if (!parentElement.getCorrespondingResource().isSynchronized(IResource.DEPTH_ZERO)) {
+    		parentElement.getCorrespondingResource().refreshLocal(IResource.DEPTH_ZERO, null);
+    	}
+    	
         // For the department, we don't show IpsObjects or IpsSrcFiles, only IpsProductComponent(children of IpsSrcFile)
         // and IpsObjects (children of IpsSrcFile).                    
         IIpsElement folders[] = parentElement.getIpsChildPackageFragments();
@@ -93,6 +100,10 @@ public class ProductContentProvider implements ITreeContentProvider {
         
         for (int i = 0; i < files.length; i++) {
             if (files[i] instanceof IIpsSrcFile) {
+            	IFile file = ((IIpsSrcFile)files[i]).getCorrespondingFile();
+            	if (!file.isSynchronized(IResource.DEPTH_ZERO)) {
+            		file.getParent().refreshLocal(IResource.DEPTH_ONE, null);
+            	}
                 IIpsElement[] ipsObjects = ((IIpsSrcFile)files[i]).getChildren();
                 if (ipsObjects.length > 1) {
                     IpsPlugin.log(new IpsStatus(Messages.ProductContentProvider_tooMuchIpsObjects));
