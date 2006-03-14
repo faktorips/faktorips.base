@@ -390,7 +390,7 @@ public class Relation extends IpsObjectPart implements IRelation {
      * Overridden.
      */
     public IRelation findReverseRelation() throws CoreException {
-        if (type.isComposition() && implementsContainerRelation()) {
+        if ((type.isComposition() || type.isReverseComposition()) && implementsContainerRelation()) {
         	return findReverseRelationOfImplementationRelation();
         }
     	if (StringUtils.isEmpty(reverseRelation)) {
@@ -414,8 +414,8 @@ public class Relation extends IpsObjectPart implements IRelation {
         if (containerRel==null) {
         	return null;
         }
-        String reverseContainerRel = containerRel.getReverseRelation();
-        if (StringUtils.isEmpty(reverseContainerRel)) {
+        IRelation reverseContainerRel = containerRel.findReverseRelation();
+        if (reverseContainerRel==null) {
         	return null;
         }
         IPolicyCmptType target = findTarget();
@@ -424,7 +424,8 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         IRelation[] relations = target.getRelations();
         for (int i=0; i<relations.length; i++) {
-            if (relations[i].getContainerRelation().equals(reverseContainerRel)) {
+            if (relations[i].getTarget().equals(getIpsObject().getQualifiedName()) 
+            		&& reverseContainerRel==relations[i].findContainerRelation()) {
                 return relations[i];
             }
         }

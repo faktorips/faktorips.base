@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
@@ -152,8 +151,6 @@ public class IpsProjectProperties {
 		return projectEl;
 	}
 	
-	
-
 	public void initFromXml(IIpsProject ipsProject, Element element) {
         Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$

@@ -263,7 +263,8 @@ public interface IRelation extends IIpsObjectPart {
     
     /**
      * Searches the reverse relation and returns it, if it exists. Returns <code>null</code> if the reverse
-     * relation does not exists.
+     * relation does not exists. Note that if this relation implements a container relation,
+     * the reverse relation is determined by the container relation's reverse relation.
      * 
      * @throws CoreException if an error occurs while searching.
      */
