@@ -166,7 +166,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         menumanager.add(ActionFactory.DELETE.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(new Separator());
         menumanager.add(new ShowStructureAction());
-        menumanager.add(new FindReferenceAction());
+        menumanager.add(new FindReferenceAction(tree));
         menumanager.add(new ShowAttributesAction());
         menumanager.add(new Separator());
 
