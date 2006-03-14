@@ -183,7 +183,7 @@ public class CompilationResultImpl implements CompilationResult {
     }
     
     public String toString() {
-        return "Datatype: " + (datatype==null?"null":datatype.toString())
+        return "Datatype: " + (datatype==null?"null":datatype.toString()) //$NON-NLS-1$ //$NON-NLS-2$
                 + SystemUtils.LINE_SEPARATOR + messages.toString() + codeFragment.toString();  
     }
     

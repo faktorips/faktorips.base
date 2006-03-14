@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class PlusDecimal extends AbstractUnaryOperation {
 
     public PlusDecimal() {
-        super(Datatype.DECIMAL, "+");
+        super(Datatype.DECIMAL, "+"); //$NON-NLS-1$
     }
 
     /** 

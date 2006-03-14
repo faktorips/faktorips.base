@@ -44,13 +44,13 @@ public class WholeNumber extends AbstractFlFunction {
     public CompilationResult compile(CompilationResult[] argResults) {
         ArgumentCheck.length(argResults, 1);
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ");
+        fragment.append("new "); //$NON-NLS-1$
         fragment.appendClassName(Integer.class);
         fragment.append('(');
         fragment.append(argResults[0].getCodeFragment());
-        fragment.append(".setScale(0, ");
+        fragment.append(".setScale(0, "); //$NON-NLS-1$
         fragment.appendClassName(BigDecimal.class);
-        fragment.append(".ROUND_DOWN).intValue())");
+        fragment.append(".ROUND_DOWN).intValue())"); //$NON-NLS-1$
         return new CompilationResultImpl(fragment, Datatype.INTEGER);
     }
 

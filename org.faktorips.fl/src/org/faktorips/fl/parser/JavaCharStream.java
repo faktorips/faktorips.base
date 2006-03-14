@@ -334,8 +334,8 @@ public class JavaCharStream
         }
         catch(java.io.IOException e)
         {
-           throw new Error("Invalid escape character at line " + line +
-                                         " column " + column + ".");
+           throw new Error("Invalid escape character at line " + line + //$NON-NLS-1$
+                                         " column " + column + "."); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (backSlashCnt == 1)

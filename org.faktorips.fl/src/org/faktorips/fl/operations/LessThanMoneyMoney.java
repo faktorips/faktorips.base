@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class LessThanMoneyMoney extends AbstractBinaryOperation {
 
     public LessThanMoneyMoney() {
-        super("<", Datatype.MONEY, Datatype.MONEY);
+        super("<", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
     }
 
     /** 
@@ -36,7 +36,7 @@ public class LessThanMoneyMoney extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".lessThan(");
+        lhs.getCodeFragment().append(".lessThan("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);

@@ -40,7 +40,7 @@ public class AnyDatatype implements Datatype {
     }
 
     public String getName() {
-        return "any";
+        return "any"; //$NON-NLS-1$
     }
 
     /**
@@ -48,7 +48,7 @@ public class AnyDatatype implements Datatype {
      * @see org.faktorips.datatype.Datatype#getQualifiedName()
      */
     public String getQualifiedName() {
-        return "any";
+        return "any"; //$NON-NLS-1$
     }
 
     /**

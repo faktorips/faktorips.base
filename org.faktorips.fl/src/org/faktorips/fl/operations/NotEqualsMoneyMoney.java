@@ -28,7 +28,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class NotEqualsMoneyMoney extends AbstractBinaryOperation {
 
     public NotEqualsMoneyMoney() {
-        super("!=", Datatype.MONEY, Datatype.MONEY);
+        super("!=", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
     }
 
     /** 
@@ -40,7 +40,7 @@ public class NotEqualsMoneyMoney extends AbstractBinaryOperation {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append('!');
         fragment.append(lhs.getCodeFragment());
-        fragment.append(".equals(");
+        fragment.append(".equals("); //$NON-NLS-1$
         fragment.append(rhs.getCodeFragment());
         fragment.append(')');
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.PRIMITIVE_BOOLEAN);

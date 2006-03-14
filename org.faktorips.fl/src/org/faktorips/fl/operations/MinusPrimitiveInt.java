@@ -28,7 +28,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MinusPrimitiveInt extends AbstractUnaryOperation {
 
     public MinusPrimitiveInt() {
-        super(Datatype.PRIMITIVE_INT, "-");
+        super(Datatype.PRIMITIVE_INT, "-"); //$NON-NLS-1$
     }
 
     /** 

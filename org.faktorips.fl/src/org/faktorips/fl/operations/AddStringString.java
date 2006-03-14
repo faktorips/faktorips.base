@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class AddStringString extends AbstractBinaryOperation {
 
     public AddStringString() {
-        super("+", Datatype.STRING, Datatype.STRING);
+        super("+", Datatype.STRING, Datatype.STRING); //$NON-NLS-1$
     }
 
     /** 

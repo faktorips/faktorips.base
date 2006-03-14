@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MultiplyDecimalDecimal extends AbstractBinaryOperation {
 
     public MultiplyDecimalDecimal() {
-        super("*", Datatype.DECIMAL, Datatype.DECIMAL);
+        super("*", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
     }
 
     /** 
@@ -36,7 +36,7 @@ public class MultiplyDecimalDecimal extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".multiply(");
+        lhs.getCodeFragment().append(".multiply("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         return lhs;

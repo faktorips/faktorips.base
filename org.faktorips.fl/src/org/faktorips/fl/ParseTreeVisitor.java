@@ -87,7 +87,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTEQNode, java.lang.Object)
      */
     public Object visit(ASTEQNode node, Object data) {
-        return generateBinaryOperation("=", node, data);
+        return generateBinaryOperation("=", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -95,7 +95,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTNotEQNode, java.lang.Object)
      */
     public Object visit(ASTNotEQNode node, Object data) {
-        return generateBinaryOperation("!=", node, data);
+        return generateBinaryOperation("!=", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -103,7 +103,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTLTNode, java.lang.Object)
      */
     public Object visit(ASTLTNode node, Object data) {
-        return generateBinaryOperation("<", node, data);
+        return generateBinaryOperation("<", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -111,7 +111,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTGTNode, java.lang.Object)
      */
     public Object visit(ASTGTNode node, Object data) {
-        return generateBinaryOperation(">", node, data);
+        return generateBinaryOperation(">", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -119,7 +119,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTLENode, java.lang.Object)
      */
     public Object visit(ASTLENode node, Object data) {
-        return generateBinaryOperation("<=", node, data);
+        return generateBinaryOperation("<=", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -127,7 +127,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTGENode, java.lang.Object)
      */
     public Object visit(ASTGENode node, Object data) {
-        return generateBinaryOperation(">=", node, data);
+        return generateBinaryOperation(">=", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -135,7 +135,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTAddNode, java.lang.Object)
      */
     public Object visit(ASTAddNode node, Object data) {
-        return generateBinaryOperation("+", node, data);
+        return generateBinaryOperation("+", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -143,7 +143,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTSubNode, java.lang.Object)
      */
     public Object visit(ASTSubNode node, Object data) {
-        return generateBinaryOperation("-", node, data);
+        return generateBinaryOperation("-", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -151,7 +151,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTMultNode, java.lang.Object)
      */
     public Object visit(ASTMultNode node, Object data) {
-        return generateBinaryOperation("*", node, data);
+        return generateBinaryOperation("*", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -159,7 +159,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTDivNode, java.lang.Object)
      */
     public Object visit(ASTDivNode node, Object data) {
-        return generateBinaryOperation("/", node, data);
+        return generateBinaryOperation("/", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -167,7 +167,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTPlusNode, java.lang.Object)
      */
     public Object visit(ASTPlusNode node, Object data) {
-        return generateUnaryOperation("+", node, data);
+        return generateUnaryOperation("+", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -175,7 +175,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTMinusNode, java.lang.Object)
      */
     public Object visit(ASTMinusNode node, Object data) {
-        return generateUnaryOperation("-", node, data);
+        return generateUnaryOperation("-", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -183,7 +183,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTNotNode, java.lang.Object)
      */
     public Object visit(ASTNotNode node, Object data) {
-        return generateUnaryOperation("!", node, data);
+        return generateUnaryOperation("!", node, data); //$NON-NLS-1$
     }
 
     /** 
@@ -422,7 +422,7 @@ class ParseTreeVisitor implements FlParserVisitor {
             }
             return operation.generate(convertedLhsResult, convertedRhsResult);
         }
-        Object[] replacements = new Object[]{operator, lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName()}; 
+        Object[] replacements = new Object[]{operator, lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName()};  //$NON-NLS-1$
         String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_OPERATOR, compiler.getLocale(), replacements); 
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));
     }
@@ -431,7 +431,7 @@ class ParseTreeVisitor implements FlParserVisitor {
         StringBuffer buffer = new StringBuffer();
         for (int i=0; i<results.length; i++) {
             if (i>0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(results[i].getDatatype().getName());
         }

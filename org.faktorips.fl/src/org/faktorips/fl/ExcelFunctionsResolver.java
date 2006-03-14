@@ -49,27 +49,27 @@ public class ExcelFunctionsResolver extends DefaultFunctionResolver {
     public ExcelFunctionsResolver(Locale locale) {
         super();
         this.locale = locale;
-        localizedStrings = new LocalizedStringsSet("org.faktorips.fl.ExcelFunctions", getClass().getClassLoader());
-        add(new Abs(getFctName("abs"), getFctDescription("abs")));
-        add(new If(getFctName("if"), getFctDescription("if")));
-        add(new Or(getFctName("or"), getFctDescription("or")));
-        add(new And(getFctName("and"), getFctDescription("and")));
-        add(new Round(getFctName("round"), getFctDescription("round"), BigDecimal.ROUND_HALF_UP));
-        add(new Round(getFctName("roundup"), getFctDescription("roundup"), BigDecimal.ROUND_UP));
-        add(new Round(getFctName("rounddown"), getFctDescription("rounddown"), BigDecimal.ROUND_UP));
-        add(new WholeNumber(getFctName("wholenumber"), getFctDescription("wholenumber")));
+        localizedStrings = new LocalizedStringsSet("org.faktorips.fl.ExcelFunctions", getClass().getClassLoader()); //$NON-NLS-1$
+        add(new Abs(getFctName("abs"), getFctDescription("abs"))); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new If(getFctName("if"), getFctDescription("if"))); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Or(getFctName("or"), getFctDescription("or"))); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new And(getFctName("and"), getFctDescription("and"))); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Round(getFctName("round"), getFctDescription("round"), BigDecimal.ROUND_HALF_UP)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Round(getFctName("roundup"), getFctDescription("roundup"), BigDecimal.ROUND_UP)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Round(getFctName("rounddown"), getFctDescription("rounddown"), BigDecimal.ROUND_UP)); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new WholeNumber(getFctName("wholenumber"), getFctDescription("wholenumber"))); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     private String getFctName(String key) {
-        return localizedStrings.getString(key + ".name", locale);
+        return localizedStrings.getString(key + ".name", locale); //$NON-NLS-1$
     }
     
     private String getFctDescription(String key) {
-        return localizedStrings.getString(key + ".description", locale);
+        return localizedStrings.getString(key + ".description", locale); //$NON-NLS-1$
     }
     
     public String toString() {
-        return "ExcelFunctionResolver";
+        return "ExcelFunctionResolver"; //$NON-NLS-1$
     }
     
     class NameDescription {

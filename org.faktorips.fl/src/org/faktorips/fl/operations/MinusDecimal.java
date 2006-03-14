@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MinusDecimal extends AbstractUnaryOperation {
 
     public MinusDecimal() {
-        super(Datatype.DECIMAL, "-");
+        super(Datatype.DECIMAL, "-"); //$NON-NLS-1$
     }
 
     /** 
@@ -35,7 +35,7 @@ public class MinusDecimal extends AbstractUnaryOperation {
      * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
      */
     public CompilationResultImpl generate(CompilationResultImpl arg) {
-        arg.getCodeFragment().append(".multiply(-1)");
+        arg.getCodeFragment().append(".multiply(-1)"); //$NON-NLS-1$
         return arg;
     }
 

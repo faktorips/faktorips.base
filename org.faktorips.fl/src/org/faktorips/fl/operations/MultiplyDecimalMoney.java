@@ -30,7 +30,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MultiplyDecimalMoney extends AbstractBinaryOperation {
 
     public MultiplyDecimalMoney() {
-        super("*", Datatype.DECIMAL, Datatype.MONEY);
+        super("*", Datatype.DECIMAL, Datatype.MONEY); //$NON-NLS-1$
     }
 
     /** 
@@ -40,11 +40,11 @@ public class MultiplyDecimalMoney extends AbstractBinaryOperation {
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
         JavaCodeFragment fragment = rhs.getCodeFragment();
-        fragment.append(".multiply(");
+        fragment.append(".multiply("); //$NON-NLS-1$
         rhs.add(lhs);
-        fragment.append(", ");
+        fragment.append(", "); //$NON-NLS-1$
         fragment.appendClassName(BigDecimal.class);
-        fragment.append(".ROUND_HALF_UP)");
+        fragment.append(".ROUND_HALF_UP)"); //$NON-NLS-1$
         rhs.setDatatype(Datatype.MONEY);
         return rhs;
     }

@@ -53,7 +53,7 @@ public class ExprEvaluator {
 
         StringBuffer sb = new StringBuffer();
         sb.append(fragment.getImportDeclaration().toString());
-        sb.append(System.getProperty("line.separator"));
+        sb.append(System.getProperty("line.separator")); //$NON-NLS-1$
         sb.append(fragment.getSourcecode());
 
         // execute the expression.

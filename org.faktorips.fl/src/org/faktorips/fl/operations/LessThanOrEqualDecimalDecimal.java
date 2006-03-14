@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class LessThanOrEqualDecimalDecimal extends AbstractBinaryOperation {
 
     public LessThanOrEqualDecimalDecimal() {
-        super("<=", Datatype.DECIMAL, Datatype.DECIMAL);
+        super("<=", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
     }
 
     /** 
@@ -35,7 +35,7 @@ public class LessThanOrEqualDecimalDecimal extends AbstractBinaryOperation {
      * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl, org.faktorips.fl.CompilationResultImpl)
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".lessThanOrEqual(");
+        lhs.getCodeFragment().append(".lessThanOrEqual("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);

@@ -152,7 +152,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
         buffer.append('(');
         for (int i=0; i<argTypes.length; i++) {
             if (i>0) {
-                buffer.append(", ");
+                buffer.append(", "); //$NON-NLS-1$
             }
             buffer.append(argTypes[i].getName());
         }

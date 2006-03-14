@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class PlusMoney extends AbstractUnaryOperation {
 
     public PlusMoney() {
-        super(Datatype.MONEY, "+");
+        super(Datatype.MONEY, "+"); //$NON-NLS-1$
     }
 
     /** 

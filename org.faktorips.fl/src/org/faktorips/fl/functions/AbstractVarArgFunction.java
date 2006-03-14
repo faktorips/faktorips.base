@@ -32,7 +32,7 @@ import org.faktorips.util.message.Message;
  */
 public abstract class AbstractVarArgFunction extends AbstractFlFunction {
 
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "VARARG";
+    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "VARARG"; //$NON-NLS-1$
 
     /**
      * Creates a new AbstractVarArgFunction. See the super class constructor parameter descripton

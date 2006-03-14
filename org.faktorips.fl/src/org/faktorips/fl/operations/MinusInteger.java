@@ -28,7 +28,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MinusInteger extends AbstractUnaryOperation {
 
     public MinusInteger() {
-        super(Datatype.INTEGER, "-");
+        super(Datatype.INTEGER, "-"); //$NON-NLS-1$
     }
 
     /** 
@@ -42,9 +42,9 @@ public class MinusInteger extends AbstractUnaryOperation {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append('(');
         fragment.append(arg.getCodeFragment());
-        fragment.append("==null?null:new Integer(-1 * ");
+        fragment.append("==null?null:new Integer(-1 * "); //$NON-NLS-1$
         fragment.append(arg.getCodeFragment());
-        fragment.append(".intValue()))");
+        fragment.append(".intValue()))"); //$NON-NLS-1$
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.INTEGER);
         result.addMessages(arg.getMessages());
         return result;

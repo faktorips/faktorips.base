@@ -33,7 +33,7 @@ import org.faktorips.util.message.Message;
  */
 public class If extends AbstractFlFunction {
     
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF";
+    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "IF"; //$NON-NLS-1$
     
     public If(String name, String description) {
         super(name, description, AnyDatatype.INSTANCE, new Datatype[] {Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE});

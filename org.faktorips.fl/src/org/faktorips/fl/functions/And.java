@@ -35,7 +35,7 @@ public class And extends AbstractVarArgFunction {
             fragment.append(convertedArgs[i].getCodeFragment());
             
             if(i < convertedArgs.length - 1){
-                fragment.append("&&");
+                fragment.append("&&"); //$NON-NLS-1$
             }
         }
         

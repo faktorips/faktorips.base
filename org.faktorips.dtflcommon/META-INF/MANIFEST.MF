@@ -12,5 +12,6 @@ Export-Package: org.faktorips.codegen,
  org.faktorips.codegen.conversion,
  org.faktorips.codegen.dthelpers,
  org.faktorips.datatype,
- org.faktorips.datatype.classtypes
+ org.faktorips.datatype.classtypes,
+ org.faktorips.util
 Bundle-ClassPath: faktorips-dtflcommon.jar

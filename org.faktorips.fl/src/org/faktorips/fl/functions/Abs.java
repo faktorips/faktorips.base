@@ -44,7 +44,7 @@ public class Abs extends AbstractFlFunction {
      */
     public CompilationResult compile(CompilationResult[] argResults) {
         ArgumentCheck.length(argResults, 1);
-        argResults[0].getCodeFragment().append(".abs()");
+        argResults[0].getCodeFragment().append(".abs()"); //$NON-NLS-1$
         return argResults[0];
     }
 

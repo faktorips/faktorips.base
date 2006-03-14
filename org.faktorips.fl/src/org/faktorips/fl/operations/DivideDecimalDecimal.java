@@ -33,7 +33,7 @@ public class DivideDecimalDecimal extends AbstractBinaryOperation {
     private int scale = 10;
     
     public DivideDecimalDecimal() {
-        super("/", Datatype.DECIMAL, Datatype.DECIMAL);
+        super("/", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
     }
     
     /**
@@ -57,13 +57,13 @@ public class DivideDecimalDecimal extends AbstractBinaryOperation {
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
         JavaCodeFragment fragment = lhs.getCodeFragment();
-        fragment.append(".divide(");
+        fragment.append(".divide("); //$NON-NLS-1$
         lhs.add(rhs);
-        fragment.append(", ");
+        fragment.append(", "); //$NON-NLS-1$
         fragment.append(scale);
-        fragment.append(", ");
+        fragment.append(", "); //$NON-NLS-1$
         fragment.appendClassName(BigDecimal.class);
-        fragment.append(".ROUND_HALF_UP)");
+        fragment.append(".ROUND_HALF_UP)"); //$NON-NLS-1$
         lhs.setDatatype(Datatype.DECIMAL);
         return lhs;
     }

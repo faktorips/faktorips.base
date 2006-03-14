@@ -46,7 +46,7 @@ public class ParseException extends Exception {
                         String[] tokenImageVal
                        )
   {
-    super("");
+    super(""); //$NON-NLS-1$
     specialConstructor = true;
     currentToken = currentTokenVal;
     expectedTokenSequences = expectedTokenSequencesVal;
@@ -115,24 +115,24 @@ public class ParseException extends Exception {
     if (!specialConstructor) {
       return super.getMessage();
     }
-    String expected = "";
+    String expected = ""; //$NON-NLS-1$
     int maxSize = 0;
     for (int i = 0; i < expectedTokenSequences.length; i++) {
       if (maxSize < expectedTokenSequences[i].length) {
         maxSize = expectedTokenSequences[i].length;
       }
       for (int j = 0; j < expectedTokenSequences[i].length; j++) {
-        expected += tokenImage[expectedTokenSequences[i][j]] + " ";
+        expected += tokenImage[expectedTokenSequences[i][j]] + " "; //$NON-NLS-1$
       }
       if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
-        expected += "...";
+        expected += "..."; //$NON-NLS-1$
       }
-      expected += eol + "    ";
+      expected += eol + "    "; //$NON-NLS-1$
     }
-    String retval = "Encountered \"";
+    String retval = Messages.INSTANCE.getString("ParseException.msgStart"); //$NON-NLS-1$
     Token tok = currentToken.next;
     for (int i = 0; i < maxSize; i++) {
-      if (i != 0) retval += " ";
+      if (i != 0) retval += " "; //$NON-NLS-1$
       if (tok.kind == 0) {
         retval += tokenImage[0];
         break;
@@ -140,12 +140,12 @@ public class ParseException extends Exception {
       retval += add_escapes(tok.image);
       tok = tok.next; 
     }
-    retval += "\" at line " + currentToken.next.beginLine + ", column " + currentToken.next.beginColumn;
-    retval += "." + eol;
+    retval += Messages.INSTANCE.getString("ParseException.msgAtLine") + currentToken.next.beginLine + Messages.INSTANCE.getString("ParseException.msgColumn") + currentToken.next.beginColumn; //$NON-NLS-1$ //$NON-NLS-2$
+    retval += "." + eol; //$NON-NLS-1$
     if (expectedTokenSequences.length == 1) {
-      retval += "Was expecting:" + eol + "    ";
+      retval += Messages.INSTANCE.getString("ParseException.msgWasExpecting") + eol + "    "; //$NON-NLS-1$ //$NON-NLS-2$
     } else {
-      retval += "Was expecting one of:" + eol + "    ";
+      retval += Messages.INSTANCE.getString("ParseException.msgWasExpectingOneOf") + eol + "    "; //$NON-NLS-1$ //$NON-NLS-2$
     }
     retval += expected;
     return retval;
@@ -154,7 +154,7 @@ public class ParseException extends Exception {
   /**
    * The end of line string for this machine.
    */
-  protected String eol = System.getProperty("line.separator", "\n");
+  protected String eol = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
  
   /**
    * Used to convert raw characters to their escaped version
@@ -170,33 +170,33 @@ public class ParseException extends Exception {
            case 0 :
               continue;
            case '\b':
-              retval.append("\\b");
+              retval.append("\\b"); //$NON-NLS-1$
               continue;
            case '\t':
-              retval.append("\\t");
+              retval.append("\\t"); //$NON-NLS-1$
               continue;
            case '\n':
-              retval.append("\\n");
+              retval.append("\\n"); //$NON-NLS-1$
               continue;
            case '\f':
-              retval.append("\\f");
+              retval.append("\\f"); //$NON-NLS-1$
               continue;
            case '\r':
-              retval.append("\\r");
+              retval.append("\\r"); //$NON-NLS-1$
               continue;
            case '\"':
-              retval.append("\\\"");
+              retval.append("\\\""); //$NON-NLS-1$
               continue;
            case '\'':
-              retval.append("\\\'");
+              retval.append("\\\'"); //$NON-NLS-1$
               continue;
            case '\\':
-              retval.append("\\\\");
+              retval.append("\\\\"); //$NON-NLS-1$
               continue;
            default:
               if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
-                 String s = "0000" + Integer.toString(ch, 16);
-                 retval.append("\\u" + s.substring(s.length() - 4, s.length()));
+                 String s = "0000" + Integer.toString(ch, 16); //$NON-NLS-1$
+                 retval.append("\\u" + s.substring(s.length() - 4, s.length())); //$NON-NLS-1$
               } else {
                  retval.append(ch);
               }

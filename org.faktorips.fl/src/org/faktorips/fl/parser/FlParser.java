@@ -20,14 +20,14 @@ package org.faktorips.fl.parser;
 
 public class FlParser/*@bgen(jjtree)*/implements FlParserTreeConstants, FlParserConstants {/*@bgen(jjtree)*/
   protected JJTFlParserState jjtree = new JJTFlParserState();public static void main(String args[]) {
-    System.out.println("Reading from standard input...");
+    System.out.println("Reading from standard input..."); //$NON-NLS-1$
     FlParser p = new FlParser(System.in);
     try {
       SimpleNode n = p.start();
-      n.dump("");
-      System.out.println("Thank you.");
+      n.dump(""); //$NON-NLS-1$
+      System.out.println("Thank you."); //$NON-NLS-1$
     } catch (Exception e) {
-      System.out.println("Oops.");
+      System.out.println("Oops."); //$NON-NLS-1$
       System.out.println(e.getMessage());
       e.printStackTrace();
     }
@@ -77,7 +77,7 @@ public class FlParser/*@bgen(jjtree)*/implements FlParserTreeConstants, FlParser
         jjtree.closeNodeScope(jjtn000, true);
       }
     }
-    throw new Error("Missing return statement in function");
+    throw new Error("Missing return statement in function"); //$NON-NLS-1$
   }
 
   final public void expr() throws ParseException {

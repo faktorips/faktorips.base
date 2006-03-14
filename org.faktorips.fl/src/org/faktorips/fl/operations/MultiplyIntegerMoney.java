@@ -25,7 +25,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MultiplyIntegerMoney extends AbstractBinaryOperation {
 
     public MultiplyIntegerMoney() {
-        super("*", Datatype.INTEGER, Datatype.MONEY);
+        super("*", Datatype.INTEGER, Datatype.MONEY); //$NON-NLS-1$
     }
 
     /** 
@@ -34,9 +34,9 @@ public class MultiplyIntegerMoney extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         JavaCodeFragment fragment = rhs.getCodeFragment();
-        fragment.append(".multiply(");
+        fragment.append(".multiply("); //$NON-NLS-1$
         fragment.append(lhs.getCodeFragment());
-        fragment.append(")");
+        fragment.append(")"); //$NON-NLS-1$
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.MONEY);
         result.addMessages(lhs.getMessages());
         result.addMessages(rhs.getMessages());

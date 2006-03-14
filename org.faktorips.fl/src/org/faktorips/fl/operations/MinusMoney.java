@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MinusMoney extends AbstractUnaryOperation {
 
     public MinusMoney() {
-        super(Datatype.MONEY, "-");
+        super(Datatype.MONEY, "-"); //$NON-NLS-1$
     }
 
     /** 
@@ -35,7 +35,7 @@ public class MinusMoney extends AbstractUnaryOperation {
      * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
      */
     public CompilationResultImpl generate(CompilationResultImpl result) {
-        result.getCodeFragment().append(".multiply(-1)");
+        result.getCodeFragment().append(".multiply(-1)"); //$NON-NLS-1$
         return result;
     }
 

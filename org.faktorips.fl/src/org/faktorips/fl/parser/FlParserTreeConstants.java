@@ -49,30 +49,30 @@ public interface FlParserTreeConstants
 
 
   public String[] jjtNodeName = {
-    "Start",
-    "void",
-    "EQNode",
-    "NotEQNode",
-    "LTNode",
-    "GTNode",
-    "LENode",
-    "GENode",
-    "AddNode",
-    "SubNode",
-    "MultNode",
-    "DivNode",
-    "PlusNode",
-    "MinusNode",
-    "NotNode",
-    "ParenthesisNode",
-    "FunctionCallNode",
-    "ArgListNode",
-    "IdentifierNode",
-    "BooleanNode",
-    "IntegerNode",
-    "DecimalNode",
-    "StringNode",
-    "MoneyNode",
-    "NullNode",
+    "Start", //$NON-NLS-1$
+    "void", //$NON-NLS-1$
+    "EQNode", //$NON-NLS-1$
+    "NotEQNode", //$NON-NLS-1$
+    "LTNode", //$NON-NLS-1$
+    "GTNode", //$NON-NLS-1$
+    "LENode", //$NON-NLS-1$
+    "GENode", //$NON-NLS-1$
+    "AddNode", //$NON-NLS-1$
+    "SubNode", //$NON-NLS-1$
+    "MultNode", //$NON-NLS-1$
+    "DivNode", //$NON-NLS-1$
+    "PlusNode", //$NON-NLS-1$
+    "MinusNode", //$NON-NLS-1$
+    "NotNode", //$NON-NLS-1$
+    "ParenthesisNode", //$NON-NLS-1$
+    "FunctionCallNode", //$NON-NLS-1$
+    "ArgListNode", //$NON-NLS-1$
+    "IdentifierNode", //$NON-NLS-1$
+    "BooleanNode", //$NON-NLS-1$
+    "IntegerNode", //$NON-NLS-1$
+    "DecimalNode", //$NON-NLS-1$
+    "StringNode", //$NON-NLS-1$
+    "MoneyNode", //$NON-NLS-1$
+    "NullNode", //$NON-NLS-1$
   };
 }

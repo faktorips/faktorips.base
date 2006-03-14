@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class EqualsDecimalDecimal extends AbstractBinaryOperation {
 
     public EqualsDecimalDecimal() {
-        super("=", Datatype.DECIMAL, Datatype.DECIMAL);
+        super("=", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
     }
 
     /** 
@@ -36,7 +36,7 @@ public class EqualsDecimalDecimal extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".equalsIgnoreScale(");
+        lhs.getCodeFragment().append(".equalsIgnoreScale("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);

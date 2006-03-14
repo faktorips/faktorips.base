@@ -36,38 +36,38 @@ public interface FlParserConstants {
   int DEFAULT = 0;
 
   String[] tokenImage = {
-    "<EOF>",
-    "\" \"",
-    "\"\\t\"",
-    "\"\\n\"",
-    "\"\\r\"",
-    "<token of kind 5>",
-    "<token of kind 6>",
-    "<BOOLEAN_LITERAL>",
-    "<INTEGER_LITERAL>",
-    "<DECIMAL_LITERAL>",
-    "<EXPONENT>",
-    "<STRING_LITERAL>",
-    "<MONEY_LITERAL>",
-    "<LETTER>",
-    "<NULL_LITERAL>",
-    "<IDENTIFIER>",
-    "<LETTER_OR_UNDERSCORE_OR_DOT>",
-    "<DIGIT>",
-    "\";\"",
-    "\"=\"",
-    "\"!=\"",
-    "\"<\"",
-    "\">\"",
-    "\"<=\"",
-    "\">=\"",
-    "\"+\"",
-    "\"-\"",
-    "\"*\"",
-    "\"/\"",
-    "\"!\"",
-    "\"(\"",
-    "\")\"",
+    "<EOF>", //$NON-NLS-1$
+    "\" \"", //$NON-NLS-1$
+    "\"\\t\"", //$NON-NLS-1$
+    "\"\\n\"", //$NON-NLS-1$
+    "\"\\r\"", //$NON-NLS-1$
+    "<token of kind 5>", //$NON-NLS-1$
+    "<token of kind 6>", //$NON-NLS-1$
+    "<BOOLEAN_LITERAL>", //$NON-NLS-1$
+    "<INTEGER_LITERAL>", //$NON-NLS-1$
+    "<DECIMAL_LITERAL>", //$NON-NLS-1$
+    "<EXPONENT>", //$NON-NLS-1$
+    "<STRING_LITERAL>", //$NON-NLS-1$
+    "<MONEY_LITERAL>", //$NON-NLS-1$
+    "<LETTER>", //$NON-NLS-1$
+    "<NULL_LITERAL>", //$NON-NLS-1$
+    "<IDENTIFIER>", //$NON-NLS-1$
+    "<LETTER_OR_UNDERSCORE_OR_DOT>", //$NON-NLS-1$
+    "<DIGIT>", //$NON-NLS-1$
+    "\";\"", //$NON-NLS-1$
+    "\"=\"", //$NON-NLS-1$
+    "\"!=\"", //$NON-NLS-1$
+    "\"<\"", //$NON-NLS-1$
+    "\">\"", //$NON-NLS-1$
+    "\"<=\"", //$NON-NLS-1$
+    "\">=\"", //$NON-NLS-1$
+    "\"+\"", //$NON-NLS-1$
+    "\"-\"", //$NON-NLS-1$
+    "\"*\"", //$NON-NLS-1$
+    "\"/\"", //$NON-NLS-1$
+    "\"!\"", //$NON-NLS-1$
+    "\"(\"", //$NON-NLS-1$
+    "\")\"", //$NON-NLS-1$
   };
 
 }

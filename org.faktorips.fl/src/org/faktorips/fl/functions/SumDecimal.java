@@ -50,9 +50,9 @@ public class SumDecimal extends AbstractFlFunction {
         ArgumentCheck.length(argResults, 1);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);
-        fragment.append(".sum(");
+        fragment.append(".sum("); //$NON-NLS-1$
         fragment.append(argResults[0].getCodeFragment());
-        fragment.append(")");
+        fragment.append(")"); //$NON-NLS-1$
         return new CompilationResultImpl(fragment, getType());
     }
     

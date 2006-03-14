@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class PlusPrimitiveInt extends AbstractUnaryOperation {
 
     public PlusPrimitiveInt() {
-        super(Datatype.PRIMITIVE_INT, "+");
+        super(Datatype.PRIMITIVE_INT, "+"); //$NON-NLS-1$
     }
 
     /** 

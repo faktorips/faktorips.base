@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class GreaterThanDecimalDecimal extends AbstractBinaryOperation {
 
     public GreaterThanDecimalDecimal() {
-        super(">", Datatype.DECIMAL, Datatype.DECIMAL);
+        super(">", Datatype.DECIMAL, Datatype.DECIMAL); //$NON-NLS-1$
     }
 
     /** 
@@ -36,7 +36,7 @@ public class GreaterThanDecimalDecimal extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".greaterThan(");
+        lhs.getCodeFragment().append(".greaterThan("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);

@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class MultiplyIntInt extends AbstractBinaryOperation {
 
     public MultiplyIntInt() {
-        super("*", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT);
+        super("*", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT); //$NON-NLS-1$
     }
 
     /** 
@@ -36,7 +36,7 @@ public class MultiplyIntInt extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(" * ");
+        lhs.getCodeFragment().append(" * "); //$NON-NLS-1$
         lhs.add(rhs);
         return lhs;
     }

@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class PlusInteger extends AbstractUnaryOperation {
 
     public PlusInteger() {
-        super(Datatype.INTEGER, "+");
+        super(Datatype.INTEGER, "+"); //$NON-NLS-1$
     }
 
     /** 

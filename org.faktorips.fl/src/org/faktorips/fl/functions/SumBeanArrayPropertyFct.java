@@ -40,10 +40,10 @@ import org.faktorips.values.Decimal;
  */
 public class SumBeanArrayPropertyFct extends AbstractFlFunction {
     
-    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "SUM-BEAN-ARRAY-PROPERTYFCT";
+    public final static String ERROR_MESSAGE_CODE = ExprCompiler.PREFIX + "SUM-BEAN-ARRAY-PROPERTYFCT"; //$NON-NLS-1$
     
     public SumBeanArrayPropertyFct() {
-        super("SUM", "", AnyDatatype.INSTANCE, new Datatype[]{AnyDatatype.INSTANCE, AnyDatatype.INSTANCE});
+        super("SUM", "", AnyDatatype.INSTANCE, new Datatype[]{AnyDatatype.INSTANCE, AnyDatatype.INSTANCE}); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -65,11 +65,11 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(SumBeanArrayPropertyFct.class);
         fragment.append('.');
-        fragment.append("sumDecimal(");
+        fragment.append("sumDecimal("); //$NON-NLS-1$
         fragment.append(argResults[0].getCodeFragment());
-        fragment.append(", ");
+        fragment.append(", "); //$NON-NLS-1$
         fragment.appendQuoted(property.getGetterMethod());
-        fragment.append(")");
+        fragment.append(")"); //$NON-NLS-1$
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.DECIMAL);
         result.addMessages(argResults[0].getMessages());
         result.addMessages(argResults[1].getMessages());

@@ -28,7 +28,7 @@ public class Messages extends LocalizedStringsSet {
     public final static Messages INSTANCE = new Messages();
     
     private Messages() {
-        super("org.faktorips.fl.functions.Messages", Messages.class.getClassLoader());
+        super("org.faktorips.fl.functions.Messages", Messages.class.getClassLoader()); //$NON-NLS-1$
     }
 
 }

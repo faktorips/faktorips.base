@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class SubtractMoneyMoney extends AbstractBinaryOperation {
 
     public SubtractMoneyMoney() {
-        super("-", Datatype.MONEY, Datatype.MONEY);
+        super("-", Datatype.MONEY, Datatype.MONEY); //$NON-NLS-1$
     }
 
     /** 
@@ -36,7 +36,7 @@ public class SubtractMoneyMoney extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".subtract(");
+        lhs.getCodeFragment().append(".subtract("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         return lhs;

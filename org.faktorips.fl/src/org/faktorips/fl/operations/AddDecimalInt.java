@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class AddDecimalInt extends AbstractBinaryOperation {
 
     public AddDecimalInt() {
-        super("+", Datatype.DECIMAL, Datatype.PRIMITIVE_INT);
+        super("+", Datatype.DECIMAL, Datatype.PRIMITIVE_INT); //$NON-NLS-1$
     }
 
     /** 
@@ -36,7 +36,7 @@ public class AddDecimalInt extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".add(");
+        lhs.getCodeFragment().append(".add("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         return lhs;

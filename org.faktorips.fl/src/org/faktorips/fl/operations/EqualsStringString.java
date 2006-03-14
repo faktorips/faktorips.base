@@ -27,7 +27,7 @@ import org.faktorips.fl.CompilationResultImpl;
 public class EqualsStringString extends AbstractBinaryOperation {
 
     public EqualsStringString () {
-        super("=", Datatype.STRING, Datatype.STRING);
+        super("=", Datatype.STRING, Datatype.STRING); //$NON-NLS-1$
     }
 
     /** 
@@ -35,7 +35,7 @@ public class EqualsStringString extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".equals(");
+        lhs.getCodeFragment().append(".equals("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);
