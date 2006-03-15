@@ -1,4 +1,4 @@
-feature@org.faktorips.feature=HEAD,/usr/local/cvsroot,,org.faktorips.feature
+feature@org.faktorips.feature=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.core=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.stdbuilder=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.dtflcommon=HEAD,/usr/local/cvsroot
@@ -7,5 +7,5 @@ plugin@org.faktorips.runtime=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.util=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.valuetypes=HEAD,/usr/local/cvsroot
 
-feature@org.faktorips.feature.test=HEAD,/usr/local/cvsroot/,,org.faktorips.feature.test
+feature@org.faktorips.feature.test=HEAD,/usr/local/cvsroot/
 plugin@org.faktorips.devtools.stdbuilder.test=HEAD,/usr/local/cvsroot
