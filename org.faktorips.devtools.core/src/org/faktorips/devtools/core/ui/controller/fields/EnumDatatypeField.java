@@ -44,14 +44,13 @@ public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
 
 		String[] ids = getEnumDatatype().getAllValueIds();
 		String[] names = null;
-		if (getEnumDatatype().isSupportingNames()) {
 
-			ArrayList items = new ArrayList(ids.length);
-			for (int i = 0; i < ids.length; i++) {
-				items.add(getEnumDatatype().getValueName(ids[i]));
-			}
-			names = (String[]) items.toArray(new String[items.size()]);
+		ArrayList items = new ArrayList(ids.length);
+		for (int i = 0; i < ids.length; i++) { 
+			items.add(super.getValueName(ids[i]));
 		}
+		names = (String[]) items.toArray(new String[items.size()]);
+		
 		initialize(ids, names);
 	}
 	
