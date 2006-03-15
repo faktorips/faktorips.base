@@ -114,9 +114,15 @@ public class RelationEditDialog extends IpsPartEditDialog {
         typeCombo.setFocus();
         typeCombo.addFocusListener(new FocusAdapter() {
             
-            public void focusLost(FocusEvent e) {
+        		private int selection;
+        		
+            	public void focusGained(FocusEvent e) {
+            		selection = typeCombo.getSelectionIndex();
+            	}
+            	
+            	public void focusLost(FocusEvent e) {
                 int i = typeCombo.getSelectionIndex();
-                if (i==-1) {
+                if (i==selection) {
                     return;
                 }
                 RelationType type = RelationType.getRelationType(i);

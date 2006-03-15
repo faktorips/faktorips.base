@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
@@ -91,11 +92,19 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         if ((modifier & Modifier.ABSTRACT) > 0) {
             return modifier;
         }
-        IAttribute[] attributes = getProductCmptType().findPolicyCmptyType().getAttributes();
+        return getClassModifier(getProductCmptType().findPolicyCmptyType(), modifier);
+    }
+    
+    private int getClassModifier(IPolicyCmptType type, int modifier) throws CoreException {
+        IAttribute[] attributes = type.getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             if (attributes[i].isDerivedOrComputed()) {
                 return modifier | Modifier.ABSTRACT;
             }
+        }
+        IPolicyCmptType supertype = type.findSupertype();
+        if (supertype!=null) {
+            return getClassModifier(supertype, modifier);
         }
         return modifier;
     }

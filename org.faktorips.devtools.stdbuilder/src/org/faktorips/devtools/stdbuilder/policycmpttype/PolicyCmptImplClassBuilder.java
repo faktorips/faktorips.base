@@ -923,7 +923,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         return body;
     }
-
+    
     /**
      * Returns the name of field/member var for the relation.
      */

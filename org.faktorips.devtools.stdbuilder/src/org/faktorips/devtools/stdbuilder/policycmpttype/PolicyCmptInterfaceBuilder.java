@@ -355,7 +355,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
-
     }
     
     void generateFieldConstPropertyValue(
@@ -460,6 +459,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         generateMethodGetRefObject(relation, methodsBuilder);
         if (!relation.isReadOnlyContainer() && !relation.getRelationType().isReverseComposition()) {
             generateMethodSetObject(relation, methodsBuilder);
+            if (relation.getRelationType().isComposition()) {
+                generateMethodNewChild(relation, methodsBuilder);
+            }
         }
     }
 
@@ -473,6 +475,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         if (!relation.isReadOnlyContainer()) {
             generateMethodAddObject(relation, methodsBuilder);
             generateMethodRemoveObject(relation, methodsBuilder);
+            if (relation.getRelationType().isComposition()) {
+                generateMethodNewChild(relation, methodsBuilder);
+            }
         }
     }
     
@@ -640,6 +645,55 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return getLocalizedText(relation, "PARAM_OBJECT_TO_ADD_NAME", relation.getTargetRoleSingular());
     }
     
+    /**
+     * Code sample without product component parameter:
+     * <pre>
+     * [Javadoc]
+     * public Coverage newCoverage();
+     * </pre>
+     * 
+     * Code sample with product component parameter:
+     * [Javadoc]
+     * <pre>
+     * public Coverage newCoverage(CoverageType coverageType);
+     * </pre>
+     */
+    public void generateMethodNewChild(IRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        if (1==1) {
+            // TODO generation of implementation must be done!!
+            return;
+        }
+        String targetTypeName = relation.findTarget().getName();
+        String role = relation.getTargetRoleSingular();
+        appendLocalizedJavaDoc("METHOD_NEW_CHILD", new String[]{targetTypeName, role}, relation, builder);
+        generateSignatureNewChild(relation, builder);
+        builder.appendln(";");
+    }
+
+    /**
+     * Code sample without product component parameter:
+     * <pre>
+     * public Coverage newCoverage()
+     * </pre>
+     * 
+     * Code sample with product component parameter:
+     * <pre>
+     * public Coverage newCoverage(CoverageType coverageType)
+     * </pre>
+     */
+    public void generateSignatureNewChild(IRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameNewChild(relation);
+        String returnType = getQualifiedClassName(relation.findTarget());
+        builder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
+    }
+    
+    /**
+     * Returns the name of the method to create a new child object and add it to the parent. 
+     */
+    public String getMethodNameNewChild(IRelation relation) {
+        return getLocalizedText(relation, "METHOD_NEW_CHILD_NAME", relation.getTargetRoleSingular());
+    }
+
     /**
      * Code sample:
      * <pre>
