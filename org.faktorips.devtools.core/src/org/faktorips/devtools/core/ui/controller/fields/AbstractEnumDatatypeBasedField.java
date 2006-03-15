@@ -19,13 +19,14 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An abstract base class for EnumDatatypeField and EnumValueSetField. It
+ * An abstract base class for fields dealing with enums. It
  * expects a Combo as GUI Control. Subclasses are reponsible for filling the
  * Combo. Therefor the protected initialize method can be utilized within the
- * implementation. If the provided EnumDatatype supports names for the
+ * implementation. If the provided Datatype is an enum datatype and supports names for the
  * enumeration values the names are displayed in the combo but the getValue()
  * and setValue() methods still expect the ids that identify the values. This
  * implementation doesn't adjust to changes of the values it represents.
@@ -35,11 +36,11 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
-	private EnumDatatype datatype;
+	private ValueDatatype datatype;
 
 	private String[] ids;
 
-	public AbstractEnumDatatypeBasedField(Combo combo, EnumDatatype datatype) {
+	public AbstractEnumDatatypeBasedField(Combo combo, ValueDatatype datatype) {
 		super(combo);
 		ArgumentCheck.notNull(datatype);
 		this.datatype = datatype;
@@ -64,7 +65,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	/**
 	 * Implementations of this edit field should provide a reinitialization of
 	 * the field within this method. In cases where the provided
-	 * <code>EnumDatatype</code> changes its values dynamically this edit
+	 * <code>Datatype</code> changes its values dynamically this edit
 	 * field can adjust to the value changes by means of this method. The
 	 * <code>initialized(String[], String[])</code> method is supposed to be
 	 * used to set the values of the combo within implementations of
@@ -74,7 +75,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
 	/**
 	 * Initializes the combo either with the ids of the enumeration values or
-	 * with the value names if the EnumDatatype supports names. The ids are kept
+	 * with the value names if the Datatype if it is an enum datatype and 
+	 * supports names. The ids are kept
 	 * during the life time of this EditField or until the reInit() method is
 	 * called. They are used to by the <code>getValue()</code> method.
 	 * Implementations of the <code>reInitInteral()</code> method need to call
@@ -91,9 +93,9 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	}
 
 	/**
-	 * Returns the EnumDatatype of this edit field.
+	 * Returns the ValueDatatype of this edit field.
 	 */
-	public EnumDatatype getEnumDatatype() {
+	public ValueDatatype getDatatype() {
 		return datatype;
 	}
 
@@ -120,14 +122,14 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 			return;
 		}
 
-		if (datatype.isSupportingNames()) {
-			super.setValue(getValueName((String) newValue));
-			return;
-		}
-		super.setValue(newValue);
+		super.setValue(getValueName((String) newValue));
 	}
 	
 	protected String getValueName(String id) {
-		return getEnumDatatype().getValueName(id) + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+		if (datatype instanceof EnumDatatype && ((EnumDatatype)datatype).isSupportingNames()) {
+			return ((EnumDatatype)datatype).getValueName(id) + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+		} else {
+			return id;
+		}
 	}
 }

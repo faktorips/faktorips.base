@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.util.ArgumentCheck;
 
@@ -46,7 +46,7 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
 	 *            the datatype the value set bases on
 	 */
 	public EnumValueSetField(Combo combo, IEnumValueSet valueSet,
-			EnumDatatype datatype) {
+			ValueDatatype datatype) {
 		super(combo, datatype);
 		ArgumentCheck.notNull(valueSet, this);
 		this.valueSet = valueSet;
@@ -58,11 +58,7 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
 
 		ArrayList names = new ArrayList(ids.length);
 		for (int i = 0; i < ids.length; i++) {
-			if (getEnumDatatype().isSupportingNames()) {
-				names.add(getValueName(valueSet.getValue(i)));
-//				String id = ;
-//				names.add(getEnumDatatype().getValueName(id));// + " (" + id + ")");
-			}
+			names.add(getValueName(valueSet.getValue(i)));
 		}
 		initialize(ids, (String[]) names.toArray(new String[names.size()]));
 	}

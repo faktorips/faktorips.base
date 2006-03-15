@@ -54,4 +54,8 @@ public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
 		}
 		initialize(ids, names);
 	}
+	
+	private EnumDatatype getEnumDatatype() {
+		return (EnumDatatype)getDatatype();
+	}
 }

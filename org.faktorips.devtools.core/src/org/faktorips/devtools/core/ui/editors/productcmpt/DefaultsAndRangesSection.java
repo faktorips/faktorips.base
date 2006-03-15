@@ -33,6 +33,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IRangeValueSet;
@@ -170,7 +171,7 @@ public class DefaultsAndRangesSection extends IpsSection {
     			Combo combo = toolkit.createCombo(rootPane);
     			EditField defaultField;
     			if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-    				defaultField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, (EnumDatatype)dataType);
+    				defaultField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, (ValueDatatype)dataType);
     			}
     			else {
     				defaultField = new EnumDatatypeField(combo, (EnumDatatype)dataType);
