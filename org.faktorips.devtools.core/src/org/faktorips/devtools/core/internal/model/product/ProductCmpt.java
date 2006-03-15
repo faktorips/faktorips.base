@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.product.CircleRelationException;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
@@ -202,7 +203,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptStructure getStructure() {
+	public IProductCmptStructure getStructure() throws CircleRelationException {
 		return new ProductCmptStructure(this);
 	}
 	

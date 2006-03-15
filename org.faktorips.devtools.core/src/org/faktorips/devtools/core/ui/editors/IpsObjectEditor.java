@@ -202,10 +202,10 @@ public abstract class IpsObjectEditor extends FormEditor
     	}
 
     	if (!ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE)) {
-    		String msg = NLS.bind("The resource {0} is out of sync with the file system.", ipsSrcFile.getName());
+    		String msg = NLS.bind(Messages.IpsObjectEditor_msgResourceOutOfSync, ipsSrcFile.getName());
     		if (isDirty()) {
-    			msg += " You can close the editor and discard your changes or let the editor open and discard the changes made on the file outside of FaktorIPS. Close the editor and discard the canges?";	
-        		boolean ok = MessageDialog.openQuestion(super.getSite().getShell(), "Resource out of sync", msg);
+    			msg += Messages.IpsObjectEditor_msgOutOfSyncOptions;	
+        		boolean ok = MessageDialog.openQuestion(super.getSite().getShell(), Messages.IpsObjectEditor_msgOutOfSyncTitle, msg);
         		if (ok) {
             		this.close(false);
         		} else {
@@ -213,8 +213,8 @@ public abstract class IpsObjectEditor extends FormEditor
         		}
     		}
     		else {
-    			msg += "The editor will be closed.";
-    			MessageDialog.openError(super.getSite().getShell(), "Resource out of sync", msg);
+    			msg += Messages.IpsObjectEditor_msgEditorWillBeClosed;
+    			MessageDialog.openError(super.getSite().getShell(), Messages.IpsObjectEditor_msgOutOfSyncTitle, msg);
     			this.close(false);
     		}
     		

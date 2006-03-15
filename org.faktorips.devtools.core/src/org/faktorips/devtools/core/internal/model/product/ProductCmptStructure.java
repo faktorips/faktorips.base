@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.CircleRelationException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -42,7 +43,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	private Hashtable elementToNodeMapping;
 	Node root;
 	
-	public ProductCmptStructure(IProductCmpt root) {
+	public ProductCmptStructure(IProductCmpt root) throws CircleRelationException {
         this.elementToNodeMapping = new Hashtable();
         this.root = buildNode(root, null);
 	}
@@ -109,7 +110,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void refresh() {
+	public void refresh() throws CircleRelationException {
 	    this.elementToNodeMapping = new Hashtable();
 	    this.root = buildNode(root.getWrappedElement(), null);
 	}
@@ -130,11 +131,13 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * 
      * @param element The IpsElement to be wrapped by the new node.
      * @param parent The parent-node for the new one.
+	 * @throws CircleRelationException 
      */
-    private Node buildNode(IIpsElement element, Node parent) {
+    private Node buildNode(IIpsElement element, Node parent) throws CircleRelationException {
     	Node node = new Node(element, parent);
     	node.setChildren(buildChildNodes(element, node));
-    	elementToNodeMapping.put(element, node);
+		this.elementToNodeMapping.put(element, node);
+
     	return node;
     }
 
@@ -145,8 +148,9 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @param relations The relations to create nodes for.
      * @param parent The parent for the new nodes
      * @return
+     * @throws CircleRelationException 
      */
-    private Node[] buildChildNodes(IProductCmptRelation[] relations, Node parent) {
+    private Node[] buildChildNodes(IProductCmptRelation[] relations, Node parent) throws CircleRelationException {
 		ArrayList children = new ArrayList();
         for (int i = 0; i < relations.length; i ++) {
 			try {
@@ -167,8 +171,9 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * 
      * @param element The element the new children can be found in as relation-targets.
      * @param parent The parent node for the new children.
+     * @throws CircleRelationException 
      */
-	private Node[] buildChildNodes(IIpsElement element, Node parent) {
+	private Node[] buildChildNodes(IIpsElement element, Node parent) throws CircleRelationException {
 		ArrayList children = new ArrayList();
 		
 		if (element instanceof IProductCmpt) {
@@ -208,14 +213,14 @@ public class ProductCmptStructure implements IProductCmptStructure {
 				IProductCmptRelation[] rels = new IProductCmptRelation[relationsList.size()];
 				node.setChildren(buildChildNodes((IProductCmptRelation[])relationsList.toArray(rels), node));
 				children.add(node);
-				elementToNodeMapping.put(type, node);
+				this.elementToNodeMapping.put(type, node);
 			}
 		}
 		
 		Node[] result = new Node[children.size()];
 		return (Node[])children.toArray(result);
     }   
-
+	
 	/**
 	 * Class to allow the content provider to evaluate the structure of the data to display once and
 	 * cache this information using this class.
@@ -227,9 +232,10 @@ public class ProductCmptStructure implements IProductCmptStructure {
 		private Node parent;
 		private IIpsElement wrapped;
 		
-		public Node(IIpsElement wrapped, Node parent) {
+		public Node(IIpsElement wrapped, Node parent) throws CircleRelationException {
 			this.parent = parent;
 			this.wrapped = wrapped;
+			detectCircle(new ArrayList());
 		}
 		
 		public Node getParent() {
@@ -247,5 +253,18 @@ public class ProductCmptStructure implements IProductCmptStructure {
 		public IIpsElement getWrappedElement() {
 			return wrapped;
 		}		
+		
+		private void detectCircle(ArrayList seenElements) throws CircleRelationException {
+			if (!(wrapped instanceof IProductCmptTypeRelation) && seenElements.contains(wrapped)) {
+				seenElements.add(wrapped);
+				throw new CircleRelationException((IIpsElement[])seenElements.toArray(new IIpsElement[seenElements.size()]));
+			}
+			else {
+				seenElements.add(wrapped);
+				if (parent != null) {
+					parent.detectCircle(seenElements);
+				}
+			}
+		}
 	}
 }

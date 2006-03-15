@@ -30,4 +30,5 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
     public static String ProductStructureLabelProvider_undefined;
+	public static String ProductStructureExplorer_labelCircleRelation;
 }

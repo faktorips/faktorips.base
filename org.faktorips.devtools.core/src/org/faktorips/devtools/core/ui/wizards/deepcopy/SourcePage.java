@@ -26,6 +26,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
@@ -60,6 +61,15 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 	 */
 	public void createControl(Composite parent) {
 
+		if (structure == null) {
+			Label errormsg = new Label(parent, SWT.WRAP);
+			GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, false);
+			errormsg.setLayoutData(layoutData);
+			errormsg.setText(Messages.SourcePage_msgCircleRelation);
+			this.setControl(errormsg);
+			return;
+		}
+		
 		tree = new CheckboxTreeViewer(parent);
 		
 		tree.setLabelProvider(new ProductStructureLabelProvider());
@@ -91,7 +101,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 		if (tree != null && tree.getCheckedElements().length > 0) {
 			super.setMessage(null);
 		}
-		else {
+		else if (structure == null) {
+			super.setMessage(Messages.SourcePage_msgCircleRelationShort, ERROR);
+		} else {
 			super.setMessage(Messages.SourcePage_msgSelect, INFORMATION);
 		}
 	}

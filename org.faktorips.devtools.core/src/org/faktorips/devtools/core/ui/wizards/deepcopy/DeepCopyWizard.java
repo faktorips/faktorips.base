@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.DeepCopyOperation;
+import org.faktorips.devtools.core.model.product.CircleRelationException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 
@@ -44,7 +45,11 @@ public class DeepCopyWizard extends Wizard {
 	 */
 	public DeepCopyWizard(IProductCmpt product) {
 		super();
-		structure = product.getStructure();
+		try {
+			structure = product.getStructure();
+		} catch (CircleRelationException e) {
+			IpsPlugin.log(e);
+		}
 		super.setWindowTitle(Messages.DeepCopyWizard_title);
 	}
 

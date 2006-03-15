@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
+
+
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -25,10 +27,14 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -39,6 +45,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.product.CircleRelationException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
@@ -61,6 +68,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private TreeViewer tree; 
     private IIpsSrcFile file;
     private ProductStructureContentProvider contentProvider;
+    private Label errormsg;
     
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
@@ -92,7 +100,15 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * Overridden
      */
 	public void createPartControl(Composite parent) {
+		parent.setLayout(new GridLayout(1, false));
+		errormsg = new Label(parent, SWT.WRAP);
+		GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, false);
+		layoutData.exclude = true;
+		errormsg.setLayoutData(layoutData);
+		errormsg.setVisible(false);
+
 		tree = new TreeViewer(parent);
+		tree.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		contentProvider = new ProductStructureContentProvider(false);
 		tree.setContentProvider(contentProvider);
 
@@ -138,31 +154,60 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public void showStructure(IProductCmpt product) {
     	this.file = product.getIpsSrcFile();
-        tree.setInput(product.getStructure());
+        try {
+        	errormsg.setVisible(false);
+    		((GridData)errormsg.getLayoutData()).exclude = true;
+        	
+    		tree.getTree().setVisible(true);
+    		((GridData)tree.getTree().getLayoutData()).exclude = false;
+    		tree.getTree().getParent().layout();
+			tree.setInput(product.getStructure());
+		} catch (CircleRelationException e) {
+			handleCircle(e);
+		}
         tree.expandAll();
     }
     
     public void contentsChanged(ContentChangeEvent event) {
-    	if (file == null) {
+    	if (file == null || !event.getIpsSrcFile().equals(file)) {
     		// no contents set - nothing to refresh.
     		return;
     	}
     	
     	Object input = tree.getInput();
     	if (input instanceof IProductCmptStructure) {
-    		((IProductCmptStructure)input).refresh();
+    		try {
+				((IProductCmptStructure)input).refresh();
+			} catch (CircleRelationException e) {
+				handleCircle(e);
+				return;
+			}
     	}
     	
-    	tree.refresh();
-    	if (event.getIpsSrcFile().equals(file)) {
-    		tree.refresh();
-    		System.err.println("refreshed tree2"); //$NON-NLS-1$
-    	}
+    	errormsg.setVisible(false);
+		((GridData)errormsg.getLayoutData()).exclude = true;
+    	
+		tree.getTree().setVisible(true);
+		((GridData)tree.getTree().getLayoutData()).exclude = false;
+		tree.getTree().getParent().layout();
+   		tree.refresh();
     }
 
     public ShowInContext getShowInContext() {
         ShowInContext context = new ShowInContext(null, tree.getSelection());
         return context;
+    }
+    
+    private void handleCircle(CircleRelationException e) {
+		IpsPlugin.log(e);
+		tree.getTree().setVisible(false);
+		((GridData)tree.getTree().getLayoutData()).exclude = true;
+		String msg = Messages.ProductStructureExplorer_labelCircleRelation;
+		errormsg.setText(msg + e.toString());
+		
+		errormsg.setVisible(true);
+		((GridData)errormsg.getLayoutData()).exclude = false;
+		errormsg.getParent().layout();
     }
 
 }

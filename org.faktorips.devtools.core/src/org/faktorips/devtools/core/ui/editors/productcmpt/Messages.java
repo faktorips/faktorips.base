@@ -136,4 +136,8 @@ public class Messages extends NLS {
 
 	public static String CardinalityPanel_labelOther;
 
+	public static String MissingResourcePage_msgFileOutOfSync;
+
+	public static String ProductCmptEditor_msgFileOutOfSync;
+
 }

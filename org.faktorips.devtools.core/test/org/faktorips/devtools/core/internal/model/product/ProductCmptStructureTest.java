@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.CircleRelationException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -126,8 +128,30 @@ public class ProductCmptStructureTest extends IpsPluginTest {
     	assertEquals(1, relationtypes.length);
     }
     
-    public void testNoGeneration() {
+    public void testNoGeneration() throws CircleRelationException {
     	productCmpt.getGenerations()[0].delete();
     	structure.refresh();
+    }
+    
+    public void testCircleDetection() throws Exception {
+    	DefaultTestContent content = new DefaultTestContent();
+    	
+    	// this has to work without any exception
+    	content.getComfortMotorProduct().getStructure();
+    	
+    	// create a circle
+    	IProductCmpt basic = content.getBasicMotorProduct();
+    	IProductCmpt comfort = content.getComfortMotorProduct(); 
+    	IProductCmptRelation rel = ((IProductCmptGeneration)basic.getGenerations()[0]).newRelation("VehicleType");
+    	rel.setTarget(comfort.getQualifiedName());
+    	rel = ((IProductCmptGeneration)comfort.getGenerations()[0]).newRelation("VehicleType");
+    	rel.setTarget(basic.getQualifiedName());
+    	
+    	try {
+			content.getComfortMotorProduct().getStructure();
+			fail();
+		} catch (CircleRelationException e) {
+			// success
+		} 
     }
 }

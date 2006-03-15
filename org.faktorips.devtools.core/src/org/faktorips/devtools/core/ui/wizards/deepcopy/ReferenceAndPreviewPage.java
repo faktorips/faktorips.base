@@ -43,6 +43,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -130,6 +131,16 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * {@inheritDoc}
 	 */
 	public void createControl(Composite parent) {
+
+        if (structure == null) {
+			Label errormsg = new Label(parent, SWT.WRAP);
+			GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, false);
+			errormsg.setLayoutData(layoutData);
+			errormsg.setText(Messages.ReferenceAndPreviewPage_msgCircleDetected);
+			this.setControl(errormsg);
+			return;
+		}
+
         UIToolkit toolkit = new UIToolkit(null);
 
 		Composite root = toolkit.createComposite(parent);

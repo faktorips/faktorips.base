@@ -96,8 +96,9 @@ public interface IProductCmpt extends ITimedIpsObject {
     /**
      * Returns the product component structure representing the structure defined by relations. The 
      * structure is rootet at this product.
+     * @throws CircleRelationException If a circle is detected.
      */
-    public IProductCmptStructure getStructure();
+    public IProductCmptStructure getStructure() throws CircleRelationException;
     
     
     

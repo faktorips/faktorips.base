@@ -70,6 +70,7 @@ public interface IProductCmptStructure {
 	
 	/**
 	 * Refreshes the structure to reflect changes to the underlying objects.
+	 * @throws CircleRelationException If a circle is detected.
 	 */
-	public void refresh();
+	public void refresh() throws CircleRelationException;
 }

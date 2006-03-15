@@ -42,5 +42,9 @@ public class Messages extends NLS {
 	public static String IpsPartsComposite_buttonDown;
 	public static String DescriptionPage_description;
 	public static String DescriptionSection_description;
+	public static String IpsObjectEditor_msgResourceOutOfSync;
+	public static String IpsObjectEditor_msgOutOfSyncOptions;
+	public static String IpsObjectEditor_msgEditorWillBeClosed;
+	public static String IpsObjectEditor_msgOutOfSyncTitle;
 
 }

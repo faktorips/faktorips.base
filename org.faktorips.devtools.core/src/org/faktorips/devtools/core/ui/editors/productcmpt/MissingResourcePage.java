@@ -46,7 +46,7 @@ public class MissingResourcePage extends IpsObjectEditorPage {
 	 * @param editor The owner of this page
 	 */
     public MissingResourcePage(IpsObjectEditor editor, IIpsSrcFile missing) {
-        super(editor, PAGE_ID, "");
+        super(editor, PAGE_ID, ""); //$NON-NLS-1$
         this.missing = missing;
     }
     
@@ -55,6 +55,6 @@ public class MissingResourcePage extends IpsObjectEditorPage {
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
     	Composite root = new Composite(formBody, SWT.NONE);
-    	toolkit.createLabel(root, NLS.bind("File {0} missing or out of sync.", missing.getName()));
+    	toolkit.createLabel(root, NLS.bind(Messages.MissingResourcePage_msgFileOutOfSync, missing.getName()));
     }
 }

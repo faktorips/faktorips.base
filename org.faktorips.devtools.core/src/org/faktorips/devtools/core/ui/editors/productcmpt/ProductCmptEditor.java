@@ -283,7 +283,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	protected String getUniformPageTitle() {
 		if (!isSrcFileUsable()) {
-			return NLS.bind("File {0} not found or out of sync.", getIpsSrcFile().getName());
+			return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, getIpsSrcFile().getName());
 		}
 		checkGeneration();
 		return Messages.ProductCmptEditor_productComponent
