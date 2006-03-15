@@ -18,18 +18,24 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import java.util.ArrayList;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -146,7 +152,31 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if(StringUtils.isEmpty(policyCmptType)){
             return new QualifiedNameType[0];
         }
-        return new QualifiedNameType[]{new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE)};
+        ArrayList qaTypes = new ArrayList();
+        qaTypes.add(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE));
+        
+        if(containsFormula()){
+        	IPolicyCmptType pcType = findPolicyCmptType();
+        	IAttribute[] attributes = pcType.getAttributes();
+        	for (int i = 0; i < attributes.length; i++) {
+				if(ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())){
+					Parameter[] parameters = attributes[i].getFormulaParameters();
+					for (int j = 0; j < parameters.length; j++) {
+						String dataTypeId = parameters[j].getDatatype();
+						IIpsObject ipsObject = getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, dataTypeId);
+						if(ipsObject != null){
+							qaTypes.add(ipsObject.getQualifiedNameType());
+							continue;
+						}
+						ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, dataTypeId);
+						if(ipsObject != null){
+							qaTypes.add(ipsObject.getQualifiedNameType());
+						}
+					}
+				}
+			}
+        }
+        return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
     }
 
     /**
