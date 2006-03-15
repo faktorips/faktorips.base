@@ -5,5 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="lib/bsh-2.0b2.jar"/>
+	<classpathentry kind="lib" path="lib/javacc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
