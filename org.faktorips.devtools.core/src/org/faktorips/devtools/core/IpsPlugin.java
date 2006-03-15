@@ -191,8 +191,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     public ImageDescriptor getImageDescriptor(String name) {
-        String iconPath = "icons/"; //$NON-NLS-1$
-        URL url = getBundle().getEntry(iconPath + '/' + name);
+        URL url = getBundle().getEntry("icons/" + name);
         return ImageDescriptor.createFromURL(url);
     }
 
