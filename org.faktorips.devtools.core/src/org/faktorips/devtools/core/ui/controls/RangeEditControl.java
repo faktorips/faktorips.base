@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
  * A composite that consits of three textfields for input. if there is a uicontroller supplied it is used to establish a
  * mapping between the modell object and the control which represents the object property.
  */
-public class RangeEditControl extends ControlComposite implements InternalValueSetEditControl {
+public class RangeEditControl extends ControlComposite {
 
     // lower and button controls
     private Text lower;
@@ -127,20 +127,6 @@ public class RangeEditControl extends ControlComposite implements InternalValueS
         return range;
     }
 
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.ui.controls.InternalValueSetEditControl#getValueSet()
-     */
-    public IValueSet getValueSet() {
-        return range;
-    }
-
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.ui.controls.InternalValueSetEditControl#setValueSet(org.faktorips.devtools.core.model.IValueSet)
-     */
     public void setValueSet(IValueSet valueSet) {
         range = (RangeValueSet)valueSet;
     }

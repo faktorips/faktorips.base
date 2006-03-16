@@ -46,7 +46,7 @@ public class ValueSetEditControl extends ControlComposite {
 
     private Combo validTypesCombo;
     private RangeEditControl rangeControl;
-    private EnumValueSetChooser enumControl;
+    private Composite enumControl;
     private Composite allValuesControl;
     private ValueDatatype datatype; // The datatype the values in the set are values of.
 
@@ -54,6 +54,7 @@ public class ValueSetEditControl extends ControlComposite {
     private IAttribute attribute;
     private UIToolkit toolkit;
     private DefaultUIController uiController;
+    private TableElementValidator tableElementValidator;
 
     /**
      * Generates a new control which contains a combo box and depending on the value of the box a EnumValueSetEditControl
@@ -67,6 +68,7 @@ public class ValueSetEditControl extends ControlComposite {
         this.attribute = attribute;
         this.toolkit = toolkit;
         this.uiController = uiController;
+        this.tableElementValidator = tableElementValidator;
         
         initLayout();
         Composite parentArea;
@@ -102,7 +104,13 @@ public class ValueSetEditControl extends ControlComposite {
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
-   			enumControl = new EnumValueSetChooser(valueSetArea, toolkit, null, (IEnumValueSet)valueSet, enumType, uiController);
+			
+			if (enumType != null) {
+				enumControl = new EnumValueSetChooser(valueSetArea, toolkit, null, (IEnumValueSet)valueSet, enumType, uiController);
+			} else {
+				enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, valueSetArea, tableElementValidator);
+			}
+			
     		retValue = enumControl;
     	} else if (valueSet.getValueSetType() == ValueSetType.RANGE) {
     		if (rangeControl == null) {
