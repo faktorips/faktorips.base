@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,11 +31,13 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
@@ -96,8 +99,31 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         this.configElement = configElement;
         attribute = configElement.findPcTypeAttribute();
         this.viewOnly = viewOnly;
+        
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected IpsPartUIController createUIController(IIpsObjectPart part) {
+        IpsPartUIController controller = new IpsPartUIController(part) {
+
+			protected MessageList validatePartAndUpdateUI() {
+				MessageList messages = super.validatePartAndUpdateUI();
+				if(!messages.isEmpty()){
+					Message firstMessage = messages.getMessage(0);
+					setMessage(firstMessage.getText(),  getJFaceMessageType(firstMessage.getSeverity()));	
+				}
+				else{
+					setMessage("");
+				}
+				return messages;
+			}
+        	
+        };
+        return controller;
+    }
+    
     /** 
      * {@inheritDoc}
      */
@@ -173,6 +199,21 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         return c;
     }
     
+    private int getJFaceMessageType(int severity){
+    	
+    	if(Message.ERROR == severity){
+    		return IMessageProvider.ERROR;
+    	}
+    	if(Message.INFO ==  severity){
+    		return IMessageProvider.INFORMATION;
+    	}
+    	if(Message.WARNING == severity){
+    		return IMessageProvider.WARNING;
+    	}
+    	
+    	return IMessageProvider.NONE;
+    }
+    
     /** 
      * {@inheritDoc}
      */
@@ -181,6 +222,14 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         uiController.add(formulaField, IConfigElement.PROPERTY_VALUE);
         List infos = ParameterInfo.createInfosAsList(attribute.getFormulaParameters());
         parametersControl.setInput(infos);
+    }
+    
+    /**
+     * Overrides the parent method and returns a combination of attribute name and datatype name of
+     * the attribute this formula relates to.
+     */
+    protected String buildTitle() {
+    	return attribute.getName() + " - " + attribute.getDatatype();
     }
     
 }

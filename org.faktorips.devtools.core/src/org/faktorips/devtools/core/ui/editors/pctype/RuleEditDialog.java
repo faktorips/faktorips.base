@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -174,9 +175,10 @@ public class RuleEditDialog extends IpsPartEditDialog {
             super(pdPart);
         }
         
-        protected void validatePartAndUpdateUI() {
-            super.validatePartAndUpdateUI();
+        protected MessageList validatePartAndUpdateUI() {
+            MessageList list = super.validatePartAndUpdateUI();
             rfControl.refresh();
+            return list;
         }
     }
 

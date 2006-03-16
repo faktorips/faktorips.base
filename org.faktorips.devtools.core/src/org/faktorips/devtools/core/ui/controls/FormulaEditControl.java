@@ -18,12 +18,15 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.productcmpt.FormulaEditDialog;
+import org.faktorips.util.memento.Memento;
 
 /**
  * Control to edit the value of an formula. A textfeld followed by a button is provided.
@@ -44,7 +47,16 @@ public class FormulaEditControl extends TextButtonControl {
 	
 	protected void buttonClicked() {
 		try {
-			new FormulaEditDialog(configElement, shell, !super.getTextControl().isEnabled()).open();
+			//TODO pk: don't we need a general memento handling in the IpsPartEditDialog
+            Memento memento = configElement.newMemento();
+            EditDialog dialog = new FormulaEditDialog(configElement, shell, !super.getTextControl().isEnabled());
+            dialog.open();
+            if (dialog.getReturnCode()==Window.CANCEL) {
+            	configElement.setState(memento);
+            	//TODO pk: this must happend automatically when that memento is set 
+            	configElement.getIpsObject().getIpsSrcFile().markAsClean();
+            }
+
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}

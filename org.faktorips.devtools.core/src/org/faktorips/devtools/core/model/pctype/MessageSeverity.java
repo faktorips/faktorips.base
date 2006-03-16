@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -60,6 +61,25 @@ public class MessageSeverity extends DefaultEnumValue {
     public final static MessageSeverity getMessageSeverity(String id) {
         return (MessageSeverity)enumType.getEnumValue(id);
     }
+    
+    /**
+     * Returns a message severity of the jface <code>org.eclipse.jface.dialogs.IMessageProvider</code> 
+     * for a MessageSeverity.  
+     */
+    public final static int getJFaceMessageType(MessageSeverity severity){
+    	if(MessageSeverity.ERROR.equals(severity)){
+    		return IMessageProvider.ERROR;
+    	}
+    	if(MessageSeverity.INFO.equals(severity)){
+    		return IMessageProvider.INFORMATION;
+    	}
+    	if(MessageSeverity.WARNING.equals(severity)){
+    		return IMessageProvider.WARNING;
+    	}
+    	
+    	return IMessageProvider.NONE;
+    }
+
     
     // the Java sourcecode fragment that identifies the message severity
     private JavaCodeFragment codeFragment;

@@ -69,7 +69,14 @@ public class IpsPartUIController extends IpsObjectPartContainerUIController {
         validatePartAndUpdateUI();
     }
     
-    protected void validatePartAndUpdateUI() {
+    /**
+     * Validates the part and updates the fields that are associated with attributes of the IpsPart.
+     * It returns the MessageList which is the result of the IpsPart validation. This return value 
+     * can be evaluated when overriding this method.
+     * 
+     * @return the validation message list. Never returns null.
+     */
+    protected MessageList validatePartAndUpdateUI() {
         try {
             MessageList list = part.validate();    
 	        for (Iterator it=mappings.iterator(); it.hasNext();) {
@@ -77,9 +84,11 @@ public class IpsPartUIController extends IpsObjectPartContainerUIController {
 	            MessageList controlList = list.getMessagesFor(mapping.getObject(), mapping.getPropertyName());
 	            mapping.getField().setMessages(controlList);
 	        }
+	        return list;
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        return new MessageList();
     }
     
 }
