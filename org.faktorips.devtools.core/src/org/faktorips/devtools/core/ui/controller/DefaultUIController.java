@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -100,14 +102,24 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 	public void updateModel() {
 		for (Iterator it = mappings.iterator(); it.hasNext();) {
 			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
-			mapping.setPropertyValue();
+			try {
+				mapping.setPropertyValue();
+			} catch (Exception e) {
+				IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName()
+						+ " of object " + mapping.getObject(), e));
+			}
 		}
 	}
 
 	public void updateUI() {
 		for (Iterator it = mappings.iterator(); it.hasNext();) {
 			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
-			mapping.setControlValue();
+			try {
+				mapping.setControlValue();
+			} catch (Exception e) {
+				IpsPlugin.log(new IpsStatus("Error updating control for property " + mapping.getPropertyName()
+						+ " of object " + mapping.getObject(), e));
+			}
 		}
 	}
 
@@ -118,7 +130,12 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 		for (Iterator it = mappings.iterator(); it.hasNext();) {
 			FieldPropertyMapping mapping = (FieldPropertyMapping) it.next();
 			if (e.field == mapping.getField()) {
-				mapping.setPropertyValue();
+				try {
+					mapping.setPropertyValue();
+				} catch (Exception ex) {
+					IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName()
+							+ " of object " + mapping.getObject(), ex));
+				}
 			}
 		}
 	}

@@ -121,21 +121,21 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 	 * {@inheritDoc}
 	 */
 	public String getValueName(String id) {
+	    if (!isSupportingNames) {
+            throw new UnsupportedOperationException(
+                    "This enumeration type does not support a getName(String) method, enumeration type class: "
+                            + getAdaptedClass());
+        }
+		try {
+            Object value = getValue(id);
+            if (value==null) {
+                return null;
+            }
+            return (String)getGetNameMethod().invoke(value, new Object[0]);
 
-		if (isSupportingNames) {
-			try {
-                Object value = getValue(id);
-                if(value == null){
-                    return null;
-                }
-				return (String)getGetNameMethod().invoke(value, new Object[0]);
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to invoke the method " + getNameMethodName
-						+ " on the class: " + getAdaptedClass());
-			}
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to invoke the method " + getNameMethodName
+					+ " on the class: " + getAdaptedClass());
 		}
-		throw new UnsupportedOperationException(
-				"This enumeration type does not support a getName(String) method, enumeration type class: "
-						+ getAdaptedClass());
-	}
+    }
 }

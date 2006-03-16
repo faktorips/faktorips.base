@@ -231,6 +231,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     public String valueToString(Object value) {
         getToStringMethod();
         if (toStringMethod==null) {
+            if (value==null) {
+                return null;
+            }
             return value.toString();
         }
         try {

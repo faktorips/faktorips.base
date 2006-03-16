@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.faktorips.datatype.DefaultGenericEnumDatatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsProject;
 
 /**
@@ -85,17 +87,21 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 	 * {@inheritDoc}
 	 */
 	public String getValueName(String id) {
-
-		if (isSupportingNames) {
-			DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(
-					getAdaptedClass());
-			datatype.setIsSupportingNames(isSupportingNames);
-			datatype.setGetNameMethodName(getNameMethodName);
-			return datatype.getValueName(id);
+		if (!isSupportingNames) {
+			IpsPlugin.log(new IpsStatus("The getName(String) method is not supported by this enumeration class: " + getAdaptedClass())); //$NON-NLS-1$)
+			return id;
 		}
-		throw new UnsupportedOperationException(
-				"The getName(String) method is not supported by this enumeration class: " //$NON-NLS-1$
-						+ getAdaptedClass());
+		DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());
+		datatype.setIsSupportingNames(isSupportingNames);
+		datatype.setGetNameMethodName(getNameMethodName);
+		datatype.setValueOfMethodName(this.getValueOfMethodName());
+		datatype.setToStringMethodName(getToStringMethodName());
+		try {
+			return datatype.getValueName(id);
+		} catch (Exception e) {
+			IpsPlugin.log(new IpsStatus("Error getting name for enum value id " + id, e)); 
+			return id;
+		}
 	}
 
 }
