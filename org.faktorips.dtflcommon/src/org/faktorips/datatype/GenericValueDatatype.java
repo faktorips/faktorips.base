@@ -210,7 +210,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         try {
             return getValueOfMethod().invoke(null, new Object[]{value});
         } catch (Exception e) {
-            throw new RuntimeException("Error invoking method " + valueOfMethod);
+            throw new RuntimeException("Error invoking method " + valueOfMethod, e);
         }
     }
     
