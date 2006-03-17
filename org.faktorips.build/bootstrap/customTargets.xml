@@ -124,8 +124,8 @@
 <!-- Steps to do after the build is done. -->
 <!-- ===================================================================== -->
 <target name="postBuild">
-	<!-- <antcall target="test"></antcall> -->
-</target>
+	 <antcall target="test"/>
+ </target>
 
 <!-- ===================================================================== -->
 <!-- Steps to test the build results -->
@@ -133,15 +133,15 @@
 <target name="test" unless="dontRunTests">
     <echo message="Setting up tests in ${eclipseAutomatedTestHome}"/>
 	
-	<copy file="${buildDirectory}/${buildLabel}/org.rubypeople.rdt-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/eclipse-SDK-RDT-${buildId}.zip" />
-	<copy file="${buildDirectory}/${buildLabel}/org.rubypeople.rdt-tests-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/eclipse-junit-tests-rdt-${buildId}.zip" />
+	<copy file="${buildDirectory}/${buildLabel}/org.faktorips.feature-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/org.faktorips.feature-${buildId}.zip" />
+	<copy file="${buildDirectory}/${buildLabel}/org.faktorips.feature-test-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/org.faktorips.feature.test-${buildId}.zip" />
 
 	<ant antfile="${eclipseAutomatedTestHome}/test.xml" target="runtests" dir="${eclipseAutomatedTestHome}">		
 		<property name="os" value="${baseos}" />
 	    <property name="ws" value="${basews}" />
 		<property name="arch" value="${basearch}" />
-		<property name="testPlugin" value="org.rubypeople.rdt.tests.all_0.5.0" /> 
-		<property name="report" value="org.rubypeople.rdt.tests.all" /> 
+		<property name="testPlugin" value="org.faktorips.tests.all" /> 
+		<property name="report" value="org.faktorips.tests.all" /> 
 	</ant>
 	
 </target>

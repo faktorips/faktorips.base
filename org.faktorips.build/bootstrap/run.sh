@@ -4,7 +4,7 @@ pdeBuildPluginVersion=3.1.0
 buildDirectory=/home/senf/work/
 bootstrapDir=${buildDirectory}/org.faktorips.build/bootstrap
 verboseAnt=true
-#eclipseAutomatedTestHome=${RDT_BUILD_HOME}/eclipse-testing
+eclipseAutomatedTestHome=/tmp/eclipsetest/
 
 #docbookRoot=${RDT_BUILD_HOME}/docbook
 vm=`java-config -O`/bin/java
