@@ -6,16 +6,15 @@
 <!-- ===================================================================== -->
 <target name="allElements">
 
-
-	<ant antfile="${genericTargets}" target="${target}" >
-		<property name="type" value="feature" />
-		<property name="id" value="org.faktorips.feature" />
-	</ant>
-	
 	<ant antfile="${genericTargets}" target="${target}" >
 		<property name="type" value="feature" />
 		<property name="id" value="org.faktorips.feature.test"/>
 	</ant>
+	<ant antfile="${genericTargets}" target="${target}" >
+		<property name="type" value="feature" />
+		<property name="id" value="org.faktorips.feature" />
+	</ant>
+
 
 
 </target>
