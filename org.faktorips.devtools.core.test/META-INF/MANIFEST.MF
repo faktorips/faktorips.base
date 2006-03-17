@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
  org.faktorips.util.test,
- org.faktorips.devtools.core,
+ org.faktorips.devtools.core;visibility:=reexport,
  org.eclipse.jface.text
 Eclipse-AutoStart: true
 Export-Package: org.faktorips.devtools.core,
