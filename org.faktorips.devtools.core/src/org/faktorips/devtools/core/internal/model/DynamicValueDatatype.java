@@ -187,8 +187,11 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 	}
 
 	private void accumulateClasspath(IJavaProject project, List urlsList) throws JavaModelException, MalformedURLException{
-		IPath root = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-		IPath output = root.append(project.getOutputLocation());
+		//IPath root = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		IPath projectPath = project.getProject().getLocation();
+		IPath root = projectPath.removeLastSegments(project.getProject().getFullPath().segmentCount());
+		IPath outLocation = project.getOutputLocation();
+		IPath output = root.append(outLocation);
 		urlsList.add(output.toFile().toURL());
 		System.out.println("Path: "+output.toFile().toURL());
 		IClasspathEntry[] entry = project.getRawClasspath();
