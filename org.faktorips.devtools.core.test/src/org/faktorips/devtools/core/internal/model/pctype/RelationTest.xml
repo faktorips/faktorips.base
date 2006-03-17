@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for RelationImplTest.java
+-->
+<Relation id="42"
+          abstract="true" 
+          relationType="ass" 
+          readOnlyContainer="true"
+          target="MotorPart" 
+          targetRoleSingular="PolicyPart" 
+          targetRolePlural="PolicyParts" 
+          minCardinality="1" 
+          maxCardinality="*" 
+          productRelevant="false" 
+          containerRelation="Policy.Parts" 
+          reverseRelation="Part.Policy" 
+          targetRoleSingularProductSide="PolicyPartType" 
+          targetRolePluralProductSide="PolicyPartTypes" 
+          minCardinalityProductSide="2" 
+          maxCardinalityProductSide="3" 
+          description="blabla">
+</Relation>

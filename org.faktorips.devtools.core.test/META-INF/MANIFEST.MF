@@ -6,5 +6,13 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.faktorips.devtools.core.test.TestPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.faktorips.devtools.core,
+ org.faktorips.devtools.stdbuilder,
+ org.faktorips.devtools.stdbuilder.test,
+ org.faktorips.dtflcommon,
+ org.faktorips.fl,
+ org.faktorips.runtime,
+ org.faktorips.util,
+ org.faktorips.valuetypes
 Eclipse-AutoStart: true

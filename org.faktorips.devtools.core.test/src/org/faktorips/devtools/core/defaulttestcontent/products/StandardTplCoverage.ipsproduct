@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductCmpt description="" policyCmptType="motor.TplCoverage">
+    <Generation id="0" description="" validFrom="2003-08-01">
+        <ConfigElement id="0" description="" type="policyAttribute" pcTypeAttribute="sumInusred" value="">
+            <ValueSet>
+                <AllValues/>
+            </ValueSet>
+        </ConfigElement>
+    </Generation>
+</ProductCmpt>
+

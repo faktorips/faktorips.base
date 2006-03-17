@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ConfigElement id="42" type="productAttribute" pcTypeAttribute="rate">
+    <Value><![CDATA[1.5]]></Value>
+</ConfigElement>

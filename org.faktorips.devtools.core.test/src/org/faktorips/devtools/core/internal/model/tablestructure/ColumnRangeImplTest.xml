@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for ColumnRangeImplTest.java
+-->
+<Range id="42" columnRangeType="twoColumn" fromColumn="ageFrom" toColumn="ageTo"/>

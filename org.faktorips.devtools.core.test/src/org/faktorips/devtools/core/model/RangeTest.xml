@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestCases>
+	<ValueSet>
+		<Range lowerBound="42" upperBound="trulala" step="4"/>
+	</ValueSet>
+</TestCases>

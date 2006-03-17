@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicyCmptType description="" configurableByProductCmptType="true" unqualifiedProductCmptType="BikeType" supertype="" abstract="false" forceExtensionCompilationUnitGeneration="false">
+    <Attribute id="0" description="" name="motorPower" datatype="int" productRelevant="true" modifier="published" attributeType="computed">
+        <DefaultValue isNull="false"><![CDATA[0]]></DefaultValue>
+        <FormulaParameter name="age" datatype="int"/>
+        <ValueSet id="4" description="">
+            <AllValues/>
+        </ValueSet>
+    </Attribute>
+</PolicyCmptType>
+
