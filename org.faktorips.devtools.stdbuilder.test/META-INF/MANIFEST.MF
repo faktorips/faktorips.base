@@ -12,8 +12,8 @@ Require-Bundle: org.faktorips.devtools.stdbuilder,
  org.junit,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
- org.faktorips.devtools.core,
- org.faktorips.util.test
+ org.faktorips.util.test,
+ org.faktorips.devtools.core.test
 Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.productcmpt,
  org.faktorips.devtools.stdbuilder.table
