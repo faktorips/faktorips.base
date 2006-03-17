@@ -135,9 +135,8 @@
 	<mkdir dir="${eclipseAutomatedTestHome}"/>
 	<copy file="${buildDirectory}/${buildLabel}/org.faktorips.feature-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/org.faktorips.feature-${buildId}.zip" />
 	<copy file="${buildDirectory}/${buildLabel}/org.faktorips.feature.test-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/org.faktorips.feature.test-${buildId}.zip" />
-
-	<unzip dest="${eclipseAutomatedTestHome}" src="${eclipseAutomatedTestHome}/org.faktorips.feature.test-${buildId}.zip"></unzip>
-	<ant antfile="${eclipseAutomatedTestHome}/test.xml" target="runtests" dir="${eclipseAutomatedTestHome}">		
+	<copy file="${buildDirectory}/plugins/org.faktorips.tests.all/test.xml" tofile="${eclipseAutomatedTestHome}/test.xml" />
+		<ant antfile="${eclipseAutomatedTestHome}/test.xml" target="runtests" dir="${eclipseAutomatedTestHome}">		
 		<property name="os" value="${baseos}" />
 	    <property name="ws" value="${basews}" />
 		<property name="arch" value="${basearch}" />
