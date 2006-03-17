@@ -33,7 +33,7 @@
 	</ant>
 </target>
 	
-<target name="assemble.org.faktorips.feature-tests">
+<target name="assemble.org.faktorips.feature.test">
 	<ant antfile="${assembleScriptName}" dir="${buildDirectory}">
 		<property name="zipargs" value="" />
 	</ant>
