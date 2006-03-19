@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<PolicyCmptType description="" configurableByProductCmptType="true" unqualifiedProductCmptType="CoverageType" supertype="" abstract="false" forceExtensionCompilationUnitGeneration="false">
-    <Attribute id="0" description="" name="sumInusred" datatype="Money" productRelevant="true" modifier="published" attributeType="changeable" defaultValue="">
-        <ValueSet>
-            <AllValues/>
-        </ValueSet>
-    </Attribute>
-</PolicyCmptType>
-
