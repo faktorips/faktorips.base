@@ -17,11 +17,15 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -57,6 +61,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     private String targetRolePluralProductSide = ""; //$NON-NLS-1$
     private int minCardinalityProductSide = 0;
     private int maxCardinalityProductSide = 1;
+    private boolean deleted = false;
 
     public Relation(IPolicyCmptType pcType, int id) {
         super(pcType, id);
@@ -91,8 +96,6 @@ public class Relation extends IpsObjectPart implements IRelation {
         deleted = true;
     }
 
-    private boolean deleted = false;
-
     /**
      * {@inheritDoc}
      */
@@ -100,15 +103,35 @@ public class Relation extends IpsObjectPart implements IRelation {
     	return deleted;
     }
 
-
     /** 
      * Overridden.
      */
     public RelationType getRelationType() {
         return type;
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	public boolean isAssoziation() {
+		return type.isAssoziation();
+	}
 
-    /** 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isForwardComposition() {
+		return type.isComposition();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isReverseComposition() {
+		return type.isReverseComposition();
+	}
+
+	/** 
      * Overridden.
      */
     public void setRelationType(RelationType newType) {
@@ -387,8 +410,35 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden.
-     */
+	 * {@inheritDoc}
+	 */
+	public IRelation[] findForwardCompositions() throws CoreException {
+		if (!getRelationType().isReverseComposition()) {
+			throw new CoreException(new IpsStatus("findForwardCompositions is only defined for reverse composition."));
+		}
+		IPolicyCmptType target = findTarget();
+		if (target==null) {
+			return new IRelation[0];
+		}
+		String typeName = getIpsObject().getQualifiedName();
+		ITypeHierarchy hierarchy = target.getSupertypeHierarchy();
+		IRelation[] relations = hierarchy.getAllRelations(target);
+		List result = new ArrayList(relations.length);
+		for (int i = 0; i < relations.length; i++) {
+			IRelation relation = relations[i];
+			if (relation.isForwardComposition()
+					&& relation.getTarget().equals(typeName)
+					&& relation.getReverseRelation().equals(getName())) {
+
+				result.add(relation);
+			}
+		}
+		return (IRelation[])result.toArray(new IRelation[result.size()]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
     public IRelation findReverseRelation() throws CoreException {
         if ((type.isComposition() || type.isReverseComposition()) && implementsContainerRelation()) {
         	return findReverseRelationOfImplementationRelation();
@@ -433,7 +483,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public Image getImage() {
         if (this.type==RelationType.COMPOSITION) {

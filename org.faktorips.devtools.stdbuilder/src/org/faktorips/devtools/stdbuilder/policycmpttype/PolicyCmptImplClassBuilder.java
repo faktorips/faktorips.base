@@ -164,10 +164,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         generateConstructorDefault(builder);
-        generateConstructorsWithParent(false, builder);
         if (getPcType().isConfigurableByProductCmptType()) {
             generateConstructorWithProductCmptArg(builder);
-            generateConstructorsWithParent(true, builder);
         }
     }
 
@@ -428,6 +426,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateFieldForRelation(relation, target, fieldsBuilder);
             generateMethodGetRefObjectForNoneContainerRelation(relation, methodsBuilder);
             generateMethodSetRefObject(relation, methodsBuilder);
+            generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
         }
     }
 
@@ -443,6 +442,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodGetNumOfForNoneContainerRelation(relation, methodsBuilder);
             generateMethodContainsObjectForNoneContainerRelation(relation, methodsBuilder);
             generateMethodGetAllRefObjectsForNoneContainerRelation(relation, methodsBuilder);
+            generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
             generateMethodAddObject(relation, methodsBuilder);
             generateMethodRemoveObject(relation, methodsBuilder);
         }
@@ -760,6 +760,42 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
             methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, targetClass, relation, reverseRelation));
         }
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public ICoverage newCoverage() {
+     *     ICoverage newCoverage = new Coverage();
+     *     return newCoverage;
+     * }
+     * </pre>
+     */
+    public void generateMethodNewChild(
+            IRelation relation, 
+            IPolicyCmptType target,
+            boolean inclProductCmptArg,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureNewChild(relation, target, inclProductCmptArg, methodsBuilder);
+        String addMethod = relation.is1ToMany() ? interfaceBuilder.getMethodNameAddObject(relation) :
+            interfaceBuilder.getMethodNameSetObject(relation);
+        String varName = "new" + relation.getTargetRoleSingular();
+        methodsBuilder.openBracket();
+        methodsBuilder.appendClassName(getQualifiedClassName(target));
+        methodsBuilder.append(" " + varName + " = new ");
+        methodsBuilder.appendClassName(getQualifiedClassName(target));
+        if (inclProductCmptArg) {
+            methodsBuilder.appendln("(" + interfaceBuilder.getParamNameForProductCmptInNewChildMethod(target.findProductCmptType()) + ");");  
+        } else {
+            methodsBuilder.appendln("();");
+        }
+        methodsBuilder.appendln(addMethod + "(" + varName + ");");
+        methodsBuilder.appendln(varName + "." + getMethodNameInitialize() + "();");
+        methodsBuilder.appendln("return " + varName + ";");
         methodsBuilder.closeBracket();
     }
     
@@ -1217,9 +1253,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateMethodInitialize(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_INITIALIZE", getPcType(), builder);
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Datatype.VOID.getJavaClassName(),
-                "initialize", new String[0], new String[0]);
+                getMethodNameInitialize(), new String[0], new String[0]);
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
-            builder.append("super.initialize();");
+            builder.append("super." + getMethodNameInitialize() + "();");
         }
         if (!getPcType().isConfigurableByProductCmptType()) {
             builder.methodEnd();
@@ -1243,6 +1279,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         builder.methodEnd();
+    }
+    
+    /**
+     * Returns the method name to initialize the policy component with the default data from
+     * the product component.
+     */
+    public String getMethodNameInitialize() {
+        return "initialize";
     }
 
     /**

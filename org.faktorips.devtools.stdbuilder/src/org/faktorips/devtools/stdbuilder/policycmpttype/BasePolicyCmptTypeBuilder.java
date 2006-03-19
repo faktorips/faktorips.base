@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -109,5 +110,46 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             IRelation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
+    
+    /**
+     * Methods to create a new child object should be generated if the relation
+     * is a composite and the target is not abstract. If the target is configurable
+     * by product a second method with the product component type as argument should
+     * also be generated.
+     */
+    protected void generateNewChildMethodsIfApplicable(
+            IRelation relation,
+            IPolicyCmptType target, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        if (!relation.getRelationType().isComposition()) {
+            return;
+        }
+        if (target.isAbstract()) {
+            return;
+        }
+        generateMethodNewChild(relation, target, false, methodsBuilder);
+        if (target.isConfigurableByProductCmptType()) {
+            generateMethodNewChild(relation, target, true, methodsBuilder);
+        }
+    }
+    
+    /**
+     * Generates a method to create a new child object for a parent obejct and attach
+     * it to the parent.
+     * 
+     * @param relation The parent to child relation
+     * @param target   The child type.
+     * @param inclProductCmptArg <code>true</code> if the product component type should be included as arg.
+     * @param builder  The builder sourcecode can be appended to.
+     * 
+     * @throws CoreException
+     */
+    public abstract void generateMethodNewChild(
+            IRelation relation, 
+            IPolicyCmptType target,
+            boolean inclProductCmptArg,
+            JavaCodeFragmentBuilder builder) throws CoreException;
+    
     
 }

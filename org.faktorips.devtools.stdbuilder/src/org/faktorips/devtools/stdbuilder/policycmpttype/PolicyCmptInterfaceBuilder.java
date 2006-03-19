@@ -456,12 +456,11 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1To1Relation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        IPolicyCmptType target = relation.findTarget();
         generateMethodGetRefObject(relation, methodsBuilder);
         if (!relation.isReadOnlyContainer() && !relation.getRelationType().isReverseComposition()) {
             generateMethodSetObject(relation, methodsBuilder);
-            if (relation.getRelationType().isComposition()) {
-                generateMethodNewChild(relation, methodsBuilder);
-            }
+            generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
         }
     }
 
@@ -469,15 +468,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeFor1ToManyRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        IPolicyCmptType target = relation.findTarget();
         generateMethodGetNumOfRefObjects(relation, methodsBuilder);
         generateMethodGetAllRefObjects(relation, methodsBuilder);
         generateMethodContainsObject(relation, methodsBuilder);
         if (!relation.isReadOnlyContainer()) {
             generateMethodAddObject(relation, methodsBuilder);
             generateMethodRemoveObject(relation, methodsBuilder);
-            if (relation.getRelationType().isComposition()) {
-                generateMethodNewChild(relation, methodsBuilder);
-            }
+            generateNewChildMethodsIfApplicable(relation, target, methodsBuilder);
         }
     }
     
@@ -658,33 +656,53 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * public Coverage newCoverage(CoverageType coverageType);
      * </pre>
      */
-    public void generateMethodNewChild(IRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
-        if (1==1) {
-            // TODO generation of implementation must be done!!
-            return;
-        }
-        String targetTypeName = relation.findTarget().getName();
+    public void generateMethodNewChild(
+            IRelation relation, 
+            IPolicyCmptType target,
+            boolean inclProductCmptArg,
+            JavaCodeFragmentBuilder builder) throws CoreException {
+        
+        String targetTypeName = target.getName();
         String role = relation.getTargetRoleSingular();
-        appendLocalizedJavaDoc("METHOD_NEW_CHILD", new String[]{targetTypeName, role}, relation, builder);
-        generateSignatureNewChild(relation, builder);
+        if (inclProductCmptArg) { 
+            String replacements[] = new String[]{targetTypeName, role, getParamNameForProductCmptInNewChildMethod(target.findProductCmptType())};
+            appendLocalizedJavaDoc("METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", replacements, relation, builder);
+        } else {
+            appendLocalizedJavaDoc("METHOD_NEW_CHILD", new String[]{targetTypeName, role}, relation, builder);
+        }
+        generateSignatureNewChild(relation, target, inclProductCmptArg, builder);
         builder.appendln(";");
     }
 
     /**
-     * Code sample without product component parameter:
+     * Code sample without product component argument:
      * <pre>
      * public Coverage newCoverage()
      * </pre>
      * 
-     * Code sample with product component parameter:
+     * Code sample with product component argument:
      * <pre>
-     * public Coverage newCoverage(CoverageType coverageType)
+     * public Coverage newCoverage(ICoverageType coverageType)
      * </pre>
      */
-    public void generateSignatureNewChild(IRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
+    public void generateSignatureNewChild(
+            IRelation relation, 
+            IPolicyCmptType target,
+            boolean inclProductCmptArg,
+            JavaCodeFragmentBuilder builder) throws CoreException {
+        
         String methodName = getMethodNameNewChild(relation);
         String returnType = getQualifiedClassName(relation.findTarget());
-        builder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, new String[]{}, new String[]{});
+        String[] argNames, argTypes;
+        if (inclProductCmptArg) {
+            IProductCmptType productCmptType = target.findProductCmptType();
+            argNames = new String[]{getParamNameForProductCmptInNewChildMethod(productCmptType)};
+            argTypes = new String[]{productCmptInterfaceBuilder.getQualifiedClassName(productCmptType)};
+        } else {
+            argNames = new String[0];
+            argTypes = new String[0];
+        }
+        builder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName, argNames, argTypes);
     }
     
     /**
@@ -692,6 +710,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     public String getMethodNameNewChild(IRelation relation) {
         return getLocalizedText(relation, "METHOD_NEW_CHILD_NAME", relation.getTargetRoleSingular());
+    }
+
+    /**
+     * Returns the name of the parameter in the new child mthod, e.g. coverageType.
+     */
+    protected String getParamNameForProductCmptInNewChildMethod(IProductCmptType targetProductCmptType) throws CoreException {
+        String targetProductCmptClass = productCmptInterfaceBuilder.getQualifiedClassName(targetProductCmptType);
+        return StringUtils.uncapitalise(StringUtil.unqualifiedName(targetProductCmptClass));
     }
 
     /**

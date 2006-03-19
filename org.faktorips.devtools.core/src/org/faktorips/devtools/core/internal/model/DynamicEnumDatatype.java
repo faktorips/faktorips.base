@@ -94,7 +94,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 		DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());
 		datatype.setIsSupportingNames(isSupportingNames);
 		datatype.setGetNameMethodName(getNameMethodName);
-		datatype.setValueOfMethodName(this.getValueOfMethodName());
+		datatype.setValueOfMethodName(getValueOfMethodName());
 		datatype.setToStringMethodName(getToStringMethodName());
 		try {
 			return datatype.getValueName(id);

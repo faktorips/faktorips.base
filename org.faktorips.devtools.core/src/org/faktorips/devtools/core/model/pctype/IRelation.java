@@ -111,6 +111,21 @@ public interface IRelation extends IIpsObjectPart {
     public IPolicyCmptType getPolicyCmptType();
     
     /**
+     * Returns <code>true</code> if this is an assoziation otherwise <code>false</code>.
+     */
+    public boolean isAssoziation();
+    
+    /**
+     * Returns <code>true</code> if this is a forward composition otherwise <code>false</code>.
+     */
+    public boolean isForwardComposition();
+    
+    /**
+     * Returns <code>true</code> if this is a forward composition otherwise <code>false</code>.
+     */
+    public boolean isReverseComposition();
+    
+    /**
      * Returns the relation's type indication if it's an association or
      * aggregation. 
      */
@@ -269,6 +284,19 @@ public interface IRelation extends IIpsObjectPart {
      * @throws CoreException if an error occurs while searching.
      */
     public IRelation findReverseRelation() throws CoreException;
+    
+    /**
+     * Returns the forward compositions that refer to this reverse composition.
+     * The forward compositions are those relations in this relation's target policy
+     * component type (and it's supertypes) that have the type 'composition' and 
+     * refer to this relation as reverse relation.
+     * <p>  
+     * If this relation's target can't be found, an empty array is returned. 
+     * 
+     * @throws CoreException if an error occurs while search for the forward relations or
+     * the method is called on relation that is not of type reverse composition. 
+     */
+    public IRelation[] findForwardCompositions() throws CoreException;
     
     /**
      * Returns <code>true</code> if this relation implements a container relation, otherwise <code>false</code>.
