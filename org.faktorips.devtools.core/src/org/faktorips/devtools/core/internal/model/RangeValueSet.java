@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IRangeValueSet;
@@ -128,15 +127,24 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value, ValueDatatype datatype) {
-    	return containsValue(value, datatype, null, null, null);
+    public boolean containsValue(String value) {
+    	return containsValue(value, null, null, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
-        try {
+    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
+    	ValueDatatype datatype = getValueDatatype();
+    	
+    	if (datatype == null) {
+    		if (list != null) {
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    		}
+    		return false;
+    	}
+
+    	try {
             Comparable lower = (Comparable)datatype.getValue(getLowerBound());
             Comparable upper = (Comparable)datatype.getValue(getUpperBound());
             Comparable objectvalue = (Comparable)datatype.getValue(value);
@@ -162,12 +170,16 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype,
-			MessageList list, Object invalidObject, String invalidProperty) {
-    	
-    	if (subset instanceof AllValuesValueSet) {
-    		// if the subset is an all values valueset, it is allways contained in this valueset.
-    		return true;
+    public boolean containsValueSet(IValueSet subset, MessageList list,
+			Object invalidObject, String invalidProperty) {
+
+    	ValueDatatype datatype = getValueDatatype();
+    	ValueDatatype subDatatype = subset.getValueDatatype();
+    	if (datatype == null || subDatatype == null) {
+    		if (list != null) {
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    		}
+    		return false;
     	}
 
     	if (!(subset instanceof RangeValueSet)) {
@@ -245,8 +257,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-	public boolean containsValueSet(IValueSet subset, ValueDatatype datatype) {
-		return containsValueSet(subset, datatype, null, null, null);
+	public boolean containsValueSet(IValueSet subset) {
+		return containsValueSet(subset, null, null, null);
 	}
 
     /**
@@ -286,7 +298,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * {@inheritDoc}
      */
-    public void validate(ValueDatatype datatype, MessageList list) {
+    public void validate(MessageList list) {
+    	ValueDatatype datatype = getValueDatatype();
         if (datatype==null) {
             String text = Messages.Range_msgUnknownDatatype;
             list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this, 
@@ -331,13 +344,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * {@inheritDoc}
      */
     public String toString() {
-    	return super.toString() + ":" + toShortString(null); //$NON-NLS-1$
+    	return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
-    public String toShortString(Datatype type) {
+    public String toShortString() {
         if (StringUtils.isNotEmpty(step)) {
             return "[" + lowerBound + ";" + upperBound + "] by " + step; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }

@@ -64,14 +64,23 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value, ValueDatatype datatype) {
-    	return containsValue(value, datatype, null, null, null);
+    public boolean containsValue(String value) {
+    	return containsValue(value, null, null, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
+    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
+    	ValueDatatype datatype = getValueDatatype();
+    	
+    	if (datatype == null) {
+    		if (list != null) {
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    		}
+    		return false;
+    	}
+    	
         if (!datatype.isParsable(value)) {
         	if (list != null) {
         		String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
@@ -103,11 +112,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
-    	
-    	if (subset instanceof AllValuesValueSet) {
-    		// if the subset is an all values valueset, it is allways contained in this valueset.
-    		return true;
+    public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
+    	ValueDatatype datatype = getValueDatatype();
+    	ValueDatatype subDatatype = subset.getValueDatatype();
+    	if (datatype == null || subDatatype == null) {
+    		if (list != null) {
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    		}
+    		return false;
     	}
     	
     	if (!(subset instanceof EnumValueSet)) {
@@ -122,7 +134,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	
     	boolean contains = true;
     	for (int i = 0; i < subsetValues.length && contains; i++) {
-			contains = this.containsValue(subsetValues[i], datatype, list, invalidObject, invalidProperty);
+			contains = this.containsValue(subsetValues[i], list, invalidObject, invalidProperty);
 		}
 		return contains;
 	}
@@ -130,8 +142,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
-	public boolean containsValueSet(IValueSet subset, ValueDatatype datatype) {
-		return containsValueSet(subset, datatype, null, null, null);
+	public boolean containsValueSet(IValueSet subset) {
+		return containsValueSet(subset, null, null, null);
 	}
 
     /**
@@ -197,11 +209,15 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
      * {@inheritDoc}
      */
-    public void validate(ValueDatatype datatype, MessageList list) {
+    public void validate(MessageList list) {
+    	ValueDatatype datatype = getValueDatatype();
+    	
         int numOfValues = elements.size();
         for (int i = 0; i < numOfValues; i++) {
             String value = (String)elements.get(i);
-            if (!datatype.isParsable(value)) {
+        	if (datatype == null) {
+                list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.Range_msgUnknownDatatype, Message.WARNING, value));
+        	} else if (!datatype.isParsable(value)) {
                 String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
                 list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, value));
             }
@@ -223,7 +239,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return super.toString() + ":" + elements.toString(); //$NON-NLS-1$
     }
 
-    public String toShortString(Datatype type) {
+    public String toShortString() {
+    	Datatype type = getValueDatatype();
     	if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
     		List result = new ArrayList(elements.size());
     		for (Iterator iter = elements.iterator(); iter.hasNext();) {

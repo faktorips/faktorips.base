@@ -71,6 +71,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	public ConfigElement(ProductCmptGeneration parent, int id) {
 		super(parent, id);
 		valueSet = new AllValuesValueSet(this, getNextPartId());
+		
 	}
 
 	/**
@@ -118,6 +119,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		String oldName = pcTypeAttribute;
 		pcTypeAttribute = newName;
 		name = pcTypeAttribute;
+		
 		valueChanged(oldName, pcTypeAttribute);
 	}
 
@@ -305,24 +307,37 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 			
 		if (StringUtils.isNotEmpty(value)) {
-			valueSet.validate(valueDatatype, list);
+			valueSet.validate(list);
 			if (list.containsErrorMsg()) {
 				return;
 			}
 			
 			IValueSet modelValueSet = attribute.getValueSet();
-			modelValueSet.validate(valueDatatype, list);
+			modelValueSet.validate(list);
 			if (list.containsErrorMsg()) {
 				return;
 			}
 
-			// validate valuset containment.
-			modelValueSet.containsValueSet(valueSet, valueDatatype, list, valueSet, null);
+			// validate valuset containment. If the type of this element
+			// is PRODUCT_ATTRIBUTE, we do not validate against the
+			// valueset of this element but against the valueset of
+			// the attribute this element is based on. This is because an element
+			// of type PRODUCT_ATTRIBUTE becomes an ALL_VALUES-valueset,
+			// but the valueset can not be changed for this type of config element.
+			if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE) {
+				modelValueSet.containsValueSet(valueSet, list, this, PROPERTY_VALUE);
 
-			if (!valueSet.containsValue(value, valueDatatype)) {
+				if (!valueSet.containsValue(value)) {
+					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(Messages.ConfigElement_msgValueNotInValueset, value),
+							Message.ERROR, this, PROPERTY_VALUE));
+				}
+			} else if (!modelValueSet.containsValue(value)) {
 				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(Messages.ConfigElement_msgValueNotInValueset, value),
 						Message.ERROR, this, PROPERTY_VALUE));
 			}
+
+			
+
 		}
 	}
 
@@ -405,7 +420,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		element.setAttribute(PROPERTY_TYPE, type.getId());
 		element.setAttribute(PROPERTY_PCTYPE_ATTRIBUTE, pcTypeAttribute);
 		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
-//		element.appendChild(valueSet.toXml(element.getOwnerDocument()));
 	}
 
 	/**
@@ -438,4 +452,17 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     	}
         return null;
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ValueDatatype getValueDatatype() {
+		try {
+			IAttribute attr = findPcTypeAttribute();
+			return attr.getValueDatatype();
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+		return null;
+	}
 }

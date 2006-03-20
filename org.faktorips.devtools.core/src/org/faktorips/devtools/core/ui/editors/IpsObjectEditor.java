@@ -17,11 +17,17 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import java.io.InputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -30,15 +36,19 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 
 
 /**
@@ -85,17 +95,69 @@ public abstract class IpsObjectEditor extends FormEditor
     public void init(IEditorSite site, IEditorInput input)
             throws PartInitException {
         super.init(site, input);
+        IIpsModel model = IpsPlugin.getDefault().getIpsModel();
         if (input instanceof IFileEditorInput) {
-            IFile file = ((IFileEditorInput)input).getFile();
-            IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+        	IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
-
-            model.addChangeListener(this);
             setPartName(ipsSrcFile.getName());
-            site.getPage().addPartListener(this);
-            
-            ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+        } else if (input instanceof IStorageEditorInput) {
+        	initFromStorageEditorInput((IStorageEditorInput)input);
+        	setPartName(((IStorageEditorInput)input).getName());
+    	}
+        
+        if (ipsSrcFile == null) {
+        	throw new PartInitException("Unsupported editor input type " + input.getClass().getName());
         }
+        
+        model.addChangeListener(this);    	
+        site.getPage().addPartListener(this);            
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+    }
+    
+    private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException{
+    	try {
+    		IStorage storage = input.getStorage();
+    		IPath path = storage.getFullPath();
+    		if (path == null) {
+    			return;
+    		}
+    		
+    		int nameIndex = path.lastSegment().indexOf(IpsObjectType.PRODUCT_CMPT.getFileExtension());
+    		
+    		if (nameIndex == -1) {
+    			return;
+    		}
+    		String name = path.lastSegment().substring(0, nameIndex) + IpsObjectType.PRODUCT_CMPT.getFileExtension();
+    		path = path.removeLastSegments(1).append(name);
+    		
+    		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+    		while (!file.exists() && path.segmentCount() > 0) {
+    			path = path.removeFirstSegments(1);
+        		file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+    		}
+
+    		if (!file.exists()) {
+    			return;
+    		}
+
+    		path = path.removeLastSegments(1);
+    		IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(file.getParent());
+    		
+    		if (el instanceof IIpsPackageFragment) {
+    			InputStream in = storage.getContents();
+    			ipsSrcFile = ((IIpsPackageFragment)el).createIpsFile(input.getName(), storage.getContents(), true, null);
+    			ResourceAttributes attrs = new ResourceAttributes();
+    			attrs.setReadOnly(true);
+    			ipsSrcFile.getCorrespondingFile().setResourceAttributes(attrs);
+    			in.close();
+    		}
+    		
+    	} catch (CoreException e) {
+    		throw new PartInitException(e.getStatus());
+    	} catch (Exception e) {
+    		IpsPlugin.log(e);
+    		throw new PartInitException(e.getMessage());
+    	}
     }
     
     /** 
@@ -263,7 +325,7 @@ public abstract class IpsObjectEditor extends FormEditor
 	 * and is in sync.
 	 */
 	protected boolean isSrcFileUsable() {
-		return ipsSrcFile.exists() && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
+		return ipsSrcFile != null && ipsSrcFile.exists() && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
 	}
 
 }

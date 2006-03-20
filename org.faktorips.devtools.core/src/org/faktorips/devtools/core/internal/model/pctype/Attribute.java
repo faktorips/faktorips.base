@@ -319,13 +319,13 @@ public class Attribute extends Member implements IAttribute {
                     return;
                 }
                 if (valueSet != null) {
-                    if (valueSet.containsValue(defaultValue, valueDatatype) == false) {
+                    if (valueSet.containsValue(defaultValue) == false) {
                         result.add(new Message("", NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
                                 Message.ERROR, this,
                                 PROPERTY_DEFAULT_VALUE));
                     }
                 }
-                valueSet.validate(valueDatatype, result);
+                valueSet.validate(result);
             }
             if (isDerivedOrComputed() && isProductRelevant() && parameters.length == 0) {
                 String text = Messages.Attribute_msgNoInputparams;
@@ -465,5 +465,20 @@ public class Attribute extends Member implements IAttribute {
 			return new IIpsElement[0];
 		}
     }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ValueDatatype getValueDatatype() {
+		try {
+			Datatype type = findDatatype();
+			if (type instanceof ValueDatatype) {
+				return (ValueDatatype)type;
+			}
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+		return null;
+	}
 
 }

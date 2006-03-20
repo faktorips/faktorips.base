@@ -112,30 +112,30 @@ public class DefaultTestContent {
 	}
 	
 	public IPolicyCmptType getContract() throws CoreException {
-		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "independant.Contract");
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "independant.Contract");
 	}
 	
 	public IPolicyCmptType getCoverage() throws CoreException {
-		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "independant.Coverage");
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "independant.Coverage");
 	}
 
 	public IPolicyCmptType getCollisionCoverage() throws CoreException {
-		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.CollisionCoverage");
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.CollisionCoverage");
 	}
 
 	public IPolicyCmptType getTplCoverage() throws CoreException {
-		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.TplCoverage");
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.TplCoverage");
 	}
 
 	public IPolicyCmptType getMotorContract() throws CoreException {
-		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.MotorContract");
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorContract");
 	}
 
 	public IPolicyCmptType getVehicle() throws CoreException {
-		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.Vehicle");
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Vehicle");
 	}
 
 	public IPolicyCmptType getBike() throws CoreException {
-		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.Bike");
+		return (IPolicyCmptType)project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Bike");
 	}
 }

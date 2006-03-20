@@ -17,12 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.datatype.Datatype;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IAllValuesValueSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,6 +39,15 @@ import org.w3c.dom.Element;
 public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     public final static String XML_TAG = "AllValues"; //$NON-NLS-1$
 
+    /**
+     * Creates a new value set representing all values of the datatype provided by the
+     * parent. The parent therefore has to implement IValueDatatypeProvider.
+     * 
+     * @param parent The parent this valueset belongs to. 
+     * @param partId The id this part is knwon by by the parent.
+	 * @throws IllegalArgumentException if the parent does not implement the interface 
+	 * <code>IValueDatatypeProvider</code>.
+     */
     public AllValuesValueSet(IIpsObjectPart parent, int partId) {
     	super(ValueSetType.ALL_VALUES, parent, partId);
     }
@@ -44,21 +55,19 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     /**
      * {@inheritDoc}
      */
-    protected Element createSubclassElement(Document doc) {
-        return doc.createElement(XML_TAG);
+    public void validate(MessageList list) {
+    	ValueDatatype datatype = getValueDatatype();
+        if (datatype==null) {
+            String text = Messages.Range_msgUnknownDatatype;
+            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this));
+            return;
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public void validate(ValueDatatype datatype, MessageList list) {
-        // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toShortString (Datatype type) {
+    public String toShortString () {
         return "AllValuesValueSet"; //$NON-NLS-1$
     }
 
@@ -73,29 +82,67 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value, ValueDatatype datatype) {
-        return containsValue(value, datatype, null, null, null);
+    public boolean containsValue(String value) {
+        return containsValue(value, null, null, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean containsValue(String value, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
+    public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
+    	ValueDatatype datatype = getValueDatatype();
+    	if (datatype == null) {
+    		if (list != null) {
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    		}
+    		return false;
+    	}
+    	
+    	if (!datatype.isParsable(value)) {
+        	if (list != null) {
+        		String msg = NLS.bind("The value {0} is not parsable by datatype {1}.", value, datatype.getName());
+        		addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
+
+        		// the value can not be parsed - so it is not contained, too...
+        		msg = NLS.bind("The value is not an element of the datatype {0}.", datatype.getName());
+        		addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, msg, invalidObject, invalidProperty);
+        	}
+            return false;
+		}
+
         return true;
     }
     
     /**
      * {@inheritDoc}
      */
-    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype, MessageList list, Object invalidObject, String invalidProperty) {
-		return true;
+    public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
+    	ValueDatatype datatype = getValueDatatype();
+    	ValueDatatype subDatatype = subset.getValueDatatype();
+    	
+    	if (datatype == null || subDatatype == null) {
+    		if (list != null) {
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    		}
+    		return false;
+    	}
+    	
+    	if (datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
+    		return true;
+    	}
+
+    	if (list != null) {
+    		String msg = NLS.bind("The valueset {0} is not a subset of the value set {1}.", subset.toShortString(), this.toShortString());
+    		list.add(new Message(MSGCODE_NOT_SUBSET, msg, Message.ERROR, invalidObject, invalidProperty));
+    	}
+		return false;
 	}
 
     /**
      * {@inheritDoc}
      */
-	public boolean containsValueSet(IValueSet subset, ValueDatatype datatype) {
-		return true;
+	public boolean containsValueSet(IValueSet subset) {
+		return containsValueSet(subset, null, null, null);
 	}
 
 	/**

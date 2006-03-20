@@ -55,6 +55,7 @@ public class MissingResourcePage extends IpsObjectEditorPage {
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
     	Composite root = new Composite(formBody, SWT.NONE);
-    	toolkit.createLabel(root, NLS.bind(Messages.MissingResourcePage_msgFileOutOfSync, missing.getName()));
+    	String filename = missing==null?"null":missing.getName();
+    	toolkit.createLabel(root, NLS.bind(Messages.MissingResourcePage_msgFileOutOfSync, filename));
     }
 }

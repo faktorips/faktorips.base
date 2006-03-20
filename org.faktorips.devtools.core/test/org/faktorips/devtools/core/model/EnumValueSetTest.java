@@ -47,79 +47,55 @@ public class EnumValueSetTest extends IpsPluginTest {
         
         DefaultTestContent content = new DefaultTestContent();
         IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
-        ce = gen.newConfigElement();
+        ce = gen.getConfigElement("sumInsured");
     }
-
-//    public void testEnumValueSet() {
-//        IEnumValueSet set = new EnumValueSet(ce, gender);
-//        String[] elements = set.getValues();
-//        assertEquals(2, elements.length);
-//        assertEquals("male", elements[0]);
-//        assertEquals("female", elements[1]);
-//    }
 
     public void testContainsValue() {
         EnumValueSet set = new EnumValueSet(ce, 1);
         set.addValue("10EUR");
         set.addValue("20EUR");
         set.addValue("30EUR");
-        assertTrue(set.containsValue("10EUR", Datatype.MONEY));
-        assertTrue(set.containsValue("10 EUR", Datatype.MONEY));
-        assertFalse(set.containsValue("15 EUR", Datatype.MONEY));
-        assertFalse(set.containsValue("abc", Datatype.MONEY));
-        
-        try {
-        	set.containsValue("10EUR", null);
-        	fail();
-        }
-        catch (NullPointerException e) {
-			// nothing to do
-		}
+        assertTrue(set.containsValue("10EUR"));
+        assertTrue(set.containsValue("10 EUR"));
+        assertFalse(set.containsValue("15 EUR"));
+        assertFalse(set.containsValue("abc"));
         
         MessageList list = new MessageList();
-        set.containsValue("15 EUR", Datatype.MONEY, list, null, null);
+        set.containsValue("15 EUR", list, null, null);
         assertTrue(list.containsErrorMsg());
         
         list.clear();
-        set.containsValue("10 EUR", Datatype.MONEY, list, null, null);
+        set.containsValue("10 EUR", list, null, null);
         assertFalse(list.containsErrorMsg());
     }
     
     public void testContainsValueSet() {
-    	EnumValueSet superset = new EnumValueSet(ce, 1);
-    	superset.addValue("1");
-    	superset.addValue("2");
-    	superset.addValue("3");
+    	EnumValueSet superset = new EnumValueSet(ce, 50);
+    	superset.addValue("1EUR");
+    	superset.addValue("2EUR");
+    	superset.addValue("3EUR");
     	
-    	EnumValueSet subset = new EnumValueSet(ce, 1);
-    	assertTrue(superset.containsValueSet(subset, Datatype.INTEGER));
+    	EnumValueSet subset = new EnumValueSet(ce, 100);
+    	assertTrue(superset.containsValueSet(subset));
     	
-    	subset.addValue("1");
-    	assertTrue(superset.containsValueSet(subset, Datatype.INTEGER));
+    	subset.addValue("1EUR");
+    	assertTrue(superset.containsValueSet(subset));
 
-    	subset.addValue("2");
-    	subset.addValue("3");
-    	assertTrue(superset.containsValueSet(subset, Datatype.INTEGER));
+    	subset.addValue("2EUR");
+    	subset.addValue("3EUR");
+    	assertTrue(superset.containsValueSet(subset));
 
     	MessageList list = new MessageList();
-    	superset.containsValueSet(subset, Datatype.INTEGER, list, null, null);
+    	superset.containsValueSet(subset, list, null, null);
     	assertFalse(list.containsErrorMsg());
 
-    	subset.addValue("4");
-    	assertFalse(superset.containsValueSet(subset, Datatype.INTEGER));
+    	subset.addValue("4EUR");
+    	assertFalse(superset.containsValueSet(subset));
 
     	list.clear();
-    	superset.containsValueSet(subset, Datatype.INTEGER, list, null, null);
+    	superset.containsValueSet(subset, list, null, null);
     	assertTrue(list.containsErrorMsg());
     	
-        try {
-        	superset.containsValueSet(subset, null, list, null, null);
-        	fail();
-        }
-        catch (NullPointerException e) {
-			// nothing to do
-		}
-
     }
 
     public void testAddValue() {
@@ -188,22 +164,22 @@ public class EnumValueSetTest extends IpsPluginTest {
     public void testValidate() {
         EnumValueSet set = new EnumValueSet(ce, 1);
         MessageList list = new MessageList();
-        set.validate(Datatype.DECIMAL, list);
+        set.validate(list);
         assertEquals(0, list.getNoOfMessages());
 
-        set.addValue("2");
-        set.validate(Datatype.DECIMAL, list);
+        set.addValue("2EUR");
+        set.validate(list);
         assertEquals(0, list.getNoOfMessages());
 
         set.addValue("2w");
-        set.validate(Datatype.DECIMAL, list);
+        set.validate(list);
         assertEquals(1, list.getNoOfMessages());
 
         assertFalse(list.getMessagesFor("2w").isEmpty());
-
-        set.addValue("2w");
+        set.removeValue("2w");
+        set.addValue("2EUR");
         list.clear();
-        set.validate(Datatype.STRING, list);
+        set.validate(list);
         assertEquals(2, list.getNoOfMessages());
         assertEquals(list.getMessage(0).getCode(), IEnumValueSet.MSGCODE_DUPLICATE_VALUE);
     }

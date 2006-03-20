@@ -44,7 +44,7 @@ public class ValueSetType extends DefaultEnumValue {
     public final static ValueSetType RANGE;
     
     /**
-     * Defines the value set type range. 
+     * Defines the value set type enumeration. 
      */
     public final static ValueSetType ENUM;
 

@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.message.MessageList;
 
@@ -52,6 +51,11 @@ public interface IValueSet extends IIpsObjectPart {
     public final static String MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING = MSGCODE_PREFIX + "TypeOfValueSetNotMatching"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that one value-set is not a subset of another one.
+     */
+    public final static String MSGCODE_NOT_SUBSET = MSGCODE_PREFIX + "NotSubst"; //$NON-NLS-1$
+    
+    /**
      * Validation message code to indicate that the value could not be parsed.
      */
     public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
@@ -77,18 +81,16 @@ public interface IValueSet extends IIpsObjectPart {
      * Returns <code>true</code> if the value set contains the indicated value, otherwise <code>false</code>.
      * 
      * @param value The value to check.
-     * @param datatype The datatype to parse the string values to 'real' values.
      * 
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
-    public boolean containsValue(String value, ValueDatatype datatype);
+    public boolean containsValue(String value);
 
     /**
      * Returns <code>true</code> it the value set contains the indicated value, otherwise <code>false</code>.
      * A message is stored in the message list, if the value set doesn't contain the indicated value.
      * 
      * @param value The value to check.
-     * @param datatype The datatype to parse the string values to 'real' values.
      * @param list The list to add messages, if any. Can be null if no messages are needed.
      * @param invalidObject The object the message refers to. Ignored if <code>list</code>
      *                      is <code>null</code>. Can be <code>null</code> itself. 
@@ -97,24 +99,22 @@ public interface IValueSet extends IIpsObjectPart {
      *                        Can be <code>null</code> itself.
      * @throws NullPointerException if datatype is <code>null</code>. 
      */
-    public boolean containsValue(String value, ValueDatatype datatype,
+    public boolean containsValue(String value, 
 			MessageList list, Object invalidObject, String invalidProperty);
     
     /**
      * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
      * 
      * @param subset The valueset to check.
-     * @param datatype The datatype to parse the valueset's values to 'real' values.
      * 
      * @throws NullPointerException if subset or datatype is <code>null</code>. 
      */
-    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype);
+    public boolean containsValueSet(IValueSet subset);
     
     /**
      * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
      * 
      * @param subset The valueset to check.
-     * @param datatype The datatype to parse the valueset's values to 'real' values.
      * @param list The list to which a message is added in case the given valueset is not a subset of this valueset. 
      * @param invalidObject The object the message refers to. Ignored if <code>list</code>
      *                      is <code>null</code>. Can be <code>null</code> itself. 
@@ -124,7 +124,7 @@ public interface IValueSet extends IIpsObjectPart {
      * 
      * @throws NullPointerException if subset or datatype is <code>null</code>. 
      */
-    public boolean containsValueSet(IValueSet subset, ValueDatatype datatype, 
+    public boolean containsValueSet(IValueSet subset,  
     		MessageList list, Object invalidObject, String invalidProperty);
 
     /**
@@ -133,7 +133,7 @@ public interface IValueSet extends IIpsObjectPart {
      * @param datatype The value datatype to parse the set's string values to 'real' values.
      * @param list Message collection paramter.
      */
-    public void validate(ValueDatatype datatype, MessageList list);
+    public void validate(MessageList list);
     
     /**
      * Creates a copy of this value set (type and values, parent and id are set
@@ -150,9 +150,15 @@ public interface IValueSet extends IIpsObjectPart {
     
     /**
      * Returns the unqulified, human readable representation of this value set.
-     * If a datatype is provided and it supports named values, the names provided
+     * If the datatype provided by the parent supports named values, the names provided
      * from the datatype are used to build the value-representations.
      */
-    public String toShortString(Datatype type);
+    public String toShortString();
+    
+    /**
+     * Returns the datatype this value set is based on or <code>null</code>, if the 
+     * datatype is not provided by the parent.
+     */
+    public ValueDatatype getValueDatatype();
     
 }

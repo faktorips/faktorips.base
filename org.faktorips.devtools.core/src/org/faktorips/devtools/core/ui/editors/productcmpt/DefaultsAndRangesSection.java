@@ -190,7 +190,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
 	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell(), controller);
-	    			evc.setText(valueSet.toShortString(dataType));
+	    			evc.setText(valueSet.toShortString());
 	    			this.editControls.add(evc);
         		}
     		}

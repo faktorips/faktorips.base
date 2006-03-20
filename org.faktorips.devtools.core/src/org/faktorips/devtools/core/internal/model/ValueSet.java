@@ -18,8 +18,10 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.util.message.Message;
@@ -37,7 +39,7 @@ import org.w3c.dom.Element;
  * string values remain. The user can switch back the datatype to Decimal and the range is valid again. 
  * This works also when the attribute's datatype is unkown.
  * 
- * @author Andy Roesch
+ * @author Thorsten Guenther
  * @author Jan Ortmann
  */
 public abstract class ValueSet extends IpsObjectPart implements IValueSet {
@@ -46,19 +48,26 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
      */
     public final static String XML_TAG = "ValueSet"; //$NON-NLS-1$
     
+    /**
+     * The type this value set is of.
+     */
 	private ValueSetType type;
 	
-	protected ValueSet(ValueSetType type) {
-		super();
-		this.type = type;
-	}
-	
-	protected ValueSet(ValueSetType type, IIpsObjectPart parent) {
-		this(type, parent, ((IpsObjectPart)parent).getNextPartId());
-	}
-	
+	/**
+	 * Creates a new value set of the given type and with the given parent and id.
+	 * 
+	 * @param type The type for the new valueset.
+	 * @param parent The parent this valueset belongs to. Must implement IValueDatatypeProvider.
+	 * @param partId The id this valueset is known by the parent.
+	 * @throws IllegalArgumentException if the parent does not implement the interface 
+	 * <code>IValueDatatypeProvider</code>.
+	 */
 	protected ValueSet(ValueSetType type, IIpsObjectPart parent, int partId) {
-		super(parent, partId);
+		super(parent , partId);
+		if (!(parent instanceof IValueDatatypeProvider)) {
+			super.parent = null;
+			throw new IllegalArgumentException("Parent has to implement IValueDatatypeProvider.");
+		}
 		this.type = type;
 	}
 
@@ -127,4 +136,15 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
 		return doc.createElement(XML_TAG);
 	}
 
+	// This method is listed here to avoid compilation problems
+	// caused by a visibility conflict between this method and
+	// IpsObjectPart.validate(MessageList).
+	public abstract void validate(MessageList list);
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ValueDatatype getValueDatatype() {
+		return ((IValueDatatypeProvider)parent).getValueDatatype();
+	}
 }

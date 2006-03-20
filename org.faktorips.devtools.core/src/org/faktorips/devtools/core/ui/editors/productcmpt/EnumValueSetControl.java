@@ -17,12 +17,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
@@ -92,13 +89,7 @@ public class EnumValueSetControl extends TextButtonControl {
 		preserveState();
 		DefaultsAndRangesEditDialog dialog = new DefaultsAndRangesEditDialog(configElement, shell, !enabled);
 		if (dialog.open() == Dialog.OK) {
-			Datatype type = null;
-			try {
-				type = configElement.findPcTypeAttribute().findDatatype();
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-			super.getTextControl().setText(configElement.getValueSet().toShortString(type));
+			super.getTextControl().setText(configElement.getValueSet().toShortString());
 			controller.updateUI();
 		} 
 		else {
