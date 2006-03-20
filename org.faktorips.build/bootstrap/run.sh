@@ -10,8 +10,8 @@ eclipseAutomatedTestHome=/tmp/eclipsetest/
 vm=`java-config -O`/bin/java
 
 os=-linux
-ws=-gtk
-arch=-x86
+ws=
+arch=
 #usePserver=${RDT_USE_PSERVER:+-DusePserver=true}
 #testClean=${RDT_TEST_CLEAN:+-Dclean=true}
 #dontRunTests=${RDT_DONT_RUN_TESTS:+-DdontRunTests=true}
