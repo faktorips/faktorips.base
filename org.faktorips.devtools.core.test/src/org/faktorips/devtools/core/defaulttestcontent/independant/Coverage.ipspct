@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PolicyCmptType description="" configurableByProductCmptType="true" unqualifiedProductCmptType="CoverageType" supertype="" abstract="false" forceExtensionCompilationUnitGeneration="false">
-    <Attribute id="0" description="" name="sumInusred" datatype="Money" productRelevant="true" modifier="published" attributeType="changeable" defaultValue="">
-        <ValueSet>
+    <Attribute id="0" description="" name="sumInsured" datatype="Money" productRelevant="true" modifier="published" attributeType="changeable">
+        <DefaultValue isNull="true"/>
+        <ValueSet id="3" description="">
             <AllValues/>
         </ValueSet>
     </Attribute>

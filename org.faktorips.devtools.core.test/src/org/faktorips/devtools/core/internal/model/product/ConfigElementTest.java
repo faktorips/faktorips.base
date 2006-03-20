@@ -247,7 +247,7 @@ public class ConfigElementTest extends IpsPluginTest {
     
     public void testValidate_ValueNotInValueset() throws CoreException {
     	IConfigElement ce = generation.newConfigElement();
-    	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+    	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
     	ce.setValueSetType(ValueSetType.RANGE);
@@ -284,7 +284,7 @@ public class ConfigElementTest extends IpsPluginTest {
     	attr.setDatatype("Decimal");
 
     	IConfigElement ce = generation.newConfigElement();
-    	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+    	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("12");
     	ce.setPcTypeAttribute("valueTest");
     	ce.setValueSetCopy(valueSet);

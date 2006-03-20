@@ -150,4 +150,23 @@ public class RelationPluginTest extends IpsPluginTest {
         assertEquals(relation2, relation.findReverseRelation());
     }
     
+    public void testFindForwardRelations() throws CoreException {
+        relation.setRelationType(RelationType.REVERSE_COMPOSITION);
+        relation.setTarget("Unknown");
+        assertEquals(0, relation.findForwardCompositions().length);
+        
+        // 
+        
+        relation.setReverseRelation("reverseRelation");
+        assertNull(relation.findReverseRelation());
+        
+        IPolicyCmptType targetType = (IPolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorPolicy");
+        relation.setTarget(targetType.getQualifiedName());
+        assertNull(relation.findReverseRelation());
+        
+        IRelation relation2 = targetType.newRelation();
+        relation2.setTargetRoleSingular("reverseRelation");
+        assertEquals(relation2, relation.findReverseRelation());
+    }
+    
 }

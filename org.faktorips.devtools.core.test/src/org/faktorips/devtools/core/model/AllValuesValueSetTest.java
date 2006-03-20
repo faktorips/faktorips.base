@@ -36,11 +36,13 @@ import org.xml.sax.SAXException;
 public class AllValuesValueSetTest extends IpsPluginTest {
 
 	IConfigElement ce;
+	DefaultTestContent content;
 	
 	public void setUp() throws Exception {
 		super.setUp();
-		DefaultTestContent content = new DefaultTestContent();
+		content = new DefaultTestContent();
 		IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
+		
 		ce = gen.newConfigElement();
 	}
 	
@@ -62,9 +64,30 @@ public class AllValuesValueSetTest extends IpsPluginTest {
 		assertNotNull(allValues2);
 	}
 	
-	public void testContains () {
-	    AllValuesValueSet allValues = new AllValuesValueSet(ce, 1);
-	    assertTrue(allValues.containsValue("abc", Datatype.DECIMAL));
+	public void testContainsValue() throws Exception {
+		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
+		IConfigElement config = gen.getConfigElement("sumInsured");
+	    AllValuesValueSet allValues = new AllValuesValueSet(config, 1);
+	    assertFalse(allValues.containsValue("abc"));
+	    assertTrue(allValues.containsValue("1EUR"));
+
+	    config.findPcTypeAttribute().setDatatype(Datatype.INTEGER.getQualifiedName());
+	    assertFalse(allValues.containsValue("1EUR"));
+	    assertTrue(allValues.containsValue("99"));
  	}
+	
+	public void testContainsValueSet() throws Exception {
+		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
+		IConfigElement config = gen.getConfigElement("sumInsured");
+		AllValuesValueSet allValues = (AllValuesValueSet)config.getValueSet();
+		
+		assertTrue(allValues.containsValueSet(allValues));
+		assertTrue(allValues.containsValueSet(new AllValuesValueSet(config, 99)));
+		
+		gen = (IProductCmptGeneration)content.getBasicMotorProduct().getGenerations()[0];
+		config = gen.getConfigElement("inceptionDate");
+		
+		assertFalse(allValues.containsValueSet(config.getValueSet()));
+	}
 	
 }
