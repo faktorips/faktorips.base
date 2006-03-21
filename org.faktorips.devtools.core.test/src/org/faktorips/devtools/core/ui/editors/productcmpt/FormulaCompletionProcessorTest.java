@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
@@ -64,7 +65,7 @@ public class FormulaCompletionProcessorTest extends IpsPluginTest {
 		assertEquals(StringUtil.unqualifiedName(TestEnumType.class.getName()), proposal.getDisplayString());
 		results = new ArrayList();
 		processor.doComputeCompletionProposals("TestEnumType.", 0, results);
-		assertEquals(3, results.size());
+		assertEquals(4, results.size());
 		ArrayList expectedValues = new ArrayList();
 		for (Iterator iter = results.iterator(); iter.hasNext();) {
 			proposal = (CompletionProposal) iter.next();
@@ -73,6 +74,7 @@ public class FormulaCompletionProcessorTest extends IpsPluginTest {
 		assertTrue(expectedValues.contains("1"));
 		assertTrue(expectedValues.contains("2"));
 		assertTrue(expectedValues.contains("3"));
+		assertTrue(expectedValues.contains(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
 
 	}
 

@@ -15,14 +15,21 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.internal.model;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.PrimitiveIntegerDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.internal.model.EnumValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.util.XmlUtil;
@@ -38,6 +45,7 @@ public class EnumValueSetTest extends IpsPluginTest {
     
     private DefaultEnumType gender;
     private IConfigElement ce;
+    private DefaultTestContent content;
 
     protected void setUp() throws Exception {
     	super.setUp();
@@ -45,7 +53,7 @@ public class EnumValueSetTest extends IpsPluginTest {
         new DefaultEnumValue(gender, "male");
         new DefaultEnumValue(gender, "female");
         
-        DefaultTestContent content = new DefaultTestContent();
+        content = new DefaultTestContent();
         IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
         ce = gen.getConfigElement("sumInsured");
     }
@@ -60,6 +68,9 @@ public class EnumValueSetTest extends IpsPluginTest {
         assertFalse(set.containsValue("15 EUR"));
         assertFalse(set.containsValue("abc"));
         
+        set.addValue(null);
+        assertTrue(set.containsValue(null));
+        
         MessageList list = new MessageList();
         set.containsValue("15 EUR", list, null, null);
         assertTrue(list.containsErrorMsg());
@@ -69,7 +80,7 @@ public class EnumValueSetTest extends IpsPluginTest {
         assertFalse(list.containsErrorMsg());
     }
     
-    public void testContainsValueSet() {
+    public void testContainsValueSet() throws Exception {
     	EnumValueSet superset = new EnumValueSet(ce, 50);
     	superset.addValue("1EUR");
     	superset.addValue("2EUR");
@@ -91,11 +102,25 @@ public class EnumValueSetTest extends IpsPluginTest {
 
     	subset.addValue("4EUR");
     	assertFalse(superset.containsValueSet(subset));
-
+    	
     	list.clear();
     	superset.containsValueSet(subset, list, null, null);
     	assertTrue(list.containsErrorMsg());
+
+    	subset.removeValue("4EUR");
+    	subset.addValue(null);
+    	assertFalse(superset.containsValueSet(subset));
+
+    	superset.addValue(null);
+    	assertTrue(superset.containsValueSet(subset));
     	
+    	IConfigElement ce2 = ((IProductCmptGeneration)content.getStandardVehicle().getGenerations()[0]).getConfigElement("licensePlateNo");
+    	subset = new EnumValueSet(ce2, 50);
+    	subset.addValue("2EUR");
+    	
+    	list.clear();
+    	assertFalse(superset.containsValueSet(subset, list, null, null));
+    	assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_DATATYPES_NOT_MATCHING));
     }
 
     public void testAddValue() {
@@ -161,7 +186,7 @@ public class EnumValueSetTest extends IpsPluginTest {
 
     }
 
-    public void testValidate() {
+    public void testValidate() throws Exception {
         EnumValueSet set = new EnumValueSet(ce, 1);
         MessageList list = new MessageList();
         set.validate(list);
@@ -182,23 +207,96 @@ public class EnumValueSetTest extends IpsPluginTest {
         set.validate(list);
         assertEquals(2, list.getNoOfMessages());
         assertEquals(list.getMessage(0).getCode(), IEnumValueSet.MSGCODE_DUPLICATE_VALUE);
+        
+        list.clear();
+        set.removeValue("2EUR");
+        set.addValue(null);
+        set.validate(list);
+        assertEquals(0, list.getNoOfMessages());
+        
+        set.addValue(null);
+        set.validate(list);
+        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_DUPLICATE_VALUE));
+        
+        set.removeValue(null);
+		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ArrayList vdlist = new ArrayList();
+		vdlist.addAll(Arrays.asList(vds));
+		vdlist.add(new PrimitiveIntegerDatatype());
+		content.getProject().setValueDatatypes((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+        
+        IAttribute attr = ce.findPcTypeAttribute();
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        attr.getIpsObject().getIpsSrcFile().save(true, null);
+
+        list.clear();
+        set.validate(list);
+        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE));
+        
+        set.removeValue(0);
+        set.removeValue(0);
+        set.addValue("1");
+        set.addValue(null);
+        list.clear();
+        set.validate(list);
+        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+        
     }
 
-//    public void testCreateFromEnumDatatype() {
-//    	IEnumValueSet set = EnumValueSet.createFromEnumDatatype(ce, new EnumDatatypePaymentMode());
-//        String[] elements = set.getValues();
-//        assertEquals(2, elements.length);
-//        assertEquals("annual", elements[0]);
-//        assertEquals("monthly", elements[1]);
-//    }
+    public void testGetValues() {
+        EnumValueSet set = new EnumValueSet(ce, 50);
+        String[] values = set.getValues();
+    	
+        assertEquals(0, values.length);
+        
+        set.addValue("1");        
+        values = set.getValues();
+        assertEquals(1, values.length);
+        
+        set.addValue(null);
+        values = set.getValues();
+        assertEquals(2, values.length);
+    }
 
+    public void testGetContainsNull() {
+        EnumValueSet set = new EnumValueSet(ce, 50);
+        
+        assertFalse(set.getContainsNull());
+        
+        set.setContainsNull(true);
+        assertTrue(set.getContainsNull());
+        
+        set.setContainsNull(false);
+        assertFalse(set.getContainsNull());
+        
+        set.addValue(null);
+        assertTrue(set.getContainsNull());
+    }
+    
+    public void testSetContainsNull() {
+        EnumValueSet set = new EnumValueSet(ce, 50);
+        
+        assertFalse(set.getContainsNull());
+        
+        set.setContainsNull(true);
+        
+        assertTrue(set.getContainsNull());
+        assertNull(set.getValue(0));
+        assertEquals(1, set.size());
+        
+        set.setContainsNull(false);
+        assertFalse(set.getContainsNull());
+        assertEquals(0, set.size());
+    	
+    }
+    
     
     class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDatatype {
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public String[] getAllValueIds() {
+		public String[] getAllValueIds(boolean includeNull) {
 			return new String[]{"annual", "monthly"};
 		}
 
@@ -282,6 +380,6 @@ public class EnumValueSetTest extends IpsPluginTest {
 		public String getValueName(String id) {
 			throw new RuntimeException("Not supported");
 		}
-    	
+
     }
 }
