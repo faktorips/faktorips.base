@@ -20,6 +20,7 @@ package org.faktorips.codegen.dthelpers;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DateDatatype;
+import org.faktorips.util.DateUtil;
 import org.faktorips.valueset.DateRange;
 
 /**
@@ -52,9 +53,8 @@ public class DateHelper extends AbstractDatatypeHelper {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();        
-        fragment.append("new ");
-        fragment.appendClassName(DateDatatype.class);
-        fragment.append("().getDateValue(");
+        fragment.appendClassName(DateUtil.class);
+        fragment.append(".parseIsoDateStringToDate(");
         fragment.append(expression);
         fragment.append(')');
         return fragment;
