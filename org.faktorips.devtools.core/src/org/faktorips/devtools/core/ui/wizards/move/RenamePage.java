@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.ui.wizards.move;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaConventions;
@@ -29,10 +32,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
@@ -148,6 +153,13 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			if (newFile.exists()) {
 				setMessage(Messages.RenamePage_errorFileExists, ERROR);
 				return;
+			} else {
+				// fix for windows: can not rename to an object with a name only
+				// different in case.
+				if (hasContentWithNameEqualsIgnoreCase((IFolder)pack.getCorrespondingResource(), IpsObjectType.PRODUCT_CMPT.getFileName(newName.getText()))) {
+					setMessage(Messages.RenamePage_errorFileExists, ERROR);
+					return;
+				}
 			}
 		}
 		else if (renameObject instanceof IIpsPackageFragment){
@@ -158,10 +170,31 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			if (newFolder.exists()) {
 				setMessage(Messages.RenamePage_errorFolderExists, ERROR);
 				return;
+			} else {
+				// fix for windows: can not rename to an object with a name only
+				// different in case.
+				if (hasContentWithNameEqualsIgnoreCase(folder.getParent(), newName.getText())) {
+					setMessage(Messages.RenamePage_errorFolderExists, ERROR);
+					return;
+				}
 			}
 		}
 		
 		super.setPageComplete(true);
+	}
+	
+	private boolean hasContentWithNameEqualsIgnoreCase(IContainer parentFolder, String name) {
+		try {
+			IResource[] children = parentFolder.members();
+			for (int i = 0; i < children.length; i++) {
+				if (children[i].getName().equalsIgnoreCase(name)) {
+					return true;
+				}
+			}
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+		return false;
 	}
 	
 	/**
