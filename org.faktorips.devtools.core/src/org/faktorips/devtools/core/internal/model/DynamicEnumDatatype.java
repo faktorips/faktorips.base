@@ -100,7 +100,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 		try {
 			return datatype.getValueName(id);
 		} catch (Exception e) {
-			IpsPlugin.log(new IpsStatus("Error getting name for enum value id " + id, e)); 
+			IpsPlugin.log(new IpsStatus("Error getting name for enum value id " + id, e));  //$NON-NLS-1$
 			return id;
 		}
 	}

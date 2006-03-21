@@ -87,4 +87,6 @@ public class Messages extends NLS {
 	public static String ListChooser_buttonUp;
 
 	public static String ListChooser_buttonDown;
+
+	public static String RangeEditControl_labelIncludeNull;
 }

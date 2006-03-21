@@ -34,7 +34,7 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IValueSet extends IIpsObjectPart {
     
-	public static final String PROPERTY_CONTAINS_NULL = "containsNull";
+	public static final String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
 	
     /**
      * Prefix for all message codes of this class.

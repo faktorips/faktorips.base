@@ -93,18 +93,18 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     	ValueDatatype datatype = getValueDatatype();
     	if (datatype == null) {
     		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknownDatatype, Message.WARNING, invalidObject, invalidProperty));
     		}
     		return false;
     	}
     	
     	if (!datatype.isParsable(value)) {
         	if (list != null) {
-        		String msg = NLS.bind("The value {0} is not parsable by datatype {1}.", value, datatype.getName());
+        		String msg = NLS.bind(Messages.AllValuesValueSet_msgValueNotParsable, value, datatype.getName());
         		addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
 
         		// the value can not be parsed - so it is not contained, too...
-        		msg = NLS.bind("The value is not an element of the datatype {0}.", datatype.getName());
+        		msg = NLS.bind(Messages.AllValuesValueSet_msgValueNotContained, datatype.getName());
         		addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, msg, invalidObject, invalidProperty);
         	}
             return false;
@@ -122,7 +122,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     	
     	if (datatype == null || subDatatype == null) {
     		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknowndDatatype, Message.WARNING, invalidObject, invalidProperty));
     		}
     		return false;
     	}
@@ -132,7 +132,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     	}
 
     	if (list != null) {
-    		String msg = NLS.bind("The valueset {0} is not a subset of the value set {1}.", subset.toShortString(), this.toShortString());
+    		String msg = NLS.bind(Messages.AllValuesValueSet_msgNoSubset, subset.toShortString(), this.toShortString());
     		list.add(new Message(MSGCODE_NOT_SUBSET, msg, Message.ERROR, invalidObject, invalidProperty));
     	}
 		return false;
@@ -201,10 +201,10 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
 	 */
 	public void setContainsNull(boolean containsNull) {
 		if (getValueDatatype().isPrimitive() && containsNull) {
-			throw new UnsupportedOperationException("Datatype is primitive, therefore this all-values valueset can not contain null");
+			throw new UnsupportedOperationException("Datatype is primitive, therefore this all-values valueset can not contain null"); //$NON-NLS-1$
 		}		
 		if (!getValueDatatype().isPrimitive() && !containsNull) {
-			throw new UnsupportedOperationException("Datatype is nonPrimitive, therefore this all-values values has to contain null");
+			throw new UnsupportedOperationException("Datatype is nonPrimitive, therefore this all-values values has to contain null"); //$NON-NLS-1$
 		}
 	}
 }

@@ -146,7 +146,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	
     	if (datatype == null) {
     		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.RangeValueSet_msgDatatypeUnknown, Message.WARNING, invalidObject, invalidProperty));
     		}
     		return false;
     	}
@@ -184,7 +184,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	if (datatype == null || subDatatype == null) {
     		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.RangeValueSet_msgDatatypeUnknown, Message.WARNING, invalidObject, invalidProperty));
     		}
     		return false;
     	}
@@ -249,7 +249,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	}
 
     	if (subRange.getContainsNull() && !getContainsNull()) {
-			String msg = NLS.bind("{0} is not contained in this set.", IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+			String msg = NLS.bind(Messages.RangeValueSet_msgNullNotContained, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 			addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_UPPERBOUND));
     		isSubset = false;
     	}
@@ -321,7 +321,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
         
         if (datatype.isPrimitive() && getContainsNull()) {
-        	String text = "ValueSet is based on a primitive datatype which does not support null-values, but this valueSet is marked to contain null.";
+        	String text = Messages.RangeValueSet_msgNullNotSupported;
         	list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
         }
 

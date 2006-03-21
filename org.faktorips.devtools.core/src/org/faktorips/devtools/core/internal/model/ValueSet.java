@@ -66,7 +66,7 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
 		super(parent , partId);
 		if (!(parent instanceof IValueDatatypeProvider)) {
 			super.parent = null;
-			throw new IllegalArgumentException("Parent has to implement IValueDatatypeProvider.");
+			throw new IllegalArgumentException("Parent has to implement IValueDatatypeProvider."); //$NON-NLS-1$
 		}
 		this.type = type;
 	}

@@ -93,6 +93,27 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 				tree.refresh();
 		        tree.expandAll();
 			}
+
+			public String getToolTipText() {
+				return Messages.ProductStructureExplorer_tooltipToggleRelationTypeNodes;
+			}
+		});
+    	
+    	site.getActionBars().getToolBarManager().add(new Action() {
+		
+			public void run() {
+				tree.setInput(null);
+				tree.refresh();
+			}
+		
+			public ImageDescriptor getImageDescriptor() {
+    			return IpsPlugin.getDefault().getImageDescriptor("Clear.gif"); //$NON-NLS-1$
+			}
+
+			public String getToolTipText() {
+				return Messages.ProductStructureExplorer_tooltipClear;
+			}
+		
 		});
     }
     

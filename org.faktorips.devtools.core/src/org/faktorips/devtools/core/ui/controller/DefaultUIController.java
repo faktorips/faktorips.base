@@ -105,8 +105,8 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 			try {
 				mapping.setPropertyValue();
 			} catch (Exception e) {
-				IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName()
-						+ " of object " + mapping.getObject(), e));
+				IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+						+ " of object " + mapping.getObject(), e)); //$NON-NLS-1$
 			}
 		}
 	}
@@ -117,8 +117,8 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 			try {
 				mapping.setControlValue();
 			} catch (Exception e) {
-				IpsPlugin.log(new IpsStatus("Error updating control for property " + mapping.getPropertyName()
-						+ " of object " + mapping.getObject(), e));
+				IpsPlugin.log(new IpsStatus("Error updating control for property " + mapping.getPropertyName() //$NON-NLS-1$
+						+ " of object " + mapping.getObject(), e)); //$NON-NLS-1$
 			}
 		}
 	}
@@ -133,8 +133,8 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 				try {
 					mapping.setPropertyValue();
 				} catch (Exception ex) {
-					IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName()
-							+ " of object " + mapping.getObject(), ex));
+					IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+							+ " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
 				}
 			}
 		}

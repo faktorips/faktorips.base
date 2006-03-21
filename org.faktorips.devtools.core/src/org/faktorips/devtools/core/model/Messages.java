@@ -81,4 +81,26 @@ public class Messages extends NLS {
 	public static String ValueSetType_range;
 
 	public static String ValueSetType_enumeration;
+
+	public static String EnumValueSet__msgDatatypeUnknown;
+
+	public static String EnumValueSet_msgDatatypeMissmatch;
+
+	public static String EnumValueSet_msgNullNotSupported;
+
+	public static String RangeValueSet_msgDatatypeUnknown;
+
+	public static String RangeValueSet_msgNullNotContained;
+
+	public static String RangeValueSet_msgNullNotSupported;
+
+	public static String AllValuesValueSet_msgUnknownDatatype;
+
+	public static String AllValuesValueSet_msgValueNotParsable;
+
+	public static String AllValuesValueSet_msgValueNotContained;
+
+	public static String AllValuesValueSet_msgUnknowndDatatype;
+
+	public static String AllValuesValueSet_msgNoSubset;
 }

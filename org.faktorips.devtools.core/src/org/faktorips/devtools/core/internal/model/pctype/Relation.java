@@ -414,7 +414,7 @@ public class Relation extends IpsObjectPart implements IRelation {
 	 */
 	public IRelation[] findForwardCompositions() throws CoreException {
 		if (!getRelationType().isReverseComposition()) {
-			throw new CoreException(new IpsStatus("findForwardCompositions is only defined for reverse composition."));
+			throw new CoreException(new IpsStatus("findForwardCompositions is only defined for reverse composition.")); //$NON-NLS-1$
 		}
 		IPolicyCmptType target = findTarget();
 		if (target==null) {

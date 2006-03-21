@@ -112,7 +112,7 @@ public class RangeEditControl extends ControlComposite {
         step = toolkit.createText(workArea);
         step.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         
-    	toolkit.createLabel(workArea, NLS.bind("Include {0}:", IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
+    	toolkit.createLabel(workArea, NLS.bind(Messages.RangeEditControl_labelIncludeNull, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
     	containsNullCB = toolkit.createCheckbox(workArea);
 
     	if (toolkit.getFormToolkit() != null) {

@@ -115,7 +115,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
 					setMessage(firstMessage.getText(),  getJFaceMessageType(firstMessage.getSeverity()));	
 				}
 				else{
-					setMessage("");
+					setMessage(""); //$NON-NLS-1$
 				}
 				return messages;
 			}
@@ -229,7 +229,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      * the attribute this formula relates to.
      */
     protected String buildTitle() {
-    	return attribute.getName() + " - " + attribute.getDatatype();
+    	return attribute.getName() + " - " + attribute.getDatatype(); //$NON-NLS-1$
     }
     
 }

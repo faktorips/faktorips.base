@@ -106,7 +106,7 @@ public abstract class IpsObjectEditor extends FormEditor
     	}
         
         if (ipsSrcFile == null) {
-        	throw new PartInitException("Unsupported editor input type " + input.getClass().getName());
+        	throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
         
         model.addChangeListener(this);    	

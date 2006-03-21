@@ -77,7 +77,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	
     	if (datatype == null) {
     		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, Message.WARNING, invalidObject, invalidProperty));
     		}
     		return false;
     	}
@@ -118,7 +118,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	if (datatype == null || subDatatype == null) {
     		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
+    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, Message.WARNING, invalidObject, invalidProperty));
     		}
     		return false;
     	}
@@ -132,7 +132,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	
     	if (!datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
     		if (list != null) {
-    			String msg = NLS.bind("The datatype of the subset ({0}) does not match the datatype of this set ({1}).", subDatatype.getQualifiedName(), datatype.getQualifiedName());
+    			String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeMissmatch, subDatatype.getQualifiedName(), datatype.getQualifiedName());
     			addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject, invalidProperty);
     		}
     		return false;
@@ -244,7 +244,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
         
         if (datatype != null && datatype.isPrimitive() && getContainsNull()) {
-        	String text = "ValueSet is based on a primitive datatype which does not support null-values, but this valueSet is marked to contain null.";
+        	String text = Messages.EnumValueSet_msgNullNotSupported;
         	list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
         }
 
