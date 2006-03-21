@@ -25,9 +25,13 @@ package org.faktorips.datatype;
 public interface EnumDatatype extends ValueDatatype {
 
 	/**
-	 * Returns the ids of all values defined in the enum type.
-	 */
-	public String[] getAllValueIds();
+     * Returns the ids of all values defined in the enum type.
+     * 
+     * @param includeNull <code>true</code> to get the id for the null-Value included,
+     *            <code>false</code> for not include the null-Value. Note that the null-Value can
+     *            be the Java <code>null</code> or the special case NULL-value id.
+     */
+	public String[] getAllValueIds(boolean includeNull);
 
 	/**
 	 * Returns true of an implementation of this interface supports names that

@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IEnumValueSet;
-import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.message.MessageList;
 
@@ -256,11 +255,19 @@ public class EnumValueSetEditControl extends EditTableControl {
         }
 
         String getValueName() {
-            return (String)valueSet.getValue(index);
+        	String name = (String)valueSet.getValue(index);
+        	if (name == null) {
+        		name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        	}
+            return name;
         }
 
         void setValueName(String newName) {
-            valueSet.setValue(index, newName);
+        	if (newName.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+        		valueSet.setValue(index, null);
+        	} else {
+        		valueSet.setValue(index, newName);
+        	}
         }
 
         public String toString() {

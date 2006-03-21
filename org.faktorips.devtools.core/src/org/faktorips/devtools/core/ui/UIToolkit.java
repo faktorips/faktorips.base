@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -402,18 +403,34 @@ public class UIToolkit {
 	public Combo createCombo(Composite parent, EnumDatatype enumValues) {
 		Combo newCombo = createCombo(parent);
 		if (enumValues.isSupportingNames()) {
-			String[] ids = enumValues.getAllValueIds();
+			String[] ids = enumValues.getAllValueIds(true);
 			ArrayList idList = new ArrayList(ids.length);
 			for (int i = 0; i < ids.length; i++) {
 				idList.add(enumValues.getValueName(ids[i]));
 			}
-			newCombo.setItems((String[]) idList.toArray(new String[ids.length]));
+			setComboValues(newCombo, (String[]) idList.toArray(new String[ids.length]));
 			return newCombo;
 		}
-		newCombo.setItems(enumValues.getAllValueIds());
+		setComboValues(newCombo, enumValues.getAllValueIds(true));
 		return newCombo;
 	}
 
+	/**
+	 * Replaces all occurences of <code>null</code> in the values by the defined
+	 * null representation. The result is set as items to the given combo.
+	 * 
+	 * @param combo The combo to set the values.
+	 * @param values The values to set.
+	 */
+	private void setComboValues(Combo combo, String[] values) {
+		for (int i = 0; i < values.length; i++) {
+			if (values[i] == null) {
+				values[i] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+			}
+		}
+		combo.setItems(values);
+	}
+	
 	/**
 	 * Creates a new Combo and adds the values of the value set as items to it
 	 * and returns it. If an EnumDatatype is provided then the names for the
@@ -435,7 +452,7 @@ public class UIToolkit {
 			}
 		}
 
-		newCombo.setItems(values);
+		setComboValues(newCombo, values);
 		return newCombo;
 	}
 

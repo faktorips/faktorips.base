@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
@@ -44,9 +45,15 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     public final static String XML_TAG = "Range"; //$NON-NLS-1$
 
+
     private String lowerBound;
     private String upperBound;
     private String step;
+
+    /**
+     * Flag that indicates whether this range contains <code>null</code> or not.
+     */
+	private boolean containsNull;
 
     /**
      * Creates an unbounded range with no step.
@@ -148,8 +155,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             Comparable lower = (Comparable)datatype.getValue(getLowerBound());
             Comparable upper = (Comparable)datatype.getValue(getUpperBound());
             Comparable objectvalue = (Comparable)datatype.getValue(value);
-            if (objectvalue == null) {
-            	return true;
+            if (objectvalue == null || datatype.isNull(objectvalue)) {
+            	return containsNull;
             }
             if ((!getLowerBound().equals("") && ((Comparable)lower).compareTo(objectvalue) > 0) //$NON-NLS-1$
                     || (!getUpperBound().equals("") && ((Comparable)upper).compareTo(objectvalue) < 0)) { //$NON-NLS-1$
@@ -174,7 +181,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 			Object invalidObject, String invalidProperty) {
 
     	ValueDatatype datatype = getValueDatatype();
-    	ValueDatatype subDatatype = subset.getValueDatatype();
+    	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	if (datatype == null || subDatatype == null) {
     		if (list != null) {
     			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
@@ -241,6 +248,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     		isSubset = false;
     	}
 
+    	if (subRange.getContainsNull() && !getContainsNull()) {
+			String msg = NLS.bind("{0} is not contained in this set.", IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+			addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_UPPERBOUND));
+    		isSubset = false;
+    	}
+    	
     	// TODO if step != "", the lower and upper bound of the subset must be divisible without remainder
     	// by this step. Not until values and step can calculate...
     	
@@ -306,20 +319,26 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                     new String[]{PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND, PROPERTY_STEP}));
             return;
         }
+        
+        if (datatype.isPrimitive() && getContainsNull()) {
+        	String text = "ValueSet is based on a primitive datatype which does not support null-values, but this valueSet is marked to contain null.";
+        	list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
+        }
+
         Comparable lowerValue = (Comparable)getValue(datatype, lowerBound, list, PROPERTY_LOWERBOUND);
         Comparable upperValue = (Comparable)getValue(datatype, upperBound, list, PROPERTY_UPPERBOUND);
         getValue(datatype, step, list, PROPERTY_STEP);
         if (list.getSeverity()==Message.ERROR) {
             return;
         }
-        if (datatype.isNull(lowerValue) || datatype.isNull(upperValue)) {
-            return; // range is unbounded on one side
-        }
-        if (lowerValue.compareTo(upperValue)>0) {
-            String text = Messages.Range_msgLowerboundGreaterUpperbound;
-            list.add(new Message(MSGCODE_LBOUND_GREATER_UBOUND, text, Message.WARNING, this, 
-                    new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND}));
-            return;
+        if (!datatype.isNull(lowerValue) && !datatype.isNull(upperValue)) {
+        	// range is not unbounded on one side
+        	if (lowerValue.compareTo(upperValue)>0) {
+        		String text = Messages.Range_msgLowerboundGreaterUpperbound;
+        		list.add(new Message(MSGCODE_LBOUND_GREATER_UBOUND, text, Message.WARNING, this, 
+        				new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND}));
+        		return;
+        	}
         }
     }
 
@@ -373,6 +392,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 		lowerBound = el.getAttribute(PROPERTY_LOWERBOUND);
 		upperBound = el.getAttribute(PROPERTY_UPPERBOUND);
 		step = el.getAttribute(PROPERTY_STEP);
+		containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
 	}
 
 	/**
@@ -385,6 +405,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         tagElement.setAttribute(PROPERTY_LOWERBOUND, lowerBound);
         tagElement.setAttribute(PROPERTY_UPPERBOUND, upperBound);
         tagElement.setAttribute(PROPERTY_STEP, step);
+        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(containsNull));
         element.appendChild(tagElement);
 	}
 
@@ -412,5 +433,22 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 		lowerBound = set.lowerBound;
 		upperBound = set.upperBound;
 		step = set.step;
+		containsNull = set.containsNull;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getContainsNull() {
+		return containsNull;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setContainsNull(boolean containsNull) {
+		boolean old = this.containsNull;
+		this.containsNull = containsNull;
+		valueChanged(old, containsNull);
 	}
 }

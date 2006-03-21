@@ -15,13 +15,19 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.internal.model;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.PrimitiveIntegerDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IRangeValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -30,14 +36,15 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class RangeTest extends IpsPluginTest {
+public class RangeValueSetTest extends IpsPluginTest {
 
 	private IConfigElement ce;
 	private IConfigElement intEl;
+	private DefaultTestContent content;
 	
 	public void setUp() throws Exception {
 		super.setUp();
-        DefaultTestContent content = new DefaultTestContent();
+        content = new DefaultTestContent();
         IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
         ce = gen.newConfigElement();
         
@@ -60,6 +67,7 @@ public class RangeTest extends IpsPluginTest {
 		assertEquals("42", range.getLowerBound());
 		assertEquals("trulala", range.getUpperBound());
 		assertEquals("4",range.getStep());
+		assertTrue(range.getContainsNull());
 	}
 
 	public void testToXml() {
@@ -73,6 +81,7 @@ public class RangeTest extends IpsPluginTest {
 		assertEquals(range.getLowerBound(), r2.getLowerBound());
 		assertEquals(range.getUpperBound(), r2.getUpperBound());
 		assertEquals(range.getStep(), r2.getStep());
+		assertEquals(range.getContainsNull(), r2.getContainsNull());
 	}
 	
 	public void testContainsValue() {
@@ -87,6 +96,12 @@ public class RangeTest extends IpsPluginTest {
 	    assertFalse(range.containsValue("26"));
 	    assertFalse(range.containsValue("19"));
 	    assertFalse(range.containsValue("20EUR"));
+	    
+	    range.setContainsNull(false);
+	    assertFalse(range.containsValue(null));
+	    
+	    range.setContainsNull(true);
+	    assertTrue(range.containsValue(null));
  	}
 	
 	public void testContainsValueSet() {
@@ -125,9 +140,17 @@ public class RangeTest extends IpsPluginTest {
 	    list.clear();
 	    range.containsValueSet(subRange, list, null, null);
 	    assertFalse(list.containsErrorMsg());   
+	    
+	    range.setContainsNull(false);
+	    subRange.setContainsNull(true);
+	    assertFalse(range.containsValueSet(subRange, list, null, null));
+	    assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NOT_SUBSET));
+	    
+	    range.setContainsNull(true);
+	    assertTrue(range.containsValueSet(subRange));
 	}
 	
-	public void testValidate () {
+	public void testValidate () throws Exception {
 	    RangeValueSet range = new RangeValueSet (intEl, 50);
 	    range.setLowerBound("20");
 	    range.setUpperBound("25");
@@ -155,6 +178,22 @@ public class RangeTest extends IpsPluginTest {
         list.clear();
         range.validate(list);
         assertFalse(list.containsErrorMsg());
+        
+		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ArrayList vdlist = new ArrayList();
+		vdlist.addAll(Arrays.asList(vds));
+		vdlist.add(new PrimitiveIntegerDatatype());
+		content.getProject().setValueDatatypes((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+		IAttribute attr = content.getCoverage().getAttribute("test");
+		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+		content.getCoverage().getIpsSrcFile().save(true, null);
+
+		range.validate(list);
+		assertNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+		
+		range.setContainsNull(true);
+		range.validate(list);
+		assertNotNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
     }
 	
 }

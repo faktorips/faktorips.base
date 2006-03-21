@@ -17,17 +17,20 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
 /**
@@ -45,6 +48,8 @@ public class RangeEditControl extends ControlComposite {
     private TextField upperfield;
     private TextField stepfield;
     private DefaultUIController uicontroller;
+    private Checkbox containsNullCB;
+	private CheckboxField containsNullField;
 
     /**
      */
@@ -107,7 +112,10 @@ public class RangeEditControl extends ControlComposite {
         step = toolkit.createText(workArea);
         step.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         
-        if (toolkit.getFormToolkit() != null) {
+    	toolkit.createLabel(workArea, NLS.bind("Include {0}:", IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
+    	containsNullCB = toolkit.createCheckbox(workArea);
+
+    	if (toolkit.getFormToolkit() != null) {
             toolkit.getFormToolkit().paintBordersFor(workArea);
             toolkit.getFormToolkit().adapt(workArea);
         }
@@ -117,9 +125,11 @@ public class RangeEditControl extends ControlComposite {
         upperfield = new TextField(upper);
         lowerfield = new TextField(lower);
         stepfield = new TextField(step);
+    	containsNullField = new CheckboxField(containsNullCB);
         uicontroller.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uicontroller.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
         uicontroller.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
+        uicontroller.add(containsNullField, range, IRangeValueSet.PROPERTY_CONTAINS_NULL);
         uicontroller.updateUI();
     }
 

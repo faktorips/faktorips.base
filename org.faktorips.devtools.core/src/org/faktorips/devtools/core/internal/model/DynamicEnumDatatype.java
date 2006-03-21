@@ -44,7 +44,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public String[] getAllValueIds() {
+	public String[] getAllValueIds(boolean includeNull) {
 		if (getAdaptedClass() == null) {
 			throw new RuntimeException("Datatype " + getQualifiedName() //$NON-NLS-1$
 					+ ", Class " + getAdaptedClassName() + " not found."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -52,7 +52,8 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 		DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(
 				getAdaptedClass());
 		datatype.setGetAllValuesMethodName(getAllValuesMethodName);
-		return datatype.getAllValueIds();
+			
+		return datatype.getAllValueIds(includeNull);
 	}
 
 	/**

@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.model;
 
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -35,6 +34,8 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IValueSet extends IIpsObjectPart {
     
+	public static final String PROPERTY_CONTAINS_NULL = "containsNull";
+	
     /**
      * Prefix for all message codes of this class.
      */
@@ -51,9 +52,14 @@ public interface IValueSet extends IIpsObjectPart {
     public final static String MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING = MSGCODE_PREFIX + "TypeOfValueSetNotMatching"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the value-subset is of a different datatype.
+     */
+    public final static String MSGCODE_DATATYPES_NOT_MATCHING = MSGCODE_PREFIX + "DatatypesNotMatching"; //$NON-NLS-1$
+    
+    /**
      * Validation message code to indicate that one value-set is not a subset of another one.
      */
-    public final static String MSGCODE_NOT_SUBSET = MSGCODE_PREFIX + "NotSubst"; //$NON-NLS-1$
+    public final static String MSGCODE_NOT_SUBSET = MSGCODE_PREFIX + "NotSubset"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the value could not be parsed.
@@ -71,6 +77,12 @@ public interface IValueSet extends IIpsObjectPart {
      * bound of this value set. 
      */
     public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the datatype this value set is based on does not support
+     * <code>null</code>-values, but this valueset is marked to contain a <code>null</code>-value. 
+     */
+    public final static String MSGCODE_NULL_NOT_SUPPORTED = MSGCODE_PREFIX + "NullNotSupported"; //$NON-NLS-1$
     
     /**
      * Returns the type of the value set.
@@ -156,9 +168,15 @@ public interface IValueSet extends IIpsObjectPart {
     public String toShortString();
     
     /**
-     * Returns the datatype this value set is based on or <code>null</code>, if the 
-     * datatype is not provided by the parent.
-     */
-    public ValueDatatype getValueDatatype();
-    
+    * Returns true if this value set contains the null-value, false if not.
+    */
+    public boolean getContainsNull();
+
+    /**
+    * Adds or removes the null-value from this value set.
+    * @param containsNull <code>true</code> to add the null-value to this value set
+    * or <code>false</code> to remove it.
+    * @throws UnsupportedOperationException if the underlying datatype does not support null values.
+    */
+    public void setContainsNull(boolean containsNull);
 }

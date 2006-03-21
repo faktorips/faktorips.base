@@ -141,9 +141,11 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
 	// IpsObjectPart.validate(MessageList).
 	public abstract void validate(MessageList list);
 
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * Returns the datatype this value set is based on or <code>null</code>, if the 
+     * datatype is not provided by the parent or the datatype provided is not a 
+     * <code>ValueDatatype</code>.
+     */
 	public ValueDatatype getValueDatatype() {
 		return ((IValueDatatypeProvider)parent).getValueDatatype();
 	}

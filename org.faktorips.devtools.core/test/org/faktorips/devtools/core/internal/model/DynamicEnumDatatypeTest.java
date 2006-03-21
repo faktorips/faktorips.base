@@ -40,10 +40,13 @@ public class DynamicEnumDatatypeTest extends IpsPluginTest {
 	 * Test method for 'org.faktorips.devtools.core.internal.model.DynamicEnumDatatype.getAllValueIds()'
 	 */
 	public void testGetAllValueIds() {
-		List allValues = Arrays.asList(dataType.getAllValueIds());
+		List allValues = Arrays.asList(dataType.getAllValueIds(false));
 		assertTrue(allValues.contains(TestEnumType.FIRSTVALUE.getId()));
 		assertTrue(allValues.contains(TestEnumType.SECONDVALUE.getId()));
 		assertTrue(allValues.contains(TestEnumType.THIRDVALUE.getId()));
+
+		allValues = Arrays.asList(dataType.getAllValueIds(true));
+		assertTrue(allValues.contains(null));
 	}
 
 

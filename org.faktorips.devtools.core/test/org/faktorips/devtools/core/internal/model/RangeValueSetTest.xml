@@ -2,6 +2,6 @@
 
 <TestCases>
 	<ValueSet>
-		<Range lowerBound="42" upperBound="trulala" step="4"/>
+		<Range lowerBound="42" upperBound="trulala" step="4" containsNull="true"/>
 	</ValueSet>
 </TestCases>

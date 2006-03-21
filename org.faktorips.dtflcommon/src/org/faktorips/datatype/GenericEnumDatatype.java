@@ -18,6 +18,8 @@
 package org.faktorips.datatype;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Generic enum datatype. See the superclass for more Details.
@@ -76,16 +78,25 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 		this.isSupportingNames = isSupportingNames;
 	}
 
-	public String[] getAllValueIds() {
+	public String[] getAllValueIds(boolean includeNull) {
 		try {
 			Object[] values = (Object[]) getGetAllValuesMethod().invoke(null, new Object[0]);
 			String[] ids = new String[values.length];
 			for (int i = 0; i < ids.length; i++) {
-				ids[i] = this.valueToString(values[i]);
+                ids[i] = this.valueToString(values[i]);
 			}
-			return ids;
+
+            
+            ArrayList result = new ArrayList();
+            result.addAll(Arrays.asList(ids));
+            if (!includeNull && result.contains(null)) {
+                result.remove(null);
+            } else if (includeNull && !result.contains(null)) {
+                result.add(null);
+            }
+			return (String[])result.toArray(new String[result.size()]);
 		} catch (Exception e) {
-			throw new RuntimeException("Error invoking method " + valueOfMethod);
+			throw new RuntimeException("Error invoking method " + getAllValuesMethodName, e);
 		}
 	}
 

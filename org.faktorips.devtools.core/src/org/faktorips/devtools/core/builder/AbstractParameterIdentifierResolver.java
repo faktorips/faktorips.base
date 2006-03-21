@@ -140,7 +140,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 			if(enumType == null){
 				return null;
 			}
-			List valueIds = Arrays.asList(enumType.getAllValueIds());
+			List valueIds = Arrays.asList(enumType.getAllValueIds(true));
 			if (valueIds.contains(valueName)) {
 				JavaCodeFragment frag = new JavaCodeFragment();
 				frag.getImportDeclaration().add(enumType.getJavaClassName());

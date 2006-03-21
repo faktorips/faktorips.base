@@ -480,5 +480,4 @@ public class Attribute extends Member implements IAttribute {
 		}
 		return null;
 	}
-
 }

@@ -459,10 +459,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	public ValueDatatype getValueDatatype() {
 		try {
 			IAttribute attr = findPcTypeAttribute();
+			if (attr == null){
+				return null;
+			}
 			return attr.getValueDatatype();
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
+
 		return null;
 	}
 }

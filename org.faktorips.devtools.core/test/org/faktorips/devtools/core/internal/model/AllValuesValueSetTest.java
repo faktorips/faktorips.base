@@ -15,17 +15,23 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model;
+package org.faktorips.devtools.core.internal.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.PrimitiveIntegerDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
+import org.faktorips.devtools.core.model.IAllValuesValueSet;
+import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.util.XmlUtil;
@@ -88,6 +94,66 @@ public class AllValuesValueSetTest extends IpsPluginTest {
 		config = gen.getConfigElement("inceptionDate");
 		
 		assertFalse(allValues.containsValueSet(config.getValueSet()));
+	}
+	
+	public void testGetContainsNull() throws Exception {
+		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
+		IConfigElement config = gen.getConfigElement("sumInsured");
+		AllValuesValueSet allValues = (AllValuesValueSet)config.getValueSet();
+
+		// test with non-primitive datatype
+		assertTrue(allValues.getContainsNull());
+		
+		// test with no datatype
+		IAttribute attr = content.getCoverage().getAttribute("sumInsured");
+		attr.setDatatype("");
+		content.getCoverage().getIpsSrcFile().save(true, null);
+		assertTrue(allValues.getContainsNull());
+		
+		// test with primitive datatype
+		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ArrayList list = new ArrayList();
+		list.addAll(Arrays.asList(vds));
+		list.add(new PrimitiveIntegerDatatype());
+		content.getProject().setValueDatatypes((ValueDatatype[])list.toArray(new ValueDatatype[list.size()]));
+		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+		content.getCoverage().getIpsSrcFile().save(true, null);
+		assertFalse(allValues.getContainsNull());
+		
+	}
+	
+	public void testSetContainsNull() throws Exception {
+		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
+		IConfigElement config = gen.getConfigElement("sumInsured");
+		AllValuesValueSet allValues = (AllValuesValueSet)config.getValueSet();
+
+		allValues.setContainsNull(true);
+		
+		try {
+			allValues.setContainsNull(false);
+			fail();
+		} catch (UnsupportedOperationException e) {
+			// nothing to do
+		}
+		
+		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ArrayList list = new ArrayList();
+		list.addAll(Arrays.asList(vds));
+		list.add(new PrimitiveIntegerDatatype());
+		content.getProject().setValueDatatypes((ValueDatatype[])list.toArray(new ValueDatatype[list.size()]));
+		IAttribute attr = content.getCoverage().getAttribute("sumInsured");
+		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+		content.getCoverage().getIpsSrcFile().save(true, null);
+		
+		allValues.setContainsNull(false);
+		
+		try {
+			allValues.setContainsNull(true);
+			fail();
+		} catch (UnsupportedOperationException e) {
+			// nothing to do
+		}
+		
 	}
 	
 }

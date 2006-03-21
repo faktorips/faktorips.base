@@ -42,7 +42,7 @@ public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
 	 */
 	protected final void reInitInternal() {
 
-		String[] ids = getEnumDatatype().getAllValueIds();
+		String[] ids = getEnumDatatype().getAllValueIds(true);
 		String[] names = null;
 
 		ArrayList items = new ArrayList(ids.length);

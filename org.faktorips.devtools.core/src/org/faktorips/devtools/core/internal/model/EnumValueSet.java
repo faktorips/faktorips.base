@@ -25,6 +25,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueSet;
@@ -58,7 +59,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public String[] getValues() {
-        return (String[])elements.toArray(new String[elements.size()]);
+    	return (String[])elements.toArray(new String[elements.size()]);
     }
 
     /**
@@ -114,7 +115,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
     	ValueDatatype datatype = getValueDatatype();
-    	ValueDatatype subDatatype = subset.getValueDatatype();
+    	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	if (datatype == null || subDatatype == null) {
     		if (list != null) {
     			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, "The datatype is unknown", Message.WARNING, invalidObject, invalidProperty));
@@ -125,6 +126,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	if (!(subset instanceof EnumValueSet)) {
     		if (list != null) {
     			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset, invalidObject, invalidProperty);
+    		}
+    		return false;
+    	}
+    	
+    	if (!datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
+    		if (list != null) {
+    			String msg = NLS.bind("The datatype of the subset ({0}) does not match the datatype of this set ({1}).", subDatatype.getQualifiedName(), datatype.getQualifiedName());
+    			addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject, invalidProperty);
     		}
     		return false;
     	}
@@ -150,13 +159,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public void addValue(String val) {
-        elements.add(val);
+       	elements.add(val);
         updateSrcFile();
     }
 
     /**
-     * {@inheritDoc}
-     */
+	 * {@inheritDoc}
+	 */
     public void removeValue(int index) {
         elements.remove(index);
         updateSrcFile();
@@ -165,8 +174,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     /**
 	 * {@inheritDoc}
 	 */
-	public void removeValue(String string) {
-		elements.remove(string);
+	public void removeValue(String value) {
+        elements.remove(value);
         updateSrcFile();
 	}
 
@@ -219,22 +228,35 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
                 list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.Range_msgUnknownDatatype, Message.WARNING, value));
         	} else if (!datatype.isParsable(value)) {
                 String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
-                list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, value));
+                list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, getNotNullValue(value)));
             }
         }
         for (int i = 0; i < numOfValues - 1; i++) {
             String valueOfi = (String)elements.get(i);
             for (int j = i + 1; j < numOfValues; j++) {
                 String valueOfj = (String)elements.get(j);
-                if (valueOfi.equals(valueOfj)) {
+                if ((valueOfj == null && valueOfi == null) || (valueOfi != null && valueOfi.equals(valueOfj))) {
                     String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, valueOfi);
-                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, valueOfi));
-                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, valueOfj));
+                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, getNotNullValue(valueOfi)));
+                    list.add(new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, getNotNullValue(valueOfj)));
                 }
             }
         }
+        
+        if (datatype != null && datatype.isPrimitive() && getContainsNull()) {
+        	String text = "ValueSet is based on a primitive datatype which does not support null-values, but this valueSet is marked to contain null.";
+        	list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
+        }
+
     }
 
+    private String getNotNullValue(String value) {
+    	if (value == null) {
+    		return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+    	}
+    	return value;
+    }
+    
     public String toString() {
         return super.toString() + ":" + elements.toString(); //$NON-NLS-1$
     }
@@ -267,14 +289,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 		elements.clear();
 		
 		Element el = XmlUtil.getFirstElement(element);
+
 		NodeList children = el.getElementsByTagName(XML_VALUE);
 		
 		for(int i = 0; i < children.getLength();i++) {
 			Element valueEl = (Element)children.item(i);
 			String value = ValueToXmlHelper.getValueFromElement(valueEl, "Data"); //$NON-NLS-1$
-			if (value == null) {
-				value = valueEl.getAttribute("value"); //$NON-NLS-1$
-			}
 			elements.add(value);
 		}
 	}
@@ -310,7 +330,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 	 * {@inheritDoc}
 	 */
 	public void addValuesFromDatatype(EnumDatatype datatype) {
-		String[] valueIds = datatype.getAllValueIds();
+		String[] valueIds = datatype.getAllValueIds(true);
         for (int i = 0; i < valueIds.length; i++) {
             addValue(valueIds[i]);
         }
@@ -328,5 +348,27 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 		elements.addAll(((EnumValueSet)target).elements);
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getContainsNull() {
+		return elements.contains(null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setContainsNull(boolean containsNull) {
+		boolean old = getContainsNull();
+		
+		if (old != containsNull) {
+			if (containsNull) {
+				elements.add(null);
+			} else {
+				elements.remove(null);
+			}
+		}
+		
+		valueChanged(old, containsNull);
+	}
 }

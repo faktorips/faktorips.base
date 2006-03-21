@@ -34,10 +34,15 @@ public class GenericEnumDatatypeTest extends TestCase {
     public void testGetAllValueIds() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes");
         datatype.setToStringMethodName("getId");
-        String[] valueIds = datatype.getAllValueIds();
+        datatype.setSpecialNullValue("null");
+        String[] valueIds = datatype.getAllValueIds(false);
         assertEquals(2, valueIds.length);
         assertEquals(PaymentMode.MONTHLY.getId(), valueIds[0]);
         assertEquals(PaymentMode.ANNUAL.getId(), valueIds[1]);
+        
+        valueIds = datatype.getAllValueIds(true);
+        assertEquals(3, valueIds.length);
+        assertEquals(null, valueIds[2]);
     }
 
     /*

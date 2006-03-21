@@ -118,7 +118,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
      */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
     	ValueDatatype datatype = getValueDatatype();
-    	ValueDatatype subDatatype = subset.getValueDatatype();
+    	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	
     	if (datatype == null || subDatatype == null) {
     		if (list != null) {
@@ -182,5 +182,29 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
 	 */
 	public void setValuesOf(IValueSet target) {
 		// nothing to do.
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getContainsNull() {
+		ValueDatatype type = getValueDatatype();
+		return type == null || !type.isPrimitive();
+	}
+
+	/**
+	 * Because this is an <strong>All</strong>Values valueset, this method throws an
+	 * UnsupportedOperationException if the underlying datatype is non-primitive and
+	 * this method is called with <code>false</code> for containsNull, too.
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void setContainsNull(boolean containsNull) {
+		if (getValueDatatype().isPrimitive() && containsNull) {
+			throw new UnsupportedOperationException("Datatype is primitive, therefore this all-values valueset can not contain null");
+		}		
+		if (!getValueDatatype().isPrimitive() && !containsNull) {
+			throw new UnsupportedOperationException("Datatype is nonPrimitive, therefore this all-values values has to contain null");
+		}
 	}
 }

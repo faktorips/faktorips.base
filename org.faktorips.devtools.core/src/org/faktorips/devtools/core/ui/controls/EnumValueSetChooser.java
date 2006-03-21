@@ -19,12 +19,13 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
@@ -48,7 +49,7 @@ public class EnumValueSetChooser extends ListChooser {
 	/**
 	 * Mapping of human representation names to value ids.
 	 */
-	private Map id2name = new Hashtable();
+	private Map id2name = new HashMap();
 	
 	/**
 	 * @param parent The parent control
@@ -138,7 +139,7 @@ public class EnumValueSetChooser extends ListChooser {
 		String[] ids = new String[0];
 		if (sourceSet == null && type != null) {
 			List targetIds = Arrays.asList(targetSet.getValues());
-			String[] allIds = type.getAllValueIds();
+			String[] allIds = type.getAllValueIds(true);
 			List result = new ArrayList();
 			for (int i = 0; i < allIds.length; i++) {
 				if (!targetIds.contains(allIds[i])) {
@@ -173,6 +174,9 @@ public class EnumValueSetChooser extends ListChooser {
 				name = ids[i];
 			}
 
+			if (name == null) {
+				name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+			}
 			id2name.put(name, ids[i]);
 			result.add(name);
 		}

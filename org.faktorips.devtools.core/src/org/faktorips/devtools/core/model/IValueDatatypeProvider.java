@@ -27,7 +27,10 @@ import org.faktorips.datatype.ValueDatatype;
 public interface IValueDatatypeProvider {
 
 	/**
-	 * Returns the <code>ValueDatatype</code> if available or null if not.
+	 * Returns the <code>ValueDatatype</code> if available or null if not. This
+	 * means, that null is returned if a datatype is available that is not a 
+	 * <code>ValueDatatype</code>.
 	 */
 	public ValueDatatype getValueDatatype();
+	
 }
