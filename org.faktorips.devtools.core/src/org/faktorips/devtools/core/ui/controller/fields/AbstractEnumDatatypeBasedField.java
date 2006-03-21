@@ -48,7 +48,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
 	/**
 	 * Refills the combo box and tries to keep the current value if it is still
-	 * in the range off possible values if not the first value will be selected.
+	 * in the range of possible values. If not, the first value will be selected.
 	 */
 	public final void reInit() {
 		String currentValue = (String) getValue();
@@ -85,8 +85,18 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	protected final void initialize(String[] ids, String[] names) {
 
 		this.ids = ids;
-		if (names != null && names.length > 0) {
-			getCombo().setItems(names);
+		
+		for (int i = 0; i < this.ids.length; i++) {
+			this.ids[i] = (String)super.prepareObjectForSet(this.ids[i]);
+		}
+		
+		String[] myNames = new String[names.length];
+		for (int i = 0; i < names.length; i++) {
+			myNames[i] = (String)super.prepareObjectForSet(names[i]);
+		}
+
+		if (myNames != null && myNames.length > 0) {
+			getCombo().setItems(myNames);
 			return;
 		}
 		getCombo().setItems(ids);
@@ -108,7 +118,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		if (getCombo().getSelectionIndex() == -1) {
 			return null;
 		}
-		return ids[getCombo().getSelectionIndex()];
+		return super.prepareObjectForGet(ids[getCombo().getSelectionIndex()]);
 	}
 
 	/**
@@ -126,10 +136,11 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	}
 	
 	protected String getValueName(String id) {
+		String noNullId = (String)super.prepareObjectForSet(id);
 		if (datatype instanceof EnumDatatype && ((EnumDatatype)datatype).isSupportingNames()) {
-			return ((EnumDatatype)datatype).getValueName(id) + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+			return ((EnumDatatype)datatype).getValueName(noNullId) + " (" + noNullId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 		} else {
-			return id;
+			return noNullId;
 		}
 	}
 }

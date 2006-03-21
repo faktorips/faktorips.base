@@ -57,7 +57,7 @@ public class TextButtonField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#getValue()
      */
     public Object getValue() {
-        return control.getTextControl().getText();
+    	return super.prepareObjectForGet(control.getTextControl().getText());
     }
 
     /** 
@@ -65,7 +65,7 @@ public class TextButtonField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
      */
     public void setValue(Object newValue) {
-        control.getTextControl().setText((String)newValue);
+        control.getTextControl().setText((String)super.prepareObjectForSet(newValue));
     }
 
     /** 

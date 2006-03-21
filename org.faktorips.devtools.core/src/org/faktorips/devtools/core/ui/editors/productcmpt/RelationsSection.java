@@ -197,6 +197,7 @@ public class RelationsSection extends IpsSection {
 			buildContextMenu();
 
 			cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
+			cardinalityPanel.setEnabled(false);
 
 			toolkit.getFormToolkit().paintBordersFor(relationRootPane);
 		}
@@ -354,10 +355,6 @@ public class RelationsSection extends IpsSection {
 					uiController = new IpsPartUIController(rel);
 				}
 
-				// enable the fields for cardinality only, if this section
-				// is enabled.
-				cardinalityPanel.setEnabled(fEnabled);
-
 				kardMinField = new CardinalityPaneEditField(cardinalityPanel, true);
 				kardMaxField = new CardinalityPaneEditField(cardinalityPanel, false);
 
@@ -366,6 +363,10 @@ public class RelationsSection extends IpsSection {
 				uiController.add(kardMaxField, rel,
 						Relation.PROPERTY_MAX_CARDINALITY);
 				uiController.updateUI();
+
+				// enable the fields for cardinality only, if this section
+				// is enabled.
+				cardinalityPanel.setEnabled(fEnabled);
 			} else {
 				cardinalityPanel.setEnabled(false);
 			}

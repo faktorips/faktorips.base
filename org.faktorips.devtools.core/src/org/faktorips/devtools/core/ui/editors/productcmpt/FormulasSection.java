@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.ValueTextField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -150,7 +150,7 @@ public class FormulasSection extends IpsSection {
 					.capitalise(elements[i].getName()));
 			FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit,
 					elements[i], this.getShell());
-			ctrl.add(new ValueTextField(evc.getTextControl()), elements[i],
+			ctrl.add(new TextField(evc.getTextControl()), elements[i],
 					ConfigElement.PROPERTY_VALUE);
 			this.editControls.add(evc);
 

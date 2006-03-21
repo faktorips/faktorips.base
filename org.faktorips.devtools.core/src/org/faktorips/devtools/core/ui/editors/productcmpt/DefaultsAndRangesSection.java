@@ -49,7 +49,7 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueTextField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -199,7 +199,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 
     			Text text = toolkit.createText(rootPane);    			
     			this.editControls.add(text);
-        		ValueTextField field = new ValueTextField(text);
+        		TextField field = new TextField(text);
         		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
         		uiMasterController.add(controller);
 

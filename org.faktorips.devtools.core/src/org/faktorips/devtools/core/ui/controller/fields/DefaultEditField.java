@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.message.MessageList;
 
@@ -32,7 +33,9 @@ public abstract class DefaultEditField implements EditField {
     
     private boolean notifyChangeListeners = true;
     private List changeListeners;
-
+    private boolean supportNull = true;
+    
+    
     /** 
      * Overridden method.
      * @see org.faktorips.devtools.core.ui.controller.EditField#isTextContentParsable()
@@ -111,5 +114,35 @@ public abstract class DefaultEditField implements EditField {
             listener.valueChanged(e);
         }
     }
+ 
+    /**
+     * Returns the null-representation-string defined by the user (see IpsPreferences)
+     * if the given object is null, the unmodified object otherwise.
+     */
+    Object prepareObjectForSet(Object object) {
+    	if (object == null && supportNull) {
+    		return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+    	}
+    	return object;
+    }
+
+    /**
+     * Returns null if the given object is the null-representation-string, 
+     * the unmodified object otherwise.
+     */
+    Object prepareObjectForGet(Object value) {
+    	if (supportNull && value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+    		return null;
+    	}
+    	return value;
+    }
     
+    /**
+     * <code>true</code> to activate null-handling (which means that a null-object
+     * is transformed to the user defined null-representations-string and vice versa) or
+     * <code>false</code> to deactivate null-handling.
+     */
+    public void setSupportsNull(boolean supportsNull) {
+    	this.supportNull = supportsNull;
+    }
 }

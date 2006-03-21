@@ -145,17 +145,19 @@ public class CardinalityPanel {
 	 * Method to enable or disable this panel.
 	 */
 	public void setEnabled(boolean enabled) {
-		mandatory.setEnabled(enabled);
-		mandatorylLabel.setEnabled(enabled);
-		optional.setEnabled(enabled);
-		optionalLabel.setEnabled(enabled);
-		other.setEnabled(enabled);
-		otherLabel.setEnabled(enabled);
-		if (other.getSelection()) {
-			minKard.setEnabled(enabled);
-			minKardLabel.setEnabled(enabled);
-			maxKard.setEnabled(enabled);
-			maxKardLabel.setEnabled(enabled);
+		boolean selected = optional.getSelection() || mandatory.getSelection() || other.getSelection();
+
+		mandatory.setEnabled(enabled && selected);
+		mandatorylLabel.setEnabled(enabled && selected);
+		optional.setEnabled(enabled && selected);
+		optionalLabel.setEnabled(enabled && selected);
+		other.setEnabled(enabled && selected);
+		otherLabel.setEnabled(enabled && selected);
+		if (other.getSelection() || !selected) {
+			minKard.setEnabled(enabled && selected);
+			minKardLabel.setEnabled(enabled && selected);
+			maxKard.setEnabled(enabled && selected);
+			maxKardLabel.setEnabled(enabled && selected);
 		}
 	}
 

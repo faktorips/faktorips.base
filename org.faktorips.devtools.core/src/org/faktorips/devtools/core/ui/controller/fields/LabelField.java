@@ -62,7 +62,7 @@ public class LabelField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#getValue()
      */
     public Object getValue() {
-        return label.getText();
+        return super.prepareObjectForGet(label.getText());
     }
 
     /** 
@@ -70,7 +70,7 @@ public class LabelField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#setValue(java.lang.Object)
      */
     public void setValue(Object newValue) {
-        label.setText((String)newValue);
+        label.setText((String)super.prepareObjectForSet(newValue));
     }
 
     /** 

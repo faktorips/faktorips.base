@@ -123,8 +123,11 @@ public class RangeEditControl extends ControlComposite {
 
     private void connectToModel() {
         upperfield = new TextField(upper);
+        upperfield.setSupportsNull(false);
         lowerfield = new TextField(lower);
+        lowerfield.setSupportsNull(false);
         stepfield = new TextField(step);
+        stepfield.setSupportsNull(false);
     	containsNullField = new CheckboxField(containsNullCB);
         uicontroller.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uicontroller.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);

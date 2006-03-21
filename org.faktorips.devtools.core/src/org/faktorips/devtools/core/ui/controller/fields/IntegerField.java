@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
@@ -51,10 +50,15 @@ public class IntegerField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.EditField#getValue()
      */
     public Object getValue() {
-        if (StringUtils.isEmpty(getText())) {
+    	String text = getText();
+        if (text != null && text.length() == 0) {
             throw new RuntimeException("Can't return an Integer, field is empty."); //$NON-NLS-1$
         }
-        return Integer.valueOf(getText());
+        text = (String)super.prepareObjectForGet(text);
+        if (text == null) {
+        	return null;
+        }
+        return Integer.valueOf(text);
     }
 
     /** 
@@ -63,6 +67,7 @@ public class IntegerField extends DefaultEditField {
      */
     public void setValue(Object newValue) {
         ArgumentCheck.isInstanceOf(newValue, Integer.class);
+        newValue = super.prepareObjectForSet(newValue);
         text.setText(newValue.toString());
     }
 

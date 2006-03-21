@@ -56,7 +56,6 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueTextField;
 import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -88,7 +87,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
     private CheckboxField productRelevantField;
 
-    private ValueTextField defaultValueField;
+    private TextField defaultValueField;
     
     private ValueSetEditControl valueSetEditControl;
     private DatatypeRefControl datatypeControl;
@@ -249,7 +248,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         modifierField = new EnumValueField(modifierCombo, Modifier.getEnumType());
         attributeTypeField = new EnumValueField(typeCombo, AttributeType.getEnumType());
         productRelevantField = new CheckboxField(checkbox);
-        defaultValueField = new ValueTextField(defaultValueText);
+        defaultValueField = new TextField(defaultValueText);
         
         return c;
     }
