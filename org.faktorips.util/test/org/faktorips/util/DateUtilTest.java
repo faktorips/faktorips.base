@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 /**
  *
  */
-public class DateUtilTest extends TestCase {
+public class DateUtilTest extends TestCase2 {
 
     /*
      * @see TestCase#setUp()
