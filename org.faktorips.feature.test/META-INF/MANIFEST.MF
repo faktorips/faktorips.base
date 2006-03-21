@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: All Plug-in
+Bundle-SymbolicName: org.faktorips.feature.test
+Bundle-Version: 1.0.0
+Bundle-Activator: org.faktorips.tests.all.AllPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.junit,
+ org.faktorips.devtools.core.test,
+ org.faktorips.devtools.stdbuilder.test,
+ org.faktorips.util.test
+Eclipse-AutoStart: true
