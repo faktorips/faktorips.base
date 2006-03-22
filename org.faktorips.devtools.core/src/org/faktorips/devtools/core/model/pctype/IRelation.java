@@ -57,45 +57,38 @@ public interface IRelation extends IIpsObjectPart {
      * Validation message code to indicate that the target does not exist.
      */
     public final static String MSGCODE_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "TargetDoesNotExists"; //$NON-NLS-1$
-    // TODO test case
 
     /**
      * Validation message code to indicate that the target role singular must be set and it's not.
      */
     public final static String MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET = MSGCODE_PREFIX + "TargetRoleSingularMustBeSet"; //$NON-NLS-1$
-    // TODO test case
 
     /**
      * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
      */
     public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX + "MaxCardinalityMustBeAtLeast1"; //$NON-NLS-1$
-    // TODO test case
 
     /**
      * Validation message code to indicate that the max cardinality is less than min, but it must be
      * greater or equal than min.
      */
     public final static String MSGCODE_MAX_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxIsLessThanMin"; //$NON-NLS-1$
-    // TODO test case
 
     /**
      * Validation message code to indicate that an relation implementing a container relation
      * must have the same value for the product relevant property as it's container relation.
      */
     public final static String MSGCODE_IMPLEMENTATION_MUST_HAVE_SAME_PRODUCT_RELEVANT_VALUE = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue"; //$NON-NLS-1$
-    // TODO implement, test case
 	
     /**
      * Validation message code to indicate that a reverse composition's max cardinality is not 1.
      */
-    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MustHaveSameProductRelevantValue"; //$NON-NLS-1$
-    // TODO implement, test case
+    public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MaxCardinalityMustBe1ForReverseCombosition"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that a reverse composition cant be marked as product relevant..
      */
     public final static String MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT = MSGCODE_PREFIX + "ReverseCompositionCantBeMarkedAsProductRelevant"; //$NON-NLS-1$
-    // TODO implement, test case
 
     /**
      * Validation message code to indicate that a relation can only be product relevant
@@ -103,7 +96,77 @@ public interface IRelation extends IIpsObjectPart {
      */
     public final static String MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS = 
     	MSGCODE_PREFIX + "RelationCanBeProductRelevantOnlyIfTheTypeIs"; //$NON-NLS-1$
-    // TODO implement, test case
+
+    /**
+     * Validation message code to indicate that the container relation does not exist in supertype hirachy.
+     */
+    public final static String MSGCODE_CONTAINERRELATION_NOT_IN_SUPERTYPE = MSGCODE_PREFIX + "ContainerRelationNotInSupertype"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the container relation this relation implements is not marked as container relation.
+     */
+    public final static String MSGCODE_NOT_MARKED_AS_CONTAINERRELATION = MSGCODE_PREFIX + "NotMarkedAsContainerRelation"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the target does not exist.
+     */
+    public final static String MSGCODE_CONTAINERRELATION_TARGET_DOES_NOT_EXIST = MSGCODE_PREFIX + "ContainerRelationTargetDoesNotExist"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the target class of this relation is not a subclass (or the same class) of the container relations target
+     */
+    public final static String MSGCODE_TARGET_NOT_SUBCLASS = MSGCODE_PREFIX + "TargetNotSubclass"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the container relation is not the reverse relation of the container relation of the reverse relation.
+     */
+    public final static String MSGCODE_CONTAINERRELATION_NOT_REVERSERELATION = MSGCODE_PREFIX + "ContainerRelationNotReverseRelation"; //$NON-NLS-1$
+    // TODO testcase; Jan: evtl. nicht mehr notwendig?
+    
+    /**
+     * Validation message code to indicate that the relation has same plural rolename like another relation in supertype hirarchy.
+     */
+    public final static String MSGCODE_CONTAINERRELATION_SAME_PLURAL_ROLENAME = MSGCODE_PREFIX + "RelationHasSamePluralRolename"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the relation has the same singular rolename like another relation in supertype hirachy.
+     */
+    public final static String MSGCODE_SAME_SINGULAR_ROLENAME = MSGCODE_PREFIX + "RelationHasSameSingularRolename"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the relation has the same plural rolename product side like another relation in supertype hirachy.
+     */
+    public final static String MSGCODE_SAME_PLURAL_ROLENAME_PRODUCTSIDE = MSGCODE_PREFIX + "RelationHasSamePluralRolenameProductSide"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the relation has the same singular rolename product side like another relation in supertype hirachy.
+     */
+    public final static String MSGCODE_SAME_SINGULAR_ROLENAME_PRODUCTSIDE = MSGCODE_PREFIX + "RelationHasSameSingularRolenameProductSide"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the reverse relation does not specify this relation as its reverse one.
+     */
+    public final static String MSGCODE_REVERSERELATION_NOT_IN_TARGET = MSGCODE_PREFIX + "ReverseRelationNotInTarget"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the reverse relation does not specify this relation as it's reverse one.
+     */
+    public final static String MSGCODE_REVERSERELATION_NOT_SPECIFIED = MSGCODE_PREFIX + "ReverseRelationNotSpecified"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the reverse relation of a container relation must be a container relation too.
+     */
+    public final static String MSGCODE_REVERSERELATION_OF_CONTAINERRELATION_MUST_BE_CONTAINERRELATION_TOO = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the reverse relation of a composition must be a reverse composition.
+     */
+    public final static String MSGCODE_REVERSE_COMPOSITION_MISSMATCH = MSGCODE_PREFIX + "ReverseCompositionMissmatch"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the reverse relation of an association must be an assoziation.
+     */
+    public final static String MSGCODE_REVERSE_ASSOCIATION_MISSMATCH = MSGCODE_PREFIX + "ReverseAssociationMissmatch"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this relation belongs to.
