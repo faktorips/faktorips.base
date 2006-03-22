@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.framework.Bundle;
 
 /**
+ * ClasspathVariableInitializer that initializes the FaktorIPS libraries needed at runtime.
  * 
  * @author Jan Ortmann
  */
@@ -41,14 +42,13 @@ public class FaktorIpsClasspathVariableInitializer extends
 	public final static String VARNAME_VALUETYPES_SRC = "FAKTORIPS_VALUETYPES_SRC"; //$NON-NLS-1$
 	public final static String VARNAME_RUNTIME_BIN = "FAKTORIPS_RUNTIME"; //$NON-NLS-1$
 	public final static String VARNAME_RUNTIME_SRC = "FAKTORIPS_RUNTIME_SRC"; //$NON-NLS-1$
-	public final static String VARNAME_DTFLCOMMON = "FAKTORIPS_DTFLCOMMON"; //$NON-NLS-1$
 	public final static String VARNAME_COMMONS_LANG_BIN = "FAKTORIPS_INCLUDED_COMMONS_LANG"; //$NON-NLS-1$
 	
 	/**
 	 * Classpath variables for the faktorips jars needed at runtime.
 	 */
 	public final static String[] IPS_VARIABLES_BIN = new String[] {
-		VARNAME_UTIL_BIN, VARNAME_VALUETYPES_BIN, VARNAME_RUNTIME_BIN, VARNAME_DTFLCOMMON, VARNAME_COMMONS_LANG_BIN };
+		VARNAME_UTIL_BIN, VARNAME_VALUETYPES_BIN, VARNAME_RUNTIME_BIN, VARNAME_COMMONS_LANG_BIN };
 
 	/**
 	 * Classpath variables for the source attachements.
@@ -66,7 +66,6 @@ public class FaktorIpsClasspathVariableInitializer extends
 		add(new Mapping(VARNAME_VALUETYPES_SRC, "org.faktorips.valuetypes", "/faktorips-valuetypessrc.zip")); //$NON-NLS-1$ //$NON-NLS-2$
 		add(new Mapping(VARNAME_RUNTIME_BIN, "org.faktorips.runtime", "/faktorips-runtime.jar")); //$NON-NLS-1$ //$NON-NLS-2$
 		add(new Mapping(VARNAME_RUNTIME_SRC, "org.faktorips.runtime", "/faktorips-runtimesrc.zip")); //$NON-NLS-1$ //$NON-NLS-2$
-		add(new Mapping(VARNAME_DTFLCOMMON, "org.faktorips.dtflcommon", "/faktorips-dtflcommon.jar")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	private void add(Mapping m) {
@@ -148,7 +147,6 @@ public class FaktorIpsClasspathVariableInitializer extends
 		public String getVarName() {
 			return varName;
 		}
-		
 		
 	}
 }
