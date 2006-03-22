@@ -291,6 +291,8 @@ public abstract class IpsObjectEditor extends FormEditor
         if (part==this) {
             ipsSrcFile.discardChanges();
             part.getSite().getPage().removePartListener(this);
+            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);    	
+            ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         }
     }
     
