@@ -34,11 +34,9 @@ import org.faktorips.util.ArgumentCheck;
 public class ContainerRelationCompletionProcessor extends AbstractCompletionProcessor {
     
     private IPolicyCmptType pcType;
-    private IRelation relation;
     
     public ContainerRelationCompletionProcessor(IRelation relation) {
         ArgumentCheck.notNull(relation);
-        this.relation = relation;
         this.pcType = (IPolicyCmptType)relation.getIpsObject();
         setIpsProject(pcType.getIpsProject());
     }

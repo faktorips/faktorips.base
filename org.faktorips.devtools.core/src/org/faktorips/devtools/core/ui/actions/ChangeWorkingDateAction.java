@@ -70,7 +70,9 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 			try {
 				DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
 				Date newDate = format.parse(dialog.getValue());
-				IpsPreferences.setWorkingDate(new GregorianCalendar(1900 + newDate.getYear(), newDate.getMonth(), newDate.getDate()));
+				GregorianCalendar calendar = new GregorianCalendar(); 
+				calendar.setTime(newDate);
+				IpsPreferences.setWorkingDate(calendar);
 			} catch (ParseException e) {
 				// should not happen if validator works correct.
 				IpsPlugin.log(e);

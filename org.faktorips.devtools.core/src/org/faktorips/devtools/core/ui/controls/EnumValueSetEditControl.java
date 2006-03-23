@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
@@ -139,7 +138,6 @@ public class EnumValueSetEditControl extends EditTableControl {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
         editors[0] = null; // no editor for the message image column
         editors[1] = new UnfocusableTextCellEditor(getTable());
-        Text text = (Text)editors[1].getControl();
         return editors;
     }
 

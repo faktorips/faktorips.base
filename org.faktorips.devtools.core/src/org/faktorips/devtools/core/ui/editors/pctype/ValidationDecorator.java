@@ -39,8 +39,6 @@ public class ValidationDecorator extends Composite {
 
     private Label imageLabel;
     private Control control;
-    private String property;
-    private Object object;
 
     /**
      * @param parent

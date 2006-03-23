@@ -35,7 +35,6 @@ public class ParameterInfo {
 	private String fNewTypeName;
 	private String fDefaultValue;
 	private String fNewName;
-	private Object fData;
 	private boolean fIsDeleted;
 	
 	public final static ParameterInfo[] createInfos(Parameter[] params) {
