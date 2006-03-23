@@ -51,7 +51,6 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * 
@@ -321,19 +320,30 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			// validate valuset containment. If the type of this element
 			// is PRODUCT_ATTRIBUTE, we do not validate against the
 			// valueset of this element but against the valueset of
-			// the attribute this element is based on. This is because an element
+			// the attribute this element is based on. This is because an
+			// element
 			// of type PRODUCT_ATTRIBUTE becomes an ALL_VALUES-valueset,
-			// but the valueset can not be changed for this type of config element.
+			// but the valueset can not be changed for this type of config
+			// element.
 			if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE) {
-				modelValueSet.containsValueSet(valueSet, list, this, PROPERTY_VALUE);
+				modelValueSet.containsValueSet(valueSet, list, this,
+						PROPERTY_VALUE);
 
 				if (!valueSet.containsValue(value)) {
-					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(Messages.ConfigElement_msgValueNotInValueset, value),
-							Message.ERROR, this, PROPERTY_VALUE));
+					list
+							.add(new Message(
+									IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET,
+									NLS
+											.bind(
+													Messages.ConfigElement_msgValueNotInValueset,
+													value), Message.ERROR,
+									this, PROPERTY_VALUE));
 				}
 			} else if (!modelValueSet.containsValue(value)) {
-				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(Messages.ConfigElement_msgValueNotInValueset, value),
-						Message.ERROR, this, PROPERTY_VALUE));
+				list.add(new Message(
+						IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
+								Messages.ConfigElement_msgValueNotInValueset,
+								value), Message.ERROR, this, PROPERTY_VALUE));
 			}
 
 			
@@ -345,6 +355,20 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * Overridden.
 	 */
 	public IValueSet getValueSet() {
+		if (type == ConfigElementType.PRODUCT_ATTRIBUTE) {
+			IAttribute attr = null;
+			try {
+				attr = findPcTypeAttribute();
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+			if (attr != null) {
+				return attr.getValueSet();
+			}
+			else {
+				return null;
+			}
+		}
 		return valueSet;
 	}
 
@@ -352,6 +376,10 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * {@inheritDoc}
 	 */
 	public void setValueSetType(ValueSetType type) {
+		if (this.type == ConfigElementType.PRODUCT_ATTRIBUTE) {
+			throw new UnsupportedOperationException(
+					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets.");
+		}
 		IValueSet oldset = valueSet;
 		valueSet = type.newValueSet(this, getNextPartId());
 		valueChanged(oldset, valueSet);
@@ -361,10 +389,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * {@inheritDoc}
 	 */
 	public void setValueSetCopy(IValueSet source) {
-		IValueSet oldset = valueSet;
+		if (this.type == ConfigElementType.PRODUCT_ATTRIBUTE) {
+			throw new UnsupportedOperationException(
+					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets.");
+		}
 
+		IValueSet oldset = valueSet;
 		valueSet = source.copy(this, getNextPartId());
-				
 		valueChanged(oldset, valueSet);
 	}
 	
@@ -390,24 +421,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		type = ConfigElementType.getConfigElementType(element
 				.getAttribute(PROPERTY_TYPE));
 		
-		//TODO remove migration code
-		// Code for migrating old content
-		Node valueAttr = element.getAttributeNode(PROPERTY_VALUE);
-		String tmpValue = null;
-		if (valueAttr != null) {
-			tmpValue = element.getAttribute(PROPERTY_VALUE);
-		}
-		// end of migration code
-		
 		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
 		
-		//TODO remove migration code
-		// Code for migrating old content
-		if (value == null) {
-			value = tmpValue;
-		}
-		// end of migration code
-
 		pcTypeAttribute = element.getAttribute(PROPERTY_PCTYPE_ATTRIBUTE);
 		name = pcTypeAttribute;
 	}

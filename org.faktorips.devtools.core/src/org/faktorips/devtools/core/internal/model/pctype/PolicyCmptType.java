@@ -610,12 +610,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             supertypeObj = (IPolicyCmptType)getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, supertype);
             if (supertypeObj==null) {
                 String text = NLS.bind(Messages.PolicyCmptType_msgSupertypeNotFound, supertype);
-                list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE)); //$NON-NLS-1$
+                list.add(new Message(MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE)); //$NON-NLS-1$
             }
         }
         if (isConfigurableByProductCmptType() && StringUtils.isEmpty(this.unqalifiedProductCmptType)) {
             String text = Messages.PolicyCmptType_msgNameMissing;
-            list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
         }
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(list);
@@ -623,7 +623,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             for (int i=0; i<methods.length; i++) {
                 if (methods[i].isAbstract()) {
                     String text = Messages.PolicyCmptType_msgAbstractMissmatch;
-                    list.add(new Message("", text, Message.ERROR, this, IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
+                    list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
                 }
             }
         }

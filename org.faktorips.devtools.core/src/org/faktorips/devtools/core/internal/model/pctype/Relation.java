@@ -507,7 +507,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
         } else if (maxCardinality == 1 && isReadOnlyContainer() && getRelationType() != RelationType.REVERSE_COMPOSITION) {
         	String text = Messages.Relation_msgMaxCardinalityForContainerRelationTooLow;
-        	list.add(new Message("", text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
+        	list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW, text, Message.ERROR, this, new String[]{PROPERTY_READONLY_CONTAINER, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         } else if (minCardinality > maxCardinality) {
         	String text = Messages.Relation_msgMinCardinalityGreaterThanMaxCardinality;
         	list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$

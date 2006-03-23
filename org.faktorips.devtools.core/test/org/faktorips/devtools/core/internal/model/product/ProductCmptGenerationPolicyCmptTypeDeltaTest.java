@@ -242,7 +242,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends IpsPluginTest 
 
         IConfigElement ce2 = generation.newConfigElement();
         ce2.setPcTypeAttribute("a2");
-        ce2.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+        ce2.setType(ConfigElementType.POLICY_ATTRIBUTE);
         ce2.setValueSetType(ValueSetType.ENUM);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertFalse(delta.isEmpty());

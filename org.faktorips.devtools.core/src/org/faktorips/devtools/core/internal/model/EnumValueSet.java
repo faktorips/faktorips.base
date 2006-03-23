@@ -226,13 +226,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             String value = (String)elements.get(i);
         	if (datatype == null) {
                 list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.Range_msgUnknownDatatype, Message.WARNING, value));
-        	} else if (!datatype.isParsable(value)) {
+        	} else if (!datatype.isParsable(value) || isSpecialNull(value, datatype)) {
                 String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
                 list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, getNotNullValue(value)));
             }
         }
         for (int i = 0; i < numOfValues - 1; i++) {
             String valueOfi = (String)elements.get(i);
+            
             for (int j = i + 1; j < numOfValues; j++) {
                 String valueOfj = (String)elements.get(j);
                 if ((valueOfj == null && valueOfi == null) || (valueOfi != null && valueOfi.equals(valueOfj))) {
@@ -248,6 +249,25 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         	list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
         }
 
+    }
+    
+    /**
+     * Returns whether the given value represents the special null value for the given datatype.
+     */
+    private boolean isSpecialNull(String value, ValueDatatype datatype) {
+    	if (datatype.isPrimitive()) {
+    		return false;
+    	}
+    	
+    	if (value == null) {
+    		return false;
+    	}
+    	
+    	Object valueObj = datatype.getValue(null);
+    	if (valueObj != null) {
+    		return valueObj.toString().equals(value);
+    	}
+    	return false;
     }
 
     private String getNotNullValue(String value) {

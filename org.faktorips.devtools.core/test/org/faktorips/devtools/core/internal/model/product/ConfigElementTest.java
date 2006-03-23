@@ -215,7 +215,7 @@ public class ConfigElementTest extends IpsPluginTest {
     	valueSet.setUpperBound("b");
 
     	IConfigElement ce = generation.newConfigElement();
-    	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+    	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
     	ce.setValueSetCopy(valueSet);
@@ -328,6 +328,7 @@ public class ConfigElementTest extends IpsPluginTest {
      */
     public void testToXmlDocument() {
         IConfigElement cfgElement = generation.newConfigElement();
+        cfgElement.setType(ConfigElementType.POLICY_ATTRIBUTE);
         cfgElement.setValue("value");
         cfgElement.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet valueSet = (IRangeValueSet)cfgElement.getValueSet(); 

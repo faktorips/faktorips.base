@@ -551,4 +551,59 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     	supertype.newRelation().setRelationType(RelationType.REVERSE_COMPOSITION);
     	assertFalse(subtype.isAggregateRoot());
     }
+    
+    public void testValidate_SupertypeNotFound() throws Exception {
+    	MessageList ml = pcType.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
+    	pcType.setSupertype("abc");
+    	ml = pcType.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_FOUND));
+    }
+
+    public void testValidate_ProductCmptTypeNameMissing() throws Exception {
+    	MessageList ml = pcType.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
+    	pcType.setConfigurableByProductCmptType(true);
+    	pcType.setUnqualifiedProductCmptType("");
+    	ml = pcType.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
+    }
+
+    public void testValidate_AbstractMissing() throws Exception {
+    	MessageList ml = pcType.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_ABSTRACT_MISSING));
+    	pcType.newMethod().setAbstract(true);
+    	pcType.setAbstract(false);
+    	ml = pcType.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_ABSTRACT_MISSING));
+    }
+
+    public void testValidate_CycleInTypeHirarchy() throws Exception {
+    	MessageList ml = pcType.validate();
+    }
+
+    public void testValidate_MustImplementeAbstractRelation() throws Exception {
+    	MessageList ml = pcType.validate();
+    }
+
+    public void testValidate_InconsistentTypeHirachy() throws Exception {
+    	MessageList ml = pcType.validate();
+    }
+
+    public void testValidate_RelationAndReverseRelationMustBeMarkedAsContainer() throws Exception {
+    	MessageList ml = pcType.validate();
+    }
+
+    public void testValidate_ReverseRelationMustHaveMaxCardinalityOne() throws Exception {
+    	MessageList ml = pcType.validate();
+    }
+
+    public void testValidate_ReverseRelationCanNotBeProductRelevant() throws Exception {
+    	MessageList ml = pcType.validate();
+    }
+
+    public void testValidate_ContainerRelationCanNotBeProductRelevant() throws Exception {
+    	MessageList ml = pcType.validate();
+    }
+
 }

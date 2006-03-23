@@ -118,6 +118,26 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     // TODO implement, test case
 
     /**
+     * Validation message code to indicate that the supertype can not be found.
+     */
+    public final static String MSGCODE_SUPERTYPE_NOT_FOUND = 
+    	MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that this policy component type is defined configurable by 
+     * product, but the product cmpt type name is not set.
+     */
+    public final static String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING = 
+    	MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that at least one abstract method is not implemented, but this
+     * policy component type is not marked as abstract.
+     */
+    public final static String MSGCODE_ABSTRACT_MISSING = 
+    	MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
+
+    /**
      * Returns <code>true</code> if this class has a corresponding product component type,
      * otherwise <code>false</code>.
      */

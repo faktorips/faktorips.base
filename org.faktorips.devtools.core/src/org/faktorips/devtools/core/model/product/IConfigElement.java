@@ -146,16 +146,21 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider {
     public IValueSet getValueSet();
 
     /**
-     * Sets the type of the value set defining the values valid for this config element.
-     * If the type of the currently existing value set is the same as the one to set, all
-     * old informations (e.g. bounds and step for a range value set) are removed.
-     */
-    public void setValueSetType(ValueSetType type);
+	 * Sets the type of the value set defining the values valid for this config
+	 * element. If the type of the currently existing value set is the same as
+	 * the one to set, all old informations (e.g. bounds and step for a range
+	 * value set) are removed.
+	 * 
+	 * @throws OperationNotSupportedException
+	 *             if this element ist of type PRODUCT_ATTRIBUTE because config
+	 *             elements of this type does not support own value sets.
+	 */
+	public void setValueSetType(ValueSetType type);
 
     /**
-     * Returns an expression compiler that can be used to compile the formula.
-     * or <code>null</code> if the element does not contain a formula.
-     */
+	 * Returns an expression compiler that can be used to compile the formula.
+	 * or <code>null</code> if the element does not contain a formula.
+	 */
     public ExprCompiler getExprCompiler() throws CoreException;
     
     /**
@@ -169,15 +174,20 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider {
      */
     public IAttribute findPcTypeAttribute() throws CoreException;
 
-   /**
-    *  
-    * @throws CoreException if an exception occurs while validating the object.
-    */
-   public MessageList validate() throws CoreException;
-    
-   /**
-    * Creates a copy of the given value set and aplies this copy to this config element.
-    */
-   public void setValueSetCopy(IValueSet source);
+    /**
+	 *  
+	 * @throws CoreException if an exception occurs while validating the object.
+	 */
+	public MessageList validate() throws CoreException;
+
+	/**
+	 * Creates a copy of the given value set and aplies this copy to this config
+	 * element.
+	 * 
+	 * @throws OperationNotSupportedException
+	 *             if this element ist of type PRODUCT_ATTRIBUTE because config
+	 *             elements of this type does not support own value sets.
+	 */
+	public void setValueSetCopy(IValueSet source);
     
 }

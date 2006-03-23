@@ -82,6 +82,22 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     public void init(IViewSite site) throws PartInitException {
     	super.init(site);
     	
+    	site.getActionBars().getToolBarManager().add(new Action() { //$NON-NLS-1$
+
+    		public ImageDescriptor getImageDescriptor() {
+    			return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+    		}
+    		
+			public void run() {
+				tree.refresh();
+		        tree.expandAll();
+			}
+
+			public String getToolTipText() {
+				return "Refresh contents";
+			}
+		});
+
     	site.getActionBars().getToolBarManager().add(new Action("", Action.AS_CHECK_BOX) { //$NON-NLS-1$
 
     		public ImageDescriptor getImageDescriptor() {

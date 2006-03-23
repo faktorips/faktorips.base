@@ -69,6 +69,11 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX + "MaxCardinalityMustBeAtLeast1"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
+     */
+    public final static String MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW = MSGCODE_PREFIX + "MaxCardinalityForContainerRelationTooLow"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the max cardinality is less than min, but it must be
      * greater or equal than min.
      */

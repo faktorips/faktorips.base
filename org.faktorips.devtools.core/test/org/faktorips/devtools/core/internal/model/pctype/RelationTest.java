@@ -388,4 +388,14 @@ public class RelationTest extends IpsPluginTest {
 		ml = relation.validate();
 		assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_ASSOCIATION_MISSMATCH));
     }
+	
+	public void testValidateMaxCardinalityForContainerRelationTooLow() throws Exception {
+		MessageList ml = relation.validate();
+		assertNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW));
+		
+		relation.setMaxCardinality(1);
+		relation.setReadOnlyContainer(true);
+		ml = relation.validate();
+		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW));
+	}
 }

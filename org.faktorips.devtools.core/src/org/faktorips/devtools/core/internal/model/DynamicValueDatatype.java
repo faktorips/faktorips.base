@@ -103,8 +103,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 	}
 	
 	public void writeToXml(Element element) {
-		// TODO Auto-generated method stub
-		
 		if (getAdaptedClassName() != null) {
 			element.setAttribute("valueClass", getAdaptedClassName()); //$NON-NLS-1$
 		}
