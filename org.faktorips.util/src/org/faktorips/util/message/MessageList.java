@@ -32,6 +32,26 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann
  */
 public class MessageList {
+    
+    /**
+     * Creates a copy from the message list and replaces all references to the old object
+     * with the new object. 
+     * 
+     * @param list the list to copy
+     * @param oldObject the old object reference that should be replaced. 
+     * @param newObject the object reference to set
+     */
+    public final static MessageList createCopy(MessageList list, Object oldObject, Object newObject) {
+        if (list.isEmpty()) {
+            return list;
+        }
+        MessageList newList = new MessageList();
+        int numOfMsg = list.getNoOfMessages();
+        for (int i=0; i<numOfMsg; i++) {
+            newList.add(Message.createCopy(list.getMessage(i), oldObject, newObject));
+        }
+        return newList;
+    }
 
     private List messages = new ArrayList(0);
 

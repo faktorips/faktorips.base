@@ -29,6 +29,31 @@ import org.faktorips.util.message.ObjectProperty;
  */
 public class MessageTest extends XmlAbstractTestCase {
     
+    public void testCopy() {
+        Message msg = new Message("code", "text", Message.INFO);
+        Message copy = Message.createCopy(msg, "a", "b");
+        assertEquals("code", msg.getCode());
+        assertEquals("text", msg.getText());
+        assertEquals(Message.INFO, msg.getSeverity());
+        assertEquals(0, msg.getInvalidObjectProperties().length);
+        
+        Object oldObject = new Object();
+        ObjectProperty op0 = new ObjectProperty(oldObject, "prop0");
+        ObjectProperty op1 = new ObjectProperty(this, "prop1");
+        ObjectProperty op2 = new ObjectProperty(oldObject, "prop2");
+        msg = new Message("code", "text", Message.ERROR, new ObjectProperty[]{op0, op1, op2});
+        Object newObject = new Object();
+        copy = Message.createCopy(msg, oldObject, newObject);
+        ObjectProperty[] ops = copy.getInvalidObjectProperties();
+        assertEquals(3, ops.length);
+        assertEquals(newObject, ops[0].getObject());
+        assertEquals("prop0", ops[0].getProperty());
+        assertEquals(this, ops[1].getObject());
+        assertEquals("prop1", ops[1].getProperty());
+        assertEquals(newObject, ops[2].getObject());
+        assertEquals("prop2", ops[2].getProperty());
+    }
+    
     public void testMessage_StringStringint() {
         Message msg = new Message("code", "text", Message.INFO);
         assertEquals("code", msg.getCode());

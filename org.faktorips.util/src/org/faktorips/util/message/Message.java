@@ -49,6 +49,23 @@ public class Message {
     public final static int INFO = 10;
     public final static int NONE = 0;
     
+    /**
+     * Creates a copy from the message and replaces all references to the old object
+     * with the new object.
+     */
+    public final static Message createCopy(Message msg, Object oldObject, Object newObject) {
+        ObjectProperty[] op = msg.getInvalidObjectProperties();
+        ObjectProperty[] newOp = new ObjectProperty[op.length];
+        for (int i = 0; i < op.length; i++) {
+            if (op[i].getObject()==oldObject) {
+                newOp[i] = new ObjectProperty(newObject, op[i].getProperty());
+            } else {
+                newOp[i] = op[i];
+            }
+        }
+        return new Message(msg.code, msg.text, msg.severity, newOp);
+    }
+    
     private final static ObjectProperty[] EMPTY_OBJECT_PROPERTIES = new ObjectProperty[0];
 
     //  one of the constants ERROR, WARNING, INFO
