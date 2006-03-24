@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -109,7 +111,7 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 	class TestNamingStrategy extends AbstractProductCmptNamingStrategy {
 
 		public TestNamingStrategy() {
-			super("TestNamingStrategy", " - ");
+			super(" - ");
 		}
 
 		/**
@@ -132,6 +134,27 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 		public MessageList validateVersionId(String versionId) {
 			return new MessageList();
 		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		protected void initSubclassFromXml(Element el) {
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		protected Element toXmlSubclass(Document doc) {
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String getExtensionId() {
+			return "TestStrategy";
+		}
+
 		
 	}
 }

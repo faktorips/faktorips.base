@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -43,7 +44,6 @@ public class IpsProjectProperties {
 	public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
 		IpsProjectProperties data = new IpsProjectProperties();
 		data.initFromXml(ipsProject, element);
-		data.productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 		return data;
 	}
 	
@@ -54,7 +54,7 @@ public class IpsProjectProperties {
 	private boolean productDefinitionProject;
 	private Locale javaSrcLanguage = Locale.ENGLISH;
 	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
-	private IProductCmptNamingStrategy productCmptNamingStrategy;
+	private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 	private String builderSetId = ""; //$NON-NLS-1$
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -166,7 +166,6 @@ public class IpsProjectProperties {
 	}
 	
 	public void initFromXml(IIpsProject ipsProject, Element element) {
-        Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
@@ -177,6 +176,13 @@ public class IpsProjectProperties {
         	javaSrcLanguage = Locale.ENGLISH;
         	changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
         }
+        Element artefactEl = XmlUtil.getFirstElement(element, IIpsArtefactBuilderSet.XML_ELEMENT);
+        if(artefactEl != null) {
+            builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
+        } else {
+        	builderSetId = ""; //$NON-NLS-1$
+        }
+        initProductCmptNamingStrategyFromXml(XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
         } else {
@@ -196,6 +202,17 @@ public class IpsProjectProperties {
         }
         initUsedPredefinedDatatypesFromXml(XmlUtil.getFirstElement(datatypesEl, "UsedPredefinedDatatypes")); //$NON-NLS-1$
         initDefinedDatatypesFromXml(ipsProject, XmlUtil.getFirstElement(datatypesEl, "DatatypeDefinitions")); //$NON-NLS-1$
+	}
+	
+	private void initProductCmptNamingStrategyFromXml(Element el) {
+		productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
+		if (el!=null) {
+        	String id = el.getAttribute("id");
+        	if (id.equals(DateBasedProductCmptNamingStrategy.EXTENSION_ID)) {
+        		productCmptNamingStrategy = new DateBasedProductCmptNamingStrategy();
+        	}
+    		productCmptNamingStrategy.initFromXml(el);
+		}
 	}
 
     private void initUsedPredefinedDatatypesFromXml(Element element) {
@@ -228,7 +245,6 @@ public class IpsProjectProperties {
 			definedDatatypes[i].writeToXml(datatypeEl);
 			parent.appendChild(datatypeEl);
 		}
-		
 	}
 
     static Locale getLocale(String s) {

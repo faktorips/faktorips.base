@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * A naming strategy for product components that allows to use only the constant
@@ -30,12 +32,19 @@ import org.faktorips.util.message.MessageList;
 public class NoVersionIdProductCmptNamingStrategy extends
 		AbstractProductCmptNamingStrategy {
 
-	/**
-	 * @param id
-	 * @param separator
-	 */
+	public final static String EXTENSION_ID = "org.faktorips.devtools.core.NoVersionIdProductCmptNamingStrategy";
+	
+	public final static String XML_TAG_NAME = "NoVersionIdProductCmptNamingStrategy";
+	
 	public NoVersionIdProductCmptNamingStrategy() {
-		super("NoVersionIdNamingStrategy", "");
+		super();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getExtensionId() {
+		return EXTENSION_ID;
 	}
 
 	/**
@@ -71,6 +80,20 @@ public class NoVersionIdProductCmptNamingStrategy extends
 	 */
 	public MessageList validateVersionId(String versionId) {
 		return new MessageList();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void initSubclassFromXml(Element el) {
+		setVersionIdSeparator("");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Element toXmlSubclass(Document doc) {
+		return doc.createElement(XML_TAG_NAME);
 	}
 
 }

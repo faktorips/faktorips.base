@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+  *
+  * Alle Rechte vorbehalten.
+  *
+  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+  * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
+  * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+  *   http://www.faktorips.org/legal/cl-v01.html
+  * eingesehen werden kann.
+  *
+  * Mitwirkende:
+  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+  *
+  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model;
 
@@ -65,33 +65,31 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 					.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
 			enumDatatype.setGetNameMethodName(element
 					.getAttribute("getNameMethod")); //$NON-NLS-1$
-			String isSupporting = element
-					.getAttribute("isSupportingNames"); //$NON-NLS-1$
-			enumDatatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
+			String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
+			enumDatatype
+					.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
 							: Boolean.valueOf(isSupporting).booleanValue());
 			datatype = enumDatatype;
 		}
 
 		datatype.setAdaptedClassName(element.getAttribute("valueClass")); //$NON-NLS-1$
 		datatype.setQualifiedName(element.getAttribute("id")); //$NON-NLS-1$
-		if(element.hasAttribute("valueOfMethod")) { //$NON-NLS-1$
-		datatype.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
-		}
-		else {
+		if (element.hasAttribute("valueOfMethod")) { //$NON-NLS-1$
+			datatype
+					.setValueOfMethodName(element.getAttribute("valueOfMethod")); //$NON-NLS-1$
+		} else {
 			datatype.setValueOfMethodName(null);
 		}
-		if(element.hasAttribute("isParseableMethod")) {//$NON-NLS-1$
+		if (element.hasAttribute("isParseableMethod")) {//$NON-NLS-1$
 			datatype.setIsParsableMethodName(element
 					.getAttribute("isParsableMethod")); //$NON-NLS-1$
-			}
-		else {
+		} else {
 			datatype.setIsParsableMethodName(null);
 		}
-		if(element.hasAttribute("valueToStringValue")) {//$NON-NLS-1$
-		datatype.setToStringMethodName(element
-				.getAttribute("valueToStringMethod")); //$NON-NLS-1$
-		}
-		else {
+		if (element.hasAttribute("valueToStringValue")) {//$NON-NLS-1$
+			datatype.setToStringMethodName(element
+					.getAttribute("valueToStringMethod")); //$NON-NLS-1$
+		} else {
 			datatype.setToStringMethodName(null);
 		}
 		if (element.hasAttribute("specialNullValue")) { //$NON-NLS-1$
@@ -101,7 +99,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		datatype.getAdaptedClass();
 		return datatype;
 	}
-	
+
 	public void writeToXml(Element element) {
 		if (getAdaptedClassName() != null) {
 			element.setAttribute("valueClass", getAdaptedClassName()); //$NON-NLS-1$
@@ -110,20 +108,18 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 			element.setAttribute("id", getQualifiedName()); //$NON-NLS-1$
 		}
 		if (getValueOfMethodName() != null) {
-			element.setAttribute(
-					"valueOfMethod", getValueOfMethodName()); //$NON-NLS-1$
+			element.setAttribute("valueOfMethod", getValueOfMethodName()); //$NON-NLS-1$
 		}
 		if (getIsParsableMethodName() != null) {
-			element.setAttribute(
-					"isParsableMethod", getIsParsableMethodName()); //$NON-NLS-1$
+			element.setAttribute("isParsableMethod", getIsParsableMethodName()); //$NON-NLS-1$
 		}
 		if (getToStringMethodName() != null) {
-			element.setAttribute(
-					"valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
+			element
+					.setAttribute(
+							"valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
 		}
 		if (getSpecialNullValue() != null) {
-			element.setAttribute(
-					"specialNullValue", getSpecialNullValue());  //$NON-NLS-1$			
+			element.setAttribute("specialNullValue", getSpecialNullValue()); //$NON-NLS-1$			
 		}
 	}
 
@@ -147,10 +143,10 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		removeCachedData();
 	}
 
-	public void setAdaptedClass(Class clazz){
+	public void setAdaptedClass(Class clazz) {
 		this.adaptedClass = clazz;
 	}
-	
+
 	public String getAdaptedClassName() {
 		return className;
 	}
@@ -183,31 +179,34 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		return adaptedClass;
 	}
 
-	private void accumulateClasspath(IJavaProject project, List urlsList) throws JavaModelException, MalformedURLException{
-		//IPath root = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+	private void accumulateClasspath(IJavaProject project, List urlsList)
+			throws JavaModelException, MalformedURLException {
+		// IPath root = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 		IPath projectPath = project.getProject().getLocation();
-		IPath root = projectPath.removeLastSegments(project.getProject().getFullPath().segmentCount());
+		IPath root = projectPath.removeLastSegments(project.getProject()
+				.getFullPath().segmentCount());
 		IPath outLocation = project.getOutputLocation();
 		IPath output = root.append(outLocation);
 		urlsList.add(output.toFile().toURL());
-		//System.out.println("Path: "+output.toFile().toURL());
+		// System.out.println("Path: "+output.toFile().toURL());
 		IClasspathEntry[] entry = project.getRawClasspath();
 		for (int i = 0; i < entry.length; i++) {
 			if (entry[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
 				IPath libPath = root.append(entry[i].getPath());
 				urlsList.add(libPath.toFile().toURL());
-				//System.out.println("Path: "+libPath.toFile().getPath());
+				// System.out.println("Path: "+libPath.toFile().getPath());
 			}
 		}
 
 		String[] requiredProjectNames = project.getRequiredProjectNames();
-		if(requiredProjectNames != null && requiredProjectNames.length > 0){
+		if (requiredProjectNames != null && requiredProjectNames.length > 0) {
 			for (int i = 0; i < requiredProjectNames.length; i++) {
-				accumulateClasspath(project.getJavaModel().getJavaProject(requiredProjectNames[i]), urlsList);	
+				accumulateClasspath(project.getJavaModel().getJavaProject(
+						requiredProjectNames[i]), urlsList);
 			}
 		}
 	}
-	
+
 	/*
 	 * Returns a classloader containing the project's output location and all
 	 * it's libraries (jars).
@@ -253,5 +252,4 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		}
 	}
 
-	
 }

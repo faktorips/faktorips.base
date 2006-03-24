@@ -20,8 +20,10 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.w3c.dom.Element;
 
 public class IpsProjectPropertiesTest extends IpsPluginTest {
@@ -71,6 +73,12 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
+		
+		DateBasedProductCmptNamingStrategy namingStrategy = (DateBasedProductCmptNamingStrategy)props.getProductCmptNamingStrategy();
+		assertEquals(" ", namingStrategy.getVersionIdSeparator());
+		assertEquals("yyyy-MM", namingStrategy.getDateFormatPattern());
+		assertTrue(namingStrategy.isPostfixAllowed());
+		
 		assertEquals("org.faktorips.devtools.stdbuilder.ipsstdbuilderset", props.getBuilderSetId());
 		IIpsObjectPath path = props.getIpsObjectPath();
 		assertNotNull(path);

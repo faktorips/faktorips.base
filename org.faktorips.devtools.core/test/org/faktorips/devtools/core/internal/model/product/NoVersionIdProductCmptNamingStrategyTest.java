@@ -21,7 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -70,5 +73,15 @@ public class NoVersionIdProductCmptNamingStrategyTest extends IpsPluginTest {
 		assertFalse(list.containsErrorMsg());
 	}
 
+	public void testInitFromXml() {
+		Element el = getTestDocument().getDocumentElement();
+		strategy.initFromXml(el); // should not throw an exception
+		assertEquals("", strategy.getVersionIdSeparator());
+	}
 
+	public void testToXml() {
+		Document doc = newDocument();
+		Element el = strategy.toXml(doc);
+		assertEquals(IProductCmptNamingStrategy.XML_TAG_NAME, el.getNodeName());
+	}
 }

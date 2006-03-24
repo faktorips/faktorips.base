@@ -17,9 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
@@ -28,6 +26,8 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -42,8 +42,10 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 	 * {@inheritDoc}
 	 */
 	protected void setUp() throws Exception {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-		strategy = new DateBasedProductCmptNamingStrategy(" ", df, false, 10);
+		strategy = new DateBasedProductCmptNamingStrategy();
+		strategy.setVersionIdSeparator(" ");
+		strategy.setDateFormatPattern("yyyy-MM-dd");
+		strategy.setPostfixAllowed(false);
 	}
 
 	/*
@@ -60,8 +62,7 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 		list = strategy.validateVersionId("2006-01-31");
 		assertFalse(list.containsErrorMsg());
 		
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-		strategy = new DateBasedProductCmptNamingStrategy(" ", df, true, 10);
+		strategy.setPostfixAllowed(true);
 		list = strategy.validateVersionId("2006-01-31a");
 		assertFalse(list.containsErrorMsg());
 	}
@@ -76,4 +77,21 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 		assertEquals("2006-01-31", strategy.getNextVersionId(pc));
 	}
 
+	public void testInitFromXml() {
+		Element el = getTestDocument().getDocumentElement();
+		strategy.initFromXml(el);
+		assertEquals("-", strategy.getVersionIdSeparator());
+		assertEquals("yyyy-MM", strategy.getDateFormatPattern());
+	}
+
+	public void testToXml() {
+		Document doc = newDocument();
+		Element el = strategy.toXml(doc);
+		assertEquals(IProductCmptNamingStrategy.XML_TAG_NAME, el.getNodeName());
+		strategy = new DateBasedProductCmptNamingStrategy();
+		strategy.initFromXml(el);
+		assertEquals(" ", strategy.getVersionIdSeparator());
+		assertEquals("yyyy-MM-dd", strategy.getDateFormatPattern());
+	}
+	
 }

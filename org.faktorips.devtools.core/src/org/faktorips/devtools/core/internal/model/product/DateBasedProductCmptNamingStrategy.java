@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * A naming strategy for product components that uses dates as version ids.
@@ -37,41 +39,91 @@ import org.faktorips.util.message.MessageList;
 public class DateBasedProductCmptNamingStrategy extends
 		AbstractProductCmptNamingStrategy {
 
-    private DateFormat dateFormat;
-    private int numOfCharsInDate;
-    private boolean allowAppendix;
+	public final static String EXTENSION_ID = "org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy";
 	
+	public final static String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy";
+	
+	private String dateFormatPatter; // the pattern has to be kept in order to save the state to xml
+    private DateFormat dateFormat;
+    private boolean postfixAllowed;
+	
+    /**
+     * Default constructor needed to use it as extension.
+     */
+    public DateBasedProductCmptNamingStrategy() {
+    	super();
+    }
+    
 	public DateBasedProductCmptNamingStrategy(
 			String separator,
 			String dateFormatPattern,
-			boolean allowAppendix) {
+			boolean allowPostfix) {
 
-		this(separator, new SimpleDateFormat(dateFormatPattern, Locale.getDefault()), allowAppendix, dateFormatPattern.length());
-	}
-
-	public DateBasedProductCmptNamingStrategy(
-			String separator,
-			DateFormat dateFormat,
-			boolean allowAppendix,
-			int numOfCharsInDate) {
-		super("DateBasedNamingStrategy", separator);
-		ArgumentCheck.notNull(dateFormat);
-		this.dateFormat = dateFormat;
-		this.allowAppendix = allowAppendix;
-		this.numOfCharsInDate = numOfCharsInDate;
+		super(separator);
+		setDateFormatPattern(dateFormatPattern);
+		this.postfixAllowed = allowPostfix;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	public String getExtensionId() {
+		return EXTENSION_ID;
+	}
+
+	/**
+	 * Sets the date format pattern used for the version id.
+	 * 
+	 * @param pattern Format patter according to SimpleDateFormat.
+	 * @throws NullPointerException if pattern is null.
+	 * 
+	 * @see java.text.SimpleDateFormat
+	 */
+	public void setDateFormatPattern(String pattern) {
+		ArgumentCheck.notNull(pattern);
+		dateFormatPatter = pattern;
+		dateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+	}
+	
+	/**
+	 * Returns the date format pattern used for the version id.
+	 * 
+	 * @return Format patter according to SimpleDateFormat.
+	 * 
+	 * @see java.textSimpleDateFormat
+	 */
+	public String getDateFormatPattern() {
+		return dateFormatPatter;
+	}
+	
+	/**
+	 * Sets if the version id allows a postfix after the date part or not.
+	 * E.g. if set to <code>true</code> 2006-10b is a valid version id
+	 * (with the date pattern YYYY-mm).
+	 */
+	public void setPostfixAllowed(boolean flag) {
+		postfixAllowed = flag;
+	}
+	
+	/**
+	 * Returns <code>true</code> if a postifx is allowed after the date part of
+	 * the version id, otherwise <code>false</code>.
+	 */
+	public boolean isPostfixAllowed() {
+		return postfixAllowed;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public MessageList validateVersionId(String versionId) {
-		if (allowAppendix) {
-			versionId = versionId.substring(0, numOfCharsInDate);
+		if (postfixAllowed) {
+			versionId = versionId.substring(0, dateFormatPatter.length());
 		}
 		MessageList list = new MessageList();
 		try {
 			dateFormat.parse(versionId);
-			if (versionId.length()!=numOfCharsInDate) {
+			if (versionId.length()!=dateFormatPatter.length()) {
 				throw new RuntimeException();
 			}
 		} catch (Exception e) {
@@ -86,6 +138,24 @@ public class DateBasedProductCmptNamingStrategy extends
 	public String getNextVersionId(IProductCmpt pc) {
 		GregorianCalendar date = IpsPreferences.getWorkingDate();
 		return dateFormat.format(date.getTime());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void initSubclassFromXml(Element el) {
+		dateFormatPatter = el.getAttribute("dateFormatPattern");
+		postfixAllowed = Boolean.valueOf(el.getAttribute("postfixAllowed")).booleanValue();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Element toXmlSubclass(Document doc) {
+		Element el = doc.createElement(XML_TAG_NAME);
+		el.setAttribute("dateFormatPattern", dateFormatPatter);
+		el.setAttribute("postfixAllowed", "" + postfixAllowed);
+		return el;
 	}
 	
 }

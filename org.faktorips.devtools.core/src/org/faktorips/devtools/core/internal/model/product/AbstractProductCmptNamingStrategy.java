@@ -18,16 +18,17 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
-import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * An abstract implementation that uses a special character to separate the
@@ -53,21 +54,38 @@ import org.faktorips.util.message.MessageList;
 public abstract class AbstractProductCmptNamingStrategy implements
 		IProductCmptNamingStrategy {
 
-    /**
+	/**
      * Validation message code to indicate that the name contains illegal characters.
      */
     public final static String MSGCODE_ILLEGAL_CHARACTERS = MSGCODE_PREFIX + "IllegalCharacters"; //$NON-NLS-1$
 
-    private String id;
 	private String separator;
 	private HashMap specialCharReplacements = new HashMap();
 	
-	public AbstractProductCmptNamingStrategy(String id, String separator) {
-		ArgumentCheck.notNull(id);
-		this.id = id;
+	public AbstractProductCmptNamingStrategy() {
+		this("");
+	}
+
+	public AbstractProductCmptNamingStrategy(String separator) {
 		this.separator = separator;
 		putSpecialCharReplacement('-', "__");
 		putSpecialCharReplacement(' ', "___");
+	}
+	
+	/**
+	 * Sets the String that separates the version id from the constant part of the product
+	 * component name. 
+	 */
+	public void setVersionIdSeparator(String separator) {
+		this.separator = separator;
+	}
+	
+	/**
+	 * Returns the String that separates the version id from the constant part of the product
+	 * component name. 
+	 */
+	public String getVersionIdSeparator() {
+		return separator;
 	}
 	
 	protected void putSpecialCharReplacement(char specialChar, String replacement) {
@@ -81,22 +99,6 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * Default implementation returns the id.
-	 */
-	public String getName(Locale locale) {
-		return id;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getId() {
-		return id;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -199,4 +201,43 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	private String getReplacement(char c) {
 		return (String)specialCharReplacements.get(new Character(c));
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public final void initFromXml(Element el) {
+		Element subEl = XmlUtil.getFirstElement(el);
+		separator = subEl.getAttribute("versionIdSeparator");
+		initSubclassFromXml(subEl);
+	}
+	
+	/**
+	 * Subclasses must init their state from the given element.
+	 * 
+	 * @param The xml element containing the data specific for the subclass.
+	 */
+	protected abstract void initSubclassFromXml(Element el);
+
+	/**
+	 * Appends the data from this abstract stratgey to the given element.
+	 * Should be used by subclasses to add the date.
+	 */
+	public final Element toXml(Document doc) {
+		Element el = doc.createElement(XML_TAG_NAME);
+		el.setAttribute("id", getExtensionId());
+		Element subEl = toXmlSubclass(doc); 
+		subEl.setAttribute("versionIdSeparator", separator);
+		el.appendChild(subEl);
+		return el;
+	}
+	
+	/**
+	 * Subclasses must create an xml element, copy their state to the element
+	 * and return it. 
+	 * 
+	 * @param doc Xml document to create elements.
+	 */
+	protected abstract Element toXmlSubclass(Document doc);
+	
+	
 }

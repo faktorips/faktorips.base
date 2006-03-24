@@ -17,9 +17,9 @@
 
 package org.faktorips.devtools.core.model.product;
 
-import java.util.Locale;
-
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * The product component name includes a version id and a constant part that
@@ -33,6 +33,11 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IProductCmptNamingStrategy {
 
+	/**
+	 * Name of xml tags representing a product component naming strategy.
+	 */
+	public final static String XML_TAG_NAME = "ProductCmptNamingStrategy";
+    
     /**
      * Prefix for all message codes for classes implementing the interface.
      */
@@ -55,15 +60,11 @@ public interface IProductCmptNamingStrategy {
     public final static String MSGCODE_ONYL_1_OCCURENCE_OF_SEPARATOR_ALLOWED = MSGCODE_PREFIX + "Only1OccurenceOfSeperatorAllowed"; //$NON-NLS-1$
 
     /**
-	 * Returns the strategy's identification.
-	 */
-	public String getId();
-	
-	/**
-	 * Returns the strategy's name, used to present it to the user.
-	 */
-	public String getName(Locale locale);
-
+     * Implementations of this interface are provided as extension. The method returns the
+     * id of this extension. 
+     */
+    public String getExtensionId();
+    
 	/**
 	 * Returns the unqualified product component name defined by the constant part and the
 	 * version id. Returns <code>null</code> if constant part and version id are
@@ -143,4 +144,27 @@ public interface IProductCmptNamingStrategy {
 	 * class name as it contains special characters that can't be handled by this strategy.
 	 */
 	public String getJavaClassIdentifier(String name);
+	
+	/**
+	 * Initializes the strategy with the data from the xml element. This method must
+	 * be able to read those elements created by the toXml() method. The element's
+	 * node name is expected to be the name defined in <code>XML_TAG_NAME</code>.
+	 * <p>
+	 * Concrete classes implementing this interface use their own tag name for an 
+	 * element that is nested inside the given element. E.g.
+	 * <pre>
+	 *     <ProductCmptNamingStrategy>
+	 *         <NoVersionIdProductCmptNamingStrategy/>
+	 *     </ProductCmptNamingStrategy>
+	 * </pre>
+	 */
+	public void initFromXml(Element el);
+	
+	/**
+	 * Creates an xml element representation of this strategy. The element's
+	 * node name is defined in <code>XML_TAG_NAME</code>.
+	 * 
+	 * @param doc The xml document to create new elements.
+	 */
+	public Element toXml(Document doc);
 }
