@@ -140,7 +140,8 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     
     private IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) throws CoreException {
         IProductCmptType type = generation.getProductCmpt().findProductCmptType();
-        String name = productCmptGenImplBuilder.getUnqualifiedClassName(type.getIpsSrcFile());
+        String name = generation.getProductCmpt().getName();
+        name = generation.getIpsProject().getProductCmptNamingStratgey().getJavaClassIdentifier(name);
         GregorianCalendar validFrom = generation.getValidFrom();
         int month = validFrom.get(GregorianCalendar.MONTH) + 1;
         int date = validFrom.get(GregorianCalendar.DATE);

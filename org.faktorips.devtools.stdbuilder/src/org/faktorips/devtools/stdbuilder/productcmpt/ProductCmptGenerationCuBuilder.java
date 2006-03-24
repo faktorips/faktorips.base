@@ -97,7 +97,7 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
     public IProductCmptType getProductCmptType() throws CoreException {
         return generation.getProductCmpt().findProductCmptType();
     }
-
+    
     protected void generateInternal() throws CoreException {
         if (generation.validate().containsErrorMsg()) {
             return;
