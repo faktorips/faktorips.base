@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -242,4 +243,151 @@ public class AttributeTest extends IpsPluginTest {
 			//nothing to do :-)
 		}
     }
+    
+    public void testValidate_productRelevant() throws Exception {
+    	pcType.setConfigurableByProductCmptType(true);
+    	attribute.setProductRelevant(true);
+    	
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+    	
+    	pcType.setConfigurableByProductCmptType(false);
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+    }
+
+    public void testValidate_invalidAttributeName() throws Exception {
+    	attribute.setName("test");
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
+    	
+    	attribute.setName("a.b");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
+    }
+
+    public void testValidate_defaultNotParsableUnknownDatatype() throws Exception {
+    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+    	attribute.setDefaultValue("1");
+    	
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
+    	
+    	attribute.setDatatype("a");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
+    }
+
+    public void testValidate_defaultNotParsableInvalidDatatype() throws Exception {
+    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
+    	
+    	attribute.setDatatype("abc");
+    	ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
+    }
+
+    public void testValidate_valueNotParsable() throws Exception {
+    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+    	attribute.setDefaultValue("1");
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
+    	
+    	attribute.setDefaultValue("a");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
+    }
+
+    public void testValidate_defaultNotInValueset() throws Exception {
+    	attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+    	attribute.setValueSetType(ValueSetType.RANGE);
+    	IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();
+    	range.setLowerBound("0");
+    	range.setUpperBound("10");
+    	range.setStep("1");
+    	attribute.setDefaultValue("1");
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+
+    	attribute.setDefaultValue("100");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    public void testValidate_noInputParameters() throws Exception {
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_INPUT_PARAMETERS));
+    	
+    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_INPUT_PARAMETERS));
+    }
+
+    public void testValidate_noParametersNeccessary() throws Exception {
+    	attribute.setProductRelevant(false);
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_PARAMETERS_NECCESSARY));
+    	
+    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
+    	attribute.setFormulaParameters(new Parameter[] {param});
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_PARAMETERS_NECCESSARY));
+    }
+
+    public void testValidate_emptyParameterName() throws Exception {
+    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
+    	attribute.setFormulaParameters(new Parameter[] {param});
+
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_EMPTY_PARAMETER_NAME));
+    	
+    	param.setName("");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_EMPTY_PARAMETER_NAME));
+    	
+    }
+
+    public void testValidate_invalidParameterName() throws Exception {
+    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
+    	attribute.setFormulaParameters(new Parameter[] {param});
+
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_PARAMETER_NAME));
+    	
+    	param.setName("a.b");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_PARAMETER_NAME));
+    }
+
+    public void testValidate_noDatatypeForParameter() throws Exception {
+    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
+    	attribute.setFormulaParameters(new Parameter[] {param});
+
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_DATATYPE_FOR_PARAMETER));
+    	
+    	param.setDatatype("");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_DATATYPE_FOR_PARAMETER));
+    }
+
+    public void testValidate_datatypeNotFound() throws Exception {
+    	attribute.setAttributeType(AttributeType.COMPUTED);
+    	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
+    	attribute.setFormulaParameters(new Parameter[] {param});
+
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DATATYPE_NOT_FOUND));
+
+    	param.setDatatype("abc");
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DATATYPE_NOT_FOUND));
+    }
 }
+
+    

@@ -47,16 +47,88 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
     public final static String MSGCODE_PREFIX = "ATTRIBUTE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an attribute can't be product relevant
-     * if the type is configurable by product.
-     */
-    public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = 
-    	MSGCODE_PREFIX + "AttributeCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
-    // TODO implement, test case
+	 * Validation message code to indicate that an attribute can't be product
+	 * relevant if the type is configurable by product.
+	 */
+	public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = MSGCODE_PREFIX
+			+ "AttributeCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
     
     /**
-     * Returns the attribute's datatype.
-     */
+	 * Validation message code to indicate that the name of the attribute is not a valid
+	 * java field identifier.
+	 */
+	public final static String MSGCODE_INVALID_ATTRIBUTE_NAME = MSGCODE_PREFIX
+			+ "InvalidAttributeName"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the datatype of this attribute is not set.
+	 */
+	public final static String MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE = MSGCODE_PREFIX
+			+ "DefaultNotParsableUnknownDatatype"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the datatype of this attibute is not a valid datatype.
+	 */
+	public final static String MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE = MSGCODE_PREFIX
+			+ "ValueNotParsableInvalidDatatype"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the default-value of this attribute can not be
+	 * parsed by the datatype of this attribute.
+	 */
+	public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX
+			+ "ValueTypeMissmatch"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the default-value of this attribute
+	 * is not contained in the valueset of this attribute.
+	 */
+	public final static String MSGCODE_DEFAULT_NOT_IN_VALUESET = MSGCODE_PREFIX
+			+ "DefaultNotInValueSet"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that there is no input parameter
+	 * for this (computed or derived) attribute.
+	 */
+	public final static String MSGCODE_NO_INPUT_PARAMETERS = MSGCODE_PREFIX
+			+ "NoInputParameters"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that parameters are provided, but they
+	 * are not neccessary because this attribute is neither computed nor derived.
+	 */
+	public final static String MSGCODE_NO_PARAMETERS_NECCESSARY = MSGCODE_PREFIX
+			+ "NoParametersNeccessary"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the name of a parameter is empty.
+	 */
+	public final static String MSGCODE_EMPTY_PARAMETER_NAME = MSGCODE_PREFIX
+			+ "EmptyParameterName"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the name of a parameter is not
+	 * a valid java identifier.
+	 */
+	public final static String MSGCODE_INVALID_PARAMETER_NAME = MSGCODE_PREFIX
+			+ "InvalidParameterName"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that a datatype is missing for a parameter.
+	 */
+	public final static String MSGCODE_NO_DATATYPE_FOR_PARAMETER = MSGCODE_PREFIX
+			+ "NoDatatypeForParameter"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the datatype provided for a parameter 
+	 * is not valid.
+	 */
+	public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX
+			+ "DatatypeNotFound"; //$NON-NLS-1$
+    
+    /**
+	 * Returns the attribute's datatype.
+	 */
     public String getDatatype();
     
     /**

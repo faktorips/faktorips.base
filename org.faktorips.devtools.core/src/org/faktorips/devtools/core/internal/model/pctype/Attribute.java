@@ -288,21 +288,21 @@ public class Attribute extends Member implements IAttribute {
     	super.validate(result);
         IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()) {
-            result.add(new Message("", Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         Datatype datatypeObject = ValidationUtils.checkDatatypeReference(datatype, true, false, this,
                 PROPERTY_DATATYPE, result);
         if (datatypeObject == null) {
             if (!StringUtils.isEmpty(defaultValue)) {
                 String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);
-                result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+                result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
             } else {
             }
         } else {
             if (!datatypeObject.isValueDatatype()) {
                 if (!StringUtils.isEmpty(datatype)) {
                     String text = NLS.bind(Messages.Attribute_msgValueNotParsable_InvalidDatatype, defaultValue);
-                    result.add(new Message("", text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+                    result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE, text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                 } else {
                 }
             } else {
@@ -315,49 +315,55 @@ public class Attribute extends Member implements IAttribute {
                 		defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
                 	}
                     String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, datatype);
-                    result.add(new Message("", text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+                    result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                     return;
                 }
                 if (valueSet != null) {
                     if (valueSet.containsValue(defaultValue) == false) {
-                        result.add(new Message("", NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
+                        result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
                                 Message.ERROR, this,
                                 PROPERTY_DEFAULT_VALUE));
                     }
                 }
                 valueSet.validate(result);
             }
-            if (isDerivedOrComputed() && isProductRelevant() && parameters.length == 0) {
-                String text = Messages.Attribute_msgNoInputparams;
-                result.add(new Message("", text, Message.WARNING, this)); //$NON-NLS-1$
-            }
         }
+        
+        if (isDerivedOrComputed() && isProductRelevant() && parameters.length == 0) {
+            String text = Messages.Attribute_msgNoInputparams;
+            result.add(new Message(MSGCODE_NO_INPUT_PARAMETERS, text, Message.WARNING, this)); //$NON-NLS-1$
+        }
+
         for (int i = 0; i < parameters.length; i++) {
             validate(parameters[i], result);
         }
 
+        if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
+        	String text = "An attribute can not be set product relevant if the owning type is not.";
+        	result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
+        }
     }
 
     private void validate(Parameter param, MessageList result) throws CoreException {
         if (!isDerivedOrComputed() && !isProductRelevant()) {
             String text = Messages.Attribute_msgNoParamsNeccessary;
-            result.add(new Message("", text, Message.WARNING, param)); //$NON-NLS-1$
+            result.add(new Message(MSGCODE_NO_PARAMETERS_NECCESSARY, text, Message.WARNING, param)); //$NON-NLS-1$
         }
         if (StringUtils.isEmpty(param.getName())) {
-            result.add(new Message("", Messages.Attribute_msgEmptyName, Message.ERROR, param, PROPERTY_FORMULAPARAM_NAME)); //$NON-NLS-1$
+            result.add(new Message(MSGCODE_EMPTY_PARAMETER_NAME, Messages.Attribute_msgEmptyName, Message.ERROR, param, PROPERTY_FORMULAPARAM_NAME)); //$NON-NLS-1$
         } else {
             IStatus status = JavaConventions.validateIdentifier(param.getName());
             if (!status.isOK()) {
-                result.add(new Message("", Messages.Attribute_msgInvalidParamName, Message.ERROR, param, //$NON-NLS-1$
+                result.add(new Message(MSGCODE_INVALID_PARAMETER_NAME, Messages.Attribute_msgInvalidParamName, Message.ERROR, param, //$NON-NLS-1$
                                 PROPERTY_FORMULAPARAM_NAME));
             }
         }
         if (StringUtils.isEmpty(param.getDatatype())) {
-            result.add(new Message("", Messages.Attribute_msgDatatypeEmpty, Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE)); //$NON-NLS-1$
+            result.add(new Message(MSGCODE_NO_DATATYPE_FOR_PARAMETER, Messages.Attribute_msgDatatypeEmpty, Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE)); //$NON-NLS-1$
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
             if (datatypeObject == null) {
-                result.add(new Message("", NLS.bind(Messages.Attribute_msgDatatypeNotFound, param.getDatatype()), //$NON-NLS-1$
+                result.add(new Message(MSGCODE_DATATYPE_NOT_FOUND, NLS.bind(Messages.Attribute_msgDatatypeNotFound, param.getDatatype()), //$NON-NLS-1$
                                 Message.ERROR, param,
                                 PROPERTY_FORMULAPARAM_DATATYPE));
             } else {
