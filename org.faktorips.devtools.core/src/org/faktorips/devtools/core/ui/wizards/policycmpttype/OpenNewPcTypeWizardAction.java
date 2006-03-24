@@ -15,30 +15,31 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.pctype;
+package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.INewWizard;
+import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
+
 
 /**
- * 
- * @author Thorsten Guenther
+ *
  */
-public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.pctype.messages"; //$NON-NLS-1$
+public class OpenNewPcTypeWizardAction extends OpenNewWizardAction {
 
-	private Messages() {
-	}
+    /** 
+     * Overridden method.
+     * @see org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction#createWizard()
+     */
+    public INewWizard createWizard() {
+        return new NewPcTypeWizard();
+    }
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    /** 
+     * Overridden method.
+     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+     */
+    public void dispose() {
+        // nothing to do
+    }
 
-	public static String PcTypePage_title;
-
-	public static String PcTypePage_labelSuperclass;
-
-	public static String PcTypePage_labelOption;
-
-	public static String PcTypePage_labelOverride;
 }

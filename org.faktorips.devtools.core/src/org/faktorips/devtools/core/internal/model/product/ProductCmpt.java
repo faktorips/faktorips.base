@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.CycleException;
@@ -63,21 +64,32 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.PRODUCT_CMPT;
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	public String getVersionId() throws CoreException {
+		try {
+			return getIpsProject().getProductCmptNamingStratgey().getVersionId(getName());
+		} catch (IllegalArgumentException e) {
+			throw new CoreException(new IpsStatus("Can't get version id for " + this, e));
+		}
+	}
 
-    /** 
-     * Overridden.
-     */
+	/** 
+	 * {@inheritDoc}
+	 */
     public String getPolicyCmptType() {
         return policyCmptType;
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setPolicyCmptType(String newPcType) {
         String oldType = policyCmptType;
@@ -119,6 +131,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.policyCmptType);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE)); //$NON-NLS-1$
         }
+        MessageList list2 = getIpsProject().getProductCmptNamingStratgey().validate(getName());
+        list.add(list2);
     }
     
     /** 

@@ -17,17 +17,21 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -35,35 +39,49 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
  */
 public class ProductCmptPage extends IpsObjectPage {
     
-    private ProductCmptTypeRefControl productCmptRefControl;
+    private ProductCmptTypeRefControl typeRefControl;
     
-    /**
-     * @param pageName
-     * @param selection
-     * @throws JavaModelException
-     */
     public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
         super(selection, Messages.ProductCmptPage_title);
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.IpsObjectPage#fillNameComposite(org.eclipse.swt.widgets.Composite, UIToolkit)
+     * {@inheritDoc}
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         addNameLabelField(toolkit);
         toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelName);
         
-        productCmptRefControl = new ProductCmptTypeRefControl(null, nameComposite, toolkit);
-        TextButtonField pcTypeField = new TextButtonField(productCmptRefControl);
+        typeRefControl = new ProductCmptTypeRefControl(null, nameComposite, toolkit);
+        TextButtonField pcTypeField = new TextButtonField(typeRefControl);
         pcTypeField.addChangeListener(this);
     }
     
-    String getPolicyCmptType() {
+    /**
+	 * {@inheritDoc}
+	 */
+	protected void setDefaults(IResource selectedResource) {
+		super.setDefaults(selectedResource);
+		try {
+			IIpsObject obj = getSelectedIpsObject();
+			if (!(obj instanceof IProductCmpt)) {
+				return;
+			}
+			IProductCmpt productCmpt = (IProductCmpt)obj;
+			String defaultName;
+			defaultName = productCmpt.getIpsProject().getProductCmptNamingStratgey().getNextName(productCmpt);
+			setIpsObjectName(defaultName);
+			typeRefControl.setText(productCmpt.getPolicyCmptType());
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+	}
+
+	String getPolicyCmptType() {
     	String policyCmptTypeName = ""; //$NON-NLS-1$
     	try {
-        	String productCmptTypeName = productCmptRefControl.getText();
-			IProductCmptType type = productCmptRefControl.getPdProject().findProductCmptType(productCmptTypeName);
+        	String productCmptTypeName = typeRefControl.getText();
+			IProductCmptType type = typeRefControl.getPdProject().findProductCmptType(productCmptTypeName);
 			policyCmptTypeName = type.getPolicyCmptyType();
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
@@ -72,16 +90,37 @@ public class ProductCmptPage extends IpsObjectPage {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.IpsObjectPage#sourceFolderChanged()
+     * {@inheritDoc}
      */
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
         IIpsPackageFragmentRoot root = getPdPackageFragmentRoot();
         if (root!=null) {
-        	productCmptRefControl.setPdProject(root.getIpsProject());
+        	typeRefControl.setPdProject(root.getIpsProject());
         } else {
-        	productCmptRefControl.setPdProject(null);
+        	typeRefControl.setPdProject(null);
         }
-    }    
+    }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void validateName() {
+		super.validateName();
+		if (getErrorMessage()!=null) {
+			return;
+		}
+		try {
+			MessageList list = getIpsProject().getProductCmptNamingStratgey().validate(getIpsObjectName());
+			if (!list.isEmpty()) {
+				setErrorMessage(list.getMessage(0).getText());
+			}
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+		
+		
+	}    
+    
+    
 }

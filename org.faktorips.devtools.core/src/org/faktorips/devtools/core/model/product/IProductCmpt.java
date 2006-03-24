@@ -45,6 +45,17 @@ public interface IProductCmpt extends ITimedIpsObject {
     public final static String MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistencyInPolicyCmptTypeHierarchy"; //$NON-NLS-1$
     
     /**
+     * Returns the product component's version id. The version id is extracted from the
+     * components name with the product component naming stratgey defined in the
+     * project.
+     * 
+     * @throws CoreException if an exception occurs while accessing the project properties
+     * to get the naming strategy or the version id can't be derived from the component's
+     * name. 
+     */
+    public String getVersionId() throws CoreException;
+    
+    /**
      * Returns the qualified name of the policy component type this product component
      * is based on.
      */

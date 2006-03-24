@@ -103,4 +103,6 @@ public class Messages extends NLS {
 	public static String AllValuesValueSet_msgUnknowndDatatype;
 
 	public static String AllValuesValueSet_msgNoSubset;
+
+	public static String DateBasedProductCmptNamingStrategy_0;
 }

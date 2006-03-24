@@ -44,7 +44,7 @@
                label="New Policy Class"
                icon="icons/NewPolicyCmptTypeWizard.gif"
                tooltip="New Policy Class"
-               class="org.faktorips.devtools.core.ui.wizards.pctype.OpenNewPcTypeWizardAction"
+               class="org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
          </action>
@@ -130,9 +130,6 @@
           class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
        <classpathVariableInitializer                                          
           variable="FAKTORIPS_RUNTIME_SRC"                                                        
-          class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
-       <classpathVariableInitializer                                          
-          variable="FAKTORIPS_DTFLCOMMON"                                                        
           class="org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer"/>                           
    </extension>
 
@@ -233,7 +230,7 @@
      	<wizard
 	       id = "newPcTypeWizard"
            name = "New Policy Class"
-    	   class="org.faktorips.devtools.core.ui.wizards.pctype.NewPcTypeWizard"
+    	   class="org.faktorips.devtools.core.ui.wizards.policycmpttype.NewPcTypeWizard"
     	   category="org.faktorips.devtools"
     	   icon="icons/NewPolicyCmptTypeWizard.gif">
     	   <description>Creates a new Policy Class</description>

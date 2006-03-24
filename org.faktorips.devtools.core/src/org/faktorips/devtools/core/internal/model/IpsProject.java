@@ -60,6 +60,7 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
@@ -671,11 +672,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		result.toArray(resultArray);
 		return resultArray;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException {
+		return getProperties().getProductCmptNamingStrategy();
+	}
 
 	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException  {
 		getProperties().addDefinedDataType(newDatatype);
 		saveProjectProperties(getProperties());
 	}
-    
     
 }

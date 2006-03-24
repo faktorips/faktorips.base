@@ -20,21 +20,30 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/**
+ * An ips project's properties. The project can't keep the properties on it's own, as it is
+ * a handle.
+ * 
+ * @author Jan Ortmann
+ */
 public class IpsProjectProperties {
 
 	public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
 		IpsProjectProperties data = new IpsProjectProperties();
 		data.initFromXml(ipsProject, element);
+		data.productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 		return data;
 	}
 	
@@ -45,6 +54,7 @@ public class IpsProjectProperties {
 	private boolean productDefinitionProject;
 	private Locale javaSrcLanguage = Locale.ENGLISH;
 	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
+	private IProductCmptNamingStrategy productCmptNamingStrategy;
 	private String builderSetId = ""; //$NON-NLS-1$
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
@@ -85,6 +95,10 @@ public class IpsProjectProperties {
 
 	public void setJavaSrcLanguage(Locale javaSrcLanguage) {
 		this.javaSrcLanguage = javaSrcLanguage;
+	}
+	
+	public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
+		return productCmptNamingStrategy;
 	}
 	
 	public void setChangesInTimeConventionIdForGeneratedCode(

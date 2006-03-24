@@ -68,7 +68,7 @@ public class TableContentsPage extends IpsObjectPage {
             public void focusLost(FocusEvent e) {
                 if (getIpsObjectName().equals("")) { //$NON-NLS-1$
                     String structureName = structureField.getText();
-                    setPdObjectName(StringUtil.unqualifiedName(structureName));
+                    setIpsObjectName(StringUtil.unqualifiedName(structureName));
                 }
             }
             

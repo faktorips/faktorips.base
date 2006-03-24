@@ -20,9 +20,7 @@ package org.faktorips.devtools.core.ui.wizards;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,6 +34,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -103,8 +102,8 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     public final void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
-        setTitle(getPdObjectType().getName());
-        setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getPdObjectType().getName())); 
+        setTitle(getIpsObjectType().getName());
+        setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getIpsObjectType().getName())); 
         
         parent.setLayout(new GridLayout(1, false));
         pageControl = new Composite(parent, SWT.NONE);
@@ -130,7 +129,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         
         nameComposite = toolkit.createLabelEditColumnComposite(pageControl);        
         fillNameComposite(nameComposite, toolkit);
-        setDefaults();
+        setDefaults(selectedResource);
 
         validateInput = true;
     }
@@ -138,8 +137,11 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     /**
      * Derives the default values for source folder and package from
      * the selected resource.
+     * 
+     * @param selectedResource The resource that was selected in the current selection when
+     * the wizard was opened.
      */
-    protected void setDefaults() {
+    protected void setDefaults(IResource selectedResource) {
         if (selectedResource==null) {
             setPdPackageFragmentRoot(null);
             return;
@@ -186,7 +188,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return nameField.getText();
     }
     
-    public void setPdObjectName(String newName) {
+    public void setIpsObjectName(String newName) {
         nameField.setText(newName);
     }
     
@@ -230,7 +232,31 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         return packageControl.getPdPackageFragment();
     }
     
-    protected IpsObjectType getPdObjectType() {
+    public IIpsProject getIpsProject() {
+    	if (getIpsPackageFragment()==null) {
+    		return null;
+    	}
+    	return getIpsPackageFragment().getIpsProject();
+    }
+    
+    /**
+     * Returns the ips object that is stored in the resource that was selected when
+     * the wizard was opened or <code>null</code> if none is selected.
+     * 
+     * @throws CoreException if the contents of the resource can't be parsed. 
+     */
+    public IIpsObject getSelectedIpsObject() throws CoreException {
+    	if (selectedResource==null) {
+    		return null;
+    	}
+    	IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+    	if (el instanceof IIpsSrcFile) {
+    		return ((IIpsSrcFile)el).getIpsObject();
+    	}
+    	return null;
+    }
+    
+    protected IpsObjectType getIpsObjectType() {
         return ((NewIpsObjectWizard)getWizard()).getIpsObjectType();
     }
     
@@ -261,7 +287,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     
     /**
      * Validates the page and generates error messages if needed. 
-     * Can be overridden in subclasses to add specific validation logic. 
+     * Can be overridden in subclasses to add specific validation logic.s 
      */
     protected void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
@@ -319,16 +345,8 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
 			setErrorMessage(Messages.IpsObjectPage_msgNameMustNotBeQualified);
 			return;
 		}
-		IStatus val= JavaConventions.validateJavaTypeName(name);
-		if (val.getSeverity() == IStatus.ERROR) {
-			setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgInvalidName, name));
-			return;
-		} else if (val.getSeverity() == IStatus.WARNING) {
-			setMessage(Messages.IpsObjectPage_msgNameDiscouraged, IMessageProvider.WARNING); 
-			// continue checking
-		}		
 		IIpsPackageFragment pack = packageControl.getPdPackageFragment();
-		String filename = getPdObjectType().getFileName(name);
+		String filename = getIpsObjectType().getFileName(name);
 		if (pack!=null) {
 		    IFolder folder = (IFolder)pack.getCorrespondingResource();
 		    if (folder.getFile(filename).exists()) {

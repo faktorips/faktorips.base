@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 
@@ -301,6 +302,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public JavaCodeFragment getCodeToGetTheRuntimeRepository() throws CoreException;
 
+    /**
+     * Returns the stratgey used to name product components.
+     */
+    public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException;
+    
 	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
     
 }
