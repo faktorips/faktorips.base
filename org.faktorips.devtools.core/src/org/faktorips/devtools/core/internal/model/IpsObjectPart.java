@@ -192,13 +192,11 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#reAddPart(org.faktorips.devtools.core.model.IIpsObjectPart)
+     * Empty default-implementation.
+     * 
+     * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
-        // TODO Auto-generated method stub
-
     }
     
     /**

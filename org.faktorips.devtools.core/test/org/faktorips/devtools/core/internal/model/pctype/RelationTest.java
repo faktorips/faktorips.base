@@ -305,7 +305,7 @@ public class RelationTest extends IpsPluginTest {
 		ml = cRel.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_SAME_SINGULAR_ROLENAME));
 	}
-
+	
 	public void testValidateSamePluralRolenameProductSide() throws Exception {
 		MessageList ml = cRel.validate();
 		assertNull(ml.getMessageByCode(IRelation.MSGCODE_SAME_PLURAL_ROLENAME_PRODUCTSIDE));
@@ -323,7 +323,6 @@ public class RelationTest extends IpsPluginTest {
 		ml = cRel.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_SAME_SINGULAR_ROLENAME_PRODUCTSIDE));
 	}
-
 
 	public void testValidateReverseRelationNotInTarget() throws Exception {
 		IRelation rel2 = content.getCoverage().newRelation();

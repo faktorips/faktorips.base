@@ -538,20 +538,24 @@ public class Relation extends IpsObjectPart implements IRelation {
         for (int i = 0; i < supertypes.length; i++) {
 			IRelation[] relations = supertypes[i].getRelations();
 			for (int j = 0; j < relations.length; j++) {
-				if (relations[j] != this && relations[j].getTargetRoleSingular().equals(targetRoleSingular)) {
+				if (relations[j] != this && !StringUtils.isEmpty(targetRoleSingular) && relations[j].getTargetRoleSingular().equals(targetRoleSingular)) {
 		            String text = Messages.Relation_msgSameSingularRoleName;
 		            list.add(new Message(MSGCODE_SAME_SINGULAR_ROLENAME, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_SINGULAR));
 				}
-		        if (relations[j] != this && relations[j].getTargetRolePlural().equals(getTargetRolePlural()))  {
+		        if (relations[j] != this && !StringUtils.isEmpty(targetRolePlural) && relations[j].getTargetRolePlural().equals(targetRolePlural))  {
 		            String text = Messages.Relation_msgSamePluralRolename;
 		            list.add(new Message(MSGCODE_CONTAINERRELATION_SAME_PLURAL_ROLENAME, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_PLURAL)); //$NON-NLS-1$
-		            return;
 		        }
-				if (relations[j] != this && relations[j].getTargetRoleSingularProductSide().equals(targetRoleSingularProductSide)) {
+		        
+		        if (!this.isProductRelevant()) {
+		        	continue;
+		        }
+		        
+				if (relations[j] != this && !StringUtils.isEmpty(targetRoleSingularProductSide) && relations[j].getTargetRoleSingularProductSide().equals(targetRoleSingularProductSide)) {
 		            String text = Messages.Relation_msgSameSingularRoleName;
 		            list.add(new Message(MSGCODE_SAME_SINGULAR_ROLENAME_PRODUCTSIDE, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
 				}
-				if (relations[j] != this && relations[j].getTargetRolePluralProductSide().equals(targetRolePluralProductSide)) {
+				if (relations[j] != this && !StringUtils.isEmpty(targetRolePluralProductSide) && relations[j].getTargetRolePluralProductSide().equals(targetRolePluralProductSide)) {
 		            String text = Messages.Relation_msgSameSingularRoleName;
 		            list.add(new Message(MSGCODE_SAME_PLURAL_ROLENAME_PRODUCTSIDE, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE));
 				}

@@ -612,12 +612,13 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
 
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
-        
+    	supersupertype.setAbstract(false);
+    	supersupertype.newMethod().setAbstract(true);
+
         MessageList ml = pcType.validate();
     	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
-    	supersupertype.setAbstract(false);
-    	supersupertype.newMethod().setAbstract(true);
+    	supersupertype.setSupertype("abc");
     	
     	ml = pcType.validate();
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));

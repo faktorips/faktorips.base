@@ -31,8 +31,11 @@ public interface IProductCmptTypeRelation extends IIpsObjectPart {
 
 	public static final int CARDINALITY_MANY = IRelation.CARDINALITY_MANY;
 	
-	
-	
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "ProductCmptTypeRelation-"; //$NON-NLS-1$
+    
     /**
      * Returns the product component type this relation belongs to.
      */

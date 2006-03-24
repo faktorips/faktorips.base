@@ -647,6 +647,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                     list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this, IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
                 }
             }
+
+            //TODO implement and test MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION
+//            IRelation[] relations = getRelations();
+//            for (int i = 0; i < relations.length; i++) {
+//				if (relations[i].isReadOnlyContainer()) {
+//					String text = "All abstract relations (relations marked as read only container) "
+//					list.add(new Message(MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION, text, Message.ERROR, this, PROPERTY_ABSTRACT));
+//				}
+//			}
         }
     }
     
@@ -667,9 +676,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * checks if an error in the supertype hirarchy exists. If so, this is reported with a new 
-     * message with code MSGCODE_INCONSISTENT_TYPE_HIERARCHY in the given list. The messages
-     * returned by the supertype ar not added.
+     * Checks if an MSGCODE_SUPERTYPE_NOT_FOUND error in the supertype hirarchy exists. 
+     * If so, this is reported with a new message with code MSGCODE_INCONSISTENT_TYPE_HIERARCHY 
+     * in the given list. The message(s) returned by the supertype ar not added.
      */
     private void validateSupertypeHierarchy(TypeHierarchy supertypeHierarchy, MessageList ml) {
 		if (supertypeHierarchy == null) {
@@ -677,9 +686,13 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		}
 		try {
 			MessageList tmpList = supertypeHierarchy.getSupertype(this).validate();
-			if (tmpList.getSeverity() == Message.ERROR) {
+			Message msg = tmpList.getMessageByCode(MSGCODE_INCONSISTENT_TYPE_HIERARCHY);
+			if (msg != null) {
+				ml.add(msg);
+			} else if (tmpList.getMessageByCode(MSGCODE_SUPERTYPE_NOT_FOUND) != null) {
 				ml.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, "An error exists within the type hierarchy of this type.", Message.ERROR));
 			}
+			
 		} catch (Exception e) {
 			IpsPlugin.log(e);
 		}

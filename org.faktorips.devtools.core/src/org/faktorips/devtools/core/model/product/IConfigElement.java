@@ -78,7 +78,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider {
      * of a dynamic datatype can be wrong.)
      */
     public final static String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype"; //$NON-NLS-1$
-    // TODO test case - untestable at the moment (20.02.2006) because no datatype implements validate()
 
     /**
      * Validation message code to indicate that the value can't be parsed, it is not an instance
