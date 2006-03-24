@@ -70,7 +70,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * Validation message code to indicate that the supertype hierarchy contains a cycle.
      */
     public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "SupertypeHierarchyContainsCycle"; //$NON-NLS-1$
-    // TODO implement, test case
 
     /**
      * Validation message code to indicate that an abstract relation exists in the type's supertype
@@ -82,41 +81,8 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     /**
      * Validation message code to indicate that there exists an error within the type hierarchy of this type.
      */
-    //TODO not implemented yet
     public final static String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierarchy"; //$NON-NLS-1$
     
-    /**
-     * Validation message code to indicate that the relation is marked as container relation
-     * but the reverse relation is not, or vice versa.
-     */
-    public final static String MSGCODE_RELATION_AND_REVERSERELATION_MUST_BE_MARKED_AS_CONTAINER = 
-    	MSGCODE_PREFIX + "RelationAndReverseRelationMustBeMarkedAsContainer"; //$NON-NLS-1$
-    // TODO implement, test case
-
-    /**
-     * Validation message code to indicate that a reverse relation has a maximum cardinality
-     * that is not equal to 1.
-     */
-    public final static String MSGCODE_REVERSERELATION_MUST_HAVE_MAX_CARDINALIYT_1 = 
-    	MSGCODE_PREFIX + "ReverseRelationMustHaveMaxCardinality1"; //$NON-NLS-1$
-    // TODO implement, test case
-
-    /**
-     * Validation message code to indicate that a reverse relation is marked as product
-     * relevant.
-     */
-    public final static String MSGCODE_REVERSE_RELATION_CANT_BE_PRODUCT_RELEVANT = 
-    	MSGCODE_PREFIX + "ReverseRelationCantBeProductRelevant"; //$NON-NLS-1$
-    // TODO implement, test case
-
-    /**
-     * Validation message code to indicate that a container relation is marked as product
-     * relevant.
-     */
-    public final static String MSGCODE_CONTAINER_RELATION_CANT_BE_PRODUCT_RELEVANT = 
-    	MSGCODE_PREFIX + "ContainerRelationCantBeProductRelevant"; //$NON-NLS-1$
-    // TODO implement, test case
-
     /**
      * Validation message code to indicate that the supertype can not be found.
      */

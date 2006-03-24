@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -96,9 +97,9 @@ public interface IProductCmpt extends ITimedIpsObject {
     /**
      * Returns the product component structure representing the structure defined by relations. The 
      * structure is rootet at this product.
-     * @throws CircleRelationException If a circle is detected.
+     * @throws CycleException If a circle is detected.
      */
-    public IProductCmptStructure getStructure() throws CircleRelationException;
+    public IProductCmptStructure getStructure() throws CycleException;
     
     
     

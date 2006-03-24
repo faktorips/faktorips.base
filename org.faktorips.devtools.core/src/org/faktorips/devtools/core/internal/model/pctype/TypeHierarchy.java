@@ -25,7 +25,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -50,8 +53,9 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * Creates a new type hierachy containing all the given type's supertypes.
      * Subtypes are not resolved.
+     * @throws CycleException if a cycle is detected in supertype hierarchy.
      */
-    final static TypeHierarchy getSupertypeHierarchy(IPolicyCmptType pcType) throws CoreException {
+    final static TypeHierarchy getSupertypeHierarchy(IPolicyCmptType pcType) throws CoreException, CycleException {
         IIpsProject project = pcType.getIpsProject();
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         IPolicyCmptType[] subtypes = new IPolicyCmptType[0];
@@ -70,14 +74,15 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * Creates a new type hierachy containing all the given type's subtypes.
      * Supertypes are not resolved.
+     * @throws CycleException 
      */
-    final static TypeHierarchy getSubtypeHierarchie(IPolicyCmptType pcType) throws CoreException {
+    final static TypeHierarchy getSubtypeHierarchy(IPolicyCmptType pcType) throws CoreException, CycleException {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         addSubtypes(hierarchy, pcType, null);
         return hierarchy;
     }
     
-    private final static void addSubtypes(TypeHierarchy hierarchie, IPolicyCmptType pcType, IPolicyCmptType superType) throws CoreException {
+    private final static void addSubtypes(TypeHierarchy hierarchie, IPolicyCmptType pcType, IPolicyCmptType superType) throws CoreException, CycleException {
         List subtypes = findDirectSubtypes(pcType);
         Node node = new Node(pcType, superType, (IPolicyCmptType[])subtypes.toArray(new IPolicyCmptType[subtypes.size()]));
         hierarchie.add(node);
@@ -104,8 +109,31 @@ public class TypeHierarchy implements ITypeHierarchy {
         this.pcType = pcType;
     }
     
-    private void add(Node node) {
+    private void add(Node node) throws CycleException {
+    	if (nodes.containsKey(node.type)) {
+    		ArrayList result = new ArrayList();
+    		result.add(node.type);
+    		IPolicyCmptType supertype = findSupertype(node.type);
+    		while (supertype != null && !supertype.equals(node.type)) {
+    			result.add(supertype);
+    			supertype = findSupertype(supertype);
+    		}
+        	throw new CycleException((IIpsElement[])result.toArray(new IIpsElement[result.size()]));
+    	}
         nodes.put(node.type, node);
+    }
+    
+    private IPolicyCmptType findSupertype(IPolicyCmptType type) {
+    	if (StringUtils.isEmpty(type.getSupertype())) {
+    		return null;
+    	}
+    	
+    	try {
+			return type.getIpsProject().findPolicyCmptType(type.getSupertype());
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+		return null;
     }
     
     /**

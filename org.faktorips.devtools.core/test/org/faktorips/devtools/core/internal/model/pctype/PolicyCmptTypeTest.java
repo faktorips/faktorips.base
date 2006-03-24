@@ -449,6 +449,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         
         // a supertype with a method and connect the pctype to it
         IPolicyCmptType superType = this.newPolicyCmptType(root, "Supertype");
+        superType.setAbstract(true);
         pcType.setSupertype(superType.getQualifiedName());
         IMethod superMethod = superType.newMethod();
         superMethod.setName("calc");
@@ -472,6 +473,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         // create another level in the supertype hierarchy with an abstract method on the new supersupertype.
         // an error should be reported
         IPolicyCmptType supersuperType = this.newPolicyCmptType(root, "Supersupertype");
+        supersuperType.setAbstract(true);
         superType.setSupertype(supersuperType.getQualifiedName());
         IMethod supersuperMethod = supersuperType.newMethod();
         supersuperMethod.setName("calc2");
@@ -579,7 +581,22 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     }
 
     public void testValidate_CycleInTypeHirarchy() throws Exception {
-    	MessageList ml = pcType.validate();
+        // create two more types that act as supertype and supertype's supertype 
+        IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
+        PolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
+        IIpsSrcFile file2 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
+        PolicyCmptType supersupertype = (PolicyCmptType)file2.getIpsObject();
+
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        
+        MessageList ml = pcType.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
+    	
+    	supersupertype.setSupertype(pcType.getQualifiedName());
+    	
+    	ml = pcType.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
     }
 
     public void testValidate_MustImplementeAbstractRelation() throws Exception {
@@ -587,23 +604,23 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     }
 
     public void testValidate_InconsistentTypeHirachy() throws Exception {
-    	MessageList ml = pcType.validate();
-    }
+        // create two more types that act as supertype and supertype's supertype 
+        IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
+        PolicyCmptType supertype = (PolicyCmptType)file1.getIpsObject();
+        IIpsSrcFile file2 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
+        PolicyCmptType supersupertype = (PolicyCmptType)file2.getIpsObject();
 
-    public void testValidate_RelationAndReverseRelationMustBeMarkedAsContainer() throws Exception {
-    	MessageList ml = pcType.validate();
-    }
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        
+        MessageList ml = pcType.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
-    public void testValidate_ReverseRelationMustHaveMaxCardinalityOne() throws Exception {
-    	MessageList ml = pcType.validate();
-    }
-
-    public void testValidate_ReverseRelationCanNotBeProductRelevant() throws Exception {
-    	MessageList ml = pcType.validate();
-    }
-
-    public void testValidate_ContainerRelationCanNotBeProductRelevant() throws Exception {
-    	MessageList ml = pcType.validate();
+    	supersupertype.setAbstract(false);
+    	supersupertype.newMethod().setAbstract(true);
+    	
+    	ml = pcType.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
 }

@@ -398,4 +398,14 @@ public class RelationTest extends IpsPluginTest {
 		ml = relation.validate();
 		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW));
 	}
+
+	public void testValidateContainerRelationCanNotBeProductRelevant() throws Exception {
+		MessageList ml = relation.validate();
+		assertNull(ml.getMessageByCode(IRelation.MSGCODE_CONTAINER_RELATION_CANT_BE_PRODUCT_RELEVANT));
+		
+		relation.setReadOnlyContainer(true);
+		relation.setProductRelevant(true);
+		ml = relation.validate();
+		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_CONTAINER_RELATION_CANT_BE_PRODUCT_RELEVANT));
+	}
 }

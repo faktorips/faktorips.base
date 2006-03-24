@@ -25,8 +25,11 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -605,6 +608,24 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     protected void validateThis(MessageList list) throws CoreException {
+    	TypeHierarchy supertypeHierarchy = null;
+    	try {
+    		supertypeHierarchy = TypeHierarchy.getSupertypeHierarchy(this);
+		} catch (CycleException e) {
+			StringBuffer msg = new StringBuffer("Cycle detected in type hierarchy: ");
+			IIpsElement[] path = e.getCyclePath();
+			for (int i = 0; i < path.length; i++) {
+				msg.append(path[i].getName());
+				if (i+1 < path.length) {
+					msg.append(" --> ");
+				}
+			}
+			list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this));
+			return;
+		}
+    	
+		validateSupertypeHierarchy(supertypeHierarchy, list);
+		
         IPolicyCmptType supertypeObj = null;
         if (!supertype.equals("")) { //$NON-NLS-1$
             supertypeObj = (IPolicyCmptType)getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, supertype);
@@ -643,6 +664,25 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                 }
             }
         }
+    }
+
+    /**
+     * checks if an error in the supertype hirarchy exists. If so, this is reported with a new 
+     * message with code MSGCODE_INCONSISTENT_TYPE_HIERARCHY in the given list. The messages
+     * returned by the supertype ar not added.
+     */
+    private void validateSupertypeHierarchy(TypeHierarchy supertypeHierarchy, MessageList ml) {
+		if (supertypeHierarchy == null) {
+			return;
+		}
+		try {
+			MessageList tmpList = supertypeHierarchy.getSupertype(this).validate();
+			if (tmpList.getSeverity() == Message.ERROR) {
+				ml.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, "An error exists within the type hierarchy of this type.", Message.ERROR));
+			}
+		} catch (Exception e) {
+			IpsPlugin.log(e);
+		}
     }
     
     /**
@@ -684,14 +724,24 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
-        return TypeHierarchy.getSupertypeHierarchy(this);
+        try {
+			return TypeHierarchy.getSupertypeHierarchy(this);
+		} catch (CycleException e) {
+			IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e);
+			throw new CoreException(status);
+		}
     }
     
     /**
      * {@inheritDoc}
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
-        return TypeHierarchy.getSubtypeHierarchie(this);
+    	try {
+        return TypeHierarchy.getSubtypeHierarchy(this);
+		} catch (CycleException e) {
+			IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e);
+			throw new CoreException(status);
+		}
     }
     
     /**

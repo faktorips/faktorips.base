@@ -174,6 +174,13 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_REVERSE_ASSOCIATION_MISSMATCH = MSGCODE_PREFIX + "ReverseAssociationMissmatch"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that a container relation is marked as product
+     * relevant.
+     */
+    public final static String MSGCODE_CONTAINER_RELATION_CANT_BE_PRODUCT_RELEVANT = 
+    	MSGCODE_PREFIX + "ContainerRelationCantBeProductRelevant"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this relation belongs to.
      */
     public IPolicyCmptType getPolicyCmptType();

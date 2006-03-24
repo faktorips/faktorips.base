@@ -44,8 +44,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.product.CircleRelationException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
@@ -199,7 +200,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		((GridData)tree.getTree().getLayoutData()).exclude = false;
     		tree.getTree().getParent().layout();
 			tree.setInput(product.getStructure());
-		} catch (CircleRelationException e) {
+		} catch (CycleException e) {
 			handleCircle(e);
 		}
         tree.expandAll();
@@ -215,7 +216,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     	if (input instanceof IProductCmptStructure) {
     		try {
 				((IProductCmptStructure)input).refresh();
-			} catch (CircleRelationException e) {
+			} catch (CycleException e) {
 				handleCircle(e);
 				return;
 			}
@@ -235,12 +236,25 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         return context;
     }
     
-    private void handleCircle(CircleRelationException e) {
+    private void handleCircle(CycleException e) {
 		IpsPlugin.log(e);
 		tree.getTree().setVisible(false);
 		((GridData)tree.getTree().getLayoutData()).exclude = true;
 		String msg = Messages.ProductStructureExplorer_labelCircleRelation;
-		errormsg.setText(msg + e.toString());
+		IIpsElement[] cyclePath = e.getCyclePath();
+		StringBuffer path = new StringBuffer();
+		for (int i = cyclePath.length-1; i >= 0; i--) {
+			path.append(cyclePath[i].getName());
+			if (i%2 != 0) {
+				path.append(" -> "); //$NON-NLS-1$
+			}
+			else if (i%2 == 0 && i > 0) {
+				path.append(":"); //$NON-NLS-1$
+			}
+		}
+
+		
+		errormsg.setText(msg + path);
 		
 		errormsg.setVisible(true);
 		((GridData)errormsg.getLayoutData()).exclude = false;

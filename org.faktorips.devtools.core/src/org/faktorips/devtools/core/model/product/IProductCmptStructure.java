@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.product;
 
+import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
@@ -70,7 +71,7 @@ public interface IProductCmptStructure {
 	
 	/**
 	 * Refreshes the structure to reflect changes to the underlying objects.
-	 * @throws CircleRelationException If a circle is detected.
+	 * @throws CycleException If a circle is detected.
 	 */
-	public void refresh() throws CircleRelationException;
+	public void refresh() throws CycleException;
 }
