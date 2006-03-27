@@ -684,8 +684,13 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		if (supertypeHierarchy == null) {
 			return;
 		}
+		IPolicyCmptType supertype = supertypeHierarchy.getSupertype(this);
+		if (supertype == null) {
+			return;
+		}
 		try {
-			MessageList tmpList = supertypeHierarchy.getSupertype(this).validate();
+			
+			MessageList tmpList = supertype.validate();
 			Message msg = tmpList.getMessageByCode(MSGCODE_INCONSISTENT_TYPE_HIERARCHY);
 			if (msg != null) {
 				ml.add(msg);
