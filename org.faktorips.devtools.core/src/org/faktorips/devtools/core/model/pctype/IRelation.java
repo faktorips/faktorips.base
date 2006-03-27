@@ -91,7 +91,7 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX + "MaxCardinalityMustBe1ForReverseCombosition"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that a reverse composition cant be marked as product relevant..
+     * Validation message code to indicate that a reverse composition cant be marked as product relevant.
      */
     public final static String MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT = MSGCODE_PREFIX + "ReverseCompositionCantBeMarkedAsProductRelevant"; //$NON-NLS-1$
 
@@ -172,13 +172,6 @@ public interface IRelation extends IIpsObjectPart {
      * Validation message code to indicate that the reverse relation of an association must be an assoziation.
      */
     public final static String MSGCODE_REVERSE_ASSOCIATION_MISSMATCH = MSGCODE_PREFIX + "ReverseAssociationMissmatch"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that a container relation is marked as product
-     * relevant.
-     */
-    public final static String MSGCODE_CONTAINER_RELATION_CANT_BE_PRODUCT_RELEVANT = 
-    	MSGCODE_PREFIX + "ContainerRelationCantBeProductRelevant"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this relation belongs to.

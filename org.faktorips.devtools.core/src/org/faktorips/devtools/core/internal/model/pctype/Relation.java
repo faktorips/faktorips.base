@@ -522,12 +522,6 @@ public class Relation extends IpsObjectPart implements IRelation {
         	String text = "A reverse composition can not be marked as product relevant.";
         	list.add(new Message(MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT, text, Message.ERROR, this, new String[] {PROPERTY_PRODUCT_RELEVANT, PROPERTY_RELATIONTYPE}));
         }
-        
-        if (this.isReadOnlyContainer() && isProductRelevant()) {
-        	String text = "A container relation can not be marked as product relevant.";
-        	list.add(new Message(MSGCODE_CONTAINER_RELATION_CANT_BE_PRODUCT_RELEVANT, text, Message.ERROR, this, new String[] {PROPERTY_PRODUCT_RELEVANT, PROPERTY_READONLY_CONTAINER}));
-        }
-        
         if (isProductRelevant() && !this.getPolicyCmptType().isConfigurableByProductCmptType()) {
         	String text = "A relation can only be product relevant if the type is product relevant.";
         	list.add(new Message(MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));

@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 
 
 /**
- *
+ * Control to edit references to product component types.
  */
 public class ProductCmptTypeRefControl extends IpsObjectRefControl {
 
@@ -41,8 +41,7 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
+     * {@inheritDoc}
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
     	IIpsObject[] allProductCmptTypes = getPdProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -55,4 +54,14 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
         return (IIpsObject[])result.toArray(new IIpsObject[result.size()]);
     }
 
+    /**
+     * Returns the product component type entered in this control. Returns <code>null</code>
+     * if the text in the control does not identify a product component type.
+     * 
+     * @throws CoreException if an exception occurs while searching for
+     * the type.
+     */
+    public IProductCmptType findProductCmptType() throws CoreException {
+        return (IProductCmptType)getPdProject().findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getText());
+    }
 }

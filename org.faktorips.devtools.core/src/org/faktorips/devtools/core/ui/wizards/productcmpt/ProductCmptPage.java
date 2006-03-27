@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -101,6 +102,18 @@ public class ProductCmptPage extends IpsObjectPage {
         	typeRefControl.setPdProject(null);
         }
     }
+    
+    protected void validatePage() throws CoreException {
+        super.validatePage();
+        if (getErrorMessage()!=null) {
+            return;
+        }
+	    if (typeRefControl.findProductCmptType()==null) {
+	        setErrorMessage("Product template " + typeRefControl.getText() + " does not exists!");
+	    }
+        updatePageComplete();
+    }
+    
 
 	/**
 	 * {@inheritDoc}
@@ -118,9 +131,6 @@ public class ProductCmptPage extends IpsObjectPage {
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
-		
-		
 	}    
-    
     
 }

@@ -59,12 +59,21 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 		list = strategy.validateVersionId("2006-01-31x");
 		assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_VERSION_ID));
 
+		list = strategy.validateVersionId("2006");
+		assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_VERSION_ID));
+
+		list = strategy.validateVersionId("");
+		assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_VERSION_ID));
+
 		list = strategy.validateVersionId("2006-01-31");
 		assertFalse(list.containsErrorMsg());
 		
 		strategy.setPostfixAllowed(true);
 		list = strategy.validateVersionId("2006-01-31a");
 		assertFalse(list.containsErrorMsg());
+		
+		list = strategy.validateVersionId("2006");
+		assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_VERSION_ID));
 	}
 
 	/*
@@ -79,9 +88,15 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 
 	public void testInitFromXml() {
 		Element el = getTestDocument().getDocumentElement();
+		strategy.setPostfixAllowed(false);
+		strategy.setDateFormatPattern("MM-yyyy");
 		strategy.initFromXml(el);
 		assertEquals("-", strategy.getVersionIdSeparator());
 		assertEquals("yyyy-MM", strategy.getDateFormatPattern());
+		assertTrue(strategy.isPostfixAllowed());
+		assertFalse(strategy.validateVersionId("2006-12").containsErrorMsg());
+		assertFalse(strategy.validateVersionId("2006-12b").containsErrorMsg());
+		assertTrue(strategy.validateVersionId("12-2006").containsErrorMsg());
 	}
 
 	public void testToXml() {

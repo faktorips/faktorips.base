@@ -43,7 +43,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	
 	public final static String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy";
 	
-	private String dateFormatPatter; // the pattern has to be kept in order to save the state to xml
+	private String dateFormatPattern; // the pattern has to be kept in order to save the state to xml
     private DateFormat dateFormat;
     private boolean postfixAllowed;
 	
@@ -81,8 +81,9 @@ public class DateBasedProductCmptNamingStrategy extends
 	 */
 	public void setDateFormatPattern(String pattern) {
 		ArgumentCheck.notNull(pattern);
-		dateFormatPatter = pattern;
+		dateFormatPattern = pattern;
 		dateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+		dateFormat.setLenient(false);
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	 * @see java.textSimpleDateFormat
 	 */
 	public String getDateFormatPattern() {
-		return dateFormatPatter;
+		return dateFormatPattern;
 	}
 	
 	/**
@@ -117,17 +118,21 @@ public class DateBasedProductCmptNamingStrategy extends
 	 * {@inheritDoc}
 	 */
 	public MessageList validateVersionId(String versionId) {
-		if (postfixAllowed) {
-			versionId = versionId.substring(0, dateFormatPatter.length());
-		}
 		MessageList list = new MessageList();
+		if (versionId.length() < dateFormatPattern.length()) {
+			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, "The version identification has the wrong format! Exptected format: " + dateFormatPattern));			
+			return list;
+		}
+		if (postfixAllowed) {
+			versionId = versionId.substring(0, dateFormatPattern.length());
+		}
 		try {
 			dateFormat.parse(versionId);
-			if (versionId.length()!=dateFormatPatter.length()) {
+			if (versionId.length()!=dateFormatPattern.length()) {
 				throw new RuntimeException();
 			}
 		} catch (Exception e) {
-			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, "The version identification has the wrong format!"));
+			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, "The version identification has the wrong format! Exptected format: " + dateFormatPattern));
 		}
 		return list;
 	}
@@ -144,7 +149,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	 * {@inheritDoc}
 	 */
 	public void initSubclassFromXml(Element el) {
-		dateFormatPatter = el.getAttribute("dateFormatPattern");
+		setDateFormatPattern(el.getAttribute("dateFormatPattern"));
 		postfixAllowed = Boolean.valueOf(el.getAttribute("postfixAllowed")).booleanValue();
 	}
 
@@ -153,7 +158,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	 */
 	public Element toXmlSubclass(Document doc) {
 		Element el = doc.createElement(XML_TAG_NAME);
-		el.setAttribute("dateFormatPattern", dateFormatPatter);
+		el.setAttribute("dateFormatPattern", dateFormatPattern);
 		el.setAttribute("postfixAllowed", "" + postfixAllowed);
 		return el;
 	}

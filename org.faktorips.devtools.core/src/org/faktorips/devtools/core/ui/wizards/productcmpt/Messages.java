@@ -38,5 +38,4 @@ public class Messages extends NLS {
 
 	public static String ProductCmptPage_labelName;
 
-	public static String ProductCmptPage_msgPolicyClassMissing;
 }
