@@ -138,7 +138,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
-        methodsBuilder.append(")getRepository().getProductComponentGeneration(getQualifiedName(), ");
+        methodsBuilder.append(")getRepository().getProductComponentGeneration(getRuntimeId(), ");
         methodsBuilder.append(interfaceBuilder.getVarNameEffectiveDate(getIpsObject()));
         methodsBuilder.append(");");
         methodsBuilder.closeBracket();
