@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.util.TableLayoutComposite;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -122,8 +121,7 @@ public class EnumValueSetEditControl extends EditTableControl {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controls.EditTableControl#addColumnLayoutData(org.eclipse.jdt.internal.ui.util.TableLayoutComposite)
+     * {@inheritDoc}
      */
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
         layouter.addColumnData(new ColumnPixelData(10, false)); // message image

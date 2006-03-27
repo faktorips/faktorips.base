@@ -19,8 +19,7 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.List;
 
-import org.eclipse.jdt.internal.ui.util.SWTUtil;
-import org.eclipse.jdt.internal.ui.util.TableLayoutComposite;
+
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -57,9 +56,6 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
  */
 public abstract class EditTableControl extends Composite {
     
-	// number of rows to calculate an initial size
-	private static final int NUM_OF_ROWS_HINT= 7;
-	
 	private Button fAddButton;
 	private Button fRemoveButton;
 	private Button fUpButton;
@@ -120,7 +116,6 @@ public abstract class EditTableControl extends Composite {
 		createTableColumns(table);
 		
 		GridData gd= new GridData(GridData.FILL_BOTH);
-		gd.heightHint= SWTUtil.getTableHeightHint(table, NUM_OF_ROWS_HINT);
 		gd.widthHint= 40;
 		layouter.setLayoutData(gd);
 
@@ -367,7 +362,6 @@ public abstract class EditTableControl extends Composite {
 		Button button= new Button(buttonComposite, SWT.PUSH);
 		button.setText("Add"); //$NON-NLS-1$
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		SWTUtil.setButtonDimensionHint(button);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 			    addElement();
@@ -386,7 +380,6 @@ public abstract class EditTableControl extends Composite {
 		final Button button= new Button(buttonComposite, SWT.PUSH);
 		button.setText("Remove"); //$NON-NLS-1$
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		SWTUtil.setButtonDimensionHint(button);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				int[] indices = table.getSelectionIndices();
@@ -416,7 +409,6 @@ public abstract class EditTableControl extends Composite {
 		Button button= new Button(buttonComposite, SWT.PUSH);
 		button.setText(text);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		SWTUtil.setButtonDimensionHint(button);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (table.getSelectionCount() == 0) {

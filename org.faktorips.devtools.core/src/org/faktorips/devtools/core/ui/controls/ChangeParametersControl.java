@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.util.SWTUtil;
-import org.eclipse.jdt.internal.ui.util.TableLayoutComposite;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ColumnPixelData;
@@ -183,7 +181,6 @@ public abstract class ChangeParametersControl extends Composite {
 	private static final int DEFAULT_PROP= 3;
 
 	// configuration parameters
-	private int numOfRowsHint= 7; // number of rows to calculate an initial size
 	private boolean fCanChangeParameterNames = true;
 	private boolean fCanChangeTypesOfOldParameters = true;
 	private boolean fCanAddParameters = true;
@@ -221,14 +218,6 @@ public abstract class ChangeParametersControl extends Composite {
 		super(parent, style);
 		this.ipsProject= pdProject;
 		this.label = label;
-	}
-	
-	/**
-	 * Sets the hint how many rows are displayed in the table. Used to 
-	 * calculate the tables initial size. 
-	 */
-	public void setNumOfRowsHint(int rows) {
-	    numOfRowsHint = rows;
 	}
 	
 	public void setCanChangeParameterNames(boolean value) {
@@ -335,7 +324,6 @@ public abstract class ChangeParametersControl extends Composite {
 		}	
 		
 		GridData gd= new GridData(GridData.FILL_BOTH);
-		gd.heightHint= SWTUtil.getTableHeightHint(table, numOfRowsHint);
 		gd.widthHint= 40;
 		layouter.setLayoutData(gd);
 
@@ -515,7 +503,6 @@ public abstract class ChangeParametersControl extends Composite {
 		Button button= new Button(buttonComposite, SWT.PUSH);
 		button.setText("Add"); //$NON-NLS-1$
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		SWTUtil.setButtonDimensionHint(button);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				ParameterInfo newInfo= ParameterInfo.createInfoForAddedParameter();
@@ -536,7 +523,6 @@ public abstract class ChangeParametersControl extends Composite {
 		final Button button= new Button(buttonComposite, SWT.PUSH);
 		button.setText("Remove"); //$NON-NLS-1$
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		SWTUtil.setButtonDimensionHint(button);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				int index= getTable().getSelectionIndices()[0];
@@ -568,7 +554,6 @@ public abstract class ChangeParametersControl extends Composite {
 		Button button= new Button(buttonComposite, SWT.PUSH);
 		button.setText(text);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		SWTUtil.setButtonDimensionHint(button);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				ISelection savedSelection= fTableViewer.getSelection();

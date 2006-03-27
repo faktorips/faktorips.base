@@ -176,7 +176,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setCanChangeParameterTypes(false);
         parametersControl.setCanChangeParameterNames(false);
         parametersControl.setCanMoveParameters(false);
-        parametersControl.setNumOfRowsHint(1 + attribute.getNumOfFormulaParameters());
         parametersControl.setTableStyle(SWT.BORDER);
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));

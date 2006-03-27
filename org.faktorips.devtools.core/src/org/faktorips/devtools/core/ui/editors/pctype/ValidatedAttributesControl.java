@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.util.TableLayoutComposite;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
+import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.util.message.MessageList;
 
@@ -120,8 +120,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 	}
 
 	protected void swapElements(int index1, int index2) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 
 	private IndexedValidatedAttributeWrapper[] getWrappersForAttributes() {
