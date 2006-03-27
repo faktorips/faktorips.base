@@ -497,7 +497,7 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
-        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, true, "target", this,  //$NON-NLS-1$
+        ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, "target", this,  //$NON-NLS-1$
         		PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
         ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR,  //$NON-NLS-1$
         		MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list); //$NON-NLS-1$
@@ -522,6 +522,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         	String text = "A reverse composition can not be marked as product relevant.";
         	list.add(new Message(MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT, text, Message.ERROR, this, new String[] {PROPERTY_PRODUCT_RELEVANT, PROPERTY_RELATIONTYPE}));
         }
+       
         if (isProductRelevant() && !this.getPolicyCmptType().isConfigurableByProductCmptType()) {
         	String text = "A relation can only be product relevant if the type is product relevant.";
         	list.add(new Message(MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));

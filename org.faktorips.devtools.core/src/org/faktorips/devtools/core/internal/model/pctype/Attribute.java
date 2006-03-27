@@ -290,8 +290,8 @@ public class Attribute extends Member implements IAttribute {
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
-        Datatype datatypeObject = ValidationUtils.checkDatatypeReference(datatype, true, false, this,
-                PROPERTY_DATATYPE, result);
+        Datatype datatypeObject = ValidationUtils.checkDatatypeReference(datatype, false, this,
+                PROPERTY_DATATYPE, "", result);
         if (datatypeObject == null) {
             if (!StringUtils.isEmpty(defaultValue)) {
                 String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);

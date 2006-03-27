@@ -47,49 +47,30 @@ public class ValidationUtils {
      * @param mandatory Is the reference mandatory. If yes, it is checked that
      * the reference is not an empty string. Otherwise an empty reference is valid.
      * 
-     * @return true if the reference is valid, otherwise false.
+     * @param objectName The (qualified) name of the object to check.
+     * @param type The type the object to check is of.
+     * @param propertyDisplayName The name used to display the value to the user.
+     * @param part The part the checked reference belongs to (used if a message has to be created).
+     * @param propertyName The (technical) name of the property used if a message has to be created.
+     * @param msgCode The message code to use if a message has to be created.
+     * @param list The list of messages to add a new one.
      * 
-     * @deprecated use the method with the additional msgCode parameter.
+     * @return true if the reference is valid, otherwise false.
      */
     public final static boolean checkIpsObjectReference(
             String objectName,
             IpsObjectType type,
-            boolean mandatory,
-            String propertyDisplayName,
-            IIpsObjectPart part,
-            String propertyName,
-            MessageList list) throws CoreException {
-
-    	return checkIpsObjectReference(objectName, type, mandatory, propertyDisplayName, part, propertyName, "", list); //$NON-NLS-1$
-    }
-
-    /**
-     * Tests if the given qualified name identifies a policy component type.
-     * If not, it adds an error message to the given message list.
-     * 
-     * @param objectName the qualified type name to check.
-     * @param mandatory Is the reference mandatory. If yes, it is checked that
-     * the reference is not an empty string. Otherwise an empty reference is valid.
-     * 
-     * @return true if the reference is valid, otherwise false.
-     */
-    // TODO document params
-    public final static boolean checkIpsObjectReference(
-            String objectName,
-            IpsObjectType type,
-            boolean mandatory,
             String propertyDisplayName,
             IIpsObjectPart part,
             String propertyName,
             String msgCode,
             MessageList list) throws CoreException {
         
-        if (mandatory) {
-            if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName,part, propertyName, list)) {
-                return false;
-            }
-        }
-        if (part.getIpsProject().findIpsObject(type, objectName)==null) {
+    	if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName,part, propertyName, msgCode, list)) {
+    		return false;
+    	}
+
+    	if (part.getIpsProject().findIpsObject(type, objectName)==null) {
             String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist, StringUtils.capitalise(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;
@@ -106,22 +87,27 @@ public class ValidationUtils {
      * @param datatypeName the datatype name to check.
      * @param mandatory Is the reference mandatory. If yes, it is checked that
      * the reference is not an empty string. Otherwise an empty reference is valid.
+     * @param voidAllowed <code>true</code> to allow void as datatype, <code>false</code>
+     * to prohibit void.
+     * @param part The part the checked reference belongs to (used if a message has to be created).
+     * @param propertyName The (technical) name of the property used if a message has to be created.
+     * @param msgCode The message code to use if a message has to be created.
+     * @param list The list of messages to add a new one.
      * 
      * @return the datatype if no error was detected, otherwise null.
      */
     public final static Datatype checkDatatypeReference(
             String datatypeName,
-            boolean mandatory,
             boolean voidAllowed,
             IIpsObjectPart part,
             String propertyName,
+            String msgcode,
             MessageList list) throws CoreException {
         
-        if (mandatory) {
-            if (!checkStringPropertyNotEmpty(datatypeName, "Datatype", part, propertyName, list)) { //$NON-NLS-1$
-                return null;
-            }
-        }
+    	if (!checkStringPropertyNotEmpty(datatypeName, "Datatype", part, propertyName, msgcode, list)) { //$NON-NLS-1$
+    		return null;
+    	}
+        
         Datatype datatype = part.getIpsProject().findDatatype(datatypeName);
         if (datatype==null) {
             String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName); 
@@ -149,28 +135,15 @@ public class ValidationUtils {
      * Tests if the given property value is not empty.
      * If it is empty, it adds an error message to the given message list.
      * 
-     * @return true if the string is not empty, false if the string is empty.
-     * 
-     * @deprecated use the method with the additional msgCode parameter.
-     */
-    public final static boolean checkStringPropertyNotEmpty(
-            String propertyValue, 
-            String propertyDisplayName,
-            Object object,
-            String propertyName,
-            MessageList list)
-    {
-    	return checkStringPropertyNotEmpty(propertyValue, propertyDisplayName, object, propertyName, "", list); //$NON-NLS-1$
-    }
-
-
-    /**
-     * Tests if the given property value is not empty.
-     * If it is empty, it adds an error message to the given message list.
+     * @param propertyValue The value to check.
+     * @param propertyDisplayName The name used to display the value to the user.
+     * @param object The part the checked reference belongs to (used if a message has to be created).
+     * @param propertyName The (technical) name of the property used if a message has to be created.
+     * @param msgCode The message code to use if a message has to be created.
+     * @param list The list of messages to add a new one.
      * 
      * @return true if the string is not empty, false if the string is empty.
      */
-    // TODO document params
     public final static boolean checkStringPropertyNotEmpty(
             String propertyValue, 
             String propertyDisplayName,
@@ -187,6 +160,11 @@ public class ValidationUtils {
         return true;
     }
     
+    /**
+     * Returns an image to represent the given message severity 
+     * 
+     * @param messageSeverity
+     */
     public final static Image getSeverityImage(int messageSeverity) {
         String imageName;
         switch (messageSeverity) {

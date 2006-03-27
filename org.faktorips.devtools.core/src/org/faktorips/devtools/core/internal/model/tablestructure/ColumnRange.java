@@ -150,7 +150,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
         if ((rangeType.isTwoColumn() || rangeType.isOneColumnFrom()) && 
-             ValidationUtils.checkStringPropertyNotEmpty(from, "from column", this, PROPERTY_FROM_COLUMN, list)) { //$NON-NLS-1$
+             ValidationUtils.checkStringPropertyNotEmpty(from, "from column", this, PROPERTY_FROM_COLUMN, "", list)) { //$NON-NLS-1$
             if (getTableStructure().getColumn(from)==null) {
                 String text = NLS.bind(Messages.ColumnRange_msgMissingColumn, from);
                 list.add(new Message("", text, Message.ERROR, this, PROPERTY_FROM_COLUMN)); //$NON-NLS-1$
@@ -158,7 +158,7 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         }
         
         if((rangeType.isTwoColumn() || rangeType.isOneColumnTo()) && 
-            ValidationUtils.checkStringPropertyNotEmpty(to, "to column", this, PROPERTY_TO_COLUMN, list)){ //$NON-NLS-1$
+            ValidationUtils.checkStringPropertyNotEmpty(to, "to column", this, PROPERTY_TO_COLUMN, "", list)){ //$NON-NLS-1$
             if (getTableStructure().getColumn(to)==null) {
                 String text = NLS.bind(Messages.ColumnRange_msgMissingColumn, to);
                 list.add(new Message("", text, Message.ERROR, this, PROPERTY_TO_COLUMN)); //$NON-NLS-1$

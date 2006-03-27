@@ -199,8 +199,7 @@ public class ProductCmptRelation extends IpsObjectPart implements
 			relType = relation.findPolicyCmptTypeRelation();
 		}
 		ValidationUtils.checkIpsObjectReference(target,
-				IpsObjectType.PRODUCT_CMPT, true,
-				"target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
+				IpsObjectType.PRODUCT_CMPT, "target", this, PROPERTY_TARGET, MSGCODE_UNKNWON_TARGET, list); //$NON-NLS-1$
 		if (maxCardinality == 0) {
 			String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThan1;
 			list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text,
