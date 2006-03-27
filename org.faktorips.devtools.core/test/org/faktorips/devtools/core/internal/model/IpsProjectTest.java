@@ -30,6 +30,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
+import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -340,5 +341,15 @@ public class IpsProjectTest extends IpsPluginTest {
     	newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     	EnumDatatype dataType = ipsProject.findEnumDatatype("TestEnumType");
     	assertEquals("TestEnumType", dataType.getQualifiedName());
+    }
+    
+    public void testEvaluateRuntimeId() throws Exception {
+    	ProductCmpt cmpt = this.newProductCmpt(root, "TestProduct");
+    	String id = ipsProject.evaluateRuntimeId(cmpt);
+    	assertEquals(ipsProject.getRuntimeIdPrefix() + "_" + cmpt.getName(), id);
+    	cmpt.setRuntimeId();
+    	
+    	id = ipsProject.evaluateRuntimeId(cmpt);
+    	assertEquals(ipsProject.getRuntimeIdPrefix() + "_" + cmpt.getName() + "1", id);
     }
 }

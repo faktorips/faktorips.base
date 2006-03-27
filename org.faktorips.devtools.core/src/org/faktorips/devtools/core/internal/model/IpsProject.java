@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
+import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdEvaluationStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -62,6 +63,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdEvaluationStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
@@ -73,6 +75,8 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
+	private IProductCmptRuntimeIdEvaluationStrategy runtimeIdStrategy = null;
+	
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
      * <code>IProject.addNature()</code>.
@@ -608,6 +612,20 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
+     * {@inheritDoc}
+     */
+	public IProductCmpt findProductCmpt(String runtimeId) throws CoreException {
+		IIpsObject[] all = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
+		
+		for (int i = 0; i < all.length; i++) {
+			if (((IProductCmpt)all[i]).getRuntimeId().equals(runtimeId)) {
+				return (IProductCmpt)all[i];
+			}
+		}
+		return null;
+	}
+
+	/**
      * Overridden.
      */
     public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() throws CoreException {
@@ -684,5 +702,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		getProperties().addDefinedDataType(newDatatype);
 		saveProjectProperties(getProperties());
 	}
-    
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String evaluateRuntimeId(IProductCmpt productCmpt) throws CoreException {
+		if (runtimeIdStrategy == null) {
+			runtimeIdStrategy = new DefaultRuntimeIdEvaluationStrategy(); 
+		}
+		return runtimeIdStrategy.evaluateRuntimeId(productCmpt);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getRuntimeIdPrefix() {
+		return getProperties().getRuntimeIdPrefix();
+	}
+
 }

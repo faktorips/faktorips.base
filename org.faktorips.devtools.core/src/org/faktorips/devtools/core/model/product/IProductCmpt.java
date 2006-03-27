@@ -35,6 +35,8 @@ public interface IProductCmpt extends ITimedIpsObject {
      */
     public final static String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
     
+    public final static String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
+    
     public final static String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
     
     /**
@@ -112,6 +114,19 @@ public interface IProductCmpt extends ITimedIpsObject {
      */
     public IProductCmptStructure getStructure() throws CycleException;
     
+    /**
+     * Returns the id this object is identified by at runtime. 
+     */
+    public String getRuntimeId();
     
-    
+    /**
+	 * Sets the runtimeId for this product cmpt. The id is requested from the project this
+	 * product component belongs to. This method should only be called once: At creation time. 
+	 * If called on a product component the id was allready set, an exception is thrown.
+	 * 
+	 * @throws UnsupportedOperationException if the runtime id was allready set.
+	 * @throws NullPointerException if the project is not available at calltime.
+     * @throws CoreException if an error occured during evaluation of the runtime id. 
+	 */
+	public void setRuntimeId() throws CoreException;
 }

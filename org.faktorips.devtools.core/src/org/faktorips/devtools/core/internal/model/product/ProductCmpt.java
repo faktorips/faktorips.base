@@ -54,6 +54,7 @@ import org.w3c.dom.Element;
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     
     private String policyCmptType = ""; //$NON-NLS-1$
+    private String runtimeId = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
@@ -200,6 +201,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
+        element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
     }
 
     /**
@@ -208,6 +210,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICY_CMPT_TYPE);
+        runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
     }
 
 	public IIpsObjectPart newPart(Class partType) {
@@ -220,6 +223,21 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	public IProductCmptStructure getStructure() throws CycleException {
 		return new ProductCmptStructure(this);
 	}
-	
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getRuntimeId() {
+		return runtimeId;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setRuntimeId() throws CoreException {
+		if (!StringUtils.isEmpty(this.runtimeId)) {
+			throw new UnsupportedOperationException("The runtime ID can not be overwritten");
+		}
+		this.runtimeId = getIpsProject().evaluateRuntimeId(this);
+	}
 }

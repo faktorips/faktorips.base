@@ -62,6 +62,7 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
     protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)pdObject;
         productCmpt.setPolicyCmptType(productCmptPage.getPolicyCmptType());
+        productCmpt.setRuntimeId();
         GregorianCalendar date = IpsPreferences.getWorkingDate();
         if (date==null) {
             return;

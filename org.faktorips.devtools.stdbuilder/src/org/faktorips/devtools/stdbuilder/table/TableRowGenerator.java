@@ -26,7 +26,16 @@ import org.apache.commons.lang.StringUtils;
 
 public class TableRowGenerator extends JetJavaContentGenerator
 {
-  protected final String NL = System.getProperties().getProperty("line.separator");
+  protected static String nl;
+  public static synchronized TableRowGenerator create(String lineSeparator)
+  {
+    nl = lineSeparator;
+    TableRowGenerator result = new TableRowGenerator();
+    nl = null;
+    return result;
+  }
+
+  protected final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
   protected final String TEXT_1 = "package ";
   protected final String TEXT_2 = ";";
   protected final String TEXT_3 = NL + " ";

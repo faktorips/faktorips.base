@@ -208,6 +208,16 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmpt[] findProductCmpts(String qualifiedPcTypeName, boolean includeSubtypes) throws CoreException;
     
     /**
+     * Returns the product component with the given runtime id or <code>null</code> if no such
+     * product component exists. If more than one product component with the given id exists, the
+     * first one found is returned. 
+     * 
+     * @param runtimeId The runtime-id to find the product component for.
+     * @throws CoreException if an error occurs during search.
+     */
+    public IProductCmpt findProductCmpt(String runtimeId) throws CoreException;
+    
+    /**
      * Returns all product component generation that refer to the product component identified by the
      * given qualified name. Returns an empty array if none is found.
      * 
@@ -302,6 +312,20 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public JavaCodeFragment getCodeToGetTheRuntimeRepository() throws CoreException;
 
+    /**
+     * Returns the runtime id prefix configured for this project.
+     */
+    public String getRuntimeIdPrefix();
+    
+    /**
+     * Returns the runtime id evaluated for the given product component. It is <strong>
+     * not</strong> ensured that the same id is returend for different calls.
+     * 
+     * @param productCmpt The product component to find the runtime id for.
+     * @throws CoreException if an error occurs during evaluation.
+     */
+    public String evaluateRuntimeId(IProductCmpt productCmpt) throws CoreException;
+    
     /**
      * Returns the stratgey used to name product components.
      */

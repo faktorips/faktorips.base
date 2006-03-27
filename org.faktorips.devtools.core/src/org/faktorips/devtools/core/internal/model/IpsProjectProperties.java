@@ -59,6 +59,7 @@ public class IpsProjectProperties {
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
+    private String runtimeIdPrefix = ""; //$NON-NLS-1$
 
 	public String getBuilderSetId() {
 		return builderSetId;
@@ -168,6 +169,8 @@ public class IpsProjectProperties {
 	public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
+        runtimeIdPrefix = element.getAttribute("runtimeIDPrefix"); //$NON-NLS-1$
+        
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
     	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$
@@ -202,6 +205,8 @@ public class IpsProjectProperties {
         }
         initUsedPredefinedDatatypesFromXml(XmlUtil.getFirstElement(datatypesEl, "UsedPredefinedDatatypes")); //$NON-NLS-1$
         initDefinedDatatypesFromXml(ipsProject, XmlUtil.getFirstElement(datatypesEl, "DatatypeDefinitions")); //$NON-NLS-1$
+        
+        
 	}
 	
 	private void initProductCmptNamingStrategyFromXml(Element el) {
@@ -279,5 +284,9 @@ public class IpsProjectProperties {
 			definedDatatypes[i]=oldValue[i];
 		}
 		definedDatatypes[i]=newDatatype;
+	}
+	
+	public String getRuntimeIdPrefix() {
+		return this.runtimeIdPrefix;
 	}
 }

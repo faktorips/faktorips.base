@@ -175,4 +175,17 @@ public class ProductCmptTest extends IpsPluginTest {
 		}
     }
 
+    public void testSetRuntimeId() throws Exception {
+    	assertEquals("", productCmpt.getRuntimeId());
+    	productCmpt.setRuntimeId();
+    	assertEquals(productCmpt.getIpsProject().getRuntimeIdPrefix() + "_" + productCmpt.getName(), productCmpt.getRuntimeId());
+    	
+    	try {
+    		productCmpt.setRuntimeId();
+    		fail();
+    	} catch (UnsupportedOperationException e) {
+    		// nothing to do.
+    	}    	
+    }
+    
 }
