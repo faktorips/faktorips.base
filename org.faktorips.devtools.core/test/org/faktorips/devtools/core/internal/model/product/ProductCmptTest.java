@@ -176,7 +176,10 @@ public class ProductCmptTest extends IpsPluginTest {
     }
 
     public void testSetRuntimeId() throws Exception {
-    	assertEquals("", productCmpt.getRuntimeId());
+    	// as long as migration code is contained in getRuntimeId the qualified name is 
+    	// returned if no runtime id was set. This has to be replaced by the empty 
+    	// string if the migration code in ProductCmpt.getRuntimeId is removed
+    	assertEquals("products.folder.TestProduct", productCmpt.getRuntimeId());
     	productCmpt.setRuntimeId();
     	assertEquals(productCmpt.getIpsProject().getRuntimeIdPrefix() + "_" + productCmpt.getName(), productCmpt.getRuntimeId());
     	
