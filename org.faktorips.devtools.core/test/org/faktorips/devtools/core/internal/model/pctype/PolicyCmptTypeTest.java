@@ -601,6 +601,23 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
 
     public void testValidate_MustImplementeAbstractRelation() throws Exception {
     	MessageList ml = pcType.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
+    	
+    	PolicyCmptType supertype = newPolicyCmptType(ipsProject, "base.SuperType");
+    	PolicyCmptType target = newPolicyCmptType(ipsProject, "base.Target");
+
+    	pcType.setSupertype(supertype.getQualifiedName());
+    	
+    	IRelation rel = supertype.newRelation();
+    	rel.setTarget(target.getQualifiedName());
+    	rel.setReadOnlyContainer(true);
+    	
+    	ml = pcType.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
+    	
+    	pcType.setAbstract(true);
+    	ml = pcType.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
     }
 
     public void testValidate_InconsistentTypeHirachy() throws Exception {

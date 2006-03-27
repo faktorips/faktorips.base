@@ -76,7 +76,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * hierarchy that must be implemented, or the type must also be abstract.
      */
     public final static String MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION = MSGCODE_PREFIX + "MustImplementAbstractRelation"; //$NON-NLS-1$
-    // TODO implement, test case
     
     /**
      * Validation message code to indicate that there exists an error within the type hierarchy of this type.
