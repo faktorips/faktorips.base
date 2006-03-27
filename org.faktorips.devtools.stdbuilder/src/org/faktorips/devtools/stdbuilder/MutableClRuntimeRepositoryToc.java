@@ -66,6 +66,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
     public void clear() {
         pcRuntimeIdTocEntryMap.clear();
         tableImplClassTocEntryMap.clear();
+        tableContentNameTocEntryMap.clear();
         ++modificationStamp;
     }
     
@@ -93,13 +94,13 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
         }
 
         if(entry.isTableTocEntry()){
-            TocEntryObject currentEntry = (TocEntryObject)tableImplClassTocEntryMap.get(entry.getImplementationClassName());
+            TocEntryObject currentEntry = (TocEntryObject)tableContentNameTocEntryMap.get(entry.getIpsObjectId());
 
             if(entry.equals(currentEntry)){
                 return false;
             }
 
-            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), entry);
+            tableContentNameTocEntryMap.put(entry.getIpsObjectId(), entry);
             ++modificationStamp;
             return true;
         }
@@ -116,7 +117,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	    	++modificationStamp;
 	    	return true;
 	    }
-	    for (Iterator it=tableImplClassTocEntryMap.values().iterator(); it.hasNext();) {
+	    for (Iterator it=tableContentNameTocEntryMap.values().iterator(); it.hasNext();) {
 	    	TocEntryObject entry = (TocEntryObject)it.next();
 	    	if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
@@ -135,9 +136,9 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	 */
 	public Element toXml(Document doc) {
 	    Element element = doc.createElement(ReadonlyTableOfContents.TOC_XML_ELEMENT);
-	    ArrayList allEntries = new ArrayList(pcRuntimeIdTocEntryMap.size() + tableImplClassTocEntryMap.size());
+	    ArrayList allEntries = new ArrayList(pcRuntimeIdTocEntryMap.size() + tableContentNameTocEntryMap.size());
 	    allEntries.addAll(pcRuntimeIdTocEntryMap.values());
-	    allEntries.addAll(tableImplClassTocEntryMap.values());
+	    allEntries.addAll(tableContentNameTocEntryMap.values());
         for (Iterator it=allEntries.iterator(); it.hasNext(); ) {
             TocEntryObject entry = (TocEntryObject)it.next();
             element.appendChild(entry.toXml(doc));

@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
  */
 public class TableStructure extends IpsObject implements ITableStructure {
     
-    
+    private boolean multipleTableContentsAllowed;
     private List columns = new ArrayList(2);
     private List ranges = new ArrayList(0);
     private List uniqueKeys = new ArrayList(1);
@@ -81,7 +81,23 @@ public class TableStructure extends IpsObject implements ITableStructure {
 	    return childrenArray;
     }
     
-    /** 
+    /**
+	 * {@inheritDoc}
+	 */
+	public boolean isMultipleContentsAllowed() {
+		return multipleTableContentsAllowed;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setMultipleContentsAllowed(boolean newValue) {
+		boolean oldValue = multipleTableContentsAllowed;
+		multipleTableContentsAllowed = newValue;
+		valueChanged(oldValue, newValue);
+	}
+
+	/** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getColumns()
      */
@@ -420,7 +436,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        // nothing else to do
+        newElement.setAttribute(PROPERTY_MULTIPLE_CONTENTS_ALLOWED, "" + multipleTableContentsAllowed);
     }
 
     /**
@@ -430,7 +446,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        // nothing else to do
+        multipleTableContentsAllowed = Boolean.valueOf(element.getAttribute(PROPERTY_MULTIPLE_CONTENTS_ALLOWED)).booleanValue();
     }
 
     /**

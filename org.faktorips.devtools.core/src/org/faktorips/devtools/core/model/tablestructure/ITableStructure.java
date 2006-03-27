@@ -24,7 +24,20 @@ import org.faktorips.devtools.core.model.IIpsObject;
  */
 public interface ITableStructure extends IIpsObject {
     
-    /**
+    public final static String PROPERTY_MULTIPLE_CONTENTS_ALLOWED = "multipleContentsAllowed"; //$NON-NLS-1$
+	
+	/**
+	 * Returns <code>true</code> if multiple table contents are allowed 
+	 * for this table structure, otherwise <code>false</code>.
+	 */
+	public boolean isMultipleContentsAllowed();
+	
+	/**
+	 * Sets if multiple table contents are allowed for this structure.
+	 */
+	public void setMultipleContentsAllowed(boolean newValue);
+	
+	/**
      * Returns the functions to access the table in the formula language.
      */
     public ITableAccessFunction[] getAccessFunctions();

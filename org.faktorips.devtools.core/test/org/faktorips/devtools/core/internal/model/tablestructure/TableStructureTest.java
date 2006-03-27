@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class TableStructureImplTest extends IpsPluginTest {
+public class TableStructureTest extends IpsPluginTest {
     
     private TableStructure table;
     
@@ -171,6 +171,7 @@ public class TableStructureImplTest extends IpsPluginTest {
     public void testInitFromXml() {
         table.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("blabla", table.getDescription());
+        assertTrue(table.isMultipleContentsAllowed());
         assertEquals(3, table.getNumOfColumns());
         assertEquals("ageFrom", table.getColumns()[0].getName());
         assertEquals("ageTo", table.getColumns()[1].getName());
@@ -185,6 +186,7 @@ public class TableStructureImplTest extends IpsPluginTest {
      */
     public void testToXmlDocument() {
         table.setDescription("blabla");
+        table.setMultipleContentsAllowed(true);
         IColumn column1 = table.newColumn();
         column1.setName("ageFrom");
         IColumn column2 = table.newColumn();
@@ -200,6 +202,7 @@ public class TableStructureImplTest extends IpsPluginTest {
         copy.initFromXml(element);
         
         assertEquals("blabla", copy.getDescription());
+        assertTrue(copy.isMultipleContentsAllowed());
         assertEquals(2, copy.getNumOfColumns());
         assertEquals("ageFrom", copy.getColumns()[0].getName());
         assertEquals("ageTo", copy.getColumns()[1].getName());

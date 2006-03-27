@@ -288,7 +288,11 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         createFields();
         createAddRowMethod();
         createInitKeyMapsMethod();
-        createGetInstanceMethod();
+        if (getTableStructure().isMultipleContentsAllowed()) {
+            createGetInstanceMethodForMultipleContents();
+        } else {
+            createGetInstanceMethodForSingleContent();
+        }
         createAllRowsMethod();
         createFindMethods();
         createHashKeyClasses();
@@ -313,20 +317,36 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                 getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC));
     }
 
-    private void createGetInstanceMethod() throws CoreException {
-        String qualifiedName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
+    private void createGetInstanceMethodForSingleContent() throws CoreException {
+        String qualifiedClassName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return (");
-        methodBody.appendClassName(qualifiedName);
+        methodBody.appendClassName(qualifiedClassName);
         methodBody.append(")");
         methodBody.append("repository.getTable(");
-        methodBody.appendClassName(qualifiedName);
+        methodBody.appendClassName(qualifiedClassName);
         methodBody.append(".class");
         methodBody.append(");");
 
         getJavaCodeFragementBuilder().method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                qualifiedName, "getInstance", new String[] { "repository" },
+                qualifiedClassName, "getInstance", new String[] { "repository" },
                 new String[] { RuntimeRepository.class.getName() }, methodBody,
+                getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
+    }
+
+    private void createGetInstanceMethodForMultipleContents() throws CoreException {
+        String qualifiedClassName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
+        JavaCodeFragment methodBody = new JavaCodeFragment();
+        methodBody.append("return (");
+        methodBody.appendClassName(qualifiedClassName);
+        methodBody.append(")");
+        methodBody.append("repository.getTable(qualifiedTableName);");
+
+        getJavaCodeFragementBuilder().method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
+                qualifiedClassName, "getInstance", 
+                new String[] { "repository", "qualifiedTableName" },
+                new String[] { RuntimeRepository.class.getName(), String.class.getName() }, 
+                methodBody,
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }
 

@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -47,12 +48,13 @@ public class StructurePage extends IpsObjectEditorPage {
      * @see org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage#createPageContent(org.eclipse.swt.widgets.Composite, org.faktorips.devtools.core.ui.UIToolkit)
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-		formBody.setLayout(createPageLayout(2, true));
-        
-		new ColumnsSection(getTableStructure(), formBody, toolkit);
-		new UniqueKeysSection(getTableStructure(), formBody, toolkit);
-		new RangesSection(getTableStructure(), formBody, toolkit);
-		new ForeignKeysSection(getTableStructure(), formBody, toolkit);
+		formBody.setLayout(createPageLayout(1, false));
+        new GeneralInfoSection(getTableStructure(), formBody, toolkit);
+		Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
+		new ColumnsSection(getTableStructure(), members, toolkit);
+		new UniqueKeysSection(getTableStructure(), members, toolkit);
+		new RangesSection(getTableStructure(), members, toolkit);
+		new ForeignKeysSection(getTableStructure(), members, toolkit);
     }
 
 }
