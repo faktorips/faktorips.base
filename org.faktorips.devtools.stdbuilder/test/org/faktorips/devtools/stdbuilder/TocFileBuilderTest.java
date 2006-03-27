@@ -91,7 +91,7 @@ public class TocFileBuilderTest extends IpsPluginTest {
         table.getIpsSrcFile().save(true, null);
         
         TocEntryObject entry = tocFileBuilder.createTocEntry(table);
-        assertEquals("motor.RateTable", entry.getIpsObjectName());
+        assertEquals("motor.RateTable", entry.getIpsObjectId());
         assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry.isTableTocEntry());
         assertNull(entry.getPcTypeClassName());

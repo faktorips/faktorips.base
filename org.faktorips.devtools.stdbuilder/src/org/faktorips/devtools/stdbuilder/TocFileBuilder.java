@@ -275,7 +275,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY, productCmpt.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml";
-        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(productCmpt.getQualifiedName(),
+        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(productCmpt.getRuntimeId(),
             xmlResourceName, 
             productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), 
             policyCmptTypeInterfaceBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));

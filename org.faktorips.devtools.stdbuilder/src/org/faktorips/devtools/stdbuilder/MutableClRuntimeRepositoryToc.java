@@ -64,17 +64,17 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
      * Removes all entries and updated the modification stamp.
      */
     public void clear() {
-        pcNameTocEntryMap.clear();
+        pcRuntimeIdTocEntryMap.clear();
         tableImplClassTocEntryMap.clear();
         ++modificationStamp;
     }
     
 	/**
-	 * Adds the entry to the table of contents or replaces the existing entry with the same product component name.
+	 * Adds the entry to the table of contents or replaces the existing entry with the same product component id.
 	 * If entry is <code>null</code> the table of contents remains unchanged.
 	 * 
 	 * @return <code>true</code> if the operation has changed the table of contents, either the entry was added
-	 * or the entry has replcaed an existing entry with a differnt contents. Returns <code>false</code> if the operation
+	 * or the entry has replcaed an existing entry with a differnt content. Returns <code>false</code> if the operation
 	 * hasn't changed the table of contents.
 	 */
 	public boolean addOrReplaceTocEntry(TocEntryObject entry) {
@@ -83,11 +83,11 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
         }
         
         if(entry.isProductCmptTypeTocEntry()){
-            TocEntryObject currentEntry = (TocEntryObject)pcNameTocEntryMap.get(entry.getIpsObjectName());
+            TocEntryObject currentEntry = (TocEntryObject)pcRuntimeIdTocEntryMap.get(entry.getIpsObjectId());
             if(entry.equals(currentEntry)){
                 return false;
             }
-            pcNameTocEntryMap.put(entry.getIpsObjectName(), entry);
+            pcRuntimeIdTocEntryMap.put(entry.getIpsObjectId(), entry);
             ++modificationStamp;
             return true;
         }
@@ -108,17 +108,17 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	}
 	
 	/**
-	 * Removes the toc entry with the given qualified ips object name. Does nothing if the
-	 * name does not identify an entry.
-	 */
-	public boolean removeEntry(String qName) {
-	    if (pcNameTocEntryMap.remove(qName)!=null) {
+     * Removes the toc entry with the given object id (full qualified name for tables, runtime id
+     * for product components). Does nothing if the id does not identify an entry.
+     */
+	public boolean removeEntry(String objectId) {
+	    if (pcRuntimeIdTocEntryMap.remove(objectId)!=null) {
 	    	++modificationStamp;
 	    	return true;
 	    }
 	    for (Iterator it=tableImplClassTocEntryMap.values().iterator(); it.hasNext();) {
 	    	TocEntryObject entry = (TocEntryObject)it.next();
-	    	if (entry.getIpsObjectName().equals(qName)) {
+	    	if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
 		    	++modificationStamp;
 		    	return true;
@@ -135,8 +135,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	 */
 	public Element toXml(Document doc) {
 	    Element element = doc.createElement(ReadonlyTableOfContents.TOC_XML_ELEMENT);
-	    ArrayList allEntries = new ArrayList(pcNameTocEntryMap.size() + tableImplClassTocEntryMap.size());
-	    allEntries.addAll(pcNameTocEntryMap.values());
+	    ArrayList allEntries = new ArrayList(pcRuntimeIdTocEntryMap.size() + tableImplClassTocEntryMap.size());
+	    allEntries.addAll(pcRuntimeIdTocEntryMap.values());
 	    allEntries.addAll(tableImplClassTocEntryMap.values());
         for (Iterator it=allEntries.iterator(); it.hasNext(); ) {
             TocEntryObject entry = (TocEntryObject)it.next();

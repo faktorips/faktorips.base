@@ -228,6 +228,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 * {@inheritDoc}
 	 */
 	public String getRuntimeId() {
+		
+		//TODO remove migration code
+		if (StringUtils.isEmpty(runtimeId)) {
+			return getQualifiedName();
+		}
+		//end migration code
+		
 		return runtimeId;
 	}
 
