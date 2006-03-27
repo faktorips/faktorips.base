@@ -499,7 +499,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		for (int i = 0; i < datatypeIds.length; i++) {
 			Datatype datatype = (Datatype) datatypes.get(datatypeIds[i]);
 			if (datatype == null) {
-				return;
+				continue;
 			}
 			projectTypes.add(datatype);
 			DatatypeHelper helper = (DatatypeHelper) datatypeHelpersMap

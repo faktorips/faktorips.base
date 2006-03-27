@@ -17,15 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.Map;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -34,11 +33,11 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 
-public class DeepCopyOperation implements IRunnableWithProgress {
+public class DeepCopyOperation implements IWorkspaceRunnable{
 
 	private IProductCmpt[] toCopy;
 	private IProductCmpt[] toRefer;
-	private Hashtable handleMap;
+	private Map handleMap;
 	private IProductCmpt copiedRoot;
 	
 	/**
@@ -49,13 +48,16 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 	 * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing resources!). Keys are the
 	 * product components given in <code>toCopy</code>.
 	 */
-	public DeepCopyOperation(IProductCmpt[] toCopy, IProductCmpt[] toRefer, Hashtable handleMap) {
+	public DeepCopyOperation(IProductCmpt[] toCopy, IProductCmpt[] toRefer, Map handleMap) {
 		this.toCopy = toCopy;
 		this.toRefer = toRefer;
 		this.handleMap = handleMap;
 	}
 
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	/**
+	 * {@inheritDoc}
+	 */
+	public void run(IProgressMonitor monitor) throws CoreException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
@@ -73,18 +75,13 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 		GregorianCalendar date = IpsPreferences.getWorkingDate();
 		IProductCmpt[] products = new IProductCmpt[toCopy.length];
 		for (int i = 0; i < toCopy.length; i++) {
-			try {
-				IIpsSrcFile file = (IIpsSrcFile)handleMap.get(toCopy[i]);
-				IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
-				String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-				file = targetPackage.createIpsFileFromTemplate(newName, toCopy[i], date, false, monitor);
-				monitor.worked(1);
-				IProductCmpt product = (IProductCmpt)file.getIpsObject();
-				products[i] = product;
-			} catch (CoreException e) {
-				IpsPlugin.logAndShowErrorDialog(e);
-				return;
-			}
+			IIpsSrcFile file = (IIpsSrcFile)handleMap.get(toCopy[i]);
+			IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
+			String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+			file = targetPackage.createIpsFileFromTemplate(newName, toCopy[i], date, false, monitor);
+			monitor.worked(1);
+			IProductCmpt product = (IProductCmpt)file.getIpsObject();
+			products[i] = product;
 		}
 
 		Hashtable nameMap = new Hashtable();
@@ -94,12 +91,7 @@ public class DeepCopyOperation implements IRunnableWithProgress {
 
 		for (int i = 0; i < products.length; i++) {
 			fixRelations(products[i], nameMap, referMap);
-			try {
-				products[i].getIpsSrcFile().save(true, monitor);
-			} catch (CoreException e) {
-				IpsPlugin.logAndShowErrorDialog(e);
-				return;
-			}
+			products[i].getIpsSrcFile().save(true, monitor);
 			monitor.worked(1);
 		}
 		copiedRoot = products[0];

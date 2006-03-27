@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.w3c.dom.Element;
 
 public class IpsProjectPropertiesTest extends IpsPluginTest {

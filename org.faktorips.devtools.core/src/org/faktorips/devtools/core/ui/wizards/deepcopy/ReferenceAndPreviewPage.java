@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -424,7 +425,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
 	 * @throws CoreException if any error exists (e.g. naming collisions).
 	 */
-	public Hashtable getHandles() throws CoreException {
+	public Map getHandles() throws CoreException {
 		checkForErrors();
 		if (!isValid()) {
 			StringBuffer message = new StringBuffer();

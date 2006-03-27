@@ -19,11 +19,15 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.DeepCopyOperation;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -39,6 +43,7 @@ public class DeepCopyWizard extends Wizard {
 	private SourcePage sourcePage;
 	private ReferenceAndPreviewPage previewPage;
 	private IProductCmpt copiedRoot;
+	private ISchedulingRule schedulingRule;
 	
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product
@@ -67,21 +72,27 @@ public class DeepCopyWizard extends Wizard {
 	 * {@inheritDoc}
 	 */
 	public boolean performFinish() {
-		boolean finished = false;
 		try {
-			DeepCopyOperation dco = new DeepCopyOperation(previewPage.getProductsToCopy(), previewPage.getProductsToRefer(), previewPage.getHandles());
-			ProgressMonitorDialog dialog = new ProgressMonitorDialog(super.getShell());
-			dialog.run(true, false, dco);
-			copiedRoot = dco.getCopiedRoot();
-			finished = true;
-		} catch (InvocationTargetException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		} catch (InterruptedException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		} catch (CoreException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}		
-		return finished;
+			final IProductCmpt[] toCopy = previewPage.getProductsToCopy();
+			final IProductCmpt[] toRefer = previewPage.getProductsToRefer();
+			final Map handles = previewPage.getHandles();
+			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){
+
+				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
+					DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
+					dco.run(monitor);
+					copiedRoot = dco.getCopiedRoot();
+				}
+				
+			};
+			getContainer().run(true, true, operation);
+			
+		} catch (Exception e) {
+			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the copying process.",e));
+		}
+		//this implementation of this method should always return true since this causes the wizard dialog to close.
+		//in either case if an exception arises or not it doesn't make sense to keep the dialog up
+		return true;
 	}
 
 	/**
