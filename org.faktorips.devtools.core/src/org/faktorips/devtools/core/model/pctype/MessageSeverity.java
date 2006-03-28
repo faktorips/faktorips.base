@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.runtime.Message;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
 import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 import org.faktorips.values.EnumType;
