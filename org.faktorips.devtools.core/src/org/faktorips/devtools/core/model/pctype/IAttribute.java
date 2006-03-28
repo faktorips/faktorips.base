@@ -247,7 +247,12 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
      */
     public void setValueSetType(ValueSetType type);
     
-    /**
+	/**
+	 * Creates a copy of the given value set and aplies this copy to this attribute.
+	 */
+	public void setValueSetCopy(IValueSet source);
+
+	/**
      * Returns <code>true</code> if this attribute is marked to overwrite an attribute
      * with the same name somewhere up the supertype hierarchy, <code>false</code> otherwise. 
      */

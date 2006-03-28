@@ -74,8 +74,8 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
         	type.setConfigurableByProductCmptType(false);
         }
         if (typePage.overrideAbstractMethods()) {
-            IMethod[] abstractMethods = type.findOverrideCandidates(true);
-            type.override(abstractMethods);
+            IMethod[] abstractMethods = type.findOverrideMethodCandidates(true);
+            type.overrideMethods(abstractMethods);
         }
     }
 

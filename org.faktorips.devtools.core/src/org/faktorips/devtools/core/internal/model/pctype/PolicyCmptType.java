@@ -18,8 +18,10 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -842,7 +844,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IMethod[] findOverrideCandidates(boolean onlyAbstractMethods)
+	public IMethod[] findOverrideMethodCandidates(boolean onlyAbstractMethods)
 			throws CoreException {
 		List candidates = new ArrayList();
 		ITypeHierarchy hierarchy = getSupertypeHierarchy();
@@ -852,6 +854,38 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 					candidates);
 		}
 		return (IMethod[]) candidates.toArray(new IMethod[candidates.size()]);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IAttribute[] findOverrideAttributeCandidates() throws CoreException {
+		IPolicyCmptType supertype = findSupertype();
+		
+		if (supertype == null) {
+			// no supertype, no candidates :-)
+			return new IAttribute[0];
+		}
+		
+		// for easy finding attributes by name put them in a map with the name as key
+		Map toExclude = new HashMap();		
+		for (Iterator iter = attributes.iterator(); iter.hasNext();) {
+			IAttribute attr = (IAttribute) iter.next();
+			if (attr.getOverwrites()) {
+				toExclude.put(attr.getName(), attr);
+			}
+		}
+		
+		// find all overwrite-candidates
+		IAttribute[] candidates = getSupertypeHierarchy().getAllAttributes(supertype);
+		List result = new ArrayList();
+		for (int i = 0; i < candidates.length; i++) {
+			if (!toExclude.containsKey(candidates[i].getName())) {
+				result.add(candidates[i]);
+			}
+		}
+		
+		return (IAttribute[])result.toArray(new IAttribute[result.size()]);
 	}
 
 	/**
@@ -933,7 +967,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IMethod[] override(IMethod[] methods) {
+	public IMethod[] overrideMethods(IMethod[] methods) {
 		IMethod[] newMethods = new IMethod[methods.length];
 		for (int i = 0; i < methods.length; i++) {
 			IMethod override = newMethod();
@@ -945,6 +979,28 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 			newMethods[i] = override;
 		}
 		return newMethods;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IAttribute[] overrideAttributes(IAttribute[] attributes) {
+		IAttribute[] newAttributes = new IAttribute[attributes.length];
+		for (int i = 0; i < attributes.length; i++) {
+			IAttribute override = getAttribute(attributes[i].getName());
+			
+			if (override == null) {
+				override = newAttribute();
+				override.setName(attributes[i].getName());
+				override.setDefaultValue(attributes[i].getDefaultValue());
+				override.setValueSetCopy(attributes[i].getValueSet());
+				override.setFormulaParameters(attributes[i].getFormulaParameters());
+				override.setDescription(attributes[i].getDescription());
+			}
+			override.setOverwrites(true);
+			newAttributes[i] = override;
+		}
+		return newAttributes;
 	}
 
 	/**

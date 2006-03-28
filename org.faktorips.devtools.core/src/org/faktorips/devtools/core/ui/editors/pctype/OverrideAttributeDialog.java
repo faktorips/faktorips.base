@@ -23,12 +23,13 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMember;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 
-public class OverrideMethodDialog extends OverrideDialog {
+public class OverrideAttributeDialog extends OverrideDialog {
     
 	/**
      * Creates a new dialog to select candidates for overwriting.
@@ -36,7 +37,7 @@ public class OverrideMethodDialog extends OverrideDialog {
      * @param pcType The type to get the candidates for overwriting from.
      * @param parent The shell to show this dialog in.
      */
-    public OverrideMethodDialog(IPolicyCmptType pcType, Shell parent) {
+    public OverrideAttributeDialog(IPolicyCmptType pcType, Shell parent) {
         super(pcType, parent, new CandidatesContentProvider(pcType));
        	selectAbstractMethods(pcType);
     }
@@ -60,15 +61,15 @@ public class OverrideMethodDialog extends OverrideDialog {
 	/**
 	 * Returns the methods the user has selected to override. 
 	 */
-	public IMethod[] getSelectedMethods() {
+	public IAttribute[] getSelectedAttributes() {
 	    List methods = new ArrayList();
 	    Object[] checked = getResult();
 	    for (int i=0; i<checked.length; i++) {
-	        if (checked[i] instanceof IMethod) {
+	        if (checked[i] instanceof IAttribute) {
 	            methods.add(checked[i]);
 	        }
 	    }
-	    return (IMethod[])methods.toArray(new IMethod[methods.size()]);
+	    return (IAttribute[])methods.toArray(new IAttribute[methods.size()]);
 	}
 
     private static class CandidatesContentProvider extends OverrideDialog.CandidatesContentProvider {
@@ -79,7 +80,7 @@ public class OverrideMethodDialog extends OverrideDialog {
 
 		public IMember[] getCandidates(IPolicyCmptType pcType) {
 			try {
-				return pcType.findOverrideMethodCandidates(false);
+				return pcType.findOverrideAttributeCandidates();
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 				return new IMember[0];

@@ -26,10 +26,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
@@ -47,7 +49,7 @@ public class RangeEditControl extends ControlComposite {
     private TextField lowerfield;
     private TextField upperfield;
     private TextField stepfield;
-    private DefaultUIController uicontroller;
+    private IpsPartUIController uiController;
     private Checkbox containsNullCB;
 	private CheckboxField containsNullField;
 
@@ -55,12 +57,13 @@ public class RangeEditControl extends ControlComposite {
      */
     public RangeEditControl(Composite parent, UIToolkit toolkit, RangeValueSet range, DefaultUIController uiController) {
         super(parent, SWT.NONE);
-        this.uicontroller = uiController;
         this.range = range;
         setLayout();
         Group group = createRangeGroup(toolkit);
         Composite workArea = createWorkArea(toolkit, group);
         createTextControls(toolkit, workArea);
+
+        this.uiController = new IpsPartUIController((IIpsObjectPart)range.getParent());
         connectToModel();
     }
 
@@ -129,11 +132,11 @@ public class RangeEditControl extends ControlComposite {
         stepfield = new TextField(step);
         stepfield.setSupportsNull(false);
     	containsNullField = new CheckboxField(containsNullCB);
-        uicontroller.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-        uicontroller.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-        uicontroller.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uicontroller.add(containsNullField, range, IRangeValueSet.PROPERTY_CONTAINS_NULL);
-        uicontroller.updateUI();
+        uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
+        uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
+        uiController.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
+        uiController.add(containsNullField, range, IRangeValueSet.PROPERTY_CONTAINS_NULL);
+        uiController.updateUI();
     }
 
     public RangeValueSet getRange() {
@@ -142,6 +145,15 @@ public class RangeEditControl extends ControlComposite {
 
     public void setValueSet(IValueSet valueSet) {
         range = (RangeValueSet)valueSet;
+        uiController.remove(upperfield);
+        uiController.remove(lowerfield);
+        uiController.remove(stepfield);
+        uiController.remove(containsNullField);
+        uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
+        uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
+        uiController.add(stepfield, range, IRangeValueSet.PROPERTY_STEP);
+        uiController.add(containsNullField, range, IRangeValueSet.PROPERTY_CONTAINS_NULL);
+        uiController.updateUI();
     }
 
     public void setLower(String newText) {

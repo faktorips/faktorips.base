@@ -121,6 +121,7 @@ public class Attribute extends Member implements IAttribute {
     		if (superAttr != null) {
     			return superAttr.getDatatype();
     		}
+    		return "";
     	}
         return datatype;
     }
@@ -187,6 +188,7 @@ public class Attribute extends Member implements IAttribute {
     		if (superAttr != null) {
     			return superAttr.getAttributeType();
     		}
+    		return AttributeType.CHANGEABLE;
     	}
         return attributeType;
     }
@@ -195,14 +197,14 @@ public class Attribute extends Member implements IAttribute {
      * Overridden method.
      */
     public boolean isChangeable() {
-		return attributeType==AttributeType.CHANGEABLE;
+		return getAttributeType()==AttributeType.CHANGEABLE;
 	}
     
     /**
      * Overridden.
      */
 	public boolean isDerivedOrComputed() {
-        return attributeType==AttributeType.DERIVED || attributeType==AttributeType.COMPUTED;
+        return getAttributeType()==AttributeType.DERIVED || getAttributeType()==AttributeType.COMPUTED;
     }
 
     /**
@@ -214,6 +216,7 @@ public class Attribute extends Member implements IAttribute {
     		if (superAttr != null) {
     			return superAttr.getModifier();
     		}
+    		return Modifier.PUBLISHED;
     	}
         return modifier;
     }
@@ -236,6 +239,7 @@ public class Attribute extends Member implements IAttribute {
     		if (superAttr != null) {
     			return superAttr.isProductRelevant();
     		}
+    		return true;
     	}
         return productRelevant;
     }
@@ -276,6 +280,9 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public void setValueSetType(ValueSetType type) {
+    	if (valueSet != null && type == valueSet.getValueSetType()) {
+    		return;
+    	}
     	valueSet = type.newValueSet(this, getNextPartId());
     	updateSrcFile();
     }
@@ -284,16 +291,16 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public ConfigElementType getConfigElementType() {
-        if (!productRelevant) {
+        if (!isProductRelevant()) {
             return null;
         }
-        if (attributeType == AttributeType.CHANGEABLE) {
+        if (getAttributeType() == AttributeType.CHANGEABLE) {
             return ConfigElementType.POLICY_ATTRIBUTE;
         }
-        if (attributeType == AttributeType.CONSTANT) {
+        if (getAttributeType() == AttributeType.CONSTANT) {
             return ConfigElementType.PRODUCT_ATTRIBUTE;
         }
-        if (attributeType == AttributeType.COMPUTED || attributeType == AttributeType.DERIVED) {
+        if (getAttributeType() == AttributeType.COMPUTED || getAttributeType() == AttributeType.DERIVED) {
             return ConfigElementType.FORMULA;
         }
         throw new RuntimeException("Unkown AttributeType!"); //$NON-NLS-1$
@@ -303,7 +310,7 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public Image getImage() {
-        if (modifier == Modifier.PRIVATE) {
+        if (getModifier() == Modifier.PRIVATE) {
             return IpsPlugin.getDefault().getImage("AttributePrivate.gif"); //$NON-NLS-1$
         } else {
             return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
@@ -344,7 +351,7 @@ public class Attribute extends Member implements IAttribute {
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
-        Datatype datatypeObject = ValidationUtils.checkDatatypeReference(datatype, false, this,
+        Datatype datatypeObject = ValidationUtils.checkDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
         if (datatypeObject == null) {
             if (!StringUtils.isEmpty(defaultValue)) {
@@ -354,7 +361,7 @@ public class Attribute extends Member implements IAttribute {
             }
         } else {
             if (!datatypeObject.isValueDatatype()) {
-                if (!StringUtils.isEmpty(datatype)) {
+                if (!StringUtils.isEmpty(getDatatype())) {
                     String text = NLS.bind(Messages.Attribute_msgValueNotParsable_InvalidDatatype, defaultValue);
                     result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE, text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                 } else {
@@ -368,18 +375,23 @@ public class Attribute extends Member implements IAttribute {
                 	} else if (defaultValue.equals("")) { //$NON-NLS-1$
                 		defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
                 	}
-                    String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, datatype);
+                    String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, getDatatype());
                     result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
                     return;
                 }
                 if (valueSet != null) {
+                    valueSet.validate(result);
+
                     if (valueSet.containsValue(defaultValue) == false) {
                         result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
                                 Message.ERROR, this,
                                 PROPERTY_DEFAULT_VALUE));
                     }
+                    
+                    if (overwrites) {
+                    	getSupertypeAttribute().getValueSet().containsValueSet(valueSet, result, valueSet, null);
+                    }
                 }
-                valueSet.validate(result);
             }
         }
         
@@ -458,12 +470,17 @@ public class Attribute extends Member implements IAttribute {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        datatype = element.getAttribute(PROPERTY_DATATYPE);
-        modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
-        attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
-        productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
-        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
+        
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
+
+        if (!overwrites) {
+        	// these values are only neccessary if this attribute does not overwrite one.
+        	datatype = element.getAttribute(PROPERTY_DATATYPE);
+        	modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
+        	attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
+        	productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
+        }
+        defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
 
         // get the nodes with the parameter information
         NodeList nl = element.getElementsByTagName(TAG_PROPERTY_PARAMETER);
@@ -487,10 +504,16 @@ public class Attribute extends Member implements IAttribute {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
-        element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
+        
+        element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
+        
+        if (!overwrites) {
+        	// these values are only neccessary if this attribute does not overwrite one.
+        	element.setAttribute(PROPERTY_DATATYPE, datatype);
+        	element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
+        	element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
+        	element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
+        }
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
         Document doc = element.getOwnerDocument();
         for (int i = 0; i < parameters.length; i++) {
@@ -565,6 +588,17 @@ public class Attribute extends Member implements IAttribute {
 	 * {@inheritDoc}
 	 */
 	public void setOverwrites(boolean overwrites) {
+		boolean old = this.overwrites;
 		this.overwrites = overwrites;
+		valueChanged(old, overwrites);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setValueSetCopy(IValueSet source) {
+		IValueSet oldset = valueSet;
+		valueSet = source.copy(this, getNextPartId());
+		valueChanged(oldset, valueSet);
 	}
 }

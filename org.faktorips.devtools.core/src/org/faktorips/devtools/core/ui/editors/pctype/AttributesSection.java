@@ -21,8 +21,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -58,6 +64,37 @@ public class AttributesSection extends SimpleIpsPartsSection {
      * allows to edit attributes in a dialog, create new attributes and delete attributes.
      */
     public class AttributesComposite extends IpsPartsComposite {
+        private Button overrideButton;
+
+        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
+            super.createButtons(buttons, toolkit);
+            createButtonSpace(buttons, toolkit);
+    		overrideButton = toolkit.createButton(buttons, Messages.MethodsSection_button);
+    		overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+    		overrideButton.addSelectionListener(new SelectionListener() {
+    			public void widgetSelected(SelectionEvent e) {
+    				try {
+    					overrideClicked();
+    				} catch (Exception ex) {
+    					IpsPlugin.logAndShowErrorDialog(ex);
+    				}
+    			}
+    			public void widgetDefaultSelected(SelectionEvent e) {
+    			}
+    		});
+    		return true;
+        }
+        
+        private void overrideClicked() {
+            try {
+            	OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPcType(), getShell());
+                if (dialog.open()==Window.OK) {
+                    getPcType().overrideAttributes(dialog.getSelectedAttributes());
+                }
+            } catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
 
         public AttributesComposite(IIpsObject pdObject, Composite parent,
                 UIToolkit toolkit) {

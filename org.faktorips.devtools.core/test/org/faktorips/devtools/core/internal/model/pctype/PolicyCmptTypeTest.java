@@ -370,7 +370,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     }
     
     public void testGetOverrideCandidates() throws CoreException {
-        assertEquals(0, pcType.findOverrideCandidates(false).length);
+        assertEquals(0, pcType.findOverrideMethodCandidates(false).length);
         
         // create two more types that act as supertype and supertype's supertype 
         IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
@@ -404,7 +404,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         m6.setModifier(Modifier.PRIVATE);
         m6.setName("getPremium");
         
-        IMethod[] candidates = pcType.findOverrideCandidates(false);
+        IMethod[] candidates = pcType.findOverrideMethodCandidates(false);
         assertEquals(2, candidates.length);
         assertEquals(m3, candidates[0]);
         assertEquals(m5, candidates[1]);
@@ -414,7 +414,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         // m6 is not a candidate because it is private
         
         // only abstract methods
-        candidates = pcType.findOverrideCandidates(true);
+        candidates = pcType.findOverrideMethodCandidates(true);
         assertEquals(1, candidates.length);
         assertEquals(m5, candidates[0]);
         // note: now only m5 is a candidate as it's abstract, m2 is not.
@@ -433,7 +433,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         IMethod m2 = supertype.newMethod();
         m1.setName("m2");
         
-        pcType.override(new IMethod[]{m1, m2});
+        pcType.overrideMethods(new IMethod[]{m1, m2});
         assertEquals(2, pcType.getNumOfMethods());
         IMethod[] methods = pcType.getMethods();
         assertTrue(methods[0].isSame(m1));
@@ -466,7 +466,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
 
         // "implement" the method in pcType => error should no be reported anymore
-        pcType.override(new IMethod[]{superMethod});
+        pcType.overrideMethods(new IMethod[]{superMethod});
         list = pcType.validate();
         assertEquals(numOfMsg, list.getNoOfMessages());
         
@@ -484,7 +484,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
         assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
         
         // "implement" the method in the supertype => error should no be reported anymore
-        superType.override(new IMethod[]{supersuperMethod});
+        superType.overrideMethods(new IMethod[]{supersuperMethod});
         list = pcType.validate();
         assertEquals(numOfMsg, list.getNoOfMessages());
         
@@ -599,26 +599,27 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
     }
 
-    public void testValidate_MustImplementeAbstractRelation() throws Exception {
-    	MessageList ml = pcType.validate();
-    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
-    	
-    	PolicyCmptType supertype = newPolicyCmptType(ipsProject, "base.SuperType");
-    	PolicyCmptType target = newPolicyCmptType(ipsProject, "base.Target");
-
-    	pcType.setSupertype(supertype.getQualifiedName());
-    	
-    	IRelation rel = supertype.newRelation();
-    	rel.setTarget(target.getQualifiedName());
-    	rel.setReadOnlyContainer(true);
-    	
-    	ml = pcType.validate();
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
-    	
-    	pcType.setAbstract(true);
-    	ml = pcType.validate();
-    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
-    }
+// ecause at the moment unimplemented container relations are valid...
+//    public void testValidate_MustImplementeAbstractRelation() throws Exception {
+//    	MessageList ml = pcType.validate();
+//    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
+//    	
+//    	PolicyCmptType supertype = newPolicyCmptType(ipsProject, "base.SuperType");
+//    	PolicyCmptType target = newPolicyCmptType(ipsProject, "base.Target");
+//
+//    	pcType.setSupertype(supertype.getQualifiedName());
+//    	
+//    	IRelation rel = supertype.newRelation();
+//    	rel.setTarget(target.getQualifiedName());
+//    	rel.setReadOnlyContainer(true);
+//    	
+//    	ml = pcType.validate();
+//    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
+//    	
+//    	pcType.setAbstract(true);
+//    	ml = pcType.validate();
+//    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));
+//    }
 
     public void testValidate_InconsistentTypeHirachy() throws Exception {
         // create two more types that act as supertype and supertype's supertype 
@@ -641,4 +642,36 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
+    public void testFindOverwriteAttributeCandidates() throws Exception {
+    	IAttribute[] candidates = pcType.findOverrideAttributeCandidates();
+    	
+    	assertEquals(0, candidates.length);
+
+        PolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        PolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "Supersupertype");
+
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        pcType.setSupertype(supertype.getQualifiedName());
+    	
+    	candidates = pcType.findOverrideAttributeCandidates();
+    	assertEquals(0, candidates.length);
+    	
+    	supersupertype.newAttribute().setName("name");
+    	supertype.newAttribute().setName("name2");
+    	
+    	candidates = pcType.findOverrideAttributeCandidates();
+    	assertEquals(2, candidates.length);
+    	
+    	IAttribute attr = pcType.newAttribute();
+    	attr.setName("name");
+    	
+    	candidates = pcType.findOverrideAttributeCandidates();
+    	assertEquals(2, candidates.length);
+    	
+    	attr.setOverwrites(true);
+
+    	candidates = pcType.findOverrideAttributeCandidates();
+    	assertEquals(1, candidates.length);
+    }
+    
 }

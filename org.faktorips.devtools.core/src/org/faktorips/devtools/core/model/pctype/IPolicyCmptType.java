@@ -304,14 +304,29 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * 
      * @param onlyAbstractMethods if true only abstract methods are returned.
      */
-    public IMethod[] findOverrideCandidates(boolean onlyAbstractMethods) throws CoreException;
+    public IMethod[] findOverrideMethodCandidates(boolean onlyAbstractMethods) throws CoreException;
+    
+    /**
+     * Returns an array of all attributes of all supertypes not yet overwritten by this 
+     * policy component type.
+     */
+    public IAttribute[] findOverrideAttributeCandidates() throws CoreException;
     
     /**
      * Creates new methods in this type that overrides the given methods.
      * Note that it is not checked, if the methods really belong to one of
      * the type's supertypes.
      */
-    public IMethod[] override(IMethod[] methods);
+    public IMethod[] overrideMethods(IMethod[] methods);
+    
+    /**
+     * Creates new attributes in this type overriding the given attributes.
+     * Note that it is not checked, if the attributes really belong to one of
+     * the type's supertypes.
+     * 
+     * @return The created attributes.
+     */
+    public IAttribute[] overrideAttributes(IAttribute[] attributes);
     
     /**
      * Returns the type's vallidation rules.

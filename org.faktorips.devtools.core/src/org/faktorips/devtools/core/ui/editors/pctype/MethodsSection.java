@@ -97,9 +97,9 @@ public class MethodsSection extends SimpleIpsPartsSection {
         
         private void overrideClicked() {
             try {
-                OverrideMethodDialog dialog = new OverrideMethodDialog(getPcType(), getShell());
+            	OverrideMethodDialog dialog = new OverrideMethodDialog(getPcType(), getShell());
                 if (dialog.open()==Window.OK) {
-                    getPcType().override(dialog.getSelectedMethods());
+                    getPcType().overrideMethods(dialog.getSelectedMethods());
                 }
             } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);

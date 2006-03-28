@@ -26,4 +26,17 @@
 			</Enum>
 		</ValueSet>
 	</Attribute>
+
+	<Attribute id="99" name="slave" datatype="money" productRelevant="false" attributeType="computed" overwrites="true">
+		<DefaultValue isNull="true"/>
+		<FormulaParameter name="policy" datatype="MotorPolicy"/>
+		<FormulaParameter name="vehicle" datatype="Vehicle"/>
+		<ValueSet>
+			<Enum>
+			  <Value value="122"/>
+			  <Value value="2"/>
+			  <Value value="3"/>		  
+			</Enum>
+		</ValueSet>
+	</Attribute>
 </testcases>

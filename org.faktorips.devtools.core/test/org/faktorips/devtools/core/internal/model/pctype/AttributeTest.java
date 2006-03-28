@@ -137,12 +137,16 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("vehicle", params[1].getName());
         assertEquals("Vehicle", params[1].getDatatype());
         assertNotNull(attribute.getValueSet());
+        assertFalse(attribute.getOverwrites());
         
         attribute.initFromXml((Element)nl.item(1));
         assertEquals(2, attribute.getId());
         assertNull(attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
         assertEquals(EnumValueSet.class,attribute.getValueSet().getClass());
+
+        attribute.initFromXml((Element)nl.item(2));
+        assertTrue(attribute.getOverwrites());
     }
 
     /*
@@ -155,6 +159,7 @@ public class AttributeTest extends IpsPluginTest {
         attribute.setProductRelevant(true);
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("18");
+        attribute.setOverwrites(false);
         Parameter[] params = new Parameter[2];
         params[0] = new Parameter(0, "policy", "MotorPolicy");
         params[1] = new Parameter(1, "vehicle", "Vehicle");
@@ -172,6 +177,7 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("age", copy.getName());
         assertEquals("decimal", copy.getDatatype());
         assertTrue(copy.isProductRelevant());
+        assertFalse(copy.getOverwrites());
         assertEquals(AttributeType.CONSTANT, copy.getAttributeType());
         assertEquals("18", copy.getDefaultValue());
         Parameter[] paramsCopy = copy.getFormulaParameters();
@@ -218,6 +224,14 @@ public class AttributeTest extends IpsPluginTest {
         assertEquals("a", vekt[0]);
         assertEquals("b", vekt[1]);
         assertEquals("x", vekt[2]);
+        
+        // and now an attribute which overwrites
+        attribute.setOverwrites(true);
+        element = attribute.toXml(this.newDocument());
+        copy = new Attribute();
+        copy.initFromXml(element);
+        assertTrue(attribute.getOverwrites());
+        assertEquals("", attribute.getDatatype());
     }
     
     /**
@@ -393,31 +407,45 @@ public class AttributeTest extends IpsPluginTest {
     }
     
     public void testOverwrites() throws Exception {
-    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
-    	IAttribute superAttr = supertype.newAttribute();
-    	superAttr.setDatatype("superDatatype");
-    	superAttr.setProductRelevant(false);
-    	superAttr.setModifier(Modifier.PUBLIC);
-    	superAttr.setAttributeType(AttributeType.CHANGEABLE);
-    	superAttr.setName("name");
+    	IPolicyCmptType supersupertype = newPolicyCmptType(project, "super.SuperSuperType");
+    	IAttribute supersuperAttr = supersupertype.newAttribute();
+    	supersuperAttr.setDatatype("superDatatype");
+    	supersuperAttr.setProductRelevant(false);
+    	supersuperAttr.setModifier(Modifier.PUBLIC);
+    	supersuperAttr.setAttributeType(AttributeType.CHANGEABLE);
+    	supersuperAttr.setName("name");
 
-    	pcType.setSupertype(supertype.getQualifiedName());
+    	pcType.setSupertype(supersupertype.getQualifiedName());
     	attribute.setDatatype("Datatype");
     	attribute.setProductRelevant(true);
     	attribute.setModifier(Modifier.PUBLISHED);
     	attribute.setAttributeType(AttributeType.CONSTANT);
     	attribute.setName("name");
     	
-    	assertFalse(attribute.getDatatype().equals(superAttr.getDatatype()));
-    	assertFalse(attribute.isProductRelevant() == superAttr.isProductRelevant());
-    	assertFalse(attribute.getModifier() == superAttr.getModifier());
-    	assertFalse(attribute.getAttributeType() == superAttr.getAttributeType());
+    	assertFalse(attribute.getDatatype().equals(supersuperAttr.getDatatype()));
+    	assertFalse(attribute.isProductRelevant() == supersuperAttr.isProductRelevant());
+    	assertFalse(attribute.getModifier() == supersuperAttr.getModifier());
+    	assertFalse(attribute.getAttributeType() == supersuperAttr.getAttributeType());
     	
     	attribute.setOverwrites(true);
-    	assertTrue(attribute.getDatatype().equals(superAttr.getDatatype()));
-    	assertTrue(attribute.isProductRelevant() == superAttr.isProductRelevant());
-    	assertTrue(attribute.getModifier() == superAttr.getModifier());
-    	assertTrue(attribute.getAttributeType() == superAttr.getAttributeType());
+    	assertTrue(attribute.getDatatype().equals(supersuperAttr.getDatatype()));
+    	assertTrue(attribute.isProductRelevant() == supersuperAttr.isProductRelevant());
+    	assertTrue(attribute.getModifier() == supersuperAttr.getModifier());
+    	assertTrue(attribute.getAttributeType() == supersuperAttr.getAttributeType());
+
+    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
+    	pcType.setSupertype(supertype.getQualifiedName());
+    	supertype.setSupertype(supersupertype.getQualifiedName());
+    	
+    	IAttribute superAttr = supertype.newAttribute();
+    	superAttr.setName("name");
+    	superAttr.setOverwrites(true);
+
+    	assertTrue(attribute.getDatatype().equals(supersuperAttr.getDatatype()));
+    	assertTrue(attribute.isProductRelevant() == supersuperAttr.isProductRelevant());
+    	assertTrue(attribute.getModifier() == supersuperAttr.getModifier());
+    	assertTrue(attribute.getAttributeType() == supersuperAttr.getAttributeType());
+    	
     }
     
     public void testValidate_nothingToOverwrite() throws Exception {
