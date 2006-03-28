@@ -44,6 +44,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     protected IpsPartUIController uiController;
     private TextField descriptionField;
     private Memento oldState;
+    private boolean dirty = false;
 
     public IpsPartEditDialog(
             IIpsObjectPart part, 
@@ -60,8 +61,10 @@ public abstract class IpsPartEditDialog extends EditDialog {
         super(parentShell, windowTitle, useTabFolder);
         uiController = createUIController(part);
         oldState = part.newMemento();
+        dirty = part.getIpsObject().getIpsSrcFile().isDirty();
     }
     
+    // overwritten to be sure to get the cancel-button as soon as possible...
     protected void createButtonsForButtonBar(Composite parent) {
     	super.createButtonsForButtonBar(parent);
         super.getButton(Window.CANCEL).addSelectionListener(new SelectionListener() {
@@ -72,6 +75,9 @@ public abstract class IpsPartEditDialog extends EditDialog {
 		
 			public void widgetSelected(SelectionEvent e) {
 				uiController.getIpsObjectPart().setState(oldState);
+				if (!dirty) {
+					uiController.getIpsObjectPart().getIpsObject().getIpsSrcFile().markAsClean();
+				}
 			}
 		});
     }
