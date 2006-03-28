@@ -89,4 +89,12 @@ public class Checkbox extends ControlComposite {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void setEnabled(boolean enabled) {
+    	super.setEnabled(enabled);
+    	button.setEnabled(enabled);
+    }
+    
 }

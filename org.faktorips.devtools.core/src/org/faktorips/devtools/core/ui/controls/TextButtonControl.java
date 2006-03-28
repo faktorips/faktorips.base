@@ -143,4 +143,14 @@ public abstract class TextButtonControl extends ControlComposite{
             listenToControl(text, eventType);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEnabled(boolean enabled) {
+    	super.setEnabled(enabled);
+    	text.setEnabled(enabled);
+    	button.setEnabled(enabled);
+    }
+    
 }

@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
@@ -69,6 +70,7 @@ public class Attribute extends Member implements IAttribute {
     private Modifier modifier = Modifier.PUBLISHED;
     private Parameter[] parameters = new Parameter[0];
     private IValueSet valueSet;
+    private boolean overwrites = false;
 
     /**
      * Creates a new attribute.
@@ -114,7 +116,41 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public String getDatatype() {
+    	if (overwrites) {
+    		Attribute superAttr = getSupertypeAttribute();
+    		if (superAttr != null) {
+    			return superAttr.getDatatype();
+    		}
+    	}
         return datatype;
+    }
+    
+    /**
+     * Returns the first found attribute with the same name in supertypes or <code>null</code>
+     * if no such attribute exists.
+     */
+    private Attribute getSupertypeAttribute() {
+		IPolicyCmptType type = this.getPolicyCmptType();
+
+		if (type == null) {
+			return null;
+		}
+		
+		try {
+			// get the supertype because the findAttribute-Method of TypeHierarchy 
+			// searches the given type, too. So we can avoid to find this attribute.
+			type = type.findSupertype();
+			if (type == null) {
+				return null;
+			}
+
+			Attribute attr = (Attribute)type.getSupertypeHierarchy().findAttribute(type, name); 
+			
+			return attr;
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+			return null;
+		}
     }
 
     /**
@@ -130,7 +166,7 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public Datatype findDatatype() throws CoreException {
-        return getIpsProject().findDatatype(datatype);
+        return getIpsProject().findDatatype(getDatatype());
     }
 
     /**
@@ -146,6 +182,12 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public AttributeType getAttributeType() {
+    	if (overwrites) {
+    		Attribute superAttr = getSupertypeAttribute();
+    		if (superAttr != null) {
+    			return superAttr.getAttributeType();
+    		}
+    	}
         return attributeType;
     }
 
@@ -167,6 +209,12 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public Modifier getModifier() {
+    	if (overwrites) {
+    		Attribute superAttr = getSupertypeAttribute();
+    		if (superAttr != null) {
+    			return superAttr.getModifier();
+    		}
+    	}
         return modifier;
     }
 
@@ -183,6 +231,12 @@ public class Attribute extends Member implements IAttribute {
      * Overridden.
      */
     public boolean isProductRelevant() {
+    	if (overwrites) {
+    		Attribute superAttr = getSupertypeAttribute();
+    		if (superAttr != null) {
+    			return superAttr.isProductRelevant();
+    		}
+    	}
         return productRelevant;
     }
 
@@ -342,6 +396,18 @@ public class Attribute extends Member implements IAttribute {
         	String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
         	result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
         }
+        
+        Attribute superAttr = getSupertypeAttribute();
+        if (!overwrites && superAttr != null) {
+        	IPolicyCmptType type = superAttr.getPolicyCmptType();
+        	String text = NLS.bind("Name collision with {0}:{1}", type!=null?type.getQualifiedName():"unknown", superAttr.getName());
+        	result.add(new Message(MSGCODE_NAME_COLLISION, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
+        }
+        
+        if (overwrites && superAttr == null) {
+        	String text = NLS.bind("No attribute {0} in supertype hierarchy, so nothing can be overwritten.", getName());
+        	result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
+        }
     }
 
     private void validate(Parameter param, MessageList result) throws CoreException {
@@ -397,6 +463,7 @@ public class Attribute extends Member implements IAttribute {
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
+        overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
 
         // get the nodes with the parameter information
         NodeList nl = element.getElementsByTagName(TAG_PROPERTY_PARAMETER);
@@ -485,5 +552,19 @@ public class Attribute extends Member implements IAttribute {
 			IpsPlugin.log(e);
 		}
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getOverwrites() {
+		return overwrites;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setOverwrites(boolean overwrites) {
+		this.overwrites = overwrites;
 	}
 }

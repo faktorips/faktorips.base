@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.util.message.MessageList;
@@ -50,11 +52,12 @@ public class AttributeTest extends IpsPluginTest {
     private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
     private IAttribute attribute;
+    private IIpsProject project;
     
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject pdProject = this.newIpsProject("TestProject");
-        ipsRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
+        project = this.newIpsProject("TestProject");
+        ipsRootFolder = project.getIpsPackageFragmentRoots()[0];
         ipsFolder = ipsRootFolder.createPackageFragment("products.folder", true, null);
         ipsSrcFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         pcType = (PolicyCmptType)ipsSrcFile.getIpsObject();
@@ -387,6 +390,68 @@ public class AttributeTest extends IpsPluginTest {
     	param.setDatatype("abc");
     	ml = attribute.validate();
     	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DATATYPE_NOT_FOUND));
+    }
+    
+    public void testOverwrites() throws Exception {
+    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
+    	IAttribute superAttr = supertype.newAttribute();
+    	superAttr.setDatatype("superDatatype");
+    	superAttr.setProductRelevant(false);
+    	superAttr.setModifier(Modifier.PUBLIC);
+    	superAttr.setAttributeType(AttributeType.CHANGEABLE);
+    	superAttr.setName("name");
+
+    	pcType.setSupertype(supertype.getQualifiedName());
+    	attribute.setDatatype("Datatype");
+    	attribute.setProductRelevant(true);
+    	attribute.setModifier(Modifier.PUBLISHED);
+    	attribute.setAttributeType(AttributeType.CONSTANT);
+    	attribute.setName("name");
+    	
+    	assertFalse(attribute.getDatatype().equals(superAttr.getDatatype()));
+    	assertFalse(attribute.isProductRelevant() == superAttr.isProductRelevant());
+    	assertFalse(attribute.getModifier() == superAttr.getModifier());
+    	assertFalse(attribute.getAttributeType() == superAttr.getAttributeType());
+    	
+    	attribute.setOverwrites(true);
+    	assertTrue(attribute.getDatatype().equals(superAttr.getDatatype()));
+    	assertTrue(attribute.isProductRelevant() == superAttr.isProductRelevant());
+    	assertTrue(attribute.getModifier() == superAttr.getModifier());
+    	assertTrue(attribute.getAttributeType() == superAttr.getAttributeType());
+    }
+    
+    public void testValidate_nothingToOverwrite() throws Exception {
+    	attribute.setName("name");
+
+    	MessageList ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+    	
+    	attribute.setOverwrites(true);
+    	ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+    	
+    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
+    	IAttribute superAttr = supertype.newAttribute();
+    	superAttr.setName("name");
+    	pcType.setSupertype(supertype.getQualifiedName());
+    	
+    	ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+    }
+
+    public void testValidate_nameCollision() throws Exception {
+    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
+    	IAttribute superAttr = supertype.newAttribute();
+    	superAttr.setName("name");
+    	pcType.setSupertype(supertype.getQualifiedName());    	
+    	attribute.setName("name");
+    	
+    	MessageList ml = attribute.validate();
+    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NAME_COLLISION));
+    	
+    	attribute.setName("abc");
+    	ml = attribute.validate();
+    	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NAME_COLLISION));
     }
 }
 

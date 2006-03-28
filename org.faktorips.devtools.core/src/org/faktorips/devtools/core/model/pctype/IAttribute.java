@@ -40,7 +40,7 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
     
     public final static String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
-    
+    public final static String PROPERTY_OVERWRITES = "overwrites";
     /**
      * Prefix for all message codes of this class.
      */
@@ -125,6 +125,21 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
 	 */
 	public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX
 			+ "DatatypeNotFound"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the attribute is marked overwriting 
+	 * an attribute in the supertype hierarchy, but there is no such attribute.
+	 */
+	public final static String MSGCODE_NOTHING_TO_OVERWRITE = MSGCODE_PREFIX
+			+ "NothingToOverwrite"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the attribute has a name equal to 
+	 * a name of an attribute somewhere in the supertype hierarchy but is not marked
+	 * to overwrite it. 
+	 */
+	public final static String MSGCODE_NAME_COLLISION = MSGCODE_PREFIX
+			+ "NameCollsion"; //$NON-NLS-1$
     
     /**
 	 * Returns the attribute's datatype.
@@ -231,5 +246,18 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
      * old informations (e.g. bounds and step for a range value set) are removed.
      */
     public void setValueSetType(ValueSetType type);
+    
+    /**
+     * Returns <code>true</code> if this attribute is marked to overwrite an attribute
+     * with the same name somewhere up the supertype hierarchy, <code>false</code> otherwise. 
+     */
+    public boolean getOverwrites();
+    
+    /**
+     * <code>true</code> to indicate that this attribute overwrites an attribute
+     * with the same name somewerhe up the supertype hierarchy or <code>false</code>
+     * to let this attribute be a new one.
+     */
+    public void setOverwrites(boolean overwrites);
     
 }
