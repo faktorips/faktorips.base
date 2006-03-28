@@ -52,13 +52,13 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClass
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IPolicyComponent;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.AbstractPolicyComponent;
 import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
@@ -1164,58 +1164,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
                 paramNames, paramTypes);
         builder.append("super(productCmpt);");
-        builder.methodEnd();
-    }
-    
-    private void generateConstructorsWithParent(boolean generateProductCmptArg, JavaCodeFragmentBuilder builder) throws CoreException {
-        IRelation[] relations = getPcType().getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].getRelationType().isReverseComposition() && !relations[i].isReadOnlyContainer()) {
-                generateConstructorWithParent(relations[i], generateProductCmptArg, builder);
-            }
-        }
-    }
-    
-    /**
-     * Code sample:
-     * <pre>
-     * [Javadoc]
-     * public Coverage(IPolicy parent, Product productCmpt) {
-     *     super(productCmpt);
-     *     setPolicy(parent);
-     *     initialize();
-     * }
-     * </pre>
-     */
-    private void generateConstructorWithParent(
-            IRelation reverseComp, 
-            boolean generateProductCmptArg, 
-            JavaCodeFragmentBuilder builder) throws CoreException {
-        
-        appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getPcType(), builder);
-        IPolicyCmptType target = reverseComp.findTarget();
-        String targetInterface = interfaceBuilder.getQualifiedClassName(target);
-        String[] paramNames, paramTypes;
-        if (generateProductCmptArg) {
-            paramNames = new String[] { "parent", "productCmpt" };
-            paramTypes = new String[] { 
-                    targetInterface, 
-                    productCmptInterfaceBuilder.getQualifiedClassName(getPcType())};
-        } else {
-            paramNames = new String[] { "parent" };
-            paramTypes = new String[] { targetInterface }; 
-        }
-        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, null, getUnqualifiedClassName(),
-                paramNames, paramTypes);
-        if (generateProductCmptArg) {
-            builder.appendln("super(productCmpt);");
-        } else {
-            builder.appendln("super();");
-        }
-        builder.appendln(interfaceBuilder.getMethodNameSetObject(reverseComp) + "(parent);");
-        if (generateProductCmptArg) {
-            builder.appendln("initialize();");
-        }
         builder.methodEnd();
     }
     
