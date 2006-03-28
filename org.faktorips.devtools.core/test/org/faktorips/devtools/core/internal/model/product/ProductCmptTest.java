@@ -174,21 +174,4 @@ public class ProductCmptTest extends IpsPluginTest {
 			//nothing to do :-)
 		}
     }
-
-    public void testSetRuntimeId() throws Exception {
-    	// as long as migration code is contained in getRuntimeId the qualified name is 
-    	// returned if no runtime id was set. This has to be replaced by the empty 
-    	// string if the migration code in ProductCmpt.getRuntimeId is removed
-    	assertEquals("products.folder.TestProduct", productCmpt.getRuntimeId());
-    	productCmpt.setRuntimeId();
-    	assertEquals(productCmpt.getIpsProject().getRuntimeIdPrefix() + "_" + productCmpt.getName(), productCmpt.getRuntimeId());
-    	
-    	try {
-    		productCmpt.setRuntimeId();
-    		fail();
-    	} catch (UnsupportedOperationException e) {
-    		// nothing to do.
-    	}    	
-    }
-    
 }

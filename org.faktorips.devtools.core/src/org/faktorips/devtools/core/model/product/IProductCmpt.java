@@ -120,13 +120,11 @@ public interface IProductCmpt extends ITimedIpsObject {
     public String getRuntimeId();
     
     /**
-	 * Sets the runtimeId for this product cmpt. The id is requested from the project this
-	 * product component belongs to. This method should only be called once: At creation time. 
-	 * If called on a product component the id was allready set, an exception is thrown.
+	 * Sets the given runtimeId for this product component.
 	 * 
-	 * @throws UnsupportedOperationException if the runtime id was allready set.
-	 * @throws NullPointerException if the project is not available at calltime.
-     * @throws CoreException if an error occured during evaluation of the runtime id. 
+	 * Be aware of the problems that can be caused by setting a new runtime id
+	 * to an object where allready data with references to the old runtime id
+	 * exists...
 	 */
-	public void setRuntimeId() throws CoreException;
+    public void setRuntimeId(String runtimeId);
 }

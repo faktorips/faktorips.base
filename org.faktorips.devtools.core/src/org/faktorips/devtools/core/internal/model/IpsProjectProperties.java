@@ -140,6 +140,7 @@ public class IpsProjectProperties {
 		Element projectEl = doc.createElement(TAG_NAME);
 		projectEl.setAttribute("modelProject", "" + modelProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
+		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix);
 		Element generatedCodeEl = doc.createElement(GENERATED_CODE_TAG_NAME);
 		projectEl.appendChild(generatedCodeEl);
 		generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString()); //$NON-NLS-1$
@@ -169,7 +170,7 @@ public class IpsProjectProperties {
 	public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
-        runtimeIdPrefix = element.getAttribute("runtimeIDPrefix"); //$NON-NLS-1$
+        runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
@@ -286,7 +287,22 @@ public class IpsProjectProperties {
 		definedDatatypes[i]=newDatatype;
 	}
 	
+	/**
+	 * Returns the prefix to be used for new runtime-ids for product components.
+	 */
 	public String getRuntimeIdPrefix() {
 		return this.runtimeIdPrefix;
+	}
+
+	/**
+	 * Sets the new prefix to be used for new runtime-ids for product components.
+	 * 
+	 * @throws NullPointerException if the given prefix is <code>null</code>.
+	 */
+	public void setRuntimeIdPrefix(String runtimeIdPrefix) {
+		if (runtimeIdPrefix == null) {
+			throw new NullPointerException("RuntimeIdPrefix can not be null");
+		}
+		this.runtimeIdPrefix = runtimeIdPrefix;
 	}
 }

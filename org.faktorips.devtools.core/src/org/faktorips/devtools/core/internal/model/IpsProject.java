@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
-import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdEvaluationStrategy;
+import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdInitStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -63,7 +63,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdEvaluationStrategy;
+import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdInitStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
@@ -75,7 +75,7 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
-	private IProductCmptRuntimeIdEvaluationStrategy runtimeIdStrategy = null;
+	private IProductCmptRuntimeIdInitStrategy runtimeIdStrategy = null;
 	
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -706,11 +706,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String evaluateRuntimeId(IProductCmpt productCmpt) throws CoreException {
+	public String getRuntimeId(IProductCmpt productCmpt) throws CoreException {
 		if (runtimeIdStrategy == null) {
-			runtimeIdStrategy = new DefaultRuntimeIdEvaluationStrategy(); 
+			runtimeIdStrategy = new DefaultRuntimeIdInitStrategy(); 
 		}
-		return runtimeIdStrategy.evaluateRuntimeId(productCmpt);
+		return runtimeIdStrategy.getRuntimeId(productCmpt);
 	}
 
 	/**

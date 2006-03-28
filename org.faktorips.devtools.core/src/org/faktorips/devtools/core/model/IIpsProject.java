@@ -324,7 +324,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param productCmpt The product component to find the runtime id for.
      * @throws CoreException if an error occurs during evaluation.
      */
-    public String evaluateRuntimeId(IProductCmpt productCmpt) throws CoreException;
+    public String getRuntimeId(IProductCmpt productCmpt) throws CoreException;
     
     /**
      * Returns the stratgey used to name product components.

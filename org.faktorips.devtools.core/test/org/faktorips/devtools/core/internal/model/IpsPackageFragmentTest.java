@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -147,6 +148,12 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
         assertEquals("blabla", contents);
     }
     
+    public void testCreateProductComponent() throws Exception {
+    	IIpsSrcFile file = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
+    	IProductCmpt product = (IProductCmpt)file.getIpsObject();
+    	assertFalse(StringUtils.isEmpty(product.getRuntimeId()));
+    }
+    
     public void testFindIpsObjectsStartingWith() throws CoreException {
         IIpsObject obj1 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
         IIpsObject obj2 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "motorCoverage");
@@ -245,6 +252,9 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
     	assertEquals(generation.getValidFrom(), copyGen.getValidFrom());
     	
     	assertEquals(generation.getRelations().length, copyGen.getRelations().length);
+    	
+    	assertFalse(template.getRuntimeId().equals(copy.getRuntimeId()));
+    	assertFalse(StringUtils.isEmpty(copy.getRuntimeId()));
     }
     
 }

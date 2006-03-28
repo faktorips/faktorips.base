@@ -128,12 +128,14 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        if (findPolicyCmptType()==null) {
+        IPolicyCmptType type = findPolicyCmptType();
+        if (type == null) {
             String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.policyCmptType);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE)); //$NON-NLS-1$
         }
         MessageList list2 = getIpsProject().getProductCmptNamingStratgey().validate(getName());
         list.add(list2);
+        
     }
     
     /** 
@@ -201,6 +203,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
+        if (StringUtils.isEmpty(runtimeId)) {
+        	throw new RuntimeException("RuntimeId not set in " + getQualifiedName());
+        }
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
     }
 
@@ -229,22 +234,19 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 */
 	public String getRuntimeId() {
 		
-		//TODO remove migration code
-		if (StringUtils.isEmpty(runtimeId)) {
-			return getQualifiedName();
-		}
-		//end migration code
-		
+//		//TODO remove migration code
+//		if (StringUtils.isEmpty(runtimeId)) {
+//			return getQualifiedName();
+//		}
+//		//end migration code
+//		
 		return runtimeId;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setRuntimeId() throws CoreException {
-		if (!StringUtils.isEmpty(this.runtimeId)) {
-			throw new UnsupportedOperationException("The runtime ID can not be overwritten"); //$NON-NLS-1$
-		}
-		this.runtimeId = getIpsProject().evaluateRuntimeId(this);
+	public void setRuntimeId(String runtimeId) {
+		this.runtimeId = runtimeId;
 	}
 }

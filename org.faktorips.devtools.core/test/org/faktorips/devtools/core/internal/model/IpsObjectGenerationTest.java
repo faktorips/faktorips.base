@@ -46,6 +46,7 @@ public class IpsObjectGenerationTest extends IpsObjectTestCase {
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
         timedPdo = new ProductCmpt(pdSrcFile);
+        ((ProductCmpt)timedPdo).setRuntimeId("abc");
         generation = timedPdo.newGeneration();
     }
     

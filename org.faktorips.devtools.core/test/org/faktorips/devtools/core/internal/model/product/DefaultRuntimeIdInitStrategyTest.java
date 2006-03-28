@@ -26,10 +26,10 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
  * 
  * @author Thorsten Guenther
  */
-public class DefaultRuntimeIdEvaluationStrategyTest extends IpsPluginTest {
+public class DefaultRuntimeIdInitStrategyTest extends IpsPluginTest {
 	
 	DefaultTestContent content;
-	DefaultRuntimeIdEvaluationStrategy strategy;
+	DefaultRuntimeIdInitStrategy strategy;
 	String prefix;
 	
 	/**
@@ -38,29 +38,22 @@ public class DefaultRuntimeIdEvaluationStrategyTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         content = new DefaultTestContent();
-        strategy = new DefaultRuntimeIdEvaluationStrategy();
+        strategy = new DefaultRuntimeIdInitStrategy();
         prefix = content.getProject().getIpsProject().getRuntimeIdPrefix();
     }
    
-    public void testEvaluateRuntimeId() throws Exception {
+    public void testGetRuntimeId() throws Exception {
     	IProductCmpt cmpt = newProductCmpt(content.getProject(), "TestProductCmpt");
     	
-    	String id = strategy.evaluateRuntimeId(cmpt);
-    	assertEquals(prefix + "_" + cmpt.getName(), id);
-    	
-    	cmpt.setRuntimeId();
-    	
-    	id = strategy.evaluateRuntimeId(cmpt);
-    	assertEquals(prefix + "_" + cmpt.getName() + "1", id);
+    	String id = strategy.getRuntimeId(cmpt);
+    	assertEquals(prefix + cmpt.getName() + "1", id);
     	
     	IProductCmpt cmpt2 = newProductCmpt(content.getProject(), "TestProductCmpt1");
-    	cmpt2.setRuntimeId();
-    	id = strategy.evaluateRuntimeId(cmpt2);
-    	assertEquals(prefix + "_" + cmpt.getName() + "11", id);
+    	id = strategy.getRuntimeId(cmpt2);
+    	assertEquals(prefix + cmpt.getName() + "11", id);
     	
     	cmpt2 = newProductCmpt(content.getProject(), "TestProductCmpt2");
-    	cmpt2.setRuntimeId();
-    	id = strategy.evaluateRuntimeId(cmpt);
-    	assertEquals(prefix + "_" + cmpt.getName() + "3", id);
+    	id = strategy.getRuntimeId(cmpt);
+    	assertEquals(prefix + cmpt.getName() + "3", id);
     }
 }

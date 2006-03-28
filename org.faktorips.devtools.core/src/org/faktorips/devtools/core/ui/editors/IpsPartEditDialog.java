@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -30,6 +33,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.util.memento.Memento;
 
 
 /**
@@ -39,6 +43,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     
     protected IpsPartUIController uiController;
     private TextField descriptionField;
+    private Memento oldState;
 
     public IpsPartEditDialog(
             IIpsObjectPart part, 
@@ -54,6 +59,21 @@ public abstract class IpsPartEditDialog extends EditDialog {
             boolean useTabFolder) {
         super(parentShell, windowTitle, useTabFolder);
         uiController = createUIController(part);
+        oldState = part.newMemento();
+    }
+    
+    protected void createButtonsForButtonBar(Composite parent) {
+    	super.createButtonsForButtonBar(parent);
+        super.getButton(Window.CANCEL).addSelectionListener(new SelectionListener() {
+		
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		
+			public void widgetSelected(SelectionEvent e) {
+				uiController.getIpsObjectPart().setState(oldState);
+			}
+		});
     }
     
 	protected Control createContents(Composite parent) {

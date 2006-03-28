@@ -18,10 +18,8 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -678,46 +676,48 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 							IPolicyCmptType.PROPERTY_ABSTRACT)); //$NON-NLS-1$
 				}
 			}
-
-			if (findUnresolvedAbstractRelations().length > 0) {
-				String text = Messages.PolicyCmptType_msgMustImplementAbstractRelation;
-				list.add(new Message(MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION,
-						text, Message.ERROR, this, PROPERTY_ABSTRACT));
-			}
+// Validation deactivated because at the moment unimplemented container relations 
+// are valid...
+//			if (findUnresolvedAbstractRelations().length > 0) {
+//				String text = Messages.PolicyCmptType_msgMustImplementAbstractRelation;
+//				list.add(new Message(MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION,
+//						text, Message.ERROR, this, PROPERTY_ABSTRACT));
+//			}
 		}
 	}
 
-	/**
-	 * Returns an array of all relations of this type and all of its supertypes
-	 * which are marked as read-only Container (which means they are abstract) 
-	 * and not implemented somewhere in the supertype hierarchy.
-	 */
-	private IRelation[] findUnresolvedAbstractRelations() throws CoreException {
-		IPolicyCmptType[] types = this.getSupertypeHierarchy()
-				.getAllSupertypesInclSelf(this);
-		List result = new ArrayList();
-		List abstractRelations = new ArrayList();
-		Map nonAbstractRelations = new HashMap();
-		for (int i = 0; i < types.length; i++) {
-			IRelation[] relations = types[i].getRelations();
-			for (int j = 0; j < relations.length; j++) {
-				if (relations[j].isReadOnlyContainer()) {
-					abstractRelations.add(relations[j]);
-				} else {
-					nonAbstractRelations.put(relations[j]
-							.getTargetRoleSingular(), relations[j]);
-				}
-			}
-		}
-
-		for (Iterator iter = abstractRelations.iterator(); iter.hasNext();) {
-			IRelation element = (IRelation) iter.next();
-			if (!nonAbstractRelations.containsKey(element.getTarget())) {
-				result.add(element);
-			}
-		}
-		return (IRelation[]) result.toArray(new IRelation[result.size()]);
-	}
+// see above.
+//	/**
+//	 * Returns an array of all relations of this type and all of its supertypes
+//	 * which are marked as read-only Container (which means they are abstract) 
+//	 * and not implemented somewhere in the supertype hierarchy.
+//	 */
+//	private IRelation[] findUnresolvedAbstractRelations() throws CoreException {
+//		IPolicyCmptType[] types = this.getSupertypeHierarchy()
+//				.getAllSupertypesInclSelf(this);
+//		List result = new ArrayList();
+//		List abstractRelations = new ArrayList();
+//		Map nonAbstractRelations = new HashMap();
+//		for (int i = 0; i < types.length; i++) {
+//			IRelation[] relations = types[i].getRelations();
+//			for (int j = 0; j < relations.length; j++) {
+//				if (relations[j].isReadOnlyContainer()) {
+//					abstractRelations.add(relations[j]);
+//				} else {
+//					nonAbstractRelations.put(relations[j]
+//							.getTargetRoleSingular(), relations[j]);
+//				}
+//			}
+//		}
+//
+//		for (Iterator iter = abstractRelations.iterator(); iter.hasNext();) {
+//			IRelation element = (IRelation) iter.next();
+//			if (!nonAbstractRelations.containsKey(element.getTarget())) {
+//				result.add(element);
+//			}
+//		}
+//		return (IRelation[]) result.toArray(new IRelation[result.size()]);
+//	}
 
 	private void validateIfAllAbstractMethodsAreImplemented(MessageList list)
 			throws CoreException {

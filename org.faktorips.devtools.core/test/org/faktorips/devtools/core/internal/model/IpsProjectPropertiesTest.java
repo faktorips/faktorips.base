@@ -41,6 +41,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.setJavaSrcLanguage(Locale.ITALIAN);
 		props.setChangesInTimeConventionIdForGeneratedCode("myConvention");
 		props.setBuilderSetId("myBuilder");
+		props.setRuntimeIdPrefix("newRuntimeIdPrefix");
 		IIpsObjectPath path = new IpsObjectPath();
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
 		props.setIpsObjectPath(path);
@@ -51,6 +52,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.initFromXml(ipsProject, projectEl);
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
+		assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
 		assertEquals("myBuilder", props.getBuilderSetId());
@@ -72,6 +74,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
+		assertEquals("testPrefix", props.getRuntimeIdPrefix());
 		
 		DateBasedProductCmptNamingStrategy namingStrategy = (DateBasedProductCmptNamingStrategy)props.getProductCmptNamingStrategy();
 		assertEquals(" ", namingStrategy.getVersionIdSeparator());

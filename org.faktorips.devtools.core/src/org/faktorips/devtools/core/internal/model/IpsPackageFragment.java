@@ -199,6 +199,11 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor) throws CoreException {
         String filename = type.getFileName(ipsObjectName);
         IIpsObject pdObject = type.newObject(getIpsSrcFile(filename));
+        
+        if (type == IpsObjectType.PRODUCT_CMPT) {
+        	((IProductCmpt)pdObject).setRuntimeId(pdObject.getIpsProject().getRuntimeId((IProductCmpt)pdObject));
+        }
+        
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         Element element = pdObject.toXml(doc);
         try {
@@ -233,6 +238,9 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     		}
     		file.save(true, null);
     		
+    		if (type == IpsObjectType.PRODUCT_CMPT) {
+            	((IProductCmpt)newObject).setRuntimeId(newObject.getIpsProject().getRuntimeId((IProductCmpt)newObject));
+    		}
     	}
     	else {
     		element = template.toXml(doc);

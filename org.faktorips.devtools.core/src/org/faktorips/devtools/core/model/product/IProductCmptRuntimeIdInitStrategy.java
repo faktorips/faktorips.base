@@ -21,12 +21,12 @@ import org.eclipse.core.runtime.CoreException;
 
 
 /**
- * Interface for classes that provide a strategy for evaluating 
- * new runtime-ids for new product components.
+ * Interface for classes that provide a strategy for initializing 
+ * the runtime-ids for new product components.
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptRuntimeIdEvaluationStrategy {
+public interface IProductCmptRuntimeIdInitStrategy {
 
 	/**
 	 * Finds the runtime id to use for the given product component. The result
@@ -40,7 +40,7 @@ public interface IProductCmptRuntimeIdEvaluationStrategy {
 	 * @throws CoreException
 	 *             if an error occurs during evaluation.
 	 */
-	public String evaluateRuntimeId(IProductCmpt productCmpt)
+	public String getRuntimeId(IProductCmpt productCmpt)
 			throws CoreException;
 	
 }

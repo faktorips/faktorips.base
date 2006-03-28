@@ -40,7 +40,6 @@ public abstract class AbstractPcImplementationBuilder extends
 			AbstractPcInterfaceBuilder policyInterfaceBuilder) {
 		super(builderSet, kindId, stringsSet);
 		this.policyInterfaceBuilder = policyInterfaceBuilder;
-		// TODO Auto-generated constructor stub
 	}
 
 	protected abstract void generateGetterBodyForNonDerivedAttribute(IAttribute attribute, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder);
@@ -53,8 +52,7 @@ public abstract class AbstractPcImplementationBuilder extends
 	
 		IPolicyCmptType targetType = relation.findTarget();
 		if (targetType == null) {
-			// !TODO richtige Exception werfen
-			throw new CoreException(new IpsStatus("FEEEEEEHHHLER")); //$NON-NLS-1$
+			throw new CoreException(new IpsStatus("Target not found: " + relation.getTarget())); //$NON-NLS-1$
 		}
 	
 		if (relation.getMaxCardinality() == IRelation.CARDINALITY_ONE) {

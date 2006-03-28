@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdEvaluationStrategy;
+import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdInitStrategy;
 
 /**
  * Calculates a new runtime id ensured to be unique for all product components contained
@@ -30,15 +30,15 @@ import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdEvaluation
  * 
  * @author Thorsten Guenther
  */
-public class DefaultRuntimeIdEvaluationStrategy implements
-		IProductCmptRuntimeIdEvaluationStrategy {
+public class DefaultRuntimeIdInitStrategy implements
+		IProductCmptRuntimeIdInitStrategy {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String evaluateRuntimeId(IProductCmpt productCmpt) throws CoreException {
+	public String getRuntimeId(IProductCmpt productCmpt) throws CoreException {
 		IIpsProject project = productCmpt.getIpsProject();
-		String id = productCmpt.getIpsProject().getRuntimeIdPrefix() + "_" + productCmpt.getName(); //$NON-NLS-1$
+		String id = productCmpt.getIpsProject().getRuntimeIdPrefix() + productCmpt.getName();
 		String uniqueId = id;
 		
 		int i = 1;
