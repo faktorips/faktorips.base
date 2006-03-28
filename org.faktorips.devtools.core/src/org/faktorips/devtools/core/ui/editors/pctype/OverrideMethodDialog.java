@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.util.ViewerPane;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -154,8 +154,10 @@ public class OverrideMethodDialog extends CheckedTreeSelectionDialog {
 	 */
 	protected CheckboxTreeViewer createTreeViewer(Composite composite) {
 		initializeDialogUnits(composite);
-		ViewerPane pane= new ViewerPane(composite, SWT.BORDER | SWT.FLAT);
-		pane.setText("Select methods to overrider or implement:"); //$NON-NLS-1$
+		ViewForm pane= new ViewForm(composite, SWT.BORDER | SWT.FLAT);
+		CLabel label= new CLabel(pane, SWT.NONE);
+		pane.setTopLeft(label);
+		label.setText(Messages.OverrideMethodDialog_labelSelectMethods);
 	
 		CheckboxTreeViewer treeViewer= super.createTreeViewer(pane);
 		pane.setContent(treeViewer.getControl());
@@ -169,9 +171,6 @@ public class OverrideMethodDialog extends CheckedTreeSelectionDialog {
 		gd.heightHint = convertHeightInCharsToPixels(15);
 		pane.setLayoutData(gd);
 
-		ToolBarManager tbm= pane.getToolBarManager();
-		// tbm.add(new OverrideFlatTreeAction()); // create after tree is created
-		tbm.update(true);
 		treeViewer.expandAll();
 		treeViewer.getTree().setFocus();
 					

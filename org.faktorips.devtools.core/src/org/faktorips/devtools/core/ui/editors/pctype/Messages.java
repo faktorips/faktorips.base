@@ -111,4 +111,5 @@ public class Messages extends NLS {
 	public static String RelationEditDialog_labelProdRelevant;
 	public static String RelationEditDialog_labelReverseRel;
 	public static String RelationEditDialog_labelContainerRel;
+	public static String OverrideMethodDialog_labelSelectMethods;
 }
