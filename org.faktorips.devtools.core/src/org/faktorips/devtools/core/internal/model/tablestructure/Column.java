@@ -114,8 +114,8 @@ public class Column extends IpsObjectPart implements IColumn {
 
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
-        ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$
-        ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list);
+        ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$ //$NON-NLS-2$
+        ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list); //$NON-NLS-1$
     }
 
     /**

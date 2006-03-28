@@ -22,6 +22,7 @@ import java.util.HashMap;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.XmlUtil;
@@ -63,13 +64,13 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	private HashMap specialCharReplacements = new HashMap();
 	
 	public AbstractProductCmptNamingStrategy() {
-		this("");
+		this(""); //$NON-NLS-1$
 	}
 
 	public AbstractProductCmptNamingStrategy(String separator) {
 		this.separator = separator;
-		putSpecialCharReplacement('-', "__");
-		putSpecialCharReplacement(' ', "___");
+		putSpecialCharReplacement('-', "__"); //$NON-NLS-1$
+		putSpecialCharReplacement(' ', "___"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -144,12 +145,14 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		if (separator.length() > 0) {
 			int separatorCount = StringUtils.countMatches(name, separator); 
 			if ( separatorCount == 0) {
-				Message msg = Message.newError(MSGCODE_MISSING_VERSION_SEPARATOR, "The name " + name + " does not contain the version separator.");
+				String text = NLS.bind(Messages.AbstractProductCmptNamingStrategy_msgNoVersionSeparator, name);
+				Message msg = Message.newError(MSGCODE_MISSING_VERSION_SEPARATOR, text);
 				list.add(msg);
 				return list;
 			}
 			if ( separatorCount > 1) {
-				Message msg = Message.newError(MSGCODE_ONYL_1_OCCURENCE_OF_SEPARATOR_ALLOWED, "Only 1 occurence of " + separator + " is allowed to separate the version id, found multiple.");
+				String text = NLS.bind(Messages.AbstractProductCmptNamingStrategy_msgMultipleSeparators, separator);
+				Message msg = Message.newError(MSGCODE_ONYL_1_OCCURENCE_OF_SEPARATOR_ALLOWED, text);
 				list.add(msg);
 				return list;
 			}
@@ -167,7 +170,7 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		try {
 			getJavaClassIdentifier(constantPartName);
 		} catch (IllegalArgumentException e) {
-			Message msg = Message.newError(MSGCODE_ILLEGAL_CHARACTERS, "The name contains at least 1 character that is not allowed.");
+			Message msg = Message.newError(MSGCODE_ILLEGAL_CHARACTERS, Messages.AbstractProductCmptNamingStrategy_msgIllegalChar);
 			list.add(msg);
 		}
 		return list;
@@ -191,7 +194,7 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		if (status.isOK() || status.getSeverity()==IStatus.WARNING) {
 			return identifier;
 		}
-		throw new IllegalArgumentException("Name " + name + " can't be transformed to a valid Java class name");
+		throw new IllegalArgumentException("Name " + name + " can't be transformed to a valid Java class name"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private boolean isSpecialChar(char c) {
@@ -207,7 +210,7 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	 */
 	public final void initFromXml(Element el) {
 		Element subEl = XmlUtil.getFirstElement(el);
-		separator = subEl.getAttribute("versionIdSeparator");
+		separator = subEl.getAttribute("versionIdSeparator"); //$NON-NLS-1$
 		initSubclassFromXml(subEl);
 	}
 	
@@ -224,9 +227,9 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	 */
 	public final Element toXml(Document doc) {
 		Element el = doc.createElement(XML_TAG_NAME);
-		el.setAttribute("id", getExtensionId());
+		el.setAttribute("id", getExtensionId()); //$NON-NLS-1$
 		Element subEl = toXmlSubclass(doc); 
-		subEl.setAttribute("versionIdSeparator", separator);
+		subEl.setAttribute("versionIdSeparator", separator); //$NON-NLS-1$
 		el.appendChild(subEl);
 		return el;
 	}

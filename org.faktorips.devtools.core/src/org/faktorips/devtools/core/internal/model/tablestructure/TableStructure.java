@@ -436,7 +436,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_MULTIPLE_CONTENTS_ALLOWED, "" + multipleTableContentsAllowed);
+        newElement.setAttribute(PROPERTY_MULTIPLE_CONTENTS_ALLOWED, "" + multipleTableContentsAllowed); //$NON-NLS-1$
     }
 
     /**

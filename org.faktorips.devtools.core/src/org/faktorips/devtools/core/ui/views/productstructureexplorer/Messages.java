@@ -33,4 +33,5 @@ public class Messages extends NLS {
 	public static String ProductStructureExplorer_labelCircleRelation;
 	public static String ProductStructureExplorer_tooltipToggleRelationTypeNodes;
 	public static String ProductStructureExplorer_tooltipClear;
+	public static String ProductStructureExplorer_tooltipRefreshContents;
 }

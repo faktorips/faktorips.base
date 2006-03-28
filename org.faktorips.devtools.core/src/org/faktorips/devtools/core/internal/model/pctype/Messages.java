@@ -119,4 +119,18 @@ public class Messages extends NLS {
 	public static String PolicyCmptType_msgMustOverrideAbstractMethod;
 
 	public static String Attribute_msgDefaultValueIsEmptyString;
+
+	public static String Relation_msgRevereseCompositionMustHaveMaxCardinality1;
+
+	public static String Relation_msgReverseCompositionCantBeMarkedAsProductRelevant;
+
+	public static String Relation_msgRelationCanBeProductRelevantOnlyIfTypeIs;
+
+	public static String Relation_msgImplementationMustHaveSameProductRelevantValue;
+
+	public static String Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
+
+	public static String PolicyCmptType_msgMustImplementAbstractRelation;
+
+	public static String PolicyCmptType_msgInconsistentTypeHierarchy;
 }

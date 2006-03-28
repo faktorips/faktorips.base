@@ -291,7 +291,7 @@ public class Attribute extends Member implements IAttribute {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         Datatype datatypeObject = ValidationUtils.checkDatatypeReference(datatype, false, this,
-                PROPERTY_DATATYPE, "", result);
+                PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
         if (datatypeObject == null) {
             if (!StringUtils.isEmpty(defaultValue)) {
                 String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);
@@ -339,7 +339,7 @@ public class Attribute extends Member implements IAttribute {
         }
 
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
-        	String text = "An attribute can not be set product relevant if the owning type is not.";
+        	String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
         	result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
         }
     }

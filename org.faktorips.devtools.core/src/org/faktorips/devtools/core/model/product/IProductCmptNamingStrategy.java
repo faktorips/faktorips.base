@@ -36,7 +36,7 @@ public interface IProductCmptNamingStrategy {
 	/**
 	 * Name of xml tags representing a product component naming strategy.
 	 */
-	public final static String XML_TAG_NAME = "ProductCmptNamingStrategy";
+	public final static String XML_TAG_NAME = "ProductCmptNamingStrategy"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes for classes implementing the interface.

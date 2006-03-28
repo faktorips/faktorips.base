@@ -212,7 +212,7 @@ public class IpsProjectProperties {
 	private void initProductCmptNamingStrategyFromXml(Element el) {
 		productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 		if (el!=null) {
-        	String id = el.getAttribute("id");
+        	String id = el.getAttribute("id"); //$NON-NLS-1$
         	if (id.equals(DateBasedProductCmptNamingStrategy.EXTENSION_ID)) {
         		productCmptNamingStrategy = new DateBasedProductCmptNamingStrategy();
         	}

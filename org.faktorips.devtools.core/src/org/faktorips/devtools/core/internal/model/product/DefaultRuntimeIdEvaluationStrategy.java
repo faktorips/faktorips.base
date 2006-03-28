@@ -38,7 +38,7 @@ public class DefaultRuntimeIdEvaluationStrategy implements
 	 */
 	public String evaluateRuntimeId(IProductCmpt productCmpt) throws CoreException {
 		IIpsProject project = productCmpt.getIpsProject();
-		String id = productCmpt.getIpsProject().getRuntimeIdPrefix() + "_" + productCmpt.getName();
+		String id = productCmpt.getIpsProject().getRuntimeIdPrefix() + "_" + productCmpt.getName(); //$NON-NLS-1$
 		String uniqueId = id;
 		
 		int i = 1;

@@ -514,17 +514,17 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         
         if (maxCardinality != 1 && this.type == RelationType.REVERSE_COMPOSITION) {
-        	String text = "A reverse composition has to have a max cardinality of 1.";
+        	String text = Messages.Relation_msgRevereseCompositionMustHaveMaxCardinality1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, PROPERTY_RELATIONTYPE}));
         }
         
         if (this.type == RelationType.REVERSE_COMPOSITION && isProductRelevant()) {
-        	String text = "A reverse composition can not be marked as product relevant.";
+        	String text = Messages.Relation_msgReverseCompositionCantBeMarkedAsProductRelevant;
         	list.add(new Message(MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT, text, Message.ERROR, this, new String[] {PROPERTY_PRODUCT_RELEVANT, PROPERTY_RELATIONTYPE}));
         }
        
         if (isProductRelevant() && !this.getPolicyCmptType().isConfigurableByProductCmptType()) {
-        	String text = "A relation can only be product relevant if the type is product relevant.";
+        	String text = Messages.Relation_msgRelationCanBeProductRelevantOnlyIfTypeIs;
         	list.add(new Message(MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
         }
         
@@ -577,7 +577,7 @@ public class Relation extends IpsObjectPart implements IRelation {
             return;
         }
         if (relation.isProductRelevant() != isProductRelevant()) {
-			String text = "A relation implementing a container relation must have the same product relevance as its container relation.";
+			String text = Messages.Relation_msgImplementationMustHaveSameProductRelevantValue;
 			list
 					.add(new Message(
 							MSGCODE_IMPLEMENTATION_MUST_HAVE_SAME_PRODUCT_RELEVANT_VALUE,

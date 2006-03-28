@@ -32,9 +32,9 @@ import org.w3c.dom.Element;
 public class NoVersionIdProductCmptNamingStrategy extends
 		AbstractProductCmptNamingStrategy {
 
-	public final static String EXTENSION_ID = "org.faktorips.devtools.core.NoVersionIdProductCmptNamingStrategy";
+	public final static String EXTENSION_ID = "org.faktorips.devtools.core.NoVersionIdProductCmptNamingStrategy"; //$NON-NLS-1$
 	
-	public final static String XML_TAG_NAME = "NoVersionIdProductCmptNamingStrategy";
+	public final static String XML_TAG_NAME = "NoVersionIdProductCmptNamingStrategy"; //$NON-NLS-1$
 	
 	public NoVersionIdProductCmptNamingStrategy() {
 		super();
@@ -58,21 +58,21 @@ public class NoVersionIdProductCmptNamingStrategy extends
 	 * {@inheritDoc}
 	 */
 	public String getVersionId(String productCmptName) {
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getNextVersionId(IProductCmpt productCmpt) {
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getNextName(IProductCmpt productCmpt) {
-		return productCmpt.getName() + "1";
+		return productCmpt.getName() + "1"; //$NON-NLS-1$
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class NoVersionIdProductCmptNamingStrategy extends
 	 * {@inheritDoc}
 	 */
 	public void initSubclassFromXml(Element el) {
-		setVersionIdSeparator("");
+		setVersionIdSeparator(""); //$NON-NLS-1$
 	}
 
 	/**

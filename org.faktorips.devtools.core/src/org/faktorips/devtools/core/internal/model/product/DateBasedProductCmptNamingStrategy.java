@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
@@ -39,9 +40,9 @@ import org.w3c.dom.Element;
 public class DateBasedProductCmptNamingStrategy extends
 		AbstractProductCmptNamingStrategy {
 
-	public final static String EXTENSION_ID = "org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy";
+	public final static String EXTENSION_ID = "org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy"; //$NON-NLS-1$
 	
-	public final static String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy";
+	public final static String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy"; //$NON-NLS-1$
 	
 	private String dateFormatPattern; // the pattern has to be kept in order to save the state to xml
     private DateFormat dateFormat;
@@ -120,7 +121,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	public MessageList validateVersionId(String versionId) {
 		MessageList list = new MessageList();
 		if (versionId.length() < dateFormatPattern.length()) {
-			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, "The version identification has the wrong format! Exptected format: " + dateFormatPattern));			
+			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, NLS.bind(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, dateFormatPattern)));			
 			return list;
 		}
 		if (postfixAllowed) {
@@ -132,7 +133,7 @@ public class DateBasedProductCmptNamingStrategy extends
 				throw new RuntimeException();
 			}
 		} catch (Exception e) {
-			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, "The version identification has the wrong format! Exptected format: " + dateFormatPattern));
+			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, NLS.bind(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, dateFormatPattern)));
 		}
 		return list;
 	}
@@ -149,8 +150,8 @@ public class DateBasedProductCmptNamingStrategy extends
 	 * {@inheritDoc}
 	 */
 	public void initSubclassFromXml(Element el) {
-		setDateFormatPattern(el.getAttribute("dateFormatPattern"));
-		postfixAllowed = Boolean.valueOf(el.getAttribute("postfixAllowed")).booleanValue();
+		setDateFormatPattern(el.getAttribute("dateFormatPattern")); //$NON-NLS-1$
+		postfixAllowed = Boolean.valueOf(el.getAttribute("postfixAllowed")).booleanValue(); //$NON-NLS-1$
 	}
 
 	/**
@@ -158,8 +159,8 @@ public class DateBasedProductCmptNamingStrategy extends
 	 */
 	public Element toXmlSubclass(Document doc) {
 		Element el = doc.createElement(XML_TAG_NAME);
-		el.setAttribute("dateFormatPattern", dateFormatPattern);
-		el.setAttribute("postfixAllowed", "" + postfixAllowed);
+		el.setAttribute("dateFormatPattern", dateFormatPattern); //$NON-NLS-1$
+		el.setAttribute("postfixAllowed", "" + postfixAllowed); //$NON-NLS-1$ //$NON-NLS-2$
 		return el;
 	}
 	

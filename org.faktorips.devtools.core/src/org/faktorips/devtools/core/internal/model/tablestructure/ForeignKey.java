@@ -133,10 +133,10 @@ public class ForeignKey extends Key implements IForeignKey {
         super.validate(list);
         ValidationUtils.checkIpsObjectReference(refTableStructure, 
                 IpsObjectType.TABLE_STRUCTURE, "referenced table",  //$NON-NLS-1$
-                this, PROPERTY_REF_TABLE_STRUCTURE, "", list);
+                this, PROPERTY_REF_TABLE_STRUCTURE, "", list); //$NON-NLS-1$
         ITableStructure structure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, refTableStructure);
         if (structure!=null) {
-            if (!ValidationUtils.checkStringPropertyNotEmpty(refUniqueKey, "referenced unique key", this, PROPERTY_REF_UNIQUE_KEY, "", list)) { //$NON-NLS-1$
+            if (!ValidationUtils.checkStringPropertyNotEmpty(refUniqueKey, "referenced unique key", this, PROPERTY_REF_UNIQUE_KEY, "", list)) { //$NON-NLS-1$ //$NON-NLS-2$
                 return;
             }
             IUniqueKey uk = structure.getUniqueKey(refUniqueKey);

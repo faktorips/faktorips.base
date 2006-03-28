@@ -95,7 +95,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 			}
 
 			public String getToolTipText() {
-				return "Refresh contents";
+				return Messages.ProductStructureExplorer_tooltipRefreshContents;
 			}
 		});
 

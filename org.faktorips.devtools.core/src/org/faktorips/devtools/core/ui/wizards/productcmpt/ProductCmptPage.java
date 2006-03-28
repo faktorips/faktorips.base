@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -108,7 +109,7 @@ public class ProductCmptPage extends IpsObjectPage {
             return;
         }
 	    if (typeRefControl.findProductCmptType()==null) {
-	        setErrorMessage("Product template " + typeRefControl.getText() + " does not exists!");
+	        setErrorMessage(NLS.bind(Messages.ProductCmptPage_msgTemplateDoesNotExist, typeRefControl.getText()));
 	    }
         updatePageComplete();
     }

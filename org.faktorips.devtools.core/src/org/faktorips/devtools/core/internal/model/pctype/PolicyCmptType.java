@@ -631,12 +631,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 			supertypeHierarchy = TypeHierarchy.getSupertypeHierarchy(this);
 		} catch (CycleException e) {
 			StringBuffer msg = new StringBuffer(
-					"Cycle detected in type hierarchy: ");
+					"Cycle detected in type hierarchy: "); //$NON-NLS-1$
 			IIpsElement[] path = e.getCyclePath();
 			for (int i = 0; i < path.length; i++) {
 				msg.append(path[i].getName());
 				if (i + 1 < path.length) {
-					msg.append(" --> ");
+					msg.append(" --> "); //$NON-NLS-1$
 				}
 			}
 			list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg
@@ -680,7 +680,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 			}
 
 			if (findUnresolvedAbstractRelations().length > 0) {
-				String text = "Policy component has to be marked as abstract because not all abstract relations (relations marked as read only container) are implemented.";
+				String text = Messages.PolicyCmptType_msgMustImplementAbstractRelation;
 				list.add(new Message(MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION,
 						text, Message.ERROR, this, PROPERTY_ABSTRACT));
 			}
@@ -770,7 +770,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 				ml
 						.add(new Message(
 								MSGCODE_INCONSISTENT_TYPE_HIERARCHY,
-								"An error exists within the type hierarchy of this type.",
+								Messages.PolicyCmptType_msgInconsistentTypeHierarchy,
 								Message.ERROR));
 			}
 
@@ -822,7 +822,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		try {
 			return TypeHierarchy.getSupertypeHierarchy(this);
 		} catch (CycleException e) {
-			IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e);
+			IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e); //$NON-NLS-1$
 			throw new CoreException(status);
 		}
 	}
@@ -834,7 +834,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		try {
 			return TypeHierarchy.getSubtypeHierarchy(this);
 		} catch (CycleException e) {
-			IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e);
+			IpsStatus status = new IpsStatus("Cycle in Type Hierarchy", e); //$NON-NLS-1$
 			throw new CoreException(status);
 		}
 	}

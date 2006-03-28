@@ -378,7 +378,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	public void setValueSetType(ValueSetType type) {
 		if (this.type == ConfigElementType.PRODUCT_ATTRIBUTE) {
 			throw new UnsupportedOperationException(
-					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets.");
+					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets."); //$NON-NLS-1$
 		}
 		IValueSet oldset = valueSet;
 		valueSet = type.newValueSet(this, getNextPartId());
@@ -391,7 +391,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	public void setValueSetCopy(IValueSet source) {
 		if (this.type == ConfigElementType.PRODUCT_ATTRIBUTE) {
 			throw new UnsupportedOperationException(
-					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets.");
+					"ConfigElement of type PRODUCT_ATTRIBUTE does not support own value sets."); //$NON-NLS-1$
 		}
 
 		IValueSet oldset = valueSet;

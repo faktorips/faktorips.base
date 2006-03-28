@@ -88,7 +88,7 @@ public class DeepCopyWizard extends Wizard {
 			getContainer().run(true, true, operation);
 			
 		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the copying process.",e));
+			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the copying process.",e)); //$NON-NLS-1$
 		}
 		//this implementation of this method should always return true since this causes the wizard dialog to close.
 		//in either case if an exception arises or not it doesn't make sense to keep the dialog up

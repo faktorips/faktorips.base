@@ -78,7 +78,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 		try {
 			return getIpsProject().getProductCmptNamingStratgey().getVersionId(getName());
 		} catch (IllegalArgumentException e) {
-			throw new CoreException(new IpsStatus("Can't get version id for " + this, e));
+			throw new CoreException(new IpsStatus("Can't get version id for " + this, e)); //$NON-NLS-1$
 		}
 	}
 
@@ -243,7 +243,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 */
 	public void setRuntimeId() throws CoreException {
 		if (!StringUtils.isEmpty(this.runtimeId)) {
-			throw new UnsupportedOperationException("The runtime ID can not be overwritten");
+			throw new UnsupportedOperationException("The runtime ID can not be overwritten"); //$NON-NLS-1$
 		}
 		this.runtimeId = getIpsProject().evaluateRuntimeId(this);
 	}
