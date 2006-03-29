@@ -19,16 +19,15 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.util.StringUtil;
 
 /**
  * Provides labels for relations. IProductCmptRelations are displayed as the target object.
@@ -45,14 +44,7 @@ public class RelationsLabelProvider implements ILabelProvider{
 	public String getText(Object element) {
 		if (element instanceof IProductCmptRelation) {
 			IProductCmptRelation rel = ((IProductCmptRelation)element);
-			try {
-				IIpsObject ipsObj = rel.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, rel.getTarget());
-				if (ipsObj != null) {
-					return ipsObj.getName();
-				}
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
+			return StringUtil.unqualifiedName(rel.getTarget());
 		}
 		else if (element instanceof IIpsObjectPart) {
 			return ((IIpsObjectPart)element).getName();
