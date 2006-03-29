@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<PolicyCmptType description="Tpl = Third Party Liability" configurableByProductCmptType="true" unqualifiedProductCmptType="TplCoverageType" supertype="independant.Coverage" abstract="false" forceExtensionCompilationUnitGeneration="false"/>
-
