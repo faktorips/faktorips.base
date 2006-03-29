@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.Message;
@@ -40,16 +42,29 @@ public abstract class EditDialog extends TitleAreaDialog {
     private String windowTitle;
     private boolean tabFolderUsed;
     protected UIToolkit uiToolkit = new UIToolkit(null);
+    
+    /**
+     * The editor which was active when this dialog was opened or null if this editor was
+     * not an <code>IpsObjectEditor</code>
+     */
+    private IpsObjectEditor parentEditor;
 
-	public EditDialog(Shell parentShell, String windowTitle) {
-	    this(parentShell, windowTitle, false);
+	public EditDialog(Shell shell, String windowTitle) {
+	    this(shell, windowTitle, false);
 	}
 	
-	public EditDialog(Shell parentShell, String windowTitle, boolean useTabFolder) {
-		super(parentShell);
+	public EditDialog(Shell shell, String windowTitle, boolean useTabFolder) {
+		super(shell);
 		setShellStyle(getShellStyle() | SWT.MAX | SWT.RESIZE);
 		this.windowTitle = windowTitle;
 		tabFolderUsed = useTabFolder;
+
+		IWorkbenchPage page = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IEditorPart editor = page.getActiveEditor();
+		if (editor instanceof IpsObjectEditor) {
+			parentEditor = (IpsObjectEditor)editor;
+			parentEditor.setActive(false);
+		} 
 	}
 	
 	public void setWindowTitle(String newTitle) {
@@ -115,6 +130,15 @@ public abstract class EditDialog extends TitleAreaDialog {
 	        setErrorMessage(msg.getText());    
 	    }
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void buttonPressed(int buttonId) {
+		super.buttonPressed(buttonId);
+		if (parentEditor != null) {
+			parentEditor.setActive(true);
+		}
+	}
 }	
 

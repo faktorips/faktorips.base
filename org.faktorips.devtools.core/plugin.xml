@@ -168,20 +168,6 @@
 <!-- 
     Views
   -->
-   <extension
-         point="org.eclipse.ui.views">
-      <category
-            name="Product Definition"
-            id="org.faktorips.plugin.productdefinition">
-      </category>
-      <view
-            name="Product Definition Explorer"
-            icon="icons/ProductDefinitionExplorer.gif"
-            category="org.faktorips.plugin.productdefinition"
-            class="org.faktorips.plugin.ui.views.explorer.PdExplorer"
-            id="org.faktorips.plugin.pdexplorer">
-      </view>
-   </extension>
 
 <!-- 
     Editors

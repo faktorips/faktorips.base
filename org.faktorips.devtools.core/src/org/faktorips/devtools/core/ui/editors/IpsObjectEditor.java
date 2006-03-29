@@ -35,9 +35,10 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -55,13 +56,15 @@ import org.faktorips.devtools.core.model.IpsObjectType;
  *
  */
 public abstract class IpsObjectEditor extends FormEditor 
-	implements ContentsChangeListener, IPartListener, IResourceChangeListener {
+	implements ContentsChangeListener, IPartListener2, IResourceChangeListener {
 
     // the file that's being edited (if any)
     private IIpsSrcFile ipsSrcFile;
     
     // dirty flag
     private boolean dirty = false;
+    
+    private boolean active = true;
     
     /**
      * 
@@ -109,9 +112,7 @@ public abstract class IpsObjectEditor extends FormEditor
         	throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
         
-        model.addChangeListener(this);    	
         site.getPage().addPartListener(this);            
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }
     
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException{
@@ -180,6 +181,9 @@ public abstract class IpsObjectEditor extends FormEditor
      * Refresh the controls on the active page with the data from the model.
      */
     protected void refresh() {
+    	if (!active) {
+    		return;
+    	}
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
         	IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
@@ -243,23 +247,41 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
+    /**
+     * We have to close the editor if the underlying resource is removed.
+     * {@inheritDoc}
      */
-    public void partActivated(IWorkbenchPart part) {
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (!ipsSrcFile.exists()) {
+			this.close(false);
+		}
+	}
+
+	/**
+	 * Returns <code>true</code> if the <code>IIpsSrcFile</code> this editor is based on exists
+	 * and is in sync.
+	 */
+	protected boolean isSrcFileUsable() {
+		return ipsSrcFile != null && ipsSrcFile.exists() && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partActivated(IWorkbenchPartReference partRef) {
+		IWorkbenchPart part = partRef.getPart(false);
     	if (part != this) {
     		return;
     	}
-
+    	setActive(true);
     	refresh();
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IWorkbenchPart)
-     */
-    public void partBroughtToTop(IWorkbenchPart part) {
-    	if (part != this) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partBroughtToTop(IWorkbenchPartReference partRef) {
+    	if (partRef.getPart(false) != this) {
     		return;
     	}
 
@@ -281,53 +303,72 @@ public abstract class IpsObjectEditor extends FormEditor
     		}
     		
     	}
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
-     */
-    public void partClosed(IWorkbenchPart part) {
-        if (part==this) {
-            ipsSrcFile.discardChanges();
-            part.getSite().getPage().removePartListener(this);
-            IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);    	
-            ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        }
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IPartListener#partDeactivated(org.eclipse.ui.IWorkbenchPart)
-     */
-    public void partDeactivated(IWorkbenchPart part) {
-        // nothing to do
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.eclipse.ui.IPartListener#partOpened(org.eclipse.ui.IWorkbenchPart)
-     */
-    public void partOpened(IWorkbenchPart part) {
-        // nothing to do
-    }
+	}
 
-    /**
-     * We have to close the editor if the underlying resource is removed.
-     * {@inheritDoc}
-     */
-	public void resourceChanged(IResourceChangeEvent event) {
-		if (!ipsSrcFile.exists()) {
-			this.close(false);
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partClosed(IWorkbenchPartReference partRef) {
+		IWorkbenchPart part = partRef.getPart(false);
+		if (part == this) {
+			ipsSrcFile.discardChanges();
+			part.getSite().getPage().removePartListener(this);
+			IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+			ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		}
 	}
 
 	/**
-	 * Returns <code>true</code> if the <code>IIpsSrcFile</code> this editor is based on exists
-	 * and is in sync.
+	 * {@inheritDoc}
 	 */
-	protected boolean isSrcFileUsable() {
-		return ipsSrcFile != null && ipsSrcFile.exists() && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
+	public void partDeactivated(IWorkbenchPartReference partRef) {
+		IWorkbenchPart part = partRef.getPart(false);
+    	if (part != this) {
+    		return;
+    	}
+        setActive(false);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partHidden(IWorkbenchPartReference partRef) {
+        // nothing to do
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partInputChanged(IWorkbenchPartReference partRef) {
+        // nothing to do
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partOpened(IWorkbenchPartReference partRef) {
+        // nothing to do
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void partVisible(IWorkbenchPartReference partRef) {
+        // nothing to do
+	}
+
+	/**
+	 * Activates (if <code>true</code> is given) or deactivates this editor. An active
+	 * editor is for example listening to change events of the IpsModel, an inacitve editor
+	 * does not.
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+		if (active) {
+	        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);    	
+		} else {
+	        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);    	
+		}
 	}
 
 }

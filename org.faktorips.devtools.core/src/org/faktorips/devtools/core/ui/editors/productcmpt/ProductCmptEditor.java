@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -138,7 +139,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void partActivated(IWorkbenchPart part) {
+	public void partActivated(IWorkbenchPartReference partRef) {
+		super.partActivated(partRef);
+		IWorkbenchPart part = partRef.getPart(false);
 		if (part != this || !isSrcFileUsable()) {
 			return;
 		}
@@ -153,7 +156,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void partDeactivated(IWorkbenchPart part) {
+	public void partDeactivated(IWorkbenchPartReference partRef) {
+		super.partDeactivated(partRef);
 		active = false;
 	}
 
