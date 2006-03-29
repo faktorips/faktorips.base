@@ -365,7 +365,9 @@ public abstract class IpsObjectEditor extends FormEditor
 	public void setActive(boolean active) {
 		this.active = active;
 		if (active) {
-	        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);    	
+	        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);   
+	        setDirty(ipsSrcFile.isDirty());
+	        refresh();
 		} else {
 	        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);    	
 		}
