@@ -28,6 +28,10 @@ import org.w3c.dom.Element;
  * The product component naming strategy defines how the name is constructed
  * from a given constant and version id and vice versa. It also defines how to
  * derive the next version id.
+ * <p>
+ * Note that is also possible to define a naming strategy that does not distinguish
+ * between a constant part and the version id. In this case the method 
+ * <code>supportsVersionId()</code> must return <code>false</code>.
  * 
  * @author Jan Ortmann
  */
@@ -64,6 +68,12 @@ public interface IProductCmptNamingStrategy {
      * id of this extension. 
      */
     public String getExtensionId();
+    
+    /**
+     * Returns <code>true</code> if this strategy distinguishes between a constant part
+     * and a version id, otherwise <code>false</code>.
+     */
+    public boolean supportsVersionId();
     
 	/**
 	 * Returns the unqualified product component name defined by the constant part and the

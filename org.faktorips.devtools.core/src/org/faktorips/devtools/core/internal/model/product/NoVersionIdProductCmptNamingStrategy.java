@@ -46,6 +46,13 @@ public class NoVersionIdProductCmptNamingStrategy extends
 	public String getExtensionId() {
 		return EXTENSION_ID;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean supportsVersionId() {
+		return false;
+	}
 
 	/**
 	 * {@inheritDoc}

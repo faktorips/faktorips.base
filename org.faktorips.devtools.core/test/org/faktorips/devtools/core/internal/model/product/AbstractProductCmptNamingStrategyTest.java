@@ -124,6 +124,13 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 		/**
 		 * {@inheritDoc}
 		 */
+		public boolean supportsVersionId() {
+			return true;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
 		public String getNextVersionId(IProductCmpt pc) {
 			return "nextId";
 		}

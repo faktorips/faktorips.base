@@ -71,6 +71,13 @@ public class DateBasedProductCmptNamingStrategy extends
 	public String getExtensionId() {
 		return EXTENSION_ID;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean supportsVersionId() {
+		return true;
+	}
 
 	/**
 	 * Sets the date format pattern used for the version id.
