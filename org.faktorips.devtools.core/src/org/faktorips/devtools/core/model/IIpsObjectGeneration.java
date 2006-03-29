@@ -64,4 +64,16 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
      */
 	public void initFromGeneration(IIpsObjectGeneration source);
 
+	/**
+	 * Returns the generation previous to this one. The order is determined by
+	 * the generation number and not by the valid from and valid to dates.
+	 */
+	public IIpsObjectGeneration getPrevious();
+	
+	/**
+	 * Returns the generation succeding this one. The order is determined by
+	 * the generation number and not by the valid from and valid to dates.
+	 */
+	public IIpsObjectGeneration getNext();
+	
 }

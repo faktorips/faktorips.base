@@ -19,10 +19,10 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.GregorianCalendar;
 
-import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
+import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,24 +30,22 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class IpsObjectGenerationTest extends IpsObjectTestCase {
+public class IpsObjectGenerationTest extends IpsPluginTest {
     
     private ITimedIpsObject timedPdo;
     private IIpsObjectGeneration generation;
-
+    private DefaultTestContent content;
+    
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.PRODUCT_CMPT);
-    }
-    
-    protected void createObjectAndPart() {
+        super.setUp();
+        content = new DefaultTestContent();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        timedPdo = new ProductCmpt(pdSrcFile);
-        ((ProductCmpt)timedPdo).setRuntimeId("abc");
-        generation = timedPdo.newGeneration();
+        timedPdo = content.getBasicCollisionCoverage();
+        generation = timedPdo.getGenerations()[0];
     }
     
     public void testGetGenerationNo() {
@@ -66,7 +64,7 @@ public class IpsObjectGenerationTest extends IpsObjectTestCase {
         GregorianCalendar date = new GregorianCalendar(2005, 0, 1);
         generation.setValidFrom(date);
         assertEquals(date, generation.getValidFrom());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(timedPdo.getIpsSrcFile().isDirty());
     }
 
     public void testRemove() {
@@ -110,6 +108,27 @@ public class IpsObjectGenerationTest extends IpsObjectTestCase {
 
     	date.setTimeInMillis(date.getTimeInMillis()-1);
     	assertEquals(date, validTo);
+    }
+
+    public void testGetNext() throws Exception {
+    	IIpsObjectGeneration gen1 = timedPdo.newGeneration();
+    	IIpsObjectGeneration gen2 = timedPdo.newGeneration();
+    	IIpsObjectGeneration gen3 = timedPdo.newGeneration();
+    	
+    	assertSame(gen2, gen1.getNext());
+    	assertSame(gen3, gen2.getNext());
+    	assertNull(gen3.getNext());
+    }
+    
+    public void testGetPrevious() throws Exception {
+    	IIpsObjectGeneration gen1 = timedPdo.newGeneration();
+    	IIpsObjectGeneration gen2 = timedPdo.newGeneration();
+    	IIpsObjectGeneration gen3 = timedPdo.newGeneration();
+    	
+    	assertSame(gen2, gen3.getPrevious());
+    	assertSame(gen1, gen2.getPrevious());
+    	assertSame(generation, gen1.getPrevious());
+    	assertNull(generation.getPrevious());
     }
     
 }

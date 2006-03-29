@@ -123,7 +123,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent,
                 UIToolkit toolkit) {
-            super(ipsObject, parent, false, false, true, false, false, toolkit);
+            super(ipsObject, parent, false, true, true, false, true, toolkit);
 
             getViewer().getControl().addMouseListener(new MouseAdapter() {
 				public void mouseDoubleClick(MouseEvent e) {
@@ -180,7 +180,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
          * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            return null;
+            return new GenerationEditDialog((IProductCmptGeneration)part, shell);
         }
 
 		/**
@@ -215,6 +215,10 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 			boolean editable = ((ProductCmptEditor)page.getEditor()).isEditableGeneration(getSelectedGeneration());
 			if (page.getProductCmpt().getGenerations().length == 1 || !editable) {
 				deleteButton.setEnabled(false);
+			}
+			
+			if (!editable) {
+				editButton.setEnabled(false);
 			}
 		}
     	

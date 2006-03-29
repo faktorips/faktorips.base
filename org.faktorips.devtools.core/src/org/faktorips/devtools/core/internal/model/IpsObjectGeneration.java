@@ -182,4 +182,29 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectGeneration getNext() {
+		IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerations();
+		int genIndex = getGenerationNo();
+		
+		if (generations.length > genIndex) {
+			return generations[genIndex];
+		}
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectGeneration getPrevious() {
+		IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerations();
+		int genIndex = getGenerationNo()-2;
+		
+		if (genIndex >= 0) {
+			return generations[genIndex];
+		}
+		return null;
+	}
 }
