@@ -20,6 +20,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.Locale;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -41,6 +43,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.editors.IDeleteListener;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
@@ -81,12 +84,12 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      * Set the active generation (which means, the generation to show/edit) to the editor. If the 
      * generation to set would not be editable, the user is asked if a switch is really wanted.
      */
-    private void setActiveGeneration(IProductCmptGeneration generation) {
+    private void setActiveGeneration(IProductCmptGeneration generation, boolean automatic) {
     	if (generation != null) {
 			IProductCmpt prod = page.getProductCmptEditor().getProductCmpt();
 			IProductCmptGeneration editableGeneration  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
 	    	boolean select = generation.equals(editableGeneration);
-	    	if (!select) {
+	    	if (!select && !automatic) {
 	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
 	    		String title = Messages.bind(Messages.GenerationsSection_titleShowGeneration, genName);
 	    		Object[] args = new Object[3];
@@ -96,9 +99,11 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 	    		String message = Messages.bind(Messages.GenerationsSection_msgShowGeneration, args);	    		
 	    		select = MessageDialog.openConfirm(page.getSite().getShell(), title, message);
 	    	}
-			if (select) {
+			if (select || automatic) {
 				page.getProductCmptEditor().setActiveGeneration(generation);
-				page.getProductCmptEditor().setActivePage(PropertiesPage.PAGE_ID);
+				if (!automatic) {
+					page.getProductCmptEditor().setActivePage(PropertiesPage.PAGE_ID);
+				}
 			}
     	}
     }
@@ -114,21 +119,36 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      * A composite that shows a policy component's attributes in a viewer and 
      * allows to edit attributes in a dialog, create new attributes and delete attributes.
      */
-    public class GenerationsComposite extends IpsPartsComposite {
+    public class GenerationsComposite extends IpsPartsComposite implements IDeleteListener {
 
-        public GenerationsComposite(ITimedIpsObject pdObject, Composite parent,
+        public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent,
                 UIToolkit toolkit) {
-            super(pdObject, parent, false, false, false, false, false, toolkit);
-            getViewer().getControl().addMouseListener(new MouseAdapter() {
+            super(ipsObject, parent, false, false, true, false, false, toolkit);
 
+            getViewer().getControl().addMouseListener(new MouseAdapter() {
 				public void mouseDoubleClick(MouseEvent e) {
 					Object selected = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
 					if (selected instanceof IProductCmptGeneration) {
-						setActiveGeneration((IProductCmptGeneration)selected);
+						setActiveGeneration((IProductCmptGeneration)selected, false);
 					}
 				}
-            	
             });
+            
+			addDeleteListener(this);
+			
+			IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent event) {
+					String property = event.getProperty();
+					if (property.equals(IpsPreferences.WORKING_DATE)
+									|| property
+											.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
+									|| property
+											.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
+								getViewer().refresh();
+								updateButtonEnabledStates();
+							}
+				}
+			});
         }
         
         public ITimedIpsObject getTimedPdObject() {
@@ -136,9 +156,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         }
         
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
-         */ 
+         * {@inheritDoc}
+         */
         protected IStructuredContentProvider createContentProvider() {
             return new ContentProvider();
         }
@@ -150,22 +169,54 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 			return new LabelProvider();
 		}
 
-		/**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#newIpsPart()
-         */ 
+        /**
+         * {@inheritDoc}
+         */
         protected IIpsObjectPart newIpsPart() {
             return null;
         }
 
         /**
-         * Overridden method.
-         * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createEditDialog(org.faktorips.devtools.core.model.IIpsObjectPart, org.eclipse.swt.widgets.Shell)
+         * {@inheritDoc}
          */
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return null;
         }
-    	
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void aboutToDelete(IIpsObjectPart part) {
+			if (page.getProductCmpt().getGenerations().length == 2) {
+				super.deleteButton.setEnabled(false);
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void deleted(IIpsObjectPart part) {
+			setActiveGeneration(getSelectedGeneration(), true);
+		}
+		
+		private IProductCmptGeneration getSelectedGeneration() {
+			IIpsObjectPart selected = getSelectedPart();
+			if (selected instanceof IProductCmptGeneration) {
+				return (IProductCmptGeneration)selected;
+			}
+			return null;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		protected void updateButtonEnabledStates() {
+			super.updateButtonEnabledStates();
+			boolean editable = ((ProductCmptEditor)page.getEditor()).isEditableGeneration(getSelectedGeneration());
+			if (page.getProductCmpt().getGenerations().length == 1 || !editable) {
+				deleteButton.setEnabled(false);
+			}
+		}
     	
     	private class ContentProvider implements IStructuredContentProvider {
     		public Object[] getElements(Object inputElement) {
@@ -210,7 +261,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 				}
 			}
     	}
-
     }
 
 }

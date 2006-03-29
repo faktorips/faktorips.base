@@ -133,6 +133,10 @@ public class AttributesSection extends SimpleIpsPartsSection {
 					}
 					return null;
 				}
+
+				public void deleted(IIpsObjectPart part) {
+					// nothing to do.
+				}
 			});
         }
         

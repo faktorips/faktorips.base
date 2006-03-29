@@ -362,6 +362,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
                 Object selected = viewer.getElementAt(selectedIndexAfterDeletion);
                 viewer.setSelection(new StructuredSelection(selected), true);
             }
+            fireDeleted(part);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -425,6 +426,13 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
     	for (Iterator iter = deleteListeners.iterator(); iter.hasNext();) {
 			IDeleteListener listener = (IDeleteListener) iter.next();
 			listener.aboutToDelete(part);
+		}
+    }
+
+    private void fireDeleted(IIpsObjectPart part) {
+    	for (Iterator iter = deleteListeners.iterator(); iter.hasNext();) {
+			IDeleteListener listener = (IDeleteListener) iter.next();
+			listener.deleted(part);
 		}
     }
 }

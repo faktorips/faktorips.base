@@ -418,6 +418,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	protected boolean isEditableGeneration(IProductCmptGeneration generation) {
 
+		if (generation == null) {
+			return false;
+		}
+		
 		// if generation does not match the current set working date, no editing will ever
 		// be possible, so return false immediate
 		if (!generation.equals(this.getProductCmpt()
