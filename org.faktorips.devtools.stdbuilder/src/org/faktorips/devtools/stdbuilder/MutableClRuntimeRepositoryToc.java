@@ -102,7 +102,10 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
                 return false;
             }
 
+            // can't decide here if new toc entry is multi-content table or not, so put the entry in both maps
+            // client must know whether to ask for qualified table name (single and multi content tables) or class name (single content tables only)
             tableContentNameTocEntryMap.put(entry.getIpsObjectId(), entry);
+            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), entry);
             ++modificationStamp;
             return true;
         }
