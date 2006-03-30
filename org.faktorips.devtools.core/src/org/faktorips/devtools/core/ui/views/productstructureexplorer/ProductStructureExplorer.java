@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 
 import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
@@ -34,6 +35,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
@@ -54,7 +56,6 @@ import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
 import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
-import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
 import org.faktorips.devtools.core.ui.views.ProductCmptDragListener;
 import org.faktorips.devtools.core.ui.views.ProductCmptDropListener;
 
@@ -64,7 +65,7 @@ import org.faktorips.devtools.core.ui.views.ProductCmptDropListener;
  * @author guenther
  *
  */
-public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource {
+public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource, IResourceChangeListener {
 
     private TreeViewer tree; 
     private IIpsSrcFile file;
@@ -75,6 +76,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     public ProductStructureExplorer() {
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        
+        // add as resource listener because refactoring-actions like move or rename
+        // does not cause a model-changed-event.
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
     }
     
     /**
@@ -166,8 +171,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);
-        
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(new IpsResourceChangeListener(tree), IResourceChangeEvent.POST_CHANGE);
     }
 
     /**
@@ -211,26 +214,41 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		// no contents set - nothing to refresh.
     		return;
     	}
-    	
-    	Object input = tree.getInput();
-    	if (input instanceof IProductCmptStructure) {
-    		try {
-				((IProductCmptStructure)input).refresh();
-			} catch (CycleException e) {
-				handleCircle(e);
-				return;
-			}
-    	}
-    	
-    	errormsg.setVisible(false);
-		((GridData)errormsg.getLayoutData()).exclude = true;
-    	
-		tree.getTree().setVisible(true);
-		((GridData)tree.getTree().getLayoutData()).exclude = false;
-		tree.getTree().getParent().layout();
-   		tree.refresh();
+    	refresh();
     }
 
+    private void refresh() {
+        Control ctrl = tree.getControl();
+        
+        if (ctrl == null || ctrl.isDisposed()) {
+        	return;
+        }
+        
+        ctrl.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                if (!tree.getControl().isDisposed()) {
+                	Object input = tree.getInput();
+                	if (input instanceof IProductCmptStructure) {
+                		try {
+            				((IProductCmptStructure)input).refresh();
+            			} catch (CycleException e) {
+            				handleCircle(e);
+            				return;
+            			}
+                	}
+                	
+                	errormsg.setVisible(false);
+            		((GridData)errormsg.getLayoutData()).exclude = true;
+                	
+            		tree.getTree().setVisible(true);
+            		((GridData)tree.getTree().getLayoutData()).exclude = false;
+            		tree.getTree().getParent().layout();
+               		tree.refresh();
+                }
+            }
+        });
+    }
+    
     public ShowInContext getShowInContext() {
         ShowInContext context = new ShowInContext(null, tree.getSelection());
         return context;
@@ -260,5 +278,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 		((GridData)errormsg.getLayoutData()).exclude = false;
 		errormsg.getParent().layout();
     }
+
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (file == null) {
+			return;
+		}
+		refresh();
+	}
 
 }
