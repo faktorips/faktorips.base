@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A naming strategy for product components that uses dates as version ids.
+ * A naming strategy for product components that uses dates (or part of them) as version ids.
  * The next version is determined by the current working date.
  * 
  * @author Jan Ortmann

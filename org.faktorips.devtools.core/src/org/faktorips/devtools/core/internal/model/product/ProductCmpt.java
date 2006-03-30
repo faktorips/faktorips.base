@@ -39,6 +39,8 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptKind;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
@@ -72,6 +74,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
     
     /**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptKind findProductCmptKind() throws CoreException {
+		IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStratgey();
+		String kindName = stratgey.getConstantPart(getName());
+		return new ProductCmptKind(kindName, kindName);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public String getVersionId() throws CoreException {

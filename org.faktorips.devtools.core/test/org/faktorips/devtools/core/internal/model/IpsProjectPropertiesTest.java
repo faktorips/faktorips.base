@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.w3c.dom.Element;
 
 public class IpsProjectPropertiesTest extends IpsPluginTest {
@@ -42,6 +43,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.setChangesInTimeConventionIdForGeneratedCode("myConvention");
 		props.setBuilderSetId("myBuilder");
 		props.setRuntimeIdPrefix("newRuntimeIdPrefix");
+		props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true));
 		IIpsObjectPath path = new IpsObjectPath();
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
 		props.setIpsObjectPath(path);
@@ -56,6 +58,11 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
 		assertEquals("myBuilder", props.getBuilderSetId());
+		assertTrue(props.getProductCmptNamingStrategy() instanceof DateBasedProductCmptNamingStrategy);
+		DateBasedProductCmptNamingStrategy strategy = (DateBasedProductCmptNamingStrategy)props.getProductCmptNamingStrategy();
+		assertEquals("yyyy-MM", strategy.getDateFormatPattern());
+		assertEquals(" ", strategy.getVersionIdSeparator());
+		assertTrue(strategy.isPostfixAllowed());
 		path = props.getIpsObjectPath();
 		assertNotNull(path);
 		assertEquals(1, path.getEntries().length);

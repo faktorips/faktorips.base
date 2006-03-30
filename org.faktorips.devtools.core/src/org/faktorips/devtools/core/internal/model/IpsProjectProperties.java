@@ -102,6 +102,11 @@ public class IpsProjectProperties {
 		return productCmptNamingStrategy;
 	}
 	
+	public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy) {
+		ArgumentCheck.notNull(newStrategy);
+		productCmptNamingStrategy = newStrategy;
+	}
+	
 	public void setChangesInTimeConventionIdForGeneratedCode(
 			String changesInTimeConventionIdForGeneratedCode) {
 		this.changesInTimeConventionIdForGeneratedCode = changesInTimeConventionIdForGeneratedCode;
@@ -145,9 +150,12 @@ public class IpsProjectProperties {
 		projectEl.appendChild(generatedCodeEl);
 		generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString()); //$NON-NLS-1$
 		generatedCodeEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
+		projectEl.appendChild(productCmptNamingStrategy.toXml(doc));
 		Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
 		projectEl.appendChild(builderSetEl);
 		builderSetEl.setAttribute("id", builderSetId); //$NON-NLS-1$
+		
+		// object path
 		projectEl.appendChild(((IpsObjectPath)path).toXml(doc));
 		
 		// datatypes

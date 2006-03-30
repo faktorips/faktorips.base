@@ -698,6 +698,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return getProperties().getProductCmptNamingStrategy();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setProductCmptNamingStratgey(IProductCmptNamingStrategy newStrategy) throws CoreException {
+    	IpsProjectProperties properties = getProperties();
+    	properties.setProductCmptNamingStrategy(newStrategy);
+    	saveProjectProperties(properties);
+	}
+
 	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException  {
 		getProperties().addDefinedDataType(newDatatype);
 		saveProjectProperties(getProperties());

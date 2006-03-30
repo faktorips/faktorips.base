@@ -327,10 +327,18 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public String getRuntimeId(IProductCmpt productCmpt) throws CoreException;
     
     /**
-     * Returns the stratgey used to name product components.
+     * Returns the stratgey used to name product components. This method never returns
+     * <code>null</code>.
      */
     public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException;
     
-	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
+    /**
+     * Sets the stratgey used to name product components.
+     * 
+     * @throws NullPointerException if newStrategy is <code>null</code>.
+     */
+    public void setProductCmptNamingStratgey(IProductCmptNamingStrategy newStrategy) throws CoreException;
+
+    public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
     
 }

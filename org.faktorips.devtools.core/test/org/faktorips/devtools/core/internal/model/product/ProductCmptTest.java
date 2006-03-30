@@ -38,6 +38,8 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptKind;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.w3c.dom.Element;
 
@@ -51,18 +53,31 @@ public class ProductCmptTest extends IpsPluginTest {
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;
     private IIpsSrcFile srcFile;
-    private IIpsProject pdProject;
+    private IIpsProject ipsProject;
     
     /*
      * @see PluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        pdProject = this.newIpsProject("TestProject");
-        root = pdProject.getIpsPackageFragmentRoots()[0];
+        ipsProject = this.newIpsProject("TestProject");
+        root = ipsProject.getIpsPackageFragmentRoots()[0];
         pack = root.createPackageFragment("products.folder", true, null);
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
+    }
+    
+    public void testFindProductCmptKind() throws CoreException {
+    	IProductCmptKind kind = productCmpt.findProductCmptKind();
+    	assertEquals("TestProduct", kind.getName());
+    	assertEquals("TestProduct", kind.getRuntimeId());
+    	
+    	IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
+    	ipsProject.setProductCmptNamingStratgey(strategy);
+    	productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct 2005-10");
+    	kind = productCmpt.findProductCmptKind();
+    	assertEquals("MotorProduct", kind.getName());
+    	assertEquals("MotorProduct", kind.getRuntimeId());
     }
     
     public void testSetPolicyCmptType() {
