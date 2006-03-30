@@ -46,7 +46,7 @@ public class TableStructureRefControl extends IpsObjectRefControl {
      * the table structure.
      */
     public ITableStructure findTableStructure() throws CoreException {
-        return (ITableStructure)getPdProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getText());
+        return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getText());
     }
     
     /** 
@@ -54,7 +54,7 @@ public class TableStructureRefControl extends IpsObjectRefControl {
      * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
-        return getPdProject().findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
+        return getIpsProject().findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
     }
 
 }

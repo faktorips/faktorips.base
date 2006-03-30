@@ -47,7 +47,16 @@ public class PdSourceRootSelectionDialog extends ElementTreeSelectionDialog {
     
     public IIpsPackageFragmentRoot getSelectedRoot() {
         if (getResult().length>0) {
-            return (IIpsPackageFragmentRoot) this.getResult()[0];    
+        	Object result = getResult()[0];
+        	if (result instanceof IIpsPackageFragmentRoot) {
+            return (IIpsPackageFragmentRoot) this.getResult()[0];
+        	} else if (result instanceof IIpsProject) {
+        		try {
+					return ((IIpsProject)result).getIpsPackageFragmentRoots()[0];
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+				}
+        	}
         }
         return null;
     }

@@ -60,7 +60,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
      * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
-    	IProductCmpt[] cmpts = getPdProject().findProductCmpts(qualifiedTypeName, includeCmptsForSubtypes);
+    	IProductCmpt[] cmpts = getIpsProject().findProductCmpts(qualifiedTypeName, includeCmptsForSubtypes);
 
     	List cmptList = new ArrayList();
     	cmptList.addAll(Arrays.asList(cmpts));

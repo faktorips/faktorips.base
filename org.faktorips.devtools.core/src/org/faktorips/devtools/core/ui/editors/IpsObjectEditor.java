@@ -112,7 +112,8 @@ public abstract class IpsObjectEditor extends FormEditor
         	throw new PartInitException("Unsupported editor input type " + input.getClass().getName()); //$NON-NLS-1$
         }
         
-        site.getPage().addPartListener(this);            
+        site.getPage().addPartListener(this);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
     }
     
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException{

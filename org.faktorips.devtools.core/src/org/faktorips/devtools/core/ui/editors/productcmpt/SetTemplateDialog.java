@@ -106,7 +106,7 @@ public class SetTemplateDialog extends EditDialog {
     	String policyCmptTypeName = ""; //$NON-NLS-1$
     	try {
         	String productCmptTypeName = template.getText();
-			IProductCmptType type = template.getPdProject().findProductCmptType(productCmptTypeName);
+			IProductCmptType type = template.getIpsProject().findProductCmptType(productCmptTypeName);
 			if (type == null) {
 				return "";  //$NON-NLS-1$
 			}

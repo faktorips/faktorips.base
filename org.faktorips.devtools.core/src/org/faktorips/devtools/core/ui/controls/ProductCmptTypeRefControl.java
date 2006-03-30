@@ -44,7 +44,7 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
      * {@inheritDoc}
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
-    	IIpsObject[] allProductCmptTypes = getPdProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
+    	IIpsObject[] allProductCmptTypes = getIpsProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
     	ArrayList result = new ArrayList();
     	for (int i = 0; i < allProductCmptTypes.length; i++) {
 			if (!((IProductCmptType)allProductCmptTypes[i]).isAbstract()) {
@@ -62,6 +62,10 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
      * the type.
      */
     public IProductCmptType findProductCmptType() throws CoreException {
-        return (IProductCmptType)getPdProject().findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getText());
+    	IIpsProject project = getIpsProject();
+    	if (project != null) {
+            return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getText());
+    	}
+    	return null;
     }
 }

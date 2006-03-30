@@ -43,7 +43,7 @@ public class PcTypeRefControl extends IpsObjectRefControl {
      * @see org.faktorips.devtools.core.ui.controls.IpsObjectRefControl#getPdObjects()
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
-        return getPdProject().findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
+        return getIpsProject().findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
     }
     
     /**
@@ -53,7 +53,7 @@ public class PcTypeRefControl extends IpsObjectRefControl {
      * @throws CoreException if an error occurs while searching for the type.
      */
     public IPolicyCmptType findPcType() throws CoreException {
-        IIpsProject project = getPdProject();
+        IIpsProject project = getIpsProject();
         if (project==null) {
             return null;
         }

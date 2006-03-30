@@ -22,11 +22,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -41,6 +46,9 @@ import org.faktorips.util.message.MessageList;
 public class ProductCmptPage extends IpsObjectPage {
     
     private ProductCmptTypeRefControl typeRefControl;
+    private Text versionId;
+    private Text constName;
+    private Text fullName;
     
     public ProductCmptPage(IStructuredSelection selection) throws JavaModelException {
         super(selection, Messages.ProductCmptPage_title);
@@ -50,12 +58,37 @@ public class ProductCmptPage extends IpsObjectPage {
      * {@inheritDoc}
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
-        addNameLabelField(toolkit);
+
+        toolkit.createLabel(nameComposite, "Version Id:");
+        versionId = toolkit.createText(nameComposite);
+    	toolkit.createLabel(nameComposite, "Constant name part:");
+        constName = toolkit.createText(nameComposite);
+
+        fullName = addNameLabelField(toolkit);
+        
         toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelName);
         
         typeRefControl = new ProductCmptTypeRefControl(null, nameComposite, toolkit);
         TextButtonField pcTypeField = new TextButtonField(typeRefControl);
         pcTypeField.addChangeListener(this);
+        
+        updateEnablementState();
+        
+        versionId.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				IProductCmptNamingStrategy ns = getNamingStrategy();
+				showMessage(ns.validateVersionId(versionId.getText()));
+				updateFullName();
+			}
+		});
+        
+        constName.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				IProductCmptNamingStrategy ns = getNamingStrategy();
+				showMessage(ns.validateConstantPart(constName.getText()));
+				updateFullName();
+			}
+		});
     }
     
     /**
@@ -69,10 +102,18 @@ public class ProductCmptPage extends IpsObjectPage {
 				return;
 			}
 			IProductCmpt productCmpt = (IProductCmpt)obj;
-			String defaultName;
-			defaultName = productCmpt.getIpsProject().getProductCmptNamingStratgey().getNextName(productCmpt);
-			setIpsObjectName(defaultName);
-			typeRefControl.setText(productCmpt.getPolicyCmptType());
+
+			IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
+			if (namingStrategy != null) {
+				if (namingStrategy.supportsVersionId()) {
+					versionId.setText(namingStrategy.getNextVersionId(productCmpt));
+					constName.setText(namingStrategy.getConstantPart(namingStrategy.getNextName(productCmpt)));
+				}
+			} else {
+				setIpsObjectName(productCmpt.getName());
+			}
+			
+			typeRefControl.setText(productCmpt.findProductCmptType().getQualifiedName());
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
@@ -82,7 +123,7 @@ public class ProductCmptPage extends IpsObjectPage {
     	String policyCmptTypeName = ""; //$NON-NLS-1$
     	try {
         	String productCmptTypeName = typeRefControl.getText();
-			IProductCmptType type = typeRefControl.getPdProject().findProductCmptType(productCmptTypeName);
+			IProductCmptType type = typeRefControl.getIpsProject().findProductCmptType(productCmptTypeName);
 			policyCmptTypeName = type.getPolicyCmptyType();
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
@@ -101,6 +142,7 @@ public class ProductCmptPage extends IpsObjectPage {
         } else {
         	typeRefControl.setPdProject(null);
         }
+        updateEnablementState();
     }
     
     protected void validatePage() throws CoreException {
@@ -120,17 +162,67 @@ public class ProductCmptPage extends IpsObjectPage {
 	 */
 	protected void validateName() {
 		super.validateName();
-		if (getErrorMessage()!=null) {
+		if (getErrorMessage() != null) {
 			return;
 		}
-		try {
-			MessageList list = getIpsProject().getProductCmptNamingStratgey().validate(getIpsObjectName());
+		IProductCmptNamingStrategy ns = getNamingStrategy();
+		if (ns != null) {
+			MessageList list = ns.validate(getIpsObjectName());
 			if (!list.isEmpty()) {
 				setErrorMessage(list.getMessage(0).getText());
 			}
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
 		}
 	}    
-    
+
+	/**
+	 * Returns the currentyl active naming strategy. 
+	 */
+	private IProductCmptNamingStrategy getNamingStrategy() {
+    	IIpsProject project = getIpsProject();
+    	IProductCmptNamingStrategy namingStrategy = null;
+    	if (project != null) {
+    		try {
+				namingStrategy = project.getProductCmptNamingStratgey();
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+    	}
+    	
+    	return namingStrategy;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void packageChanged() {
+		super.packageChanged();
+		updateEnablementState();
+	}
+	
+	private void updateEnablementState() {
+		IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
+		boolean enabled = namingStrategy != null && namingStrategy.supportsVersionId();
+		this.constName.setEnabled(enabled);
+		this.versionId.setEnabled(enabled);
+		this.fullName.setEnabled(!enabled);
+		
+		if (enabled) {
+			if (namingStrategy.validate(fullName.getText()).isEmpty()) {
+				versionId.setText(namingStrategy.getVersionId(fullName.getText()));
+				constName.setText(namingStrategy.getConstantPart(fullName.getText()));
+			}
+		}
+	}
+	
+	private void showMessage(MessageList list) {
+		if (!list.isEmpty()) {
+			setErrorMessage(list.getMessage(0).getText());
+		} else {
+			setErrorMessage(null);
+		}
+	}
+	
+	private void updateFullName() {
+		fullName.setText(getNamingStrategy().getProductCmptName(constName.getText(), versionId.getText()));
+	}
 }

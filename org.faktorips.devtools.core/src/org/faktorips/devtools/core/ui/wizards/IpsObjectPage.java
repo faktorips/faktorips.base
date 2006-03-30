@@ -89,7 +89,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         } else if (selection.getFirstElement() instanceof IJavaElement) {
             selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();                
         } else if (selection.getFirstElement() instanceof IIpsElement) {
-        	selectedResource = ((IIpsElement)selection.getFirstElement()).getCorrespondingResource();
+        	selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
         } else {
             selectedResource = null;
         }
@@ -178,6 +178,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     protected Text addNameLabelField(UIToolkit toolkit) {
         toolkit.createFormLabel(nameComposite, Messages.IpsObjectPage_labelName); 
         Text nameText = toolkit.createText(nameComposite);
+        
         nameText.setFocus();
         nameField = new TextField(nameText);
         nameField.addChangeListener(this);

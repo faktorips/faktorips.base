@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
  */
 abstract class IpsObjectRefControl extends TextButtonControl {
     
-    private IIpsProject pdProject;
+    private IIpsProject ipsProject;
     
     private String dialogTitle;
     private String dialogMessage;
@@ -52,7 +52,7 @@ abstract class IpsObjectRefControl extends TextButtonControl {
             String dialogTitle,
             String dialogMessage) {
         super(parent, toolkit, Messages.IpsObjectRefControl_title);
-        this.pdProject = project;
+        this.ipsProject = project;
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
         completionProcessor = new IpsObjectCompletionProcessor(this);
@@ -60,12 +60,12 @@ abstract class IpsObjectRefControl extends TextButtonControl {
     }
     
     public void setPdProject(IIpsProject project) {
-        this.pdProject = project;
+        this.ipsProject = project;
         setButtonEnabled(project!=null && project.exists());
     }
     
-    public IIpsProject getPdProject() {
-        return pdProject;
+    public IIpsProject getIpsProject() {
+        return ipsProject;
     }
     
     protected void buttonClicked() {
