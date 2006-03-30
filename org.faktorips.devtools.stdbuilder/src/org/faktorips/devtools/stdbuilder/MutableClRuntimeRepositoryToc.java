@@ -65,6 +65,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
      */
     public void clear() {
         pcRuntimeIdTocEntryMap.clear();
+        pcNameTocEntryMap.clear();
         tableImplClassTocEntryMap.clear();
         tableContentNameTocEntryMap.clear();
         ++modificationStamp;
@@ -89,6 +90,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
                 return false;
             }
             pcRuntimeIdTocEntryMap.put(entry.getIpsObjectId(), entry);
+            pcNameTocEntryMap.put(entry.getIpsObjectName(), entry);
             ++modificationStamp;
             return true;
         }
@@ -101,7 +103,6 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
             }
 
             tableContentNameTocEntryMap.put(entry.getIpsObjectId(), entry);
-            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), entry);
             ++modificationStamp;
             return true;
         }
@@ -111,16 +112,25 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	
 	/**
      * Removes the toc entry with the given object id (full qualified name for tables, runtime id
-     * for product components). Does nothing if the id does not identify an entry.
+     * or full qualified name for product components). Does nothing if the id does not identify an entry.
      */
 	public boolean removeEntry(String objectId) {
-	    if (pcRuntimeIdTocEntryMap.remove(objectId)!=null) {
-	    	++modificationStamp;
-	    	return true;
-	    }
-        for (Iterator it=tableContentNameTocEntryMap.values().iterator(); it.hasNext();) {
-            TocEntryObject entry = (TocEntryObject)it.next();
-            if (entry.getIpsObjectId().equals(objectId)) {
+        TocEntryObject removed = (TocEntryObject)pcNameTocEntryMap.remove(objectId);
+        if (removed == null) {
+            removed = (TocEntryObject)pcRuntimeIdTocEntryMap.remove(objectId);
+        }
+        
+        if (removed != null) {
+            pcRuntimeIdTocEntryMap.remove(removed.getIpsObjectId());
+            pcNameTocEntryMap.remove(removed.getIpsObjectName());
+            
+            ++modificationStamp;
+            return true;
+        }
+        
+	    for (Iterator it=tableContentNameTocEntryMap.values().iterator(); it.hasNext();) {
+	    	TocEntryObject entry = (TocEntryObject)it.next();
+	    	if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
                 ++modificationStamp;
                 break;

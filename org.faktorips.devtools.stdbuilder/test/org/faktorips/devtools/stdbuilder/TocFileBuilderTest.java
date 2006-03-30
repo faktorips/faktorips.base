@@ -139,7 +139,7 @@ public class TocFileBuilderTest extends IpsPluginTest {
         TocEntryObject[] entries = toc.getProductCmptTocEntries();
         assertEquals(1, entries.length);
         
-        TocEntryObject entry0 = toc.getProductCmptTocEntry("motor.MotorProduct");
+        TocEntryObject entry0 = toc.getProductCmptTocEntry(motorProduct.getRuntimeId());
         assertNotNull(entry0);
         TocEntryGeneration genEntry0 = entry0.getGenerationEntry(validFrom);
         assertNotNull(genEntry0);
