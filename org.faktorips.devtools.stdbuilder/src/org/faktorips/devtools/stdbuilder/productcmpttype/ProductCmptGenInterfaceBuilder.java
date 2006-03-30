@@ -60,22 +60,10 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * Overridden.
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getPublishedInterfaceName(getConceptName(ipsSrcFile));
+        String name = getProductCmptType(ipsSrcFile).getName() + getAbbreviationForGenerationConcept(ipsSrcFile);
+        return getJavaNamingConvention().getPublishedInterfaceName(name);
     }
     
-    /**
-     * @deprecated
-     */
-    public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
-        return getProductCmptType(ipsSrcFile).getName() + generationAbb;
-    }
-
-    public String getConceptName(IProductCmptType type) throws CoreException {
-        String generationAbb = getAbbreviationForGenerationConcept(type);
-        return type.getName() + generationAbb;
-    }
-
     protected boolean generatesInterface() {
         return true;
     }
