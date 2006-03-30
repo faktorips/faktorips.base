@@ -699,7 +699,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
             String[] keyItemTypes) throws CoreException {
         
         getJavaCodeFragementBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC));
-        getJavaCodeFragementBuilder().classBegin(Modifier.PRIVATE | Modifier.STATIC,
+        getJavaCodeFragementBuilder().classBegin(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
                 hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
             getJavaCodeFragementBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
