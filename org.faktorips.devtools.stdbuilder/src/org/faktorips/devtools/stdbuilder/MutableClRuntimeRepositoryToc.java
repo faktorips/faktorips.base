@@ -101,6 +101,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
             }
 
             tableContentNameTocEntryMap.put(entry.getIpsObjectId(), entry);
+            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), entry);
             ++modificationStamp;
             return true;
         }
@@ -117,14 +118,22 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	    	++modificationStamp;
 	    	return true;
 	    }
-	    for (Iterator it=tableContentNameTocEntryMap.values().iterator(); it.hasNext();) {
-	    	TocEntryObject entry = (TocEntryObject)it.next();
-	    	if (entry.getIpsObjectId().equals(objectId)) {
+        for (Iterator it=tableContentNameTocEntryMap.values().iterator(); it.hasNext();) {
+            TocEntryObject entry = (TocEntryObject)it.next();
+            if (entry.getIpsObjectId().equals(objectId)) {
                 it.remove();
-		    	++modificationStamp;
-		    	return true;
-	    	}
-	    }
+                ++modificationStamp;
+                break;
+            }
+        }
+        for (Iterator it=tableImplClassTocEntryMap.values().iterator(); it.hasNext();) {
+            TocEntryObject entry = (TocEntryObject)it.next();
+            if (entry.getImplementationClassName().equals(objectId)) {
+                it.remove();
+                ++modificationStamp;
+                return true;
+            }
+        }
 	    return false;
 	}
 	
