@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -26,6 +27,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
@@ -39,10 +41,32 @@ public class IpsDeepCopyAction extends IpsAction {
 
 	private Shell shell;
 	
-	public IpsDeepCopyAction(Shell shell, ISelectionProvider selectionProvider) {
+	/**
+	 * One of DeepCopyWizard.TYPE_COPY_PRODUCT or DeepCopyWizard.TYPE_NEW_VERSION.
+	 */
+	private int type;
+	
+	/**
+	 * Creates a new action to start the deep copy wizard.
+	 * 
+	 * @param shell The shell to use as parent for the wizard
+	 * @param selectionProvider The provider of the selected item to use as root for the copy.
+	 * @param type One of DeepCopyWizard.TYPE_COPY_PRODUCT or DeepCopyWizard.TYPE_NEW_VERSION
+	 */
+	public IpsDeepCopyAction(Shell shell, ISelectionProvider selectionProvider, int type) {
 		super(selectionProvider);
+		if (type != DeepCopyWizard.TYPE_COPY_PRODUCT && type != DeepCopyWizard.TYPE_NEW_VERSION) {
+			throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
+		}
+		this.type = type;
+
 		this.shell = shell;
-		setText(Messages.IpsDeepCopyAction_name);
+
+		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+			setText(Messages.IpsDeepCopyAction_name);
+		} else {
+			setText(Messages.IpsDeepCopyAction_nameNewVersion);
+		}
 	}
 
 	/** 
@@ -52,8 +76,22 @@ public class IpsDeepCopyAction extends IpsAction {
 		Object selected  = selection.getFirstElement();
 		if (selected instanceof IProductCmpt) {
 			IProductCmpt root = (IProductCmpt)selected;
-			DeepCopyWizard dcw = new DeepCopyWizard(root);
+			
+			IProductCmptNamingStrategy ns = null;
+			try {
+				ns = root.getIpsProject().getProductCmptNamingStratgey();
+			} catch (CoreException e1) {
+				IpsPlugin.log(e1);
+			}
+			if (type == DeepCopyWizard.TYPE_NEW_VERSION && (ns == null || !ns.supportsVersionId())) {
+				MessageDialog.openInformation(shell, Messages.IpsDeepCopyAction_titleNoVersion, Messages.IpsDeepCopyAction_msgNoVersion);
+				return;
+			}
+			
+			
+			DeepCopyWizard dcw = new DeepCopyWizard(root, type);
 			WizardDialog wd = new WizardDialog(shell, dcw);
+			wd.setBlockOnOpen(true);
 			wd.open();
 			if (wd.getReturnCode() == WizardDialog.OK) {
 				

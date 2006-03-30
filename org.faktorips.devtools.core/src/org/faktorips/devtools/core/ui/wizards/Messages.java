@@ -29,7 +29,7 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
-    public static String ProductStructureLabelProvider_undefined;
+
     public static String NewIpsObjectWizard_title;
     public static String IpsObjectPage_msgNew; 
     public static String IpsObjectPage_labelSrcFolder;

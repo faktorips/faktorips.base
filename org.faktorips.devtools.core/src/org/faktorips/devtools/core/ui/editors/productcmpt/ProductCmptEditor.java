@@ -101,7 +101,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 					SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
 					int button = dialog.open();
 					if (button != SetTemplateDialog.OK) {
-						addPage(new FormPage(this, Messages.ProductCmptEditor_titleEmpty, "")); //$NON-NLS-2$
+						addPage(new FormPage(this, Messages.ProductCmptEditor_titleEmpty, "")); //$NON-NLS-2$ //$NON-NLS-1$
 						this.close(false);
 						return;
 					} else {

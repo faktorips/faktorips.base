@@ -29,7 +29,7 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
-    public static String ProductStructureLabelProvider_undefined;
+
     public static String DeepCopyWizard_title;
     public static String SourcePage_title;
     public static String SourcePage_pageTitle;
@@ -51,4 +51,8 @@ public class Messages extends NLS {
 	public static String SourcePage_msgCircleRelation;
 	public static String SourcePage_msgCircleRelationShort;
 	public static String ReferenceAndPreviewPage_msgCircleDetected;
+	public static String DeepCopyWizard_titleNewVersion;
+	public static String SourcePage_titleNewVersion;
+	public static String ReferenceAndPreviewPage_titleNewVersion;
+	public static String ReferenceAndPreviewPage_labelVersionId;
 }

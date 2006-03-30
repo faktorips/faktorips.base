@@ -44,15 +44,22 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 	
 	private static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
+	private static String getTitle(int type) {
+		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+			return Messages.SourcePage_title;
+		} else {
+			return Messages.SourcePage_titleNewVersion;
+		}
+	}
+	
 	/**
 	 * Creates a new page to select the objects to copy.
 	 */
-	protected SourcePage(IProductCmptStructure structure) {
-		super(PAGE_ID, Messages.SourcePage_title, null); 
+	protected SourcePage(IProductCmptStructure structure, int type) {
+		super(PAGE_ID, getTitle(type), null);
 		this.structure = structure;
 		setPageComplete();
 		
-		super.setTitle(Messages.SourcePage_pageTitle);
 		super.setDescription(Messages.SourcePage_description);
 	}
 

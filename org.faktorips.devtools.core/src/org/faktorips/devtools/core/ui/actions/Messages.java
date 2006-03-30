@@ -61,4 +61,7 @@ public class Messages extends NLS {
 	public static String ChangeWorkingDateAction_description;
 	public static String ChangeWorkingDateAction_errorFallbackMessageParameter;
 	public static String ChangeWorkingDateAction_errorPrefix;
+	public static String IpsDeepCopyAction_nameNewVersion;
+	public static String IpsDeepCopyAction_titleNoVersion;
+	public static String IpsDeepCopyAction_msgNoVersion;
 }

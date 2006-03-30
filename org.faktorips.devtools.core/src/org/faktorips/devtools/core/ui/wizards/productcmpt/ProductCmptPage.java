@@ -59,9 +59,9 @@ public class ProductCmptPage extends IpsObjectPage {
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
 
-        toolkit.createLabel(nameComposite, "Version Id:");
+        toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelVersionId);
         versionId = toolkit.createText(nameComposite);
-    	toolkit.createLabel(nameComposite, "Constant name part:");
+    	toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelConstNamePart);
         constName = toolkit.createText(nameComposite);
 
         fullName = addNameLabelField(toolkit);

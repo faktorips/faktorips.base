@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -42,22 +41,22 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Page to preview the changes to the names of copied products and to switch between
@@ -99,7 +98,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	/**
 	 * Cotnrol for search pattern
 	 */
-	private Combo searchInput;
+	private Text searchInput;
 	
 	/**
 	 * Control for replace text
@@ -110,22 +109,63 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * Collection of error messages indexed by product components.
 	 */
 	private Hashtable errorElements;
+	
+	/**
+	 * the type used to create the wizard
+	 */
+	private int type;
+	
+	/**
+	 * The naming strategy which is to be used to find the correct new names of the
+	 * product components to create.
+	 */
+	private IProductCmptNamingStrategy namingStrategy;
+	
+	/**
+	 * The input field for the user to enter a version id to be used for all newly
+	 * created product components.
+	 */
+	private Text versionId;
+	
+	private static String getTitle(int type) {
+		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+			return Messages.ReferenceAndPreviewPage_title;
+		} else {
+			return Messages.ReferenceAndPreviewPage_titleNewVersion;
+		}
+	}
 
 	/**
 	 * Create a new page to show the previously selected products with new names and allow the user
 	 * to choose between copy and reference, select the target package, search- and replac-pattern.
 	 * 
+	 * @param structure The product component structure to copy.
 	 * @param sourcePage The page to get the objects selected for copy, the target package and the 
 	 * search and replace patterns.
+	 * @param type The type used to create the <code>DeepCopyWizard</code>.
+	 * 
+	 * @throws IllegalArgumentException if the given type is neither DeepCopyWizard.TYPE_COPY_PRODUCT
+	 * nor DeepCopyWizard.TYPE_NEW_VERSION.
 	 */
-	protected ReferenceAndPreviewPage(IProductCmptStructure structure, SourcePage sourcePage) {
-		super(PAGE_ID, Messages.ReferenceAndPreviewPage_title, null);
+	protected ReferenceAndPreviewPage(IProductCmptStructure structure, SourcePage sourcePage, int type) {
+		super(PAGE_ID, getTitle(type), null);
+		
+		if (type != DeepCopyWizard.TYPE_COPY_PRODUCT && type != DeepCopyWizard.TYPE_NEW_VERSION) {
+			throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
+		}
+		this.type = type;
+
 		this.sourcePage = sourcePage;
 		this.structure = structure;
-		this.setTitle(Messages.ReferenceAndPreviewPage_pageTitle);
+		this.setTitle(getTitle(type));
 		this.setDescription(Messages.ReferenceAndPreviewPage_description);
 		setPageComplete(false);
 		this.errorElements = new Hashtable();
+		try {
+			this.namingStrategy = structure.getRoot().getIpsProject().getProductCmptNamingStratgey();
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
 	}
 
 	/**
@@ -162,19 +202,23 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		}
 		targetInput.getTextControl().addModifyListener(listener);
 		
-		// TODO fill combo from config
-		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
-		searchInput = toolkit.createCombo(inputRoot);
-		searchInput.add("(.*)_\\d{2}_\\d{4}"); //$NON-NLS-1$
-		searchInput.select(0);
-		searchInput.addModifyListener(listener);
+		
+		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+			toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
+			searchInput = toolkit.createText(inputRoot);
+			searchInput.addModifyListener(listener);
+			
+			toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelReplacePattern);
+			replaceInput = toolkit.createText(inputRoot);
+			replaceInput.addModifyListener(listener);
 
-		// TODO make combo and fill from config
-		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelReplacePattern);
-		replaceInput = toolkit.createText(inputRoot);
-		replaceInput.setText("$1_" + getDateString());  //$NON-NLS-1$
-		replaceInput.addModifyListener(listener);
-
+			if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+				toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelVersionId);
+				versionId = toolkit.createText(inputRoot);
+				versionId.addModifyListener(listener);
+			} 
+		}
+		
 		tree = new CheckboxTreeViewer(root);
 		tree.setLabelProvider(new LabelProvider(tree));
 		tree.setContentProvider(new ContentProvider());
@@ -183,18 +227,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		tree.addCheckStateListener(new CheckStateListener(this));
 	}
 	
-	/**
-	 * Returns a string like MM_YYYY from the working date set in preferences.
-	 */
-	private String getDateString() {
-		String result = ""; //$NON-NLS-1$
-		GregorianCalendar workingDate = IpsPreferences.getWorkingDate(); 
-		int month = workingDate.get(GregorianCalendar.MONTH) + 1;
-		int year = workingDate.get(GregorianCalendar.YEAR);
-		result = "" + (month<10?"0"+month:"" + month) + "_" + year; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		return result;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -339,20 +371,42 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * Constructs the new name. If at least one of search pattern and replace text is empty, 
 	 * the new name is the old name.
 	 */
-	private String getNewName(String oldName) {
-		String searchPattern = getSearchPattern();
-		String replaceText = getReplaceText();
-		if (!replaceText.equals("") && !searchPattern.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
-			return oldName.replaceAll(searchPattern, replaceText);
+	private String getNewName(String oldName, IProductCmpt productCmpt) {
+		String newName = oldName;
+		
+		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+			if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+				newName = namingStrategy.getConstantPart(newName);
+			}
+			String searchPattern = getSearchPattern();
+			String replaceText = getReplaceText();
+			if (!replaceText.equals("") && !searchPattern.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
+				newName = newName.replaceAll(searchPattern, replaceText);
+			}
+
+			if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+				newName = namingStrategy.getProductCmptName(newName, versionId.getText());
+			}
+		} else if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+			newName = namingStrategy.getNextName(productCmpt);
 		}
-		return oldName;
+		
+		return newName;
 	}
 	
 	/**
 	 * Checks for errors in user input. If no erros found, <code>true</code> is returned.
 	 */
 	private boolean isValid() {
-		checkForErrors();
+		checkForInvalidTargets();
+
+		if (namingStrategy != null && namingStrategy.supportsVersionId() && type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+			 MessageList ml = namingStrategy.validateVersionId(versionId.getText());
+			 if (!ml.isEmpty()) {
+				 setMessage(ml.getMessage(0).getText(), ERROR);
+				 return false;
+			 }
+		}
 		
 		if (getProductsToCopy().length == 0) {
 			setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, WARNING);
@@ -363,9 +417,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	}
 
 	/**
-	 * Checks for errors and refreshes the map of error messages.
+	 * Checks for invalid targets (target names that does not allow to create 
+	 * a new product component with this name) and refreshes the map of error messages.
 	 */
-	private void checkForErrors() {
+	private void checkForInvalidTargets() {
 		StringBuffer message = new StringBuffer();
 		this.errorElements.clear();
 
@@ -380,7 +435,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 			String packageName = buildTargetPackageName(base, toCopy[i], segmentsToIgnore);
 			IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
 			if (targetPackage.exists()) {
-				String newName = getNewName(toCopy[i].getName());
+				String newName = getNewName(toCopy[i].getName(), toCopy[i]);
 				IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
 				if (file.exists()) {
 					message = new StringBuffer();
@@ -398,6 +453,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -426,7 +482,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * @throws CoreException if any error exists (e.g. naming collisions).
 	 */
 	public Map getHandles() throws CoreException {
-		checkForErrors();
+		checkForInvalidTargets();
 		if (!isValid()) {
 			StringBuffer message = new StringBuffer();
 			Collection errors = errorElements.values();
@@ -447,7 +503,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		for (int i = 0; i < toCopy.length; i++) {
 			String packageName = buildTargetPackageName(base, toCopy[i], segmentsToIgnore);
 			IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
-			String newName = getNewName(toCopy[i].getName());
+			String newName = getNewName(toCopy[i].getName(), toCopy[i]);
 			IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
 			result.put(toCopy[i], file);
 		}
@@ -529,11 +585,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 			if (element instanceof IProductCmpt) {
 				String name = ((IProductCmpt)element).getName();
 				if (tree.getChecked(element)) {
-					String search = getSearchPattern();
-					String replace = getReplaceText();
-					if (search.length() > 0 && replace.length() > 0) {
-						name = name.replaceAll(search, replace);
-					}
+					name = getNewName(name, (IProductCmpt)element);
 				}
 				if (isInError(element)) {
 					name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert + getErrorMessage(element);

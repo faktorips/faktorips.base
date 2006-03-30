@@ -39,32 +39,56 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructure;
  * @author Thorsten Guenther
  */
 public class DeepCopyWizard extends Wizard {
+	
+	public static final int TYPE_COPY_PRODUCT = 10;
+	public static final int TYPE_NEW_VERSION = 100;
+	
 	private IProductCmptStructure structure;
 	private SourcePage sourcePage;
 	private ReferenceAndPreviewPage previewPage;
 	private IProductCmpt copiedRoot;
 	private ISchedulingRule schedulingRule;
+	private int type;
 	
 	/**
-	 * Creates a new wizard which can make a deep copy of the given product
+	 * Creates a new wizard which can make a deep copy of the given product.
+	 * 
+	 * @param type One of TYPE_COPY_PRODUCT or TYPE_NEW_VERSION. The first one 
+	 * allows to enter the version id (if supported by product component naming strategy)
+	 * free and enter a search- and a rename-pattern. The second one does neither support
+	 * to set the version id manually nor does it allow the user to enter a search- and a 
+	 * rename-pattern.
+	 * 
+	 * @throws IllegalArgumentException if the given type is not valid.
 	 */
-	public DeepCopyWizard(IProductCmpt product) {
+	public DeepCopyWizard(IProductCmpt product, int type) throws IllegalArgumentException {
 		super();
+		
+		if (type != TYPE_COPY_PRODUCT && type != TYPE_NEW_VERSION) {
+			throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
+		}
+		this.type = type;
+		
 		try {
 			structure = product.getStructure();
 		} catch (CycleException e) {
 			IpsPlugin.log(e);
 		}
-		super.setWindowTitle(Messages.DeepCopyWizard_title);
+		
+		if (type == TYPE_COPY_PRODUCT) {
+			super.setWindowTitle(Messages.DeepCopyWizard_title);
+		} else {
+			super.setWindowTitle(Messages.DeepCopyWizard_titleNewVersion);
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void addPages() {
-		sourcePage = new SourcePage(structure);
+		sourcePage = new SourcePage(structure, type);
 		super.addPage(sourcePage);
-		previewPage = new ReferenceAndPreviewPage(structure, sourcePage);
+		previewPage = new ReferenceAndPreviewPage(structure, sourcePage, type);
 		super.addPage(previewPage);
 	}
 
@@ -76,7 +100,7 @@ public class DeepCopyWizard extends Wizard {
 			final IProductCmpt[] toCopy = previewPage.getProductsToCopy();
 			final IProductCmpt[] toRefer = previewPage.getProductsToRefer();
 			final Map handles = previewPage.getHandles();
-			schedulingRule = copiedRoot.getIpsProject().getCorrespondingResource();
+			schedulingRule = structure.getRoot().getIpsProject().getCorrespondingResource();
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){
 
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
@@ -102,4 +126,5 @@ public class DeepCopyWizard extends Wizard {
 	public IProductCmpt getCopiedRoot() {
 		return copiedRoot;
 	}
+	
 }
