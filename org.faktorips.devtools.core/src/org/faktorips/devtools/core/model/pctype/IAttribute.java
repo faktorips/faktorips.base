@@ -40,7 +40,7 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
     
     public final static String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
-    public final static String PROPERTY_OVERWRITES = "overwrites";
+    public final static String PROPERTY_OVERWRITES = "overwrites"; //$NON-NLS-1$
     /**
      * Prefix for all message codes of this class.
      */

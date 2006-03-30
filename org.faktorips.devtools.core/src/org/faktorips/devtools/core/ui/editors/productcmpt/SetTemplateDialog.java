@@ -52,7 +52,7 @@ public class SetTemplateDialog extends EditDialog {
      * @param message The message to be displayed to the user if no error message is set.
      */
     public SetTemplateDialog(IProductCmpt cmpt, Shell parentShell, String message) {
-        super(parentShell, "Select New Template", false);
+        super(parentShell, Messages.SetTemplateDialog_titleNewTemplate, false);
         this.message = message;
         this.productCmpt = cmpt;
     }
@@ -64,14 +64,14 @@ public class SetTemplateDialog extends EditDialog {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        uiToolkit.createFormLabel(workArea, "New Template:");
+        uiToolkit.createFormLabel(workArea, Messages.SetTemplateDialog_labelNewTemplate);
         template = new ProductCmptTypeRefControl(productCmpt.getIpsProject(), workArea, uiToolkit);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				if (StringUtils.isEmpty(getPolicyCmptType())) {
 					getButton(OK).setEnabled(false);
-					String msg = NLS.bind("The template {0} does not exist.", template.getText());
+					String msg = NLS.bind(Messages.SetTemplateDialog_msgTemplateDoesNotExist, template.getText());
 					setMessage(msg, IMessageProvider.ERROR);
 				} else {
 					getButton(OK).setEnabled(true);
@@ -108,7 +108,7 @@ public class SetTemplateDialog extends EditDialog {
         	String productCmptTypeName = template.getText();
 			IProductCmptType type = template.getPdProject().findProductCmptType(productCmptTypeName);
 			if (type == null) {
-				return ""; 
+				return "";  //$NON-NLS-1$
 			}
 			policyCmptTypeName = type.getPolicyCmptyType();
 		} catch (CoreException e) {

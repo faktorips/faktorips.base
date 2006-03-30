@@ -140,4 +140,26 @@ public class Messages extends NLS {
 
 	public static String ProductCmptEditor_msgFileOutOfSync;
 
+	public static String SetTemplateDialog_titleNewTemplate;
+
+	public static String SetTemplateDialog_labelNewTemplate;
+
+	public static String SetTemplateDialog_msgTemplateDoesNotExist;
+
+	public static String ProductCmptEditor_msgTemplateNotFound;
+
+	public static String ProductCmptEditor_titleEmpty;
+
+	public static String GenerationEditDialog_titleChangeValidFromDate;
+
+	public static String GenerationEditDialog_pagetitleValidFromDate;
+
+	public static String GenerationEditDialog_labelValidFrom;
+
+	public static String GenerationEditDialog_msgInvalidFormat;
+
+	public static String GenerationEditDialog_msgDateToEarly;
+
+	public static String GenerationEditDialog_msgDateToLate;
+
 }

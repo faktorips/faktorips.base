@@ -121,7 +121,7 @@ public class Attribute extends Member implements IAttribute {
     		if (superAttr != null) {
     			return superAttr.getDatatype();
     		}
-    		return "";
+    		return ""; //$NON-NLS-1$
     	}
         return datatype;
     }
@@ -412,12 +412,12 @@ public class Attribute extends Member implements IAttribute {
         Attribute superAttr = getSupertypeAttribute();
         if (!overwrites && superAttr != null) {
         	IPolicyCmptType type = superAttr.getPolicyCmptType();
-        	String text = NLS.bind("Name collision with {0}:{1}", type!=null?type.getQualifiedName():"unknown", superAttr.getName());
+        	String text = NLS.bind(Messages.Attribute_msgNameCollision, type!=null?type.getQualifiedName():Messages.Attribute_msgpartUnknown, superAttr.getName());
         	result.add(new Message(MSGCODE_NAME_COLLISION, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
         }
         
         if (overwrites && superAttr == null) {
-        	String text = NLS.bind("No attribute {0} in supertype hierarchy, so nothing can be overwritten.", getName());
+        	String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
         	result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
         }
     }

@@ -227,7 +227,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)attribute);
 
-        uiToolkit.createFormLabel(workArea, "Overwrites:");
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
         Checkbox cb = new Checkbox(workArea, uiToolkit);
 
         overwritesListener = new OverwritesListener(cb);

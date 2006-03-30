@@ -19,8 +19,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,6 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarField;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
@@ -54,7 +57,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
      * @param parentShell The shell to be used as parent for the dialog
      */
     public GenerationEditDialog(IProductCmptGeneration generation, Shell parentShell) {
-        super(generation, parentShell, "Change Valid-From Date", true);
+        super(generation, parentShell, Messages.GenerationEditDialog_titleChangeValidFromDate, true);
         
         // we have to store previous and next here, because the evaulation of
         // previous and next depend on the valid-from date which we will modify...
@@ -68,7 +71,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
         TabItem firstPage = new TabItem(folder, SWT.NONE);
-        firstPage.setText("Valid-From Date");
+        firstPage.setText(Messages.GenerationEditDialog_pagetitleValidFromDate);
         firstPage.setControl(createFirstPage(folder));
         createDescriptionTabItem(folder);
         return folder;
@@ -80,7 +83,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        uiToolkit.createFormLabel(workArea, "Valid From:");
+        uiToolkit.createFormLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
         Text date = uiToolkit.createText(workArea); 
 
         date.addModifyListener(this);
@@ -107,13 +110,15 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
 		GregorianCalendar value = (GregorianCalendar)dateField.getValue();
 		if (value == null) {
 			SimpleDateFormat format = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
-			super.setErrorMessage("Valid from has to have the format " + format.toPattern());
+			super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + format.toPattern());
 			getButton(OK).setEnabled(false);
 		} else if (previous != null && !value.after(previous.getValidFrom())) {
-			super.setErrorMessage("Valid from lies before or at the valid from of the previous generation");
+			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
+			super.setErrorMessage(msg);
 			getButton(OK).setEnabled(false);
 		} else if (next != null && !next.getValidFrom().after(value)) {
-			super.setErrorMessage("Valid from lies after or at the valid from date of the next generation");
+			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
+			super.setErrorMessage(msg);
 			getButton(OK).setEnabled(false);
 		} else {
 			super.setErrorMessage(null);

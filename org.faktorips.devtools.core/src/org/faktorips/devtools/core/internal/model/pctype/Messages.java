@@ -133,4 +133,10 @@ public class Messages extends NLS {
 	public static String PolicyCmptType_msgMustImplementAbstractRelation;
 
 	public static String PolicyCmptType_msgInconsistentTypeHierarchy;
+
+	public static String Attribute_msgNameCollision;
+
+	public static String Attribute_msgpartUnknown;
+
+	public static String Attribute_msgNothingToOverwrite;
 }

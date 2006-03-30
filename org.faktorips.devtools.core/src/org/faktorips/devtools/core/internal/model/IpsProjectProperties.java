@@ -145,7 +145,7 @@ public class IpsProjectProperties {
 		Element projectEl = doc.createElement(TAG_NAME);
 		projectEl.setAttribute("modelProject", "" + modelProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
-		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix);
+		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
 		Element generatedCodeEl = doc.createElement(GENERATED_CODE_TAG_NAME);
 		projectEl.appendChild(generatedCodeEl);
 		generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString()); //$NON-NLS-1$
@@ -309,7 +309,7 @@ public class IpsProjectProperties {
 	 */
 	public void setRuntimeIdPrefix(String runtimeIdPrefix) {
 		if (runtimeIdPrefix == null) {
-			throw new NullPointerException("RuntimeIdPrefix can not be null");
+			throw new NullPointerException("RuntimeIdPrefix can not be null"); //$NON-NLS-1$
 		}
 		this.runtimeIdPrefix = runtimeIdPrefix;
 	}

@@ -96,12 +96,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		try {
 			if (isSrcFileUsable()) {
 				IProductCmpt cmpt = (ProductCmpt)getIpsObject();
-				if (cmpt.findProductCmptType() == null) {
-					String msg = NLS.bind("The previously set template ({0}) was not found - please select an existing one.", cmpt.getPolicyCmptType());
+				if (cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
+					String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
 					SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
 					int button = dialog.open();
 					if (button != SetTemplateDialog.OK) {
-						addPage(new FormPage(this, "Empty", ""));
+						addPage(new FormPage(this, Messages.ProductCmptEditor_titleEmpty, "")); //$NON-NLS-2$
 						this.close(false);
 						return;
 					} else {
