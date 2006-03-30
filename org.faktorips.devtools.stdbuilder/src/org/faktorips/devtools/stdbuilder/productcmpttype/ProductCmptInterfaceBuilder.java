@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
@@ -67,6 +68,10 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     
     public String getConceptName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getProductCmptType(ipsSrcFile).getName();
+    }
+    
+    protected IPolicyCmptType getPolicyCmptType() {
+        return (IPolicyCmptType)getIpsObject();
     }
 
     /**
@@ -166,7 +171,7 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String policyCmptTypeName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(getIpsSrcFile()); 
         appendLocalizedJavaDoc("METHOD_CREATE_POLICY_CMPT", new String[]{policyCmptTypeName}, getIpsObject(), methodsBuilder);
-        generateSignatureCreatePolicyCmpt(getIpsSrcFile(), methodsBuilder);
+        generateSignatureCreatePolicyCmpt(getPolicyCmptType(), methodsBuilder);
         methodsBuilder.append(';');
     }
     
@@ -176,11 +181,18 @@ public class ProductCmptInterfaceBuilder extends AbstractProductCmptTypeBuilder 
      * public IPolicy createPolicy()
      * </pre>
      */
-    void generateSignatureCreatePolicyCmpt(IIpsSrcFile ipsSrcFile, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(ipsSrcFile); 
-        String returnType =policyCmptTypeInterfaceBuilder.getQualifiedClassName(ipsSrcFile);
-        String methodName = getLocalizedText(ipsSrcFile, "METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
+    void generateSignatureCreatePolicyCmpt(IPolicyCmptType type, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        String returnType =policyCmptTypeInterfaceBuilder.getQualifiedClassName(type);
+        String methodName = getMethodNameCreatePolicyCmpt(type);
         methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, new String[0], new String[0]);
+    }
+    
+    /**
+     * Returns the method name to create the concrete policy component class, e.g. createMotorPolicy.
+     */
+    public String getMethodNameCreatePolicyCmpt(IPolicyCmptType type) throws CoreException {
+        String policyCmptConceptName = policyCmptTypeInterfaceBuilder.getPolicyCmptTypeName(type); 
+        return getLocalizedText(type, "METHOD_CREATE_POLICY_CMPT_NAME", policyCmptConceptName);
     }
     
     /**

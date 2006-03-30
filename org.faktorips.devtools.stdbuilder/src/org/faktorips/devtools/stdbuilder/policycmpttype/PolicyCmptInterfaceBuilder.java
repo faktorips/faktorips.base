@@ -78,6 +78,10 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return StringUtils.capitalise(name);
     }
     
+    public String getPolicyCmptTypeName(IPolicyCmptType type) throws CoreException {
+        return StringUtils.capitalise(type.getName());
+    }
+
     protected void assertConditionsBeforeGenerating() {
         String builderName = null;
 

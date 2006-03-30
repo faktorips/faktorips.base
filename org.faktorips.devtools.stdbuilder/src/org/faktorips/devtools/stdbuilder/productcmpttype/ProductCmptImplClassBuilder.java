@@ -26,10 +26,13 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.runtime.RuntimeRepository;
+import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -66,6 +69,10 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return getJavaNamingConvention().getImplementationClassName(getProductCmptType(ipsSrcFile).getName());
+    }
+
+    protected IPolicyCmptType getPolicyCmptType() {
+        return (IPolicyCmptType)getIpsObject();
     }
 
     /**
@@ -129,6 +136,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         generateGetGenerationMethod(methodsBuilder);
         if (!getProductCmptType().isAbstract()) {
             generateMethodCreatePolicyCmpt(methodsBuilder);
+            generateMethodCreatePolicyCmptBase(methodsBuilder);
         }
     }
     
@@ -144,13 +152,39 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         methodsBuilder.closeBracket();
     }
     
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public IMotorPolicy createMotorPolicy() {
+     *     return new MotorPolicy(this);
+     * }
+     * </pre>
+     */
     private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureCreatePolicyCmpt(getIpsSrcFile(), methodsBuilder);
+        interfaceBuilder.generateSignatureCreatePolicyCmpt(getPolicyCmptType(), methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
-        methodsBuilder.appendClassName(policyCmptImplClassBuilder.getQualifiedClassName(getIpsSrcFile()));
+        methodsBuilder.appendClassName(policyCmptImplClassBuilder.getQualifiedClassName(getPolicyCmptType()));
         methodsBuilder.appendln("(this);");
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public IPolicyComponent createPolicyComponent() {
+     *     return createMotorPolicy();
+     * }
+     * </pre>
+     */
+    private void generateMethodCreatePolicyCmptBase(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.signature(Modifier.PUBLIC, IPolicyComponent.class.getName(), MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
+        methodsBuilder.openBracket();
+        methodsBuilder.appendln("return " + interfaceBuilder.getMethodNameCreatePolicyCmpt(getPolicyCmptType()) + "();");
         methodsBuilder.closeBracket();
     }
 
