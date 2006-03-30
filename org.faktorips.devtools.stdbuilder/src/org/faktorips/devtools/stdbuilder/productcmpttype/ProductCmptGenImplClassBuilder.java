@@ -38,6 +38,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
+import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
@@ -342,6 +344,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     protected void generateCodeForConstantAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateFieldValue(a, datatypeHelper, memberVarsBuilder);
         generateMethodGetValue(a, datatypeHelper, methodsBuilder);
+        generateMethodSetValue(a, datatypeHelper, methodsBuilder);
     }
     
     /**
@@ -373,6 +376,36 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append("return ");
         methodsBuilder.append(getFieldNameValue(a));
         methodsBuilder.append(';');
+        methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void setInterestRate(Decimal newValue) {
+     *     if (!getRepository().isModifiable()) {
+     *         throw new IllegalRepositoryModificationException();
+     *     }
+     *     this.interestRate = newValue;
+     * }
+     * </pre>
+     */
+    private void generateMethodSetValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_SET_VALUE", a.getName(), a, methodsBuilder);
+        String methodName = getJavaNamingConvention().getSetterMethodName(interfaceBuilder.getPropertyNameValue(a), datatypeHelper.getDatatype());
+        String[] paramNames = new String[]{"newValue"};
+        String[] paramTypes = new String[]{datatypeHelper.getJavaClassName()};
+        methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
+        
+        methodsBuilder.openBracket();
+        methodsBuilder.appendln("if (!" + MethodNames.GET_REPOSITORY + "()." + MethodNames.IS_MODIFIABLE + "()) {");
+        methodsBuilder.append("throw new ");
+        methodsBuilder.appendClassName(IllegalRepositoryModificationException.class);
+        methodsBuilder.append("();");
+        methodsBuilder.append("}");
+        methodsBuilder.append("this." + getFieldNameValue(a));
+        methodsBuilder.appendln(" = newValue;");
         methodsBuilder.closeBracket();
     }
     
