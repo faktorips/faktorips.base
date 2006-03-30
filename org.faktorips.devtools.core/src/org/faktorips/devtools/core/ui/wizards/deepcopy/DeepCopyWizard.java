@@ -76,6 +76,7 @@ public class DeepCopyWizard extends Wizard {
 			final IProductCmpt[] toCopy = previewPage.getProductsToCopy();
 			final IProductCmpt[] toRefer = previewPage.getProductsToRefer();
 			final Map handles = previewPage.getHandles();
+			schedulingRule = copiedRoot.getIpsProject().getCorrespondingResource();
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){
 
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {

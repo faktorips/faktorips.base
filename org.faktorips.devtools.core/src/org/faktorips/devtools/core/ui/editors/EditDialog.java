@@ -60,6 +60,10 @@ public abstract class EditDialog extends TitleAreaDialog {
 		tabFolderUsed = useTabFolder;
 
 		IWorkbenchPage page = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		if (page == null) {
+			return;
+		}
+		
 		IEditorPart editor = page.getActiveEditor();
 		if (editor instanceof IpsObjectEditor) {
 			parentEditor = (IpsObjectEditor)editor;
@@ -82,6 +86,8 @@ public abstract class EditDialog extends TitleAreaDialog {
 	    getShell().setText(windowTitle);
 		Composite composite = (Composite)super.createDialogArea(parent);
 		updateTitleInTitleArea();
+		composite.setLayout(new GridLayout(1, false));
+		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		Composite panel;
 		if (tabFolderUsed) {
 		    panel = new TabFolder(composite, SWT.TOP);

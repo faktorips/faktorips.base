@@ -156,13 +156,14 @@ public class ProductAttributesSection extends IpsSection {
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 
-		
-		
 		createEditControls();
 		
 		IpsObjectUIController controller = new IpsObjectUIController(generation.getIpsObject());
 		try {
-			controller.add(new TextField(pcTypeText), generation.getProductCmpt().findProductCmptType(), IProductCmptType.PROPERTY_NAME);
+			IProductCmptType type = generation.getProductCmpt().findProductCmptType();
+			if (type != null) {
+				controller.add(new TextField(pcTypeText), type, IProductCmptType.PROPERTY_NAME);
+			}
 		} catch (CoreException e) {
 			pcTypeText.setText(Messages.ProductAttributesSection_noProductCmptType);
 		}

@@ -32,8 +32,10 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.editor.FormPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -93,6 +95,20 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	protected void addPages() {
 		try {
 			if (isSrcFileUsable()) {
+				IProductCmpt cmpt = (ProductCmpt)getIpsObject();
+				if (cmpt.findProductCmptType() == null) {
+					String msg = NLS.bind("The previously set template ({0}) was not found - please select an existing one.", cmpt.getPolicyCmptType());
+					SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
+					int button = dialog.open();
+					if (button != SetTemplateDialog.OK) {
+						addPage(new FormPage(this, "Empty", ""));
+						this.close(false);
+						return;
+					} else {
+						checkForInconsistenciesBetweenAttributeAndConfigElements();
+					}
+				}
+				
 				propertiesPage = new PropertiesPage(this);
 				generationsPage = new GenerationsPage(this);
 				descriptionPage = new DescriptionPage(this);

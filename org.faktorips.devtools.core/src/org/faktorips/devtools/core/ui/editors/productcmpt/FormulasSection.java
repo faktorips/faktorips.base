@@ -32,6 +32,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.ConfigElement;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -155,12 +156,15 @@ public class FormulasSection extends IpsSection {
 			this.editControls.add(evc);
 
 			try {
-				FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(
-						elements[i].findPcTypeAttribute(), elements[i]
-								.getIpsProject(), elements[i].getExprCompiler());
-				ContentAssistHandler.createHandlerForText(evc.getTextControl(),
-						CompletionUtil
-								.createContentAssistant(completionProcessor));
+				IAttribute attr = elements[i].findPcTypeAttribute();
+				if (attr != null) { 
+					FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(
+							attr, elements[i]
+							               .getIpsProject(), elements[i].getExprCompiler());
+					ContentAssistHandler.createHandlerForText(evc.getTextControl(),
+							CompletionUtil
+							.createContentAssistant(completionProcessor));
+				}
 			} catch (CoreException e) {
 				IpsPlugin.logAndShowErrorDialog(e);
 			}

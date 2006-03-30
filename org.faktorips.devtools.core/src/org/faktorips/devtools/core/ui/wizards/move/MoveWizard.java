@@ -21,12 +21,13 @@ package org.faktorips.devtools.core.ui.wizards.move;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
@@ -133,34 +134,47 @@ public class MoveWizard extends Wizard {
 	 * {@inheritDoc}
 	 */
 	public boolean performFinish() {
-		boolean finished = false;
-		
 		try {
-			MoveOperation move = null;;
+			WorkspaceModifyOperation modifyOperation = null;
 			if (operation == OPERATION_MOVE) {
-				move = new MoveOperation(this.selectedObjects, ((MovePage)sourcePage).getTarget());
-				
+				MoveOperation move = new MoveOperation(selectedObjects,
+						((MovePage) sourcePage).getTarget());
+				modifyOperation = new ModifyOperation(move);
+			} else if (operation == OPERATION_RENAME) {
+				MoveOperation move = new MoveOperation(selectedObjects,
+						new String[] { ((RenamePage) sourcePage).getNewName() });
+				modifyOperation = new ModifyOperation(move);
 			}
-			else if (operation == OPERATION_RENAME) {
-				move = new MoveOperation(this.selectedObjects, new String[] {((RenamePage)sourcePage).getNewName()});
-			}
-			ProgressMonitorDialog dialog = new ProgressMonitorDialog(super.getShell());
-			dialog.run(false, false, move);
-			finished = true;
-		} catch (InvocationTargetException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		} catch (InterruptedException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
+
+			getContainer().run(true, true, modifyOperation);
+
 		} catch (CoreException e) {
 			if (e.getStatus() != null) {
 				IStatus status = e.getStatus();
 				if (status instanceof IpsStatus) {
-					MessageDialog.openError(getShell(), Messages.MoveWizard_error, e.getMessage());
+					MessageDialog.openError(getShell(),
+							Messages.MoveWizard_error, e.getMessage());
 				}
 			}
 			IpsPlugin.log(e);
+		} catch (Exception e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+		} 
+		
+		return true;
+	}
+	
+	private class ModifyOperation extends WorkspaceModifyOperation {
+		private MoveOperation move;
+		
+		public ModifyOperation(MoveOperation toExecute) {
+			super();
+			this.move = toExecute;
+		}
+		
+		protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
+			move.run(monitor);
 		}		
-		return finished;
 	}
 	
 }
