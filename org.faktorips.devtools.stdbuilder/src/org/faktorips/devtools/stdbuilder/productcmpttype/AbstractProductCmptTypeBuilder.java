@@ -144,13 +144,12 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
      */
     public String generate() throws CoreException {
         StringBuffer content = new StringBuffer();
-        content.append("package ");
-        content.append(getPackage(getIpsSrcFile()));
-        content.append(';');
+        String pack = getPackage();
+        content.append("package " + pack + ";");
         content.append(StringUtil.getSystemLineSeparator());
         content.append(StringUtil.getSystemLineSeparator());
         JavaCodeFragment code = generateCodeForJavatype();
-        content.append(code.getImportDeclaration().toString());
+        content.append(code.getImportDeclaration(pack).toString());
         content.append(StringUtil.getSystemLineSeparator());
         content.append(StringUtil.getSystemLineSeparator());
         content.append(code.getSourcecode());

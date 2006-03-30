@@ -384,7 +384,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * <pre>
      * [Javadoc]
      * public void setInterestRate(Decimal newValue) {
-     *     if (!getRepository().isModifiable()) {
+     *     if (getRepository()!=null && !getRepository().isModifiable()) {
      *         throw new IllegalRepositoryModificationException();
      *     }
      *     this.interestRate = newValue;
@@ -397,16 +397,21 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         String[] paramNames = new String[]{"newValue"};
         String[] paramTypes = new String[]{datatypeHelper.getJavaClassName()};
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, paramNames, paramTypes);
-        
         methodsBuilder.openBracket();
-        methodsBuilder.appendln("if (!" + MethodNames.GET_REPOSITORY + "()." + MethodNames.IS_MODIFIABLE + "()) {");
-        methodsBuilder.append("throw new ");
-        methodsBuilder.appendClassName(IllegalRepositoryModificationException.class);
-        methodsBuilder.append("();");
-        methodsBuilder.append("}");
+        methodsBuilder.append(generateFragmentCheckIfRepositoryIsModifiable());
         methodsBuilder.append("this." + getFieldNameValue(a));
         methodsBuilder.appendln(" = newValue;");
         methodsBuilder.closeBracket();
+    }
+    
+    private JavaCodeFragment generateFragmentCheckIfRepositoryIsModifiable() {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendln("if (" + MethodNames.GET_REPOSITORY + "()!=null && !" + MethodNames.GET_REPOSITORY + "()." + MethodNames.IS_MODIFIABLE + "()) {");
+        frag.append("throw new ");
+        frag.appendClassName(IllegalRepositoryModificationException.class);
+        frag.appendln("();");
+        frag.appendln("}");
+        return frag;
     }
     
     private String getFieldNameValue(IAttribute a) throws CoreException {
@@ -459,9 +464,11 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             generateFieldToManyRelation(relation, memberVarsBuilder);
             generateMethodGetManyRelatedCmpts(relation, methodsBuilder);
             generateMethodGetRelatedCmptAtIndex(relation, methodsBuilder);
+            generateMethodAddRelatedCmpt(relation, methodsBuilder);
         } else {
             generateFieldTo1Relation(relation, memberVarsBuilder);
-            generateMethodGet1RelatedCmpt(relation, memberVarsBuilder, methodsBuilder);
+            generateMethodGet1RelatedCmpt(relation, methodsBuilder);
+            generateMethodSet1RelatedCmpt(relation, methodsBuilder);
         }
         generateMethodGetNumOfRelatedProductCmpts(relation, methodsBuilder);        
     }
@@ -527,6 +534,42 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
     
     /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void addCoverageType(ICoverageType[] target) {
+     *     if (getRepository()!=null && !getRepository().isModifiable()) {
+     *         throw new IllegalRepositoryModificationException();
+     *     }
+     *     String[] tmp = new String[coverageTypes.length+1];
+     *     System.arraycopy(coverageTypes, 0, tmp, 0, coverageTypes.length);
+     *     tmp[tmp.length-1] = target.getRuntimeId();
+     *     coverageTypes = tmp;
+     * }
+     * </pre>
+     */
+    private void generateMethodAddRelatedCmpt(
+            IProductCmptTypeRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        IProductCmptType target = relation.findTarget();
+        appendLocalizedJavaDoc("METHOD_ADD_RELATED_CMPT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        String methodName = "add" + StringUtils.capitalise(relation.getTargetRoleSingular());
+        String[] argNames = new String[]{"target"};
+        String[] argTypes = new String[]{productCmptTypeInterfaceBuilder.getQualifiedClassName(target)};
+        methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
+                "void", methodName, argNames, argTypes);
+        String fieldName = getFieldNameToManyRelation(relation);
+        methodsBuilder.openBracket();
+        methodsBuilder.append(generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.appendln("String[] tmp = new String[this." + fieldName + ".length+1];");
+        methodsBuilder.appendln("System.arraycopy(this." + fieldName + ", 0, tmp, 0, this." + fieldName + ".length);");
+        methodsBuilder.appendln("tmp[tmp.length-1] = " + argNames[0] + "."  + MethodNames.GET_PRODUCT_COMPONENT_ID + "();");
+        methodsBuilder.appendln("this." + fieldName + " = tmp;");
+        methodsBuilder.closeBracket();
+    }
+        
+    /**
      * Code sample for 
      * <pre>
      * [javadoc]
@@ -570,7 +613,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     /**
-     * Code sample for 
+     * Code sample:
      * <pre>
      * [javadoc]
      * public CoverageType getMainCoverageType() {
@@ -580,7 +623,6 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      */
     private void generateMethodGet1RelatedCmpt(
             IProductCmptTypeRelation relation, 
-            JavaCodeFragmentBuilder memberVarsBuilder, 
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
@@ -593,6 +635,33 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append(")getRepository().getProductComponent(");
         methodsBuilder.append(fieldName);
         methodsBuilder.append(");");
+        methodsBuilder.closeBracket();
+    }
+
+    /**
+     * Code sample:
+     * <pre>
+     * [javadoc]
+     * public void setMainCoverageType(ICoverageType target) {
+     *     mainCoverageType = target==null ? null : target.getRuntimeId();
+     * }
+     * </pre>
+     */
+    private void generateMethodSet1RelatedCmpt(
+            IProductCmptTypeRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+
+        appendLocalizedJavaDoc("METHOD_SET_1_RELATED_CMPT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+
+        String propName = interfaceBuilder.getPropertyNameTo1Relation(relation);
+        String methodName = getJavaNamingConvention().getSetterMethodName(propName, Datatype.INTEGER);
+        String[] argNames = new String[]{"target"};
+        String[] argTypes = new String[]{productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget())};
+        methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, argNames, argTypes);
+        String fieldName = getFieldNameTo1Relation(relation);
+        methodsBuilder.openBracket();
+        methodsBuilder.append(generateFragmentCheckIfRepositoryIsModifiable());
+        methodsBuilder.append(fieldName + " = (" + argNames[0] + "==null ? null : " + argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID + "() );");
         methodsBuilder.closeBracket();
     }
 

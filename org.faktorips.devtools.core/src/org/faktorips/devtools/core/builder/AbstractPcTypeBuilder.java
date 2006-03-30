@@ -122,13 +122,12 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     public String generate() throws CoreException {
         assertConditionsBeforeGenerating();
         StringBuffer content = new StringBuffer();
-        content.append("package "); //$NON-NLS-1$
-        content.append(getPackage(getIpsSrcFile()));
-        content.append(';');
+        String pack = getPackage();
+        content.append("package " + pack + ";"); //$NON-NLS-1$
         content.append(StringUtil.getSystemLineSeparator());
         content.append(StringUtil.getSystemLineSeparator());
         JavaCodeFragment code = generateCodeForJavatype();
-        content.append(code.getImportDeclaration().toString());
+        content.append(code.getImportDeclaration(pack).toString());
         content.append(StringUtil.getSystemLineSeparator());
         content.append(StringUtil.getSystemLineSeparator());
         content.append(code.getSourcecode());

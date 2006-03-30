@@ -37,10 +37,10 @@ public class JavaCodeFragment {
     private final static String INDENT_HELPER = "                                                         "; 
 
     // buffer holding the sourcecode text
-	private StringBuffer sourcecode_;
+	private StringBuffer sourcecode;
 	
 	// import declaration needed to compile the sourcecode
-	private ImportDeclaration importDecl_;
+	private ImportDeclaration importDecl;
 	
 	// number of blanks used for indentation
 	private int indentation = 4;
@@ -67,8 +67,8 @@ public class JavaCodeFragment {
 	 * Creates a new JavaCodeFragment with the indicated sourcecode and import declaration.
 	 */
 	public JavaCodeFragment(String sourcecode, ImportDeclaration importDecl) {
-		this.sourcecode_ = new StringBuffer(sourcecode);
-		this.importDecl_ = new ImportDeclaration(importDecl);
+		this.sourcecode = new StringBuffer(sourcecode);
+		this.importDecl = new ImportDeclaration(importDecl);
 	}
 	
 	/**
@@ -77,8 +77,8 @@ public class JavaCodeFragment {
 	 * the indicated package.
 	 */
 	public JavaCodeFragment(JavaCodeFragment fragment, String packageName) {
-		sourcecode_ = fragment.sourcecode_;
-		importDecl_ = new ImportDeclaration(fragment.importDecl_, packageName);
+		sourcecode = fragment.sourcecode;
+		importDecl = new ImportDeclaration(fragment.importDecl, packageName);
 	}
 	
 	/**
@@ -92,14 +92,23 @@ public class JavaCodeFragment {
 	 * Returns the import declaration needed to compile the sourcecode.
 	 */
 	public ImportDeclaration getImportDeclaration() {
-		return new ImportDeclaration(importDecl_); // defensive copy
+		return new ImportDeclaration(importDecl); // defensive copy
 	}
 
-	/**
+    /**
+     * Returns the import declaration needed to compile the sourcecode. The returned
+     * import declaration does not contain any import statements that refer to the indicated 
+     * packageName. The method is useful to avoid unneccessary import statements.
+     */
+    public ImportDeclaration getImportDeclaration(String packageName) {
+        return new ImportDeclaration(importDecl, packageName);
+    }
+
+    /**
 	 * Returns the sourcecode.
 	 */
 	public String getSourcecode() {
-		return sourcecode_.toString();
+		return sourcecode.toString();
 	}
 	
     /**
@@ -148,7 +157,7 @@ public class JavaCodeFragment {
 	 */
 	public void append(String s) {
 	    indentIfBol();
-	    sourcecode_.append(s);
+	    sourcecode.append(s);
 	}
 	
 	/**
@@ -164,7 +173,7 @@ public class JavaCodeFragment {
 	 */
 	public void append(char c) {
 	    indentIfBol();
-	    sourcecode_.append(c);
+	    sourcecode.append(c);
 	}
 	
 	/**
@@ -219,14 +228,14 @@ public class JavaCodeFragment {
 	 */
 	public void appendClassName(String qualifiedClassName) {
 	    append(StringUtil.unqualifiedName(qualifiedClassName));
-	    importDecl_.add(qualifiedClassName);
+	    importDecl.add(qualifiedClassName);
 	}
 	
 	/**
 	 * Appends a line seperator to the sourcecode. 
 	 */
 	public void appendln() {
-	    sourcecode_.append(SystemUtils.LINE_SEPARATOR);
+	    sourcecode.append(SystemUtils.LINE_SEPARATOR);
 	}
 	
 	/**
@@ -234,16 +243,16 @@ public class JavaCodeFragment {
 	 */
 	public void appendln(String s) {
 	    indentIfBol();
-	    sourcecode_.append(s);
-	    sourcecode_.append(SystemUtils.LINE_SEPARATOR);
+	    sourcecode.append(s);
+	    sourcecode.append(SystemUtils.LINE_SEPARATOR);
 	}
 	
 	/**
 	 * Appends the given String as is to the sourcecode without indenting it.
 	 */
 	public void appendlnUnindented(String arg) {
-		sourcecode_.append(arg);
-		sourcecode_.append(SystemUtils.LINE_SEPARATOR);
+		sourcecode.append(arg);
+		sourcecode.append(SystemUtils.LINE_SEPARATOR);
 	}
 
 	/**
@@ -251,15 +260,15 @@ public class JavaCodeFragment {
 	 */
 	public void appendln(char c) {
 	    indentIfBol();
-	    sourcecode_.append(c);
-	    sourcecode_.append(SystemUtils.LINE_SEPARATOR);
+	    sourcecode.append(c);
+	    sourcecode.append(SystemUtils.LINE_SEPARATOR);
 	}
 	
 	/**
 	 * Appends the given fragment to his fragment and idents it properly.
 	 */
 	public void append(JavaCodeFragment fragment) {
-		importDecl_.add(fragment.getImportDeclaration());
+		importDecl.add(fragment.getImportDeclaration());
 		String sourcecode = fragment.getSourcecode();
 		StringTokenizer tokenizer = new StringTokenizer(sourcecode, SystemUtils.LINE_SEPARATOR);
 		while (tokenizer.hasMoreTokens()) {
@@ -286,9 +295,9 @@ public class JavaCodeFragment {
 			return false;
 		}
 		JavaCodeFragment other = (JavaCodeFragment)o;
-		return importDecl_.equals(other.importDecl_)
-			 && sourcecode_.length()==other.sourcecode_.length() 
-			 && sourcecode_.toString().equals(other.sourcecode_.toString()); 
+		return importDecl.equals(other.importDecl)
+			 && sourcecode.length()==other.sourcecode.length() 
+			 && sourcecode.toString().equals(other.sourcecode.toString()); 
 	}
 	
 	/**
@@ -296,8 +305,8 @@ public class JavaCodeFragment {
 	 * so any text appended to the sourcecode goes to a new line (bol = begin of line).
 	 */
 	public boolean bol() {
-	   return sourcecode_.length()==0 
-	   	|| sourcecode_.toString().endsWith(SystemUtils.LINE_SEPARATOR); 
+	   return sourcecode.length()==0 
+	   	|| sourcecode.toString().endsWith(SystemUtils.LINE_SEPARATOR); 
 	}
 	
 	/**
@@ -306,9 +315,9 @@ public class JavaCodeFragment {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return importDecl_.toString() 
+		return importDecl.toString() 
 			+ SystemUtils.LINE_SEPARATOR
-			+ sourcecode_;
+			+ sourcecode;
 	}
 	
 	/*
@@ -316,7 +325,7 @@ public class JavaCodeFragment {
 	 */
 	private void indentIfBol() {
 	    if (bol()) {
-	        sourcecode_.append(INDENT_HELPER.substring(0, indentation * indentLevel));
+	        sourcecode.append(INDENT_HELPER.substring(0, indentation * indentLevel));
 	    }
 	}
 

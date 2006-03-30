@@ -17,13 +17,18 @@
 
 package org.faktorips.sourcecode;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.SystemUtils;
-import org.faktorips.codegen.*;
+import org.faktorips.codegen.ClassNameUtil;
+import org.faktorips.codegen.ImportDeclaration;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 
 
 /**
@@ -40,6 +45,16 @@ public class JavaCodeFragmentTest extends TestCase
 	{
 		super(name);
 	}
+    
+    public void testGetImportDeclaration() {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(JavaCodeFragment.class);
+        fragment.appendClassName(this.getClass());
+        String pack = ClassNameUtil.getPackageName(JavaCodeFragment.class.getName());
+        ImportDeclaration decl = fragment.getImportDeclaration(pack);
+        assertEquals(1, decl.getNoOfImports());
+        assertTrue(decl.toString().indexOf(getClass().getName())!=-1);
+    }
 	
 	public void testJavaCodeFragment() {
 	    JavaCodeFragment fragment = new JavaCodeFragment();
