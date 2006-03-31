@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.DummyRoot;
 
 public class DefaultDoubleclickListener implements IDoubleClickListener {
 
@@ -55,9 +54,6 @@ public class DefaultDoubleclickListener implements IDoubleClickListener {
                     tree.expandToLevel(obj, 1);
                 }
             }
-            else if (obj instanceof DummyRoot) {
-                openEditor(((DummyRoot)obj).data);
-            }
             else if (obj instanceof IProductCmptRelation) {
             	try {
             		IProductCmptRelation rel = (IProductCmptRelation)obj;
@@ -74,14 +70,22 @@ public class DefaultDoubleclickListener implements IDoubleClickListener {
     }
 
     private void openEditor(IIpsElement e) {
-        for(; e != null && !(e instanceof IIpsSrcFile); e = e.getParent());
-        try {
-            if (e != null) {
-                IpsPlugin.getDefault().openEditor((IIpsSrcFile)e);
-            }
-        } catch (PartInitException e1) {
-            IpsPlugin.logAndShowErrorDialog(e1);
-        }
-    }
+		for (; e != null && !(e instanceof IIpsSrcFile); e = e.getParent())
+			;
+		try {
+			if (e != null) {
+				IpsObjectType type = ((IIpsSrcFile) e).getQualifiedNameType()
+						.getIpsObjectType();
+
+				if (IpsPlugin.getDefault().getIpsPreferences()
+						.canNavigateToModel()
+						|| (type == IpsObjectType.PRODUCT_CMPT || type == IpsObjectType.TABLE_CONTENTS)) {
+					IpsPlugin.getDefault().openEditor((IIpsSrcFile) e);
+				}
+			}
+		} catch (PartInitException e1) {
+			IpsPlugin.logAndShowErrorDialog(e1);
+		}
+	}
 
 }

@@ -123,7 +123,7 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
         assertConditionsBeforeGenerating();
         StringBuffer content = new StringBuffer();
         String pack = getPackage();
-        content.append("package " + pack + ";"); //$NON-NLS-1$
+        content.append("package " + pack + ";"); //$NON-NLS-1$ //$NON-NLS-2$
         content.append(StringUtil.getSystemLineSeparator());
         content.append(StringUtil.getSystemLineSeparator());
         JavaCodeFragment code = generateCodeForJavatype();

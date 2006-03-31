@@ -89,7 +89,6 @@ import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.DummyRoot;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -298,10 +297,6 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         }
         else if (node instanceof IProductCmpt) {
             tree.setSelection(new StructuredSelection(node), true);
-            return true;
-        }
-        else if (node instanceof DummyRoot) {
-            tree.setSelection(new StructuredSelection(((DummyRoot)node).data), true);
             return true;
         }
         else if (node instanceof IFile) {

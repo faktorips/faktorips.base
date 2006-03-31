@@ -93,6 +93,11 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				IpsPreferences.ENABLE_GENERATING,
 				Messages.FaktorIpsPreferencePage_FaktorIpsPreferencePage_enableGenerating, getFieldEditorParent());
 		addField(enableGeneratingField);
+
+		BooleanFieldEditor canNavigateToModel = new BooleanFieldEditor(
+				IpsPreferences.NAVIGATE_TO_MODEL,
+				Messages.FaktorIpsPreferencePage_labelCanNavigateToModel, getFieldEditorParent());
+		addField(canNavigateToModel);
 	}
 
 	/**

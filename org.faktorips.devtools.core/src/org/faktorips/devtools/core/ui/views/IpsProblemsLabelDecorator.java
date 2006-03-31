@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.ImageDescriptorRegistry;
 import org.faktorips.devtools.core.ImageImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.DummyRoot;
 
 public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightLabelDecorator {
 
@@ -56,10 +55,6 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
 	private int computeAdornmentFlags(Object element) throws CoreException {
         IIpsElement ipsElement = null;
-        if (element instanceof DummyRoot) {
-            ipsElement = ((DummyRoot)element).data;
-        }
-        
 		if (element instanceof IIpsElement) {
             ipsElement = ((IIpsElement)element);
         }
