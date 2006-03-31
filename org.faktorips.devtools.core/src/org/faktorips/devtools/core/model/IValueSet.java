@@ -154,7 +154,7 @@ public interface IValueSet extends IIpsObjectPart {
     public IValueSet copy(IIpsObjectPart parent, int id);
 
     /**
-     * Copy all values (not the parent or the id) of the given target to this value set.
+     * Copy all values (not the parent or the id) of the given source to this value set.
      * @throws IllegalArgumentException if the given target is not the same type
      * this method is invoked.
      */

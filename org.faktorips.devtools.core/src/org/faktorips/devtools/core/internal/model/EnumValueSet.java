@@ -364,6 +364,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 			throw new IllegalArgumentException("The given value set is not an enum value set"); //$NON-NLS-1$
 		}
 		
+		if (target == this) {
+			return;
+		}
+		
 		elements.clear();
 		elements.addAll(((EnumValueSet)target).elements);
 	}

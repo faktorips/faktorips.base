@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -208,6 +209,17 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         }
 
         createDescriptionTabItem(folder);
+        
+        folder.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		
+			public void widgetSelected(SelectionEvent e) {
+				uiController.updateUI();
+			}
+		});
+        
         return folder;
     }
     
@@ -506,6 +518,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     
     private class OverwritesListener implements SelectionListener {
     	Checkbox source;
+    	IValueSet oldValueSet;
     	
     	public OverwritesListener(Checkbox source) {
     		this.source = source;
@@ -513,6 +526,13 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     	
 		public void widgetSelected(SelectionEvent e) {
 			doEnablement(!source.isChecked());
+			
+			if (source.isChecked()) {
+				oldValueSet = attribute.getValueSet();
+			} else if (oldValueSet != null) {
+				attribute.setValueSetCopy(oldValueSet);
+			}
+			
 			uiController.updateModel();
 			uiController.updateUI();
 		}

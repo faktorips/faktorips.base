@@ -169,6 +169,13 @@ public class ValueSetEditControl extends ControlComposite {
         this.datatype = datatype;
         ValueSetType oldType = getValueSetType();
         ValueSetType newType = valueSetTypes[0];
+        
+        // needed to reset the value set (and value set type) to the 
+        // value it was before the attribute was marked overwriting.
+        if (attribute != null && attribute.getValueSet() != null) {
+        	oldType = attribute.getValueSet().getValueSetType();
+        }
+        
         validTypesCombo.removeAll();
         for (int i = 0; i < valueSetTypes.length; i++) {
             validTypesCombo.add(valueSetTypes[i].getName());
