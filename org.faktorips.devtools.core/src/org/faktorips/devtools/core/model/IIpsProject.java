@@ -339,6 +339,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public void setProductCmptNamingStratgey(IProductCmptNamingStrategy newStrategy) throws CoreException;
 
+    /**
+     * Adds a new DynamicValueDataType to the Project at runtime
+     * 
+     * @param newDatatype
+     * @throws CoreException
+     */
     public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
     
 }
