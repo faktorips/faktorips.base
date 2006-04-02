@@ -47,7 +47,6 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
@@ -73,7 +72,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 	private Map tocFileMap = new HashMap();
 
 	// required builders
-    private PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder;
     private ProductCmptImplClassBuilder productCmptTypeImplClassBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
     private ProductCmptBuilder productCmptBuilder;
@@ -81,10 +79,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     
     public TocFileBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet);
-    }
-
-    public void setPolicyCmptTypeInterfaceBuilder(PolicyCmptInterfaceBuilder policyCmptTypeInterfaceBuilder) {
-        this.policyCmptTypeInterfaceBuilder = policyCmptTypeInterfaceBuilder;
     }
 
     public void setProductCmptTypeImplClassBuilder(ProductCmptImplClassBuilder builder) {
@@ -284,8 +278,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             productCmpt.findProductCmptKind().getRuntimeId(),
             productCmpt.getVersionId(),
             xmlResourceName, 
-            productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), 
-            policyCmptTypeInterfaceBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
+            productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
         IIpsObjectGeneration[] generations = productCmpt.getGenerations();
         TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
         for (int i = 0; i < generations.length; i++) {

@@ -171,16 +171,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
         
-        // table builders
-        tocFileBuilder.setPolicyCmptTypeInterfaceBuilder(policyCmptInterfaceBuilder);
+        // toc file builders
         tocFileBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
         tocFileBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
         tocFileBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
         tocFileBuilder.setTableImplBuilder(tableImplBuilder);
 
-        // toc file builder
-        
-        
         builders = new IIpsArtefactBuilder[] { 
                 tableImplBuilder, 
                 tableRowBuilder,

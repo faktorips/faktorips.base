@@ -94,7 +94,6 @@ public class TocFileBuilderTest extends IpsPluginTest {
         assertEquals("motor.RateTable", entry.getIpsObjectId());
         assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry.isTableTocEntry());
-        assertNull(entry.getPcTypeClassName());
     }
     
     public void test() throws Exception {

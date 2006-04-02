@@ -120,10 +120,10 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         String className = getUnqualifiedClassName();
         appendLocalizedJavaDoc("CONSTRUCTOR", className, getIpsObject(), builder);
-        String[] argNames = new String[] { "repository", "qName", "policyComponentType" };
-        String[] argTypes = new String[] { RuntimeRepository.class.getName(), String.class.getName(), Class.class.getName() };
+        String[] argNames = new String[] { "repository", "id" };
+        String[] argTypes = new String[] { RuntimeRepository.class.getName(), String.class.getName() };
         builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);
-        builder.append("super(repository, qName, policyComponentType);");
+        builder.append("super(repository, id);");
         builder.methodEnd();
     }
 
