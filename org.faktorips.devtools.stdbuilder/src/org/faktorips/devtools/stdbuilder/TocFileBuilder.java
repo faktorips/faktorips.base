@@ -131,6 +131,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     	IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (int i = 0; i < srcRoots.length; i++) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
+            if (buildKind==IncrementalProjectBuilder.FULL_BUILD) {
+                getToc(root).clear();
+            }
             long modStamp = getToc(root).getModificationStamp();
             packFrgmtRootTocModStamps.put(root, new Long(modStamp));
         }
@@ -275,7 +278,11 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY, productCmpt.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml";
-        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(productCmpt.getRuntimeId(), productCmpt.getQualifiedName(),
+        TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(
+            productCmpt.getRuntimeId(), 
+            productCmpt.getQualifiedName(),
+            productCmpt.findProductCmptKind().getRuntimeId(),
+            productCmpt.getVersionId(),
             xmlResourceName, 
             productCmptTypeImplClassBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), 
             policyCmptTypeInterfaceBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
