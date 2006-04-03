@@ -87,15 +87,17 @@ public class IpsProjectTest extends IpsPluginTest {
         createRefProject();
 
 	    types = ipsProject.getValueDatatypes(false);
-	    assertEquals(2, types.length);
+	    assertEquals(3, types.length);
 	    assertEquals(Datatype.DECIMAL, types[0]);
 	    assertEquals(Datatype.MONEY, types[1]);
+	    assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
         
 	    types = ipsProject.getValueDatatypes(true);
-	    assertEquals(3, types.length);
+	    assertEquals(4, types.length);
 	    assertEquals(Datatype.VOID, types[0]);
 	    assertEquals(Datatype.DECIMAL, types[1]);
 	    assertEquals(Datatype.MONEY, types[2]);
+	    assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
     }
     
     public void testGetDatatypeHelper() throws CoreException {
@@ -141,41 +143,49 @@ public class IpsProjectTest extends IpsPluginTest {
 	    
         // only value types, void not included
 	    types = ipsProject.findDatatypes(true, false);
-	    assertEquals(2, types.length);
+	    assertEquals(3, types.length);
 	    assertEquals(Datatype.DECIMAL, types[0]);
 	    assertEquals(Datatype.MONEY, types[1]);
+	    assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
 	    
         // only value types, void included
 	    types = ipsProject.findDatatypes(true, true);
-	    assertEquals(3, types.length);
+	    assertEquals(4, types.length);
 	    assertEquals(Datatype.VOID, types[0]);
 	    assertEquals(Datatype.DECIMAL, types[1]);
 	    assertEquals(Datatype.MONEY, types[2]);
-        
+	    assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
+	    
         // all types, void not included
 	    types = ipsProject.findDatatypes(false, false);
-	    assertEquals(4, types.length);
+	    assertEquals(5, types.length);
 	    assertEquals(Datatype.DECIMAL, types[0]);
 	    assertEquals(Datatype.MONEY, types[1]);
-	    assertEquals(pcType1, types[2]);
-	    assertEquals(pcType2, types[3]);
-        
+	    assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
+	    assertEquals(pcType1, types[3]);
+	    assertEquals(pcType2, types[4]);
+	    
+	    
         // all types, void included
 	    types = ipsProject.findDatatypes(false, true);
-	    assertEquals(5, types.length);
+	    assertEquals(6, types.length);
 	    assertEquals(Datatype.VOID, types[0]);
 	    assertEquals(Datatype.DECIMAL, types[1]);
 	    assertEquals(Datatype.MONEY, types[2]);
-	    assertEquals(pcType1, types[3]);
-	    assertEquals(pcType2, types[4]);
+	    assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
+	    assertEquals(pcType1, types[4]);
+	    assertEquals(pcType2, types[5]);
+	    
     }
     
     /*
-     * Creates an ips project called RefProject that is referenced by the ips project and has two defined datatypes.
+     * Creates an ips project called RefProject that is referenced by the ips project and has 2 predefined datatypes and
+     * one dynamic datatype.
      */
     private IIpsProject createRefProject() throws CoreException {
         IIpsProject refProject = newIpsProject("RefProject");
         refProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.MONEY.getQualifiedName()});
+        newDefinedEnumDatatype((IpsProject)refProject, new Class[]{TestEnumType.class});
         // set the reference from the ips project to the referenced project
 	    IIpsObjectPath path = ipsProject.getIpsObjectPath();
 	    path.newIpsProjectRefEntry(refProject);

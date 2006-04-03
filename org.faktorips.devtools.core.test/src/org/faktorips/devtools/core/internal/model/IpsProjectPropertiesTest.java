@@ -20,8 +20,10 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.w3c.dom.Element;
 
 public class IpsProjectPropertiesTest extends IpsPluginTest {
@@ -40,6 +42,8 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.setJavaSrcLanguage(Locale.ITALIAN);
 		props.setChangesInTimeConventionIdForGeneratedCode("myConvention");
 		props.setBuilderSetId("myBuilder");
+		props.setRuntimeIdPrefix("newRuntimeIdPrefix");
+		props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true));
 		IIpsObjectPath path = new IpsObjectPath();
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
 		props.setIpsObjectPath(path);
@@ -50,9 +54,15 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.initFromXml(ipsProject, projectEl);
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
+		assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
 		assertEquals("myBuilder", props.getBuilderSetId());
+		assertTrue(props.getProductCmptNamingStrategy() instanceof DateBasedProductCmptNamingStrategy);
+		DateBasedProductCmptNamingStrategy strategy = (DateBasedProductCmptNamingStrategy)props.getProductCmptNamingStrategy();
+		assertEquals("yyyy-MM", strategy.getDateFormatPattern());
+		assertEquals(" ", strategy.getVersionIdSeparator());
+		assertTrue(strategy.isPostfixAllowed());
 		path = props.getIpsObjectPath();
 		assertNotNull(path);
 		assertEquals(1, path.getEntries().length);
@@ -71,6 +81,13 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
 		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
+		assertEquals("testPrefix", props.getRuntimeIdPrefix());
+		
+		DateBasedProductCmptNamingStrategy namingStrategy = (DateBasedProductCmptNamingStrategy)props.getProductCmptNamingStrategy();
+		assertEquals(" ", namingStrategy.getVersionIdSeparator());
+		assertEquals("yyyy-MM", namingStrategy.getDateFormatPattern());
+		assertTrue(namingStrategy.isPostfixAllowed());
+		
 		assertEquals("org.faktorips.devtools.stdbuilder.ipsstdbuilderset", props.getBuilderSetId());
 		IIpsObjectPath path = props.getIpsObjectPath();
 		assertNotNull(path);

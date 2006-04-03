@@ -20,12 +20,12 @@ package org.faktorips.devtools.core.internal.model.product;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.product.CircleRelationException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -128,7 +128,7 @@ public class ProductCmptStructureTest extends IpsPluginTest {
     	assertEquals(1, relationtypes.length);
     }
     
-    public void testNoGeneration() throws CircleRelationException {
+    public void testNoGeneration() throws CycleException {
     	productCmpt.getGenerations()[0].delete();
     	structure.refresh();
     }
@@ -150,7 +150,7 @@ public class ProductCmptStructureTest extends IpsPluginTest {
     	try {
 			content.getComfortMotorProduct().getStructure();
 			fail();
-		} catch (CircleRelationException e) {
+		} catch (CycleException e) {
 			// success
 		} 
     }

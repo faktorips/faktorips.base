@@ -264,7 +264,7 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
         
         MessageList ml = generation.validate();
         
-        assertTrue(ml.isEmpty());
+        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NOT_ENOUGH_RELATIONS));
         
         relation.setMaxCardinalityProductSide(2);
         relation.setMinCardinalityProductSide(2);

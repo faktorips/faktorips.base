@@ -17,8 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -61,11 +61,11 @@ public class TypeHierarchyTest extends IpsPluginTest {
         supersupertype = (PolicyCmptType)file2.getIpsObject();
     }
 
-    public void testGetSubtypeHierarchy() throws CoreException {
+    public void testGetSubtypeHierarchy() throws Exception {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        ITypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchie(supersupertype);
+        ITypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchy(supersupertype);
         assertNull(hierarchy.getSupertype(supersupertype));
         assertEquals(1, hierarchy.getSubtypes(supersupertype).length);
         assertEquals(supertype, hierarchy.getSubtypes(supersupertype)[0]);
@@ -78,11 +78,11 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(0, hierarchy.getSubtypes(pcType).length);
     }
 
-    public void testIsSubtypeOf() throws CoreException {
+    public void testIsSubtypeOf() throws Exception {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        ITypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchie(supersupertype);
+        ITypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchy(supersupertype);
         assertTrue(hierarchy.isSubtypeOf(supertype, supersupertype));
         assertTrue(hierarchy.isSubtypeOf(pcType, supersupertype));
         assertFalse(hierarchy.isSubtypeOf(supertype, pcType));
@@ -90,7 +90,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertFalse(hierarchy.isSubtypeOf(null, supertype));
     }
         
-    public void testGetSupertype() throws CoreException {
+    public void testGetSupertype() throws Exception {
 
         ITypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
         assertNull(hierarchy.getSupertype(pcType)); // supertype relationship hasn't been established
@@ -108,7 +108,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(0, hierarchy.getSubtypes(pcType).length);
     }
 
-    public void testGetAllSupertypes() throws CoreException {
+    public void testGetAllSupertypes() throws Exception {
         ITypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
         assertEquals(0, hierarchy.getAllSupertypes(pcType).length); // supertype relationship hasn't been established
         
@@ -123,7 +123,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(supersupertype, supertypes[1]);
     }
 
-    public void testGetAllSupertypesInclSelf() throws CoreException {
+    public void testGetAllSupertypesInclSelf() throws Exception {
         ITypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
         assertEquals(1, hierarchy.getAllSupertypesInclSelf(pcType).length); // supertype relationship hasn't been established
         assertEquals(pcType, hierarchy.getAllSupertypesInclSelf(pcType)[0]);
@@ -140,12 +140,12 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(supersupertype, supertypes[2]);
     }
     
-    public void testGetSubtypes() throws CoreException {
+    public void testGetSubtypes() throws Exception {
         ITypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
         assertEquals(0, hierarchy.getSubtypes(pcType).length);
     }
     
-    public void testIsSupertypeOf() throws CoreException {
+    public void testIsSupertypeOf() throws Exception {
         ITypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
         assertFalse(hierarchy.isSupertypeOf(supertype, pcType)); // supertype relationship hasn't been established
         
@@ -161,7 +161,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertFalse(hierarchy.isSupertypeOf(null, pcType));
     }
     
-    public void testGetAllAttributes() throws CoreException {
+    public void testGetAllAttributes() throws Exception {
         // create the supetype relations
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
@@ -177,7 +177,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(a3, attributes[2]);
     }
 
-    public void testGetAllMethods() throws CoreException {
+    public void testGetAllMethods() throws Exception {
         // create the supetype relations
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
@@ -193,7 +193,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(m3, methods[2]);
     }
 
-    public void testFindAttribute() throws CoreException {
+    public void testFindAttribute() throws Exception {
         // create the supetype relations
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
@@ -210,7 +210,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertNull(hierarchy.findAttribute(pcType, "unkown"));
     }
     
-    public void testFindRelation() throws CoreException {
+    public void testFindRelation() throws Exception {
         // create the supetype relations
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
@@ -227,7 +227,7 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertNull(hierarchy.findRelation(pcType, "unkown"));
     }
     
-    public void testGetAllRelations() throws CoreException {
+    public void testGetAllRelations() throws Exception {
         // create the supetype relations
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
@@ -243,4 +243,27 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(r3, relations[2]);
     }
 
+    public void testCycleDetection() throws Exception {
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+
+    	TypeHierarchy.getSupertypeHierarchy(pcType);
+    	TypeHierarchy.getSubtypeHierarchy(supersupertype);    	
+    	
+    	supersupertype.setSupertype(pcType.getQualifiedName());
+        
+        try {
+        	TypeHierarchy.getSupertypeHierarchy(pcType);
+        	fail();
+        } catch (CycleException e) {
+        	// nothing to do
+        }
+        
+        try {
+        	TypeHierarchy.getSubtypeHierarchy(supersupertype);
+        	fail();
+        } catch (CycleException e) {
+        	// nothing to do
+        }
+    }
 }

@@ -46,6 +46,7 @@ public class TimedIpsObjectTest extends IpsObjectTestCase {
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
         timedObject = new ProductCmpt(pdSrcFile);
+        ((ProductCmpt)timedObject).setRuntimeId("abc");
     }
     
     public void testGetChildren() throws CoreException {

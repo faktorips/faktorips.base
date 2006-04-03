@@ -17,9 +17,17 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -33,6 +41,7 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -215,7 +224,7 @@ public class ConfigElementTest extends IpsPluginTest {
     	valueSet.setUpperBound("b");
 
     	IConfigElement ce = generation.newConfigElement();
-    	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+    	ce.setType(ConfigElementType.POLICY_ATTRIBUTE);
     	ce.setValue("1");
     	ce.setPcTypeAttribute("valueTest");
     	ce.setValueSetCopy(valueSet);
@@ -243,6 +252,28 @@ public class ConfigElementTest extends IpsPluginTest {
 
     	ml = ce.validate();
     	assertEquals(0, ml.getNoOfMessages());
+    }
+    
+    public void testValidate_InvalidDatatype() throws Exception {
+    	IAttribute attr = policyCmptType.newAttribute();
+    	attr.setName("test");
+    	InvalidDatatype datatype = new InvalidDatatype();
+    	attr.setDatatype(datatype.getQualifiedName());
+
+		ValueDatatype[] vds = project.getValueDatatypes(false);
+		ArrayList vdlist = new ArrayList();
+		vdlist.addAll(Arrays.asList(vds));
+		vdlist.add(datatype);
+		project.setValueDatatypes((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+		
+		InvalidDatatypeHelper idh = new InvalidDatatypeHelper();
+    	idh.setDatatype(datatype);
+    	((IpsModel)project.getIpsModel()).addDatatypeHelper(idh);
+
+    	IConfigElement ce = generation.newConfigElement();
+    	ce.setPcTypeAttribute("test");
+    	MessageList ml = ce.validate();
+    	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
     }
     
     public void testValidate_ValueNotInValueset() throws CoreException {
@@ -328,6 +359,7 @@ public class ConfigElementTest extends IpsPluginTest {
      */
     public void testToXmlDocument() {
         IConfigElement cfgElement = generation.newConfigElement();
+        cfgElement.setType(ConfigElementType.POLICY_ATTRIBUTE);
         cfgElement.setValue("value");
         cfgElement.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet valueSet = (IRangeValueSet)cfgElement.getValueSet(); 
@@ -376,5 +408,81 @@ public class ConfigElementTest extends IpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    private class InvalidDatatype implements ValueDatatype {
+
+		public Datatype getWrapperType() {
+			return null;
+		}
+
+		public boolean isParsable(String value) {
+			return true;
+		}
+
+		public Object getValue(String value) {
+			return value;
+		}
+
+		public String valueToString(Object value) {
+			return value.toString();
+		}
+
+		public boolean isNull(Object value) {
+			return false;
+		}
+
+		public String getName() {
+			return getQualifiedName();
+		}
+
+		public String getQualifiedName() {
+			return "InvalidDatatype";
+		}
+
+		public boolean isVoid() {
+			return false;
+		}
+
+		public boolean isPrimitive() {
+			return false;
+		}
+
+		public boolean isValueDatatype() {
+			return true;
+		}
+
+		public String getJavaClassName() {
+			return null;
+		}
+
+		public MessageList validate() throws Exception {
+			MessageList ml = new MessageList();
+			
+			ml.add(new Message("", "", Message.ERROR));
+			
+			return ml;
+		}
+
+		public int compareTo(Object o) {
+			return -1;
+		}
+    	
+    }
+    
+    private class InvalidDatatypeHelper extends AbstractDatatypeHelper {
+
+		protected JavaCodeFragment valueOfExpression(String expression) {
+			return null;
+		}
+
+		public JavaCodeFragment nullExpression() {
+			return null;
+		}
+
+		public JavaCodeFragment newInstance(String value) {
+			return null;
+		}
+    	
     }
 }
