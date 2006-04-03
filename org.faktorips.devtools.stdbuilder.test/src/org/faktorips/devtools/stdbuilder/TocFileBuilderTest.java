@@ -91,7 +91,7 @@ public class TocFileBuilderTest extends IpsPluginTest {
         table.getIpsSrcFile().save(true, null);
         
         TocEntryObject entry = tocFileBuilder.createTocEntry(table);
-        assertEquals("motor.RateTable", entry.getIpsObjectName());
+        assertEquals("motor.RateTable", entry.getIpsObjectId());
         assertEquals(tableImplBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
         assertTrue(entry.isTableTocEntry());
         assertNull(entry.getPcTypeClassName());
@@ -117,6 +117,13 @@ public class TocFileBuilderTest extends IpsPluginTest {
         structure.getIpsSrcFile().save(true, null);
         table.getIpsSrcFile().save(true, null);
         
+        // create another table content based on the same structure
+        ITableContents table2 = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "motor.RateTable2");
+        tableGen = (ITableContentsGeneration)table2.newGeneration();
+        tableGen.setValidFrom(validFrom);
+        table2.setTableStructure(structure.getQualifiedName());
+        table2.getIpsSrcFile().save(true, null);
+        
         // now build
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
@@ -132,14 +139,18 @@ public class TocFileBuilderTest extends IpsPluginTest {
         TocEntryObject[] entries = toc.getProductCmptTocEntries();
         assertEquals(1, entries.length);
         
-        TocEntryObject entry0 = toc.getProductCmptTocEntry("motor.MotorProduct");
+        TocEntryObject entry0 = toc.getProductCmptTocEntry(motorProduct.getRuntimeId());
         assertNotNull(entry0);
         TocEntryGeneration genEntry0 = entry0.getGenerationEntry(validFrom);
         assertNotNull(genEntry0);
         
         // asserts for table entry
-        TocEntryObject entry1 = toc.getTableTocEntryByClassname(tableImplBuilder.getQualifiedClassName(structure));
+        TocEntryObject entry1 = toc.getTableTocEntryByQualifiedTableName("motor.RateTable");
         assertNotNull(entry1);
+        
+        // asserts for second table entry
+        TocEntryObject entry2 = toc.getTableTocEntryByQualifiedTableName("motor.RateTable2");
+        assertNotNull(entry2);
         
         // no changes => toc file should remain untouched.
         long stamp = tocFile.getModificationStamp();
@@ -156,7 +167,13 @@ public class TocFileBuilderTest extends IpsPluginTest {
         table.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         toc2 = tocFileBuilder.getToc(root);
-        assertNull(toc2.getTableTocEntryByClassname(tableImplBuilder.getQualifiedClassName(structure)));
+        assertNull(toc2.getTableTocEntryByQualifiedTableName("motor.RateTable"));
+
+        // delete the second table => should be removed from toc
+        table2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        toc2 = tocFileBuilder.getToc(root);
+        assertNull(toc2.getTableTocEntryByClassname("motor.RateTable2"));
     }
     
 
