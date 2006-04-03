@@ -30,7 +30,8 @@ import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -55,9 +56,9 @@ import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
 import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
+import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
-import org.faktorips.devtools.core.ui.views.ProductCmptDragListener;
-import org.faktorips.devtools.core.ui.views.ProductCmptDropListener;
 
 /**
  * Navigate all Products defined in the active Project.
@@ -160,8 +161,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         
         tree.addDoubleClickListener(new DefaultDoubleclickListener(tree));
         tree.expandAll();
-        tree.addDragSupport(DND.DROP_LINK, new Transfer[] {TextTransfer.getInstance()}, new ProductCmptDragListener(tree));
-        tree.addDropSupport(DND.DROP_LINK, new Transfer[] {TextTransfer.getInstance()}, new ProductCmptDropListener(tree));
+        tree.addDragSupport(DND.DROP_LINK, new Transfer[] {FileTransfer.getInstance()}, new IpsElementDragListener(tree));
+        tree.addDropSupport(DND.DROP_LINK, new Transfer[] {FileTransfer.getInstance()}, new ProductCmptDropListener());
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
@@ -284,6 +285,28 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 			return;
 		}
 		refresh();
+	}
+	
+	private class ProductCmptDropListener extends IpsElementDropListener {
+
+	    public void dragEnter(DropTargetEvent event) {
+	        event.detail = DND.DROP_LINK;
+	    }
+
+	    public void drop(DropTargetEvent event) {
+	    	IIpsElement[] transferred = super.getTransferedElements(event.currentDataType);
+	    	if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
+	    		try {
+					showStructure((IIpsSrcFile)transferred[0]);
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+				}
+	    	}
+	    }
+
+	    public void dropAccept(DropTargetEvent event) {
+	        event.detail = DND.DROP_LINK;
+	    }
 	}
 
 }

@@ -23,13 +23,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -44,7 +42,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
@@ -87,6 +84,7 @@ import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
+import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
@@ -328,7 +326,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         return tree.getSelection();
     }
     
-    private class DropListener implements DropTargetListener {
+    private class DropListener extends IpsElementDropListener {
 
 		/**
 		 * {@inheritDoc}
@@ -338,27 +336,6 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 				event.detail = DND.DROP_MOVE;
 			}
 			event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dragLeave(DropTargetEvent event) {
-			// nothing to do
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dragOperationChanged(DropTargetEvent event) {
-			// nothing to do
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dragOver(DropTargetEvent event) {
-			// nothing to do
 		}
 
 		/**
@@ -374,28 +351,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
 					return;
 				}
 				
-				String[] filenames = (String[])FileTransfer.getInstance().nativeToJava(event.currentDataType);
-				ArrayList elements = new ArrayList();
-				for (int i = 0; i < filenames.length; i++) {
-					Path path = new Path(filenames[i]);
-					
-					// first, we assume that the given path leads to a file
-					IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-					IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-					if (element.exists()) {
-						elements.add(element);
-					}
-					else {
-						// the ipselement created from the file does not exist - so try it with an 
-						// container...
-						IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
-						element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
-						if (element.exists()) {
-							elements.add(element);
-						}
-					}
-				}
-				IIpsElement[] sources = (IIpsElement[])elements.toArray(new IIpsElement[elements.size()]);
+				IIpsElement[] sources = super.getTransferedElements(event.currentDataType);
 				MoveOperation moveOp = new MoveOperation(sources, target);
 				ProgressMonitorDialog dialog = new ProgressMonitorDialog(ProductExplorer.this.getSite().getShell());
 				dialog.run(false, false, moveOp);

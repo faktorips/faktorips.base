@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+  *
+  * Alle Rechte vorbehalten.
+  *
+  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+  * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
+  * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+  *   http://www.faktorips.org/legal/cl-v01.html
+  * eingesehen werden kann.
+  *
+  * Mitwirkende:
+  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+  *
+  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
@@ -88,7 +88,7 @@ public class RelationsSection extends IpsSection {
 	private IProductCmptGeneration generation;
 
 	private CardinalityPanel cardinalityPanel;
-	
+
 	private CardinalityPaneEditField kardMinField;
 
 	private CardinalityPaneEditField kardMaxField;
@@ -104,19 +104,21 @@ public class RelationsSection extends IpsSection {
 	private IEditorSite site;
 
 	/**
-	 * Flag to indicate that the generation this informations are based on has changed (<code>true</code>)
+	 * Flag to indicate that the generation this informations are based on has
+	 * changed (<code>true</code>)
 	 */
 	private boolean fGenerationDirty;
 
 	/**
-	 * Field to store the product component relation that should be moved using 
+	 * Field to store the product component relation that should be moved using
 	 * drag and drop.
 	 */
 	private IProductCmptRelation toMove;
 
 	/**
-	 * <code>true</code> if this section is enabled, <code>false</code> otherwise.
-	 * This flag is used to control the enablement-state of the contained controlls.
+	 * <code>true</code> if this section is enabled, <code>false</code>
+	 * otherwise. This flag is used to control the enablement-state of the
+	 * contained controlls.
 	 */
 	private boolean fEnabled;
 
@@ -131,11 +133,15 @@ public class RelationsSection extends IpsSection {
 	private Menu emptyMenu;
 
 	/**
-	 * Creates a new RelationsSection which displays relations for the given generation.
+	 * Creates a new RelationsSection which displays relations for the given
+	 * generation.
 	 * 
-	 * @param generation The base to get the relations from.
-	 * @param parent The composite whicht is the ui-parent for this section.
-	 * @param toolkit The ui-toolkit to support drawing.
+	 * @param generation
+	 *            The base to get the relations from.
+	 * @param parent
+	 *            The composite whicht is the ui-parent for this section.
+	 * @param toolkit
+	 *            The ui-toolkit to support drawing.
 	 */
 	public RelationsSection(IProductCmptGeneration generation,
 			Composite parent, UIToolkit toolkit, IEditorSite site) {
@@ -182,8 +188,8 @@ public class RelationsSection extends IpsSection {
 			treeViewer
 					.addSelectionChangedListener(new SelectionChangedListener());
 			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE,
-					new Transfer[] { TextTransfer.getInstance(),
-							FileTransfer.getInstance() }, new DropListener());
+					new Transfer[] { FileTransfer.getInstance() },
+					new DropListener());
 			treeViewer.addDragSupport(DND.DROP_MOVE,
 					new Transfer[] { TextTransfer.getInstance() },
 					new DragListener(treeViewer));
@@ -240,7 +246,8 @@ public class RelationsSection extends IpsSection {
 		treeViewer.getControl().setMenu(treePopup);
 
 		// Dont register context menu to avoid population with debug etc.
-		// site.registerContextMenu("productCmptEditor.relations", menumanager, treeViewer); //$NON-NLS-1$
+		// site.registerContextMenu("productCmptEditor.relations", menumanager,
+		// treeViewer); //$NON-NLS-1$
 
 		// create empty menu for later use
 		emptyMenu = new MenuManager()
@@ -258,8 +265,8 @@ public class RelationsSection extends IpsSection {
 	}
 
 	/**
-	 * Returns all product component type relations that are defined either in the generation
-	 * or in the type the generation is based on.
+	 * Returns all product component type relations that are defined either in
+	 * the generation or in the type the generation is based on.
 	 */
 	private String[] getTypeRelations(IProductCmptGeneration generation) {
 		List result = new ArrayList();
@@ -298,13 +305,16 @@ public class RelationsSection extends IpsSection {
 	public IProductCmptGeneration getActiveGeneration() {
 		return generation;
 	}
-	
+
 	/**
-	 * Creates a new relation which connects the currently displayed generation with the given target.
-	 * The max cardinality for the new relation is set to the max cardinality of the given type.
+	 * Creates a new relation which connects the currently displayed generation
+	 * with the given target. The max cardinality for the new relation is set to
+	 * the max cardinality of the given type.
 	 * 
-	 * @param target The target for the new relation.
-	 * @param relation The type of the new relation.
+	 * @param target
+	 *            The target for the new relation.
+	 * @param relation
+	 *            The type of the new relation.
 	 */
 	private void newRelation(String target, IProductCmptTypeRelation relation) {
 		IProductCmptRelation prodRelation = generation.newRelation(relation
@@ -315,19 +325,22 @@ public class RelationsSection extends IpsSection {
 	}
 
 	/**
-	 * Creates a new relation which connects the currently displayed generation with the given target. The
-	 * new relation is placed before the the given one.
+	 * Creates a new relation which connects the currently displayed generation
+	 * with the given target. The new relation is placed before the the given
+	 * one.
 	 */
 	private void newRelation(String target, IProductCmptTypeRelation relation,
 			IProductCmptRelation insertBefore) {
-		IProductCmptRelation prodRelation = generation.newRelation(relation.getName(), insertBefore);
+		IProductCmptRelation prodRelation = generation.newRelation(relation
+				.getName(), insertBefore);
 		prodRelation.setTarget(target);
 		prodRelation.setMaxCardinality(1);
 		prodRelation.setMinCardinality(relation.getMinCardinality());
 	}
 
 	/**
-	 * Listener for updating the kardinality triggerd by the selection of another relation.
+	 * Listener for updating the kardinality triggerd by the selection of
+	 * another relation.
 	 */
 	private class SelectionChangedListener implements ISelectionChangedListener {
 		IpsPartUIController uiController;
@@ -355,8 +368,10 @@ public class RelationsSection extends IpsSection {
 					uiController = new IpsPartUIController(rel);
 				}
 
-				kardMinField = new CardinalityPaneEditField(cardinalityPanel, true);
-				kardMaxField = new CardinalityPaneEditField(cardinalityPanel, false);
+				kardMinField = new CardinalityPaneEditField(cardinalityPanel,
+						true);
+				kardMaxField = new CardinalityPaneEditField(cardinalityPanel,
+						false);
 
 				uiController.add(kardMinField, rel,
 						Relation.PROPERTY_MIN_CARDINALITY);
@@ -419,7 +434,8 @@ public class RelationsSection extends IpsSection {
 				}
 			}
 
-			// found no relation or relationtype which gives us the information about
+			// found no relation or relationtype which gives us the information
+			// about
 			// the position of the insert, so dont drop.
 			if (insertAt == null) {
 				return;
@@ -427,29 +443,21 @@ public class RelationsSection extends IpsSection {
 
 			if (event.operations == DND.DROP_MOVE) {
 				move(insertAt);
-			} else {
-				if (FileTransfer.getInstance().isSupportedType(
-						event.currentDataType)) {
-					// we have a file transfer
-					String[] filenames = (String[]) FileTransfer.getInstance()
-							.nativeToJava(event.currentDataType);
-					for (int i = 0; i < filenames.length; i++) {
-						IFile file = ResourcesPlugin.getWorkspace().getRoot()
-								.getFileForLocation(new Path(filenames[i]));
-						insert(file, insertAt);
-					}
-				} else if (TextTransfer.getInstance().isSupportedType(
-						event.currentDataType)) {
-					// we have a text transfer
-					String data = (String) TextTransfer.getInstance()
-							.nativeToJava(event.currentDataType);
-					insert(data, insertAt);
+			} else 	if (FileTransfer.getInstance().isSupportedType(
+					event.currentDataType)) {
+				// we have a file transfer
+				String[] filenames = (String[]) FileTransfer.getInstance()
+				.nativeToJava(event.currentDataType);
+				for (int i = 0; i < filenames.length; i++) {
+					IFile file = ResourcesPlugin.getWorkspace().getRoot()
+					.getFileForLocation(new Path(filenames[i]));
+					insert(file, insertAt);
 				}
 			}
 		}
 
 		public void dropAccept(DropTargetEvent event) {
-			//nothing to do
+			// nothing to do
 		}
 
 		private void move(Object insertBefore) {
@@ -460,13 +468,15 @@ public class RelationsSection extends IpsSection {
 		}
 
 		/**
-		 * Insert a new relation to the product component contained in the given file.
-		 * If the file is <code>null</code> or does not contain a product component, 
-		 * the insert is aborted.
+		 * Insert a new relation to the product component contained in the given
+		 * file. If the file is <code>null</code> or does not contain a
+		 * product component, the insert is aborted.
 		 * 
-		 * @param file The file describing a product component (can be null, no insert
-		 * takes place then).
-		 * @param insertAt The relation or relation type to insert at.
+		 * @param file
+		 *            The file describing a product component (can be null, no
+		 *            insert takes place then).
+		 * @param insertAt
+		 *            The relation or relation type to insert at.
 		 */
 		private void insert(IFile file, Object insertAt) {
 			if (file == null) {
@@ -493,12 +503,17 @@ public class RelationsSection extends IpsSection {
 		}
 
 		/**
-		 * Inserts a new relation to the product component identified by the given target name.
-		 * @param target The qualified name for the target product component
-		 * @param insertAt The product component relation or product component type relation 
-		 * the new relations has to be inserted. The type of the new relation is determined from
-		 * this object (which means the new relation has the same product component relation type
-		 * as the given one or is of the given type).
+		 * Inserts a new relation to the product component identified by the
+		 * given target name.
+		 * 
+		 * @param target
+		 *            The qualified name for the target product component
+		 * @param insertAt
+		 *            The product component relation or product component type
+		 *            relation the new relations has to be inserted. The type of
+		 *            the new relation is determined from this object (which
+		 *            means the new relation has the same product component
+		 *            relation type as the given one or is of the given type).
 		 */
 		private void insert(String target, Object insertAt) {
 			try {
@@ -550,9 +565,11 @@ public class RelationsSection extends IpsSection {
 	}
 
 	/**
-	 * Returns all targets for all relations defined with the given product component relation type.
+	 * Returns all targets for all relations defined with the given product
+	 * component relation type.
 	 * 
-	 * @param relation The type of the relations to find.
+	 * @param relation
+	 *            The type of the relations to find.
 	 */
 	public IProductCmpt[] getRelationTargetsFor(
 			IProductCmptTypeRelation relation) {
@@ -573,8 +590,9 @@ public class RelationsSection extends IpsSection {
 	}
 
 	/**
-	 * To get access to the informations which depend on the selections that can be made
-	 * in this section, only some parts can be disabled, other parts need special handling.
+	 * To get access to the informations which depend on the selections that can
+	 * be made in this section, only some parts can be disabled, other parts
+	 * need special handling.
 	 * 
 	 * {@inheritDoc}
 	 */
@@ -584,7 +602,7 @@ public class RelationsSection extends IpsSection {
 			// no relations defined, so no tree to disable.
 			return;
 		}
-		
+
 		if (enabled) {
 			treeViewer.getTree().setMenu(this.treePopup);
 		} else {
@@ -617,8 +635,9 @@ public class RelationsSection extends IpsSection {
 	}
 
 	/**
-	 * Special cue label provider to get messages for product component type relations
-	 * from the generations instead of the product component type relation itself.
+	 * Special cue label provider to get messages for product component type
+	 * relations from the generations instead of the product component type
+	 * relation itself.
 	 * 
 	 * @author Thorsten Guenther
 	 */

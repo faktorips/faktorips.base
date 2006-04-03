@@ -64,7 +64,7 @@ public abstract class IpsObjectEditor extends FormEditor
     // dirty flag
     private boolean dirty = false;
     
-    private boolean active = true;
+    private boolean active = false;
     
     /**
      * 
@@ -114,6 +114,7 @@ public abstract class IpsObjectEditor extends FormEditor
         
         site.getPage().addPartListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+        setActive(true);
     }
     
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException{
@@ -324,7 +325,7 @@ public abstract class IpsObjectEditor extends FormEditor
 	 */
 	public void partDeactivated(IWorkbenchPartReference partRef) {
 		IWorkbenchPart part = partRef.getPart(false);
-    	if (part != this) {
+    	if (part != this || partRef.getPage().isPartVisible(part)) {
     		return;
     	}
         setActive(false);
@@ -364,6 +365,10 @@ public abstract class IpsObjectEditor extends FormEditor
 	 * does not.
 	 */
 	public void setActive(boolean active) {
+		if (this.active == active) {
+			return;
+		}
+		
 		this.active = active;
 		if (active) {
 	        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);   
