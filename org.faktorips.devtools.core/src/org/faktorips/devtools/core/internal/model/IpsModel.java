@@ -46,7 +46,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
@@ -287,22 +286,18 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		if (changeListeners == null) {
 			return;
 		}
-		Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
-		display.syncExec(new Runnable() {
-			public void run() {
-				for (Iterator it = changeListeners.iterator(); it.hasNext();) {
-					try {
-						ContentsChangeListener listener = (ContentsChangeListener) it
-								.next();
-						listener.contentsChanged(event);
-					} catch (Exception e) {
-						IpsPlugin.log(new IpsStatus(
-								"Error notifying IPS model change listener", //$NON-NLS-1$
-								e));
-					}
-				}
+
+		for (Iterator it = changeListeners.iterator(); it.hasNext();) {
+			try {
+				ContentsChangeListener listener = (ContentsChangeListener) it
+						.next();
+				listener.contentsChanged(event);
+			} catch (Exception e) {
+				IpsPlugin.log(new IpsStatus(
+						"Error notifying IPS model change listener", //$NON-NLS-1$
+						e));
 			}
-		});
+		}
 	}
 
 	/**
