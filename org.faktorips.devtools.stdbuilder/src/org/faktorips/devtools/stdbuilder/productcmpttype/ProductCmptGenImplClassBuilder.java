@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
@@ -244,7 +245,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         // for each 1-1 relation in the policy component type we generate:
         // relationElements = (ArrayList) relationMap.get("Product");
         // if(relationElement != null) {
-        //     vertragsteilePk = ((Element)relationElement.get(0)).getAttribute("target");
+        //     vertragsteilePk = ((Element)relationElement.get(0)).getAttribute("targetRuntimeId");
         // }
         // 
         // for each 1-many relation in the policy component type we generate:
@@ -252,7 +253,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         // if(relationElement != null) {
         //     vertragsteilPks[] = new VertragsteilPk[relationElements.length()];
         //     for (int i=0; i<vertragsteilsPks.length; i++) {
-        //         vertragsteilPks[i] = ((Element)relationElement.get(i)).getAttribute("target");
+        //         vertragsteilPks[i] = ((Element)relationElement.get(i)).getAttribute("targetRuntimeId");
         //         }
         //     }
         // }
@@ -283,13 +284,13 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     builder.append(fieldName);
                     builder.append("[i] = ((");
                     builder.appendClassName(Element.class);
-                    builder.append(")relationElements.get(i)).getAttribute(\"target\");");
+                    builder.append(")relationElements.get(i)).getAttribute(\"" + IProductCmptRelation.PROPERTY_TARGET_RUNTIME_ID + "\");");
                     builder.appendln("}");
                 } else {
                     builder.append(getFieldNameTo1Relation(r));
                     builder.append(" = ((");
                     builder.appendClassName(Element.class);
-                    builder.append(")relationElements.get(0)).getAttribute(\"target\");");
+                    builder.append(")relationElements.get(0)).getAttribute(\"" + IProductCmptRelation.PROPERTY_TARGET_RUNTIME_ID + "\");");
                 }
                 builder.appendln("}");
             }

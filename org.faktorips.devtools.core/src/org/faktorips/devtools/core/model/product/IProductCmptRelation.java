@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 public interface IProductCmptRelation extends IIpsObjectPart {
     
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    public final static String PROPERTY_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
     public final static String PROPERTY_PCTYPE_RELATION = "pcTypeRelation"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
@@ -97,6 +98,11 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      * Sets the target product component.
      */
     public void setTarget(String newTarget);
+
+    /**
+     * Is derived from the target and returns the runtimeId of the target.
+     */
+    public String getTargetRuntimeId();
 
     /**
      * Returns the minmum number of target instances required in this relation.   

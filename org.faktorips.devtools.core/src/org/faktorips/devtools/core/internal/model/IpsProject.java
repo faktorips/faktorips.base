@@ -600,6 +600,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public IProductCmpt[] findProductCmpts(String qualifiedTypeName, boolean includeSubytpes)
             throws CoreException {
+    	
         List result = new ArrayList();
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
         for (int i = 0; i < roots.length; i++) {
@@ -615,6 +616,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
 	public IProductCmpt findProductCmpt(String runtimeId) throws CoreException {
+		
+		if(runtimeId == null){
+			return null;
+		}
+
 		IIpsObject[] all = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
 		
 		for (int i = 0; i < all.length; i++) {
@@ -625,6 +631,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return null;
 	}
 
+	public IProductCmpt findProductCmptByQualifiedName(String qualifiedName) throws CoreException{
+	
+		if(qualifiedName == null){
+			return null;
+		}
+		
+		IIpsObject[] all = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
+		
+		for (int i = 0; i < all.length; i++) {
+			if (((IProductCmpt)all[i]).getQualifiedName().equals(qualifiedName)) {
+				return (IProductCmpt)all[i];
+			}
+		}
+		return null;
+	}
+	
 	/**
      * Overridden.
      */

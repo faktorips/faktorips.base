@@ -218,6 +218,16 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmpt findProductCmpt(String runtimeId) throws CoreException;
     
     /**
+     * Returns the product component with the given qualified name or <code>null</code> if no such
+     * product component exists. If more than one product component with the given id exists, the
+     * first one found is returned. 
+     * 
+     * @param qualifiedName the name to find the product component for
+     * @throws CoreException if an error occurs during search.
+     */
+    public IProductCmpt findProductCmptByQualifiedName(String qualifiedName) throws CoreException;
+
+    /**
      * Returns all product component generation that refer to the product component identified by the
      * given qualified name. Returns an empty array if none is found.
      * 
