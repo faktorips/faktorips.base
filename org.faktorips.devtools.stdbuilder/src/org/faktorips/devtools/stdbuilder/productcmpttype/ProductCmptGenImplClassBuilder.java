@@ -544,7 +544,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      *     }
      *     String[] tmp = new String[coverageTypes.length+1];
      *     System.arraycopy(coverageTypes, 0, tmp, 0, coverageTypes.length);
-     *     tmp[tmp.length-1] = target.getRuntimeId();
+     *     tmp[tmp.length-1] = target.getId();
      *     coverageTypes = tmp;
      * }
      * </pre>
@@ -644,7 +644,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * <pre>
      * [javadoc]
      * public void setMainCoverageType(ICoverageType target) {
-     *     mainCoverageType = target==null ? null : target.getRuntimeId();
+     *     mainCoverageType = target==null ? null : target.getId();
      * }
      * </pre>
      */
