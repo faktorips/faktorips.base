@@ -35,12 +35,12 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.CompletionUtil;
-import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectCompletionProcessor;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
@@ -108,7 +108,7 @@ public class RuleFunctionsControl extends EditTableControl {
      * {@inheritDoc}
      */ 
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-		layouter.addColumnData(new ColumnPixelData(10, false)); // message image
+		layouter.addColumnData(new ColumnPixelData(20, false)); // message image
 		layouter.addColumnData(new ColumnWeightData(100, true));
     }
     
@@ -125,8 +125,7 @@ public class RuleFunctionsControl extends EditTableControl {
 		processor.setComputeProposalForEmptyPrefix(true);
 		processor.setPdProject(getRule().getIpsProject());
 		SubjectControlContentAssistant contentAssistant= CompletionUtil.createContentAssistant(processor);
-		ContentAssistHandler handler = ContentAssistHandler.createHandlerForText(text, contentAssistant);
-		handler.setCueLabelProvider(null);
+		ContentAssistHandler.createHandlerForText(text, contentAssistant);
         editors[1].setContentAssistant(contentAssistant, 1);
         return editors;
     }

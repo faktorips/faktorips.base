@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.DatatypeSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 
 
 /**
@@ -46,6 +46,7 @@ public class DatatypeRefControl extends TextButtonControl {
         ipsProject = project;
         completionProcessor = new DatatypeCompletionProcessor();
         completionProcessor.setIpsProject(project);
+        CompletionUtil.createContentAssistant(completionProcessor);
         ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
     

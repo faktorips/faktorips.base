@@ -61,12 +61,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
-import org.faktorips.devtools.core.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
 import org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener;
@@ -307,6 +307,7 @@ public abstract class ChangeParametersControl extends Composite {
 		
 		TableColumn tc;
 		tc= new TableColumn(table, SWT.NONE, MESSAGE_PROP);
+		tc.setAlignment(SWT.LEFT);
 		tc.setResizable(false);
 		
 		tc= new TableColumn(table, SWT.NONE, TYPE_PROP);
@@ -406,12 +407,12 @@ public abstract class ChangeParametersControl extends Composite {
 	
 	private void addColumnLayoutData(TableLayoutComposite layouter) {
 		if (fCanAddParameters && defaultValueForNewParameters){
-			layouter.addColumnData(new ColumnPixelData(10, false));
+			layouter.addColumnData(new ColumnPixelData(20, false));
 			layouter.addColumnData(new ColumnWeightData(60, true));
 			layouter.addColumnData(new ColumnWeightData(20, true));
 			layouter.addColumnData(new ColumnWeightData(20, true));
 		} else {
-			layouter.addColumnData(new ColumnPixelData(10, false));
+			layouter.addColumnData(new ColumnPixelData(20, false));
 			layouter.addColumnData(new ColumnWeightData(70, true));
 			layouter.addColumnData(new ColumnWeightData(30, true));
 		}	
@@ -736,8 +737,8 @@ public abstract class ChangeParametersControl extends Composite {
 		DatatypeCompletionProcessor processor= new DatatypeCompletionProcessor();
 		processor.setIpsProject(ipsProject);
 		SubjectControlContentAssistant contentAssistant= CompletionUtil.createContentAssistant(processor);
-		ContentAssistHandler handler = ContentAssistHandler.createHandlerForText(text, contentAssistant);
-		handler.setCueLabelProvider(null);
+		
+		ContentAssistHandler.createHandlerForText(text, contentAssistant);
 		return contentAssistant;
 	}
 
