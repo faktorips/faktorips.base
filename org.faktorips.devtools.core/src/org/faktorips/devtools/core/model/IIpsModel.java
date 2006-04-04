@@ -69,6 +69,7 @@ public interface IIpsModel extends IIpsElement {
     
     /**
      * Adds a listener that is notified when something in the model was changed.
+     * The notifications are made in the ui-thread.
      * 
      * @throws IllegalArgumentException if listener is null.
      */
