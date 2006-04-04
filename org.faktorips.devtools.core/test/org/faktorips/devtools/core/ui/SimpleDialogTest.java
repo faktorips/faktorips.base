@@ -22,10 +22,10 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.internal.test.ITestAnswerProvider;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**

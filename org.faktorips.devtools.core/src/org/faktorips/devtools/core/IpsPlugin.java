@@ -39,7 +39,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsModelManager;
-import org.faktorips.devtools.core.internal.test.ITestAnswerProvider;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;

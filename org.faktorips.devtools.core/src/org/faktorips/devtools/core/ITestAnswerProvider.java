@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.test;
+package org.faktorips.devtools.core;
 
 /**
  * Interface for classes which provide values to be returned on simulated 
