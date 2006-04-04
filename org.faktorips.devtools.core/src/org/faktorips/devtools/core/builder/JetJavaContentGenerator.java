@@ -105,11 +105,13 @@ public abstract class JetJavaContentGenerator {
      * declarations to the java source content at the marked position.
      * 
      * @param buffer the string buffer variable that can be accessed within JET templates
+     * @throws CoreException 
      */
-    protected void addImports(StringBuffer buffer) {
-
+    protected void addImports(StringBuffer buffer) throws CoreException {
         StringBuffer importBuffer = new StringBuffer();
-        for (Iterator it = importDeclartion.iterator(); it.hasNext();) {
+        String pack = getJavaSourceFileBuilder().getPackage();
+        ImportDeclaration decl = new ImportDeclaration(importDeclartion, pack);
+        for (Iterator it = decl.iterator(); it.hasNext();) {
             importBuffer.append("import "); //$NON-NLS-1$
             importBuffer.append((String)it.next());
             importBuffer.append(';');
