@@ -56,7 +56,7 @@ public class ParameterInfo {
 	public final static Parameter[] createParameters(List infolist) {
 	    List params = new ArrayList();
 	    int i=0;
-	    for (Iterator it=infolist.iterator(); it.hasNext(); i++) {
+	    for (Iterator it=infolist.iterator(); it.hasNext();) {
 	        ParameterInfo info = (ParameterInfo)it.next();
 	        if (!info.isDeleted()) {
 	            Parameter p = new Parameter(i);
