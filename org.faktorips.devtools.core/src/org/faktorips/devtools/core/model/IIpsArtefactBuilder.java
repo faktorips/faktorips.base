@@ -48,7 +48,8 @@ public interface IIpsArtefactBuilder {
 	
 	/**
      * Is called on every registered IpsArtefactBuilder before a build process starts.
-	 * @param buildKind TODO
+     * 
+	 * @param buildKind One of the build kinds defined in org.eclipse.core.resources.IncrementalProjectBuilder
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions. Throwing a
      *             CoreException or RuntimeException will stop the current build cycle of this
@@ -58,7 +59,8 @@ public interface IIpsArtefactBuilder {
 
     /**
      * Is called on every registered IpsArtefactBuilder after a build process has finished.
-     * @param buildKind TODO
+     * 
+	 * @param buildKind One of the build kinds defined in org.eclipse.core.resources.IncrementalProjectBuilder
      * 
      * @throws CoreException implementations can throw or delegate rising CoreExceptions.
      */

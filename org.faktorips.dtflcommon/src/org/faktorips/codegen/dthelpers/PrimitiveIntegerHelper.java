@@ -69,13 +69,5 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("Integer.parseInt(" + expression + ")");
         return fragment;
-	}
-	
-	/**
-     * {@inheritDoc}
-	 */
-	public JavaCodeFragment nullExpression() {
-		throw new RuntimeException("Primitive datatype does not support null.");
-	}
-	
+	}	
 }

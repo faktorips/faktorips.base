@@ -20,7 +20,7 @@ package org.faktorips.codegen.dthelpers;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.LongDatatype;
-import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.LongRange;
 
 
 /**
@@ -79,7 +79,6 @@ public class LongHelper extends AbstractDatatypeHelper {
      * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
      */
     public String getRangeJavaClassName() {
-        // TODO: provide LongRange
-        return IntegerRange.class.getName();
+        return LongRange.class.getName();
     }
 }

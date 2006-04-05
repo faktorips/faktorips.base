@@ -43,7 +43,6 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * 
  */
-//TODO Tests are missing for this class
 public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
 
     private ExprCompiler compiler;

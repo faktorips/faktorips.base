@@ -223,7 +223,10 @@ public class MessageList {
         return getMessagesFor(object, null);
     }
 
-    //TODO comment, test
+    /**
+     * Returns a new list with the messages in this list that belong to the given object and
+     * property and the property is of the given index. Returns an empty list if no such message is found.
+     */
     public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
         for (int i = 0; i < getNoOfMessages(); i++) {

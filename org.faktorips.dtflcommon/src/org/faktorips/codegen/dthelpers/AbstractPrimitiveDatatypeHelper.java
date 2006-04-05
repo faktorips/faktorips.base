@@ -44,4 +44,10 @@ public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHe
         return valueOfExpression(expression);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment nullExpression() {
+        throw new RuntimeException("Primitive datatype does not support null.");
+    }
 }

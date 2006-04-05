@@ -75,13 +75,4 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
         fragment.append("Boolean.valueOf(" + expression + ").booleanValue()");
         return fragment;
 	}
-
-	/**
-     * {@inheritDoc}
-	 */
-	public JavaCodeFragment nullExpression() {
-		// TODO oder doch ne Exception werfen
-		return new JavaCodeFragment("false");
-	}
-
 }

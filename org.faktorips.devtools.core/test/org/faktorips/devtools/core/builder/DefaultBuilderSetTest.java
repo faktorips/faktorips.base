@@ -76,8 +76,6 @@ public class DefaultBuilderSetTest extends IpsPluginTest {
 		 * {@inheritDoc}
 		 */
 		public void initialize() throws CoreException {
-			// TODO Auto-generated method stub
-			
 		}
 		
 	}

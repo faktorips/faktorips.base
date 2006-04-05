@@ -205,11 +205,17 @@ public class MessageListTest extends TestCase {
         Message msg3 = new Message("2", "text3", Message.ERROR, this, "descriptopm");
         Message msg4 = new Message("2", "text4", Message.ERROR,  
                 new ObjectProperty[]{new ObjectProperty(this, "description"), new ObjectProperty(this, "name")});
+        Message msg5 = new Message("5", "text5", Message.ERROR,  
+                new ObjectProperty[]{new ObjectProperty(this, "index", 1), new ObjectProperty(this, "index", 2)});        
+        Message msg6 = new Message("6", "text6", Message.ERROR,  
+                new ObjectProperty[]{new ObjectProperty(this, "index", 3), new ObjectProperty(this, "index", 4)});
         
         list.add(msg1);
         list.add(msg2);
         list.add(msg3);
         list.add(msg4);
+        list.add(msg5);
+        list.add(msg6);
 
         // the object/property variant
         MessageList result = list.getMessagesFor(this, "name");
@@ -219,16 +225,21 @@ public class MessageListTest extends TestCase {
 
         // the object/any property variant
         result = list.getMessagesFor(this);
-        assertEquals(3, result.getNoOfMessages());
+        assertEquals(5, result.getNoOfMessages());
         assertEquals(msg1, result.getMessage(0));        
         assertEquals(msg3, result.getMessage(1));        
         assertEquals(msg4, result.getMessage(2));
+        assertEquals(msg5, result.getMessage(3));        
+        assertEquals(msg6, result.getMessage(4));        
+
+        // the object/property/index property variant
+        result = list.getMessagesFor(this, "index", 2);
+        assertEquals(1, result.getNoOfMessages());
+        assertEquals(msg5, result.getMessage(0));        
 
         // empty list
         result = list.getMessagesFor(result, "name");
         assertEquals(0, result.getNoOfMessages());
     }
-
-    
 
 }
