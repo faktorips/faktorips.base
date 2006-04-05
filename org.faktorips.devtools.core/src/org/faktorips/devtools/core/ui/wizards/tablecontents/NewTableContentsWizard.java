@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -67,7 +67,7 @@ public class NewTableContentsWizard extends NewIpsObjectWizard {
     protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
         ITableContents table = (ITableContents)pdObject;
         table.setTableStructure(page.getTableStructure());
-        GregorianCalendar date = IpsPreferences.getWorkingDate();
+        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         if (date==null) {
             return;
         }

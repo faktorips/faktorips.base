@@ -23,7 +23,6 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
@@ -178,7 +177,9 @@ public class ProductCmptStructure implements IProductCmptStructure {
 		
 		if (element instanceof IProductCmpt) {
 			IProductCmpt cmpt = ((IProductCmpt)element);
-			IProductCmptGeneration activeGeneration = (IProductCmptGeneration)cmpt.findGenerationEffectiveOn(IpsPreferences.getWorkingDate());
+			IProductCmptGeneration activeGeneration = (IProductCmptGeneration) cmpt
+					.findGenerationEffectiveOn(IpsPlugin.getDefault()
+							.getIpsPreferences().getWorkingDate());
 			
 			if (activeGeneration == null) {
 				// no active generation found, so no nodes can be returned.

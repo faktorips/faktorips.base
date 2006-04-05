@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.ui.editors;
 
 import java.util.GregorianCalendar;
 
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 
@@ -57,7 +57,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
      * working date set in preferences.
      */
     public IIpsObjectGeneration getPreferredGeneration() {
-        GregorianCalendar workingDate = IpsPreferences.getWorkingDate();
+        GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         ITimedIpsObject object = (ITimedIpsObject)getIpsObject();
         IIpsObjectGeneration prefGen = object.getGenerationByEffectiveDate(workingDate);
         if (prefGen==null && object.getNumOfGenerations()>0) {

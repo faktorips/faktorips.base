@@ -22,7 +22,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -62,7 +62,7 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
     protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)pdObject;
         productCmpt.setPolicyCmptType(productCmptPage.getPolicyCmptType());
-        GregorianCalendar date = IpsPreferences.getWorkingDate();
+        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
         if (date==null) {
             return;
         }

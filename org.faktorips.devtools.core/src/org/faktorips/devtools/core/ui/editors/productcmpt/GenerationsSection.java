@@ -87,7 +87,9 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     private void setActiveGeneration(IProductCmptGeneration generation, boolean automatic) {
     	if (generation != null) {
 			IProductCmpt prod = page.getProductCmptEditor().getProductCmpt();
-			IProductCmptGeneration editableGeneration  = (IProductCmptGeneration)prod.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
+			IProductCmptGeneration editableGeneration = (IProductCmptGeneration) prod
+					.getGenerationByEffectiveDate(IpsPlugin.getDefault()
+							.getIpsPreferences().getWorkingDate());
 	    	boolean select = generation.equals(editableGeneration);
 	    	if (!select && !automatic) {
 	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());

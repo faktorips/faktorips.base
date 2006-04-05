@@ -18,8 +18,8 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -70,12 +70,12 @@ public class ProductCmptStructureTest extends IpsPluginTest {
         productCmpt = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "products.TestProduct");
         productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
-        generation.setValidFrom(IpsPreferences.getWorkingDate());
+        generation.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
 
         productCmptTarget = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "products.TestProductTarget");
         productCmptTarget.setPolicyCmptType(policyCmptTypeTarget.getQualifiedName());
         IProductCmptGeneration targetGen = (IProductCmptGeneration)productCmptTarget.newGeneration();
-        targetGen.setValidFrom(IpsPreferences.getWorkingDate());
+        targetGen.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
         
         IProductCmptRelation cmptRelation = generation.newRelation(relation.getName());
         cmptRelation.setTarget(productCmptTarget.getQualifiedName());

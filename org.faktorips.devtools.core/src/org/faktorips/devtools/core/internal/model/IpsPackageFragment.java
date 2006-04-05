@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -231,7 +230,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     		IIpsObjectGeneration target = newObject.newGeneration();
     		IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
     		target.initFromGeneration(source);
-    		target.setValidFrom(IpsPreferences.getWorkingDate());
+    		target.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
     		if (template instanceof IProductCmpt) {
     			((IProductCmpt)newObject).setPolicyCmptType(((IProductCmpt)template).getPolicyCmptType());
     		}

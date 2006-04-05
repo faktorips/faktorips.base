@@ -58,7 +58,6 @@ import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -245,7 +244,9 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
                 resultList.add(selected);
             }
             else if (selected instanceof IProductCmpt) {
-                resultList.add(((IProductCmpt)selected).findGenerationEffectiveOn(IpsPreferences.getWorkingDate()));
+                resultList.add(((IProductCmpt) selected)
+						.findGenerationEffectiveOn(IpsPlugin.getDefault()
+								.getIpsPreferences().getWorkingDate()));
             }
         }
         

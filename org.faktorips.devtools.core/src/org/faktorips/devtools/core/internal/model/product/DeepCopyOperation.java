@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -72,7 +72,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		
 		monitor.worked(1);
 
-		GregorianCalendar date = IpsPreferences.getWorkingDate();
+		GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		IProductCmpt[] products = new IProductCmpt[toCopy.length];
 		for (int i = 0; i < toCopy.length; i++) {
 			IIpsSrcFile file = (IIpsSrcFile)handleMap.get(toCopy[i]);

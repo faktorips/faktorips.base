@@ -23,7 +23,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -149,7 +149,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	 * {@inheritDoc}
 	 */
 	public String getNextVersionId(IProductCmpt pc) {
-		GregorianCalendar date = IpsPreferences.getWorkingDate();
+		GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		return dateFormat.format(date.getTime());
 	}
 	

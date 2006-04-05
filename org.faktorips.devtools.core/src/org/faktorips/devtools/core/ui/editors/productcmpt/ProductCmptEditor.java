@@ -319,13 +319,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	private void checkGeneration() {
 
 		IProductCmpt prod = getProductCmpt();
+		GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		IProductCmptGeneration generation = (IProductCmptGeneration) prod
-				.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate());
+				.getGenerationByEffectiveDate(workingDate);
 
 		if (generation == null) {
 			if (this.referenceDate != null
-					&& this.referenceDate.equals(IpsPreferences
-							.getWorkingDate())) {
+					&& this.referenceDate.equals(workingDate)) {
 				// check happned before and user decided not to create a new generation - dont bother 
 				// the user with repeating questions.
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
@@ -333,7 +333,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				return;
 			}
 
-			this.referenceDate = IpsPreferences.getWorkingDate();
+			this.referenceDate = workingDate;
 			// no generation for the _exact_ current working date.
 			IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
 			String gen = prefs.getChangesOverTimeNamingConvention()
@@ -357,7 +357,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			if (ok) {
 				// create a new generation and set it active
 				IProductCmptGeneration newGen = (IProductCmptGeneration) prod
-						.newGeneration(IpsPreferences.getWorkingDate());
+						.newGeneration(workingDate);
 				this.setActiveGeneration(newGen);
 			} else {
 				// no new generation - disable editing
@@ -441,7 +441,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		// if generation does not match the current set working date, no editing will ever
 		// be possible, so return false immediate
 		if (!generation.equals(this.getProductCmpt()
-				.getGenerationByEffectiveDate(IpsPreferences.getWorkingDate()))) {
+				.getGenerationByEffectiveDate(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate()))) {
 			return false;
 		}
 

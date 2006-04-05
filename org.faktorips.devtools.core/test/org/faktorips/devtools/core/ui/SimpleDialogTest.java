@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**
@@ -55,12 +54,12 @@ public class SimpleDialogTest extends IpsPluginTest implements ILogListener, ITe
 	}
 
 	private void openEditor(IIpsSrcFile file) throws Exception {
-		IpsPreferences.setWorkingDate(new GregorianCalendar(2003, 7, 1));
+		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
 		plugin.openEditor(file);
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		
 		answer = false;
-		IpsPreferences.setWorkingDate(new GregorianCalendar(2003, 10, 1));
+		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 10, 1));
 		plugin.openEditor(content.getComfortCollisionCoverageA().getIpsSrcFile());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 

@@ -71,28 +71,6 @@ public class IpsPreferences {
     
     public final static String NAVIGATE_TO_MODEL = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
     
-    /**
-     * Returns the working date preference.
-     */
-    // TODO static Zugriff entfernen
-    public final static GregorianCalendar getWorkingDate() {
-    	String date = IpsPlugin.getDefault().getIpsPreferences().prefStore.getString(WORKING_DATE);
-        try {
-            return XmlUtil.parseXmlDateStringToGregorianCalendar(date);
-        } catch (Exception e) {
-            return new GregorianCalendar();
-        }
-    }
-
-    /**
-	 * Set the working date to the given one.
-	 */
-	public final static void setWorkingDate(GregorianCalendar newDate) {
-		IpsPlugin.getDefault().getIpsPreferences().prefStore
-				.setValue(WORKING_DATE, XmlUtil
-						.gregorianCalendarToXmlDateString(newDate));
-	}
-    
     private IPreferenceStore prefStore;
     
     public IpsPreferences(IPreferenceStore prefStore) {
@@ -110,6 +88,27 @@ public class IpsPreferences {
     	prefStore.setDefault(ENABLE_GENERATING, true);
     }
 
+    /**
+     * Returns the working date preference.
+     */
+    public final GregorianCalendar getWorkingDate() {
+    	String date = IpsPlugin.getDefault().getIpsPreferences().prefStore.getString(WORKING_DATE);
+        try {
+            return XmlUtil.parseXmlDateStringToGregorianCalendar(date);
+        } catch (Exception e) {
+            return new GregorianCalendar();
+        }
+    }
+
+    /**
+	 * Set the working date to the given one.
+	 */
+	public final void setWorkingDate(GregorianCalendar newDate) {
+		IpsPlugin.getDefault().getIpsPreferences().prefStore
+				.setValue(WORKING_DATE, XmlUtil
+						.gregorianCalendarToXmlDateString(newDate));
+	}
+    
     /**
      * Returns the naming convention used in the GUI for product changes over time.  
      */

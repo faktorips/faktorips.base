@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 
 /**
  * Action that allows to modify the working date (which is a part of the ips preferences)
@@ -72,7 +71,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 				Date newDate = format.parse(dialog.getValue());
 				GregorianCalendar calendar = new GregorianCalendar(); 
 				calendar.setTime(newDate);
-				IpsPreferences.setWorkingDate(calendar);
+				IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(calendar);
 			} catch (ParseException e) {
 				// should not happen if validator works correct.
 				IpsPlugin.log(e);

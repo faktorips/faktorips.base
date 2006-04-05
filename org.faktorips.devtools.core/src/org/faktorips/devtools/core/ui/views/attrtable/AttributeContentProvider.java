@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -43,7 +42,10 @@ public class AttributeContentProvider implements IStructuredContentProvider {
                     IProductCmpt[] products = (projects[pi].findProductCmpts(type.getQualifiedName(), true));
                     for (int i = 0; i < products.length; i++) {
                         ArrayList row = new ArrayList();
-                        IProductCmptGeneration gen = (IProductCmptGeneration)products[i].findGenerationEffectiveOn(IpsPreferences.getWorkingDate());
+                        IProductCmptGeneration gen = (IProductCmptGeneration) products[i]
+								.findGenerationEffectiveOn(IpsPlugin
+										.getDefault().getIpsPreferences()
+										.getWorkingDate());
                         
                         if (gen != null) {
                             row.add(products[i]);

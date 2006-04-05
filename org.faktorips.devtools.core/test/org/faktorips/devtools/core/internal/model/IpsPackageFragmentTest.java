@@ -236,7 +236,7 @@ public class IpsPackageFragmentTest extends IpsPluginTest {
     
     public void testCreateIpsFileFromTemplate() throws CoreException {
     	IpsPlugin.getDefault().getPreferenceStore().setValue(IpsPreferences.WORKING_DATE, "2006-01-01");
-    	GregorianCalendar date = IpsPreferences.getWorkingDate();
+    	GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
     	IProductCmpt template = (IProductCmpt)newIpsObject(this.rootPackage, IpsObjectType.PRODUCT_CMPT, "products.Bla");
     	IProductCmptGeneration generation = (IProductCmptGeneration)template.newGeneration(date);
     	generation.newRelation("testRelation");

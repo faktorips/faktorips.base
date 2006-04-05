@@ -41,7 +41,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdInitStrategy;
@@ -693,7 +692,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		IIpsObject[] allProductCmpts = this.findIpsObjects(IpsObjectType.PRODUCT_CMPT);
 		
 		for (int i = 0; i < allProductCmpts.length; i++) {
-			IProductCmptGeneration generation = (IProductCmptGeneration)((IProductCmpt)allProductCmpts[i]).findGenerationEffectiveOn(IpsPreferences.getWorkingDate());
+			IProductCmptGeneration generation = (IProductCmptGeneration) ((IProductCmpt) allProductCmpts[i])
+					.findGenerationEffectiveOn(IpsPlugin.getDefault()
+							.getIpsPreferences().getWorkingDate());
 			if (generation == null) {
 				// it is possible have the working date set to a date in the past
 				// where no generation exists for a product cmpt. In this case,

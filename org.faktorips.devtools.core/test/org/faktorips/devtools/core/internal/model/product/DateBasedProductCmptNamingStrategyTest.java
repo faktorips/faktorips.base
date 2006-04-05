@@ -20,8 +20,8 @@ package org.faktorips.devtools.core.internal.model.product;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
@@ -80,7 +80,7 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 	 * Test method for 'org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy.getNextVersionId(IProductCmpt)'
 	 */
 	public void testGetNextVersionId() throws CoreException {
-		IpsPreferences.setWorkingDate(new GregorianCalendar(2006, 0, 31));
+		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2006, 0, 31));
 		IIpsProject project = newIpsProject("TestProject");
 		IProductCmpt pc = newProductCmpt(project, "TestProduct 2005-01-01");
 		assertEquals("2006-01-31", strategy.getNextVersionId(pc));
