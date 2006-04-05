@@ -19,16 +19,20 @@ package org.faktorips.devtools.core.internal.refactor;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.util.StringUtil;
 
 /**
  * Tests for move- and rename-operation
@@ -185,20 +189,49 @@ public class MoveOperationTest extends IpsPluginTest {
 		}
     }
     
-    /**
-     * Try to rename a table content which should lead to an exception.
-     */
-    public void testRenameTableContent() throws CoreException, InvocationTargetException, InterruptedException {
+    public void testMoveTableContent() throws CoreException, InvocationTargetException, InterruptedException {
     	IIpsSrcFile file = content.getStandardVehicle().getIpsPackageFragment().createIpsFile(IpsObjectType.TABLE_CONTENTS, "table", true, null);
     	
     	assertTrue(file.exists());
     	
-    	try {
-    		new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"newTable"});
-    		fail();
-    	}
-    	catch (CoreException e) {
-    		// nothing to do
-    	}
+   		new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"table"}).run(null);
+   		
+   		IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getRoot().getIpsDefaultPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
+   		assertTrue(target.exists());
+   		assertFalse(file.exists());
+    }
+    
+    public void testRenameTableContent() throws Exception {
+    	IIpsSrcFile file = content.getStandardVehicle().getIpsPackageFragment().createIpsFile(IpsObjectType.TABLE_CONTENTS, "table", true, null);
+    	
+    	assertTrue(file.exists());
+    	
+   		new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"products.newTable"}).run(null);
+   		
+   		IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("newTable"));
+   		assertTrue(target.exists());
+   		assertFalse(file.exists());
+    }
+    
+    /**
+     * Test to rename a package framgent which contains at least one file that is NOT a product component or a table content 
+     */
+    public void testRenamePackageWithFiles() throws Exception {
+    	IIpsPackageFragmentRoot root = content.getStandardVehicle().getIpsPackageFragment().getRoot();
+    	IIpsPackageFragment pack = root.createPackageFragment("test.subpackage", true, null);
+    	IFile file = ((IFolder)pack.getCorrespondingResource()).getFile("test.unknown");
+    	file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+    	assertTrue(pack.exists());
+    	assertTrue(file.exists());
+    	
+    	new MoveOperation(new IIpsElement[] {pack}, new String[] {"test.renamedPackage"}).run(null);
+    	
+    	assertFalse(pack.exists());
+    	assertFalse(file.exists());
+    	
+    	pack = root.createPackageFragment("test.renamedPackage", true, null);
+    	file = ((IFolder)pack.getCorrespondingResource()).getFile("test.unknown");
+    	assertTrue(pack.exists());
+    	assertTrue(file.exists());
     }
 }

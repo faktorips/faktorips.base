@@ -18,9 +18,11 @@
 package org.faktorips.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,6 +193,17 @@ public class StringUtil
      */
     public static String getSystemLineSeparator(){
         return System.getProperty("line.separator");
+    }
+    
+    /**
+     * Returns the input stream to read the given data.
+     * 
+     * @param data The data to read.
+     * @param charset The charset to be used to convert the string data to bytes.
+     * @throws UnsupportedEncodingException if the given charset is unsupported.
+     */
+    public static InputStream getInputStreamForString(String data, String charset) throws UnsupportedEncodingException {
+        return new ByteArrayInputStream(data.getBytes(charset));
     }
     
 }

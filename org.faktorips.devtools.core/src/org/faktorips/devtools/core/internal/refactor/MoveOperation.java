@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -213,11 +213,10 @@ public class MoveOperation implements IRunnableWithProgress {
 							move(cmpt, file, monitor);
 						} else {
 							// we dont have a IIpsSrcFile, so move the file as resource operation
-//							IContainer container = (IContainer)sourcePackage.getEnclosingResource(); 
-//							IPath path = container.getFullPath();
-//							path.append(fileInfos[1]);
-//							container.getf
-//							getFile(new IPath());
+							IFolder folder = (IFolder)sourcePackage.getEnclosingResource(); 
+							IFile rawFile = folder.getFile(fileInfos[1]);
+							IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath().append(fileInfos[1]);
+							rawFile.move(destination, true, monitor);
 						}
 					}
 
