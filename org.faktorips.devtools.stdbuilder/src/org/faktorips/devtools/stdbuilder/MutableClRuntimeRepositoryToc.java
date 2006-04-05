@@ -64,7 +64,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
      * Removes all entries and updated the modification stamp.
      */
     public void clear() {
-        pcRuntimeIdTocEntryMap.clear();
+        pcIdTocEntryMap.clear();
         pcNameTocEntryMap.clear();
         tableImplClassTocEntryMap.clear();
         tableContentNameTocEntryMap.clear();
@@ -85,12 +85,12 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
         }
         
         if(entry.isProductCmptTypeTocEntry()){
-            TocEntryObject currentEntry = (TocEntryObject)pcRuntimeIdTocEntryMap.get(entry.getIpsObjectId());
+            TocEntryObject currentEntry = (TocEntryObject)pcIdTocEntryMap.get(entry.getIpsObjectId());
             if(entry.equals(currentEntry)){
                 return false;
             }
-            pcRuntimeIdTocEntryMap.put(entry.getIpsObjectId(), entry);
-            pcNameTocEntryMap.put(entry.getIpsObjectName(), entry);
+            pcIdTocEntryMap.put(entry.getIpsObjectId(), entry);
+            pcNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
             ++modificationStamp;
             return true;
         }
@@ -120,12 +120,12 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	public boolean removeEntry(String objectId) {
         TocEntryObject removed = (TocEntryObject)pcNameTocEntryMap.remove(objectId);
         if (removed == null) {
-            removed = (TocEntryObject)pcRuntimeIdTocEntryMap.remove(objectId);
+            removed = (TocEntryObject)pcIdTocEntryMap.remove(objectId);
         }
         
         if (removed != null) {
-            pcRuntimeIdTocEntryMap.remove(removed.getIpsObjectId());
-            pcNameTocEntryMap.remove(removed.getIpsObjectName());
+            pcIdTocEntryMap.remove(removed.getIpsObjectId());
+            pcNameTocEntryMap.remove(removed.getIpsObjectQualifiedName());
             
             ++modificationStamp;
             return true;
@@ -158,8 +158,8 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	 */
 	public Element toXml(Document doc) {
 	    Element element = doc.createElement(ReadonlyTableOfContents.TOC_XML_ELEMENT);
-	    ArrayList allEntries = new ArrayList(pcRuntimeIdTocEntryMap.size() + tableContentNameTocEntryMap.size());
-	    allEntries.addAll(pcRuntimeIdTocEntryMap.values());
+	    ArrayList allEntries = new ArrayList(pcIdTocEntryMap.size() + tableContentNameTocEntryMap.size());
+	    allEntries.addAll(pcIdTocEntryMap.values());
 	    allEntries.addAll(tableContentNameTocEntryMap.values());
         for (Iterator it=allEntries.iterator(); it.hasNext(); ) {
             TocEntryObject entry = (TocEntryObject)it.next();

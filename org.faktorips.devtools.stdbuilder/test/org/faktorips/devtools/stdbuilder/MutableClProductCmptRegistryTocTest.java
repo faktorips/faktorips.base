@@ -144,7 +144,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         assertEquals(modStamp, toc.getModificationStamp());
         
         modStamp = toc.getModificationStamp(); 
-        toc.removeEntry(entry1.getIpsObjectName());
+        toc.removeEntry(entry1.getIpsObjectQualifiedName());
         assertTrue(modStamp!=toc.getModificationStamp());
         assertEquals(1, toc.getProductCmptTocEntries().length);
         assertEquals(entry0, toc.getProductCmptTocEntry("MotorPolicy"));
