@@ -599,7 +599,7 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
     }
 
-// ecause at the moment unimplemented container relations are valid...
+// deactivated because at the moment unimplemented container relations are valid...
 //    public void testValidate_MustImplementeAbstractRelation() throws Exception {
 //    	MessageList ml = pcType.validate();
 //    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION));

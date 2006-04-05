@@ -143,6 +143,16 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (type == null) {
             String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.policyCmptType);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE)); //$NON-NLS-1$
+        } else {
+        	try {
+				MessageList list3 = type.validate();
+				if (list3.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || list3.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
+					String msg = NLS.bind("Error in type hierarchy of type {0}.", this.getPolicyCmptType());
+					list.add(new Message(MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY, msg, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+				}
+			} catch (Exception e) {
+				throw new CoreException(new IpsStatus("Error during validate of policy component type", e));
+			}
         }
         MessageList list2 = getIpsProject().getProductCmptNamingStratgey().validate(getName());
         list.add(list2);
