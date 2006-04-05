@@ -43,7 +43,6 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Peter Erzberger
  */
-// TODO test case has to be written
 public class XmlContentFileCopyBuilder extends AbstractArtefactBuilder {
 
     private IpsObjectType ipsObjectType;

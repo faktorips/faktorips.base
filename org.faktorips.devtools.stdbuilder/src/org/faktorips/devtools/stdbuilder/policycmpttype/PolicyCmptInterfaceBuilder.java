@@ -25,12 +25,9 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -44,9 +41,6 @@ import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
-
-    private final static String JAVA_GETTER_METHOD_MAX_VALUESET = "JAVA_GETTER_METHOD_MAX_VALUESET";
-    private final static String JAVA_GETTER_METHOD_VALUESET = "JAVA_GETTER_METHOD_VALUESET";
 
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     
@@ -879,98 +873,5 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     }
-    
-    private String getPolicyCmptInterfaceGetMaxValueSetMethodName(IAttribute a) {
-        return "getMaxWertebereich" + StringUtils.capitalise(a.getName());
-    }
-
-    private String getPolicyCmptInterfaceGetValueSetMethodName(IAttribute a) {
-        return "getWertebereich" + StringUtils.capitalise(a.getName());
-    }
-
-    /**
-     * @param a
-     * @throws CoreException
-     */
-    private void createAttributeValueSetDeclaration(JavaCodeFragmentBuilder methodsBuilder,
-            IAttribute a,
-            Datatype datatype,
-            DatatypeHelper helper) throws CoreException {
-        // TODO: Kommentare der Methoden in die Resourcendatei auslageern !
-        if (a.getValueSet() != null && a.getValueSet().getValueSetType() != ValueSetType.ALL_VALUES) {
-            String methodNameMax = getPolicyCmptInterfaceGetMaxValueSetMethodName(a);
-            String methodName = getPolicyCmptInterfaceGetValueSetMethodName(a);
-            String javaDocMax = getLocalizedText(a, JAVA_GETTER_METHOD_MAX_VALUESET, a.getName());
-            String javaDoc = getLocalizedText(a, JAVA_GETTER_METHOD_VALUESET, a.getName());
-            if (a.getValueSet().getValueSetType() == ValueSetType.RANGE) {
-                methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
-                        helper.getRangeJavaClassName(), methodNameMax, new String[0], new String[0], javaDocMax,
-                        ANNOTATION_GENERATED);
-                methodsBuilder.appendln(";");
-
-                methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
-                        helper.getRangeJavaClassName(), methodName, new String[0], new String[0], javaDoc,
-                        ANNOTATION_GENERATED);
-                methodsBuilder.appendln(";");
-            } else { // a.getValueSet().isEnum()
-
-                methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
-                        datatype.getJavaClassName() + "[]", methodNameMax, new String[0], new String[0], javaDocMax,
-                        ANNOTATION_GENERATED);
-                methodsBuilder.appendln(";");
-
-                methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT,
-                        datatype.getJavaClassName() + "[]", methodName, new String[0], new String[0], javaDoc,
-                        ANNOTATION_GENERATED);
-                methodsBuilder.appendln(";");
-            }
-        }
-    }
-
-    private String getPolicyCmptInterfaceValueSetFieldName(IAttribute a) {
-        return "maxWertebereich" + StringUtils.capitalise(a.getName());
-    }
-
-    private void createAttributeValueSetField(JavaCodeFragmentBuilder memberVarsBuilder, IAttribute a, Datatype datatype, DatatypeHelper helper)
-            throws CoreException {
-        String fieldName = getPolicyCmptInterfaceValueSetFieldName(a);
-        String dataTypeValueSet;
-        JavaCodeFragment initialValueExpression = new JavaCodeFragment();
-
-        if (a.getValueSet().getValueSetType() == ValueSetType.RANGE) {
-            dataTypeValueSet = helper.getRangeJavaClassName();
-            initialValueExpression.append("new ");
-            initialValueExpression.appendClassName(helper.getRangeJavaClassName());
-            initialValueExpression.append("( ");
-            initialValueExpression.append(helper.newInstance(((IRangeValueSet)a.getValueSet()).getLowerBound()));
-            initialValueExpression.append(", ");
-            initialValueExpression.append(helper.newInstance(((IRangeValueSet)a.getValueSet()).getUpperBound()));
-            initialValueExpression.append(", ");
-            initialValueExpression.append(helper.newInstance(((IRangeValueSet)a.getValueSet()).getStep()));
-            initialValueExpression.append(" ) ");
-        } else {
-            dataTypeValueSet = datatype.getJavaClassName() + "[]";
-            initialValueExpression = new JavaCodeFragment();
-            String[] elements = ((IEnumValueSet)a.getValueSet()).getValues();
-            initialValueExpression.append("{ ");
-            for (int i = 0; i < elements.length; i++) {
-                if (i > 0) {
-                    initialValueExpression.append(", ");
-                }
-                if (elements[i].equals("null")) {
-                    initialValueExpression.append(helper.nullExpression());
-                } else {
-                    initialValueExpression.append(helper.newInstance(elements[i]));
-                }
-            }
-            initialValueExpression.append(" }");
-        }
-        String comment = getLocalizedText(a, "FIELD_VALUESET_JAVADOC", a.getName());
-        memberVarsBuilder.javaDoc(comment, ANNOTATION_GENERATED);
-        memberVarsBuilder.varDeclaration(
-                java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                        | java.lang.reflect.Modifier.STATIC, dataTypeValueSet, fieldName, initialValueExpression);
-    }
-
     
 }

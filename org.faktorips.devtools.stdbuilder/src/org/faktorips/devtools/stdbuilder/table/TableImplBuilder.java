@@ -623,12 +623,10 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                     fragment.append("KEY_IS_TWO_COLUMN_KEY"); 
                 }
                 if (range.getColumnRangeType().isOneColumnFrom()) {
-                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); // TODO mï¿½glicherweise ï¿½ber
-                    // reflection
+                    fragment.append("KEY_IS_LOWER_BOUND_EQUAL"); 
                 }
                 if (range.getColumnRangeType().isOneColumnTo()) {
-                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL"); // TODO mï¿½glicherweise ï¿½ber
-                    // reflection
+                    fragment.append("KEY_IS_UPPER_BOUND_EQUAL"); 
                 }
             }
             fragment.append("});");
