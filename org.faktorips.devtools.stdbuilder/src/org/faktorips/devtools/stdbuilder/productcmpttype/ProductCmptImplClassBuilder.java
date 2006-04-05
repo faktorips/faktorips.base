@@ -19,7 +19,9 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -120,10 +122,13 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         String className = getUnqualifiedClassName();
         appendLocalizedJavaDoc("CONSTRUCTOR", className, getIpsObject(), builder);
-        String[] argNames = new String[] { "repository", "id", "kindId", "versionId" };
+        Locale locale = getLanguageUsedInGeneratedSourceCode(getIpsObject());
+        String versionParam = getChangesInTimeNamingConvention(getIpsObject()).getVersionConceptNameSingular(locale);
+        versionParam = StringUtils.uncapitalise(versionParam) + "Id";
+        String[] argNames = new String[] { "repository", "id", "kindId", versionParam };
         String[] argTypes = new String[] { RuntimeRepository.class.getName(), String.class.getName(), String.class.getName(), String.class.getName() };
         builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);
-        builder.append("super(repository, id, kindId, versionId);");
+        builder.append("super(repository, id, kindId, " + versionParam + ");");
         builder.methodEnd();
     }
 

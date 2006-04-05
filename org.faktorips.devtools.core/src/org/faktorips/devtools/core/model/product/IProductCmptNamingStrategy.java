@@ -23,10 +23,10 @@ import org.w3c.dom.Element;
 
 /**
  * The product component name includes a version id and a constant part that
- * is constant over the different versions. E.g. given FullCoverage.2005-01-01  
- * the version id is 2005-01-01 and the constant part is FullCoverage. 
+ * is constant over the different versions. E.g. given "FullCoverage 2005-01-01",  
+ * the version id is "2005-01-01" and the constant part is "FullCoverage". 
  * The product component naming strategy defines how the name is constructed
- * from a given constant and version id and vice versa. It also defines how to
+ * from a given constant kind id and a version id and vice versa. It also defines how to
  * derive the next version id.
  * <p>
  * Note that is also possible to define a naming strategy that does not distinguish

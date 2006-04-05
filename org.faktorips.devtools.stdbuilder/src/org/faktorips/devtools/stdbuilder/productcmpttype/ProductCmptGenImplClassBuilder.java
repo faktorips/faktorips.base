@@ -101,7 +101,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private int getClassModifier(IPolicyCmptType type, int modifier) throws CoreException {
         IAttribute[] attributes = type.getAttributes();
         for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].isDerivedOrComputed()) {
+            if (attributes[i].isDerivedOrComputed() && attributes[i].isProductRelevant()) {
+                // note: type can't be an instanceof ProductCmptType, as derived or computed policy cmpt type attributes
+                // aren't  not product cmpt attributes!
                 return modifier | Modifier.ABSTRACT;
             }
         }
