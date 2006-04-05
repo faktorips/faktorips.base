@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.faktorips.feature_0.9.9.jar" id="org.faktorips.feature" version="0.9.9">
+   <feature url="features/org.faktorips.feature_0.9.10.jar" id="org.faktorips.feature" version="0.9.10">
       <category name="FaktorIPS"/>
    </feature>
    <category-def name="FaktorIPS" label="FaktorIPS">
