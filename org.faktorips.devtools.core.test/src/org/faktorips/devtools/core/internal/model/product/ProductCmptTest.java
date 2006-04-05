@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.util.CollectionUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -188,5 +190,37 @@ public class ProductCmptTest extends IpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    public void testValidate_InconsitencyInTypeHierarch() throws Exception {
+        PolicyCmptType type = super.newPolicyCmptType(root, "Type"); 
+        PolicyCmptType supertype = super.newPolicyCmptType(root, "Supertype"); 
+        PolicyCmptType supersupertype = super.newPolicyCmptType(root, "Supersupertype"); 
+
+        type.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+    	supersupertype.setSupertype("abc");
+
+    	MessageList ml = type.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+    	
+    	ProductCmpt product = super.newProductCmpt(root, "products.Testproduct");
+    	product.setPolicyCmptType(type.getQualifiedName());
+    	
+    	ml = product.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY));
+    	
+    	supersupertype.setSupertype("");
+    	ml = type.validate();
+    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+    	ml = product.validate();
+    	assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY));
+
+    	supersupertype.setSupertype(type.getQualifiedName());
+    	ml = type.validate();
+    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
+    	ml = product.validate();
+    	assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY));
+    	
     }
 }

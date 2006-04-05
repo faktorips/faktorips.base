@@ -45,21 +45,21 @@ public class JetJavaContentGeneratorTest extends IpsPluginTest {
         generator.setJavaSourceFileBuilder(builder);
     }
     
-    public void testAppendClass(){
+    public void testAppendClass() throws CoreException{
         StringBuffer buf = new StringBuffer();
         generator.appendClass(List.class);
         generator.addImports(buf);
         assertTrue(buf.toString().indexOf(List.class.getName()) != -1);
     }
     
-    public void testAppendClassName(){
+    public void testAppendClassName() throws CoreException{
         StringBuffer buf = new StringBuffer();
         generator.appendClassName(List.class.getName());
         generator.addImports(buf);
         assertTrue(buf.toString().indexOf(List.class.getName()) != -1);
     }
     
-    public void testMarkImportLocation(){
+    public void testMarkImportLocation() throws CoreException{
         StringBuffer buf = new StringBuffer();
         buf.append("hello");
         int length = buf.length();
