@@ -144,14 +144,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             String text = NLS.bind(Messages.ProductCmpt_msgUnknownTemplate, this.policyCmptType);
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE)); //$NON-NLS-1$
         } else {
+        	IProductCmptType pType = findProductCmptType();
         	try {
 				MessageList list3 = type.validate();
 				if (list3.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || list3.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
-					String msg = NLS.bind("Error in type hierarchy of type {0}.", this.getPolicyCmptType());
-					list.add(new Message(MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY, msg, Message.ERROR, this, PROPERTY_POLICY_CMPT_TYPE));
+					String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, this.getPolicyCmptType());
+					list.add(new Message(MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY, msg, Message.ERROR, pType, IProductCmptType.PROPERTY_NAME));
 				}
 			} catch (Exception e) {
-				throw new CoreException(new IpsStatus("Error during validate of policy component type", e));
+				throw new CoreException(new IpsStatus("Error during validate of policy component type", e)); //$NON-NLS-1$
 			}
         }
         MessageList list2 = getIpsProject().getProductCmptNamingStratgey().validate(getName());

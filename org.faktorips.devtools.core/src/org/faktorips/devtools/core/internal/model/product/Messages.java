@@ -90,4 +90,6 @@ public class Messages extends NLS {
 
 	public static String DateBasedProductCmptNamingStrategy_msgWrongFormat;
 
+	public static String ProductCmpt_msgInvalidTypeHierarchy;
+
 }

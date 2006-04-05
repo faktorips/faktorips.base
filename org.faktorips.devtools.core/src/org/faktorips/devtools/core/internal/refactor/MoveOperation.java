@@ -205,7 +205,7 @@ public class MoveOperation implements IRunnableWithProgress {
 							root.createPackageFragment(targetPackage.getName(), true, null);
 						}
 						IIpsSrcFile file = targetPackage.getIpsSrcFile(fileInfos[1]);
-						IIpsPackageFragment sourcePackage = root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0]));
+						IIpsPackageFragment sourcePackage = root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])); //$NON-NLS-1$
 						IIpsSrcFile cmptFile = sourcePackage.getIpsSrcFile(fileInfos[1]);  //$NON-NLS-1$
 						if (cmptFile != null) {
 							// we got an IIpsSrcFile, so we have to move it correctly
@@ -477,7 +477,7 @@ public class MoveOperation implements IRunnableWithProgress {
 			else if (toTest instanceof ITableContents) {
 				ITableContents table = (ITableContents)toTest;
 				if (!table.exists()) {
-					String msg = NLS.bind("Tablecontent {0} is missing", table.getName());
+					String msg = NLS.bind("Tablecontent {0} is missing", table.getName()); //$NON-NLS-1$
 					IpsStatus status = new IpsStatus(msg); 
 					throw new CoreException(status);
 				}

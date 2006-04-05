@@ -772,7 +772,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 						.add(new Message(
 								MSGCODE_INCONSISTENT_TYPE_HIERARCHY,
 								Messages.PolicyCmptType_msgInconsistentTypeHierarchy,
-								Message.ERROR));
+								Message.ERROR, this, PROPERTY_SUPERTYPE));
 			}
 
 		} catch (Exception e) {

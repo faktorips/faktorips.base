@@ -53,7 +53,7 @@ public class ProductCmptRelation extends IpsObjectPart implements
 
 	private int maxCardinality = 1;
 	
-	private String targetRuntimeId = "";
+	private String targetRuntimeId = ""; //$NON-NLS-1$
 
 	private boolean deleted = false;
 
@@ -157,7 +157,7 @@ public class ProductCmptRelation extends IpsObjectPart implements
 					targetRuntimeId = productCmpt.getRuntimeId();
 					return;
 				}
-				targetRuntimeId = "";
+				targetRuntimeId = ""; //$NON-NLS-1$
 
 			} catch (CoreException e) {
 				IpsPlugin.logAndShowErrorDialog(e);
