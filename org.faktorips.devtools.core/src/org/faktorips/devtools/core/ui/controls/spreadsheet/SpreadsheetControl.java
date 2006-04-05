@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.faktorips.devtools.core.IpsPlugin;
 
 
 
@@ -182,8 +183,7 @@ public class SpreadsheetControl extends Composite {
 		MenuItem item = new MenuItem(popupMenu_, SWT.NONE);
 		item.setAccelerator(SWT.ALT | SWT.DEL);
 		item.setText(Messages.SpreadsheetControl_menuDelete);
-		// TODO Image handling 
-		// item.setImage(PdfsPlugin.getPlugin().getImage("Delete.gif"));
+		item.setImage(IpsPlugin.getDefault().getImage("Delete.gif"));
 		item.setData("deleteRow"); //$NON-NLS-1$
 		
 		item.addSelectionListener(new SelectionListener()
@@ -202,8 +202,7 @@ public class SpreadsheetControl extends Composite {
 		item = new MenuItem(popupMenu_, SWT.NONE);
 		item.setAccelerator(SWT.DEL);
 		item.setText(Messages.SpreadsheetControl_menuSetNull); 
-		// TODO image handling
-		//item.setImage(PdfsPlugin.getPlugin().getImage("Clear.gif"));
+		item.setImage(IpsPlugin.getDefault().getImage("Clear.gif"));
 		item.setData("clearCell"); //$NON-NLS-1$
 
 		item.addSelectionListener(new SelectionListener()
@@ -523,9 +522,7 @@ public class SpreadsheetControl extends Composite {
 		
 		if (item != null)
 		{
-			//TODO: handle null objects here ??!!
 			setCellValue(item, col, null);
-
 			table.select(table.indexOf(item));
 		}
 	}
@@ -573,16 +570,8 @@ public class SpreadsheetControl extends Composite {
 		
 		// check scroll right
 		if (cursorBounds.x < clientArea.x) {
-			//TODO: This hack should be replaced in version 3.0 of swt
-			//      by the showColumn method of the table control. 
-			// int dx = cursorBounds.x - clientArea.x;			
-			// obsolete OS.SendMessage(table.handle, OS.LVM_SCROLL, dx, 0);
 			cursor.setSelection(table.getSelectionIndex(), cursor.getInternalColumn());
 		} else if (cursorBounds.x + cursorBounds.width > clientArea.x + clientArea.width) {
-			//TODO: This hack should be replaced in version 3.0 of swt
-			//      by the showColumn method of the table control. 
-			//int dx = cursorBounds.x + cursorBounds.width - (clientArea.x + clientArea.width);
-			//obsolete OS.SendMessage (table.handle, OS. LVM_SCROLL, dx, 0);
 			cursor.setSelection(table.getSelectionIndex(), cursor.getInternalColumn());
 		}
 	}

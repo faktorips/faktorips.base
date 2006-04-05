@@ -98,7 +98,6 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
 	 * {@inheritDoc}
 	 */
 	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

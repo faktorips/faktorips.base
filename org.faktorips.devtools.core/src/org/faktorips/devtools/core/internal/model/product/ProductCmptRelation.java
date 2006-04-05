@@ -139,10 +139,11 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		productCmptTypeRelation = newRelation;
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getTargetRuntimeId() {
-		// TODO Auto-generated method stub
-		return null;
+		return targetRuntimeId;
 	}
 
 	private void setRuntimeIdForTarget(String newTarget, String oldTarget){

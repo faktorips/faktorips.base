@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -1029,14 +1028,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 */
 	public int compareTo(Object o) {
 		return 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IType getJavaImplementationType() throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**

@@ -100,7 +100,7 @@ public abstract class Key extends IpsObjectPart implements IKey {
      * Overridden.
      */
     public void addKeyItem(String name) {
-        // TODO Auto-generated method stub
+        items.add(name);
 
     }
 
@@ -109,8 +109,7 @@ public abstract class Key extends IpsObjectPart implements IKey {
      * @see org.faktorips.devtools.core.model.tablestructure.IKey#removeKeyItem(java.lang.String)
      */
     public void removeKeyItem(String name) {
-        // TODO Auto-generated method stub
-
+        items.remove(name);
     }
 
     /** 
