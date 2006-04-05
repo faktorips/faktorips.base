@@ -21,9 +21,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -40,6 +43,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
  * Moves (and renames) product components.
@@ -180,10 +184,8 @@ public class MoveOperation implements IRunnableWithProgress {
 				
 				if (toMove instanceof IProductCmpt) {
 					IProductCmpt product = (IProductCmpt)toMove;
-					IIpsPackageFragmentRoot root = product.getIpsPackageFragment().getRoot();
-					IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(this.targetNames[i]));
-					IIpsSrcFile file = pack.getIpsSrcFile(product.getIpsObjectType().getFileName(getUnqualifiedName(this.targetNames[i])));
-					move((IProductCmpt)toMove, file, monitor);
+					IIpsSrcFile file = createTarget(product, this.targetNames[i]);
+					move(product, file, monitor);
 				}
 				else if (toMove instanceof IIpsPackageFragment) {
 					IIpsPackageFragment pack = (IIpsPackageFragment)toMove;
@@ -203,18 +205,45 @@ public class MoveOperation implements IRunnableWithProgress {
 							root.createPackageFragment(targetPackage.getName(), true, null);
 						}
 						IIpsSrcFile file = targetPackage.getIpsSrcFile(fileInfos[1]);
-						IProductCmpt cmpt = (IProductCmpt)root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])).getIpsSrcFile(fileInfos[1]).getIpsObject(); //$NON-NLS-1$
-						move(cmpt, file, monitor);
+						IIpsPackageFragment sourcePackage = root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0]));
+						IIpsSrcFile cmptFile = sourcePackage.getIpsSrcFile(fileInfos[1]);  //$NON-NLS-1$
+						if (cmptFile != null) {
+							// we got an IIpsSrcFile, so we have to move it correctly
+							IProductCmpt cmpt = (IProductCmpt)cmptFile.getIpsObject();
+							move(cmpt, file, monitor);
+						} else {
+							// we dont have a IIpsSrcFile, so move the file as resource operation
+//							IContainer container = (IContainer)sourcePackage.getEnclosingResource(); 
+//							IPath path = container.getFullPath();
+//							path.append(fileInfos[1]);
+//							container.getf
+//							getFile(new IPath());
+						}
 					}
 
 					// third, remove remaining folders
 				    pack.getEnclosingResource().delete(true, monitor);
+				}
+				else if (toMove instanceof ITableContents) {
+					IIpsSrcFile file = createTarget((ITableContents)toMove, this.targetNames[i]);
+					move((ITableContents)toMove, file, monitor);
 				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
 		}
 
+	}
+	
+	/**
+	 * Creates the IIpsSrcFile for the given target. The IpsObjectType associated with 
+	 * the new file is the one stored in the given source. The target is created in the 
+	 * package fragment root of the given source.
+	 */
+	private IIpsSrcFile createTarget(IIpsObject source, String targetName) {
+		IIpsPackageFragmentRoot root = source.getIpsPackageFragment().getRoot();
+		IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(targetName));
+		return pack.getIpsSrcFile(source.getIpsObjectType().getFileName(getUnqualifiedName(targetName)));
 	}
 	
 	/**
@@ -284,6 +313,20 @@ public class MoveOperation implements IRunnableWithProgress {
 		return result;
 	}
 	
+	/**
+	 * Moves one table content to the given target file.
+	 */
+	private void move(ITableContents source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
+		try {
+			createCopy(source.getIpsSrcFile(), targetFile, monitor);
+			source.getEnclosingResource().delete(true, monitor);
+		} catch (CoreException e) {
+			Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+			MessageDialog.openError(shell, Messages.MoveOperation_titleAborted, Messages.MoveOperation_msgAborted);
+			IpsPlugin.log(e);
+		}		
+		
+	}
 	
 	/**
 	 * Moves one product component to the given target file.
@@ -294,11 +337,7 @@ public class MoveOperation implements IRunnableWithProgress {
 			IProductCmptGeneration[] refs = source.getIpsProject().findReferencingProductCmptGenerations(source.getQualifiedName());
 			
 			// second, create the target
-			IIpsPackageFragment pack = targetFile.getIpsPackageFragment();
-			if (!pack.exists()) {
-				pack.getRoot().createPackageFragment(pack.getName(), true, monitor);
-			}
-			pack.createIpsFile(targetFile.getName(), source.getIpsSrcFile().getContents(), true, monitor);
+			createCopy(source.getIpsSrcFile(), targetFile, monitor);
 			
 			// third, update references
 			for (int i = 0; i < refs.length; i++) {
@@ -312,6 +351,14 @@ public class MoveOperation implements IRunnableWithProgress {
 			MessageDialog.openError(shell, Messages.MoveOperation_titleAborted, Messages.MoveOperation_msgAborted);
 			IpsPlugin.log(e);
 		}		
+	}
+	
+	private void createCopy(IIpsSrcFile source, IIpsSrcFile targetFile, IProgressMonitor monitor) throws CoreException {
+		IIpsPackageFragment pack = targetFile.getIpsPackageFragment();
+		if (!pack.exists()) {
+			pack.getRoot().createPackageFragment(pack.getName(), true, monitor);
+		}
+		pack.createIpsFile(targetFile.getName(), source.getContents(), true, monitor);
 	}
 	
 	/**
@@ -374,6 +421,16 @@ public class MoveOperation implements IRunnableWithProgress {
 					throw new CoreException(status);
 				}
 			}
+			else if (toTest instanceof ITableContents) {
+				ITableContents table = (ITableContents)toTest;
+				IIpsPackageFragmentRoot root = table.getIpsPackageFragment().getRoot();
+				IIpsPackageFragment pack = root.getIpsPackageFragment(getPackageName(targets[i]));
+				if (pack.getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName(getUnqualifiedName(targets[i]))).exists()) {
+					String msg = NLS.bind(Messages.MoveOperation_msgFileExists, targets[i]);
+					IpsStatus status = new IpsStatus(msg);
+					throw new CoreException(status);
+				}
+			}
 		}
 	}
 	
@@ -417,6 +474,14 @@ public class MoveOperation implements IRunnableWithProgress {
 					throw new CoreException(status);
 				}
 				checkSources(pack.getChildren());
+			}
+			else if (toTest instanceof ITableContents) {
+				ITableContents table = (ITableContents)toTest;
+				if (!table.exists()) {
+					String msg = NLS.bind("Tablecontent {0} is missing", table.getName());
+					IpsStatus status = new IpsStatus(msg); 
+					throw new CoreException(status);
+				}
 			}
 			else {				
 				String msg = NLS.bind(Messages.MoveOperation_msgUnsupportedType, toTest.getName());

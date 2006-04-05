@@ -35,11 +35,12 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.MessageList;
 
@@ -111,8 +112,8 @@ public class RenamePage extends WizardPage implements ModifyListener {
 
 		Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
-		if (renameObject instanceof IpsPackageFragment) {
-			createControlForPackage(toolkit, inputRoot, (IIpsPackageFragment)renameObject);
+		if (renameObject instanceof IpsPackageFragment || renameObject instanceof ITableContents) {
+			createControlForObject(toolkit, inputRoot, (IIpsElement)renameObject);
 		}
 		else if (renameObject instanceof IProductCmpt){
 			createControlForProduct(toolkit, inputRoot, (IProductCmpt)renameObject);
@@ -122,12 +123,12 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	}
 
 	/**
-	 * Creates the input controlls for a package to rename
+	 * Creates the input controlls for an IpsObject.
 	 */
-	private void createControlForPackage(UIToolkit toolkit, Composite parent, IIpsPackageFragment pack) {
+	private void createControlForObject(UIToolkit toolkit, Composite parent, IIpsElement obj) {
 		toolkit.createLabel(parent, Messages.RenamePage_newName);
 		newName = toolkit.createText(parent);
-		newName.setText(((IIpsPackageFragment)renameObject).getCorrespondingResource().getName());
+		newName.setText(obj.getName());
 	}
 	
 	/**
@@ -224,7 +225,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			return;
 		}
 		
-		if (renameObject instanceof IProductCmpt) {
+		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents) {
 			IStatus val= JavaConventions.validateJavaTypeName(name);
 			if (val.getSeverity() == IStatus.ERROR) {
 				String msg = Messages.bind(Messages.errorNameNotValid, name);
@@ -234,8 +235,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 				setMessage(Messages.RenamePage_warningDiscouraged, WARNING);
 				// continue checking
 			}		
-		}
-		else {
+		} else {
 			IStatus val= JavaConventions.validatePackageName(name);
 			if (val.getSeverity() == IStatus.ERROR) {
 				String msg = Messages.bind(Messages.errorNameNotValid, name);
@@ -246,16 +246,16 @@ public class RenamePage extends WizardPage implements ModifyListener {
 		
 		IIpsPackageFragment pack = null;
 		
-		if (renameObject instanceof IProductCmpt) {
-			pack = ((IProductCmpt)renameObject).getIpsPackageFragment();
-			IIpsSrcFile newFile = pack.getIpsSrcFile(((IProductCmpt)renameObject).getIpsObjectType().getFileName(newName.getText()));
+		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents) {
+			pack = ((IIpsObject)renameObject).getIpsPackageFragment();
+			IIpsSrcFile newFile = pack.getIpsSrcFile(((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()));
 			if (newFile.exists()) {
 				setMessage(Messages.RenamePage_errorFileExists, ERROR);
 				return;
 			} else {
 				// fix for windows: can not rename to an object with a name only
 				// different in case.
-				if (hasContentWithNameEqualsIgnoreCase((IFolder)pack.getCorrespondingResource(), IpsObjectType.PRODUCT_CMPT.getFileName(newName.getText()))) {
+				if (hasContentWithNameEqualsIgnoreCase((IFolder)pack.getCorrespondingResource(), ((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()))) {
 					setMessage(Messages.RenamePage_errorFileExists, ERROR);
 					return;
 				}
@@ -302,8 +302,8 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 */
 	public String getNewName() {
 		String name = ""; //$NON-NLS-1$
-		if (this.renameObject instanceof IProductCmpt) {
-			name = ((IProductCmpt)this.renameObject).getIpsPackageFragment().getName();
+		if (this.renameObject instanceof IProductCmpt || this.renameObject instanceof ITableContents) {
+			name = ((IIpsObject)this.renameObject).getIpsPackageFragment().getName();
 		}
 		else if (this.renameObject instanceof IIpsPackageFragment) {
 			IIpsPackageFragment parent = ((IIpsPackageFragment)this.renameObject).getIpsParentPackageFragment();

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.internal.refactor.MoveOperation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
  * A wizard to move and/or rename package fragements or product components.
@@ -98,7 +99,9 @@ public class MoveWizard extends Wizard {
 		Object[] selected = selection.toArray();
 		this.selectedObjects = new IIpsElement[selected.length];
 		for (int i = 0; i < selection.size(); i++) {
-			if (selected[i] instanceof IProductCmpt || selected[i] instanceof IIpsPackageFragment) {
+			if (selected[i] instanceof IProductCmpt
+					|| selected[i] instanceof IIpsPackageFragment
+					|| selected[i] instanceof ITableContents) {
 				this.selectedObjects[i] = (IIpsElement)selected[i];
 			}
 			else {
