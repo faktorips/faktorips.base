@@ -98,6 +98,9 @@ public class ProductCmptPage extends IpsObjectPage {
 		super.setDefaults(selectedResource);
 		try {
 			IIpsObject obj = getSelectedIpsObject();
+	        if (constName.isEnabled()) {
+	            constName.setFocus();
+	        }
 			if (!(obj instanceof IProductCmpt)) {
 				return;
 			}

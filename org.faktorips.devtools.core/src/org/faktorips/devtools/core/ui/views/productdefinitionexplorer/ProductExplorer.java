@@ -141,12 +141,12 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), new IpsDeleteAction(this));
         
         menumanager.add(new OpenEditorAction(tree));
-        menumanager.add(new IpsDeepCopyAction(this.getSite().getShell(), tree, DeepCopyWizard.TYPE_COPY_PRODUCT));
-        menumanager.add(new IpsDeepCopyAction(this.getSite().getShell(), tree, DeepCopyWizard.TYPE_NEW_VERSION));
         
         MenuManager subMm = new MenuManager(Messages.ProductExplorer_submenuNew);
         subMm.add(new NewFolderAction(this.getSite().getShell(), tree));
         subMm.add(new NewProductComponentAction(this.getSite().getWorkbenchWindow()));
+        subMm.add(new IpsDeepCopyAction(this.getSite().getShell(), tree, DeepCopyWizard.TYPE_NEW_VERSION));
+        subMm.add(new IpsDeepCopyAction(this.getSite().getShell(), tree, DeepCopyWizard.TYPE_COPY_PRODUCT));
         menumanager.add(subMm);
 
 
