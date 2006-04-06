@@ -59,13 +59,13 @@ public class ProductCmptPage extends IpsObjectPage {
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
 
-        toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelVersionId);
-        versionId = toolkit.createText(nameComposite);
     	toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelConstNamePart);
         constName = toolkit.createText(nameComposite);
+        toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelVersionId);
+        versionId = toolkit.createText(nameComposite);
 
         fullName = addNameLabelField(toolkit);
-        
+
         toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelName);
         
         typeRefControl = new ProductCmptTypeRefControl(null, nameComposite, toolkit);
@@ -117,6 +117,11 @@ public class ProductCmptPage extends IpsObjectPage {
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
+		
+        if (constName.isEnabled()) {
+            constName.setFocus();
+        }
+
 	}
 
 	String getPolicyCmptType() {
