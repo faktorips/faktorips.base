@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -131,7 +132,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
 			return Messages.ReferenceAndPreviewPage_title;
 		} else {
-			return Messages.ReferenceAndPreviewPage_titleNewVersion;
+			return NLS.bind(Messages.ReferenceAndPreviewPage_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 		}
 	}
 
@@ -213,7 +214,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
 			replaceInput.addModifyListener(listener);
 
 			if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-				toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelVersionId);
+				String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+				toolkit.createFormLabel(inputRoot, label);
 				versionId = toolkit.createText(inputRoot);
 				versionId.addModifyListener(listener);
 			} 

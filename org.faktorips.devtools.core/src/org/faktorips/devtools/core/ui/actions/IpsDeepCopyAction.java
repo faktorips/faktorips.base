@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -65,7 +66,7 @@ public class IpsDeepCopyAction extends IpsAction {
 		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
 			setText(Messages.IpsDeepCopyAction_name);
 		} else {
-			setText(Messages.IpsDeepCopyAction_nameNewVersion);
+			setText(NLS.bind(Messages.IpsDeepCopyAction_nameNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular()));
 		}
 	}
 
@@ -84,7 +85,8 @@ public class IpsDeepCopyAction extends IpsAction {
 				IpsPlugin.log(e1);
 			}
 			if (type == DeepCopyWizard.TYPE_NEW_VERSION && (ns == null || !ns.supportsVersionId())) {
-				MessageDialog.openInformation(shell, Messages.IpsDeepCopyAction_titleNoVersion, Messages.IpsDeepCopyAction_msgNoVersion);
+				String title = NLS.bind(Messages.IpsDeepCopyAction_titleNoVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+				MessageDialog.openInformation(shell, title, Messages.IpsDeepCopyAction_msgNoVersion);
 				return;
 			}
 			

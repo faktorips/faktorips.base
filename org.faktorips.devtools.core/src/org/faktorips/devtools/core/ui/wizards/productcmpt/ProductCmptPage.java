@@ -61,7 +61,8 @@ public class ProductCmptPage extends IpsObjectPage {
 
     	toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelConstNamePart);
         constName = toolkit.createText(nameComposite);
-        toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelVersionId);
+        String label = NLS.bind(Messages.ProductCmptPage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+        toolkit.createLabel(nameComposite, label);
         versionId = toolkit.createText(nameComposite);
 
         fullName = addNameLabelField(toolkit);

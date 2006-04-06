@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -136,7 +137,8 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 */
 	private void createControlForProduct(UIToolkit toolkit, Composite parent, IProductCmpt product) {
 		if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-			toolkit.createLabel(parent, Messages.RenamePage_labelVersionId);
+			String label = NLS.bind(Messages.RenamePage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+			toolkit.createLabel(parent, label);
 			versionId = toolkit.createText(parent);
 
 			toolkit.createLabel(parent, Messages.RenamePage_labelConstNamePart);
