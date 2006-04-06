@@ -67,6 +67,7 @@ public abstract class SimpleIpsPartsSection extends IpsSection {
      */
     protected final void initClientComposite(Composite client, UIToolkit toolkit) {
 		pdPartsComposite = createIpsPartsComposite(client, toolkit);
+		addFocusControl(pdPartsComposite);
     }
     
     protected abstract IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit);

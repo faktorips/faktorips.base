@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 
 /**
@@ -36,11 +37,14 @@ public class StructurePage extends PctEditorPage {
     
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		formBody.setLayout(createPageLayout(1, false));
-		new GeneralInfoSection(getPolicyCmptType(), formBody, toolkit); 
+		IpsSection general = new GeneralInfoSection(getPolicyCmptType(), formBody, toolkit); 
 		
 		Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-		new AttributesSection(getPolicyCmptType(), members, toolkit);
-		new RelationsSection(getPolicyCmptType(), members, toolkit);
+		IpsSection attributes = new AttributesSection(getPolicyCmptType(), members, toolkit);
+		IpsSection relations = new RelationsSection(getPolicyCmptType(), members, toolkit);
+		
+		general.setFocusSuccessor(attributes);
+		attributes.setFocusSuccessor(relations);
 	}
 
 }

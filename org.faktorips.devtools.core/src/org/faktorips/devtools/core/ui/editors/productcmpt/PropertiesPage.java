@@ -116,6 +116,10 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		defaultsAndRangesSection = new DefaultsAndRangesSection(generation, right, toolkit);
 		relationsSection = new RelationsSection(generation, right, toolkit, getEditorSite());
 
+		productAttributesSection.setFocusSuccessor(formulasSection);
+		formulasSection.setFocusSuccessor(defaultsAndRangesSection);
+		defaultsAndRangesSection.setFocusSuccessor(relationsSection);
+		
 		pageRoot.layout();
 		setEnabled(enabled);
 	}

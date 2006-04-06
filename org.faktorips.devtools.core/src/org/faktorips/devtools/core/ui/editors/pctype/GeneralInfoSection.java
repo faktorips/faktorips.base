@@ -76,65 +76,63 @@ public class GeneralInfoSection extends IpsSection {
     }
 
     /**
-     * Overridden.
-     */ 
-    protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        client.setLayout(new GridLayout(1, false));
-        Composite composite = toolkit.createLabelEditColumnComposite(client);
-        
-        Hyperlink link = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_linkSuperclass);
-        link.addHyperlinkListener(new HyperlinkAdapter() {
-
-            public void linkActivated(HyperlinkEvent event) {
-                try {
-                    IPolicyCmptType supertype = (IPolicyCmptType)supertypeField.getPdObject(pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE);
-                    if (supertype!=null) {
-                        IpsPlugin.getDefault().openEditor(supertype.getIpsSrcFile());    
-                    }
-                } catch (Exception e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
-                
-            }
-            
-        });
-        
-        PcTypeRefControl control = toolkit.createPcTypeRefControl(pcType.getIpsProject(), composite);
-        
-        Composite c2 = toolkit.createLabelEditColumnComposite(client);
-        toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelAbstractClass);
-        Checkbox abstractCheckbox = toolkit.createCheckbox(c2);
-        toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelProduct);
-        Checkbox configuratedCheckbox = toolkit.createCheckbox(c2);
-        toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelType);
-        Text productCmptTypeNameText = toolkit.createText(c2);
-
-        // create fields
-        supertypeField = new PdObjectField(control);
-        abstractField = new CheckboxField(abstractCheckbox);
-        productCmptTypeNameField = new TextField(productCmptTypeNameText);
-        configuratedField = new CheckboxField(configuratedCheckbox);
-        
-        // connect fields to model properties
-        uiController = new IpsObjectUIController(pcType);
-        uiController.add(supertypeField, IPolicyCmptType.PROPERTY_SUPERTYPE);
-        uiController.add(abstractField, IPolicyCmptType.PROPERTY_ABSTRACT);
-        uiController.add(productCmptTypeNameField, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
-        uiController.add(configuratedField, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
-        
-        extFactory.createControls(c2,toolkit,(IpsObjectPartContainer)pcType);
-        extFactory.connectToModel(uiController);
-    }
+	 * Overridden.
+	 */ 
+	protected void initClientComposite(Composite client, UIToolkit toolkit) {
+	    client.setLayout(new GridLayout(1, false));
+	    Composite composite = toolkit.createLabelEditColumnComposite(client);
+	    
+	    Hyperlink link = toolkit.createHyperlink(composite, Messages.GeneralInfoSection_linkSuperclass);
+	    link.addHyperlinkListener(new HyperlinkAdapter() {
+	
+	        public void linkActivated(HyperlinkEvent event) {
+	            try {
+	                IPolicyCmptType supertype = (IPolicyCmptType)supertypeField.getPdObject(pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE);
+	                if (supertype!=null) {
+	                    IpsPlugin.getDefault().openEditor(supertype.getIpsSrcFile());    
+	                }
+	            } catch (Exception e) {
+	                IpsPlugin.logAndShowErrorDialog(e);
+	            }
+	            
+	        }
+	        
+	    });
+	    
+	    PcTypeRefControl control = toolkit.createPcTypeRefControl(pcType.getIpsProject(), composite);
+	    
+	    Composite c2 = toolkit.createLabelEditColumnComposite(client);
+	    toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelAbstractClass);
+	    Checkbox abstractCheckbox = toolkit.createCheckbox(c2);
+	    toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelProduct);
+	    Checkbox configuratedCheckbox = toolkit.createCheckbox(c2);
+	    toolkit.createFormLabel(c2, Messages.GeneralInfoSection_labelType);
+	    Text productCmptTypeNameText = toolkit.createText(c2);
+	
+	    // register controls for focus handling
+	    addFocusControl(control);
+	    addFocusControl(abstractCheckbox);
+	    addFocusControl(productCmptTypeNameText);
+	    addFocusControl(configuratedCheckbox);
+	    
+	    // create fields
+	    supertypeField = new PdObjectField(control);
+	    abstractField = new CheckboxField(abstractCheckbox);
+	    productCmptTypeNameField = new TextField(productCmptTypeNameText);
+	    configuratedField = new CheckboxField(configuratedCheckbox);
+	    
+	    // connect fields to model properties
+	    uiController = new IpsObjectUIController(pcType);
+	    uiController.add(supertypeField, IPolicyCmptType.PROPERTY_SUPERTYPE);
+	    uiController.add(abstractField, IPolicyCmptType.PROPERTY_ABSTRACT);
+	    uiController.add(productCmptTypeNameField, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
+	    uiController.add(configuratedField, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
+	    
+	    extFactory.createControls(c2,toolkit,(IpsObjectPartContainer)pcType);
+	    extFactory.connectToModel(uiController);
+	}
     
 
-    /*
-     * Sets the focus explicitly to the supertype control. Otherwise the
-     * hyperlink receives focus.
-     */
-    public boolean setFocus() {
-        return supertypeField.getControl().setFocus();
-    }
-    
     /** 
      * Overridden.
      */

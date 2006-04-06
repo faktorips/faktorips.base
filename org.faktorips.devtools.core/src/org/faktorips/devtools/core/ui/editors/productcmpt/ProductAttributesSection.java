@@ -219,7 +219,7 @@ public class ProductAttributesSection extends IpsSection {
 		
 		IpsPartUIController controller = new IpsPartUIController(toDisplay);
 		uiMasterController.add(controller);
-
+	
 		try {
 			IAttribute attr = toDisplay.findPcTypeAttribute();
 			Datatype datatype = null;
@@ -234,6 +234,7 @@ public class ProductAttributesSection extends IpsSection {
 				combo.add(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				addFocusControl(combo);
 				editControls.add(combo);
 			}
 			else if (datatype != null && datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
@@ -242,21 +243,25 @@ public class ProductAttributesSection extends IpsSection {
 				combo.add(Messages.ProductAttributesSection_false);
 				ComboField field = new ComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				addFocusControl(combo);
 				editControls.add(combo);
 			}
 			else if (datatype != null && datatype instanceof EnumDatatype) {
 				Combo combo = toolkit.createCombo(rootPane);
 				EnumDatatypeField field = new EnumDatatypeField(combo, (EnumDatatype)datatype);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				addFocusControl(combo);
 				editControls.add(combo);
 			}
 			else {
 				Text text = toolkit.createText(rootPane);
+				addFocusControl(text);
 				editControls.add(text);
 				controller.add(new TextField(text), toDisplay, IConfigElement.PROPERTY_VALUE);		
 			}
 		} catch (CoreException e) {
 			Text text = toolkit.createText(rootPane);
+			addFocusControl(text);
 			editControls.add(text);
 			controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);		
 		}
@@ -264,4 +269,5 @@ public class ProductAttributesSection extends IpsSection {
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 	}
+
 }

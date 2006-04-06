@@ -126,21 +126,21 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
     
     /**
-     * Create the controls...
-     */
-    private void createEditControls() {
-    	uiMasterController = new CompositeUIController();
-    	
-    	IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
-    	
-    	if (elements.length == 0) {
-    		toolkit.createLabel(rootPane, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
-    	}
-    	
-    	for (int i = 0; i < elements.length; i++) {
-    		IAttribute attribute = null; 
-    		Datatype dataType = null;
-    		try {
+	 * Create the controls...
+	 */
+	private void createEditControls() {
+		uiMasterController = new CompositeUIController();
+		
+		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
+		
+		if (elements.length == 0) {
+			toolkit.createLabel(rootPane, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);
+		}
+		
+		for (int i = 0; i < elements.length; i++) {
+			IAttribute attribute = null; 
+			Datatype dataType = null;
+			try {
 				attribute = elements[i].findPcTypeAttribute();
 				if (attribute != null) {
 					dataType = attribute.findDatatype();
@@ -149,92 +149,98 @@ public class DefaultsAndRangesSection extends IpsSection {
 				IpsPlugin.log(e);
 			}
 			
-    		IValueSet valueSet = elements[i].getValueSet();
-    		
-    		// if the config element has an all values valueset and the valueset
-    		// of the underlying attribute is not an all values valuese, the valueset
-    		// is changed to a copy of the underlying attribute valueset. This is
-    		// because all value valuesets onyl apply on datatypes, not on other
-    		// valuesets.
-    		if (attribute != null
+			IValueSet valueSet = elements[i].getValueSet();
+			
+			// if the config element has an all values valueset and the valueset
+			// of the underlying attribute is not an all values valuese, the valueset
+			// is changed to a copy of the underlying attribute valueset. This is
+			// because all value valuesets onyl apply on datatypes, not on other
+			// valuesets.
+			if (attribute != null
 					&& valueSet.getValueSetType() == ValueSetType.ALL_VALUES
 					&& attribute.getValueSet().getValueSetType() != ValueSetType.ALL_VALUES) {
-    			elements[i].setValueSetCopy(attribute.getValueSet());
-    			valueSet = elements[i].getValueSet();
-    		}
-
-    		toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
-    		toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
-
-    		if ((valueSet.getValueSetType() == ValueSetType.ALL_VALUES && dataType instanceof EnumDatatype) || valueSet.getValueSetType() == ValueSetType.ENUM) {
-    			
-    			Combo combo = toolkit.createCombo(rootPane);
-    			EditField defaultField;
-    			if (valueSet.getValueSetType() == ValueSetType.ENUM) {
-    				defaultField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, (ValueDatatype)dataType);
-    			}
-    			else {
-    				defaultField = new EnumDatatypeField(combo, (EnumDatatype)dataType);
-    			}
-    			
-    			this.editControls.add(combo);
-        		
-    			IpsPartUIController controller = new IpsPartUIController(elements[i]);
-        		uiMasterController.add(controller);
-
-        		controller.add(defaultField, elements[i], IConfigElement.PROPERTY_VALUE);
-        		
-        		if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES) {
-        			// only if the value set defined in the model is not an all values value set
-        			// we can modify the content of the value set.
+				elements[i].setValueSetCopy(attribute.getValueSet());
+				valueSet = elements[i].getValueSet();
+			}
+	
+			toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
+			toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
+	
+			if ((valueSet.getValueSetType() == ValueSetType.ALL_VALUES && dataType instanceof EnumDatatype) || valueSet.getValueSetType() == ValueSetType.ENUM) {
+				
+				Combo combo = toolkit.createCombo(rootPane);
+				EditField defaultField;
+				if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+					defaultField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, (ValueDatatype)dataType);
+				}
+				else {
+					defaultField = new EnumDatatypeField(combo, (EnumDatatype)dataType);
+				}
+				
+				addFocusControl(combo);
+				this.editControls.add(combo);
+	    		
+				IpsPartUIController controller = new IpsPartUIController(elements[i]);
+	    		uiMasterController.add(controller);
+	
+	    		controller.add(defaultField, elements[i], IConfigElement.PROPERTY_VALUE);
+	    		
+	    		if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES) {
+	    			// only if the value set defined in the model is not an all values value set
+	    			// we can modify the content of the value set.
 	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
 	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell(), controller);
 	    			evc.setText(valueSet.toShortString());
+	    			addFocusControl(evc.getTextControl());
 	    			this.editControls.add(evc);
-        		}
-    		}
-    		else if (valueSet.getValueSetType() == ValueSetType.RANGE || valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
-        		IpsPartUIController controller = new IpsPartUIController(elements[i]);
-
-    			Text text = toolkit.createText(rootPane);    			
-    			this.editControls.add(text);
-        		TextField field = new TextField(text);
-        		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
-        		uiMasterController.add(controller);
-
-        		if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES && !attribute.getDatatype().equals(Datatype.STRING.getName())) {
-        			// only if the value set defined in the model is not an all values value set
-        			// and the datatype is not a string we can modify the ranges of the value set.
-        			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
-        			Text lower = toolkit.createText(rootPane);
-        			this.editControls.add(lower);
-        			
-        			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_maximum);
-        			Text upper = toolkit.createText(rootPane);
-        			this.editControls.add(upper);
-        			
-        			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
-        			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
-        			Text step = toolkit.createText(rootPane);
-        			this.editControls.add(step);
-        			
-        			controller.add(upper, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
-        			controller.add(lower, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
-        			controller.add(step, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_STEP);
-        		}
-        		
-    		}
-    		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
-    		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
-    		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
-    	}
-    	    	
+	    		}
+			}
+			else if (valueSet.getValueSetType() == ValueSetType.RANGE || valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
+	    		IpsPartUIController controller = new IpsPartUIController(elements[i]);
+	
+				Text text = toolkit.createText(rootPane);
+				addFocusControl(text);
+				this.editControls.add(text);
+	    		TextField field = new TextField(text);
+	    		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
+	    		uiMasterController.add(controller);
+	
+	    		if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES && !attribute.getDatatype().equals(Datatype.STRING.getName())) {
+	    			// only if the value set defined in the model is not an all values value set
+	    			// and the datatype is not a string we can modify the ranges of the value set.
+	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
+	    			Text lower = toolkit.createText(rootPane);
+	    			addFocusControl(lower);
+	    			this.editControls.add(lower);
+	    			
+	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_maximum);
+	    			Text upper = toolkit.createText(rootPane);
+	    			addFocusControl(upper);
+	    			this.editControls.add(upper);
+	    			
+	    			toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
+	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
+	    			Text step = toolkit.createText(rootPane);
+	    			addFocusControl(step);
+	    			this.editControls.add(step);
+	    			
+	    			controller.add(upper, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_UPPERBOUND);
+	    			controller.add(lower, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_LOWERBOUND);
+	    			controller.add(step, (IRangeValueSet) valueSet, IRangeValueSet.PROPERTY_STEP);
+	    		}
+	    		
+			}
+			toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
+			toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
+			toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
+		}
+		    	
 		rootPane.layout(true);
 		rootPane.redraw();
-    }
+	}
     
 	/**
 	 * {@inheritDoc}
@@ -256,4 +262,5 @@ public class DefaultsAndRangesSection extends IpsSection {
 		rootPane.layout(true);
 		rootPane.redraw();
 	}
+	
 }

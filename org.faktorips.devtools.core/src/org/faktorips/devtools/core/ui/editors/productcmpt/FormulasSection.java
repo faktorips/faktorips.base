@@ -133,10 +133,10 @@ public class FormulasSection extends IpsSection {
 		IpsObjectUIController ctrl = new IpsObjectUIController(generation
 				.getIpsObject());
 		uiMasterController.add(ctrl);
-
+	
 		IConfigElement[] elements = generation
 				.getConfigElements(ConfigElementType.FORMULA);
-
+	
 		if (elements.length == 0 && noFormulasLabel == null) {
 			noFormulasLabel = toolkit.createLabel(rootPane,
 					Messages.FormulasSection_noFormulasDefined);
@@ -144,17 +144,18 @@ public class FormulasSection extends IpsSection {
 			noFormulasLabel.dispose();
 			noFormulasLabel = null;
 		}
-
+	
 		for (int i = 0; i < elements.length; i++) {
-
+	
 			toolkit.createFormLabel(rootPane, StringUtils
 					.capitalise(elements[i].getName()));
 			FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit,
 					elements[i], this.getShell());
 			ctrl.add(new TextField(evc.getTextControl()), elements[i],
 					ConfigElement.PROPERTY_VALUE);
+			addFocusControl(evc.getTextControl());
 			this.editControls.add(evc);
-
+	
 			try {
 				IAttribute attr = elements[i].findPcTypeAttribute();
 				if (attr != null) { 
@@ -169,7 +170,7 @@ public class FormulasSection extends IpsSection {
 				IpsPlugin.logAndShowErrorDialog(e);
 			}
 		}
-
+	
 		rootPane.layout(true);
 		rootPane.redraw();
 	}

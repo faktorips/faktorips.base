@@ -172,14 +172,14 @@ public class RelationsSection extends IpsSection {
 					true, true));
 			GridLayout layout = new GridLayout(2, false);
 			relationRootPane.setLayout(layout);
-
+	
 			Tree tree = toolkit.getFormToolkit().createTree(relationRootPane,
 					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 			GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 			tree.setLayoutData(layoutData);
-
+	
 			RelationsLabelProvider labelProvider = new RelationsLabelProvider();
-
+	
 			treeViewer = new TreeViewer(tree);
 			treeViewer.setContentProvider(new RelationsContentProvider());
 			treeViewer.setLabelProvider(new MyMessageCueLabelProvider(
@@ -197,15 +197,16 @@ public class RelationsSection extends IpsSection {
 			treeViewer.expandAll();
 			treeViewer.addDoubleClickListener(new DefaultDoubleclickListener(
 					treeViewer));
-
+	
 			new MessageService(treeViewer);
-
+	
 			buildContextMenu();
-
+	
 			cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
 			cardinalityPanel.setEnabled(false);
-
+	
 			toolkit.getFormToolkit().paintBordersFor(relationRootPane);
+			addFocusControl(treeViewer.getTree());
 		}
 	}
 
