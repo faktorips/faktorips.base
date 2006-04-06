@@ -137,12 +137,12 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 */
 	private void createControlForProduct(UIToolkit toolkit, Composite parent, IProductCmpt product) {
 		if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+			toolkit.createLabel(parent, Messages.RenamePage_labelConstNamePart);
+			constNamePart = toolkit.createText(parent);
+
 			String label = NLS.bind(Messages.RenamePage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 			toolkit.createLabel(parent, label);
 			versionId = toolkit.createText(parent);
-
-			toolkit.createLabel(parent, Messages.RenamePage_labelConstNamePart);
-			constNamePart = toolkit.createText(parent);
 
 			toolkit.createLabel(parent, Messages.RenamePage_newName);
 			newName = toolkit.createText(parent);
