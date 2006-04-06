@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import java.util.Locale;
-
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -64,9 +62,8 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 		IChangesOverTimeNamingConvention[] conventions = IpsPlugin.getDefault()
 				.getIpsModel().getChangesOverTimeNamingConvention();
 		String[][] nameValues = new String[conventions.length][2];
-		Locale locale = Locale.getDefault();
 		for (int i = 0; i < conventions.length; i++) {
-			nameValues[i][0] = conventions[i].getName(locale);
+			nameValues[i][0] = conventions[i].getName();
 			nameValues[i][1] = conventions[i].getId();
 		}
 		ComboFieldEditor changeOverTimeField = new ComboFieldEditor(
@@ -77,14 +74,14 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 
         String label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditRecentGenerations, IpsPlugin.getDefault()
 				.getIpsPreferences().getChangesOverTimeNamingConvention()
-				.getGenerationConceptNamePlural(Locale.getDefault()));
+				.getGenerationConceptNamePlural());
 		BooleanFieldEditor editRecentGernations = new BooleanFieldEditor(
 				IpsPreferences.EDIT_RECENT_GENERATION, label, getFieldEditorParent());
 		addField(editRecentGernations);
 
 		label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditGenerationsWithSuccessor, IpsPlugin.getDefault()
 				.getIpsPreferences().getChangesOverTimeNamingConvention()
-				.getGenerationConceptNamePlural(Locale.getDefault()));
+				.getGenerationConceptNamePlural());
 		BooleanFieldEditor editGernationsWithSuccessor = new BooleanFieldEditor(
 				IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR, label, getFieldEditorParent());
 		addField(editGernationsWithSuccessor);

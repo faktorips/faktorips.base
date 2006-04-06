@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -126,7 +125,7 @@ public class ProductAttributesSection extends IpsSection {
 		toolkit.getFormToolkit().paintBordersFor(rootPane);
 		
 		// create label and text for the currently displayed generation
-		String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()); 
+		String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
 		toolkit.createLabel(rootPane, generationConceptName);
 		
 		DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();

@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -113,11 +112,11 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
 			super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + format.toPattern());
 			getButton(OK).setEnabled(false);
 		} else if (previous != null && !value.after(previous.getValidFrom())) {
-			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
+			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
 			super.setErrorMessage(msg);
 			getButton(OK).setEnabled(false);
 		} else if (next != null && !next.getValidFrom().after(value)) {
-			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault()));
+			String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
 			super.setErrorMessage(msg);
 			getButton(OK).setEnabled(false);
 		} else {

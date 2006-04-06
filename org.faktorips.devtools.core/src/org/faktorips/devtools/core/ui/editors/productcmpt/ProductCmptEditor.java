@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -337,7 +336,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			// no generation for the _exact_ current working date.
 			IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
 			String gen = prefs.getChangesOverTimeNamingConvention()
-					.getGenerationConceptNameSingular(Locale.getDefault());
+					.getGenerationConceptNameSingular();
 			String message = Messages.bind(
 					Messages.ProductCmptEditor_msg_GenerationMissmatch, prefs
 							.getFormattedWorkingDate(), gen);

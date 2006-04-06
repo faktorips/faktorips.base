@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core;
 
 import java.net.URL;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -314,5 +315,18 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public void setTestAnswerProvider(ITestAnswerProvider testAnswerProvider) {
     	this.testAnswerProvider = testAnswerProvider;
+    }
+    
+    /**
+     * Returns the locale used by the localization. The returned locale is not
+     * the locale the localization <strong>should</strong> use, it is the locale
+     * the localization <strong>can</strong> use. That means if the default locale
+     * this plugin runs is for example de_DE, but no language pack for german is installed,
+     * the localization uses the english language, and this method will return the
+     * Locale for "en".
+     */
+    public Locale getUsedLanguagePackLocale() {
+    	Locale retValue = new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry, Messages.IpsPlugin_languagePackVariant);
+    	return retValue;
     }
 }

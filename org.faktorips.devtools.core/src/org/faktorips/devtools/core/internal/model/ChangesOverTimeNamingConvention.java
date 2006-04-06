@@ -139,6 +139,76 @@ public class ChangesOverTimeNamingConvention implements
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	public String getEffectiveDateConceptName() {
+		return getEffectiveDateConceptName(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Image getGenerationConceptImage() {
+		return getGenerationConceptImage(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getGenerationConceptNameAbbreviation() {
+		return getGenerationConceptNameAbbreviation(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getGenerationConceptNamePlural() {
+		return getGenerationConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getGenerationConceptNameSingular() {
+		return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getName() {
+		return getName(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Image getVersionConceptImage() {
+		return getVersionConceptImage(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getVersionConceptNameAbbreviation() {
+		return getVersionConceptNameAbbreviation(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getVersionConceptNamePlural() {
+		return getVersionConceptNamePlural(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getVersionConceptNameSingular() {
+		return getVersionConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale());
+	}
+
+	/**
 	 * Returns the image with the name build by the id given to this
 	 * class on construction, the given baseName
 	 * and locale as <code><id>_<basename>_<locale>.gif</code>. First, the 

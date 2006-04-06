@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.Locale;
-
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.layout.GridLayout;
@@ -39,7 +37,7 @@ public class GenerationsPage extends IpsObjectEditorPage {
     final static String PAGE_ID = "Generations"; //$NON-NLS-1$
 
     public GenerationsPage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()));
+        super(editor, PAGE_ID, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
     }
 
     /**

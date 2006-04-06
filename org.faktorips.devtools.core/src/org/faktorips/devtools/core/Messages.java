@@ -37,4 +37,10 @@ public class Messages extends NLS {
 	public static String IpsPlugin_titleErrorDialog;
 
 	public static String IpsPlugin_msgUnexpectedError;
+
+	public static String IpsPlugin_languagePackLanguage;
+
+	public static String IpsPlugin_languagePackCountry;
+
+	public static String IpsPlugin_languagePackVariant;
 }

@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -120,7 +119,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      * {@inheritDoc}
      */
     public Image getImage() {
-    	return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptImage(Locale.getDefault());
+    	return IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptImage();
     }
 
     /**

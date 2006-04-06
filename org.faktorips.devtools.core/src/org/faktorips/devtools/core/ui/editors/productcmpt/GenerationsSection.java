@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.Locale;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -69,7 +67,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             Composite parent,
             UIToolkit toolkit) {
         super(page.getProductCmpt(), parent, Section.TITLE_BAR | Section.DESCRIPTION, 
-        		IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(Locale.getDefault()), toolkit);
+        		IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(), toolkit);
         this.page = page;
     }
 
@@ -92,7 +90,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 							.getIpsPreferences().getWorkingDate());
 	    	boolean select = generation.equals(editableGeneration);
 	    	if (!select && !automatic) {
-	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(Locale.getDefault());
+	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
 	    		String title = Messages.bind(Messages.GenerationsSection_titleShowGeneration, genName);
 	    		Object[] args = new Object[3];
 	    		args[0] = genName;
