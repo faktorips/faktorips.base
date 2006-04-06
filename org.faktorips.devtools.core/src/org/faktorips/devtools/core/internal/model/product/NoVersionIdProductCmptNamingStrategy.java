@@ -57,7 +57,7 @@ public class NoVersionIdProductCmptNamingStrategy extends
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getConstantPart(String productCmptName) {
+	public String getKindId(String productCmptName) {
 		return productCmptName;
 	}
 	

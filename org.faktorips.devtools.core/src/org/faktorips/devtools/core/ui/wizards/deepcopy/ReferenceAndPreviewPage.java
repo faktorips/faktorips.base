@@ -376,7 +376,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		
 		if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
 			if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-				newName = namingStrategy.getConstantPart(newName);
+				newName = namingStrategy.getKindId(newName);
 			}
 			String searchPattern = getSearchPattern();
 			String replaceText = getReplaceText();

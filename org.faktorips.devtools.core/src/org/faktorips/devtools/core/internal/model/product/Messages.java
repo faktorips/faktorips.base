@@ -92,4 +92,6 @@ public class Messages extends NLS {
 
 	public static String ProductCmpt_msgInvalidTypeHierarchy;
 
+	public static String AbstractProductCmptNamingStrategy_emptyKindId;
+
 }

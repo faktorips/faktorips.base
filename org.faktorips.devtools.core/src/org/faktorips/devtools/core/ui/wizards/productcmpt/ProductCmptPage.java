@@ -85,7 +85,7 @@ public class ProductCmptPage extends IpsObjectPage {
         constName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				IProductCmptNamingStrategy ns = getNamingStrategy();
-				showMessage(ns.validateConstantPart(constName.getText()));
+				showMessage(ns.validateKindId(constName.getText()));
 				updateFullName();
 			}
 		});
@@ -110,7 +110,7 @@ public class ProductCmptPage extends IpsObjectPage {
 			if (namingStrategy != null) {
 				if (namingStrategy.supportsVersionId()) {
 					versionId.setText(namingStrategy.getNextVersionId(productCmpt));
-					constName.setText(namingStrategy.getConstantPart(namingStrategy.getNextName(productCmpt)));
+					constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt)));
 				}
 			} else {
 				setIpsObjectName(productCmpt.getName());
@@ -217,7 +217,7 @@ public class ProductCmptPage extends IpsObjectPage {
 		if (enabled) {
 			if (namingStrategy.validate(fullName.getText()).isEmpty()) {
 				versionId.setText(namingStrategy.getVersionId(fullName.getText()));
-				constName.setText(namingStrategy.getConstantPart(fullName.getText()));
+				constName.setText(namingStrategy.getKindId(fullName.getText()));
 			}
 		}
 	}

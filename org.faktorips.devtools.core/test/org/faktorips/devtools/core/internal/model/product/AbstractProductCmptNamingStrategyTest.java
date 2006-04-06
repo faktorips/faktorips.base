@@ -53,8 +53,8 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getConstantPart(String)'
 	 */
-	public void testGetConstantPart() {
-		assertEquals("abc", namingStrategy.getConstantPart("abc - id"));
+	public void testGetKindId() {
+		assertEquals("abc", namingStrategy.getKindId("abc - id"));
 
 	}
 
@@ -78,12 +78,12 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 		MessageList list = namingStrategy.validate("abc");
 		assertNotNull(list.getMessageByCode(AbstractProductCmptNamingStrategy.MSGCODE_MISSING_VERSION_SEPARATOR));
 
-		list = namingStrategy.validate("abc - qwe - 123");
-		assertNotNull(list.getMessageByCode(AbstractProductCmptNamingStrategy.MSGCODE_ONYL_1_OCCURENCE_OF_SEPARATOR_ALLOWED));
-		
 		list = namingStrategy.validate("abc% - 123");
 		assertNotNull(list.getMessageByCode(AbstractProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));	
 	
+		list = namingStrategy.validate("abc - qwe - 123"); // two version separators strings are ok, the first one is taken 
+		assertFalse(list.containsErrorMsg());	
+		
 		list = namingStrategy.validate("abc - d123");
 		assertFalse(list.containsErrorMsg());	
 	}
@@ -91,11 +91,14 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.validateConstantPart(String)'
 	 */
-	public void testValidateConstantPart() {
-		MessageList list = namingStrategy.validateConstantPart("abc%");
+	public void testValidateKindId() {
+		MessageList list = namingStrategy.validateKindId("abc%");
 		assertNotNull(list.getMessageByCode(AbstractProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));	
 
-		list = namingStrategy.validateConstantPart("abc");
+		list = namingStrategy.validateKindId("");
+		assertNotNull(list.getMessageByCode(AbstractProductCmptNamingStrategy.MSGCODE_KIND_ID_IS_EMPTY));	
+
+		list = namingStrategy.validateKindId("abc");
 		assertFalse(list.containsErrorMsg());	
 	}
 

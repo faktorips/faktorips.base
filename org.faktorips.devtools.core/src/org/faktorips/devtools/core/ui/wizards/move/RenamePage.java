@@ -158,7 +158,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 					updateFullName();
 				}
 			});
-			constNamePart.setText(namingStrategy.getConstantPart(product.getName()));
+			constNamePart.setText(namingStrategy.getKindId(product.getName()));
 		} else {
 			toolkit.createLabel(parent, Messages.RenamePage_newName);
 			newName = toolkit.createText(parent);
@@ -209,7 +209,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			if (setMessageFromList(namingStrategy.validateVersionId(versionId.getText()))) {
 				return;
 			}
-			if (setMessageFromList(namingStrategy.validateConstantPart(constNamePart.getText()))) {
+			if (setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()))) {
 				return;
 			}
 		}

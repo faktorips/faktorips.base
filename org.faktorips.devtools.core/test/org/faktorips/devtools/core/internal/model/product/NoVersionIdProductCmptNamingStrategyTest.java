@@ -47,7 +47,7 @@ public class NoVersionIdProductCmptNamingStrategyTest extends IpsPluginTest {
 	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getConstantPart(String)'
 	 */
 	public void testGetConstantPart() {
-		assertEquals("abc", strategy.getConstantPart("abc"));
+		assertEquals("abc", strategy.getKindId("abc"));
 	}
 
 	/*
@@ -62,7 +62,7 @@ public class NoVersionIdProductCmptNamingStrategyTest extends IpsPluginTest {
 	 */
 	public void testGetNextName() {
 		
-		assertEquals("abc", strategy.getConstantPart("abc"));
+		assertEquals("abc", strategy.getKindId("abc"));
 	}
 
 	/*

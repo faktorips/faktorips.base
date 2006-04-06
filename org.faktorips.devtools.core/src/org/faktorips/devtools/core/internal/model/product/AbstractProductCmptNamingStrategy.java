@@ -110,7 +110,7 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getConstantPart(String productCmptName) {
+	public String getKindId(String productCmptName) {
 		int index = productCmptName.indexOf(separator);
 		if (index==-1) {
 			throw new IllegalArgumentException("Can't get constant part from " + productCmptName + ", separator not found!"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -133,7 +133,7 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	 * {@inheritDoc}
 	 */
 	public String getNextName(IProductCmpt productCmpt) {
-		String part = getConstantPart(productCmpt.getName());
+		String part = getKindId(productCmpt.getName());
 		return part + separator + getNextVersionId(productCmpt);
 	}
 
@@ -150,14 +150,8 @@ public abstract class AbstractProductCmptNamingStrategy implements
 				list.add(msg);
 				return list;
 			}
-			if ( separatorCount > 1) {
-				String text = NLS.bind(Messages.AbstractProductCmptNamingStrategy_msgMultipleSeparators, separator);
-				Message msg = Message.newError(MSGCODE_ONYL_1_OCCURENCE_OF_SEPARATOR_ALLOWED, text);
-				list.add(msg);
-				return list;
-			}
 		}
-		list.add(validateConstantPart(getConstantPart(name)));
+		list.add(validateKindId(getKindId(name)));
 		list.add(validateVersionId(getVersionId(name)));
 		return list;
 	}
@@ -165,10 +159,15 @@ public abstract class AbstractProductCmptNamingStrategy implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public MessageList validateConstantPart(String constantPartName) {
+	public MessageList validateKindId(String kindId) {
 		MessageList list = new MessageList();
+		if (StringUtils.isEmpty(kindId)) {
+			Message msg = Message.newError(MSGCODE_KIND_ID_IS_EMPTY, Messages.AbstractProductCmptNamingStrategy_emptyKindId);
+			list.add(msg);
+			return list;
+		}
 		try {
-			getJavaClassIdentifier(constantPartName);
+			getJavaClassIdentifier(kindId);
 		} catch (IllegalArgumentException e) {
 			Message msg = Message.newError(MSGCODE_ILLEGAL_CHARACTERS, Messages.AbstractProductCmptNamingStrategy_msgIllegalChar);
 			list.add(msg);

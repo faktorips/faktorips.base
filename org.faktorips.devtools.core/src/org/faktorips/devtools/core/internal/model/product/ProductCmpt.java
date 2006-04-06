@@ -78,7 +78,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 */
 	public IProductCmptKind findProductCmptKind() throws CoreException {
 		IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStratgey();
-		String kindName = stratgey.getConstantPart(getName());
+		String kindName = stratgey.getKindId(getName());
 		return new ProductCmptKind(kindName, getIpsProject().getRuntimeIdPrefix() + kindName);
 	}
 

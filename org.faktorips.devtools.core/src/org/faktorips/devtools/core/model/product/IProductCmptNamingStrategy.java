@@ -22,11 +22,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * The product component name includes a version id and a constant part that
- * is constant over the different versions. E.g. given "FullCoverage 2005-01-01",  
- * the version id is "2005-01-01" and the constant part is "FullCoverage". 
+ * The product component name includes a kind id is constant over different versions
+ * and a version id.E.g. given "FullCoverage 2005-01-01", the kind id is "FullCoverage" 
+ * the version id is "2005-01-01". 
  * The product component naming strategy defines how the name is constructed
- * from a given constant kind id and a version id and vice versa. It also defines how to
+ * from a given kind id and a version id and vice versa. It also defines how to
  * derive the next version id.
  * <p>
  * Note that is also possible to define a naming strategy that does not distinguish
@@ -48,6 +48,11 @@ public interface IProductCmptNamingStrategy {
     public final static String MSGCODE_PREFIX = "ProductCmptNamingStrategy-"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the kindId is empty.
+     */
+    public final static String MSGCODE_KIND_ID_IS_EMPTY = MSGCODE_PREFIX + "KindIdIsEmpty"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the name contains illegal characters.
      */
     public final static String MSGCODE_ILLEGAL_VERSION_ID = MSGCODE_PREFIX + "IllegalVersionId"; //$NON-NLS-1$
@@ -57,12 +62,6 @@ public interface IProductCmptNamingStrategy {
      */
     public final static String MSGCODE_MISSING_VERSION_SEPARATOR = MSGCODE_PREFIX + "VersionSeparatorIsMissing"; //$NON-NLS-1$
     
-    /**
-     * Validation message code to indicate that multiple separator chars are found in the
-     * name (but only 1 is allowd).
-     */
-    public final static String MSGCODE_ONYL_1_OCCURENCE_OF_SEPARATOR_ALLOWED = MSGCODE_PREFIX + "Only1OccurenceOfSeperatorAllowed"; //$NON-NLS-1$
-
     /**
      * Implementations of this interface are provided as extension. The method returns the
      * id of this extension. 
@@ -76,25 +75,25 @@ public interface IProductCmptNamingStrategy {
     public boolean supportsVersionId();
     
 	/**
-	 * Returns the unqualified product component name defined by the constant part and the
-	 * version id. Returns <code>null</code> if constant part and version id are
+	 * Returns the unqualified product component name defined by the kind id and the
+	 * version id. Returns <code>null</code> if kind id and version id are
 	 * <code>null</code>. If only of the two arguments is <code>null</code>, the
 	 * method returns the other.
 	 */
-	public String getProductCmptName(String constantPart, String versionId);
+	public String getProductCmptName(String kindId, String versionId);
 	
 	/**
-	 * Returns the product component name's constant part, that is the name without 
-	 * the version id. Returns <code>null</code> if qName is <code>null</code>.
+	 * Returns the product component name's kind id, that is the name without 
+	 * the version id. Returns <code>null</code> if productCmptName is <code>null</code>.
 	 * 
 	 * @param productCmptName The unqualified product component name.
 	 * @throws IllegalArgumentException if the constant part can't be extracted
 	 * from the name. 
 	 */
-	public String getConstantPart(String productCmptName);
+	public String getKindId(String productCmptName);
 	
 	/**
-	 * Returns the version id included in the qualified product component name.
+	 * Returns the version id included in the product component name.
 	 * 
 	 * @param productCmptName The unqualified product component name.
 	 * @throws IllegalArgumentException if the versionId can't be extracted
@@ -131,11 +130,11 @@ public interface IProductCmptNamingStrategy {
 	public MessageList validateVersionId(String versionId);
 
 	/**
-	 * Checks if the constant part has the correct format. 
+	 * Checks if the kindId has the correct format. 
 	 * 
-	 * @throws NullPointerException if constantPartName is <code>null</code>.
+	 * @throws NullPointerException if kindId is <code>null</code>.
 	 */
-	public MessageList validateConstantPart(String constantPartName);
+	public MessageList validateKindId(String kindId);
 
 	/**
 	 * Returns a valid Java class identifier for the given name. For example - and .
