@@ -57,6 +57,21 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IJavaProject getJavaProject();
     
     /**
+     * Returns the project's properties. Note that the method returns a copy of the properties,
+     * not a reference. In order to update the project's properties the modified properties
+     * object has to be set in the project via setProperties().
+     */
+    public IIpsProjectProperties getProperties();
+    
+    /**
+     * Sets the project's properties and stores the properties in the project's property file
+     * (".ipsproject").
+     * 
+     * @throws CoreException if an error occurs while saving the properties to the file. 
+     */
+    public void setProperties(IIpsProjectProperties properties) throws CoreException;
+
+    /**
      * Returns the charset/encoding in that the IIpsSrcFile contents is stored.
      */
     public String getXmlFileCharset();
@@ -77,11 +92,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Sets the new object path.
      */
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException;
-    
-    /**
-     * Set the value datatypes allowed in the project.
-     */
-    public void setValueDatatypes(String[] ids) throws CoreException;
     
     /**
      * Set the value datatypes allowed in the project.
@@ -121,23 +131,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public boolean isModelProject();
 
     /**
-     * Sets if this is project contains a model defininition,
-     * @throws CoreException 
-     */
-    public void setModelProject(boolean flag) throws CoreException;
-
-    /**
      * Returns <code>true</code> if this project contains a product defininition
      * (that means it contains product components), otherwise <code>false</code>.
      */
     public boolean isProductDefinitionProject();
     
-    /**
-     * Sets if this is project contains a product defininition,
-     * @throws CoreException 
-     */
-    public void setProductDefinitionProject(boolean flag) throws CoreException;
-
     /**
      * Returns the root folder with the indicated name.
      */
@@ -343,18 +341,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException;
     
     /**
-     * Sets the stratgey used to name product components.
-     * 
-     * @throws NullPointerException if newStrategy is <code>null</code>.
-     */
-    public void setProductCmptNamingStratgey(IProductCmptNamingStrategy newStrategy) throws CoreException;
-
-    /**
      * Adds a new DynamicValueDataType to the Project at runtime
      * 
      * @param newDatatype
      * @throws CoreException
      */
     public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
+    
+    
     
 }

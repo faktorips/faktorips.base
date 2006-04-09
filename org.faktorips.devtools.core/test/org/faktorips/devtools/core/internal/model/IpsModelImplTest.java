@@ -29,6 +29,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 
 /**
  * 
@@ -69,7 +70,9 @@ public class IpsModelImplTest extends IpsPluginTest {
     
     
     public void testGetValueDatatypes() throws CoreException, IOException {
-        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
+        ipsProject.setProperties(props);
         SortedSet datatypes = new TreeSet();
         model.getValueDatatypes(ipsProject, datatypes);
         assertEquals(1, datatypes.size());
@@ -78,7 +81,9 @@ public class IpsModelImplTest extends IpsPluginTest {
     }
 
     public void testGetDatatypeHelpers() throws IOException, CoreException {
-        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
+        ipsProject.setProperties(props);
         DatatypeHelper helper = model.getDatatypeHelper(ipsProject, Datatype.DECIMAL);
         assertEquals(DecimalHelper.class, helper.getClass());
         assertNull(model.getDatatypeHelper(ipsProject, Datatype.MONEY));

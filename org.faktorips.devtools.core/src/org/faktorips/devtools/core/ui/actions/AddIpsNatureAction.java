@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 
 /**
  * An action that adds the ips nature to a project.
@@ -111,8 +112,10 @@ public class AddIpsNatureAction extends ActionDelegate {
 			}
 			addIpsRuntimeLibraries(javaProject);
 			IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
-			ipsProject.setProductDefinitionProject(true);
-			ipsProject.setModelProject(true);
+			IIpsProjectProperties props = ipsProject.getProperties();
+			props.setProductDefinitionProject(true);
+			props.setModelProject(true);
+			ipsProject.setProperties(props);
 			ipsProject.setValueDatatypes(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
 			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model"); //$NON-NLS-1$
 			if (!ipsModelFolder.exists()) {
@@ -125,6 +128,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 			path.setBasePackageNameForExtensionJavaClasses("org.faktorips.sample.model"); //$NON-NLS-1$
 			path.newSourceFolderEntry(ipsModelFolder);
 			ipsProject.setIpsObjectPath(path);
+			
 		} catch (CoreException e) {
 			IpsStatus status = new IpsStatus(Messages.AddIpsNatureAction_msgErrorCreatingIPSProject + javaProject, e);
 			ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, null, status);

@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -205,14 +206,14 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 				.getFolder("extension"));
 		ipsProject.setIpsObjectPath(path);
 
-		// TODO: wichtig dies erzeugt eine Abhï¿½ngigkeit vom StdBuilder Projekt.
-		// Dies muss dringend ï¿½berarbeitet
-		// werden
-		ipsProject
-				.setCurrentArtefactBuilderSet("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
-		ipsProject.setValueDatatypes(new String[] { "Decimal", "Money", "Integer", 
+		// TODO: wichtig dies erzeugt eine Abhae½ngigkeit vom StdBuilder Projekt.
+		// Dies muss ueberarbeitet werden
+		IIpsProjectProperties props = ipsProject.getProperties();
+		props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
+		props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", 
 				"String", "Boolean" });
-		ipsProject.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
+		props.setJavaSrcLanguage(Locale.GERMAN);
+		ipsProject.setProperties(props);
 	}
 
 	private void addSystemLibraries(IJavaProject javaProject)

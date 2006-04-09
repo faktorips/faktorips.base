@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
@@ -39,7 +40,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Jan Ortmann
  */
-public class IpsProjectProperties {
+public class IpsProjectProperties implements IIpsProjectProperties {
 
 	public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
 		IpsProjectProperties data = new IpsProjectProperties();
@@ -61,82 +62,133 @@ public class IpsProjectProperties {
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String getBuilderSetId() {
 		return builderSetId;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setBuilderSetId(String id) {
 		ArgumentCheck.notNull(id);
 		builderSetId = id;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public IIpsObjectPath getIpsObjectPath() {
 		return path;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isModelProject() {
 		return modelProject;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setModelProject(boolean modelProject) {
 		this.modelProject = modelProject;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isProductDefinitionProject() {
 		return productDefinitionProject;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setProductDefinitionProject(boolean productDefinitionProject) {
 		this.productDefinitionProject = productDefinitionProject;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public Locale getJavaSrcLanguage() {
 		return javaSrcLanguage;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setJavaSrcLanguage(Locale javaSrcLanguage) {
 		this.javaSrcLanguage = javaSrcLanguage;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
 		return productCmptNamingStrategy;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy) {
 		ArgumentCheck.notNull(newStrategy);
 		productCmptNamingStrategy = newStrategy;
 	}
 	
-	public void setChangesInTimeConventionIdForGeneratedCode(
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setChangesOverTimeNamingConventionIdForGeneratedCode(
 			String changesInTimeConventionIdForGeneratedCode) {
 		this.changesInTimeConventionIdForGeneratedCode = changesInTimeConventionIdForGeneratedCode;
 	}
 
-	public String getChangesInTimeConventionIdForGeneratedCode() {
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getChangesOverTimeNamingConventionIdForGeneratedCode() {
 		return changesInTimeConventionIdForGeneratedCode;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setIpsObjectPath(IIpsObjectPath path) {
 		ArgumentCheck.notNull(path);
 		this.path = path;
 	}
 	
     /**
-     * Returns the ids of the predefined datatypes used by the project.
-     */
+	 * {@inheritDoc}
+	 */
 	public String[] getPredefinedDatatypesUsed() {
 		return predefinedDatatypesUsed;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void setPredefinedDatatypesUsed(String[] datatypes) {
 		ArgumentCheck.notNull(datatypes);
 		this.predefinedDatatypesUsed = datatypes;
 	}
     
+    /**
+	 * {@inheritDoc}
+	 */
     public DynamicValueDatatype[] getDefinedDatatypes() {
         return definedDatatypes;
     }
     
+    /**
+	 * {@inheritDoc}
+	 */
     public void setDefinedDatatypes(DynamicValueDatatype[] datatypes) {
         definedDatatypes = datatypes;
     }
@@ -194,7 +246,7 @@ public class IpsProjectProperties {
         } else {
         	builderSetId = ""; //$NON-NLS-1$
         }
-        initProductCmptNamingStrategyFromXml(XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
+        initProductCmptNamingStrategyFromXml(ipsProject, XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
         if(artefactEl != null) {
             builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
         } else {
@@ -218,13 +270,14 @@ public class IpsProjectProperties {
         
 	}
 	
-	private void initProductCmptNamingStrategyFromXml(Element el) {
+	private void initProductCmptNamingStrategyFromXml(IIpsProject ipsProject, Element el) {
 		productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 		if (el!=null) {
         	String id = el.getAttribute("id"); //$NON-NLS-1$
         	if (id.equals(DateBasedProductCmptNamingStrategy.EXTENSION_ID)) {
         		productCmptNamingStrategy = new DateBasedProductCmptNamingStrategy();
         	}
+        	productCmptNamingStrategy.setIpsProject(ipsProject);
     		productCmptNamingStrategy.initFromXml(el);
 		}
 	}
@@ -296,16 +349,14 @@ public class IpsProjectProperties {
 	}
 	
 	/**
-	 * Returns the prefix to be used for new runtime-ids for product components.
+	 * {@inheritDoc}
 	 */
 	public String getRuntimeIdPrefix() {
 		return this.runtimeIdPrefix;
 	}
 
 	/**
-	 * Sets the new prefix to be used for new runtime-ids for product components.
-	 * 
-	 * @throws NullPointerException if the given prefix is <code>null</code>.
+	 * {@inheritDoc}
 	 */
 	public void setRuntimeIdPrefix(String runtimeIdPrefix) {
 		if (runtimeIdPrefix == null) {

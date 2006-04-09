@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -100,7 +101,9 @@ public class IpsBuilderTest extends IpsPluginTest {
         ipsProject.getIpsModel().setAvailableArtefactBuilderSets(
             new IIpsArtefactBuilderSet[] { new TestIpsArtefactBuilderSet(
                     new IIpsArtefactBuilder[] { builder }) });
-        ipsProject.setCurrentArtefactBuilderSet(TestIpsArtefactBuilderSet.ID);
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        ipsProject.setProperties(props);
         IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE,
             "IpsObjectToRemove");
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD,
@@ -172,7 +175,9 @@ public class IpsBuilderTest extends IpsPluginTest {
         project.getIpsModel().setAvailableArtefactBuilderSets(
             new IIpsArtefactBuilderSet[] { new TestIpsArtefactBuilderSet(
                     new IIpsArtefactBuilder[] { builder }) });
-        project.setCurrentArtefactBuilderSet(TestIpsArtefactBuilderSet.ID);
+        IIpsProjectProperties props = project.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        project.setProperties(props);
         return builder;
     }
     

@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -94,6 +95,64 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
     
     /**
+	 * {@inheritDoc}
+	 */
+	public IIpsProjectProperties getProperties() {
+    	return copy(getPropertiesInternal());
+	}
+
+	/*
+	 * Returns the properties from the model.
+	 */
+	private IpsProjectProperties getPropertiesInternal() {
+		return ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+	}
+	
+	private IpsProjectProperties copy(IpsProjectProperties propsToCopy) {
+    	Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+    	Element el = propsToCopy.toXml(doc);
+    	return IpsProjectProperties.createFromXml(this, el);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setProperties(IIpsProjectProperties properties) throws CoreException {
+		saveProjectProperties(copy((IpsProjectProperties)properties));
+	}
+
+	/**
+     * Saves the project properties to the .ipsproject file.
+     * 
+     * @throws CoreException if an error occurs while saving the data.
+     */
+    private void saveProjectProperties(IIpsProjectProperties properties) throws CoreException {
+    	Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+    	Element propertiesEl = ((IpsProjectProperties)properties).toXml(doc);
+        IFile file = getIpsProjectPropertiesFile();
+        String charset = getXmlFileCharset();
+        String contents;
+        try {
+            contents = XmlUtil.nodeToString(propertiesEl, charset);
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(
+                    "Error tranforming project data to xml string", e)); //$NON-NLS-1$
+        }
+        ByteArrayInputStream is;
+        try {
+            is = new ByteArrayInputStream(contents.getBytes(charset));
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
+        }
+        if (file.exists()) {
+            file.setContents(is, true, true, null);
+        } else {
+            file.create(is, true, null);
+        }
+    }
+    
+	
+	/**
      * Returns the file that stores the project's properties. Note that the file need not exist.
      */
     public IFile getIpsProjectPropertiesFile() {
@@ -126,7 +185,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException 
      */
 	public void setModelProject(boolean flag) throws CoreException {
-    	IpsProjectProperties properties = getProperties();
+    	IIpsProjectProperties properties = getProperties();
     	properties.setModelProject(flag);
     	saveProjectProperties(properties);
 	}
@@ -136,15 +195,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
 	public boolean isProductDefinitionProject() {
 		return getProperties().isProductDefinitionProject();
-	}
-
-	/**
-	 * Overridden
-	 */
-	public void setProductDefinitionProject(boolean flag) throws CoreException {
-    	IpsProjectProperties properties = getProperties();
-    	properties.setProductDefinitionProject(flag);
-    	saveProjectProperties(properties);
 	}
 
 	/**
@@ -158,7 +208,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public void setCurrentArtefactBuilderSet(String id) throws CoreException {
-    	IpsProjectProperties properties = getProperties();
+    	IIpsProjectProperties properties = getProperties();
     	properties.setBuilderSetId(id);
     	saveProjectProperties(properties);
     }
@@ -167,7 +217,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public void setValueDatatypes(String[] ids) throws CoreException {
-        IpsProjectProperties properties = getProperties();
+        IIpsProjectProperties properties = getProperties();
         properties.setPredefinedDatatypesUsed(ids);
         saveProjectProperties(properties);
     }
@@ -182,36 +232,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		}
 		setValueDatatypes(ids);
 	}
-    
-	/**
-     * Saves the project properties to the .ipsproject file.
-     * 
-     * @throws CoreException if an error occurs while saving the data.
-     */
-    private void saveProjectProperties(IpsProjectProperties properties) throws CoreException {
-    	Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-    	Element propertiesEl = properties.toXml(doc);
-        IFile file = getIpsProjectPropertiesFile();
-        String charset = getXmlFileCharset();
-        String contents;
-        try {
-            contents = XmlUtil.nodeToString(propertiesEl, charset);
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(
-                    "Error tranforming project data to xml string", e)); //$NON-NLS-1$
-        }
-        ByteArrayInputStream is;
-        try {
-            is = new ByteArrayInputStream(contents.getBytes(charset));
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
-        }
-        if (file.exists()) {
-            file.setContents(is, true, true, null);
-        } else {
-            file.create(is, true, null);
-        }
-    }
     
     /**
      * Overridden.
@@ -278,7 +298,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
 	public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
     	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
-    	return getIpsModel().getChangesOverTimeNamingConvention(properties.getChangesInTimeConventionIdForGeneratedCode());
+    	return getIpsModel().getChangesOverTimeNamingConvention(properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
 	}
 
 	/**
@@ -680,10 +700,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return new JavaCodeFragment("null"); // TODO must read from ipsproject file. //$NON-NLS-1$
     }
     
-    private IpsProjectProperties getProperties() {
-    	return ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
-    }
-
     /**
      * Overridden
      */
@@ -718,20 +734,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * {@inheritDoc}
 	 */
 	public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException {
-		return getProperties().getProductCmptNamingStrategy();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setProductCmptNamingStratgey(IProductCmptNamingStrategy newStrategy) throws CoreException {
-    	IpsProjectProperties properties = getProperties();
-    	properties.setProductCmptNamingStrategy(newStrategy);
-    	saveProjectProperties(properties);
+		return getPropertiesInternal().getProductCmptNamingStrategy();
 	}
 
 	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException  {
-		getProperties().addDefinedDataType(newDatatype);
+		((IpsProjectProperties)getPropertiesInternal()).addDefinedDataType(newDatatype);
 		saveProjectProperties(getProperties());
 	}
 
@@ -749,7 +756,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * {@inheritDoc}
 	 */
 	public String getRuntimeIdPrefix() {
-		return getProperties().getRuntimeIdPrefix();
+		return getPropertiesInternal().getRuntimeIdPrefix();
 	}
 
 }

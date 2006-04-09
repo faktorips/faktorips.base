@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -75,7 +76,9 @@ public class ProductCmptTest extends IpsPluginTest {
     	assertEquals("TestProduct", kind.getRuntimeId());
     	
     	IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
-    	ipsProject.setProductCmptNamingStratgey(strategy);
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setProductCmptNamingStrategy(strategy);
+    	ipsProject.setProperties(props);
     	productCmpt = newProductCmpt(ipsProject, "motor.MotorProduct 2005-10");
     	kind = productCmpt.findProductCmptKind();
     	assertEquals("MotorProduct", kind.getName());

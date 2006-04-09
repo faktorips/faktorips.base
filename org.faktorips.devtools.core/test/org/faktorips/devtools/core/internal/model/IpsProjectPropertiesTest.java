@@ -39,7 +39,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		props.setModelProject(true);
 		props.setProductDefinitionProject(true);
 		props.setJavaSrcLanguage(Locale.ITALIAN);
-		props.setChangesInTimeConventionIdForGeneratedCode("myConvention");
+		props.setChangesOverTimeNamingConventionIdForGeneratedCode("myConvention");
 		props.setBuilderSetId("myBuilder");
 		props.setRuntimeIdPrefix("newRuntimeIdPrefix");
 		props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true));
@@ -55,7 +55,7 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
-		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
+		assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
 		assertEquals("myBuilder", props.getBuilderSetId());
 		assertTrue(props.getProductCmptNamingStrategy() instanceof DateBasedProductCmptNamingStrategy);
 		DateBasedProductCmptNamingStrategy strategy = (DateBasedProductCmptNamingStrategy)props.getProductCmptNamingStrategy();
@@ -79,13 +79,14 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
-		assertEquals("myConvention", props.getChangesInTimeConventionIdForGeneratedCode());
+		assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
 		assertEquals("testPrefix", props.getRuntimeIdPrefix());
 		
 		DateBasedProductCmptNamingStrategy namingStrategy = (DateBasedProductCmptNamingStrategy)props.getProductCmptNamingStrategy();
 		assertEquals(" ", namingStrategy.getVersionIdSeparator());
 		assertEquals("yyyy-MM", namingStrategy.getDateFormatPattern());
 		assertTrue(namingStrategy.isPostfixAllowed());
+		assertEquals(ipsProject, namingStrategy.getIpsProject());
 		
 		assertEquals("org.faktorips.devtools.stdbuilder.ipsstdbuilderset", props.getBuilderSetId());
 		IIpsObjectPath path = props.getIpsObjectPath();

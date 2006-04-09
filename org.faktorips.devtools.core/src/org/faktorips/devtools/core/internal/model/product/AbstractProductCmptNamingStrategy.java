@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.XmlUtil;
@@ -62,6 +63,7 @@ public abstract class AbstractProductCmptNamingStrategy implements
 
 	private String separator;
 	private HashMap specialCharReplacements = new HashMap();
+	private IIpsProject ipsProject;
 	
 	public AbstractProductCmptNamingStrategy() {
 		this(""); //$NON-NLS-1$
@@ -73,6 +75,23 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		putSpecialCharReplacement(' ', "___"); //$NON-NLS-1$
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setIpsProject(IIpsProject project) {
+		if (project==null) {
+			throw new NullPointerException();
+		}
+		this.ipsProject = project;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsProject getIpsProject() {
+		return ipsProject;
+	}
+
 	/**
 	 * Sets the String that separates the version id from the constant part of the product
 	 * component name. 

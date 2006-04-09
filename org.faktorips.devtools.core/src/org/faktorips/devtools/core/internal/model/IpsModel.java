@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+  *
+  * Alle Rechte vorbehalten.
+  *
+  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+  * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
+  * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+  *   http://www.faktorips.org/legal/cl-v01.html
+  * eingesehen werden kann.
+  *
+  * Mitwirkende:
+  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+  *
+  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model;
 
@@ -67,6 +67,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.util.ArgumentCheck;
@@ -153,11 +154,10 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		Util.addNature(javaProject.getProject(), IIpsProject.NATURE_ID);
 		IIpsArtefactBuilderSet builderSets[] = getAvailableArtefactBuilderSets();
 		if (builderSets.length > 0) {
-			ipsProject
-					.setCurrentArtefactBuilderSet(getAvailableArtefactBuilderSets()[0]
-							.getId());
+			IIpsProjectProperties props = ipsProject.getProperties();
+			props.setBuilderSetId(getAvailableArtefactBuilderSets()[0].getId());
+			ipsProject.setProperties(props);
 		}
-		ipsProject.setValueDatatypes(new String[0]);
 		return ipsProject;
 	}
 
@@ -387,13 +387,17 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 * Returns the <code>DependencyGraph</code> of the provided
 	 * <code>IpsProject</code>. If the provided IpsProject doesn't exist or
 	 * if it isn't a valid <code>IpsProject</code> <code>null</code> will be
-	 * returned by this method. This method is not part of the published interface.
+	 * returned by this method. This method is not part of the published
+	 * interface.
 	 * 
-	 * @throws CoreException will be thrown if an error occures while trying to validated the provided
-	 * 			IpsProject.
-	 * @throws NullPointerException if the argument is null
+	 * @throws CoreException
+	 *             will be thrown if an error occures while trying to validated
+	 *             the provided IpsProject.
+	 * @throws NullPointerException
+	 *             if the argument is null
 	 */
-	//TODO the resource change listener method of this IpsModel needs to update the dependencyGraphForProjectsMap 
+	// TODO the resource change listener method of this IpsModel needs to update
+	// the dependencyGraphForProjectsMap
 	public DependencyGraph getDependencyGraph(IIpsProject ipsProject)
 			throws CoreException {
 		ArgumentCheck.notNull(ipsProject, this);
@@ -667,7 +671,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/*
-	 * Checks if project's properties file was changed. Removes data from cache
+	 * Checks if the project's properties file was changed. If yes, removes data from cache
 	 * and returns true, otherwise false.
 	 */
 	private boolean checkProjectPropertiesFileModification(
@@ -683,7 +687,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(
 			Class type, boolean includeSupertypesAndInterfaces) {
@@ -693,14 +697,12 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		ArrayList result = new ArrayList();
 		getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces,
 				result);
-		return (IExtensionPropertyDefinition[]) result.toArray(new IExtensionPropertyDefinition[result.size()]);
+		return (IExtensionPropertyDefinition[]) result
+				.toArray(new IExtensionPropertyDefinition[result.size()]);
 	}
 
 	/**
-	 * Overridden IMethod.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsModel#getExtensionPropertyDefinition(java.lang.Class,
-	 *      java.lang.String, boolean)
+	 * {@inheritDoc}
 	 */
 	public IExtensionPropertyDefinition getExtensionPropertyDefinition(
 			Class type, String propertyId,

@@ -35,6 +35,7 @@ import org.w3c.dom.Element;
  */
 public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 
+	private IIpsProject ipsProject;
 	private DateBasedProductCmptNamingStrategy strategy;
 	
 	
@@ -42,7 +43,10 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 	 * {@inheritDoc}
 	 */
 	protected void setUp() throws Exception {
+		super.setUp();
+		ipsProject = newIpsProject("TestProject");
 		strategy = new DateBasedProductCmptNamingStrategy();
+		strategy.setIpsProject(ipsProject);
 		strategy.setVersionIdSeparator(" ");
 		strategy.setDateFormatPattern("yyyy-MM-dd");
 		strategy.setPostfixAllowed(false);
@@ -81,8 +85,7 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 	 */
 	public void testGetNextVersionId() throws CoreException {
 		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2006, 0, 31));
-		IIpsProject project = newIpsProject("TestProject");
-		IProductCmpt pc = newProductCmpt(project, "TestProduct 2005-01-01");
+		IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct 2005-01-01");
 		assertEquals("2006-01-31", strategy.getNextVersionId(pc));
 	}
 

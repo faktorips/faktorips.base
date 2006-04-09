@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.product;
 
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,6 +62,19 @@ public interface IProductCmptNamingStrategy {
      * Validation message code to indicate that the version separator is missing.
      */
     public final static String MSGCODE_MISSING_VERSION_SEPARATOR = MSGCODE_PREFIX + "VersionSeparatorIsMissing"; //$NON-NLS-1$
+    
+    /**
+     * Sets the ips project this stratgey belongs to. Is called when the strategey is instantiated.
+     * Should never be called by clients.
+     * 
+     * @throws NullPointerException if project is <code>null</code>. 
+     */
+    public void setIpsProject(IIpsProject project);
+
+    /**
+     * Returns the ips project the strategy belongs to.
+     */
+    public IIpsProject getIpsProject();
     
     /**
      * Implementations of this interface are provided as extension. The method returns the

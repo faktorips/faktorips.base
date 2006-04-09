@@ -128,7 +128,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	public MessageList validateVersionId(String versionId) {
 		MessageList list = new MessageList();
 		if (versionId.length() < dateFormatPattern.length()) {
-			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, NLS.bind(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, dateFormatPattern)));			
+			list.add(newInvalidVersionIdMsg(versionId));			
 			return list;
 		}
 		if (postfixAllowed) {
@@ -140,9 +140,15 @@ public class DateBasedProductCmptNamingStrategy extends
 				throw new RuntimeException();
 			}
 		} catch (Exception e) {
-			list.add(Message.newError(MSGCODE_ILLEGAL_VERSION_ID, NLS.bind(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, dateFormatPattern)));
+			list.add(newInvalidVersionIdMsg(versionId));
 		}
 		return list;
+	}
+	
+	private Message newInvalidVersionIdMsg(String versionId) {
+		String versionConcept = getIpsProject().getChangesInTimeNamingConventionForGeneratedCode().getVersionConceptNameSingular();
+		String text = NLS.bind(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, versionConcept, dateFormatPattern);
+		return Message.newError(MSGCODE_ILLEGAL_VERSION_ID, text);		
 	}
 
 	/**
