@@ -54,6 +54,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RefreshAction;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
@@ -104,8 +105,11 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
      */
     public void init(IViewSite site) throws PartInitException {
     	super.init(site);
-    	
-    	site.getActionBars().getToolBarManager().add(new PERefreshAction(site.getShell()));
+    	IWorkbenchAction action = ActionFactory.REFRESH.create(site.getWorkbenchWindow());
+    	site.getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), new PERefreshAction(site.getShell()));
+    	action.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("Refresh.gif")); //$NON-NLS-1$
+        site.getActionBars().getToolBarManager().add(action);
+        
     }
 
     /**
@@ -188,6 +192,8 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         // Dont register this context menu to avoid menu-items contributed by other plugins.
         // site.registerContextMenu(menumanager, site.getSelectionProvider());
     
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.RENAME.getId(), new RenameAction(site.getShell(), tree));
+
         ResourcesPlugin.getWorkspace().addResourceChangeListener(new IpsResourceChangeListener(tree), IResourceChangeEvent.POST_CHANGE);
 
     }
