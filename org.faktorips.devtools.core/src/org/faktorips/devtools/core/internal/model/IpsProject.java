@@ -177,7 +177,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public boolean isModelProject() {
-		return getProperties().isModelProject();
+		return getPropertiesInternal().isModelProject();
 	}
 
     /**
@@ -194,14 +194,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden
      */
 	public boolean isProductDefinitionProject() {
-		return getProperties().isProductDefinitionProject();
+		return getPropertiesInternal().isProductDefinitionProject();
 	}
 
 	/**
      * Overridden
      */
     public IIpsObjectPath getIpsObjectPath() throws CoreException {
-    	return getProperties().getIpsObjectPath();
+    	return getPropertiesInternal().getIpsObjectPath();
     }
 
     /**
