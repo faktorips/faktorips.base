@@ -32,11 +32,12 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
 
 public class DeepCopyOperation implements IWorkspaceRunnable{
 
-	private IProductCmpt[] toCopy;
-	private IProductCmpt[] toRefer;
+	private IStructureNode[] toCopy;
+	private IStructureNode[] toRefer;
 	private Map handleMap;
 	private IProductCmpt copiedRoot;
 	
@@ -46,9 +47,9 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 	 * @param toCopy All product components that should be copied.
 	 * @param toRefer All product components which should be referred from the copied ones.
 	 * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing resources!). Keys are the
-	 * product components given in <code>toCopy</code>.
+	 * nodes given in <code>toCopy</code>.
 	 */
-	public DeepCopyOperation(IProductCmpt[] toCopy, IProductCmpt[] toRefer, Map handleMap) {
+	public DeepCopyOperation(IStructureNode[] toCopy, IStructureNode[] toRefer, Map handleMap) {
 		this.toCopy = toCopy;
 		this.toRefer = toRefer;
 		this.handleMap = handleMap;
@@ -67,47 +68,63 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		
 		Hashtable referMap = new Hashtable();
 		for (int i = 0; i < toRefer.length; i++) {
-			referMap.put(toRefer[i].getQualifiedName(), toRefer[i].getName());
+			referMap.put(((IProductCmpt)toRefer[i].getWrappedElement()).getQualifiedName(), toRefer[i]);
 		}
 		
 		monitor.worked(1);
 
 		GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		IProductCmpt[] products = new IProductCmpt[toCopy.length];
+		Hashtable copied = new Hashtable();
 		for (int i = 0; i < toCopy.length; i++) {
 			IIpsSrcFile file = (IIpsSrcFile)handleMap.get(toCopy[i]);
-			IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
-			String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-			file = targetPackage.createIpsFileFromTemplate(newName, toCopy[i], date, false, monitor);
-			monitor.worked(1);
-			IProductCmpt product = (IProductCmpt)file.getIpsObject();
-			products[i] = product;
+			// if the file allready exists, we can do nothing because the file was created allready
+			// caused by another reference to the same product component.
+			if (!file.exists()) {
+				IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
+				String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+				file = targetPackage.createIpsFileFromTemplate(newName, (IProductCmpt)toCopy[i].getWrappedElement(), date, false, monitor);
+				monitor.worked(1);
+				IProductCmpt product = (IProductCmpt)file.getIpsObject();
+				products[i] = product;
+				copied.put(product, toCopy[i]);
+			}
 		}
 
 		Hashtable nameMap = new Hashtable();
 		for (int i = 0; i < products.length; i++) {
-			nameMap.put(toCopy[i].getQualifiedName(), products[i].getQualifiedName());
+			if (products[i] != null) {
+				nameMap.put(((IProductCmpt)toCopy[i].getWrappedElement()).getQualifiedName(), products[i].getQualifiedName());
+			}
 		}
 
 		for (int i = 0; i < products.length; i++) {
-			fixRelations(products[i], nameMap, referMap);
-			products[i].getIpsSrcFile().save(true, monitor);
-			monitor.worked(1);
+			if (products[i] != null) {
+				fixRelations(products[i], (IStructureNode)copied.get(products[i]), nameMap, referMap);
+				products[i].getIpsSrcFile().save(true, monitor);
+				monitor.worked(1);
+			}
 		}
 		copiedRoot = products[0];
 		monitor.done();
 	}
 	
-	private void fixRelations(IProductCmpt product, Hashtable nameMap, Hashtable referMap) {
+	private void fixRelations(IProductCmpt product, IStructureNode source, Hashtable nameMap, Hashtable referMap) {
 		IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
 		IProductCmptRelation[] relations = generation.getRelations();
 		
 		for (int i = 0; i < relations.length; i++) {
 			String target = relations[i].getTarget();
-			if (nameMap.containsKey(target)) {
-				relations[i].setTarget((String)nameMap.get(target));
+			IStructureNode node = (IStructureNode)referMap.get(target);
+			while (node != null && node != source) {
+				node = node.getParent();
 			}
-			else if (!referMap.containsKey(target)) {
+
+			if (referMap.containsKey(target) && node != null) {
+				// do nothing, the old relation has to be kept.
+			} else if (nameMap.containsKey(target)) {
+				relations[i].setTarget((String)nameMap.get(target));
+			} else if (!referMap.containsKey(target) || node == null) {
 				relations[i].delete();
 			}
 		}

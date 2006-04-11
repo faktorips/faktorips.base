@@ -22,9 +22,9 @@ import java.util.Arrays;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
 
 /**
  * Provides the elements of the FaktorIps-Model for the department.
@@ -44,6 +44,8 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 	 */
 	private boolean fShowRelationType = false;
 	
+	private IStructureNode root;
+	
 	/**
 	 * Creates a new content provider.
 	 * 
@@ -57,38 +59,32 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getChildren(Object parentElement) {
-    	if (!fShowRelationType && (parentElement instanceof IProductCmpt || parentElement instanceof IProductCmptStructure)) {
-    		IIpsObjectPartContainer[] children;
-    		if (parentElement instanceof IProductCmpt) {
-    			children = structure.getChildren((IIpsObjectPartContainer)parentElement);
-    		}
-    		else {
-    			children = structure.getChildren(((IProductCmptStructure)parentElement).getRoot());
-    		}
+    	if (!(parentElement instanceof IStructureNode)) {
+    		return new Object[0];
+    	}
+    	
+    	IStructureNode node = (IStructureNode)parentElement;
+    	
+    	if (!fShowRelationType && node.getWrappedElement() instanceof IProductCmpt) {
+    		IStructureNode[] children = node.getChildren();
+    		
     		ArrayList result = new ArrayList();
     		for (int i = 0; i < children.length; i++) {
-    			result.addAll(Arrays.asList(structure.getChildren(children[i])));
+    			result.addAll(Arrays.asList(children[i].getChildren()));
 			}
     		
-    		return (IIpsObjectPartContainer[])result.toArray(new IIpsObjectPartContainer[result.size()]);
+    		return (IStructureNode[])result.toArray(new IStructureNode[result.size()]);
+    	} else {
+    		return node.getChildren();
     	}
-
-    	if (parentElement instanceof IIpsObjectPartContainer) {
-        	return structure.getChildren((IIpsObjectPartContainer)parentElement);
-        }
-
-    	if (parentElement instanceof IProductCmptStructure) {
-    		return ((IProductCmptStructure)parentElement).getChildren(((IProductCmptStructure)parentElement).getRoot());
-    	}
-        return new Object[0];
     }
 
     /**
      * {@inheritDoc}
      */
     public Object getParent(Object element) {
-    	if (element instanceof IIpsObjectPartContainer && structure != null) {
-    		return structure.getParent((IIpsObjectPartContainer)element);
+    	if (element instanceof IStructureNode && structure != null) {
+    		return ((IStructureNode)element).getParent();
     	}
         return null;
     }
@@ -112,7 +108,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      */
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
-            return new Object[] {structure.getRoot()};
+            return new Object[] {root};
         }
         else {
             return new Object[0];
@@ -129,6 +125,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         }
         
         structure = (IProductCmptStructure)newInput;
+        root = structure.getRootNode();
     }
     
     public boolean isRelationTypeShowing() {

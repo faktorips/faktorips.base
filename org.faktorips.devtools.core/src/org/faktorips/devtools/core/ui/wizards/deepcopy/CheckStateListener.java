@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
@@ -55,11 +56,15 @@ public class CheckStateListener implements ICheckStateListener {
 	 * {@inheritDoc}
 	 */
 	public void checkStateChanged(CheckStateChangedEvent event) {
-		
-		CheckboxTreeViewer treeViewer = (CheckboxTreeViewer)event.getSource();
+		updateCheckState((CheckboxTreeViewer)event.getSource(), event.getElement(), event.getChecked());
+	}
+
+	/**
+	 * Updates the check state for the given treeViewer, stating at the given modified object.
+	 */
+	public void updateCheckState(CheckboxTreeViewer treeViewer, Object modified, boolean checked) {
 		Tree t = (Tree)treeViewer.getControl();
 		TreeItem[] items = t.getItems();
-		Object modified = event.getElement();
 		
 		TreeItem toStartAt = find(items, modified);
 		
@@ -67,7 +72,7 @@ public class CheckStateListener implements ICheckStateListener {
 			return;
 		}
 		
-		if (event.getChecked()) {
+		if (checked) {
 			checkParents(toStartAt.getParentItem());
 			checkRelationChildren(toStartAt);
 		}
@@ -83,12 +88,19 @@ public class CheckStateListener implements ICheckStateListener {
 		}
 	}
 
+	private Object getTreeItemContent(TreeItem in) {
+		if (in.getData() instanceof IStructureNode) {
+			return ((IStructureNode)in.getData()).getWrappedElement();
+		}
+		return null;
+	}
+	
 	/**
 	 * If the given treeitem reprensents a relation, it is unchecked if all
 	 * direct children are unchecked.
 	 */
 	private void uncheckRelationParent(TreeItem parent) {
-		if (parent != null && parent.getData() instanceof IProductCmptTypeRelation) {
+		if (parent != null && getTreeItemContent(parent) instanceof IProductCmptTypeRelation) {
 			TreeItem[] children = parent.getItems();
 			boolean checkedChild = false;
 			for (int i = 0; i < children.length && !checkedChild; i++) {
@@ -106,7 +118,7 @@ public class CheckStateListener implements ICheckStateListener {
 	 * are checked.
 	 */
 	private void checkRelationChildren(TreeItem node) {
-		if (!(node.getData() instanceof IProductCmptTypeRelation)) {
+		if (!(getTreeItemContent(node) instanceof IProductCmptTypeRelation)) {
 			return;
 		}
 		
@@ -124,7 +136,6 @@ public class CheckStateListener implements ICheckStateListener {
 		boolean gray = false;
 		boolean unchecked = false;
 		
-
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].getChecked()) {
 				boolean myGray = updateGrayState(items[i].getItems());
@@ -176,7 +187,7 @@ public class CheckStateListener implements ICheckStateListener {
 	private TreeItem find(TreeItem[] toSearch, Object toFind) {
 		TreeItem found = null;
 		for (int i = 0; i < toSearch.length && found == null; i++) {
-			if (toSearch[i].getData() == toFind) {
+			if (toSearch[i].getData().equals(toFind)) {
 				return toSearch[i];
 			}
 			found = find(toSearch[i].getItems(), toFind);

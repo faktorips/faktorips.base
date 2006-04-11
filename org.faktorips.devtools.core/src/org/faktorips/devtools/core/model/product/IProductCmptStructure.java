@@ -18,60 +18,64 @@
 package org.faktorips.devtools.core.model.product;
 
 import org.faktorips.devtools.core.model.CycleException;
-import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
  * A product component structure provides navigation between a product
- * component at a given working date, the relation types defined in the product
- * component type and the targets of instances of these product component type relations.
+ * component at a given working date, the relations and the targets of these 
+ * product component relations.
  * 
+ * Because a specific product component can be referenced by more than one other product component, 
+ * it is not possible to establis a simple "one parent - many children"-relation based on the 
+ * product component. This leads to the <code>IStructureNode</code> which wraps a product component.
+ * One node wraps one product component, but it is possible that more than one node wraps the same 
+ * product component.
+ *   
  * @author Thorsten Guenther
  */
 public interface IProductCmptStructure {
 
-	/**
-	 * Returns all product components which are targets of relations of the given relation type.
-	 * 
-	 * @param relationType The product component relation type for the relations to follow.
-	 * @param cmpt The product component to get the relations from.
-	 * 
-	 * @return All found product componets or an empty array if no relations of the given type are
-	 * defined.
-	 */
-	public IProductCmpt[] getTargets(IProductCmptTypeRelation relationType, IProductCmpt cmpt);
-	
-	/**
-	 * Returns all product component relation types defined for the given product component.
-	 */
-	public IProductCmptTypeRelation[] getRelationTypes(IProductCmpt cmpt);
-
-	/**
-	 * Returns an array of either product components (<code>IProductCmpt</code>) if the 
-	 * parent is a product component relation type (<code>IProductCmptTypeRelation</code>)
-	 * or product component relation types, if the parent is a product component.
-	 * 
-	 * @return as described abvoe or an empty array, if no children are available.
-	 */
-	public IIpsObjectPartContainer[] getChildren(IIpsObjectPartContainer parent);
-
-	/**
-	 * Returns the parent in the context of this structure. If the child is a product component,
-	 * the result is a product component relation type. If the child ia a product component
-	 * relation type, the result is a product component. 
-
-	 * @return as described above or null, if the child is the root.
-	 */
-	public IIpsObjectPartContainer getParent(IIpsObjectPartContainer child);
-	
 	/**
 	 * Returns the product component this structure is rooted at.
 	 */
 	public IProductCmpt getRoot();
 	
 	/**
+	 * Returns the node wrapping the root product component of this structure.
+	 */
+	public IStructureNode getRootNode();
+
+	/**
 	 * Refreshes the structure to reflect changes to the underlying objects.
 	 * @throws CycleException If a circle is detected.
 	 */
 	public void refresh() throws CycleException;
+	
+	/**
+	 * A node wrapping either an <code>IProductCmpt</code> or an <code>IProductCmptRelation</code> 
+	 * 
+	 * @author Thorsten Guenther
+	 */
+	public interface IStructureNode {
+		/**
+		 * Returns the parent of this node.
+		 * 
+		 * @return The parent node or null, if this is the root node.
+		 */
+		public IStructureNode getParent();
+		
+		/**
+		 * Returns the children for this node.
+		 * 
+		 * @return An array containing all children of this node or an empty
+		 *         array if no children are available
+		 */
+		public IStructureNode[] getChildren();
+
+		/**
+		 * Returns the IIpsElement which is wrapped by this node. This can be
+		 * either a IProductCmpt or an IProductCmptRelation
+		 */
+		public IIpsElement getWrappedElement();
+	}
 }

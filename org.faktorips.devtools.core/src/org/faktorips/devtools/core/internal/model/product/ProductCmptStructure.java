@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -34,53 +33,17 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
- * {@inheritDoc}
+ * Implementation of the product component structure
  * 
  * @author Thorsten Guenther
  */
 public class ProductCmptStructure implements IProductCmptStructure {
 	private Hashtable elementToNodeMapping;
-	Node root;
+	StructureNode root;
 	
 	public ProductCmptStructure(IProductCmpt root) throws CycleException {
         this.elementToNodeMapping = new Hashtable();
         this.root = buildNode(root, null);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IProductCmpt[] getTargets(IProductCmptTypeRelation relationType, IProductCmpt cmpt) {
-		Node node = (Node)elementToNodeMapping.get(relationType);
-		
-		if (node == null) {
-			return new IProductCmpt[0];
-		}
-		
-		Node[] children = node.getChildren();
-		IProductCmpt result[] = new IProductCmpt[children.length];
-		for (int i = 0; i < children.length; i++) {
-			result[i] = (IProductCmpt)children[i].getWrappedElement();
-		}
-		return result;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IProductCmptTypeRelation[] getRelationTypes(IProductCmpt cmpt) {
-		Node node = (Node)elementToNodeMapping.get(cmpt);
-		
-		if (node == null) {
-			return new IProductCmptTypeRelation[0];
-		}
-		
-		Node[] children = node.getChildren();
-		IProductCmptTypeRelation result[] = new IProductCmptTypeRelation[children.length];
-		for (int i = 0; i < children.length; i++) {
-			result[i] = (IProductCmptTypeRelation)children[i].getWrappedElement();
-		}
-		return result;
 	}
 
 	/**
@@ -93,19 +56,10 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IIpsObjectPartContainer[] getChildren(IIpsObjectPartContainer parent) {
-		Node node = (Node)elementToNodeMapping.get(parent);
-		if (node != null) {
-			Node[] children = node.getChildren();
-			IIpsObjectPartContainer[] result = new IIpsObjectPartContainer[children.length];
-			for (int i = 0; i < children.length; i++) {
-				result[i] = (IIpsObjectPartContainer)children[i].getWrappedElement();
-			}
-			return result;
-		}
-		return new IIpsObjectPartContainer[0];
+	public IStructureNode getRootNode() {
+		return root;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,25 +69,14 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPartContainer getParent(IIpsObjectPartContainer child) {
-		Node node = (Node)elementToNodeMapping.get(child);
-		if (node != null) {
-			return (IIpsObjectPartContainer)node.getParent().getWrappedElement();
-		}
-		return null;
-	}
-
-	/**
      * Creates a new node for the given element and links it to the given parent-node.
      * 
      * @param element The IpsElement to be wrapped by the new node.
      * @param parent The parent-node for the new one.
 	 * @throws CycleException 
      */
-    private Node buildNode(IIpsElement element, Node parent) throws CycleException {
-    	Node node = new Node(element, parent);
+    private StructureNode buildNode(IIpsElement element, StructureNode parent) throws CycleException {
+    	StructureNode node = new StructureNode(element, parent);
     	node.setChildren(buildChildNodes(element, node));
 		this.elementToNodeMapping.put(element, node);
 
@@ -149,7 +92,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @return
      * @throws CycleException 
      */
-    private Node[] buildChildNodes(IProductCmptRelation[] relations, Node parent) throws CycleException {
+    private StructureNode[] buildChildNodes(IProductCmptRelation[] relations, StructureNode parent) throws CycleException {
 		ArrayList children = new ArrayList();
         for (int i = 0; i < relations.length; i ++) {
 			try {
@@ -161,8 +104,8 @@ public class ProductCmptStructure implements IProductCmptStructure {
 				IpsPlugin.log(e);
 			}
         }
-		Node[] result = new Node[children.size()];
-		return (Node[])children.toArray(result);
+		StructureNode[] result = new StructureNode[children.size()];
+		return (StructureNode[])children.toArray(result);
     }
     
     /**
@@ -172,7 +115,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @param parent The parent node for the new children.
      * @throws CycleException 
      */
-	private Node[] buildChildNodes(IIpsElement element, Node parent) throws CycleException {
+	private StructureNode[] buildChildNodes(IIpsElement element, StructureNode parent) throws CycleException {
 		ArrayList children = new ArrayList();
 		
 		if (element instanceof IProductCmpt) {
@@ -183,7 +126,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			
 			if (activeGeneration == null) {
 				// no active generation found, so no nodes can be returned.
-				return new Node[0];
+				return new StructureNode[0];
 			}
 			
 			IProductCmptRelation[] relations = activeGeneration.getRelations();
@@ -209,7 +152,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			
 			for (Iterator iter = typeList.iterator(); iter.hasNext();) {
 				IProductCmptTypeRelation type = (IProductCmptTypeRelation) iter.next();
-				Node node = new Node(type, parent);
+				StructureNode node = new StructureNode(type, parent);
 				ArrayList relationsList = (ArrayList)mapping.get(type.getName());
 				IProductCmptRelation[] rels = new IProductCmptRelation[relationsList.size()];
 				node.setChildren(buildChildNodes((IProductCmptRelation[])relationsList.toArray(rels), node));
@@ -218,8 +161,8 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			}
 		}
 		
-		Node[] result = new Node[children.size()];
-		return (Node[])children.toArray(result);
+		StructureNode[] result = new StructureNode[children.size()];
+		return (StructureNode[])children.toArray(result);
     }   
 	
 	/**
@@ -228,32 +171,44 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 * 
 	 * @author Thorsten Guenther
 	 */
-	private  class Node {
-		private Node[] children;
-		private Node parent;
+	public class StructureNode implements IProductCmptStructure.IStructureNode{
+		private StructureNode[] children;
+		private StructureNode parent;
 		private IIpsElement wrapped;
 		
-		public Node(IIpsElement wrapped, Node parent) throws CycleException {
+		/**
+		 * Creates a new Node.
+		 */
+		StructureNode(IIpsElement wrapped, StructureNode parent) throws CycleException {
 			this.parent = parent;
 			this.wrapped = wrapped;
 			detectCycle(new ArrayList());
 		}
 		
-		public Node getParent() {
+		/**
+		 * {@inheritDoc}
+		 */
+		public IStructureNode getParent() {
 			return parent;
 		}
 		
-		public Node[] getChildren() {
+		/**
+		 * {@inheritDoc}
+		 */
+		public IStructureNode[] getChildren() {
 			return children;
 		}
 		
-		public void setChildren(Node[] children) {
-			this.children = children;
-		}
-		
+		/**
+		 * {@inheritDoc}
+		 */
 		public IIpsElement getWrappedElement() {
 			return wrapped;
 		}		
+		
+		void setChildren(StructureNode[] children) {
+			this.children = children;
+		}
 		
 		private void detectCycle(ArrayList seenElements) throws CycleException {
 			if (!(wrapped instanceof IProductCmptTypeRelation) && seenElements.contains(wrapped)) {
@@ -266,6 +221,22 @@ public class ProductCmptStructure implements IProductCmptStructure {
 					parent.detectCycle(seenElements);
 				}
 			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean equals(Object o) {
+			if (!(o instanceof StructureNode)) {
+				return false;
+			}
+			StructureNode other = (StructureNode)o;
+			return ((children == null && other.children == null) || (children != null && children
+					.equals(other.children)))
+					&& ((parent == null && other.parent == null) || (parent != null && parent
+							.equals(other.parent)))
+					&& ((wrapped == null && other.wrapped == null) || (wrapped != null && wrapped
+							.equals(other.wrapped)));
 		}
 	}
 }

@@ -30,9 +30,10 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.DeepCopyOperation;
+import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
 
 /**
  * A wizard to create a deep copy from a given product component.
@@ -44,7 +45,7 @@ public class DeepCopyWizard extends Wizard {
 	public static final int TYPE_COPY_PRODUCT = 10;
 	public static final int TYPE_NEW_VERSION = 100;
 	
-	private IProductCmptStructure structure;
+	private ProductCmptStructure structure;
 	private SourcePage sourcePage;
 	private ReferenceAndPreviewPage previewPage;
 	private IProductCmpt copiedRoot;
@@ -71,7 +72,7 @@ public class DeepCopyWizard extends Wizard {
 		this.type = type;
 		
 		try {
-			structure = product.getStructure();
+			structure = (ProductCmptStructure)product.getStructure();
 		} catch (CycleException e) {
 			IpsPlugin.log(e);
 		}
@@ -99,8 +100,8 @@ public class DeepCopyWizard extends Wizard {
 	 */
 	public boolean performFinish() {
 		try {
-			final IProductCmpt[] toCopy = previewPage.getProductsToCopy();
-			final IProductCmpt[] toRefer = previewPage.getProductsToRefer();
+			final IStructureNode[] toCopy = previewPage.getProductsToCopy();
+			final IStructureNode[] toRefer = previewPage.getProductsToRefer();
 			final Map handles = previewPage.getHandles();
 			schedulingRule = structure.getRoot().getIpsProject().getCorrespondingResource();
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){

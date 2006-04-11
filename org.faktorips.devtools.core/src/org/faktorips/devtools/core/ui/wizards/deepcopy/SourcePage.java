@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -30,8 +30,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureLabelProvider;
 
@@ -43,6 +45,7 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
 public class SourcePage extends WizardPage implements ICheckStateListener {
 	private IProductCmptStructure structure;
 	private CheckboxTreeViewer tree;
+	private CheckStateListener checkStateListener;
 	
 	private static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
@@ -78,6 +81,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 			this.setControl(errormsg);
 			return;
 		}
+
+		checkStateListener = new CheckStateListener(null);
 		
 		tree = new CheckboxTreeViewer(parent);
 		
@@ -88,7 +93,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 		setCheckedAll(tree.getTree().getItems(), true);
 		tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		tree.addCheckStateListener(this);		
-		tree.addCheckStateListener(new CheckStateListener(null));
+		tree.addCheckStateListener(checkStateListener);
 		this.setControl(tree.getControl());
 	}
 
@@ -117,25 +122,38 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 		}
 	}
 	
-	/**
-	 * Returns all products checked for copy. 
-	 */
-	public IProductCmpt[] getCheckedProducts() {
-		ArrayList result = new ArrayList();
-		
-		Object[] checked = tree.getCheckedElements();
-		for (int i = 0; i < checked.length; i++) {
-			if (checked[i] instanceof IProductCmpt) {
-				result.add(checked[i]);
-			}
-		}
-		
-		return (IProductCmpt[])result.toArray(new IProductCmpt[result.size()]);
+	public IStructureNode[] getCheckedNodes() {
+		return (IStructureNode[])Arrays.asList(tree.getCheckedElements()).toArray(new IStructureNode[0]);
 	}
 	
 	public void checkStateChanged(CheckStateChangedEvent event) {
+		
+		// we have to check or uncheck all items which represent the same ipselement
+		// because the decision of copy or not copy is global.
+		IIpsElement changed = ((IStructureNode)event.getElement()).getWrappedElement();
+		IStructureNode root = structure.getRootNode();
+		
+		if (!(changed instanceof IProductCmpt)) {
+			IStructureNode[] children = ((IStructureNode)event.getElement()).getChildren();
+			for (int i = 0; i < children.length; i++) {
+				setCheckState(children[i].getWrappedElement(), new IStructureNode[] {root}, event.getChecked());				
+			}
+		} else {
+			setCheckState(changed, new IStructureNode[] {root}, event.getChecked());
+		}
+		
 		setPageComplete(); 
 	}		
+	
+	private void setCheckState(IIpsElement toCompareWith, IStructureNode[] nodes, boolean checked) {
+		for (int i = 0; i < nodes.length; i++) {
+			setCheckState(toCompareWith, nodes[i].getChildren(), checked);
+			if (nodes[i].getWrappedElement().equals(toCompareWith)) {
+				tree.setChecked(nodes[i], checked);
+				checkStateListener.updateCheckState(tree, nodes[i], checked);
+			}
+		}
+	}
 }
 
 
