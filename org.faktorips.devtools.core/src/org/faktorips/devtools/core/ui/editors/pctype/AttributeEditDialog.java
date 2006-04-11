@@ -100,7 +100,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     /**
      * Checkbox to edit the "overwrites"-Flag of the attribute.
      */
-    private CheckboxField overwritesField;
+    private CheckboxField overrideField;
 
     /**
      * TextField to link the name input control with the rule name
@@ -239,14 +239,14 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)attribute);
 
-        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
-        Checkbox cb = new Checkbox(workArea, uiToolkit);
-
-        overwritesListener = new OverwritesListener(cb);
-        cb.getButton().addSelectionListener(overwritesListener);
         
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelName);
         Text nameText = uiToolkit.createText(workArea);
+
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
+        Checkbox cb = new Checkbox(workArea, uiToolkit);
+        overwritesListener = new OverwritesListener(cb);
+        cb.getButton().addSelectionListener(overwritesListener);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatype);
         datatypeControl = uiToolkit.createDatatypeRefEdit(attribute.getIpsProject(), workArea);
@@ -277,7 +277,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         attributeTypeField = new EnumValueField(typeCombo, AttributeType.getEnumType());
         productRelevantField = new CheckboxField(checkbox);
         defaultValueField = new TextField(defaultValueText);
-        overwritesField = new CheckboxField(cb);
+        overrideField = new CheckboxField(cb);
         
         return c;
     }
@@ -462,7 +462,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiController.add(attributeTypeField, IAttribute.PROPERTY_ATTRIBUTE_TYPE);
         uiController.add(defaultValueField, IAttribute.PROPERTY_DEFAULT_VALUE);
         uiController.add(productRelevantField, IAttribute.PROPERTY_PRODUCT_RELEVANT);
-        uiController.add(overwritesField, IAttribute.PROPERTY_OVERWRITES);
+        uiController.add(overrideField, IAttribute.PROPERTY_OVERWRITES);
 
         if (rule != null) {
         	initRuleUIController();
