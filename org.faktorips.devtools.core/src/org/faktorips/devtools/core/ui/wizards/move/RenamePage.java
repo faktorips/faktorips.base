@@ -211,9 +211,10 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			if (setMessageFromList(namingStrategy.validateVersionId(versionId.getText()))) {
 				return;
 			}
-			if (setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()))) {
-				return;
-			}
+			
+			setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()));
+			return;
+			
 		}
 		
 		String name = newName.getText(); 
