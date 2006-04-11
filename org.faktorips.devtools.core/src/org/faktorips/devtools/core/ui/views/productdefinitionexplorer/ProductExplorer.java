@@ -36,7 +36,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -95,7 +94,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * @author guenther
  *
  */
-public class ProductExplorer extends ViewPart implements IShowInTarget, ISelectionProvider{
+public class ProductExplorer extends ViewPart implements IShowInTarget {
 
     public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
     private TreeViewer tree;
@@ -132,17 +131,17 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         tree.setSorter(new Sorter());
         
         IWorkbenchPartSite site = getSite();
-        site.setSelectionProvider(this);
+        site.setSelectionProvider(tree);
 
         // Create the menu completely manually because we dont wont any other actions 
         // provided by other plugins put in here...
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
 
-        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.CUT.getId(), new IpsCutAction(this, this.getSite().getShell()));
-        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), new IpsCopyAction(this, this.getSite().getShell()));
-        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(), new IpsPasteAction(this, this.getSite().getShell()));
-        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), new IpsDeleteAction(this));
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.CUT.getId(), new IpsCutAction(tree, this.getSite().getShell()));
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), new IpsCopyAction(tree, this.getSite().getShell()));
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(), new IpsPasteAction(tree, this.getSite().getShell()));
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), new IpsDeleteAction(tree));
         
         menumanager.add(new OpenEditorAction(tree));
         
@@ -242,7 +241,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         IProductCmptGeneration[] result = new IProductCmptGeneration[0];
         ArrayList resultList = new ArrayList();
         
-        IStructuredSelection selection = (IStructuredSelection)this.getSelection();
+        IStructuredSelection selection = (IStructuredSelection)tree.getSelection();
         
         for (Iterator i = selection.iterator(); i.hasNext();) {
             Object selected = i.next();
@@ -325,14 +324,6 @@ public class ProductExplorer extends ViewPart implements IShowInTarget, ISelecti
         tree.removeSelectionChangedListener(listener);
     }
 
-    public void setSelection(ISelection selection) {
-        tree.setSelection(selection);
-    }
-
-    public ISelection getSelection() {
-        return tree.getSelection();
-    }
-    
     private class DropListener extends IpsElementDropListener {
 
 		/**
