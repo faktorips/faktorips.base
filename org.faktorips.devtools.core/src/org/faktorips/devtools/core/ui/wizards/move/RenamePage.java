@@ -129,7 +129,11 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	private void createControlForObject(UIToolkit toolkit, Composite parent, IIpsElement obj) {
 		toolkit.createLabel(parent, Messages.RenamePage_newName);
 		newName = toolkit.createText(parent);
-		newName.setText(obj.getName());
+		if (obj instanceof IpsPackageFragment) {
+			newName.setText(((IIpsPackageFragment)obj).getFolderName());
+		} else {
+			newName.setText(obj.getName());
+		}
 	}
 	
 	/**
@@ -212,38 +216,39 @@ public class RenamePage extends WizardPage implements ModifyListener {
 				return;
 			}
 			
-			setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()));
-			return;
+			if (setMessageFromList(namingStrategy.validateKindId(constNamePart.getText()))) {
+				return;
+			}
 			
-		}
-		
-		String name = newName.getText(); 
-		// must not be empty
-		if (name.length() == 0) {
-			setMessage(Messages.RenamePage_errorNameIsEmpty, ERROR);
-			return;
-		}
-		if (name.indexOf('.') != -1) {
-			setMessage(Messages.RenamePage_errorNameQualified, ERROR);
-			return;
-		}
-		
-		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents) {
-			IStatus val= JavaConventions.validateJavaTypeName(name);
-			if (val.getSeverity() == IStatus.ERROR) {
-				String msg = Messages.bind(Messages.errorNameNotValid, name);
-				setMessage(msg, ERROR);
-				return;
-			} else if (val.getSeverity() == IStatus.WARNING) {
-				setMessage(Messages.RenamePage_warningDiscouraged, WARNING);
-				// continue checking
-			}		
 		} else {
-			IStatus val= JavaConventions.validatePackageName(name);
-			if (val.getSeverity() == IStatus.ERROR) {
-				String msg = Messages.bind(Messages.errorNameNotValid, name);
-				setMessage(msg, ERROR);
+			String name = newName.getText(); 
+			// must not be empty
+			if (name.length() == 0) {
+				setMessage(Messages.RenamePage_errorNameIsEmpty, ERROR);
 				return;
+			}
+			if (name.indexOf('.') != -1) {
+				setMessage(Messages.RenamePage_errorNameQualified, ERROR);
+				return;
+			}
+			
+			if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents) {
+				IStatus val= JavaConventions.validateJavaTypeName(name);
+				if (val.getSeverity() == IStatus.ERROR) {
+					String msg = Messages.bind(Messages.errorNameNotValid, name);
+					setMessage(msg, ERROR);
+					return;
+				} else if (val.getSeverity() == IStatus.WARNING) {
+					setMessage(Messages.RenamePage_warningDiscouraged, WARNING);
+					// continue checking
+				}		
+			} else {
+				IStatus val= JavaConventions.validatePackageName(name);
+				if (val.getSeverity() == IStatus.ERROR) {
+					String msg = Messages.bind(Messages.errorNameNotValid, name);
+					setMessage(msg, ERROR);
+					return;
+				}
 			}
 		}
 		
