@@ -20,6 +20,8 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
@@ -30,6 +32,8 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -51,6 +55,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	final static String TAG_NAME = "IpsProject"; //$NON-NLS-1$
 	final static String GENERATED_CODE_TAG_NAME = "GeneratedSourcecode";  //$NON-NLS-1$
 		
+	private boolean createdFromParsableFileContents = true;
+	
 	private boolean modelProject;
 	private boolean productDefinitionProject;
 	private Locale javaSrcLanguage = Locale.ENGLISH;
@@ -61,6 +67,61 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	private String[] predefinedDatatypesUsed = new String[0];
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
+
+
+    /**
+     * Default constructor.
+     */
+	public IpsProjectProperties() {
+		super();
+	}
+
+    /**
+     * Copy constructor.
+     */
+	public IpsProjectProperties(IIpsProject ipsProject, IpsProjectProperties props) {
+		Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+		Element el = props.toXml(doc);
+		initFromXml(ipsProject, el);
+		this.createdFromParsableFileContents = props.createdFromParsableFileContents;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MessageList validate(IIpsProject ipsProject) throws CoreException {
+		MessageList list = new MessageList();
+		validateBuilderSetId(ipsProject, list);
+		return list;
+	}
+	
+	private void validateBuilderSetId(IIpsProject ipsProject, MessageList list) {
+		IIpsArtefactBuilderSet[] sets = ipsProject.getIpsModel().getAvailableArtefactBuilderSets();
+		for (int i = 0; i < sets.length; i++) {
+			if (sets[i].getId().equals(builderSetId)) {
+				return;
+			}
+		}
+		String text = "Unknown builder set id " + builderSetId;
+		Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_BUILDER_SET_ID, text, Message.ERROR, this, IIpsProjectProperties.PROPERTY_BUILDER_SET_ID);
+		list.add(msg);
+	}
+
+	/**
+	 * Returns <code>true</code> if this property object was created by reading a  
+	 * .ipsproject file containg parsable xml data, otherwise <code>false</code>.
+	 */
+	public boolean isCreatedFromParsableFileContents() {
+		return createdFromParsableFileContents;
+	}
+
+	/**
+	 * Sets if if this property object was created by reading a .ipsproject file 
+	 * containg parsable xml data, or not.
+	 */
+	public void setCreatedFromParsableFileContents(boolean flag) {
+		this.createdFromParsableFileContents = flag;
+	}
 
 	/**
 	 * {@inheritDoc}

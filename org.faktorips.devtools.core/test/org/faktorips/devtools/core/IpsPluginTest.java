@@ -206,7 +206,7 @@ public abstract class IpsPluginTest extends XmlAbstractTestCase {
 				.getFolder("extension"));
 		ipsProject.setIpsObjectPath(path);
 
-		// TODO: wichtig dies erzeugt eine Abhae½ngigkeit vom StdBuilder Projekt.
+		// TODO: wichtig dies erzeugt eine Abhaengigkeit vom StdBuilder Projekt.
 		// Dies muss ueberarbeitet werden
 		IIpsProjectProperties props = ipsProject.getProperties();
 		props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");

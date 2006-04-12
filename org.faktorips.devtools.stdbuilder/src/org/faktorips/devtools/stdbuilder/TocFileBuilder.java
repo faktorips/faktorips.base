@@ -202,7 +202,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 	 *             if an error occurs while accessing the toc file.
 	 */
 	public MutableClRuntimeRepositoryToc getToc(IIpsPackageFragmentRoot root) throws CoreException {
-		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getCurrentArtefactBuilderSet();
+		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
 		IFile tocFile = builderSet.getRuntimeRepositoryTocFile(root);
 		MutableClRuntimeRepositoryToc toc = (MutableClRuntimeRepositoryToc) tocFileMap.get(tocFile);
 		if (toc == null) {

@@ -36,7 +36,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -67,6 +66,8 @@ import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdInitStrate
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.XmlUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -98,7 +99,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * {@inheritDoc}
 	 */
 	public IIpsProjectProperties getProperties() {
-    	return copy(getPropertiesInternal());
+    	return new IpsProjectProperties(this, (IpsProjectProperties)getPropertiesInternal());
 	}
 
 	/*
@@ -108,17 +109,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
 	}
 	
-	private IpsProjectProperties copy(IpsProjectProperties propsToCopy) {
-    	Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-    	Element el = propsToCopy.toXml(doc);
-    	return IpsProjectProperties.createFromXml(this, el);
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public void setProperties(IIpsProjectProperties properties) throws CoreException {
-		saveProjectProperties(copy((IpsProjectProperties)properties));
+		((IpsModel)getIpsModel()).setIpsProjectProperties(this, properties);
+		saveProjectProperties(new IpsProjectProperties(this, (IpsProjectProperties)properties));
 	}
 
 	/**
@@ -160,62 +156,72 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IJavaProject getJavaProject() {
         return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProject(getName());
     }
-
+    
     /**
-     * Overridden.
-     */
+	 * {@inheritDoc}
+	 */
+	public boolean canBeBuild() {
+		try {
+			return !validate().containsErrorMsg();
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+			return false;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
     public String getXmlFileCharset() {
         return "UTF-8"; //$NON-NLS-1$
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isModelProject() {
 		return getPropertiesInternal().isModelProject();
 	}
 
     /**
-     * Overridden
-     * @throws CoreException 
-     */
-	public void setModelProject(boolean flag) throws CoreException {
-    	IIpsProjectProperties properties = getProperties();
-    	properties.setModelProject(flag);
-    	saveProjectProperties(properties);
-	}
-
-    /**
-     * Overridden
+     * {@inheritDoc}
      */
 	public boolean isProductDefinitionProject() {
 		return getPropertiesInternal().isProductDefinitionProject();
 	}
 
 	/**
-     * Overridden
-     */
+	 * {@inheritDoc}
+	 */
     public IIpsObjectPath getIpsObjectPath() throws CoreException {
-    	return getPropertiesInternal().getIpsObjectPath();
+    	return getProperties().getIpsObjectPath();
+    }
+
+	/**
+	 * Returns a <strong>reference</strong> to the ips object path, in
+	 * contrast to the getIpsObjectPath() method that returns a copy.
+	 */
+    public IpsObjectPath getIpsObjectPathInternal() throws CoreException {
+    	return (IpsObjectPath)getPropertiesInternal().getIpsObjectPath();
     }
 
     /**
-     * Overridden.
-     */
+	 * {@inheritDoc}
+	 */
     public void setCurrentArtefactBuilderSet(String id) throws CoreException {
     	IIpsProjectProperties properties = getProperties();
     	properties.setBuilderSetId(id);
     	saveProjectProperties(properties);
     }
     
-    /**
-     * Overridden.
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public void setValueDatatypes(String[] ids) throws CoreException {
         IIpsProjectProperties properties = getProperties();
         properties.setPredefinedDatatypesUsed(ids);
@@ -223,7 +229,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setValueDatatypes(ValueDatatype[] types) throws CoreException {
     	String[] ids = new String[types.length];
@@ -234,7 +240,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	}
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException {
     	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
@@ -243,18 +249,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name) {
         return new IpsPackageFragmentRoot(this, name);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() throws CoreException {
         List roots = new ArrayList();
-        IIpsObjectPathEntry[] entries = getIpsObjectPath().getEntries();
+        IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i] instanceof IIpsSrcFolderEntry) {
                 roots.add(((IIpsSrcFolderEntry)entries[i]).getIpsPackageFragmentRoot(this));
@@ -264,40 +270,32 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean exists() {
         return getCorrespondingResource().exists();
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Locale getExpressionLanguageFunctionsLanguage() {
         return Locale.GERMAN;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage() {
-    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	IpsProjectProperties properties = getPropertiesInternal();
     	return properties.getJavaSrcLanguage();
-    }
-
-    /**
-     * Sets the generated java source code documentation language. 
-     */
-    public void setGeneratedJavaSourcecodeDocumentationLanguage(Locale locale) {
-    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
-    	properties.setJavaSrcLanguage(locale);
     }
 
     /**
      * {@inheritDoc}
      */
 	public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
-    	IpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(this);
+    	IpsProjectProperties properties = getPropertiesInternal();
     	return getIpsModel().getChangesOverTimeNamingConvention(properties.getChangesOverTimeNamingConventionIdForGeneratedCode());
 	}
 
@@ -330,9 +328,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#configure()
+     * {@inheritDoc}
      */
     public void configure() throws CoreException {
         IProjectDescription description = getProject().getDescription();
@@ -346,17 +342,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#deconfigure()
+     * {@inheritDoc}
      */
     public void deconfigure() throws CoreException {
     }
 
     /**
-     * Overridden.
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
+     * {@inheritDoc}
      */
     public void setProject(IProject project) {
         this.name = project.getName();
@@ -391,21 +383,21 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPath()).findIpsObject(this, nameType);
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, nameType);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPath()).findIpsObject(this, type, qualifiedName);
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObject(this, type, qualifiedName);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type,
             String prefix,
@@ -425,7 +417,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             String prefix,
             boolean ignoreCase,
             List result) throws CoreException {
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjectsStartingWith(this, type, prefix,
+        ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjectsStartingWith(this, type, prefix,
             ignoreCase, result);
     }
 
@@ -447,7 +439,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Overridden.
      */
     public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException {
-        return ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, type);
+        return ((IpsObjectPath)getIpsObjectPathInternal()).findIpsObjects(this, type);
     }
 
     /**
@@ -455,18 +447,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException
      */
     public void findAllIpsObjects(List result) throws CoreException{
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result);
-        ((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.POLICY_CMPT_TYPE, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.PRODUCT_CMPT, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result);
     }
     
     /**
      * Finds all ips objects of the given type in the project and adds them to the result.
      */
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
-    	((IpsObjectPath)getIpsObjectPath()).findIpsObjects(this, type, result);
+    	getIpsObjectPathInternal().findIpsObjects(this, type, result);
     }
 
     /**
@@ -488,7 +480,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private void getValueDatatypes(IIpsProject ipsProject, Set result, Set visitedProjects){
         try {
             ((IpsModel)getIpsModel()).getValueDatatypes(ipsProject, result);
-            IIpsProject[] projects = ipsProject.getIpsObjectPath().getReferencedIpsProjects();
+            IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 if(!visitedProjects.contains(projects[i])){
                 	visitedProjects.add(projects[i]);
@@ -580,7 +572,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return helper;
         }
         try {
-            IIpsProject[] projects = getIpsObjectPath().getReferencedIpsProjects();
+            IIpsProject[] projects = getIpsObjectPathInternal().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 //helper = ((IpsModel)getIpsModel()).getDatatypeHelper(projects[i],
                  //   (ValueDatatype)datatype);
@@ -689,19 +681,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public IIpsArtefactBuilderSet getCurrentArtefactBuilderSet() throws CoreException {
-        return ((IpsModel)getIpsModel()).getCurrentIpsArtefactBuilderSet(this);
+    public IIpsArtefactBuilderSet getArtefactBuilderSet() throws CoreException {
+        return ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this);
     }
 
     /**
-     * Overridden.
-     */
-    public JavaCodeFragment getCodeToGetTheRuntimeRepository() throws CoreException {
-        return new JavaCodeFragment("null"); // TODO must read from ipsproject file. //$NON-NLS-1$
-    }
-    
-    /**
-     * Overridden
+     * {@inheritDoc}
      */
 	public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException {
 		ArrayList result = new ArrayList();
@@ -759,4 +744,27 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return getPropertiesInternal().getRuntimeIdPrefix();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public MessageList validate() throws CoreException {
+		MessageList result = new MessageList();
+		if (!getIpsProjectPropertiesFile().exists()) {
+			String text = "The property file .ipsproject is missing!";
+			Message msg = new Message(IIpsProject.MSGCODE_MISSING_PROPERTY_FILE, text, Message.ERROR, this);
+			result.add(msg);
+			return result;
+		}
+		IpsProjectProperties props = (IpsProjectProperties)getPropertiesInternal();
+		if (!props.isCreatedFromParsableFileContents()) {
+			String text = "The property file's contents can't be parsed!";
+			Message msg = new Message(IIpsProject.MSGCODE_UNPARSABLE_PROPERTY_FILE, text, Message.ERROR, this);
+			result.add(msg);
+			return result;
+		}
+		MessageList list = props.validate(this);
+		result.add(list);
+		return result;
+	}
+	
 }

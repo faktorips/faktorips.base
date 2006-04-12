@@ -19,8 +19,10 @@ package org.faktorips.devtools.core.model;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Properties of the ips project. The ips project can't keep the properties itself,
@@ -29,6 +31,23 @@ import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
  * @author Jan Ortmann
  */
 public interface IIpsProjectProperties {
+	
+	public final static String PROPERTY_BUILDER_SET_ID = "builderSetId";
+	
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the ips artefact builder set id is unknown.
+     */
+    public final static String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
+	
+	/**
+	 * Validates the project properties. 
+	 */
+	public MessageList validate(IIpsProject ipsProject) throws CoreException;
 
 	/**
 	 * Returns id of the builderset used to generate sourcecode from the model / product definition.

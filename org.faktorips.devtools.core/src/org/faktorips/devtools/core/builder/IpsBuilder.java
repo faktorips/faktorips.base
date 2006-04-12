@@ -69,6 +69,52 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		super();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+			throws CoreException {
+
+		MultiStatus buildStatus = null;
+		if (lastBuildWasCancelled) {
+			lastBuildWasCancelled = false;
+			return getProject().getReferencedProjects();
+		}
+		getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
+		MessageList list = getIpsProject().validate();
+		createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
+		if (!getIpsProject().canBeBuild()) {
+			return getProject().getReferencedProjects();
+		}
+		buildStatus = applyBuildCommand(buildStatus, new BeforeBuildProcessCommand(kind));
+		if (kind == IncrementalProjectBuilder.FULL_BUILD
+				|| kind == IncrementalProjectBuilder.CLEAN_BUILD
+				|| getDelta(getProject()) == null) {
+			// delta not available
+			buildStatus = fullBuild(monitor);
+		} else {
+			buildStatus = incrementalBuild(monitor);
+		}
+		buildStatus = applyBuildCommand(buildStatus,
+				new AfterBuildProcessCommand(kind));
+
+		if (buildStatus.getSeverity() == IStatus.OK) {
+			return getProject().getReferencedProjects();
+		}
+
+		// reinitialize the builders of the current builder set if an error
+		// occurs
+		try {
+			IIpsArtefactBuilderSet builderSet = getIpsProject()
+					.getArtefactBuilderSet();
+			builderSet.initialize();
+		} catch (Exception e) {
+			buildStatus.add(new IpsStatus(
+					Messages.IpsBuilder_msgErrorExceptionDuringBuild));
+		}
+		throw new CoreException(buildStatus);
+	}
+
 	private MultiStatus applyBuildCommand(MultiStatus buildStatus,
 			BuildCommand command) throws CoreException {
 		// Despite the fact that generating is disabled in the faktor ips
@@ -79,7 +125,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 			return buildStatus;
 		}
 		IIpsArtefactBuilderSet currentBuilderSet = getIpsProject()
-				.getCurrentArtefactBuilderSet();
+				.getArtefactBuilderSet();
 		IIpsArtefactBuilder[] artefactBuilders = currentBuilderSet
 				.getArtefactBuilders();
 		for (int i = 0; i < artefactBuilders.length; i++) {
@@ -108,48 +154,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 	private DependencyGraph getDependencyGraph() throws CoreException {
 		IpsModel model = ((IpsModel) getIpsProject().getIpsModel());
 		return model.getDependencyGraph(getIpsProject());
-	}
-
-	/**
-	 * Overridden method.
-	 */
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-			throws CoreException {
-		MultiStatus buildStatus = null;
-
-		if (lastBuildWasCancelled) {
-			lastBuildWasCancelled = false;
-			return getProject().getReferencedProjects();
-		}
-
-		buildStatus = applyBuildCommand(buildStatus,
-				new BeforeBuildProcessCommand(kind));
-		if (kind == IncrementalProjectBuilder.FULL_BUILD
-				|| kind == IncrementalProjectBuilder.CLEAN_BUILD
-				|| getDelta(getProject()) == null) {
-			// delta not available
-			buildStatus = fullBuild(monitor);
-		} else {
-			buildStatus = incrementalBuild(monitor);
-		}
-		buildStatus = applyBuildCommand(buildStatus,
-				new AfterBuildProcessCommand(kind));
-
-		if (buildStatus.getSeverity() == IStatus.OK) {
-			return getProject().getReferencedProjects();
-		}
-
-		// reinitialize the builders of the current builder set if an error
-		// occurs
-		try {
-			IIpsArtefactBuilderSet builderSet = getIpsProject()
-					.getCurrentArtefactBuilderSet();
-			builderSet.initialize();
-		} catch (Exception e) {
-			buildStatus.add(new IpsStatus(
-					Messages.IpsBuilder_msgErrorExceptionDuringBuild));
-		}
-		throw new CoreException(buildStatus);
 	}
 
 	/*
@@ -200,13 +204,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 	}
 
 	/**
-	 * 
-	 * Overridden IMethod.
+	 * {@inheritDoc}
 	 */
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		// since the introduction of JMerge the generated java source files
-		// don't
-		// have to be deleted anymore
+		// don't have to be deleted anymore
 	}
 
 	private void removeEmptyFolders(IFolder parent, boolean removeThisParent,
@@ -236,7 +238,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 				Messages.IpsBuilder_msgIncrementalBuildResults, null);
 		IResourceDelta delta = getDelta(getProject());
 		try {
-
 			IncBuildVisitor visitor = new IncBuildVisitor(buildStatus, monitor);
 			delta.accept(visitor);
 			buildStatus = visitor.buildStatus;
@@ -259,14 +260,18 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		}
 		resource.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 		MessageList list = object.validate();
+		createMarkersFromMessageList(resource, list, IMarker.PROBLEM);
+	}
+
+	private void createMarkersFromMessageList(IResource resource, MessageList list, String markerType) throws CoreException {
 		for (int i = 0; i < list.getNoOfMessages(); i++) {
 			Message msg = list.getMessage(i);
-			IMarker marker = resource.createMarker(IMarker.PROBLEM);
+			IMarker marker = resource.createMarker(markerType);
 			marker.setAttribute(IMarker.MESSAGE, msg.getText());
 			marker.setAttribute(IMarker.SEVERITY, getMarkerSeverity(msg));
 		}
 	}
-
+	
 	private int getMarkerSeverity(Message msg) {
 		int msgSeverity = msg.getSeverity();
 		if (msgSeverity == Message.ERROR) {

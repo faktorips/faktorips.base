@@ -160,6 +160,7 @@ public class IpsPreferences {
     public boolean canEditGenerationsWithSuccesor() {
     	return prefStore.getBoolean(EDIT_GENERATION_WITH_SUCCESSOR);
     }
+    
     /**
      * Returns the value of the enable generating preference.
      */

@@ -304,6 +304,15 @@
 		        datatypeClass="org.faktorips.datatype.PrimitiveIntegerDatatype"
       			helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
    </extension>
+
+<!-- 
+  Markers
+-->
+   <extension point="org.eclipse.core.resources.markers" id="problemmarker" name="FaktorIPS-Problemmarker"> 
+      <persistent value="true"/> 
+      <super type="org.eclipse.core.resources.problemmarker"/> 
+   </extension> 
+
   
 <!-- 
   Product-Definition-Extensions

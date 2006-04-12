@@ -25,7 +25,6 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -36,15 +35,32 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.message.MessageList;
 
 
 
 /**
- * Project to edit IPS objects. 
+ * Project to develop IPS objects. 
  */
 public interface IIpsProject extends IIpsElement, IProjectNature {
 
     public final static String NATURE_ID = IpsPlugin.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
+    
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the project's property file is missing.
+     */
+    public final static String MSGCODE_MISSING_PROPERTY_FILE = MSGCODE_PREFIX + "MissingPropertyFile"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the project's property file's contents is
+     * not parsable.
+     */
+    public final static String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
     
     /**
      * Returns the corresponding platform project.
@@ -55,6 +71,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the corresponding Java project.
      */
     public IJavaProject getJavaProject();
+    
+    /**
+     * Returns <code>true</code> if the project can be build / Java sourcecode can be generated.
+     * Returns <code>false</code> otherwise. E. g. if the project's properties file is missing
+     * the project can't be build.
+     */
+    public boolean canBeBuild();
     
     /**
      * Returns the project's properties. Note that the method returns a copy of the properties,
@@ -85,6 +108,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     
     /**
      * Sets the id of the current artefact builder.
+     * 
+     * @deprecated use IIpsProjectProperties to change the project properties
      */
     public void setCurrentArtefactBuilderSet(String id) throws CoreException;
     
@@ -95,6 +120,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     
     /**
      * Set the value datatypes allowed in the project.
+     * 
+     * @deprecated use IIpsProjectProperties to change the project properties
      */
     public void setValueDatatypes(ValueDatatype[] types) throws CoreException;
 
@@ -112,12 +139,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * generate getAnzahlCoverages().
      */
     public Locale getGeneratedJavaSourcecodeDocumentationLanguage();
-    
-    /**
-     * Sets the language (as a locale) in that the generated Java sourcecode
-     * is documented. 
-     */
-    public void setGeneratedJavaSourcecodeDocumentationLanguage(Locale locale);
     
     /**
      * Returns the naming convention for changes over time used in the generated Java sourcecode.
@@ -313,13 +334,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If no
      * IpsArtefactBuilderSet is active for this project an <code>EmptyBuilderSet</code> is returned.
      */
-    public IIpsArtefactBuilderSet getCurrentArtefactBuilderSet() throws CoreException;
+    public IIpsArtefactBuilderSet getArtefactBuilderSet() throws CoreException;
     
-    /**
-     * Returns a Java code fragment that gives access to the FaktorIPS runtime repository.
-     */
-    public JavaCodeFragment getCodeToGetTheRuntimeRepository() throws CoreException;
-
     /**
      * Returns the runtime id prefix configured for this project.
      */
@@ -345,9 +361,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @param newDatatype
      * @throws CoreException
+     * 
+     * @deprecated use IIpsProjectProperties to change the project properties
      */
     public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
     
-    
+    /**
+     * Validates the project and returns the result as list of messages.
+     */
+    public MessageList validate() throws CoreException;
     
 }

@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
@@ -42,6 +44,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -61,8 +64,43 @@ public class IpsProjectTest extends IpsPluginTest {
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
     
+    public void testValidate() throws CoreException {
+    	MessageList list = ipsProject.validate();
+    	assertTrue(list.isEmpty());
+    }
+
+    public void testValidate_MissingPropertyFile() throws CoreException {
+    	IFile file = ipsProject.getIpsProjectPropertiesFile();
+    	file.delete(true, false, null);
+    	MessageList list = ipsProject.validate();
+    	assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_MISSING_PROPERTY_FILE));
+    	assertEquals(1, list.getNoOfMessages());
+    }
+    
+    public void testValidate_UnparsablePropertyFile() throws CoreException {
+    	IFile file = ipsProject.getIpsProjectPropertiesFile();
+    	InputStream unparsableContents = new ByteArrayInputStream("blabla".getBytes());
+    	file.setContents(unparsableContents, true, false, null);
+    	MessageList list = ipsProject.validate();
+    	assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_UNPARSABLE_PROPERTY_FILE));
+    	assertEquals(1, list.getNoOfMessages());
+    }
+
     public void testGetProperties() {
     	assertNotNull(ipsProject.getProperties());
+    }
+    
+    /**
+     * This has once been a bug. If setProperties() only saves the properties
+     * to the file without updating it in memory, an access method might return
+     * an old value, if it is called before the resource change listener has
+     * removed the old prop file from the cache in the model.
+     */
+    public void testSetProperties_RacingCondition() throws CoreException {
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setRuntimeIdPrefix("newPrefix");
+    	ipsProject.setProperties(props);
+    	assertEquals("newPrefix", ipsProject.getRuntimeIdPrefix());
     }
     
     public void testSetProperties() throws CoreException {
@@ -83,7 +121,6 @@ public class IpsProjectTest extends IpsPluginTest {
     	// test if a copy was created during set
     	props.setBuilderSetId("newBuilder");
     	assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
-    	
     }
 
     public void testFindProductCmptType() throws CoreException {
@@ -101,7 +138,6 @@ public class IpsProjectTest extends IpsPluginTest {
     	prj2.setIpsObjectPath(path);
     	productCmptType = prj2.findProductCmptType("motor.MotorProduct");
     	assertNotNull(productCmptType);
-    	
     }
 
     public void testGetValueDatatypes() throws CoreException {

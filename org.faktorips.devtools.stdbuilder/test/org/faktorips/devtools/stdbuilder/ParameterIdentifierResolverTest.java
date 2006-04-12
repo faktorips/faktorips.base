@@ -20,6 +20,7 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -52,7 +54,10 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         pdProject = this.newIpsProject("TestProject");
-        pdProject.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
+        IIpsProjectProperties props = pdProject.getProperties();
+        props.setJavaSrcLanguage(Locale.GERMAN);
+        pdProject.setProperties(props);
+        ValueDatatype[] types = pdProject.getValueDatatypes(false);
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
         pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
@@ -61,12 +66,12 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
         pdProject.setCurrentArtefactBuilderSet(StdBuilderPlugin.STANDARD_BUILDER_EXTENSION_ID);
-        resolver = pdProject.getCurrentArtefactBuilderSet().getFlParameterIdentifierResolver();
+        resolver = pdProject.getArtefactBuilderSet().getFlParameterIdentifierResolver();
         resolver.setIpsProject(pdProject);
     }
 
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
-        IIpsArtefactBuilder[] builders = pdProject.getCurrentArtefactBuilderSet().getArtefactBuilders();
+        IIpsArtefactBuilder[] builders = pdProject.getArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {
             if (((JavaSourceFileBuilder)builders[i]).getKindId().equals(StandardBuilderSet.KIND_POLICY_CMPT_INTERFACE)) {
                 return (PolicyCmptInterfaceBuilder)builders[i];

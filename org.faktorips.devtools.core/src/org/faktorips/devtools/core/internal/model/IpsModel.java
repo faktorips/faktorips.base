@@ -360,7 +360,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 * registered builder sets a warning is logged and an EmptyBuilderSet will
 	 * be returned.
 	 */
-	public IIpsArtefactBuilderSet getCurrentIpsArtefactBuilderSet(
+	public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(
 			IIpsProject project) throws CoreException {
 
 		ArgumentCheck.notNull(project, this);
@@ -429,6 +429,16 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 		return (DatatypeHelper) map.get(datatype);
 	}
+	
+	/**
+	 * Places the properties object in the cache.
+	 * Should only be called by IpsProject.setProperties().
+	 */
+	public void setIpsProjectProperties(IpsProject ipsProject, IIpsProjectProperties props) {
+		if (projectPropertiesMap == null) {
+			projectPropertiesMap = new HashMap();
+		}
+		projectPropertiesMap.put(ipsProject.getName(), props);	}
 
 	/**
 	 * Returns the properties (stored in the .ipsproject file) for the given ips
@@ -448,13 +458,14 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 		return data;
 	}
-
+	
 	/**
 	 * Reads the project's data from the .ipsproject file.
 	 */
 	private IpsProjectProperties readProjectData(IpsProject ipsProject) {
 		IFile file = ipsProject.getIpsProjectPropertiesFile();
 		IpsProjectProperties data = new IpsProjectProperties();
+		data.setCreatedFromParsableFileContents(false);
 		if (!file.exists()) {
 			return data;
 		}
@@ -483,8 +494,17 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				return data;
 			}
 		}
-		return IpsProjectProperties.createFromXml(ipsProject, doc
-				.getDocumentElement());
+		try {
+		    data = IpsProjectProperties.createFromXml(ipsProject, doc
+					.getDocumentElement());
+			data.setCreatedFromParsableFileContents(true);
+		} catch (Exception e) {
+			IpsPlugin.log(new IpsStatus(
+					"Error creating properties from xml, file:  " //$NON-NLS-1$
+							+ file, e));
+			data.setCreatedFromParsableFileContents(false);
+		}
+		return data;
 	}
 
 	/*
@@ -522,9 +542,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+	 * {@inheritDoc}
 	 */
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta delta = event.getDelta();
@@ -540,7 +558,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 	}
 
-	private void retrieveRegisteredArteFactBuilderSets() {
+	private void retrieveRegisteredArtefactBuilderSets() {
 
 		availableBuilderSets = new ArrayList();
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -614,7 +632,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 */
 	public IIpsArtefactBuilderSet[] getAvailableArtefactBuilderSets() {
 		if (availableBuilderSets == null) {
-			retrieveRegisteredArteFactBuilderSets();
+			retrieveRegisteredArtefactBuilderSets();
 		}
 		return (IIpsArtefactBuilderSet[]) availableBuilderSets
 				.toArray(new IIpsArtefactBuilderSet[availableBuilderSets.size()]);

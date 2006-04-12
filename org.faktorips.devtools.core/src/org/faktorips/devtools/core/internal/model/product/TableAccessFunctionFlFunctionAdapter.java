@@ -53,7 +53,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
      */
     public CompilationResult compile(CompilationResult[] argResults) {
         try {
-            IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getCurrentArtefactBuilderSet();
+            IIpsArtefactBuilderSet builderSet = fct.getIpsProject().getArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
                 return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
             }

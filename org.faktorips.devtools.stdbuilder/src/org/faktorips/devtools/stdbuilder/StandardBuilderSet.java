@@ -39,6 +39,7 @@ import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.runtime.internal.MethodNames;
 
 /**
  * A IpsArtefactBuilderSet implementation that assembles the standard FaktorIPS artefact builders.
@@ -52,31 +53,29 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsArtefactBuilder[] getArtefactBuilders() {
         return builders;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isSupportTableAccess() {
         return true;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public CompilationResult getTableAccessCode(ITableAccessFunction fct, CompilationResult[] argResults) throws CoreException {
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
         CompilationResultImpl result = new CompilationResultImpl(code, returnType);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(fct.getTableStructure().getIpsSrcFile()));
-        code.append(".getInstance(");
-        code.append(fct.getIpsProject().getCodeToGetTheRuntimeRepository());
+        code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "()).findRow(");
         //TODO pk: findRow is not correct in general
-        code.append(").findRow(");
         for (int i = 0; i < argResults.length; i++) {
             if (i>0) {
                 code.append(", ");

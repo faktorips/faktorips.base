@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -43,7 +44,9 @@ public class XmlContentFileCopyBuilderTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        project.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
+        IIpsProjectProperties props = project.getProperties();
+        props.setJavaSrcLanguage(Locale.GERMAN);
+        project.setProperties(props);
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE,
             "TestTable");
         contents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
@@ -65,7 +68,7 @@ public class XmlContentFileCopyBuilderTest extends IpsPluginTest {
     }
 
     private IJavaPackageStructure getPackageStructure() throws CoreException {
-        return (IJavaPackageStructure)project.getCurrentArtefactBuilderSet();
+        return (IJavaPackageStructure)project.getArtefactBuilderSet();
     }
 
     public void testDelete() throws CoreException {
