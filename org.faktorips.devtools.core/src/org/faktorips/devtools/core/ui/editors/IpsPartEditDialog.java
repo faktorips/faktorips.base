@@ -60,7 +60,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
             boolean useTabFolder) {
         super(parentShell, windowTitle, useTabFolder);
         uiController = createUIController(part);
-        oldState = part.newMemento();
+        oldState = part.getIpsObject().newMemento();
         dirty = part.getIpsObject().getIpsSrcFile().isDirty();
     }
     
@@ -74,12 +74,21 @@ public abstract class IpsPartEditDialog extends EditDialog {
 			}
 		
 			public void widgetSelected(SelectionEvent e) {
-				uiController.getIpsObjectPart().setState(oldState);
-				if (!dirty) {
-					uiController.getIpsObjectPart().getIpsObject().getIpsSrcFile().markAsClean();
-				}
+				handleAbortion();
 			}
 		});
+    }
+    
+    protected void handleShellCloseEvent() {
+		handleAbortion();
+    	super.handleShellCloseEvent();
+    }
+    
+    private void handleAbortion() {
+		uiController.getIpsObjectPart().getIpsObject().setState(oldState);
+		if (!dirty) {
+			uiController.getIpsObjectPart().getIpsObject().getIpsSrcFile().markAsClean();
+		}
     }
     
 	protected Control createContents(Composite parent) {

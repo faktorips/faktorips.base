@@ -142,6 +142,18 @@ public abstract class EditDialog extends TitleAreaDialog {
 	 */
 	protected void buttonPressed(int buttonId) {
 		super.buttonPressed(buttonId);
+    	activateParentEditor();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void handleShellCloseEvent() {
+    	super.handleShellCloseEvent();
+    	activateParentEditor();
+    }
+
+	private void activateParentEditor() {
 		if (parentEditor != null) {
 			parentEditor.setActive(true);
 		}
