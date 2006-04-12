@@ -143,7 +143,7 @@ public class CheckStateListener implements ICheckStateListener {
  				gray = gray || myGray;
 			}
 			else {
-				items[i].setGrayed(false);
+				setNotGrayedRecursive(new TreeItem[] {items[i]});
 				unchecked = true;
 			}
 		}
@@ -151,6 +151,16 @@ public class CheckStateListener implements ICheckStateListener {
 		return gray || unchecked;
 	}
 
+	/**
+	 * Set all given TreeItems and all children non-grayed. 
+	 */
+	private void setNotGrayedRecursive(TreeItem[] items) {
+		for (int i = 0; i < items.length; i++) {
+			items[i].setGrayed(false);
+			setNotGrayedRecursive(items[i].getItems());
+		}
+	}
+	
 	/**
 	 * Uncheck the given tree items and all its direct or indirect children.
 	 */
