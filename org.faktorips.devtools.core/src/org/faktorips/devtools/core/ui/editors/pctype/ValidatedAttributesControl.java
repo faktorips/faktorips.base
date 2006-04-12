@@ -107,7 +107,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 	}
 
 	protected void addColumnLayoutData(TableLayoutComposite layouter) {
-		layouter.addColumnData(new ColumnPixelData(10, false)); // message image
+		layouter.addColumnData(new ColumnPixelData(20, false)); // message image
 		layouter.addColumnData(new ColumnWeightData(100, true));
 	}
 
