@@ -33,17 +33,17 @@
             label="%org.faktorips.devtools.actions.ModellingActionSet"
             visible="false">
          <action
-               label="New Table Structure"
+               label="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.label"
                icon="icons/NewTableStructureWizard.gif"
-               tooltip="New Table Structure"
+               tooltip="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructureWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewTableStructureWizardAction">
          </action>
          <action
-               label="New Policy Class"
+               label="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.label"
                icon="icons/NewPolicyCmptTypeWizard.gif"
-               tooltip="New Policy Class"
+               tooltip="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
@@ -55,9 +55,9 @@
             label="%org.faktorips.devtools.actions.ProductDefinitionActionSet"
             visible="false">
          <action
-               label="New Table Contents"
+               label="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.label"
                icon="icons/NewTableContentsWizard.gif"
-               tooltip="New Table Contents"
+               tooltip="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.tablecontents.OpenNewTableContentsWizardAction"
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewTableContentsWizardAction">
@@ -66,17 +66,17 @@
                class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
                icon="icons/NewProductCmptWizard.gif"
                id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction"
-               label="New Product Component"
+               label="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.label"
                toolbarPath="org.faktorips.devtools"
-               tooltip="New Product Component">
+               tooltip="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.tooltip">
          </action>
          <action
                class="org.faktorips.devtools.core.ui.actions.ChangeWorkingDateAction"
                icon="icons/WorkingDate.gif"
                id="org.faktorips.devtools.core.ChangeWorkingDateAction"
-               label="%org.faktorips.devtools.core.ChangeWorkingDateAction"
+               label="%org.faktorips.devtools.core.ChangeWorkingDateAction.label"
                toolbarPath="org.faktorips.devtools"
-               tooltip="Change Working Date"/>
+               tooltip="%org.faktorips.devtools.core.ChangeWorkingDateAction.tooltip"/>
       </actionSet>
    </extension>
    
