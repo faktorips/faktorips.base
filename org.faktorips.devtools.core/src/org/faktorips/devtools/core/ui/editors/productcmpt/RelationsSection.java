@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
@@ -162,12 +163,23 @@ public class RelationsSection extends IpsSection {
 	 * {@inheritDoc}
 	 */
 	protected void initClientComposite(Composite client, UIToolkit toolkit) {
+		Composite relationRootPane = toolkit.createComposite(client);
+		relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+
 		String[] pcTypeRelations = getTypeRelations(generation);
 		if (pcTypeRelations.length == 0) {
-			toolkit.createLabel(client,
-					Messages.PropertiesPage_noRelationsDefined);
+			GridLayout layout = (GridLayout) client.getLayout();
+			layout.marginHeight = 2;
+			layout.marginWidth = 1;
+
+			relationRootPane.setLayout(new GridLayout(1, true));
+			relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+					true, true));
+
+			toolkit.createLabel(relationRootPane,
+					Messages.PropertiesPage_noRelationsDefined).setLayoutData(
+					new GridData(SWT.FILL, SWT.FILL, true, true));
 		} else {
-			Composite relationRootPane = toolkit.createComposite(client);
 			relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
 					true, true));
 			GridLayout layout = new GridLayout(2, false);
@@ -205,9 +217,9 @@ public class RelationsSection extends IpsSection {
 			cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
 			cardinalityPanel.setEnabled(false);
 	
-			toolkit.getFormToolkit().paintBordersFor(relationRootPane);
 			addFocusControl(treeViewer.getTree());
 		}
+		toolkit.getFormToolkit().paintBordersFor(relationRootPane);
 	}
 
 	/**
