@@ -84,8 +84,6 @@ public class Messages extends NLS {
 
 	public static String AbstractProductCmptNamingStrategy_msgNoVersionSeparator;
 
-	public static String AbstractProductCmptNamingStrategy_msgMultipleSeparators;
-
 	public static String AbstractProductCmptNamingStrategy_msgIllegalChar;
 
 	public static String DateBasedProductCmptNamingStrategy_msgWrongFormat;

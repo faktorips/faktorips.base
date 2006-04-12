@@ -201,10 +201,17 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
 		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
 		targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getIpsPackageFragment().getRoot(), inputRoot);
+		
+		int ignore = getSegmentsToIgnore(structure.toArray(true));
 		IIpsPackageFragment pack = structure.getRoot().getIpsPackageFragment();
-		if (pack.getIpsParentPackageFragment() != null) {
-			targetInput.setPdPackageFragment(pack.getIpsParentPackageFragment());
-		}
+		int segments = pack.getRelativePath().segmentCount();
+		
+		if (segments - ignore >= 0) {
+			IPath path = pack.getRelativePath().removeLastSegments(segments-ignore);
+			pack = pack.getRoot().getIpsPackageFragment(path.toString().replace('/', '.'));
+			targetInput.setPdPackageFragment(pack);
+		} 
+		
 		targetInput.getTextControl().addModifyListener(listener);
 		
 		

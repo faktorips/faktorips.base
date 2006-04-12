@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.product;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -67,7 +68,26 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	    this.elementToNodeMapping = new Hashtable();
 	    this.root = buildNode(root.getWrappedElement(), null);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IStructureNode[] toArray(boolean prodcutCmptOnly) {
+		List result = new ArrayList();
+		addChildrenToList(root, result, prodcutCmptOnly);
+		return (IStructureNode[])result.toArray(new IStructureNode[result.size()]);
+	}
 	
+	private void addChildrenToList(IStructureNode parent, List list, boolean productCmptOnly) {
+		IStructureNode[] children = parent.getChildren();
+		for (int i = 0; i < children.length; i++) {
+			if ((productCmptOnly && children[i].getWrappedElement() instanceof IProductCmpt) || !productCmptOnly) {
+				list.add(children[i]);
+			}
+			addChildrenToList(children[i], list, productCmptOnly);
+		}
+	}
+
 	/**
      * Creates a new node for the given element and links it to the given parent-node.
      * 

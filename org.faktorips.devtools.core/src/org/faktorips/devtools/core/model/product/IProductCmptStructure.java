@@ -52,6 +52,11 @@ public interface IProductCmptStructure {
 	public void refresh() throws CycleException;
 	
 	/**
+	 * Returns all nodes contained in this structure as plain array. The order of the nodes is unspecified.
+	 */
+	public IStructureNode[] toArray(boolean productCmptOnly);
+	
+	/**
 	 * A node wrapping either an <code>IProductCmpt</code> or an <code>IProductCmptRelation</code> 
 	 * 
 	 * @author Thorsten Guenther
