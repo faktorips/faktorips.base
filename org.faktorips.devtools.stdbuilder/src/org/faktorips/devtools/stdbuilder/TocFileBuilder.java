@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -54,6 +55,7 @@ import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.TocEntryGeneration;
 import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -144,18 +146,18 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
             Long oldModStamp = (Long)packFrgmtRootTocModStamps.get(root);
             if (oldModStamp.longValue() != getToc(root).getModificationStamp()) {
-                saveProductCmptRegistryToc(root);
+                saveToc(root);
             }
         }
     }
     
 	/**
-	 * Saves the product component registry's table of contents to a file. The table of contents file is needed
-	 * by the FaktorIPS runtime's ClassloaderProductCmptRegistry to load the product component's.
+	 * Saves the repository's table of contents to a file. The table of contents file is needed
+	 * by the FaktorIPS runtime to load the product component's.
 	 * 
 	 * @throws CoreException if an error occurs while writing the toc to the file.
 	 */
-	private void saveProductCmptRegistryToc(IIpsPackageFragmentRoot root) throws CoreException {
+	private void saveToc(IIpsPackageFragmentRoot root) throws CoreException {
         IFile tocFile = getBuilderSet().getRuntimeRepositoryTocFile(root);
         if (tocFile==null) {
             return;
@@ -180,7 +182,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             throw new CoreException(new IpsStatus(e1));
         }
         if (tocFile.exists()) {
-            tocFile.setContents(is, true, true, null);
+            replaceTocFileIfContentHasChanged(root.getIpsProject(), tocFile, xml);
         } else {
             if (!tocFile.getParent().exists()) {
                 createFolder((IFolder)tocFile.getParent());
@@ -188,7 +190,28 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             tocFile.create(is, true, null);
         }
 	}
-	
+    
+    private void replaceTocFileIfContentHasChanged(IIpsProject ipsProject, IFile tocFile, String newContents) throws CoreException {
+        String oldContents = null;
+        String charset = ipsProject.getXmlFileCharset();
+        try {
+            oldContents = StringUtil.readFromInputStream(tocFile.getContents(), charset);
+        } catch (Exception e) {
+            // if an error occurs reading the old contents, we just write the new one
+            // e.g. an error can occur if the toc file isn't synchronized 
+        }
+        if (newContents.equals(oldContents)) {
+            return;
+        }
+        InputStream is;
+        try {
+            is = new ByteArrayInputStream(newContents.getBytes(charset));
+        } catch (UnsupportedEncodingException e1) {
+            throw new CoreException(new IpsStatus(e1));
+        }
+        tocFile.setContents(is, true, true, null);
+    }
+    
     private MutableClRuntimeRepositoryToc getToc(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsPackageFragmentRoot root = ipsSrcFile.getIpsObject().getIpsPackageFragment().getRoot();
         return getToc(root);

@@ -178,6 +178,28 @@ public class TocFileBuilderTest extends IpsPluginTest {
         assertNull(toc2.getTableTocEntryByClassname("motor.RateTable2"));
     }
     
+    
+    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
+        // create a product component
+        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
+        IProductCmpt motorProduct = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct");
+        motorProduct.setPolicyCmptType(type.getQualifiedName());
+        GregorianCalendar validFrom = new GregorianCalendar(2006, 0, 1);
+        motorProduct.newGeneration().setValidFrom(validFrom);
+        type.getIpsSrcFile().save(true, null);
+        motorProduct.getIpsSrcFile().save(true, null);
+        
+        // now make a full build
+        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IFile tocFile = project.getArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        assertTrue(tocFile.exists());
+        long modStamp = tocFile.getModificationStamp();
+        
+        // now make a seond full build
+        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertEquals(modStamp, tocFile.getModificationStamp());
+    }
 
 
 }
