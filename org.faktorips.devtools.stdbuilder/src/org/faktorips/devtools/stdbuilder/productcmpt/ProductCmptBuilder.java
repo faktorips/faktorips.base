@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 
@@ -139,17 +138,15 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
     
     private IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) throws CoreException {
-        IProductCmptType type = generation.getProductCmpt().findProductCmptType();
-        String name = generation.getProductCmpt().getName();
-        name = generation.getIpsProject().getProductCmptNamingStratgey().getJavaClassIdentifier(name);
         GregorianCalendar validFrom = generation.getValidFrom();
         int month = validFrom.get(GregorianCalendar.MONTH) + 1;
         int date = validFrom.get(GregorianCalendar.DATE);
-        name = name
+        String name = generation.getProductCmpt().getName() + " " + 
                 + validFrom.get(GregorianCalendar.YEAR)
                 + (month<10?"0"+month:""+month)
                 + (date<10?"0"+date:""+date);
-        return type.getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
+        name = generation.getIpsProject().getProductCmptNamingStratgey().getJavaClassIdentifier(name);
+        return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
     
     public String getQualifiedClassName(IProductCmptGeneration generation) throws CoreException {

@@ -64,7 +64,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 	public final static String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder"; //$NON-NLS-1$
 
 	private static boolean lastBuildWasCancelled = false;
-
+	
 	public IpsBuilder() {
 		super();
 	}
@@ -440,11 +440,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		// so that this files won't get build mutliple times
 		private Set alreadyBuild;
 
+		private IFolder[] outputFolders;
+
 		private IncBuildVisitor(MultiStatus buildStatus,
-				IProgressMonitor monitor) {
+				IProgressMonitor monitor) throws CoreException {
 			this.monitor = monitor;
 			this.buildStatus = buildStatus;
 			this.alreadyBuild = new HashSet();
+			outputFolders = getIpsProject().getOutputFolders();
 		}
 
 		/**
@@ -461,10 +464,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 			if (outPutLocation.equals(resourceLocation)) {
 				return true;
 			}
-			IFolder[] outPutFolders = getIpsProject().getIpsObjectPath()
-					.getOutputFolders();
-			for (int i = 0; i < outPutFolders.length; i++) {
-				if (outPutFolders[i].getFullPath().equals(resourceLocation)) {
+			for (int i = 0; i < outputFolders.length; i++) {
+				if (outputFolders[i].getFullPath().equals(resourceLocation)) {
 					return true;
 				}
 			}

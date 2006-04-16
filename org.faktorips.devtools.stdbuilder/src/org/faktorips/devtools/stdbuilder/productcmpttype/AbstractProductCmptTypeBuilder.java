@@ -29,6 +29,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -41,14 +42,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 /**
  * 
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuilder {
+public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     /**
      * @param packageStructure
@@ -136,30 +136,10 @@ public abstract class AbstractProductCmptTypeBuilder extends JavaSourceFileBuild
             getGenerationConceptNameAbbreviation(getLanguageUsedInGeneratedSourceCode(element));
     }
     
-    /**
-     * Overridden.
-     * 
-     * Calls the generateInternal() method and addes the package and import declarations to the
-     * content.
-     */
-    public String generate() throws CoreException {
-        StringBuffer content = new StringBuffer();
-        String pack = getPackage();
-        content.append("package " + pack + ";");
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
-        JavaCodeFragment code = generateCodeForJavatype();
-        content.append(code.getImportDeclaration(pack).toString());
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(code.getSourcecode());
-        return content.toString();
-    }
-
     /*
      * Generates the sourcecode of the generated Java class or interface.
      */
-    private JavaCodeFragment generateCodeForJavatype() throws CoreException {
+    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         generateTypeJavadoc(codeBuilder);
         if (generatesInterface()) {

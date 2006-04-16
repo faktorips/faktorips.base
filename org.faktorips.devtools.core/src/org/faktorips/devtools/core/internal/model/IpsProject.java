@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -200,6 +201,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 */
     public IIpsObjectPath getIpsObjectPath() throws CoreException {
     	return getProperties().getIpsObjectPath();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IFolder[] getOutputFolders() throws CoreException {
+    	return getIpsObjectPathInternal().getOutputFolders();
     }
 
 	/**

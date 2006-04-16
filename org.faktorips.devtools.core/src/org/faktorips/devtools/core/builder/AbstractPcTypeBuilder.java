@@ -39,7 +39,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 /**
  * Abstract base class that can be used for builders generating Java sourcecode for a policy
@@ -47,7 +46,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
+public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     public AbstractPcTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
             LocalizedStringsSet stringsSet) {
@@ -114,30 +113,9 @@ public abstract class AbstractPcTypeBuilder extends JavaSourceFileBuilder {
     }
 
     /**
-     * Overridden.
-     * 
-     * Calls the generateInternal() method and addes the package and import declarations to the
-     * content.
-     */
-    public String generate() throws CoreException {
-        assertConditionsBeforeGenerating();
-        StringBuffer content = new StringBuffer();
-        String pack = getPackage();
-        content.append("package " + pack + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
-        JavaCodeFragment code = generateCodeForJavatype();
-        content.append(code.getImportDeclaration(pack).toString());
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(StringUtil.getSystemLineSeparator());
-        content.append(code.getSourcecode());
-        return content.toString();
-    }
-
-    /*
      * Generates the sourcecode of the generated Java class or interface.
      */
-    private JavaCodeFragment generateCodeForJavatype() throws CoreException {
+    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         generateTypeJavadoc(codeBuilder);
         if (generatesInterface()) {

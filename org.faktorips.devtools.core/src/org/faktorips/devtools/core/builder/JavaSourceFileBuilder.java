@@ -594,7 +594,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	}
 
 	private void closeStream(InputStream is) {
-
 		if (is != null) {
 			try {
 				is.close();

@@ -81,7 +81,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         if (!exists()) {
             throw new CoreException(new IpsStatus("IpsPackageFragmentRoot does not exist!")); //$NON-NLS-1$
         }
-        IIpsObjectPathEntry[] entries = getIpsProject().getIpsObjectPath().getEntries();
+        IIpsObjectPathEntry[] entries = ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntries();
         for (int i=0; i<entries.length; i++) {
             if (entries[i].getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)entries[i];

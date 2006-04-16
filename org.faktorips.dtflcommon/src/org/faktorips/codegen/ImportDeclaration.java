@@ -50,17 +50,17 @@ public class ImportDeclaration {
     private final static String JAVA_LANG_ASTERIX = "java.lang.*";
 
     // List that holds the class imports 
-    private List classes_;
+    private List classes;
 
     // Set that holds the package imports (e.g. java.util.*) 
-    private List packages_;
+    private List packages;
 
 	/**
 	 * Creates a new import declaration.
 	 */
 	public ImportDeclaration() {
-        classes_ = new ArrayList();
-        packages_ = new ArrayList();
+        classes = new ArrayList();
+        packages = new ArrayList();
 	}
 	
 	/**
@@ -132,9 +132,9 @@ public class ImportDeclaration {
         }
         if (isPackageImport(importSpec)) {
             removeClassImports(importSpec);
-            packages_.add(importSpec);
+            packages.add(importSpec);
         } else {
-            classes_.add(importSpec);
+            classes.add(importSpec);
         }
     }
     
@@ -142,7 +142,7 @@ public class ImportDeclaration {
      * Removes the class imports that are covered by the package import.
      */
     private void removeClassImports(String packageImport) {
-        for (Iterator it=classes_.iterator(); it.hasNext();) {
+        for (Iterator it=classes.iterator(); it.hasNext();) {
             String classImport = (String)it.next();
             if (classImportCoveredByPackageImport(classImport, packageImport)) {
                    it.remove();
@@ -182,9 +182,9 @@ public class ImportDeclaration {
             if (JAVA_LANG_ASTERIX.equals(importSpec)) {
                 return true;
             }
-            return packages_.contains(importSpec);
+            return packages.contains(importSpec);
         }
-        if (classes_.contains(importSpec)) {
+        if (classes.contains(importSpec)) {
             return true;
         }
         return isCovered(StringUtil.getPackageName(importSpec)+".*");
@@ -206,8 +206,8 @@ public class ImportDeclaration {
     public Iterator iterator()
     {
     	List allImports = new ArrayList();
-        allImports.addAll(packages_);
-		allImports.addAll(classes_);
+        allImports.addAll(packages);
+		allImports.addAll(classes);
         return allImports.iterator();
     }
     
@@ -215,7 +215,26 @@ public class ImportDeclaration {
      * Returns the number of imports.
      */
     public int getNoOfImports() {
-        return classes_.size() + packages_.size();
+        return classes.size() + packages.size();
+    }
+    
+    /**
+     * Returns those imports in the <code>importsToTest>/code> declaration that are not
+     * covered this one. Returns an empty import declaration if either all imports are covered
+     * or importsToTest is <code>null</code>.
+     */
+    public ImportDeclaration getUncoveredImports(ImportDeclaration importsToTest) {
+        ImportDeclaration uncovered = new ImportDeclaration();
+        if (importsToTest==null) {
+            return uncovered;
+        }
+        for (Iterator it=importsToTest.iterator(); it.hasNext();) {
+            String importToTest = (String)it.next();
+            if (!isCovered(importToTest)) {
+                uncovered.add(importToTest);
+            }
+        }
+        return uncovered;
     }
     
     /**
@@ -229,7 +248,7 @@ public class ImportDeclaration {
     		return false;
     	}
     	ImportDeclaration other = (ImportDeclaration)o;
-    	return classes_.equals(other.classes_) && packages_.equals(other.packages_);
+    	return classes.equals(other.classes) && packages.equals(other.packages);
     }
     
 	/**

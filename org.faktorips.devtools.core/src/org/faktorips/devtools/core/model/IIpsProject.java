@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
@@ -105,6 +106,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * <code>setIpsObjectPath()</code> method.
      */
     public IIpsObjectPath getIpsObjectPath() throws CoreException;
+    
+    /**
+     * Returns all output folders specified in the project's object path.
+     */
+    public IFolder[] getOutputFolders() throws CoreException;
     
     /**
      * Sets the id of the current artefact builder.

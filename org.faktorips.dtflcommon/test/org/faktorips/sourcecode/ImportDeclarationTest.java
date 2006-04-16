@@ -46,7 +46,7 @@ public class ImportDeclarationTest extends TestCase
 		ImportDeclaration id = new ImportDeclaration();
 		assertEquals(0, id.getNoOfImports());
 	}
-	
+    
 	public void testImportDeclaration_ImportDeclaration_PackageName()
 	{
 		ImportDeclaration id = new ImportDeclaration();
@@ -76,7 +76,7 @@ public class ImportDeclarationTest extends TestCase
         id.add("java.util.ArrayList");
         assertEquals(2, id.getNoOfImports());
         
-        id.add("com.fja.pm.*");
+        id.add("org.faktorips.*");
         assertEquals(3, id.getNoOfImports());
         
         id.add("java.util.*");
@@ -95,7 +95,7 @@ public class ImportDeclarationTest extends TestCase
         assertEquals(2, id.getNoOfImports());
         
         Iterator it = id.iterator();
-        assertEquals("com.fja.pm.*", it.next());
+        assertEquals("org.faktorips.*", it.next());
         assertEquals("java.util.*", it.next());
         assertFalse(it.hasNext());
 	}
@@ -132,4 +132,33 @@ public class ImportDeclarationTest extends TestCase
 		assertFalse(id.equals(id2));
 	}
 
+    public void testGetUncoveredImports() {
+        ImportDeclaration decl = new ImportDeclaration();
+        decl.add("java.util.List");
+        decl.add("java.io.*");
+
+        ImportDeclaration toTest = new ImportDeclaration();
+        toTest.add("java.io.File");
+        ImportDeclaration uncovered = decl.getUncoveredImports(toTest);
+        assertEquals(0, uncovered.getNoOfImports());
+        
+        toTest.add("java.util.List");
+        uncovered = decl.getUncoveredImports(toTest);
+        assertEquals(0, uncovered.getNoOfImports());
+
+        toTest.add("java.math.Math");
+        uncovered = decl.getUncoveredImports(toTest);
+        assertEquals(1, uncovered.getNoOfImports());
+
+        toTest.add("java.util.ArrayList");
+        uncovered = decl.getUncoveredImports(toTest);
+        assertEquals(2, uncovered.getNoOfImports());
+        
+        uncovered = decl.getUncoveredImports(decl);
+        assertEquals(0, uncovered.getNoOfImports());
+        
+        uncovered = decl.getUncoveredImports(null);
+        assertEquals(0, uncovered.getNoOfImports());
+
+    }
 }

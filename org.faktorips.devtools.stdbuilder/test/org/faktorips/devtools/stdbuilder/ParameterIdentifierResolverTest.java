@@ -20,7 +20,6 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -56,8 +55,9 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
         pdProject = this.newIpsProject("TestProject");
         IIpsProjectProperties props = pdProject.getProperties();
         props.setJavaSrcLanguage(Locale.GERMAN);
+        props.setBuilderSetId(StdBuilderPlugin.STANDARD_BUILDER_EXTENSION_ID);
         pdProject.setProperties(props);
-        ValueDatatype[] types = pdProject.getValueDatatypes(false);
+        pdProject.getValueDatatypes(false);
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
         pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
@@ -65,7 +65,6 @@ public class ParameterIdentifierResolverTest extends IpsPluginTest {
         attribute = pcType.newAttribute();
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        pdProject.setCurrentArtefactBuilderSet(StdBuilderPlugin.STANDARD_BUILDER_EXTENSION_ID);
         resolver = pdProject.getArtefactBuilderSet().getFlParameterIdentifierResolver();
         resolver.setIpsProject(pdProject);
     }

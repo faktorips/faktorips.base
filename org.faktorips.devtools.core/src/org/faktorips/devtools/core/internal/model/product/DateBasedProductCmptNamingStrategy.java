@@ -121,7 +121,7 @@ public class DateBasedProductCmptNamingStrategy extends
 	public boolean isPostfixAllowed() {
 		return postfixAllowed;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
