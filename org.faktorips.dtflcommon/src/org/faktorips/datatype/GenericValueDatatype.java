@@ -72,7 +72,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     public abstract String getAdaptedClassName();
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public MessageList validate() {
         MessageList list = new MessageList();

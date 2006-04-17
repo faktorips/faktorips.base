@@ -63,7 +63,6 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL));
     }
     
-
     /*
      * Test method for 'org.faktorips.datatype.GenericValueDatatype.isParsable(String)'
      */
