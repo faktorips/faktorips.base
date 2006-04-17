@@ -61,64 +61,53 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
+     * {@inheritDoc}
      */
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
+     * {@inheritDoc}
      */
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
         throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
+     * {@inheritDoc}
      */
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[0];
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
+     * {@inheritDoc}
      */
     public char[] getContextInformationAutoActivationCharacters() {
         return null;
     }
 
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
-     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
+     * {@inheritDoc}
      */
     public IContextInformationValidator getContextInformationValidator() {
 		return null; //no context
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeContextInformation(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
+     * {@inheritDoc}
      */
     public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
         return null;
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
+     * {@inheritDoc}
      */
     public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
 		if (documentOffset == 0 && !computeProposalForEmptyPrefix) {
