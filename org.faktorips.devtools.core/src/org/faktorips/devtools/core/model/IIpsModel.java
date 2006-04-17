@@ -133,6 +133,13 @@ public interface IIpsModel extends IIpsElement {
     public ValueDatatype[] getPredefinedValueDatatypes();
     
     /**
+     * Returns <code>true</code> if the datatype is predefined (via the datatypeDefinition
+     * extension point), otherwise <code>false</code>. Returns <code>false</code> if 
+     * datatypeId is <code>null</code>.
+     */
+    public boolean isPredefinedValueDatatype(String datatypeId);
+    
+    /**
      * Returns the available changes over time naming conventions.
      */
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention();

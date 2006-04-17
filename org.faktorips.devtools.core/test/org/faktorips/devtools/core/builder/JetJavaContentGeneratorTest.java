@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.List;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -68,7 +69,7 @@ public class JetJavaContentGeneratorTest extends IpsPluginTest {
         generator.addImports(buf);
         String content = buf.toString();
         String importEntry = content.substring(length, content.length());
-        assertEquals("import java.util.List;", importEntry);
+        assertEquals("import java.util.List;" + SystemUtils.LINE_SEPARATOR, importEntry);
     }
     
     public void testGetDocumentText() throws CoreException{

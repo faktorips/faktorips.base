@@ -19,10 +19,13 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class IpsProjectPropertiesTest extends IpsPluginTest {
@@ -32,6 +35,30 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 	protected void setUp() throws Exception {
 		super.setUp();
         ipsProject = this.newIpsProject("TestProject");
+	}
+	
+	public void testValidate_DefinedDatatypes() throws CoreException {
+		IpsProjectProperties props = new IpsProjectProperties();
+		MessageList list = props.validate(ipsProject);
+		int numOfMessages = list.getNoOfMessages();
+		DynamicValueDatatype dynDatatype = new DynamicValueDatatype(ipsProject);
+		props.setDefinedDatatypes(new DynamicValueDatatype[]{dynDatatype});
+		list = props.validate(ipsProject);
+		assertTrue(list.getNoOfMessages()>numOfMessages); // there should be at least one or message
+	}
+
+	public void testValidate_PredefinedDatatypes() throws CoreException {
+		IpsProjectProperties props = new IpsProjectProperties();
+		MessageList list = props.validate(ipsProject);
+		int numOfMessages = list.getNoOfMessages();
+		props.setPredefinedDatatypesUsed(ipsProject.getIpsModel().getPredefinedValueDatatypes());
+		list = props.validate(ipsProject);
+		assertEquals(numOfMessages, list.getNoOfMessages()); // there should be at least one or message
+		
+		props.setPredefinedDatatypesUsed(new String[]{"unknownDatatype"});
+		list = props.validate(ipsProject);
+		assertTrue(list.getNoOfMessages()>numOfMessages); // there should be at least one or message
+		assertTrue(list.getMessageByCode(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE)!=null);
 	}
 
 	public void testToXml() {
@@ -70,6 +97,32 @@ public class IpsProjectPropertiesTest extends IpsPluginTest {
 		assertEquals(2, datatypes.length);
 		assertEquals("Integer", datatypes[0]);
 		assertEquals("Boolean", datatypes[1]);
+	}
+	
+	public void testAddDefinedDatatype() {
+		IpsProjectProperties props = new IpsProjectProperties();
+
+		DynamicValueDatatype type1 = new DynamicValueDatatype(ipsProject);
+		type1.setQualifiedName("type1");
+		props.addDefinedDatatype(type1);
+		assertEquals(type1, props.getDefinedDatatypes()[0]);
+		
+		DynamicValueDatatype type2 = new DynamicValueDatatype(ipsProject);
+		type2.setQualifiedName("type2");
+		props.addDefinedDatatype(type2);
+		assertEquals(type1, props.getDefinedDatatypes()[0]);
+		assertEquals(type2, props.getDefinedDatatypes()[1]);
+		
+		DynamicValueDatatype type1b = new DynamicValueDatatype(ipsProject);
+		type1b.setQualifiedName("type1");
+		props.addDefinedDatatype(type1b);
+		assertEquals(type1b, props.getDefinedDatatypes()[0]);
+		assertEquals(type2, props.getDefinedDatatypes()[1]);
+
+		// type with qName=null
+		DynamicValueDatatype type3 = new DynamicValueDatatype(ipsProject);
+		props.addDefinedDatatype(type3);
+		assertEquals(type3, props.getDefinedDatatypes()[2]);
 	}
 
 	public void testInitFromXml() {

@@ -730,7 +730,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	}
 
 	public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException  {
-		((IpsProjectProperties)getPropertiesInternal()).addDefinedDataType(newDatatype);
+		((IpsProjectProperties)getPropertiesInternal()).addDefinedDatatype(newDatatype);
 		saveProjectProperties(getProperties());
 	}
 

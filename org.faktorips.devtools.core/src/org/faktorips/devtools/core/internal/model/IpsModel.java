@@ -929,7 +929,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public ValueDatatype[] getPredefinedValueDatatypes() {
 		if (datatypes == null) {
@@ -937,6 +937,16 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 		Collection c = datatypes.values();
 		return (ValueDatatype[]) c.toArray(new ValueDatatype[c.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isPredefinedValueDatatype(String valueDatatypeId) {
+		if (datatypes == null) {
+			this.initDatatypeDefintionsFromConfiguration();
+		}
+		return datatypes.containsKey(valueDatatypeId);
 	}
 
 	/*

@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNa
 import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
@@ -93,7 +94,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	public MessageList validate(IIpsProject ipsProject) throws CoreException {
 		MessageList list = new MessageList();
 		validateBuilderSetId(ipsProject, list);
+		validateUsedPredefinedDatatype(ipsProject, list);
+		for (int i = 0; i < definedDatatypes.length; i++) {
+			list.add(definedDatatypes[i].validate());
+		}
 		return list;
+	}
+	
+	private void validateUsedPredefinedDatatype(IIpsProject ipsProject, MessageList list) {
+		IIpsModel model = ipsProject.getIpsModel();
+		for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
+			if (!model.isPredefinedValueDatatype(predefinedDatatypesUsed[i])) {
+				String text = "The predefined datatype " + predefinedDatatypesUsed[i] + " is unknown.";
+				Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE, text, Message.ERROR, this);
+				list.add(msg);
+			}
+		}
 	}
 	
 	private void validateBuilderSetId(IIpsProject ipsProject, MessageList list) {
@@ -107,7 +123,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_BUILDER_SET_ID, text, Message.ERROR, this, IIpsProjectProperties.PROPERTY_BUILDER_SET_ID);
 		list.add(msg);
 	}
-
+	
 	/**
 	 * Returns <code>true</code> if this property object was created by reading a  
 	 * .ipsproject file containg parsable xml data, otherwise <code>false</code>.
@@ -404,12 +420,17 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     	return new Locale(language, country, variant);
     }
 
-	public void addDefinedDataType(DynamicValueDatatype newDatatype) {
+    /**
+     * {@inheritDoc}
+     */
+	public void addDefinedDatatype(DynamicValueDatatype newDatatype) {
 		DynamicValueDatatype [] oldValue = definedDatatypes;
 		int i;
 		/* replace, if Datatype already registered */
 		for (i = 0; i < definedDatatypes.length; i++) {
-			if(definedDatatypes[i].getAdaptedClassName().equals(newDatatype.getAdaptedClassName())) {
+			if(definedDatatypes[i].getQualifiedName()!=null && 
+					newDatatype.getQualifiedName()!=null && 
+					definedDatatypes[i].getQualifiedName().equals(newDatatype.getQualifiedName())) {
 				definedDatatypes[i] = newDatatype;
 				return;
 			}

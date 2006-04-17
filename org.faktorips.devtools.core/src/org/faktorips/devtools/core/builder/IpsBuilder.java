@@ -84,6 +84,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		MessageList list = getIpsProject().validate();
 		createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
 		if (!getIpsProject().canBeBuild()) {
+			IMarker marker = getProject().createMarker(IpsPlugin.PROBLEM_MARKER);
+			String msg = "The project can't be build until it's properties are valid.";
+			updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
 			return getProject().getReferencedProjects();
 		}
 		buildStatus = applyBuildCommand(buildStatus, new BeforeBuildProcessCommand(kind));
@@ -267,9 +270,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		for (int i = 0; i < list.getNoOfMessages(); i++) {
 			Message msg = list.getMessage(i);
 			IMarker marker = resource.createMarker(markerType);
-			marker.setAttribute(IMarker.MESSAGE, msg.getText());
-			marker.setAttribute(IMarker.SEVERITY, getMarkerSeverity(msg));
+			updateMarker(marker, msg.getText(), getMarkerSeverity(msg));
 		}
+	}
+	
+	private void updateMarker(IMarker marker, String text, int severity) throws CoreException {
+		marker.setAttributes(
+				new String[]{IMarker.MESSAGE, IMarker.SEVERITY},
+				new Object[]{text, new Integer(severity)});
 	}
 	
 	private int getMarkerSeverity(Message msg) {
