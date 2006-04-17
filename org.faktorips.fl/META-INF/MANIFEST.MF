@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FaktorIPS-FormulaLanguage
 Bundle-SymbolicName: org.faktorips.fl
-Bundle-Version: 0.9.11
+Bundle-Version: 0.9.12
 Bundle-Vendor: Faktorzehn
 Bundle-Localization: plugin
 Require-Bundle: org.faktorips.util,
