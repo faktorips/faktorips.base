@@ -188,13 +188,11 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		IPath outLocation = project.getOutputLocation();
 		IPath output = root.append(outLocation);
 		urlsList.add(output.toFile().toURL());
-		// System.out.println("Path: "+output.toFile().toURL());
 		IClasspathEntry[] entry = project.getRawClasspath();
 		for (int i = 0; i < entry.length; i++) {
 			if (entry[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
 				IPath libPath = root.append(entry[i].getPath());
 				urlsList.add(libPath.toFile().toURL());
-				// System.out.println("Path: "+libPath.toFile().getPath());
 			}
 		}
 
