@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
@@ -239,8 +240,19 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		ArgumentCheck.notNull(datatypes);
 		this.predefinedDatatypesUsed = datatypes;
 	}
-    
+	
     /**
+	 * {@inheritDoc}
+	 */
+	public void setPredefinedDatatypesUsed(ValueDatatype[] datatypes) {
+		ArgumentCheck.notNull(datatypes);
+		predefinedDatatypesUsed = new String[datatypes.length];
+		for (int i = 0; i < datatypes.length; i++) {
+			predefinedDatatypesUsed[i] = datatypes[i].getQualifiedName();
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
     public DynamicValueDatatype[] getDefinedDatatypes() {

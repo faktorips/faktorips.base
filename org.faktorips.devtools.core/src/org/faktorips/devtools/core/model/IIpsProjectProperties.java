@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
@@ -146,8 +147,22 @@ public interface IIpsProjectProperties {
 	 * Sets the predefined datatypes (by id) used by this project.
 	 * Predefined datatypes are those that are defined by the extension
 	 * <code>datatypeDefinition</code>.
+	 * 
+	 * @throws NullPointerException if datatypes is <code>null</code>.
 	 */
 	public abstract void setPredefinedDatatypesUsed(String[] datatypes);
+
+	/**
+	 * Sets the predefined datatypes used by this project.
+	 * Predefined datatypes are those that are defined by the extension
+	 * <code>datatypeDefinition</code>.
+	 * <p>
+	 * If one of the datatypes isn't a predefined one, the project properties
+	 * become invalid. 
+	 * 
+	 * @throws NullPointerException if datatypes is <code>null</code>.
+	 */
+	public abstract void setPredefinedDatatypesUsed(ValueDatatype[] datatypes);
 
 	/**
 	 * Returns the value datatypes that are defined in this project.

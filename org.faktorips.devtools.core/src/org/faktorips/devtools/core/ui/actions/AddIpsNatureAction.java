@@ -56,7 +56,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 	private IStructuredSelection selection = StructuredSelection.EMPTY;
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void selectionChanged(IAction action, ISelection newSelection) {
 		if (newSelection instanceof IStructuredSelection)
@@ -115,8 +115,8 @@ public class AddIpsNatureAction extends ActionDelegate {
 			IIpsProjectProperties props = ipsProject.getProperties();
 			props.setProductDefinitionProject(true);
 			props.setModelProject(true);
+			props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
 			ipsProject.setProperties(props);
-			ipsProject.setValueDatatypes(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
 			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model"); //$NON-NLS-1$
 			if (!ipsModelFolder.exists()) {
 				ipsModelFolder.create(true, true, null);

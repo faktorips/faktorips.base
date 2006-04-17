@@ -60,16 +60,14 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     /**
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
+     * {@inheritDoc}
      */
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[] {'.'};
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.AbstractCompletionProcessor#doComputeCompletionProposals(java.lang.String, java.util.List)
+     * {@inheritDoc}
      */
     protected void doComputeCompletionProposals(
             String prefix, 

@@ -148,7 +148,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
     
-	
 	/**
      * Returns the file that stores the project's properties. Note that the file need not exist.
      */
