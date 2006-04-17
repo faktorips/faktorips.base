@@ -28,12 +28,14 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
-import org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -60,7 +62,7 @@ import org.w3c.dom.Text;
  * 
  * @author Peter Erzberger
  */
-public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
+public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private final static String CLASS_JAVADOC = "TABLE_IMPL_BUILDER_CLASS_JAVADOC";
     private final static String GET_ALL_ROWS_JAVADOC = "TABLE_IMPL_BUILDER_GET_ALL_ROWS_JAVADOC";
@@ -101,23 +103,21 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder#beforeBuildInternal(org.faktorips.devtools.core.model.IIpsSrcFile)
+     * {@inheritDoc}
      */
-    public void beforeBuildInternal(IIpsSrcFile ipsSrcFile)
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status)
             throws CoreException {
+        super.beforeBuild(ipsSrcFile, status);
         qualifiedTableRowName = tableRowBuilder.getQualifiedClassName(ipsSrcFile);
         buildKeyVariableNames();
         initClassVariables();
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder#afterBuildInternal(org.faktorips.devtools.core.model.IIpsSrcFile)
+     * {@inheritDoc}
      */
-    public void afterBuildInternal(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+        super.afterBuild(ipsSrcFile);
         fKeyVariableNames = null;
         fKeyClassNames = null;
         fKeyClassParameterNames = null;
@@ -272,34 +272,40 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         }
         return true;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
+        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
+        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), CLASS_JAVADOC));
+        codeBuilder.classBegin(Modifier.PUBLIC, getTableStructure().getName(),
+                TableImpl.class, new Class[0]);
+        createFields(codeBuilder);
+        createAddRowMethod(codeBuilder);
+        createInitKeyMapsMethod(codeBuilder);
+        if (getTableStructure().isMultipleContentsAllowed()) {
+            createGetInstanceMethodForMultipleContents(codeBuilder);
+        } else {
+            createGetInstanceMethodForSingleContent(codeBuilder);
+        }
+        createAllRowsMethod(codeBuilder);
+        createFindMethods(codeBuilder);
+        createHashKeyClasses(codeBuilder);
+        codeBuilder.classEnd();
+        return codeBuilder.getFragment();
+    }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder#generateInternal()
+     * @throws CoreException
      */
     protected void generateInternal() throws CoreException {
         if (!checkColumnValidity()) {
             return;
         }
-        getJavaCodeFragementBuilder().javaDoc(getLocalizedText(getIpsObject(), CLASS_JAVADOC));
-        getJavaCodeFragementBuilder().classBegin(Modifier.PUBLIC, getTableStructure().getName(),
-                TableImpl.class, new Class[0]);
-        createFields();
-        createAddRowMethod();
-        createInitKeyMapsMethod();
-        if (getTableStructure().isMultipleContentsAllowed()) {
-            createGetInstanceMethodForMultipleContents();
-        } else {
-            createGetInstanceMethodForSingleContent();
-        }
-        createAllRowsMethod();
-        createFindMethods();
-        createHashKeyClasses();
-        getJavaCodeFragementBuilder().classEnd();
     }
 
-    private void createAllRowsMethod() throws CoreException {
+    private void createAllRowsMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendClassName(qualifiedTableRowName);
         methodBody.append("[]");
@@ -312,12 +318,12 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         methodBody.append("rows.toArray(rowsArray);");
         methodBody.appendln();
         methodBody.append("return rowsArray;");
-        getJavaCodeFragementBuilder().method(Modifier.PUBLIC, qualifiedTableRowName + "[]",
+        codeBuilder.method(Modifier.PUBLIC, qualifiedTableRowName + "[]",
                 "getAllRows", new String[0], new String[0], methodBody,
                 getLocalizedText(getIpsObject(), GET_ALL_ROWS_JAVADOC));
     }
 
-    private void createGetInstanceMethodForSingleContent() throws CoreException {
+    private void createGetInstanceMethodForSingleContent(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         String qualifiedClassName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return (");
@@ -328,13 +334,13 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         methodBody.append(".class");
         methodBody.append(");");
 
-        getJavaCodeFragementBuilder().method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
+        codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                 qualifiedClassName, "getInstance", new String[] { "repository" },
                 new String[] { RuntimeRepository.class.getName() }, methodBody,
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }
 
-    private void createGetInstanceMethodForMultipleContents() throws CoreException {
+    private void createGetInstanceMethodForMultipleContents(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         String qualifiedClassName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return (");
@@ -342,7 +348,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         methodBody.append(")");
         methodBody.append("repository.getTable(qualifiedTableName);");
 
-        getJavaCodeFragementBuilder().method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
+        codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                 qualifiedClassName, "getInstance", 
                 new String[] { "repository", "qualifiedTableName" },
                 new String[] { RuntimeRepository.class.getName(), String.class.getName() }, 
@@ -350,7 +356,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }
 
-    private void createAddRowMethod() throws CoreException {
+    private void createAddRowMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         IColumn[] columns = getTableStructure().getColumns();
         for (int i = 0; i < columns.length; i++) {
@@ -403,12 +409,12 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
 
         methodBody.append("));");
 
-        getJavaCodeFragementBuilder().method(Modifier.PROTECTED, Void.TYPE, "addRow",
+        codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "addRow",
                 new String[] { "valueElements" }, new Class[] { NodeList.class }, methodBody,
                 getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC));
     }
 
-    private void createFindMethods() throws CoreException {
+    private void createFindMethods(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         if (!checkUniqueKeyValidity()) {
             return;
         }
@@ -421,7 +427,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
             createFindMethod(methodName.toString(), qualifiedTableRowName,
                     (String[])fAllItemParameterTypes.get(i), (String[])fAllItemNamesAsParameters
                             .get(i), (String[])fKeyClassParameterNames.get(i),
-                    fKeyVariableNames[i], fKeyClassNames[i], keys[i]);
+                    fKeyVariableNames[i], fKeyClassNames[i], keys[i], codeBuilder);
         }
     }
 
@@ -429,7 +435,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         return getTableStructure().getUniqueKeys();
     }
 
-    private void createFields() throws CoreException {
+    private void createFields(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         if (!checkUniqueKeyValidity()) {
             return;
         }
@@ -445,7 +451,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
                 keyMapFieldName.append("Tree");
                 fieldClassName = ReadOnlyBinaryRangeTree.class.getName();
             }
-            getJavaCodeFragementBuilder().varDeclaration(Modifier.PRIVATE, fieldClassName,
+            codeBuilder.varDeclaration(Modifier.PRIVATE, fieldClassName,
                     keyMapFieldName.toString());
         }
     }
@@ -470,7 +476,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         return methodBody;
     }
 
-    private void createInitKeyMapsMethod() throws CoreException {
+    private void createInitKeyMapsMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         if (!checkUniqueKeyValidity()) {
             return;
         }
@@ -480,7 +486,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         if(keys.length != 0){
             methodBody = createInitKeyMapsMethodBody(keys);
         }
-        getJavaCodeFragementBuilder().method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps",
+        codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "initKeyMaps",
                 new String[0], new Class[0], methodBody,
                 getLocalizedText(getIpsObject(), INIT_KEY_MAPS_JAVADOC));
     }
@@ -678,7 +684,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         return returnValue;
     }
 
-    private void createHashKeyClasses() throws CoreException {
+    private void createHashKeyClasses(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         if (!checkUniqueKeyValidity()) {
             return;
         }
@@ -687,24 +693,25 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
             String[] keyClassParameterTypes = (String[])fKeyClassParameterTypes.get(i);
             if (keyClassParameterTypes != null) {
                 createHashKeyClass(fKeyClassNames[i], (String[])fKeyClassParameterNames.get(i),
-                        keyClassParameterTypes);
+                        keyClassParameterTypes, codeBuilder);
             }
         }
     }
 
     private void createHashKeyClass(String hashKeyClassName,
             String[] keyNames,
-            String[] keyItemTypes) throws CoreException {
+            String[] keyItemTypes,
+            JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         
-        getJavaCodeFragementBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC));
-        getJavaCodeFragementBuilder().classBegin(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
+        codeBuilder.javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC));
+        codeBuilder.classBegin(Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
                 hashKeyClassName);
         for (int i = 0; i < keyNames.length; i++) {
-            getJavaCodeFragementBuilder().varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
+            codeBuilder.varDeclaration(Modifier.PRIVATE, keyItemTypes[i],
                     keyNames[i]);
         }
         // create hashCode field
-        getJavaCodeFragementBuilder().varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
+        codeBuilder.varDeclaration(Modifier.PRIVATE, Integer.TYPE, "hashCode");
 
         JavaCodeFragment constructorBody = new JavaCodeFragment();
         for (int i = 0; i < keyNames.length; i++) {
@@ -717,16 +724,16 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         }
         constructorBody.appendln("hashCode = calculateHashCode();");
         // constructor
-        getJavaCodeFragementBuilder()
+        codeBuilder
                 .method(Modifier.PRIVATE, null, hashKeyClassName, keyNames, keyItemTypes,
                         constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC));
-        createKeyClassCalHashCodeMethod(keyNames);
-        createKeyClassEqualsMethod(hashKeyClassName, keyNames);
-        createKeyClassHashCodeMethod(keyNames);
-        getJavaCodeFragementBuilder().classEnd();
+        createKeyClassCalHashCodeMethod(keyNames, codeBuilder);
+        createKeyClassEqualsMethod(hashKeyClassName, keyNames, codeBuilder);
+        createKeyClassHashCodeMethod(keyNames, codeBuilder);
+        codeBuilder.classEnd();
     }
 
-    private void createKeyClassCalHashCodeMethod(String[] keyNames) throws CoreException {
+    private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendln("int result = 17;");
         for (int i = 0; i < keyNames.length; i++) {
@@ -736,13 +743,16 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         }
         methodBody.appendln("return result;");
 
-        getJavaCodeFragementBuilder().methodBegin(Modifier.PRIVATE, Integer.TYPE,
+        codeBuilder.methodBegin(Modifier.PRIVATE, Integer.TYPE,
                 "calculateHashCode", new String[0], new Class[0]);
-        getJavaCodeFragementBuilder().append(methodBody);
-        getJavaCodeFragementBuilder().methodEnd();
+        codeBuilder.append(methodBody);
+        codeBuilder.methodEnd();
     }
 
-    private void createKeyClassEqualsMethod(String keyClass, String[] combinedKeyNames)
+    private void createKeyClassEqualsMethod(
+            String keyClass, 
+            String[] combinedKeyNames,
+            JavaCodeFragmentBuilder codeBuilder)
             throws CoreException {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
@@ -768,17 +778,17 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         methodBody.appendCloseBracket();
         methodBody.append("return false;");
 
-        getJavaCodeFragementBuilder().method(Modifier.PUBLIC, Boolean.TYPE, "equals",
+        codeBuilder.method(Modifier.PUBLIC, Boolean.TYPE, "equals",
                 new String[] { "o" }, new Class[] { Object.class }, methodBody,
                 getLocalizedText(getIpsObject(), KEY_CLASS_EQUALS_JAVADOC));
     }
 
-    private void createKeyClassHashCodeMethod(String[] combineKeyNames) throws CoreException {
+    private void createKeyClassHashCodeMethod(String[] combineKeyNames, JavaCodeFragmentBuilder codeBuilder) throws CoreException {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return hashCode;");
 
-        getJavaCodeFragementBuilder().method(Modifier.PUBLIC, Integer.TYPE, "hashCode",
+        codeBuilder.method(Modifier.PUBLIC, Integer.TYPE, "hashCode",
                 new String[0], new Class[0], methodBody,
                 getLocalizedText(getIpsObject(), KEY_CLASS_HASHCODE_JAVADOC));
     }
@@ -790,7 +800,8 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
             String[] keyClassParameterNames,
             String combinedKeyName,
             String keyClassName,
-            IUniqueKey key) throws JavaModelException {
+            IUniqueKey key,
+            JavaCodeFragmentBuilder codeBuilder) throws JavaModelException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
 
         for (int i = 0; i < parameterNames.length; i++) {
@@ -824,7 +835,7 @@ public class TableImplBuilder extends SimpleJavaSourceFileBuilder {
         }
         methodBody.append(';');
 
-        getJavaCodeFragementBuilder().method(Modifier.PUBLIC, returnTypeName, methodName,
+        codeBuilder.method(Modifier.PUBLIC, returnTypeName, methodName,
                 parameterNames, parameterTypes, methodBody, getLocalizedText(getIpsObject(), FIND_JAVADOC));
     }
 

@@ -27,7 +27,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.SimpleJavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -51,7 +51,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder {
+public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder {
 
     // property key for the constructor's Javadoc.
     private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
@@ -98,49 +98,54 @@ public class ProductCmptGenerationCuBuilder extends SimpleJavaSourceFileBuilder 
         return generation.getProductCmpt().findProductCmptType();
     }
     
-    protected void generateInternal() throws CoreException {
-        if (generation.validate().containsErrorMsg()) {
-            return;
-        }
+    /**
+     * {@inheritDoc}
+     */
+    protected JavaCodeFragment generateCodeForJavatype() throws CoreException {
         IPolicyCmptType pcType = generation.getProductCmpt().findPolicyCmptType();
-        if (pcType == null) {
-            return;
-        }
-        getJavaCodeFragementBuilder().classBegin(Modifier.PUBLIC, getUnqualifiedClassName(),
-            productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), new String[0]);
-        buildConstructor();
+        JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
+        codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(),
+                productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()), new String[0]);
+        buildConstructor(codeBuilder);
         IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
         for (int i = 0; i < elements.length; i++) {
             try {
-                generateMethodComputeValue(elements[i]);
+                generateMethodComputeValue(elements[i], codeBuilder);
             } catch (Exception e) {
                 addToBuildStatus(new IpsStatus("Error generating code for " + elements[i], e));
             }
         }
-        getJavaCodeFragementBuilder().classEnd();
+        codeBuilder.classEnd();
+        return codeBuilder.getFragment();
     }
-    
+
     /*
-     * Generates the constructor. <p> Example: <p><pre> public MotorPolicyPk0(RuntimeRepository
-     * repository, String qName, Class policyComponentType) { super(registry, qName,
-     * policyComponentType); } </pre>
+     * Generates the constructor. 
+     * <p> 
+     * Example:
+     * <p>
+     * <pre> 
+     * public MotorPolicyPk0(RuntimeRepository repository, String qName, Class policyComponentType) {
+     *     super(registry, qName,
+     *     policyComponentType); 
+     * } 
+     * </pre>
      */
-    private void buildConstructor() throws CoreException {
+    private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         String className = getUnqualifiedClassName();
         String javaDoc = getLocalizedText(getIpsSrcFile(), CONSTRUCTOR_JAVADOC);
         String[] argNames = new String[] { "productCmpt" };
         String[] argClassNames = new String[] { productCmptImplBuilder.getQualifiedClassName(generation.getProductCmpt().findProductCmptType()) };
         JavaCodeFragment body = new JavaCodeFragment(
                 "super(productCmpt);");
-        getJavaCodeFragementBuilder().method(Modifier.PUBLIC, null, className, argNames,
+        codeBuilder.method(Modifier.PUBLIC, null, className, argNames,
             argClassNames, body, javaDoc);
     }
 
     /*
      * Generates the method to compute a value as specified by a formula configuration element and
      */
-    private void generateMethodComputeValue(IConfigElement formulaElement) throws CoreException {
-        JavaCodeFragmentBuilder builder = getJavaCodeFragementBuilder();
+    private void generateMethodComputeValue(IConfigElement formulaElement, JavaCodeFragmentBuilder builder) throws CoreException {
         IAttribute attribute = formulaElement.findPcTypeAttribute();
         Datatype datatype = attribute.getIpsProject().findDatatype(attribute.getDatatype());
         DatatypeHelper datatypeHelper = attribute.getIpsProject().getDatatypeHelper(datatype);

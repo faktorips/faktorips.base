@@ -17,7 +17,11 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IImportContainer;
+import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -33,6 +37,7 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
 
     protected String generate() throws CoreException {
         TableRowGenerator generator = new TableRowGenerator();
+        generator.setImportContainer(getImportContainer());
         generator.setJavaSourceFileBuilder(this);
         return generator.generate(getIpsSrcFile());
     }
@@ -44,4 +49,14 @@ public class TableRowBuilder extends JavaSourceFileBuilder {
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "Row";
     }
+    
+    private IImportContainer getImportContainer() throws CoreException {
+        IFile file = getJavaFile(getIpsSrcFile());
+        ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+        if (cu==null || !cu.exists()) {
+            return null;
+        }
+        return cu.getImportContainer();
+    }
+    
 }
