@@ -169,8 +169,17 @@ public class ProductCmptTypeTest extends IpsPluginTest {
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType.getQualifiedName()'
 	 */
-	public void testGetQualifiedName() {
+	public void testGetQualifiedName() throws Exception {
 		assertEquals("motor.MotorProduct", productCmptType.getQualifiedName());
+		
+		PolicyCmptType pct = super.newPolicyCmptType(ipsProject, "Test");
+		pct.setUnqualifiedProductCmptType("TestProductType");
+		pct.setConfigurableByProductCmptType(true);
+		
+		IProductCmptType type = pct.findProductCmptType();
+		
+		assertEquals("TestProductType", type.getQualifiedName());
+		
 	}
 
 	/*
