@@ -46,10 +46,9 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.runtime.RuntimeRepository;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
 import org.faktorips.runtime.internal.TableImpl;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.XmlUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -805,11 +804,11 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment methodBody = new JavaCodeFragment();
 
         for (int i = 0; i < parameterNames.length; i++) {
-            methodBody.appendClassName(ArgumentCheck.class);
-            methodBody.append(".notNull(");
-            methodBody.append(parameterNames[i]);
-            methodBody.append(");");
-            methodBody.appendln();
+            methodBody.appendln("if (" + parameterNames[i] + "==null) {");
+            methodBody.appendln("throw new ");
+            methodBody.appendClassName(NullPointerException.class);
+            methodBody.appendln("();");
+            methodBody.appendln("}");
         }
 
         String mapName = StringUtils.uncapitalise(combinedKeyName) + "Map";

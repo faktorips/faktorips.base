@@ -20,7 +20,7 @@ package org.faktorips.codegen.dthelpers;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DateDatatype;
-import org.faktorips.util.DateUtil;
+import org.faktorips.values.DateUtil;
 import org.faktorips.valueset.DateRange;
 
 /**

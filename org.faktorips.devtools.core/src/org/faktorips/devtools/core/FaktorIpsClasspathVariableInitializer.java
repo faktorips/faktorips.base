@@ -36,32 +36,26 @@ import org.osgi.framework.Bundle;
 public class FaktorIpsClasspathVariableInitializer extends
 		ClasspathVariableInitializer {
 	
-	public final static String VARNAME_UTIL_BIN = "FAKTORIPS_UTIL"; //$NON-NLS-1$
-	public final static String VARNAME_UTIL_SRC = "FAKTORIPS_UTIL_SRC"; //$NON-NLS-1$
 	public final static String VARNAME_VALUETYPES_BIN = "FAKTORIPS_VALUETYPES"; //$NON-NLS-1$
 	public final static String VARNAME_VALUETYPES_SRC = "FAKTORIPS_VALUETYPES_SRC"; //$NON-NLS-1$
 	public final static String VARNAME_RUNTIME_BIN = "FAKTORIPS_RUNTIME"; //$NON-NLS-1$
 	public final static String VARNAME_RUNTIME_SRC = "FAKTORIPS_RUNTIME_SRC"; //$NON-NLS-1$
-	public final static String VARNAME_COMMONS_LANG_BIN = "FAKTORIPS_INCLUDED_COMMONS_LANG"; //$NON-NLS-1$
 	
 	/**
 	 * Classpath variables for the faktorips jars needed at runtime.
 	 */
 	public final static String[] IPS_VARIABLES_BIN = new String[] {
-		VARNAME_UTIL_BIN, VARNAME_VALUETYPES_BIN, VARNAME_RUNTIME_BIN, VARNAME_COMMONS_LANG_BIN };
+		VARNAME_VALUETYPES_BIN, VARNAME_RUNTIME_BIN };
 
 	/**
 	 * Classpath variables for the source attachements.
 	 */
 	public final static String[] IPS_VARIABLES_SRC = new String[] {
-		VARNAME_UTIL_SRC, VARNAME_VALUETYPES_SRC, VARNAME_RUNTIME_SRC, "", ""}; //$NON-NLS-1$ //$NON-NLS-2$
+		VARNAME_VALUETYPES_SRC, VARNAME_RUNTIME_SRC }; //$NON-NLS-1$ //$NON-NLS-2$
 	
 	private HashMap varMapping = new HashMap();
 	
 	public FaktorIpsClasspathVariableInitializer() {
-		add(new Mapping(VARNAME_UTIL_BIN, "org.faktorips.util", "/faktorips-util.jar")); //$NON-NLS-1$ //$NON-NLS-2$
-		add(new Mapping(VARNAME_UTIL_SRC, "org.faktorips.util", "/faktorips-utilsrc.zip")); //$NON-NLS-1$ //$NON-NLS-2$
-		add(new Mapping(VARNAME_COMMONS_LANG_BIN, "org.faktorips.util", "/lib/commons-lang-1.0.1.jar")); //$NON-NLS-1$ //$NON-NLS-2$
 		add(new Mapping(VARNAME_VALUETYPES_BIN, "org.faktorips.valuetypes", "/faktorips-valuetypes.jar")); //$NON-NLS-1$ //$NON-NLS-2$
 		add(new Mapping(VARNAME_VALUETYPES_SRC, "org.faktorips.valuetypes", "/faktorips-valuetypessrc.zip")); //$NON-NLS-1$ //$NON-NLS-2$
 		add(new Mapping(VARNAME_RUNTIME_BIN, "org.faktorips.runtime", "/faktorips-runtime.jar")); //$NON-NLS-1$ //$NON-NLS-2$

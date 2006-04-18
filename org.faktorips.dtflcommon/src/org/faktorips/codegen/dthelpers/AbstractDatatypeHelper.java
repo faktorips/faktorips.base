@@ -21,7 +21,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.ArgumentCheck;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Abstract base class for datatype helpers.
@@ -71,18 +70,20 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 	protected abstract JavaCodeFragment valueOfExpression(String expression);
 
 	/**
-     * Overridden.
+     * {@inheritDoc}
 	 */
 	public JavaCodeFragment newInstanceFromExpression(String expression) {
-		if (StringUtils.isEmpty(expression)) {
+		if (expression==null || expression.equals("")) {
 			return nullExpression();
 		}
-		// StringUtils.isEmpty(expression) ? nullExpression() :
+		// (expression==null || expression.equals("")) ? nullExpression() :
 		// valueOfExpression(expression)
 		JavaCodeFragment fragment = new JavaCodeFragment();
-		fragment.appendClassName(StringUtils.class);
-		fragment.append(".isEmpty(");		
-		fragment.append(expression);
+        fragment.append("(");
+        fragment.append(expression);
+        fragment.append("==null || ");
+        fragment.append(expression);
+        fragment.append(".equals(\"\")");
 		fragment.append(") ? ");
 		fragment.append(nullExpression());
 		fragment.append(" : ");
@@ -92,14 +93,14 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 	}
 	
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getJavaClassName() {
         return datatype.getJavaClassName();
     }
 
-    /* (non-Javadoc)
-     * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
+    /**
+     * {@inheritDoc}
      */
     public String getRangeJavaClassName() {
         return null;
