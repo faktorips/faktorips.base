@@ -80,13 +80,13 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		} else {
 			datatype.setValueOfMethodName(null);
 		}
-		if (element.hasAttribute("isParseableMethod")) {//$NON-NLS-1$
+		if (element.hasAttribute("isParsableMethod")) {//$NON-NLS-1$
 			datatype.setIsParsableMethodName(element
 					.getAttribute("isParsableMethod")); //$NON-NLS-1$
 		} else {
 			datatype.setIsParsableMethodName(null);
 		}
-		if (element.hasAttribute("valueToStringValue")) {//$NON-NLS-1$
+		if (element.hasAttribute("valueToStringMethod")) {//$NON-NLS-1$
 			datatype.setToStringMethodName(element
 					.getAttribute("valueToStringMethod")); //$NON-NLS-1$
 		} else {

@@ -64,6 +64,13 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 	}
 
 	/**
+	 * Returns the name of the method that provides all values of the datatype.
+	 */
+	public String getAllValuesMethodName() {
+		return getAllValuesMethodName;
+	}
+
+	/**
 	 * Sets the name of the method that returns the isSupportingNames flag of the enumeration class wrapped by this dynamic enum datatype.
 	 */
 	public void setIsSupportingNames(boolean supporting){
@@ -75,6 +82,13 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 	 */
 	public void setGetNameMethodName(String getNameMethodName){
 		this.getNameMethodName = getNameMethodName;
+	}
+	
+	/**
+	 * Returns the name of the method returning the value's name.
+	 */
+	public String getGetNameMethodName() {
+		return getNameMethodName;
 	}
 	
 	/**

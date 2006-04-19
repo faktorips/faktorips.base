@@ -60,7 +60,8 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
 	 * {@inheritDoc}
 	 */
 	protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
-        DefaultLabelProvider labelProvider = new DefaultLabelProvider();
+        prefix = prefix.toLowerCase();
+		DefaultLabelProvider labelProvider = new DefaultLabelProvider();
         List foundTypes = new ArrayList();
         Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid);
         for (int i=0; i<types.length; i++) {
