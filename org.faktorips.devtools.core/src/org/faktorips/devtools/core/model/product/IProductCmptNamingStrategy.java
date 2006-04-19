@@ -23,15 +23,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * The product component name includes a kind id is constant over different versions
+ * The product component name includes a kind id that is constant over different versions
  * and a version id.E.g. given "FullCoverage 2005-01-01", the kind id is "FullCoverage" 
  * the version id is "2005-01-01". 
+ * <p>
  * The product component naming strategy defines how the name is constructed
  * from a given kind id and a version id and vice versa. It also defines how to
  * derive the next version id.
  * <p>
  * Note that is also possible to define a naming strategy that does not distinguish
- * between a constant part and the version id. In this case the method 
+ * between a kind id and the version id. In this case the method 
  * <code>supportsVersionId()</code> must return <code>false</code>.
  * 
  * @author Jan Ortmann
@@ -83,7 +84,7 @@ public interface IProductCmptNamingStrategy {
     public String getExtensionId();
     
     /**
-     * Returns <code>true</code> if this strategy distinguishes between a constant part
+     * Returns <code>true</code> if this strategy distinguishes between the kind id 
      * and a version id, otherwise <code>false</code>.
      */
     public boolean supportsVersionId();
