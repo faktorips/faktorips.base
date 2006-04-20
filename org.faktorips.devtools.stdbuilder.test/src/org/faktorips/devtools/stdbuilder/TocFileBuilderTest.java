@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -55,8 +56,10 @@ public class TocFileBuilderTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        project.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
-        builderSet = (StandardBuilderSet)project.getCurrentArtefactBuilderSet();
+        IIpsProjectProperties props = project.getProperties();
+        props.setJavaSrcLanguage(Locale.GERMAN);
+        project.setProperties(props);
+        builderSet = (StandardBuilderSet)project.getArtefactBuilderSet();
         tableImplBuilder = (TableImplBuilder)builderSet.getBuilder(TableImplBuilder.class);
         tocFileBuilder = (TocFileBuilder)builderSet.getBuilder(TocFileBuilder.class);
     }
@@ -126,7 +129,7 @@ public class TocFileBuilderTest extends IpsPluginTest {
         // now build
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFile tocFile = project.getCurrentArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        IFile tocFile = project.getArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
         assertTrue(tocFile.exists());
         assertEquals(project.getXmlFileCharset(), tocFile.getCharset());
         
@@ -175,6 +178,28 @@ public class TocFileBuilderTest extends IpsPluginTest {
         assertNull(toc2.getTableTocEntryByClassname("motor.RateTable2"));
     }
     
+    
+    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
+        // create a product component
+        IPolicyCmptType type = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
+        IProductCmpt motorProduct = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "motor.MotorProduct");
+        motorProduct.setPolicyCmptType(type.getQualifiedName());
+        GregorianCalendar validFrom = new GregorianCalendar(2006, 0, 1);
+        motorProduct.newGeneration().setValidFrom(validFrom);
+        type.getIpsSrcFile().save(true, null);
+        motorProduct.getIpsSrcFile().save(true, null);
+        
+        // now make a full build
+        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IFile tocFile = project.getArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        assertTrue(tocFile.exists());
+        long modStamp = tocFile.getModificationStamp();
+        
+        // now make a seond full build
+        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertEquals(modStamp, tocFile.getModificationStamp());
+    }
 
 
 }

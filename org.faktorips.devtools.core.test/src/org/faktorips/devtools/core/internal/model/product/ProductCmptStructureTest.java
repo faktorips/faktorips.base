@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
  * Tests for product component structure.
@@ -94,38 +93,6 @@ public class ProductCmptStructureTest extends IpsPluginTest {
     public void testGetRoot() {
     	IProductCmpt root = structure.getRoot();
     	assertSame(productCmpt, root);
-    }
-    
-    public void testGetChildren() {
-    	Object[] children = structure.getChildren(productCmpt);
-    	
-    	assertEquals(1, children.length);
-    	assertTrue(children[0] instanceof IProductCmptTypeRelation);
-    	
-    	children = structure.getChildren((IProductCmptTypeRelation)children[0]);
-    	
-    	assertEquals(2, children.length);
-    	assertTrue(children[0] instanceof IProductCmpt);
-    }
-    
-    public void testGetParent() {
-    	Object[] children = structure.getChildren(productCmpt);
-    	
-    	Object parent = structure.getParent((IProductCmptTypeRelation)children[0]);
-    	assertSame(parent, productCmpt);
-    }
-    
-    public void testGetTargets() {
-    	Object[] relations = structure.getChildren(productCmpt);
-    	IProductCmpt[] targets = structure.getTargets((IProductCmptTypeRelation)relations[0], productCmpt);
-    	
-    	assertEquals(2, targets.length);
-    }
-    
-    public void testGetRelationTypes() {
-    	Object[] relationtypes = structure.getRelationTypes(productCmpt);
-    	
-    	assertEquals(1, relationtypes.length);
     }
     
     public void testNoGeneration() throws CycleException {

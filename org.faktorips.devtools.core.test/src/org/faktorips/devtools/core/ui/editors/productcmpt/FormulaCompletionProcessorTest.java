@@ -39,7 +39,6 @@ public class FormulaCompletionProcessorTest extends IpsPluginTest {
 	
 	public void setUp() throws Exception{
 		super.setUp();
-		System.out.println(Thread.currentThread().getName());
 		ipsProject = (IpsProject)newIpsProject("TestProject");
 		PolicyCmptType cmptType = newPolicyCmptType(ipsProject.getIpsPackageFragmentRoots()[0], "TestPolicy");
 		newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
@@ -57,7 +56,6 @@ public class FormulaCompletionProcessorTest extends IpsPluginTest {
 	 * Test method for 'org.faktorips.devtools.core.ui.editors.productcmpt.FormulaCompletionProcessor.doComputeCompletionProposals(String, int, List)'
 	 */
 	public void testDoComputeCompletionProposals() throws Exception {
-		System.out.println(Thread.currentThread().getName());
 		ArrayList results = new ArrayList();
 		processor.doComputeCompletionProposals("Test", 0, results);
 		assertEquals(1, results.size());

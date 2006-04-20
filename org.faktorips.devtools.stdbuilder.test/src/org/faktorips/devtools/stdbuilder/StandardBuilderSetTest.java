@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -43,7 +44,9 @@ public class StandardBuilderSetTest extends IpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        project.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
+        IIpsProjectProperties props = project.getProperties();
+        props.setJavaSrcLanguage(Locale.GERMAN);
+        project.setProperties(props);
         type = newPolicyCmptType(project, "Policy");
         IAttribute a = type.newAttribute();
         a.setAttributeType(AttributeType.COMPUTED);

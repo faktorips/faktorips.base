@@ -243,6 +243,13 @@ public class IpsModelTest extends IpsPluginTest implements ContentsChangeListene
     	assertTrue(datatypes.length > 0);
     }
     
+    public void testIsPredefinedValueDatatype() {
+    	ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
+    	assertTrue(model.isPredefinedValueDatatype(datatypes[0].getQualifiedName()));
+    	assertFalse(model.isPredefinedValueDatatype("unknownDatatype"));
+    	assertFalse(model.isPredefinedValueDatatype(null));
+    }
+    
     public void testGetChangesInTimeNamingConvention() {
     	IChangesOverTimeNamingConvention convention = model.getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
     	assertNotNull(convention);

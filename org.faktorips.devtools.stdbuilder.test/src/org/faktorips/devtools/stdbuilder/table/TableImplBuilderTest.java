@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -37,7 +38,9 @@ public class TableImplBuilderTest extends IpsPluginTest {
     public void setUp() throws Exception{
         super.setUp();
         project = newIpsProject("TestProject");
-        project.setGeneratedJavaSourcecodeDocumentationLanguage(Locale.GERMAN);
+        IIpsProjectProperties props = project.getProperties();
+        props.setJavaSrcLanguage(Locale.GERMAN);
+        project.setProperties(props);
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }
     
@@ -52,7 +55,7 @@ public class TableImplBuilderTest extends IpsPluginTest {
     }
     
     private TableImplBuilder getTableImpleBuilder() throws CoreException{
-        IIpsArtefactBuilder[] builders = project.getCurrentArtefactBuilderSet().getArtefactBuilders();
+        IIpsArtefactBuilder[] builders = project.getArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {
             if(builders[i].getClass() == TableImplBuilder.class){
                 return (TableImplBuilder)builders[i];

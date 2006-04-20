@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
@@ -35,12 +37,14 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.message.MessageList;
 
 
 /**
@@ -60,6 +64,65 @@ public class IpsProjectTest extends IpsPluginTest {
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
     
+    public void testValidate() throws CoreException {
+    	MessageList list = ipsProject.validate();
+    	assertTrue(list.isEmpty());
+    }
+
+    public void testValidate_MissingPropertyFile() throws CoreException {
+    	IFile file = ipsProject.getIpsProjectPropertiesFile();
+    	file.delete(true, false, null);
+    	MessageList list = ipsProject.validate();
+    	assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_MISSING_PROPERTY_FILE));
+    	assertEquals(1, list.getNoOfMessages());
+    }
+    
+    public void testValidate_UnparsablePropertyFile() throws CoreException {
+    	IFile file = ipsProject.getIpsProjectPropertiesFile();
+    	InputStream unparsableContents = new ByteArrayInputStream("blabla".getBytes());
+    	file.setContents(unparsableContents, true, false, null);
+    	MessageList list = ipsProject.validate();
+    	assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_UNPARSABLE_PROPERTY_FILE));
+    	assertEquals(1, list.getNoOfMessages());
+    }
+
+    public void testGetProperties() {
+    	assertNotNull(ipsProject.getProperties());
+    }
+    
+    /**
+     * This has once been a bug. If setProperties() only saves the properties
+     * to the file without updating it in memory, an access method might return
+     * an old value, if it is called before the resource change listener has
+     * removed the old prop file from the cache in the model.
+     */
+    public void testSetProperties_RacingCondition() throws CoreException {
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setRuntimeIdPrefix("newPrefix");
+    	ipsProject.setProperties(props);
+    	assertEquals("newPrefix", ipsProject.getRuntimeIdPrefix());
+    }
+    
+    public void testSetProperties() throws CoreException {
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	String builderSetId = props.getBuilderSetId();
+    	props.setBuilderSetId("myBuilder");
+    	
+    	// test if a copy was returned
+    	assertEquals(builderSetId, ipsProject.getProperties().getBuilderSetId());
+    	
+    	// test if prop file is updated
+    	IFile propFile = ipsProject.getIpsProjectPropertiesFile();
+    	long stamp = propFile.getModificationStamp();
+    	ipsProject.setProperties(props);
+    	assertTrue(propFile.getModificationStamp()!=stamp);
+    	assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
+    	
+    	// test if a copy was created during set
+    	props.setBuilderSetId("newBuilder");
+    	assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
+    }
+
     public void testFindProductCmptType() throws CoreException {
     	IPolicyCmptType policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
     	policyCmptType.setUnqualifiedProductCmptType("MotorProduct");
@@ -75,11 +138,12 @@ public class IpsProjectTest extends IpsPluginTest {
     	prj2.setIpsObjectPath(path);
     	productCmptType = prj2.findProductCmptType("motor.MotorProduct");
     	assertNotNull(productCmptType);
-    	
     }
 
     public void testGetValueDatatypes() throws CoreException {
-        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
+        ipsProject.setProperties(props);
 	    ValueDatatype[] types = ipsProject.getValueDatatypes(false);
 	    assertEquals(1, types.length);
 	    assertEquals(Datatype.DECIMAL, types[0]);
@@ -101,7 +165,9 @@ public class IpsProjectTest extends IpsPluginTest {
     }
     
     public void testGetDatatypeHelper() throws CoreException {
-        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
+        ipsProject.setProperties(props);
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
         assertEquals(DecimalHelper.class, helper.getClass());
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
@@ -113,7 +179,9 @@ public class IpsProjectTest extends IpsPluginTest {
     }
     
     public void testFindDatatypes() throws CoreException {
-        ipsProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName()});
+    	IIpsProjectProperties props = ipsProject.getProperties();
+    	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
+        ipsProject.setProperties(props);
         IIpsPackageFragment pack = ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragment("");
         IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestObject1", true, null);
         IPolicyCmptType pcType1 = (IPolicyCmptType)file1.getIpsObject();
@@ -184,7 +252,10 @@ public class IpsProjectTest extends IpsPluginTest {
      */
     private IIpsProject createRefProject() throws CoreException {
         IIpsProject refProject = newIpsProject("RefProject");
-        refProject.setValueDatatypes(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.MONEY.getQualifiedName()});
+    	IIpsProjectProperties props = refProject.getProperties();
+    	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.MONEY.getQualifiedName()});
+    	refProject.setProperties(props);
+        
         newDefinedEnumDatatype((IpsProject)refProject, new Class[]{TestEnumType.class});
         // set the reference from the ips project to the referenced project
 	    IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -193,7 +264,7 @@ public class IpsProjectTest extends IpsPluginTest {
 	    return refProject;
     }
 
-    public void testFindPdObject() throws CoreException {
+    public void testFindIpsObject() throws CoreException {
         IIpsPackageFragment folder = root.createPackageFragment("a.b", true, null);
         IIpsSrcFile file = folder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Test", true, null);
         IIpsObject pdObject = ipsProject.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
@@ -306,28 +377,6 @@ public class IpsProjectTest extends IpsPluginTest {
     	assertEquals(result[0], gen1);
     }
     
-    public void testSetValueDatatypes() throws CoreException {
-    	ipsProject.setValueDatatypes(new ValueDatatype[]{Datatype.BOOLEAN, Datatype.STRING});
-    	ValueDatatype[] valueDatatypes = ipsProject.getValueDatatypes(false);
-    	assertEquals(2, valueDatatypes.length);
-    	assertEquals(Datatype.BOOLEAN, valueDatatypes[0]);
-    	assertEquals(Datatype.STRING, valueDatatypes[1]);
-    }
-    
-    public void testSetValueDatatypes_String() throws CoreException {
-    	ipsProject.setValueDatatypes(new String[]{Datatype.BOOLEAN.getQualifiedName(), Datatype.STRING.getQualifiedName()});
-    	ValueDatatype[] valueDatatypes = ipsProject.getValueDatatypes(false);
-    	assertEquals(2, valueDatatypes.length);
-    	assertEquals(Datatype.BOOLEAN, valueDatatypes[0]);
-    	assertEquals(Datatype.STRING, valueDatatypes[1]);
-    	
-    	// test if unknown datatypes are ignored.
-    	ipsProject.setValueDatatypes(new String[]{Datatype.BOOLEAN.getQualifiedName(), "UnknownType"});
-    	valueDatatypes = ipsProject.getValueDatatypes(false);
-    	assertEquals(1, valueDatatypes.length);
-    	assertEquals(Datatype.BOOLEAN, valueDatatypes[0]);
-    }
-
     public void testFindEnumDatatypes() throws CoreException{
     	newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     	EnumDatatype[] dataType = ipsProject.findEnumDatatypes();
