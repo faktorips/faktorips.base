@@ -693,8 +693,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      *     if (collisionCoverageType!=null) {
      *         result[index++] = getCollisionCoverageType();
      *     }
-     *     for (int i=0; i<tplCoverageTypes.length; i++) {
-     *         result[index++] = (ICoverageType)getRepository().getProductComponent(tplCoverageTypes[i]);
+     *     ITplCoverageType[] tplCoverageTypesObjects = getTplcCoverageTypes();
+     *     for (int i=0; i<tplCoverageTypesObjects.length; i++) {
+     *         result[index++] = tplCoverageTypes[i];
      *     }
      *     return result;
      * }
@@ -720,15 +721,23 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         for (Iterator it = implRelations.iterator(); it.hasNext();) {
             IProductCmptTypeRelation implRelation = (IProductCmptTypeRelation)it.next();
             if (implRelation.is1ToMany()) {
-                String fieldName = getFieldNameToManyRelation(implRelation);
-                methodsBuilder.appendln("for (int i=0; i<" + fieldName + ".length; i++) {");
-                methodsBuilder.append("result[index++] = ");
-                methodsBuilder.append(interfaceBuilder.getMethodNameGetRelatedCmptAtIndex(implRelation));
-                methodsBuilder.appendln("(i);");
+                String objectArrayVar = getFieldNameToManyRelation(implRelation) + "Objects";
+                String getterMethod = interfaceBuilder.getMethodNameGetManyRelatedCmpts(implRelation) + "()";
+                methodsBuilder.appendClassName(productCmptTypeInterfaceBuilder.getQualifiedClassName(implRelation.findTarget()));
+                methodsBuilder.append("[] " + objectArrayVar + " = " + getterMethod + ";");
+                methodsBuilder.appendln("for (int i=0; i<" + objectArrayVar + ".length; i++) {");
+                methodsBuilder.appendln("result[index++] = " + objectArrayVar + "[i];");
                 methodsBuilder.appendln("}");
             } else {
-                String fieldName = getFieldNameTo1Relation(implRelation);
-                methodsBuilder.appendln("if (" + fieldName + "!=null) {");
+                String accessCode;
+                if (implRelation.isAbstractContainer()) {
+                    // if the implementation relation is itself a container relation, use the access method
+                    accessCode = interfaceBuilder.getMethodNameGet1RelatedCmpt(implRelation) + "()";
+                } else {
+                    // otherwise use the field.
+                    accessCode = getFieldNameTo1Relation(implRelation);
+                }
+                methodsBuilder.appendln("if (" + accessCode + "!=null) {");
                 methodsBuilder.appendln("result[index++] = " + interfaceBuilder.getMethodNameGet1RelatedCmpt(implRelation) + "();");
                 methodsBuilder.appendln("}");
             }

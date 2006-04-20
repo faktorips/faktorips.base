@@ -222,7 +222,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     void generateSignatureGetManyRelatedCmpts(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getJavaNamingConvention().getMultiValueGetterMethodName(getPropertyNameToManyRelation(relation));
+        String methodName = getMethodNameGetManyRelatedCmpts(relation);
         IProductCmptType target = relation.findTarget();
         String returnType = productCmptTypeInterfaceBuilder.getQualifiedClassName(target) + "[]";
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), 
@@ -262,6 +262,10 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
     
     String getMethodNameGet1RelatedCmpt(IProductCmptTypeRelation relation) throws CoreException {
         return getJavaNamingConvention().getGetterMethodName(getPropertyNameTo1Relation(relation), Datatype.INTEGER);
+    }
+    
+    String getMethodNameGetManyRelatedCmpts(IProductCmptTypeRelation relation) throws CoreException {
+        return getJavaNamingConvention().getMultiValueGetterMethodName(getPropertyNameToManyRelation(relation));
     }
 
     String getPropertyNameTo1Relation(IProductCmptTypeRelation relation) {

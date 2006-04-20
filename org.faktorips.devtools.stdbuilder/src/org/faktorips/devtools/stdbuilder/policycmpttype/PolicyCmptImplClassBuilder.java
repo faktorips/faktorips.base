@@ -707,9 +707,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.openBracket();
         for (int i = 0; i < subRelations.size(); i++) {
             IRelation subrel = (IRelation)subRelations.get(i);
-            String field = getFieldNameForRelation(subrel);
-            methodsBuilder.appendln("if (" + field + "!=null) {");
-            methodsBuilder.appendln("return " + field + ";");
+            String accessCode;
+            if (subrel.isReadOnlyContainer()) {
+                // if the implementation relation is a container relation itself
+                // we have to use the access method
+                accessCode = interfaceBuilder.getMethodNameGetRefObject(subrel) + "()";
+            } else {
+                // otherwise we use the field.
+                accessCode = getFieldNameForRelation(subrel);
+            }
+            methodsBuilder.appendln("if (" + accessCode + "!=null) {");
+            methodsBuilder.appendln("return " + accessCode + ";");
             methodsBuilder.appendln("}");
         }
         methodsBuilder.append("return null;");
