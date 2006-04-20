@@ -64,12 +64,20 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET = MSGCODE_PREFIX + "TargetRoleSingularMustBeSet"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the target role plural must be set if the max cardinality is
+     * greater than 1.
+     */
+    public final static String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
+    //TODO 
+    
+    /**
      * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
      */
     public final static String MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1 = MSGCODE_PREFIX + "MaxCardinalityMustBeAtLeast1"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
+     * Validation message code to indicate that for container relations the max cardinality must be greater than 1,
+     * but it's not.
      */
     public final static String MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW = MSGCODE_PREFIX + "MaxCardinalityForContainerRelationTooLow"; //$NON-NLS-1$
 
