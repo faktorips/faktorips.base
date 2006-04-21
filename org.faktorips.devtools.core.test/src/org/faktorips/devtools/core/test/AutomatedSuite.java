@@ -94,9 +94,6 @@ public class AutomatedSuite extends TestSuite {
 		suite.addTestSuite(QualifiedNameTypeTest.class);
 		suite.addTestSuite(IpsObjectPartStringExtPropertyTest.class);
 		suite.addTestSuite(ModifierTest.class);
-		suite.addTestSuite(DefaultTestContent.class);
-		suite.addTestSuite(TestEnumType.class);
-		suite.addTestSuite(IpsPluginTest.class);
 		suite.addTestSuite(ProductCmptTypeRelationTest.class);
 		suite.addTestSuite(ProductCmptTypeTest.class);
 		suite.addTestSuite(DynamicValueDatatypeTest.class);
@@ -108,9 +105,7 @@ public class AutomatedSuite extends TestSuite {
 		suite.addTestSuite(EnumValueSetTest.class);
 		suite.addTestSuite(IpsModelImplTest.class);
 		suite.addTestSuite(DescriptionHelperTest.class);
-		suite.addTestSuite(IpsObjectTestCase.class);
 		suite.addTestSuite(IpsProjectTest.class);
-		suite.addTestSuite(TestIpsObjectFactory.class);
 		suite.addTestSuite(TimedIpsObjectTest.class);
 		suite.addTestSuite(IpsObjectPartStateTest.class);
 		suite.addTestSuite(RangeValueSetTest.class);
@@ -159,7 +154,6 @@ public class AutomatedSuite extends TestSuite {
 		suite.addTestSuite(DependencyGraphTest.class);
 		suite.addTestSuite(JetJavaContentGeneratorTest.class);
 		suite.addTestSuite(JavaSourceFileBuilderTest.class);
-		suite.addTestSuite(TestIpsArtefactBuilderSet.class);
 		suite.addTestSuite(IpsBuilderTest.class);
 		suite.addTestSuite(DefaultBuilderSetTest.class);
 		suite.addTestSuite(IpsCutActionTest.class);
