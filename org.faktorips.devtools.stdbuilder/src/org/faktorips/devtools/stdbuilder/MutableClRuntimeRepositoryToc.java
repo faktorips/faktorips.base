@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 /**
  * Table of contents of a mutable classloader runtime repository.
  * 
- * @author Jan Ortmann
+ * @author Jan Ortmann 
  */
 public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
 

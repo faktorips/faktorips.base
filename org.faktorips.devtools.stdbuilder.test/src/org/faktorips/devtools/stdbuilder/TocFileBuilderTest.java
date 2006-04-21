@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
-import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
+import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.TocEntryGeneration;
 import org.faktorips.runtime.TocEntryObject;
 import org.w3c.dom.Document;
@@ -134,7 +134,7 @@ public class TocFileBuilderTest extends IpsPluginTest {
         assertEquals(project.getXmlFileCharset(), tocFile.getCharset());
         
         Document doc = getDocumentBuilder().parse(tocFile.getContents());
-        ReadonlyTableOfContentsImpl toc = new ReadonlyTableOfContentsImpl();
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
         toc.initFromXml(doc.getDocumentElement());
 
         // asserts for product cmpt entry
