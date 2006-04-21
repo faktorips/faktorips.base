@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.IPolicyComponent;
-import org.faktorips.runtime.RuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
@@ -126,7 +126,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         String versionParam = getChangesInTimeNamingConvention(getIpsObject()).getVersionConceptNameSingular(locale);
         versionParam = StringUtils.uncapitalise(versionParam) + "Id";
         String[] argNames = new String[] { "repository", "id", "kindId", versionParam };
-        String[] argTypes = new String[] { RuntimeRepository.class.getName(), String.class.getName(), String.class.getName(), String.class.getName() };
+        String[] argTypes = new String[] { IRuntimeRepository.class.getName(), String.class.getName(), String.class.getName(), String.class.getName() };
         builder.methodBegin(Modifier.PUBLIC, null, className, argNames, argTypes);
         builder.append("super(repository, id, kindId, " + versionParam + ");");
         builder.methodEnd();

@@ -20,8 +20,8 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.faktorips.runtime.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContents;
-import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
 import org.faktorips.runtime.TocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
+public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
 
     // a value that is increased every time the registry content's is changed.
     private long modificationStamp;
@@ -157,7 +157,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContentsImpl{
 	 * @throws NullPointerException if doc is <code>null</code>.
 	 */
 	public Element toXml(Document doc) {
-	    Element element = doc.createElement(ReadonlyTableOfContents.TOC_XML_ELEMENT);
+	    Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
 	    ArrayList allEntries = new ArrayList(pcIdTocEntryMap.size() + tableContentNameTocEntryMap.size());
 	    allEntries.addAll(pcIdTocEntryMap.values());
 	    allEntries.addAll(tableContentNameTocEntryMap.values());

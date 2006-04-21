@@ -43,9 +43,9 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
-import org.faktorips.runtime.RuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
-import org.faktorips.runtime.internal.TableImpl;
+import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
 import org.faktorips.util.LocalizedStringsSet;
@@ -279,7 +279,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         codeBuilder.javaDoc(getLocalizedText(getIpsObject(), CLASS_JAVADOC));
         codeBuilder.classBegin(Modifier.PUBLIC, getTableStructure().getName(),
-                TableImpl.class, new Class[0]);
+                Table.class, new Class[0]);
         createFields(codeBuilder);
         createAddRowMethod(codeBuilder);
         createInitKeyMapsMethod(codeBuilder);
@@ -335,7 +335,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                 qualifiedClassName, "getInstance", new String[] { "repository" },
-                new String[] { RuntimeRepository.class.getName() }, methodBody,
+                new String[] { IRuntimeRepository.class.getName() }, methodBody,
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }
 
@@ -350,7 +350,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
                 qualifiedClassName, "getInstance", 
                 new String[] { "repository", "qualifiedTableName" },
-                new String[] { RuntimeRepository.class.getName(), String.class.getName() }, 
+                new String[] { IRuntimeRepository.class.getName(), String.class.getName() }, 
                 methodBody,
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }

@@ -18,8 +18,8 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.faktorips.devtools.stdbuilder.MutableClRuntimeRepositoryToc;
+import org.faktorips.runtime.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContents;
-import org.faktorips.runtime.ReadonlyTableOfContentsImpl;
 import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.util.XmlAbstractTestCase;
 import org.w3c.dom.Element;
@@ -175,7 +175,7 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         toc.addOrReplaceTocEntry(entry1);
         Element tocElement = toc.toXml(newDocument());
         assertNotNull(tocElement);
-        ReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContentsImpl();
+        AbstractReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContents();
         readOnlyToc.initFromXml(tocElement);
         TocEntryObject[] entries = readOnlyToc.getProductCmptTocEntries();
         assertEquals(2, entries.length);
