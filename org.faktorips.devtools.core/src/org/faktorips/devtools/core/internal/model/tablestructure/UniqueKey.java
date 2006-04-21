@@ -36,11 +36,14 @@ public class UniqueKey extends Key implements IUniqueKey {
     
     final static String TAG_NAME = "UniqueKey"; //$NON-NLS-1$
 
+    private boolean deleted = false;
+
+
     public UniqueKey(TableStructure tableStructure, int id) {
         super(tableStructure, id);
     }
 
-    protected UniqueKey() {
+    public UniqueKey() {
         super();
     }
     
@@ -68,8 +71,6 @@ public class UniqueKey extends Key implements IUniqueKey {
         ((TableStructure)getTableStructure()).removeUniqueKey(this);
         deleted = true;
     }
-
-    private boolean deleted = false;
 
     /**
      * {@inheritDoc}

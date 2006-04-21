@@ -46,11 +46,14 @@ public class ForeignKey extends Key implements IForeignKey {
     // the unique key referenced by this fk.
     private String refUniqueKey = ""; //$NON-NLS-1$
 
+    private boolean deleted = false;
+
+
     public ForeignKey(TableStructure tableStructure, int id) {
         super(tableStructure, id);
     }
 
-    protected ForeignKey() {
+    public ForeignKey() {
         super();
     }
     
@@ -118,8 +121,6 @@ public class ForeignKey extends Key implements IForeignKey {
         ((TableStructure)getTableStructure()).removeForeignKey(this);
         deleted = true;
     }
-
-    private boolean deleted = false;
 
     /**
      * {@inheritDoc}

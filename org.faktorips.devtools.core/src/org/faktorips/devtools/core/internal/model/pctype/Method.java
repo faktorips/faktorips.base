@@ -72,14 +72,14 @@ public class Method extends Member implements IMethod {
      * @param pcType The type the method belongs to.
      * @param id The method's unique id within the type.
      */
-     Method(IIpsObject pdObject, int id) {
+    public Method(IIpsObject pdObject, int id) {
         super(pdObject, id);
     }
 
     /**
      * Constructor for testing purposes.
      */
-    Method() {
+    public Method() {
     }
     
     /** 
