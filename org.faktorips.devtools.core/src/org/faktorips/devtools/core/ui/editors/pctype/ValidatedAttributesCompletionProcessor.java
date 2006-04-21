@@ -50,7 +50,7 @@ public class ValidatedAttributesCompletionProcessor extends
 	 * @see org.faktorips.devtools.core.ui.AbstractCompletionProcessor#doComputeCompletionProposals(java.lang.String,
 	 *      java.util.List)
 	 */
-	protected void doComputeCompletionProposals(String prefix,
+	public void doComputeCompletionProposals(String prefix,
 			int documentOffset, List result) throws Exception {
 		prefix = prefix.toLowerCase();
 		IAttribute[] attributes = pcType.getSupertypeHierarchy().getAllAttributes(pcType);

@@ -84,7 +84,7 @@ public abstract class JetJavaContentGenerator {
      * @param fullQualifiedName the qualified class name as a string
      * @return the unqualified class name
      */
-    protected String appendClassName(String fullQualifiedName) {
+    public String appendClassName(String fullQualifiedName) {
         importDeclartion.add(fullQualifiedName);
         return StringUtil.unqualifiedName(fullQualifiedName);
     }
@@ -96,7 +96,7 @@ public abstract class JetJavaContentGenerator {
      * @param clazz used to detemine the qualified class name of this class
      * @return the unqualified class name of the provided class
      */
-    protected String appendClass(Class clazz) {
+    public String appendClass(Class clazz) {
         importDeclartion.add(clazz);
         return StringUtil.unqualifiedName(clazz.getName());
     }
@@ -108,7 +108,7 @@ public abstract class JetJavaContentGenerator {
      * 
      * @param buffer the string buffer variable that can be accessed within JET templates
      */
-    protected void markImportLocation(StringBuffer buffer) {
+    public void markImportLocation(StringBuffer buffer) {
         importLocation = buffer.length() == 0 ? 0 : buffer.length();
     }
 

@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
 /**
  * The ips source file's content.  
  */
-class IpsSourceFileContents {
+public class IpsSourceFileContents {
     
     // handle to the file this is the content of.
     private IIpsSrcFile ipsSrcFile;
