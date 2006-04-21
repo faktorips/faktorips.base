@@ -283,7 +283,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    TocEntryObject createTocEntry(IProductCmpt productCmpt) throws CoreException {
+    public TocEntryObject createTocEntry(IProductCmpt productCmpt) throws CoreException {
         if (productCmpt.getNumOfGenerations() == 0) {
             return null;
         }
@@ -318,7 +318,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         return entry;
     }
 
-    TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {
+    public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {
         ITableStructure tableStructure = tableContents.findTableStructure();
         if (tableStructure == null) {
             return null;
