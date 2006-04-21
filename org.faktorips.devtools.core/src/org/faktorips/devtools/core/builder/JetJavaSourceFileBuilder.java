@@ -83,7 +83,7 @@ public class JetJavaSourceFileBuilder extends JavaSourceFileBuilder {
      * 
      * @see org.faktorips.devtools.core.builder.JavaSourceFileBuilder#generate(org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected String generate() throws CoreException {
+    public String generate() throws CoreException {
 
         try {
             JetJavaContentGenerator generator = (JetJavaContentGenerator)generatorClass

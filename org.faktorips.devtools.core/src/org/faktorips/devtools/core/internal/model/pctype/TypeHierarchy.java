@@ -55,7 +55,7 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Subtypes are not resolved.
      * @throws CycleException if a cycle is detected in supertype hierarchy.
      */
-    final static TypeHierarchy getSupertypeHierarchy(IPolicyCmptType pcType) throws CoreException, CycleException {
+    public final static TypeHierarchy getSupertypeHierarchy(IPolicyCmptType pcType) throws CoreException, CycleException {
         IIpsProject project = pcType.getIpsProject();
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         IPolicyCmptType[] subtypes = new IPolicyCmptType[0];
@@ -76,7 +76,7 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Supertypes are not resolved.
      * @throws CycleException 
      */
-    final static TypeHierarchy getSubtypeHierarchy(IPolicyCmptType pcType) throws CoreException, CycleException {
+    public final static TypeHierarchy getSubtypeHierarchy(IPolicyCmptType pcType) throws CoreException, CycleException {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         addSubtypes(hierarchy, pcType, null);
         return hierarchy;

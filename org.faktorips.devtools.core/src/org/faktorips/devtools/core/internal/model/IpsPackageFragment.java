@@ -262,7 +262,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         for (int i=0; i<members.length; i++) {
             if (members[i].getType()==IResource.FILE) {
                 IFile file = (IFile)members[i];
-                if (type == IpsObjectType.PRODUCT_CMPT_TYPE && file.getFileExtension().equals(IpsObjectType.POLICY_CMPT_TYPE.getFileExtension())) {
+                if (type == IpsObjectType.PRODUCT_CMPT_TYPE && IpsObjectType.POLICY_CMPT_TYPE.getFileExtension().equals(file.getFileExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject()!=null) {
                     	IPolicyCmptType policyCmptType = (IPolicyCmptType)srcFile.getIpsObject();
@@ -289,7 +289,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      * @throws CoreException if an error occurs while searching.
      *  
      */
-    void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
+    public void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
         ArgumentCheck.notNull(result);

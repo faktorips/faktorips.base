@@ -266,7 +266,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * 
      * @throws CoreException if an error occurs while searching for the objects. 
      */
-    void findIpsObjectsStartingWith(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
+    public void findIpsObjectsStartingWith(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
         for (int i=0; i<entries.length; i++) {
             ((IpsObjectPathEntry)entries[i]).findIpsObjectsStartingWith(project, type, prefix, ignoreCase, result);
         }

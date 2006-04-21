@@ -42,11 +42,11 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     // the ips project referenced by this entry
     private IIpsProject referencedIpsProject;
     
-    IpsProjectRefEntry(IpsObjectPath path) {
+    public IpsProjectRefEntry(IpsObjectPath path) {
         super(path);
     }
     
-    IpsProjectRefEntry(IpsObjectPath path, IIpsProject referencedIpsProject) {
+    public IpsProjectRefEntry(IpsObjectPath path, IIpsProject referencedIpsProject) {
         super(path);
         ArgumentCheck.notNull(referencedIpsProject);
         this.referencedIpsProject = referencedIpsProject;

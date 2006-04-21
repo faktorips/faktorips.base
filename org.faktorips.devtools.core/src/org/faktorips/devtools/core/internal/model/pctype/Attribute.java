@@ -86,7 +86,7 @@ public class Attribute extends Member implements IAttribute {
     /**
      * Constructor for testing purposes.
      */
-    Attribute() {
+    public Attribute() {
         valueSet = new AllValuesValueSet(this, getNextPartId());
     }
 

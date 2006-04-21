@@ -62,7 +62,7 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		super(generation, id);
 	}
 
-	ProductCmptRelation() {
+	public ProductCmptRelation() {
 		super();
 	}
 

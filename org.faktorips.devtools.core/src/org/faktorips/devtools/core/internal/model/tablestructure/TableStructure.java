@@ -57,7 +57,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     /**
      * Constructor for testing purposes.
      */
-    protected TableStructure() {
+    public TableStructure() {
         super();
     }
     

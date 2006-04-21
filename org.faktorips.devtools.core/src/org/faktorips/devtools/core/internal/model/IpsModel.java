@@ -283,7 +283,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 	}
 
-	void notifyChangeListeners(final ContentChangeEvent event) {
+	public void notifyChangeListeners(final ContentChangeEvent event) {
 		if (changeListeners == null) {
 			return;
 		}

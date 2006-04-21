@@ -175,7 +175,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * Returns the IpsObject provided to this builder. It returns the IpsObject
 	 * only during the generating phase otherwise null is returned.
 	 */
-	protected IIpsObject getIpsObject() {
+	public IIpsObject getIpsObject() {
 		return ipsObject;
 	}
 
@@ -183,7 +183,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * Returns the IpsSrcFile provided to this builder. It returns the
 	 * IpsSrcFile only during the generating phase otherwise null is returned.
 	 */
-	protected IIpsSrcFile getIpsSrcFile() {
+	public IIpsSrcFile getIpsSrcFile() {
 		return ipsSrcFile;
 	}
 

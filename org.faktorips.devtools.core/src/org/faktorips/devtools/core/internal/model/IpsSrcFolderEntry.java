@@ -55,11 +55,11 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     // the name of the base package containing the Java files where the developer adds it's own code.
     private String basePackageExtension = ""; //$NON-NLS-1$
 
-    IpsSrcFolderEntry(IpsObjectPath path) {
+    public IpsSrcFolderEntry(IpsObjectPath path) {
         super(path);
     }
 
-    IpsSrcFolderEntry(IpsObjectPath path, IFolder sourceFolder) {
+    public IpsSrcFolderEntry(IpsObjectPath path, IFolder sourceFolder) {
         super(path);
         ArgumentCheck.notNull(sourceFolder);
         this.sourceFolder = sourceFolder;

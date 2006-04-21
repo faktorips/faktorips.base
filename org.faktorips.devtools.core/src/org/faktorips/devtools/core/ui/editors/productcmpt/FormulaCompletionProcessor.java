@@ -69,7 +69,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
     /** 
      * {@inheritDoc}
      */
-    protected void doComputeCompletionProposals(
+    public void doComputeCompletionProposals(
             String prefix, 
             int documentOffset, 
             List result) throws Exception {

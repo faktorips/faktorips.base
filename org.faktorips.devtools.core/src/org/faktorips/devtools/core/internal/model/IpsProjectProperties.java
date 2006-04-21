@@ -403,7 +403,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		}
 	}
 
-    static Locale getLocale(String s) {
+    public static Locale getLocale(String s) {
     	StringTokenizer tokenzier = new StringTokenizer(s, "_"); //$NON-NLS-1$
     	if (!tokenzier.hasMoreTokens()) {
     		return Locale.ENGLISH;
