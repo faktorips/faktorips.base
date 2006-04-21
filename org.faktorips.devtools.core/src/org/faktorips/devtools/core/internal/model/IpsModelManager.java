@@ -41,7 +41,7 @@ public class IpsModelManager {
         return (IpsSourceFileContents)cache.get(file);
     }
     
-    void putSrcFileContents(IIpsSrcFile file, IpsSourceFileContents newContent) {
+    public void putSrcFileContents(IIpsSrcFile file, IpsSourceFileContents newContent) {
         cache.put(file, newContent);
     }
     
