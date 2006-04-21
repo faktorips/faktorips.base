@@ -12,10 +12,6 @@
 		<property name="id" value="org.faktorips.feature" />
 	</ant>
 	
-	<ant antfile="${genericTargets}" target="${target}" >
-		<property name="type" value="feature" />
-		<property name="id" value="org.faktorips.feature.test"/>
-	</ant>
 
 
 </target>
@@ -133,9 +129,9 @@
 <target name="test" unless="dontRunTests">
     <echo message="Setting up tests in ${eclipseAutomatedTestHome}"/>
 	<mkdir dir="${eclipseAutomatedTestHome}"/>
+
 	<copy file="${buildDirectory}/${buildLabel}/org.faktorips.feature-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/org.faktorips.feature-${buildId}.zip" />
 	<copy file="${buildDirectory}/${buildLabel}/org.faktorips.feature.test-${buildId}.zip" tofile="${eclipseAutomatedTestHome}/org.faktorips.feature.test-${buildId}.zip" />
-	
 	<copy file="${buildDirectory}/plugins/org.faktorips.tests.all/test.xml" tofile="${eclipseAutomatedTestHome}/test.xml" />
 	
 	<ant antfile="${eclipseAutomatedTestHome}/test.xml" target="run" dir="${eclipseAutomatedTestHome}">		
