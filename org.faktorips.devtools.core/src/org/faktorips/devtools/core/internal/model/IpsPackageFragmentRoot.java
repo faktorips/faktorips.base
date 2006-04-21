@@ -252,7 +252,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws CoreException if an error occurs while searching.
      */
-    void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
+    public void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result) throws CoreException {
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
         ArgumentCheck.notNull(result);
@@ -277,7 +277,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      * on the given type are returned.
      * @param result List in which the product components being found are stored in.
      */
-    void findProductCmpts(String pcTypeName, boolean includeSubtypes, List result) throws CoreException {
+    public void findProductCmpts(String pcTypeName, boolean includeSubtypes, List result) throws CoreException {
         List allCmpts = new ArrayList(100);
         IPolicyCmptType pcType = null;
         ITypeHierarchy hierarchy = null;

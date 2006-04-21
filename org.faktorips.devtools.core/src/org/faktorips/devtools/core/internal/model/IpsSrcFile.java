@@ -49,7 +49,7 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     
-    IpsSrcFile(IIpsElement parent, String name) {
+    public IpsSrcFile(IIpsElement parent, String name) {
 
     	super(parent, name);
     	if(IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name)) == null){
