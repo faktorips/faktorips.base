@@ -59,7 +59,7 @@ public class IpsSourceFileContents {
     // the text's encoding
     private String encoding;
 
-    IpsSourceFileContents(IIpsSrcFile file, String sourceText, String encoding) {
+    public IpsSourceFileContents(IIpsSrcFile file, String sourceText, String encoding) {
         this.ipsSrcFile = file;
         this.sourceText = sourceText;
         this.encoding = encoding;

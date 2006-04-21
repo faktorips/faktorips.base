@@ -119,7 +119,7 @@ public abstract class JetJavaContentGenerator {
      * @param buffer the string buffer variable that can be accessed within JET templates
      * @throws CoreException 
      */
-    protected void addImports(StringBuffer buffer) throws CoreException {
+    public void addImports(StringBuffer buffer) throws CoreException {
         StringBuffer importBuffer = new StringBuffer();
         String pack = getJavaSourceFileBuilder().getPackage();
         ImportDeclaration decl = new ImportDeclaration(importDeclartion, pack);
