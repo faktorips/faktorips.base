@@ -3,15 +3,14 @@
 <project name="testsuite" default="run" basedir=".">
   <!-- The property ${eclipse-home} should be passed into this script -->
   <!-- Set a meaningful default value for when it is not. -->
-  <property name="eclipse-home" value="/usr/lib/test2/"/>
+  <property name="eclipse-home" value="/usr/lib/test3/"/>
   
-  <property name="org.faktorips.tests" value="org.faktorips.tests.all"/>
-  <property name="fips-tests-workspace" value="testworkspace" />
+  <property name="org.faktorips.devtools.stdbuilder.test" value="org.faktorips.devtools.stdbuilder.test"/>
+
 
   <!-- sets the properties eclipse-home, and library-file -->
-  <property name="plugin-name" value="org.faktorips.tests.all"/>
-  <property name="library-file"
-            value="${eclipse-home}/plugins/org.eclipse.test/library.xml"/>
+  <property name="plugin-name" value="org.faktorips.devtools.stdbuilder.test"/>
+  <property name="library-file"  value="${eclipse-home}/plugins/org.eclipse.test/library.xml"/>
 
   <!-- This target holds all initialization code that needs to be done for -->
   <!-- all tests that are to be run. Initialization for individual tests -->
@@ -27,12 +26,10 @@
   <!-- This target defines the tests that need to be run. -->
   <target name="suite">
 
-    <delete dir="${fips-tests-workspace}" quiet="true"/>
-
     <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${fips-tests-workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
-      <property name="classname" value="org.faktorips.tests.all.AllTests"/>	  
+      <property name="classname" value="org.faktorips.devtools.stdbuilder.test.AutomatedSuite"/>	  
       <property name="test.target" value="junit" />
     </ant>
   

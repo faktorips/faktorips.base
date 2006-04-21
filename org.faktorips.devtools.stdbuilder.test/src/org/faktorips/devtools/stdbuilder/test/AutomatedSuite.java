@@ -1,3 +1,4 @@
+package org.faktorips.devtools.stdbuilder.test;
 import org.faktorips.devtools.stdbuilder.ParameterIdentifierResolverTest;
 
 import junit.framework.Test;
