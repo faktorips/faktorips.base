@@ -132,7 +132,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Reinits the model (so all data in the cache is cleared). Should only be called in test cases to ensure
      * a clean environment.
      */
-    public void reinitModel() {
+    void reinitModel() {
         ((IpsModel)getIpsModel()).stopListeningToResourceChanges();
         manager = new IpsModelManager();
         ((IpsModel)getIpsModel()).startListeningToResourceChanges();
