@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
- Test data for DateBasedProductCmptNamingStrategyTest.java
--->
-<ProductCmptNamingStrategy>
-	<DateBasedProductCmptNamingStrategy versionIdSeparator="-" dateFormatPattern="yyyy-MM" postfixAllowed="true"/>
-</ProductCmptNamingStrategy>
