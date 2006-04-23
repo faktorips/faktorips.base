@@ -187,6 +187,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.methodBegin(Modifier.PROTECTED, Void.class, "doInitPropertiesFromXml", 
                 new String[]{"configMap"}, new Class[]{Map.class});
         
+        builder.appendln("super.doInitPropertiesFromXml(configMap);");
         IAttribute[] attributes = getProductCmptType().getAttributes();
         boolean attributeFound = false;
         for (int i = 0; i < attributes.length; i++) {
