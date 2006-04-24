@@ -17,10 +17,12 @@
 
 package org.faktorips.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
@@ -28,7 +30,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -52,6 +57,15 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlUtil {
     
+    public final static String dateToXmlDateString(Date date) {
+        if (date == null) {
+            return "";
+        }
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return gregorianCalendarToXmlDateString(calendar);
+    }
+
     public final static String gregorianCalendarToXmlDateString(GregorianCalendar calendar) {
         if (calendar==null) {
             return "";
@@ -62,7 +76,17 @@ public class XmlUtil {
         	+ "-" + (month<10?"0"+month:""+month)
         	+ "-" + (date<10?"0"+date:""+date); 
     } 
-    
+
+    /**
+     * Parses the given xml String to a Date.
+     */
+    public final static Date parseXmlDateStringToDate(String s) {
+        if (s == null || s.equals("")) {
+            return null;
+        }
+        return parseXmlDateStringToGregorianCalendar(s).getTime();
+    }
+
     /**
      * Parses the given xml String to a Gregorian calendar.
      */
@@ -141,6 +165,28 @@ public class XmlUtil {
             }
         });
         return builder;
+    }
+    
+    /**
+     * Writes a XML document to a file.
+     * <p>See also the <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java example</a>.</p>
+     */
+    public static void writeXMLtoFile(File file, Document doc){
+		try {
+    		Source src = new DOMSource(doc);
+    		Result res = new StreamResult(file);
+    		Transformer trafo;
+			trafo = TransformerFactory.newInstance().newTransformer();
+			trafo.setOutputProperty(OutputKeys.METHOD, "xml");
+			trafo.setOutputProperty(OutputKeys.INDENT, "yes");
+			trafo.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+			trafo.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+    		trafo.transform(src, res);
+		} catch (TransformerConfigurationException e) {
+			System.err.println("TransformerConfigurationException: " + e);
+		} catch (TransformerException e) {
+			System.err.println("TransformerException: "+e);
+		}
     }
     
     public final static Element getFirstElement(Node parent, String tagName) {
@@ -223,6 +269,24 @@ public class XmlUtil {
             }
         }
         return null;
+    }
+    
+    public final static Element addNewChild(Document doc, Node parent, String childName){
+    	Element e = doc.createElement(childName);
+    	parent.appendChild(e);
+    	return e;
+    }
+    
+    public final static Node addNewTextChild(Document doc, Node parent, String text){
+        Node n = doc.createTextNode(text);
+        parent.appendChild(n);
+        return n;
+    }
+    
+    public final static Node addNewCDATAChild(Document doc, Node parent, String text){
+        Node n = doc.createCDATASection(text);
+        parent.appendChild(n);
+        return n;
     }
 
     private XmlUtil() {
