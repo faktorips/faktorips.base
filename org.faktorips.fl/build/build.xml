@@ -79,6 +79,10 @@
 		
 	</target>
 	
+	<target name="clean">
+		<ant antfile="../../org.faktorips.build/build.xml" target="clean" />
+	</target>
+	
 
 	
 </project>
