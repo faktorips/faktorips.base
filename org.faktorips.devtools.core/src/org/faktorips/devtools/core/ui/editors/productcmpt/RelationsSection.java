@@ -18,12 +18,14 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -132,6 +134,11 @@ public class RelationsSection extends IpsSection {
 	 * Empty popup-Menu.
 	 */
 	private Menu emptyMenu;
+	
+	/**
+	 * Collection of all actions supported by this section
+	 */
+	private List actions = new ArrayList();
 
 	/**
 	 * Creates a new RelationsSection which displays relations for the given
@@ -230,15 +237,24 @@ public class RelationsSection extends IpsSection {
 		MenuManager menumanager = new MenuManager();
 		menumanager.setRemoveAllWhenShown(false);
 
-		site.getActionBars().setGlobalActionHandler(ActionFactory.CUT.getId(),
-				new IpsCutAction(treeViewer, site.getShell()));
-		site.getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(),
-				new IpsCopyAction(treeViewer, site.getShell()));
+		IAction action = new IpsCutAction(treeViewer, site.getShell());
+		
+		site.getActionBars().setGlobalActionHandler(ActionFactory.CUT.getId(), action);
+		actions.add(action);
+				
+		action = new IpsCopyAction(treeViewer, site.getShell());
+		site.getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), action);
+		actions.add(action);
+		
+		action = new IpsPasteAction(treeViewer, site.getShell());
 		site.getActionBars().setGlobalActionHandler(
-				ActionFactory.PASTE.getId(),
-				new IpsPasteAction(treeViewer, site.getShell()));
+				ActionFactory.PASTE.getId(), action);
+		actions.add(action);
+		
+		action = new IpsDeleteAction(treeViewer);
 		site.getActionBars().setGlobalActionHandler(
-				ActionFactory.DELETE.getId(), new IpsDeleteAction(treeViewer));
+				ActionFactory.DELETE.getId(), action);
+		actions.add(action);
 
 		menumanager.add(new NewProductCmptRelationAction(site.getShell(),
 				treeViewer, this));
@@ -622,6 +638,12 @@ public class RelationsSection extends IpsSection {
 			treeViewer.getTree().setMenu(emptyMenu);
 		}
 		cardinalityPanel.setEnabled(enabled);
+		
+		for (Iterator iter = actions.iterator(); iter.hasNext();) {
+			IAction action = (IAction) iter.next();
+			action.setEnabled(enabled);
+		}
+		
 	}
 
 	private MessageList validate(Object element) throws CoreException {
