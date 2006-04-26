@@ -92,6 +92,13 @@ public abstract class AbstractCompletionProcessor implements IContentAssistProce
         return errorMessage;
     }
 
+    /**
+     * @param errorMsg Set this message as error message.
+     */
+    public void setErrorMessage(String errorMsg) {
+    	this.errorMessage = errorMsg;
+    }
+    
     /** 
      * {@inheritDoc}
      */

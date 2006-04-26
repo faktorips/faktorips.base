@@ -123,7 +123,7 @@ public class RuleFunctionsControl extends EditTableControl {
 		Text text= (Text)editors[1].getControl();
 		IpsObjectCompletionProcessor processor= new IpsObjectCompletionProcessor(IpsObjectType.BUSINESS_FUNCTION);
 		processor.setComputeProposalForEmptyPrefix(true);
-		processor.setPdProject(getRule().getIpsProject());
+		processor.setIpsProject(getRule().getIpsProject());
 		SubjectControlContentAssistant contentAssistant= CompletionUtil.createContentAssistant(processor);
 		ContentAssistHandler.createHandlerForText(text, contentAssistant);
         editors[1].setContentAssistant(contentAssistant, 1);

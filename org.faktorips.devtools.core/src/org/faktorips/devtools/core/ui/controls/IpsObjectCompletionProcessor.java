@@ -17,139 +17,118 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
-import org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.util.StringUtil;
 
 
 /**
  *
  */
-public class IpsObjectCompletionProcessor implements IContentAssistProcessor, ISubjectControlContentAssistProcessor {
+public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     
-    private IIpsProject pdProject;
     private IpsObjectRefControl control;
-    private IpsObjectType pdObjectType;
-    private char[] proposalAutoActivationSet;
-    private String errorMessage;
-    private boolean computeProposalForEmptyPrefix = false;
+    private IpsObjectType ipsObjectType;
 
     public IpsObjectCompletionProcessor(IpsObjectRefControl control) {
         this.control = control;
-        pdObjectType = null;
+        ipsObjectType = null;
     }
     
     public IpsObjectCompletionProcessor(IpsObjectType type) {
-        pdObjectType = type;
+        ipsObjectType = type;
         control = null;
     }
     
-    public void setPdProject(IIpsProject project) {
-        pdProject = project;
-    }
+    /**
+	 * Creates completion proposals for every package matching the given prefix.
+	 * 
+	 * @param packages
+	 *            The array of packages to check
+	 * @param prefix
+	 *            The prefix to check the packages against
+	 * @param replacementLength
+	 *            The replacement length given to the new completion proposal
+	 * @param result
+	 *            The list to add new completion proposals to.
+	 */
+	private void matchPackages(IIpsPackageFragment[] packages, String prefix,
+			int replacementLength, List result) {
+		String lowerPrefix = prefix.toLowerCase();
+		for (int i = 0; i < packages.length; i++) {
+			String name = packages[i].getName();
+			if (name.toLowerCase().startsWith(lowerPrefix)) {
+				CompletionProposal proposal = new CompletionProposal(name, 0,
+						replacementLength, name.length(), packages[i]
+								.getImage(), name, null, "");
+				result.add(proposal);
+			}
+		}
+	}
     
     /**
-     * If true, the processor proposes all objects if the user has provided
-     * no prefix to start with. If false, the processor won't generate a
-     * prososal.
-     */
-    public void setComputeProposalForEmptyPrefix(boolean value) {
-        computeProposalForEmptyPrefix = value;
-    }
+	 * Returns whether the given qualified name will match the given package and
+	 * name prefixes.
+	 * 
+	 * @param pack
+	 *            The package the given qualified name must match. Can be empty,
+	 *            but must not be <code>null</code>.
+	 * @param prefix
+	 *            The prefix the unqualifed name must match. Can be emtpy, but
+	 *            must not be <code>null</code>.
+	 * @param qualifiedName
+	 *            The qulified name to match against the given package and name
+	 *            prefix.
+	 * 
+	 * @return <code>true</code> if the given qualified name matches,
+	 *         <code>false</code> otherwise.
+	 */
+	private boolean match(String pack, String prefix, String qualifiedName) {
+		String toMatchPack = StringUtil.getPackageName(qualifiedName).toLowerCase();
+		String toMatchName = StringUtil.unqualifiedName(qualifiedName).toLowerCase();
 
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
-     */
-    public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
-    }
+		return (StringUtils.isEmpty(pack) || toMatchPack.startsWith(pack.toLowerCase()))
+				&& (StringUtils.isEmpty(prefix) || toMatchName.startsWith(prefix.toLowerCase()));
+	}
 
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
-     */
-    public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
-        throw new RuntimeException("ITextViewer not supported."); //$NON-NLS-1$
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
-     */
-    public char[] getCompletionProposalAutoActivationCharacters() {
-        return proposalAutoActivationSet;
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
-     */
-    public char[] getContextInformationAutoActivationCharacters() {
-        return null;
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
-     */
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
-     */
-    public IContextInformationValidator getContextInformationValidator() {
-		return null; //no context
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeContextInformation(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
-     */
-    public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
-        return null;
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
-     */
     public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
-		if (documentOffset == 0 && !computeProposalForEmptyPrefix) {
-			return null;
-		}
-        if (control==null && pdProject==null) {
-            errorMessage = Messages.IpsObjectCompletionProcessor_msgNoProject;
-            return null;
+    	if (ipsProject == null && control != null) {
+    		ipsProject = control.getIpsProject();
+    	}
+    	return super.computeCompletionProposals(contentAssistSubjectControl, documentOffset);
+    }
+
+	
+	protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
+        if (control==null && ipsProject==null) {
+            setErrorMessage(Messages.IpsObjectCompletionProcessor_msgNoProject);
+            return;
         }
-		String input= contentAssistSubjectControl.getDocument().get();
-        String match = input.substring(0, documentOffset).toLowerCase();
+        String match = prefix.toLowerCase();
         
-        List result = new ArrayList(100);
+        String matchPack = StringUtil.getPackageName(match);
+        String matchName = StringUtil.unqualifiedName(match);
+        
         try {
             IIpsObject[] objects;
             if (control != null) {
                 objects = control.getPdObjects();    
             } else {
-                objects = pdProject.findIpsObjects(pdObjectType);
+                objects = ipsProject.findIpsObjects(ipsObjectType);
             }
             for (int i=0; i<objects.length; i++) {
-                if (objects[i].getName().toLowerCase().startsWith(match)) {
+            	if (match(matchPack, matchName, objects[i].getQualifiedName())) {
                     String qName = objects[i].getQualifiedName();
                     String displayText = objects[i].getName() + " - " + objects[i].getParent().getParent().getName(); //$NON-NLS-1$
                     CompletionProposal proposal = new CompletionProposal(
@@ -158,16 +137,36 @@ public class IpsObjectCompletionProcessor implements IContentAssistProcessor, IS
                     result.add(proposal);
                 }
             }
+            
+            // find packages of the project this completion processor was created in
+            IIpsProject prj = ipsProject;
+            if (prj == null && control != null) {
+            	prj = control.getIpsProject();
+            }
+
+            if (prj == null) {
+            	return;
+            }
+
+            IIpsPackageFragmentRoot[] roots = prj.getIpsPackageFragmentRoots();
+            for (int i = 0; i < roots.length; i++) {
+				matchPackages(roots[i].getIpsPackageFragments(), match, documentOffset, result);
+			}
+
+            // find packages of projects, the project of this compeltion processor refers to...
+            IIpsProject[] projects = prj.getIpsObjectPath().getReferencedIpsProjects();
+            for (int i = 0; i < projects.length; i++) {
+				roots = projects[i].getIpsPackageFragmentRoots();
+				for (int j = 0; j < projects.length; j++) {
+					matchPackages(roots[j].getIpsPackageFragments(), match, documentOffset, result);
+				}
+			}
+
         } catch (Exception e) {
-            errorMessage = Messages.IpsObjectCompletionProcessor_msgInternalError;
+            setErrorMessage(Messages.IpsObjectCompletionProcessor_msgInternalError);
             IpsPlugin.log(e);
-            return null;
+            return;
         }
         
-		ICompletionProposal[] proposals = new ICompletionProposal[result.size()];
-		result.toArray(proposals);
-		return proposals;
-    }
-
-
+	}
 }
