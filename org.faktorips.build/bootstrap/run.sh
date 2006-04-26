@@ -1,10 +1,10 @@
 #echo using RDT_BUILD_HOME: ${RDT_BUILD_HOME:?must be set}
 eclipseDir=/usr/lib/eclipse-3.1
 pdeBuildPluginVersion=3.1.0
-buildDirectory=/home/senf/work/
+buildDirectory=/opt/cc/work/eclipsetest/
 bootstrapDir=${buildDirectory}/org.faktorips.build/bootstrap
 verboseAnt=true
-eclipseAutomatedTestHome=/tmp/eclipsetest/
+
 
 #docbookRoot=${RDT_BUILD_HOME}/docbook
 vm=`java-config -O`/bin/java
