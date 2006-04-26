@@ -271,22 +271,43 @@ public class XmlUtil {
         return null;
     }
     
+    /**
+     * Adds a child Element by the name given in childName to the parent and returns the child.
+     */
     public final static Element addNewChild(Document doc, Node parent, String childName){
     	Element e = doc.createElement(childName);
     	parent.appendChild(e);
     	return e;
     }
-    
+
+    /**
+     * Adds a TextNode containing the text to the parent and returns the TextNode.
+     */
     public final static Node addNewTextChild(Document doc, Node parent, String text){
         Node n = doc.createTextNode(text);
         parent.appendChild(n);
         return n;
     }
-    
+
+    /**
+     * Adds a CDATASection containing the text to the parent and returns the CDATASection.
+     */
     public final static Node addNewCDATAChild(Document doc, Node parent, String text){
         Node n = doc.createCDATASection(text);
         parent.appendChild(n);
         return n;
+    }
+
+    /**
+     * Adds a TextNode or, if text contains chars>127, a CDATASection containing the text to the parent and returns this new child.
+     */
+    public final static Node addNewCDATAorTextChild(Document doc, Node parent, String text){
+        char[] chars = text.toCharArray();
+        boolean toCDATA = false;
+        for(int i=0; i<chars.length&&!toCDATA; i++){
+            if(chars[i]<32||126<chars[i]) toCDATA = true;
+        }
+        return toCDATA ? addNewCDATAChild(doc, parent, text) : addNewTextChild(doc, parent, text);
     }
 
     private XmlUtil() {
