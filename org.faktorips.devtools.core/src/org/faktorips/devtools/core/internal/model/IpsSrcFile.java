@@ -69,7 +69,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      * Overridden.
      */
     public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.getTypeForExtension(getCorrespondingFile().getFileExtension());
+        return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
     }
     
     /** 
@@ -219,7 +219,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
         getContentObject().updateStateFromMemento(memento);
     }
     
-    private String getEncoding() throws CoreException {
+    String getEncoding() throws CoreException {
         return getIpsProject().getXmlFileCharset();
     }
 
@@ -237,5 +237,12 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
         buf.append(StringUtil.getFilenameWithoutExtension(getName()));
         return new QualifiedNameType(buf.toString(), getIpsObjectType());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isMutable() {
+		return true;
+	}
 
 }

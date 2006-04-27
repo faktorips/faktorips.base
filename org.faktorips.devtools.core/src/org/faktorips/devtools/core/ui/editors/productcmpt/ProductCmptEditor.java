@@ -68,7 +68,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 	/**
 	 * Image used in editor titlebar if editor is enabled
-	 */
+	 */ 
 	private Image enabledImage;
 
 	/**
@@ -180,6 +180,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Does what the methodname says :-)
 	 */
 	private void checkForInconsistenciesBetweenAttributeAndConfigElements() {
+		
+		if (!getIpsSrcFile().isMutable()) {
+			return;
+		}
+		
 		IProductCmptGeneration generation = (IProductCmptGeneration) getActiveGeneration();
 		if (generation == null) {
 			return;
@@ -317,6 +322,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	private void checkGeneration() {
 
+		if (!getIpsSrcFile().isMutable()) {
+			setPropertiesEnabled(false);
+			return;
+		}
+
 		IProductCmpt prod = getProductCmpt();
 		GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 		IProductCmptGeneration generation = (IProductCmptGeneration) prod
@@ -372,10 +382,17 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	}
 
 	/**
-	 * Enable or disable the properties page.
+	 * Enable the properties page if the given generation is editable or disable the page 
+	 * if not. 
 	 */
 	private void setPropertiesEnabled(IProductCmptGeneration generation) {
-		boolean enabled = isEditableGeneration(generation);
+		setPropertiesEnabled(isEditableGeneration(generation));
+	}
+
+	/**
+	 * Set the enablement-state of the properties page.
+	 */
+	private void setPropertiesEnabled(boolean enabled) {
 		if (enabled) {
 			this.setTitleImage(enabledImage);
 		} else {
@@ -385,7 +402,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			propertiesPage.setEnabled(enabled);
 		}
 	}
-
+	
 	/**
 	 * Listener to the working-date-property. If changes occur, check if correct generation is displayed.
 	 * 

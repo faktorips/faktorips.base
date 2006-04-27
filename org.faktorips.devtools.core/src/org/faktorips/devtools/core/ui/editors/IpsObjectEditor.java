@@ -17,14 +17,11 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import java.io.InputStream;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -42,6 +39,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -124,13 +122,24 @@ public abstract class IpsObjectEditor extends FormEditor
     		if (path == null) {
     			return;
     		}
+
+    		String extension = IpsObjectType.PRODUCT_CMPT.getFileExtension();
+    		int nameIndex = path.lastSegment().indexOf(extension);
     		
-    		int nameIndex = path.lastSegment().indexOf(IpsObjectType.PRODUCT_CMPT.getFileExtension());
+    		IpsObjectType[] types = IpsObjectType.ALL_TYPES;
+    		for (int i = 0; i < types.length; i++) {
+    			extension = types[i].getFileExtension();
+    			nameIndex = path.lastSegment().indexOf(extension);
+    			if (nameIndex != -1) {
+    				break;
+    			}
+    		}
     		
     		if (nameIndex == -1) {
     			return;
     		}
-    		String name = path.lastSegment().substring(0, nameIndex) + IpsObjectType.PRODUCT_CMPT.getFileExtension();
+    		String name = path.lastSegment().substring(0, nameIndex) + extension;
+    		String version = path.lastSegment().substring(nameIndex);
     		path = path.removeLastSegments(1).append(name);
     		
     		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
@@ -147,13 +156,10 @@ public abstract class IpsObjectEditor extends FormEditor
     		IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(file.getParent());
     		
     		if (el instanceof IIpsPackageFragment) {
-    			InputStream in = storage.getContents();
-    			ipsSrcFile = ((IIpsPackageFragment)el).createIpsFile(input.getName(), storage.getContents(), true, null);
-    			ResourceAttributes attrs = new ResourceAttributes();
-    			attrs.setReadOnly(true);
-    			ipsSrcFile.getCorrespondingFile().setResourceAttributes(attrs);
-    			in.close();
-    		}
+    			ipsSrcFile = new IpsSrcFileImmutable((IIpsPackageFragment)el, name, version, storage.getContents());
+     		}
+    		
+    		
     		
     	} catch (CoreException e) {
     		throw new PartInitException(e.getStatus());
@@ -169,6 +175,9 @@ public abstract class IpsObjectEditor extends FormEditor
     protected void setActivePage(int pageIndex) {
         super.setActivePage(pageIndex);
         refresh();
+        if (!ipsSrcFile.isMutable()) {
+        	super.getActivePageInstance().getPartControl().setEnabled(false);
+        }
     }
     
     /** 
@@ -231,6 +240,7 @@ public abstract class IpsObjectEditor extends FormEditor
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        setDirty(ipsSrcFile.isDirty());
     }
 
     /** 
@@ -264,6 +274,9 @@ public abstract class IpsObjectEditor extends FormEditor
 	 * and is in sync.
 	 */
 	protected boolean isSrcFileUsable() {
+		if (ipsSrcFile instanceof IpsSrcFileImmutable) {
+			return true;
+		}
 		return ipsSrcFile != null && ipsSrcFile.exists() && ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE);
 	}
 
@@ -287,6 +300,10 @@ public abstract class IpsObjectEditor extends FormEditor
     		return;
     	}
 
+    	if (ipsSrcFile instanceof IpsSrcFileImmutable) {
+    		return;
+    	}
+    	
     	if (!ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE)) {
     		String msg = NLS.bind(Messages.IpsObjectEditor_msgResourceOutOfSync, ipsSrcFile.getName());
     		if (isDirty()) {

@@ -110,5 +110,8 @@ public interface IIpsSrcFile extends IIpsElement {
      */
     public QualifiedNameType getQualifiedNameType();
     
-    
+    /**
+     * Returns whether this file is mutable or not.
+     */
+    public boolean isMutable();
 }

@@ -153,7 +153,7 @@ public class IpsSourceFileContents {
     private void parse() throws CoreException {
         contentParsable = Boolean.FALSE;
         ipsObject = null;
-        IpsObjectType type = IpsObjectType.getTypeForExtension(ipsSrcFile.getCorrespondingResource().getFileExtension());
+        IpsObjectType type = ipsSrcFile.getIpsObjectType();
         if (type==null) {
             return;
         }

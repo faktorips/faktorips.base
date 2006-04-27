@@ -102,16 +102,6 @@ public final class IpsObjectType {
         return null;
     }
     
-    /**
-     * Returns the IpsObjectType for the IpsObject that is contained within the provided IpsSrcFile or null
-     * if the IpsObjectType cannot be identified.
-     * 
-     * @deprecated
-     */
-    public final static IpsObjectType getType(IIpsSrcFile file){
-        return getTypeForExtension(file.getCorrespondingFile().getFileExtension());
-    }
-    
 	/**
 	 * Returns the IpsObjectType that has the given name.
 	 * Returns <code>null</code>, if no type with the given name exists or the given
