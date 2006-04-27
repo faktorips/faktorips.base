@@ -61,7 +61,6 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -173,8 +172,9 @@ public class RelationsSection extends IpsSection {
 		Composite relationRootPane = toolkit.createComposite(client);
 		relationRootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
-		String[] pcTypeRelations = getTypeRelations(generation);
-		if (pcTypeRelations.length == 0) {
+		RelationsContentProvider rcp = new RelationsContentProvider();
+		
+		if (rcp.getElements(generation).length == 0) {
 			GridLayout layout = (GridLayout) client.getLayout();
 			layout.marginHeight = 2;
 			layout.marginWidth = 1;
@@ -291,33 +291,6 @@ public class RelationsSection extends IpsSection {
 			treeViewer.setInput(generation);
 			treeViewer.expandAll();
 		}
-	}
-
-	/**
-	 * Returns all product component type relations that are defined either in
-	 * the generation or in the type the generation is based on.
-	 */
-	private String[] getTypeRelations(IProductCmptGeneration generation) {
-		List result = new ArrayList();
-		try {
-			IProductCmptType type = generation.getProductCmpt()
-					.findProductCmptType();
-			if (type != null) {
-				IProductCmptTypeRelation[] typeRelations = type.getRelations();
-				for (int i = 0; i < typeRelations.length; i++) {
-					result.add(typeRelations[i].getName());
-				}
-			}
-		} catch (CoreException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}
-		IProductCmptRelation[] relations = generation.getRelations();
-		for (int i = 0; i < relations.length; i++) {
-			if (!result.contains(relations[i].getProductCmptTypeRelation())) {
-				result.add(relations[i].getProductCmptTypeRelation());
-			}
-		}
-		return (String[]) result.toArray(new String[result.size()]);
 	}
 
 	/**
