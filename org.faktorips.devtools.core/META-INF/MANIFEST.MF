@@ -65,3 +65,4 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.ui.wizards.tablecontents,
  org.faktorips.devtools.core.ui.wizards.tablestructure,
  org.faktorips.devtools.core.util
+Bundle-ClassPath: lib/commons-cli-1.0.jar
