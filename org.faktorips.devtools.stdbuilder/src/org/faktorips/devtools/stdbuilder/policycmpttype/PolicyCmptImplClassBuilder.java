@@ -210,10 +210,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             return;
         }
         for (int i = 0; i < relations.length; i++) {
-            String method = interfaceBuilder.getMethodNameGetRefObject(relations[i]);
-            methodsBuilder.appendln("if (" + method + "()!=null) {");
-            methodsBuilder.appendln("return " + method + "();");
-            methodsBuilder.appendln("}");
+            if (relations[i].getRelationType().isReverseComposition() && !relations[i].isReadOnlyContainer()) {
+                String method = interfaceBuilder.getMethodNameGetRefObject(relations[i]);
+                methodsBuilder.appendln("if (" + method + "()!=null) {");
+                methodsBuilder.appendln("return " + method + "();");
+                methodsBuilder.appendln("}");
+            }
         }
         methodsBuilder.append("return null;");
         methodsBuilder.methodEnd();
