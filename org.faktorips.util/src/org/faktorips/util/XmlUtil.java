@@ -147,6 +147,7 @@ public class XmlUtil {
     public final static DocumentBuilder getDefaultDocumentBuilder() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
+        factory.setExpandEntityReferences(false);
 		DocumentBuilder builder;
         try {
 			builder = factory.newDocumentBuilder();
@@ -171,16 +172,21 @@ public class XmlUtil {
      * Writes a XML document to a file.
      * <p>See also the <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java example</a>.</p>
      */
-    public static void writeXMLtoFile(File file, Document doc){
+    public static void writeXMLtoFile(File file, Document doc, String doctype, boolean indent){
 		try {
     		Source src = new DOMSource(doc);
     		Result res = new StreamResult(file);
     		Transformer trafo;
 			trafo = TransformerFactory.newInstance().newTransformer();
-			trafo.setOutputProperty(OutputKeys.METHOD, "xml");
-			trafo.setOutputProperty(OutputKeys.INDENT, "yes");
+            trafo.setOutputProperty(OutputKeys.METHOD, "xml");
+            trafo.setOutputProperty(OutputKeys.METHOD, "xml");
 			trafo.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-			trafo.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            if(doctype!=null) trafo.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype);
+            trafo.setOutputProperty(OutputKeys.INDENT, "yes");
+            if(indent){
+                trafo.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            }
+            
     		trafo.transform(src, res);
 		} catch (TransformerConfigurationException e) {
 			System.err.println("TransformerConfigurationException: " + e);
