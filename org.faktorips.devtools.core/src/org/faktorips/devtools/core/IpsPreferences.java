@@ -24,8 +24,8 @@ import java.util.Locale;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.XmlUtil;
 
 /**
  * The class gives access to the plugin's preferences.

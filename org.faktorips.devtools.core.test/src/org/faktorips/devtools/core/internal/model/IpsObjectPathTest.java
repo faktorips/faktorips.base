@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.util.XmlUtil;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
 /**

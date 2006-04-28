@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.util;
+package org.faktorips.devtools.core.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,10 +24,9 @@ import java.util.GregorianCalendar;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.faktorips.util.XmlUtil;
-import org.w3c.dom.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**

@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.SystemUtils;
-import org.faktorips.util.XmlAbstractTestCase;
+import org.faktorips.devtools.core.util.XmlAbstractTestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

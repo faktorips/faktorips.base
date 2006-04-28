@@ -25,7 +25,7 @@ import javax.xml.transform.TransformerException;
 
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
-import org.faktorips.util.XmlUtil;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

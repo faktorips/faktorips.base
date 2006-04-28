@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.util;
+package org.faktorips.devtools.core.util;
 
 import java.io.File;
 import java.io.IOException;

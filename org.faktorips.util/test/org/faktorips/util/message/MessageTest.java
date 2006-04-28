@@ -17,17 +17,16 @@
 
 package org.faktorips.util.message;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.lang.SystemUtils;
-import org.faktorips.util.XmlAbstractTestCase;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.ObjectProperty;
 
 
 
 /**
  *
  */
-public class MessageTest extends XmlAbstractTestCase {
+public class MessageTest extends TestCase {
     
     public void testCopy() {
         Message msg = new Message("code", "text", Message.INFO);

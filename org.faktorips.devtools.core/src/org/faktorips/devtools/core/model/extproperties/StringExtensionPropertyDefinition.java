@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.model.extproperties;
 
-import org.faktorips.util.XmlUtil;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 
