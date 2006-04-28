@@ -197,7 +197,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                     throw new NullPointerException();
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName() + ", Methodname: " + isParsableMethodName);
+                throw new RuntimeException("Can't get the method isParsable(String), Class: " + getAdaptedClassName() + ", Methodname: " + isParsableMethodName, e);
             }
         }
         return isParsableMethod;
