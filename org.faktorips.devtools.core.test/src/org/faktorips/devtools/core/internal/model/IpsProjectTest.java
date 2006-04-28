@@ -64,7 +64,9 @@ public class IpsProjectTest extends IpsPluginTest {
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
     
-    public void testValidate() throws CoreException {
+    public void testValidate() throws Exception {
+        Thread.sleep(500); // TODO here we have a threading issue
+        // if the validate is called too fast, the .ipsproject-file is not written to disk and so can't be parsed!
     	MessageList list = ipsProject.validate();
     	assertTrue(list.isEmpty());
     }
