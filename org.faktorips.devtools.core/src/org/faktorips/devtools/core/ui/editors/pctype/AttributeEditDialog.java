@@ -217,6 +217,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 		
 			public void widgetSelected(SelectionEvent e) {
 				uiController.updateUI();
+				ruleUIController.updateUI();
 			}
 		});
         
@@ -470,6 +471,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         	ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
         	ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
         	ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+        	ruleUIController.updateUI();
         }
         
         extFactory.connectToModel(uiController);
@@ -478,6 +480,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         parametersControl.setParameterListChangeListener(this);
         
         overwritesListener.doEnablement(!this.attribute.getOverwrites());
+        
     }
 
 	/**
