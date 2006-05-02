@@ -673,5 +673,18 @@ public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeL
     	candidates = pcType.findOverrideAttributeCandidates();
     	assertEquals(1, candidates.length);
     }
-    
+
+    public void testValidateProductCmptTypeNameMissmatch() throws Exception {
+        pcType.setUnqualifiedProductCmptType(pcType.getName());
+        pcType.setConfigurableByProductCmptType(true);
+
+        MessageList ml = pcType.validate();
+        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH));
+        
+        pcType.setUnqualifiedProductCmptType(pcType.getName() + "Art");
+        
+        ml = pcType.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH));
+    }
+
 }

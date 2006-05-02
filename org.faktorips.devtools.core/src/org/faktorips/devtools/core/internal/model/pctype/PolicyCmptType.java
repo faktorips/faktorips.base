@@ -666,6 +666,13 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 					Message.ERROR, this,
 					IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
 		}
+		if (isConfigurableByProductCmptType()
+				&& this.unqalifiedProductCmptType.equals(this.getName())) {
+			String msg = "The Product Component Type Name can not be equal to the name of the Policy Component Type.";
+			list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH, msg,
+					Message.ERROR, this,
+					IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+		}
 		if (!isAbstract()) {
 			validateIfAllAbstractMethodsAreImplemented(list);
 			IMethod[] methods = getMethods();

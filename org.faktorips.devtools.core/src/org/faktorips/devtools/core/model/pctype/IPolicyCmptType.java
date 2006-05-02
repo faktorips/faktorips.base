@@ -97,6 +97,13 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     	MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that this policy component type is defined configurable by 
+     * product, but the product cmpt type name is not set.
+     */
+    public final static String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH = 
+    	MSGCODE_PREFIX + "ProductCmptTypeNameMissmatch"; //$NON-NLS-1$
+    
+    /**
      * Validation message code to indicate that at least one abstract method is not implemented, but this
      * policy component type is not marked as abstract.
      */
