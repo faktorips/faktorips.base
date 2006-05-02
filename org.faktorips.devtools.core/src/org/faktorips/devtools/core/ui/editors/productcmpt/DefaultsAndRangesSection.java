@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -199,12 +200,33 @@ public class DefaultsAndRangesSection extends IpsSection {
 			else if (valueSet.getValueSetType() == ValueSetType.RANGE || valueSet.getValueSetType() == ValueSetType.ALL_VALUES) {
 	    		IpsPartUIController controller = new IpsPartUIController(elements[i]);
 	
-				Text text = toolkit.createText(rootPane);
-				addFocusControl(text);
-				this.editControls.add(text);
-	    		TextField field = new TextField(text);
-	    		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
-	    		uiMasterController.add(controller);
+	    		if (dataType != null && dataType.equals(Datatype.BOOLEAN)) {
+					Combo combo = toolkit.createCombo(rootPane);
+					combo.add(Messages.ProductAttributesSection_true);
+					combo.add(Messages.ProductAttributesSection_false);
+					combo.add(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+					ComboField field = new ComboField(combo);
+					controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);		
+					addFocusControl(combo);
+					editControls.add(combo);
+	    		} 
+	    		else if (dataType != null && dataType.equals(Datatype.PRIMITIVE_BOOLEAN)) {
+					Combo combo = toolkit.createCombo(rootPane);
+					combo.add(Messages.ProductAttributesSection_true);
+					combo.add(Messages.ProductAttributesSection_false);
+					ComboField field = new ComboField(combo);
+					controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);		
+					addFocusControl(combo);
+					editControls.add(combo);
+	    		} 
+	    		else {
+					Text text = toolkit.createText(rootPane);
+					addFocusControl(text);
+					this.editControls.add(text);
+		    		TextField field = new TextField(text);
+		    		controller.add(field, elements[i], IConfigElement.PROPERTY_VALUE);
+		    		uiMasterController.add(controller);
+	    		}
 	
 	    		if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES && !attribute.getDatatype().equals(Datatype.STRING.getName())) {
 	    			// only if the value set defined in the model is not an all values value set
