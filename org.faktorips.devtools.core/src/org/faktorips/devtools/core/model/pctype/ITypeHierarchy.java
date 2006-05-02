@@ -68,6 +68,13 @@ public interface ITypeHierarchy {
     public IAttribute[] getAllAttributes(IPolicyCmptType type);
     
     /**
+     * Returns all attributes of the given type either defined in the type itself
+     * or any of it's supertyes found in the hierarchy. If an attribute overrides another,
+     * only the one overriding is contained in the result, but not the overridden one.
+     */
+    public IAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type);
+    
+    /**
      * Returns all methods of the given type either defined in the type itself
      * or any of it's supertyes found in the hierarchy.
      */

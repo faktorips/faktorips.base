@@ -62,7 +62,7 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     
     private void computeAttributesWithMissingConfigElements(ITypeHierarchy hierarchy) throws CoreException {
         List missing = new ArrayList();
-        IAttribute[] attributes = hierarchy.getAllAttributes(pcType);
+        IAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
         for (int i=0; i<attributes.length; i++) {
             if (attributes[i].isProductRelevant()) {
                 if (generation.getConfigElement(attributes[i].getName())==null) {

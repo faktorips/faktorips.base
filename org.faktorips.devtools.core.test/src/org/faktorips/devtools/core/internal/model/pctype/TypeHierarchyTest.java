@@ -177,6 +177,49 @@ public class TypeHierarchyTest extends IpsPluginTest {
         assertEquals(a3, attributes[2]);
     }
 
+    public void testGetAllAttributesRespectingOverride() throws Exception {
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+
+        // no attribute overridden
+        IAttribute a1 = pcType.newAttribute();
+        a1.setName("a");
+        IAttribute a2 = supertype.newAttribute();
+        a2.setName("b");
+        IAttribute a3 = supersupertype.newAttribute();
+        a3.setName("c");
+        
+        TypeHierarchy hierarchy = TypeHierarchy.getSupertypeHierarchy(pcType);
+        IAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        assertEquals(3, attributes.length);
+        
+        // a1 overrides a2, a3 not overridden
+        a1.setName("b");
+        a1.setOverwrites(true);
+
+        attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        assertEquals(2, attributes.length);
+        assertEquals(a1, attributes[0]);
+        assertEquals(a3, attributes[1]);
+        
+        // a1 overrides a2, a2 overrides a3
+        a3.setName("b");
+        a2.setOverwrites(true);
+
+        attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        assertEquals(1, attributes.length);
+        assertEquals(a1, attributes[0]);
+
+        // a2 overrides a3, a1 not overridden nor overriding.
+        a1.setName("x");
+        a1.setOverwrites(false);
+        
+        attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
+        assertEquals(2, attributes.length);
+        assertEquals(a1, attributes[0]);
+        assertEquals(a2, attributes[1]);
+    }
+    
     public void testGetAllMethods() throws Exception {
         // create the supetype relations
         pcType.setSupertype(supertype.getQualifiedName());

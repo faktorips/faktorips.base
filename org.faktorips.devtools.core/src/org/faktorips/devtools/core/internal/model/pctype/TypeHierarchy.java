@@ -255,6 +255,29 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
     
     /**
+	 * {@inheritDoc}
+	 */
+	public IAttribute[] getAllAttributesRespectingOverride(IPolicyCmptType type) {
+        List attributes = new ArrayList();
+        IPolicyCmptType[] types = getAllSupertypesInclSelf(type);
+        
+        Map overriden = new HashMap();
+        
+        for (int i=0; i<types.length; i++) {
+        	IAttribute[] attrs = types[i].getAttributes();
+        	for (int j = 0; j < attrs.length; j++) {
+				if (!overriden.containsKey(attrs[j].getName())) {
+					attributes.add(attrs[j]);
+					if (attrs[j].getOverwrites()) {
+						overriden.put(attrs[j].getName(), attrs[j]);
+					}
+				}
+			}
+        }
+        return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
+	}
+	
+		/**
      * Overridden IMethod.
      *
      * @see org.faktorips.devtools.core.model.pctype.ITypeHierarchy#getAllMethods(org.faktorips.devtools.core.model.pctype.IPolicyCmptType)

@@ -94,6 +94,17 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends IpsPluginTest 
         assertEquals(a1, missing[0]);
         assertEquals(a2, missing[1]);
         
+        a1.setName("a2");
+        a1.setOverwrites(true);
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
+        assertFalse(delta.isEmpty());
+        missing = delta.getAttributesWithMissingConfigElements();
+        assertEquals(1, missing.length);
+        assertEquals(a1, missing[0]);
+
+        a1.setName("a1");
+        a1.setOverwrites(false);
+        
         IConfigElement ce = generation.newConfigElement();
         ce.setPcTypeAttribute("a2");
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
