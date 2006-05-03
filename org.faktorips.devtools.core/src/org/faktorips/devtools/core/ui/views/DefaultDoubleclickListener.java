@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure.StructureNode;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -64,6 +65,9 @@ public class DefaultDoubleclickListener implements IDoubleClickListener {
             }
             else if (obj instanceof IIpsElement) {
                 openEditor((IIpsElement)obj);
+            }
+            else if (obj instanceof StructureNode) {
+            	openEditor(((StructureNode)obj).getWrappedElement());
             }
 
         }
