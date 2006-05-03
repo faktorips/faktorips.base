@@ -139,4 +139,6 @@ public class Messages extends NLS {
 	public static String Attribute_msgpartUnknown;
 
 	public static String Attribute_msgNothingToOverwrite;
+
+	public static String PolicyCmptType_msgNameMissmatch;
 }

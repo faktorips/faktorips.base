@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
@@ -105,7 +106,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		IIpsModel model = ipsProject.getIpsModel();
 		for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
 			if (!model.isPredefinedValueDatatype(predefinedDatatypesUsed[i])) {
-				String text = "The predefined datatype " + predefinedDatatypesUsed[i] + " is unknown.";
+				String text = NLS.bind(Messages.IpsProjectProperties_msgUnknownDatatype, predefinedDatatypesUsed[i]);
 				Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE, text, Message.ERROR, this);
 				list.add(msg);
 			}
@@ -119,7 +120,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 				return;
 			}
 		}
-		String text = "Unknown builder set id " + builderSetId;
+		String text = Messages.IpsProjectProperties_msgUnknownBuilderSetId + builderSetId;
 		Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_BUILDER_SET_ID, text, Message.ERROR, this, IIpsProjectProperties.PROPERTY_BUILDER_SET_ID);
 		list.add(msg);
 	}

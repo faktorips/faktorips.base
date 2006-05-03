@@ -460,7 +460,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				if (file.exists()) {
 					message = new StringBuffer();
 					message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName);
-					if (!packageName.equals("")) {
+					if (!packageName.equals("")) { //$NON-NLS-1$
 						message.append("."); //$NON-NLS-1$
 					}
 					message.append(newName).append(Messages.ReferenceAndPreviewPage_msgFileAllreadyExists);

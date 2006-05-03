@@ -234,4 +234,45 @@ public class MoveOperationTest extends IpsPluginTest {
     	assertTrue(pack.exists());
     	assertTrue(file.exists());
     }
+    
+    public void testRenameEmptyFolder() throws Exception {
+        IIpsPackageFragmentRoot root = content.getStandardVehicle().getIpsPackageFragment().getRoot();
+        IIpsPackageFragment pack = root.createPackageFragment("empty", true, null);
+        
+        assertTrue(pack.exists());
+        
+        new MoveOperation(new IIpsElement[] {pack}, new String[] {"empty2"}).run(null);
+        
+        assertFalse(pack.exists());
+        
+        pack = root.getIpsPackageFragment("empty2");
+        
+        assertTrue(pack.exists());
+    }
+    
+    public void testRenamePackageContainingOnlyPackages() throws Exception {
+        IIpsPackageFragmentRoot root = content.getProject().getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragment level1 = root.createPackageFragment("level1", true, null);
+        
+        root.createPackageFragment("level1.level2_1", true, null);
+        root.createPackageFragment("level1.level2_2", true, null);
+        root.createPackageFragment("level1.level2_3", true, null);
+        root.createPackageFragment("level1.level2_4", true, null);
+        
+        super.newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "level1.level2_1.TableContent");
+        
+        new MoveOperation(new IIpsElement[] {level1}, new String[] {"levela"}).run(null);
+        
+        assertFalse(level1.exists());
+        assertTrue(root.getIpsPackageFragment("levela").exists());
+        
+        super.newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, "levela.level2_2.TableStructure");
+
+        try {
+            new MoveOperation(new IIpsElement[] {root.getIpsPackageFragment("levela")}, new String[] {"levelb"}).run(null);
+            fail();
+        } catch (CoreException ce) {
+            // success
+        }
+    }
 }

@@ -41,4 +41,12 @@ public class Messages extends NLS {
 	public static String ValidationUtils_msgVoidNotAllowed;
 
 	public static String ValidationUtils_msgPropertyMissing;
+
+	public static String IpsProjectProperties_msgUnknownDatatype;
+
+	public static String IpsProjectProperties_msgUnknownBuilderSetId;
+
+	public static String IpsProject_msgMissingDotIpsprojectFile;
+
+	public static String IpsProject_msgUnparsableDotIpsprojectFile;
 }

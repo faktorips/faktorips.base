@@ -59,7 +59,7 @@ public class XmlUtil {
     
     public final static String dateToXmlDateString(Date date) {
         if (date == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -68,20 +68,20 @@ public class XmlUtil {
 
     public final static String gregorianCalendarToXmlDateString(GregorianCalendar calendar) {
         if (calendar==null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         int month = calendar.get(GregorianCalendar.MONTH) + 1;
         int date = calendar.get(GregorianCalendar.DATE);
         return calendar.get(GregorianCalendar.YEAR)
-        	+ "-" + (month<10?"0"+month:""+month)
-        	+ "-" + (date<10?"0"+date:""+date); 
+        	+ "-" + (month<10?"0"+month:""+month) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        	+ "-" + (date<10?"0"+date:""+date);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     } 
 
     /**
      * Parses the given xml String to a Date.
      */
     public final static Date parseXmlDateStringToDate(String s) {
-        if (s == null || s.equals("")) {
+        if (s == null || s.equals("")) { //$NON-NLS-1$
             return null;
         }
         return parseXmlDateStringToGregorianCalendar(s).getTime();
@@ -95,13 +95,13 @@ public class XmlUtil {
             return null;
         }
         try {
-            StringTokenizer tokenizer = new StringTokenizer(s, "-");
+            StringTokenizer tokenizer = new StringTokenizer(s, "-"); //$NON-NLS-1$
             int year = Integer.parseInt(tokenizer.nextToken());
             int month = Integer.parseInt(tokenizer.nextToken());
             int date = Integer.parseInt(tokenizer.nextToken());
             return new GregorianCalendar(year, month-1, date);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Can't parse " + s + " to a date!");
+            throw new IllegalArgumentException("Can't parse " + s + " to a date!"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
  
@@ -132,8 +132,8 @@ public class XmlUtil {
         // explicit use of xalan, as we need it's indentation feature
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
         DOMSource source = new DOMSource(node);
         StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);		
@@ -178,20 +178,20 @@ public class XmlUtil {
     		Result res = new StreamResult(file);
     		Transformer trafo;
 			trafo = TransformerFactory.newInstance().newTransformer();
-            trafo.setOutputProperty(OutputKeys.METHOD, "xml");
-            trafo.setOutputProperty(OutputKeys.METHOD, "xml");
-			trafo.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+            trafo.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
+            trafo.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
+			trafo.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1"); //$NON-NLS-1$
             if(doctype!=null) trafo.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype);
-            trafo.setOutputProperty(OutputKeys.INDENT, "yes");
+            trafo.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
             if(indent){
-                trafo.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+                trafo.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
             }
             
     		trafo.transform(src, res);
 		} catch (TransformerConfigurationException e) {
-			System.err.println("TransformerConfigurationException: " + e);
+			System.err.println("TransformerConfigurationException: " + e); //$NON-NLS-1$
 		} catch (TransformerException e) {
-			System.err.println("TransformerException: "+e);
+			System.err.println("TransformerException: "+e); //$NON-NLS-1$
 		}
     }
     

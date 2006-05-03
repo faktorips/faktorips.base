@@ -71,7 +71,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
 			if (name.toLowerCase().startsWith(lowerPrefix)) {
 				CompletionProposal proposal = new CompletionProposal(name, 0,
 						replacementLength, name.length(), packages[i]
-								.getImage(), name, null, "");
+								.getImage(), name, null, ""); //$NON-NLS-1$
 				result.add(proposal);
 			}
 		}

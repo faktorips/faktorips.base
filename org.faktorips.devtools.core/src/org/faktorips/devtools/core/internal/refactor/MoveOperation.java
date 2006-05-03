@@ -196,21 +196,33 @@ public class MoveOperation implements IRunnableWithProgress {
 				    ArrayList files = new ArrayList();
 					getRelativeFileNames("", (IFolder)pack.getEnclosingResource(), files); //$NON-NLS-1$
 					
-					// second, move them all
+					// create new package
 					IIpsPackageFragmentRoot root = parent.getRoot();
+					IIpsPackageFragment newPack = root.getIpsPackageFragment(buildPackageName(parent.getName(), newName, "")); //$NON-NLS-1$
+					if (!newPack.exists()) {
+						root.createPackageFragment(newPack.getName(), true, monitor);
+					}
+					
+					// second, move them all
 					for (Iterator iter = files.iterator(); iter.hasNext();) {
 						String[] fileInfos = (String[]) iter.next();
 						IIpsPackageFragment targetPackage = root.getIpsPackageFragment(buildPackageName("", newName, fileInfos[0])); //$NON-NLS-1$
 						if (!targetPackage.exists()) {
-							root.createPackageFragment(targetPackage.getName(), true, null);
+							root.createPackageFragment(targetPackage.getName(), true, monitor);
 						}
 						IIpsSrcFile file = targetPackage.getIpsSrcFile(fileInfos[1]);
 						IIpsPackageFragment sourcePackage = root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])); //$NON-NLS-1$
 						IIpsSrcFile cmptFile = sourcePackage.getIpsSrcFile(fileInfos[1]);  //$NON-NLS-1$
 						if (cmptFile != null) {
 							// we got an IIpsSrcFile, so we have to move it correctly
-							IProductCmpt cmpt = (IProductCmpt)cmptFile.getIpsObject();
-							move(cmpt, file, monitor);
+							if (cmptFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
+								IProductCmpt cmpt = (IProductCmpt)cmptFile.getIpsObject();
+								move(cmpt, file, monitor);
+							}
+							else if (cmptFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
+								ITableContents tblcontent = (ITableContents)cmptFile.getIpsObject();
+								move(tblcontent, file, monitor);
+							}
 						} else {
 							// we dont have a IIpsSrcFile, so move the file as resource operation
 							IFolder folder = (IFolder)sourcePackage.getEnclosingResource(); 
@@ -473,6 +485,7 @@ public class MoveOperation implements IRunnableWithProgress {
 					throw new CoreException(status);
 				}
 				checkSources(pack.getChildren());
+				checkSources(pack.getIpsChildPackageFragments());
 			}
 			else if (toTest instanceof ITableContents) {
 				ITableContents table = (ITableContents)toTest;
@@ -482,8 +495,18 @@ public class MoveOperation implements IRunnableWithProgress {
 					throw new CoreException(status);
 				}
 			}
-			else {				
-				String msg = NLS.bind(Messages.MoveOperation_msgUnsupportedType, toTest.getName());
+			else {
+				// localisation of the following messages is neccessary because
+				// the exception is excpected to be
+				// catched later and the messages are expected to be displayed
+				// to the user.
+				String msg = null;
+				if (toTest instanceof IIpsObject) {
+					msg = NLS.bind(Messages.MoveOperation_msgUnsupportedType, ((IIpsObject)toTest).getIpsObjectType().getName());
+				} 
+				else {
+					msg = NLS.bind(Messages.MoveOperation_msgUnsupportedObject, toTest.getName());
+				}
 				IpsStatus status = new IpsStatus(msg); 
 				throw new CoreException(status);
 			}

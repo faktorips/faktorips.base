@@ -85,7 +85,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
 		if (!getIpsProject().canBeBuild()) {
 			IMarker marker = getProject().createMarker(IpsPlugin.PROBLEM_MARKER);
-			String msg = "The project can't be build until it's properties are valid.";
+			String msg = Messages.IpsBuilder_msgInvalidProperties;
 			updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
 			return getProject().getReferencedProjects();
 		}

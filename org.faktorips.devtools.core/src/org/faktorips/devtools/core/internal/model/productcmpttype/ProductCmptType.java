@@ -142,7 +142,7 @@ public class ProductCmptType implements IProductCmptType {
 	 */
 	public String getQualifiedName() {
         String pack = StringUtil.getPackageName(policyCmptType.getQualifiedName());
-        if (pack.equals("")) {
+        if (pack.equals("")) { //$NON-NLS-1$
         	return getName();
         }
         return pack + '.' + getName();

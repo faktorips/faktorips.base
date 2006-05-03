@@ -757,14 +757,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	public MessageList validate() throws CoreException {
 		MessageList result = new MessageList();
 		if (!getIpsProjectPropertiesFile().exists()) {
-			String text = "The property file .ipsproject is missing!";
+			String text = Messages.IpsProject_msgMissingDotIpsprojectFile;
 			Message msg = new Message(IIpsProject.MSGCODE_MISSING_PROPERTY_FILE, text, Message.ERROR, this);
 			result.add(msg);
 			return result;
 		}
 		IpsProjectProperties props = (IpsProjectProperties)getPropertiesInternal();
 		if (!props.isCreatedFromParsableFileContents()) {
-			String text = "The property file's contents can't be parsed!";
+			String text = Messages.IpsProject_msgUnparsableDotIpsprojectFile;
 			Message msg = new Message(IIpsProject.MSGCODE_UNPARSABLE_PROPERTY_FILE, text, Message.ERROR, this);
 			result.add(msg);
 			return result;

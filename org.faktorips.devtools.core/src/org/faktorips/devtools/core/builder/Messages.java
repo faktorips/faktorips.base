@@ -55,4 +55,6 @@ public class Messages extends NLS {
 	public static String IpsBuilder_msgFullBuildResults;
 
 	public static String IpsBuilder_msgIncrementalBuildResults;
+
+	public static String IpsBuilder_msgInvalidProperties;
 }

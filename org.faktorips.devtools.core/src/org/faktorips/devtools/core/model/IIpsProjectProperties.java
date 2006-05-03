@@ -33,7 +33,7 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsProjectProperties {
 	
-	public final static String PROPERTY_BUILDER_SET_ID = "builderSetId";
+	public final static String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
 	
     /**
      * Prefix for all message codes of this class.
