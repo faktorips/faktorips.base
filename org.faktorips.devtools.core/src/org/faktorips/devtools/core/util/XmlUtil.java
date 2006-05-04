@@ -308,6 +308,7 @@ public class XmlUtil {
      * Adds a TextNode or, if text contains chars>127, a CDATASection containing the text to the parent and returns this new child.
      */
     public final static Node addNewCDATAorTextChild(Document doc, Node parent, String text){
+    	if(text==null) return null;
         char[] chars = text.toCharArray();
         boolean toCDATA = false;
         for(int i=0; i<chars.length&&!toCDATA; i++){
