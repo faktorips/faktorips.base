@@ -20,7 +20,7 @@ my $basedir = "../";
 
 
 #Skeleton 
-my $skeleton = <<CODE_HEADER;
+my $skel = <<CODE_HEADER;
 package --BASEPACKAGE--;
 
 
@@ -53,6 +53,7 @@ my $file="";
 my @files;
 my $importstatements="";
 my $testcases="";
+my $skeleton="";
                
 foreach $project (@projects){
 
@@ -69,6 +70,7 @@ foreach $project (@projects){
 		$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $classname. ".class);";
 	}
 	
+	$skeleton = $skel;
 	$skeleton =~ s/--BASEPACKAGE--/$project/ig;	
 	$skeleton =~ s/--IMPORTSTATEMENTS--/$importstatements/ig;
 	$skeleton =~ s/--TESTCASES--/$testcases/ig;
