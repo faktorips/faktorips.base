@@ -111,6 +111,13 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     	MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the name of the product component type is not a valid
+     * java identifier.
+     */
+    public final static String MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME = 
+    	MSGCODE_PREFIX + "InvalidProductCmptTypeName"; //$NON-NLS-1$
+    
+    /**
      * Returns <code>true</code> if this class has a corresponding product component type,
      * otherwise <code>false</code>.
      */

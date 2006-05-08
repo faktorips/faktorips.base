@@ -283,7 +283,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 			if (viewer.getControl().isDisposed()) {
 				IpsPlugin
 						.log(new IpsStatus(
-								"Disposed GenerationsSections is listening for property changes."));
+								"Disposed GenerationsSections is listening for property changes.")); //$NON-NLS-1$
 				return;
 			}
 

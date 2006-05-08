@@ -227,7 +227,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     	if (template instanceof ITimedIpsObject) {
     		IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
     		if (source == null) {
-    			throw new CoreException(new IpsStatus("No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName()));
+    			throw new CoreException(new IpsStatus("No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
     		}
     		file = createIpsFile(type, name, force, monitor);
     		ITimedIpsObject newObject = (ITimedIpsObject)file.getIpsObject();

@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -659,20 +661,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 								IPolicyCmptType.PROPERTY_SUPERTYPE)); //$NON-NLS-1$
 			}
 		}
-		if (isConfigurableByProductCmptType()
-				&& StringUtils.isEmpty(this.unqalifiedProductCmptType)) {
-			String text = Messages.PolicyCmptType_msgNameMissing;
-			list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text,
-					Message.ERROR, this,
-					IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE)); //$NON-NLS-1$
-		}
-		if (isConfigurableByProductCmptType()
-				&& this.unqalifiedProductCmptType.equals(this.getName())) {
-			String msg = Messages.PolicyCmptType_msgNameMissmatch;
-			list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH, msg,
-					Message.ERROR, this,
-					IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
-		}
+		
+		validateProductSide(list);
+
 		if (!isAbstract()) {
 			validateIfAllAbstractMethodsAreImplemented(list);
 			IMethod[] methods = getMethods();
@@ -727,6 +718,34 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 //		return (IRelation[]) result.toArray(new IRelation[result.size()]);
 //	}
 
+	private void validateProductSide(MessageList list) {
+		if (!isConfigurableByProductCmptType()) {
+			return;
+		}
+
+		if (StringUtils.isEmpty(this.unqalifiedProductCmptType)) {
+			String text = Messages.PolicyCmptType_msgNameMissing;
+			list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text,
+					Message.ERROR, this,
+					IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+		}
+
+		IStatus status = JavaConventions.validateJavaTypeName(unqalifiedProductCmptType);
+		if (status.getSeverity() == IStatus.ERROR) {
+			String msg = Messages.PolicyCmptType_msgInvalidProductCmptTypeName;
+			list.add(new Message(MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME, msg,
+					Message.ERROR, this, PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+		}
+
+		if (this.unqalifiedProductCmptType.equals(this.getName())) {
+			String msg = Messages.PolicyCmptType_msgNameMissmatch;
+			list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH, msg,
+					Message.ERROR, this,
+					IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+		}
+
+	}
+	
 	private void validateIfAllAbstractMethodsAreImplemented(MessageList list)
 			throws CoreException {
 		ITypeHierarchy hierarchy = getSupertypeHierarchy();

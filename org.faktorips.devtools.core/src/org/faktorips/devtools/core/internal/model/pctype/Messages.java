@@ -141,4 +141,12 @@ public class Messages extends NLS {
 	public static String Attribute_msgNothingToOverwrite;
 
 	public static String PolicyCmptType_msgNameMissmatch;
+
+	public static String PolicyCmptType_msgInvalidProductCmptTypeName;
+
+	public static String Relation_msgNoTargetRoleSingular;
+
+	public static String Relation_msgNoTargetRolePlural;
+
+	public static String Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
 }

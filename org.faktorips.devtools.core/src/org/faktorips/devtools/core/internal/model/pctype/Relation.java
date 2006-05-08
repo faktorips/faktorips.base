@@ -573,21 +573,21 @@ public class Relation extends IpsObjectPart implements IRelation {
 		}
 
 		if (StringUtils.isEmpty(this.getTargetRoleSingularProductSide())) {
-			String text = "Relation is product relevant, but no target role singular is given for the product side.";
+			String text = Messages.Relation_msgNoTargetRoleSingular;
 			list.add(new Message(MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
 					text, Message.ERROR, this,
 					PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
 		}
 
 		if (StringUtils.isEmpty(this.getTargetRolePluralProductSide())) {
-			String text = "Relation is product relevant, but no target role plural is given for the product side.";
+			String text = Messages.Relation_msgNoTargetRolePlural;
 			list.add(new Message(MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE,
 					text, Message.ERROR, this,
 					PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE));
 		} else {
 			if (this.getTargetRolePluralProductSide().equals(
 					this.getTargetRoleSingularProductSide())) {
-				String text = "Relation name for target role singular at product side and target role plural at product side has to be different.";
+				String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
 				list
 						.add(new Message(
 								MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
