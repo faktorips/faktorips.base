@@ -141,7 +141,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
     
     /**
-     * Overridden
+     * {@inheritDoc}
      */
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
@@ -175,7 +175,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     /**
-     * Overridden
+     * {@inheritDoc}
      */
 	public void setFocus() {
         //nothing to do.
@@ -195,6 +195,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * Displays the structure of the given product component.
      */
     public void showStructure(IProductCmpt product) {
+    	if (product == null) {
+    		return;
+    	}
+    	
     	this.file = product.getIpsSrcFile();
         try {
         	errormsg.setVisible(false);
@@ -210,6 +214,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         tree.expandAll();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public void contentsChanged(ContentChangeEvent event) {
     	if (file == null || !event.getIpsSrcFile().equals(file)) {
     		// no contents set - nothing to refresh.
@@ -250,6 +257,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         });
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public ShowInContext getShowInContext() {
         ShowInContext context = new ShowInContext(null, tree.getSelection());
         return context;
@@ -280,6 +290,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 		errormsg.getParent().layout();
     }
 
+    /**
+     * {@inheritDoc}
+     */
 	public void resourceChanged(IResourceChangeEvent event) {
 		if (file == null) {
 			return;

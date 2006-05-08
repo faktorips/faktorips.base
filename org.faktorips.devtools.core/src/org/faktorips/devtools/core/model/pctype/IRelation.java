@@ -111,6 +111,27 @@ public interface IRelation extends IIpsObjectPart {
     	MSGCODE_PREFIX + "RelationCanBeProductRelevantOnlyIfTheTypeIs"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that a relation marked as product relevant
+     * is missing the target role singular at product side.
+     */
+    public final static String MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE = 
+    	MSGCODE_PREFIX + "NoTargetRoleSingularProductSide"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a relation marked as product relevant
+     * is missing the target role plural at product side.
+     */
+    public final static String MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE = 
+    	MSGCODE_PREFIX + "NoTargetRolePluralProductSide"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a relation marked as product relevant
+     * is missing the target role plural at product side.
+     */
+    public final static String MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE = 
+    	MSGCODE_PREFIX + "TargetRoleSingularProductSideEqualsTargetRoleSingularProductSide"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the container relation does not exist in supertype hirachy.
      */
     public final static String MSGCODE_CONTAINERRELATION_NOT_IN_SUPERTYPE = MSGCODE_PREFIX + "ContainerRelationNotInSupertype"; //$NON-NLS-1$

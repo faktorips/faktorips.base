@@ -18,10 +18,12 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -162,5 +164,49 @@ public class DeepCopyOperationTest extends IpsPluginTest {
         rels = gen.getRelations("VehicleType");
         assertEquals(1, rels.length);
         assertEquals("products.DeepCopyOfStandardVehicle", rels[0].getName());
+    }
+    
+    public void testCopyWithNoGeneration() throws Exception {
+        IStructureNode[] toCopy = new IStructureNode[5];
+        int count = 0;
+
+        IProductCmptStructure structure = content.getComfortMotorProduct().getStructure();
+        IStructureNode node = structure.getRootNode();
+        IStructureNode[] children = node.getChildren();
+        for (int i = 0; i < children.length; i++) {
+            IStructureNode[] children2 = children[i].getChildren();
+            for (int j = 0; j < children2.length; j++) {
+                toCopy[count] = children2[j];
+                count++;
+            }
+        }
+        toCopy[count] = node;
+        
+        Hashtable handles = new Hashtable();
+
+        for (int i = 0; i < toCopy.length; i++) {
+            IProductCmpt cmpt = (IProductCmpt)toCopy[i].getWrappedElement();
+            handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + cmpt.getName() + ".ipsproduct"));
+            assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
+        }
+        
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(1990, 1, 1));
+        
+        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IStructureNode[0], handles);
+        dco.run(null);
+        
+        for (int i = 0; i < toCopy.length; i++) {
+            IIpsSrcFile src = (IIpsSrcFile)handles.get(toCopy[i]);
+            assertTrue(src.exists());
+
+            // we have a race condition, because files are written async. So loop for some times...
+            count = 0;
+            if (src.isDirty() && count < 100) {
+                count ++;
+            }
+            
+            assertFalse(src.isDirty());
+        }
+        
     }
 }

@@ -145,6 +145,7 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * <li> A <code>CoreException</code> occurred while creating an underlying resource
 	 * <li> This root folder is read only
 	 * <li> The name is not a valid object name
+	 * <li> The template has no generation valid on the given date
 	 * </ul>
      */
     public IIpsSrcFile createIpsFileFromTemplate(String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException;

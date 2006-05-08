@@ -523,10 +523,7 @@ public class Relation extends IpsObjectPart implements IRelation {
         	list.add(new Message(MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT, text, Message.ERROR, this, new String[] {PROPERTY_PRODUCT_RELEVANT, PROPERTY_RELATIONTYPE}));
         }
        
-        if (isProductRelevant() && !this.getPolicyCmptType().isConfigurableByProductCmptType()) {
-        	String text = Messages.Relation_msgRelationCanBeProductRelevantOnlyIfTypeIs;
-        	list.add(new Message(MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
-        }
+        validateProductSide(list);
         
         IPolicyCmptType type = getPolicyCmptType();
         IPolicyCmptType[] supertypes = type.getSupertypeHierarchy().getAllSupertypesInclSelf(type);
@@ -560,6 +557,49 @@ public class Relation extends IpsObjectPart implements IRelation {
         validateContainerRelation(list);
         validateReverseRelation(list);
     }
+    
+    private void validateProductSide(MessageList list) {
+		if (!isProductRelevant()) {
+			return;
+		}
+
+		if (!this.getPolicyCmptType().isConfigurableByProductCmptType()) {
+			String text = Messages.Relation_msgRelationCanBeProductRelevantOnlyIfTypeIs;
+			list
+					.add(new Message(
+							MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS,
+							text, Message.ERROR, this,
+							PROPERTY_PRODUCT_RELEVANT));
+		}
+
+		if (StringUtils.isEmpty(this.getTargetRoleSingularProductSide())) {
+			String text = "Relation is product relevant, but no target role singular is given for the product side.";
+			list.add(new Message(MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
+					text, Message.ERROR, this,
+					PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+		}
+
+		if (StringUtils.isEmpty(this.getTargetRolePluralProductSide())) {
+			String text = "Relation is product relevant, but no target role plural is given for the product side.";
+			list.add(new Message(MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE,
+					text, Message.ERROR, this,
+					PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+		} else {
+			if (this.getTargetRolePluralProductSide().equals(
+					this.getTargetRoleSingularProductSide())) {
+				String text = "Relation name for target role singular at product side and target role plural at product side has to be different.";
+				list
+						.add(new Message(
+								MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
+								text,
+								Message.ERROR,
+								this,
+								new String[] {
+										PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
+										PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE }));
+			}
+		}
+	}
     
     private void validateContainerRelation(MessageList list) throws CoreException {
         if (StringUtils.isEmpty(containerRelation)) {

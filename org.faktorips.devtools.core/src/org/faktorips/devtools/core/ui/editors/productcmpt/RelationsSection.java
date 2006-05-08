@@ -456,6 +456,7 @@ public class RelationsSection extends IpsSection {
 					insert(file, insertAt);
 				}
 			}
+			treeViewer.refresh();
 		}
 
 		public void dropAccept(DropTargetEvent event) {
@@ -466,6 +467,7 @@ public class RelationsSection extends IpsSection {
 			if (insertBefore instanceof IProductCmptRelation) {
 				generation.moveRelation(toMove,
 						(IProductCmptRelation) insertBefore);
+				treeViewer.refresh();
 			}
 		}
 

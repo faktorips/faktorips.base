@@ -212,7 +212,10 @@ public abstract class IpsObjectEditor extends FormEditor
             return;
         }
         setDirty(ipsSrcFile.isDirty());
-        refresh();
+        
+        // no refresh neccessary - this method is only called if this editor is the active one.
+        // we only need a refresh here if the content of one field of this editorwill have an 
+        // effect on another field in this editor, but this is not the case yet.
     }
     
     protected void setDirty(boolean newValue) {

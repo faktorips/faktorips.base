@@ -118,6 +118,9 @@ public class RelationsContentProvider implements ITreeContentProvider {
 			return ((ProductCmptTypeRelation)element).getParent();
 		}
 		if (element instanceof IProductCmptRelation) {
+			if (((IProductCmptRelation)element).isDeleted()) {
+				return null;
+			}
 			try {
 				return ((ProductCmptRelation)element).findProductCmptTypeRelation();
 			} catch (CoreException e) {

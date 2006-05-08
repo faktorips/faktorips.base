@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -88,6 +89,9 @@ public class IpsDeleteAction extends IpsAction {
             }
         }
 
+        source.setSelection(StructuredSelection.EMPTY);
+        source.refresh();
+        
         // select the item the path to was stored before.
         if (start != null)  {
         	TreeItem toSetAt = tree.getItem(start.index);
@@ -119,6 +123,8 @@ public class IpsDeleteAction extends IpsAction {
         		tree.setSelection(new TreeItem[] {toSetAt});
         	}
         }
+
+
     }
     
     private class Indexer {

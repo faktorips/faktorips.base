@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
@@ -34,6 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -136,17 +139,15 @@ public class GenerationsSection extends SimpleIpsPartsSection {
             
 			addDeleteListener(this);
 			
-			IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent event) {
-					String property = event.getProperty();
-					if (property.equals(IpsPreferences.WORKING_DATE)
-									|| property
-											.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
-									|| property
-											.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
-								getViewer().refresh();
-								updateButtonEnabledStates();
-							}
+			final MyPropertyChangeListener changeListener = new MyPropertyChangeListener(getViewer(), this);
+
+			IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
+			
+			getViewer().getControl().addDisposeListener(new DisposeListener() {
+
+				public void widgetDisposed(DisposeEvent e) {
+					IpsPlugin.getDefault().getPreferenceStore()
+							.removePropertyChangeListener(changeListener);
 				}
 			});
         }
@@ -266,5 +267,35 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 			}
     	}
     }
+    
+    private class MyPropertyChangeListener implements IPropertyChangeListener {
+		private Viewer viewer;
+
+		private GenerationsComposite composite;
+
+		public MyPropertyChangeListener(Viewer viewer,
+				GenerationsComposite generationsComposite) {
+			this.viewer = viewer;
+			this.composite = generationsComposite;
+		}
+
+		public void propertyChange(PropertyChangeEvent event) {
+			if (viewer.getControl().isDisposed()) {
+				IpsPlugin
+						.log(new IpsStatus(
+								"Disposed GenerationsSections is listening for property changes."));
+				return;
+			}
+
+			String property = event.getProperty();
+			if (property.equals(IpsPreferences.WORKING_DATE)
+					|| property
+							.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
+					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
+				viewer.refresh();
+				composite.updateButtonEnabledStates();
+			}
+		}
+	}
 
 }

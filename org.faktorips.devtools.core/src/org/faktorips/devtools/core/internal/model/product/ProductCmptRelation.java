@@ -88,9 +88,9 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		if (deleted) {
 			return;
 		}
+		deleted = true;
 		((ProductCmptGeneration) getParent()).removeRelation(this);
 		parent = null;
-		deleted = true;
 	}
 
 	/**

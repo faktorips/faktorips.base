@@ -388,14 +388,57 @@ public class RelationTest extends IpsPluginTest {
 		assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSE_ASSOCIATION_MISSMATCH));
     }
 	
-	public void testValidateMaxCardinalityForContainerRelationTooLow() throws Exception {
-		MessageList ml = relation.validate();
-		assertNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW));
-		
-		relation.setMaxCardinality(1);
-		relation.setReadOnlyContainer(true);
-		ml = relation.validate();
-		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW));
-	}
+    public void testValidateMaxCardinalityForContainerRelationTooLow() throws Exception {
+        MessageList ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW));
+        
+        relation.setMaxCardinality(1);
+        relation.setReadOnlyContainer(true);
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_MAX_CARDINALITY_FOR_CONTAINERRELATION_TOO_LOW));
+    }
 
+    public void testValidateEmptyTargetRoleSingularProductSide() throws Exception {
+        relation.setProductRelevant(false);
+        relation.setTargetRoleSingularProductSide("");
+        MessageList ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+        
+        relation.setProductRelevant(true);
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+        
+        relation.setTargetRoleSingularProductSide("notEmpty");
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+    }
+
+    public void testValidateEmptyTargetRolePluralProductSide() throws Exception {
+        relation.setProductRelevant(false);
+        relation.setTargetRolePluralProductSide("");
+        MessageList ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+        
+        relation.setProductRelevant(true);
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+        
+        relation.setTargetRolePluralProductSide("notEmpty");
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_NO_TARGET_ROLE_PLURAL_PRODUCTSIDE));
+    }
+
+    public void testValidateSameSingularAndPluralTargetRoleProductSide() throws Exception {
+        relation.setProductRelevant(true);
+        relation.setTargetRolePluralProductSide("a");
+        relation.setTargetRoleSingularProductSide("b");
+        MessageList ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+        
+        relation.setTargetRoleSingularProductSide("a");
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+    }
+
+    
 }

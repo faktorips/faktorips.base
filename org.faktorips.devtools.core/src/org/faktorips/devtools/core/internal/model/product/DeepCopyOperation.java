@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -83,7 +84,15 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 			if (!file.exists()) {
 				IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
 				String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-				file = targetPackage.createIpsFileFromTemplate(newName, (IProductCmpt)toCopy[i].getWrappedElement(), date, false, monitor);
+				try {
+					file = targetPackage.createIpsFileFromTemplate(newName, (IProductCmpt)toCopy[i].getWrappedElement(), date, false, monitor);
+				} catch (CoreException e) {
+					// the file could not be created from template, so create an empty file
+					file = targetPackage.createIpsFile(IpsObjectType.PRODUCT_CMPT, newName, false, monitor);
+					IProductCmpt cmpt = (IProductCmpt)file.getIpsObject();
+			        IProductCmptGeneration generation = (IProductCmptGeneration)cmpt.newGeneration();
+			        generation.setValidFrom(date);
+				}
 				monitor.worked(1);
 				IProductCmpt product = (IProductCmpt)file.getIpsObject();
 				products[i] = product;

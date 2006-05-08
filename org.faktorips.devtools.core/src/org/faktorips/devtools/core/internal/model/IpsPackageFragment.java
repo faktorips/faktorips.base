@@ -225,10 +225,13 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 
     	IIpsSrcFile file;
     	if (template instanceof ITimedIpsObject) {
+    		IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
+    		if (source == null) {
+    			throw new CoreException(new IpsStatus("No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName()));
+    		}
     		file = createIpsFile(type, name, force, monitor);
     		ITimedIpsObject newObject = (ITimedIpsObject)file.getIpsObject();
     		IIpsObjectGeneration target = newObject.newGeneration();
-    		IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
     		target.initFromGeneration(source);
     		target.setValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
     		if (template instanceof IProductCmpt) {

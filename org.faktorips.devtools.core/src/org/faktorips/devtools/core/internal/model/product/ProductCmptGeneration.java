@@ -393,12 +393,17 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 					Message.ERROR, this));
 			return;
 		}
-
+		
 		IProductCmptTypeRelation[] relationTypes = type.getRelations();
 		for (int i = 0; i < relationTypes.length; i++) {
 			IProductCmptRelation[] relations = getRelations(relationTypes[i]
 					.getTargetRoleSingular());
 
+			MessageList relMessages = relationTypes[i].validate();
+			if (!relMessages.isEmpty()) {
+				list.add(relMessages, new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null), true);
+			}
+			
 			if (relationTypes[i].getMinCardinality() > relations.length) {
 				Object[] params = { new Integer(relations.length),
 						relationTypes[i].getTargetRoleSingular(),
