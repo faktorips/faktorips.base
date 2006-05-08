@@ -51,11 +51,13 @@ CODE_HEADER
 my $project="";
 my $file="";
 my @files;
-my $importstatements="";
-my $testcases="";
+
 my $skeleton="";
                
 foreach $project (@projects){
+
+	my $importstatements="";
+	my $testcases="";
 
 	debug("scanning for testclasses in $project...");
 	find(\&generateList, $basedir . $project);
