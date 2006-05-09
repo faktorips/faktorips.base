@@ -55,11 +55,7 @@
                 dest="${buildDirectory}/maps"
                 command="export -r ${mapVersionTag} org.faktorips.build/maps"
         />
-	
-    <!-- generate TestSuite - Classes, which are configured within the script -->
-    <exec executable="/usr/bin/perl" dir="${buildDirectory}/org.faktorips.build/">
-            <arg line="generateTestSuite.pl" />
-    </exec>
+
 
 
 </target>
@@ -86,6 +82,11 @@
 <!-- Steps to do after fetching the build elements -->
 <!-- ===================================================================== -->
 <target name="postFetch">
+	
+    <!-- generate TestSuite - Classes, which are configured within the script -->
+    <exec executable="/usr/bin/perl" dir="${buildDirectory}/org.faktorips.build/">
+            <arg line="generateTestSuite.pl" />
+    </exec>
 </target>
 
 <!-- ===================================================================== -->
