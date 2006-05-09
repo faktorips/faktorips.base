@@ -278,6 +278,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		return newRelationInternal(getNextPartId());
 	}
 
+	public boolean canCreateValidRelation(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException {
+		return ProductCmptRelation.willBeValid(target, relation) && this.getRelations(relation.getName()).length < relation.getMaxCardinality();
+	}
+	
 	private ProductCmptRelation newRelationInternal(int id,
 			IProductCmptRelation insertBefore) {
 		ProductCmptRelation newRelation = new ProductCmptRelation(this, id);
@@ -399,6 +403,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			IProductCmptRelation[] relations = getRelations(relationTypes[i]
 					.getTargetRoleSingular());
 
+			// get all messages for the relation types and add them
 			MessageList relMessages = relationTypes[i].validate();
 			if (!relMessages.isEmpty()) {
 				list.add(relMessages, new ObjectProperty(relationTypes[i].getTargetRoleSingular(), null), true);

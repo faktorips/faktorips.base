@@ -48,6 +48,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
@@ -207,7 +208,7 @@ public class RelationsSection extends IpsSection {
 			treeViewer
 					.addSelectionChangedListener(new SelectionChangedListener());
 			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE,
-					new Transfer[] { FileTransfer.getInstance() },
+					new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
 					new DropListener());
 			treeViewer.addDragSupport(DND.DROP_MOVE,
 					new Transfer[] { TextTransfer.getInstance() },
@@ -318,12 +319,13 @@ public class RelationsSection extends IpsSection {
 	 * @param relation
 	 *            The type of the new relation.
 	 */
-	private void newRelation(String target, IProductCmptTypeRelation relation) {
+	private IProductCmptRelation newRelation(String target, IProductCmptTypeRelation relation) {
 		IProductCmptRelation prodRelation = generation.newRelation(relation
 				.getName());
 		prodRelation.setTarget(target);
 		prodRelation.setMaxCardinality(1);
 		prodRelation.setMinCardinality(relation.getMinCardinality());
+		return prodRelation;
 	}
 
 	/**
@@ -331,13 +333,14 @@ public class RelationsSection extends IpsSection {
 	 * with the given target. The new relation is placed before the the given
 	 * one.
 	 */
-	private void newRelation(String target, IProductCmptTypeRelation relation,
+	private IProductCmptRelation newRelation(String target, IProductCmptTypeRelation relation,
 			IProductCmptRelation insertBefore) {
 		IProductCmptRelation prodRelation = generation.newRelation(relation
 				.getName(), insertBefore);
 		prodRelation.setTarget(target);
 		prodRelation.setMaxCardinality(1);
 		prodRelation.setMinCardinality(relation.getMinCardinality());
+		return prodRelation;
 	}
 
 	/**
@@ -398,6 +401,8 @@ public class RelationsSection extends IpsSection {
 	 */
 	private class DropListener implements DropTargetListener {
 
+		private int oldDetail = DND.DROP_NONE;
+		
 		public void dragEnter(DropTargetEvent event) {
 			if (!fEnabled) {
 				event.detail = DND.DROP_NONE;
@@ -407,6 +412,9 @@ public class RelationsSection extends IpsSection {
 			if (event.detail == 0) {
 				event.detail = DND.DROP_LINK;
 			}
+			
+			oldDetail = event.detail;
+			
 			event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT
 					| DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
 		}
@@ -420,21 +428,61 @@ public class RelationsSection extends IpsSection {
 		}
 
 		public void dragOver(DropTargetEvent event) {
-			// nothing to do
+			Object insertAt = getInsertAt(event);
+			if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+				// we have a file transfer
+				String[] filenames = (String[]) FileTransfer.getInstance().nativeToJava(event.currentDataType);
+				for (int i = 0; i < filenames.length; i++) {
+					IFile file = getFile(filenames[i]);
+					try {
+						IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+						
+						if (!element.exists()) {
+							event.detail = DND.DROP_NONE;
+							return;
+						}
+						
+						IProductCmpt target = getProductCmpt(file); 
+
+						IProductCmptTypeRelation relation = null;
+						if (insertAt instanceof IProductCmptTypeRelation) {
+							relation = (IProductCmptTypeRelation) insertAt;
+						} else if (insertAt instanceof IProductCmptRelation) {
+							relation = ((IProductCmptRelation)insertAt).findProductCmptTypeRelation();
+						}
+
+						if (generation.canCreateValidRelation(target, relation)) {
+							event.detail = oldDetail;
+						} 
+						else {
+							event.detail = DND.DROP_NONE;
+						}
+					} catch (CoreException e) {
+						IpsPlugin.log(e);
+						event.detail = DND.DROP_NONE;
+					}
+				}
+			}
+			else if (toMove != null && insertAt instanceof IProductCmptRelation) {
+				try {
+					if (generation.canCreateValidRelation(toMove.findTarget(), ((IProductCmptRelation)insertAt).findProductCmptTypeRelation())) {
+						event.detail = oldDetail;
+					} 
+					else {
+						event.detail = DND.DROP_NONE;
+					}
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+					event.detail = DND.DROP_NONE;
+				}
+			} 
+			else {
+				event.detail = DND.DROP_NONE;
+			}
 		}
 
 		public void drop(DropTargetEvent event) {
-			Object insertAt = null;
-			// find the position to insert/move to
-			if (event.item != null && event.item.getData() != null) {
-				insertAt = event.item.getData();
-			} else {
-				// event happened on the treeview, but not targeted at an entry
-				Object[] items = treeViewer.getVisibleExpandedElements();
-				if (items.length > 0) {
-					insertAt = items[items.length - 1];
-				}
-			}
+			Object insertAt = getInsertAt(event);
 
 			// found no relation or relationtype which gives us the information
 			// about
@@ -451,8 +499,7 @@ public class RelationsSection extends IpsSection {
 				String[] filenames = (String[]) FileTransfer.getInstance()
 				.nativeToJava(event.currentDataType);
 				for (int i = 0; i < filenames.length; i++) {
-					IFile file = ResourcesPlugin.getWorkspace().getRoot()
-					.getFileForLocation(new Path(filenames[i]));
+					IFile file = getFile(filenames[i]);
 					insert(file, insertAt);
 				}
 			}
@@ -463,14 +510,50 @@ public class RelationsSection extends IpsSection {
 			// nothing to do
 		}
 
+		private IFile getFile(String filename) {
+			return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
+		}
+		
+		private IProductCmpt getProductCmpt(IFile file) throws CoreException {
+			if (file == null) {
+				return null;
+			}
+
+			IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+
+			if (!element.exists()) {
+				return null;
+			}
+
+			if (element instanceof IIpsSrcFile
+					&& ((IIpsSrcFile) element).getIpsObjectType().equals(
+							IpsObjectType.PRODUCT_CMPT)) {
+				return (IProductCmpt) ((IIpsSrcFile) element).getIpsObject();
+			}
+			
+			return null;
+		}
+		
 		private void move(Object insertBefore) {
 			if (insertBefore instanceof IProductCmptRelation) {
 				generation.moveRelation(toMove,
 						(IProductCmptRelation) insertBefore);
-				treeViewer.refresh();
 			}
 		}
 
+		private Object getInsertAt(DropTargetEvent event) {
+			if (event.item != null && event.item.getData() != null) {
+				return event.item.getData();
+			} else {
+				// event happened on the treeview, but not targeted at an entry
+				TreeItem[] items = treeViewer.getTree().getItems();
+				if (items.length > 0) {
+					return items[items.length - 1].getData();
+				}
+			}
+			return null;
+		}
+		
 		/**
 		 * Insert a new relation to the product component contained in the given
 		 * file. If the file is <code>null</code> or does not contain a
@@ -483,26 +566,13 @@ public class RelationsSection extends IpsSection {
 		 *            The relation or relation type to insert at.
 		 */
 		private void insert(IFile file, Object insertAt) {
-			if (file == null) {
-				return;
-			}
-
-			IIpsElement element = IpsPlugin.getDefault().getIpsModel()
-					.getIpsElement(file);
-
-			if (!element.exists()) {
-				return;
-			}
-
-			if (element instanceof IIpsSrcFile
-					&& ((IIpsSrcFile) element).getIpsObjectType().equals(
-							IpsObjectType.PRODUCT_CMPT)) {
-				try {
-					insert(((IProductCmpt) ((IIpsSrcFile) element)
-							.getIpsObject()).getQualifiedName(), insertAt);
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
+			try {
+				IProductCmpt cmpt = getProductCmpt(file);
+				if (cmpt != null) {
+					insert(cmpt.getQualifiedName(), insertAt);
 				}
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
 			}
 		}
 
@@ -531,7 +601,6 @@ public class RelationsSection extends IpsSection {
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
-
 		}
 	}
 
@@ -551,6 +620,13 @@ public class RelationsSection extends IpsSection {
 			Object selected = ((IStructuredSelection) selectionProvider
 					.getSelection()).getFirstElement();
 			event.doit = selected instanceof IProductCmptRelation;
+			
+			// we provide the event data yet so we can decide if we will
+			// accept a drop at drag-over time.
+			if (selected instanceof IProductCmptRelation) {
+				toMove = (IProductCmptRelation) selected;
+				event.data = "local"; //$NON-NLS-1$
+			}
 		}
 
 		public void dragSetData(DragSourceEvent event) {

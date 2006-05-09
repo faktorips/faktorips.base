@@ -72,6 +72,12 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      * the min cardinality.
      */
     public final static String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN = MSGCODE_PREFIX + "MaxCardinalityIsLessThanMin"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the maximum cardinality is less than 
+     * the min cardinality.
+     */
+    public final static String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
     
     /**
      * Returns the product component generation this config element belongs to.
@@ -98,6 +104,12 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      * Sets the target product component.
      */
     public void setTarget(String newTarget);
+
+    /**
+     * Retursn the product component which is the target of this relation or <code>null</code>, 
+     * if no (valid) target name is set.
+     */
+    public IProductCmpt findTarget();
 
     /**
      * Is derived from the target and returns the runtimeId of the target.
@@ -138,5 +150,5 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      * @throws CoreException if an exception occurs while searching the relation. 
      */
     public IProductCmptTypeRelation findProductCmptTypeRelation() throws CoreException;
-    
+
 }

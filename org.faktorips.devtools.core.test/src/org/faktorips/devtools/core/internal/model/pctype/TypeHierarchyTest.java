@@ -309,4 +309,23 @@ public class TypeHierarchyTest extends IpsPluginTest {
         	// nothing to do
         }
     }
+    
+    public void testGetAllSubtypes() throws Exception {
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+
+        TypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchy(supersupertype);
+        
+        IPolicyCmptType[] types = hierarchy.getAllSubtypes(supersupertype);
+        assertEquals(2, types.length);
+        assertSame(supertype, types[0]);
+        assertSame(pcType, types[1]);
+        
+        types = hierarchy.getAllSubtypes(supertype);
+        assertEquals(1, types.length);
+        assertSame(pcType, types[0]);
+
+        types = hierarchy.getAllSubtypes(pcType);
+        assertEquals(0, types.length);
+    }
 }

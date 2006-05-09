@@ -26,7 +26,9 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -173,6 +175,18 @@ public class ProductCmptRelation extends IpsObjectPart implements
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmpt findTarget() {
+		try {
+			return (IProductCmpt)getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, getTarget());
+		} catch (CoreException e) {
+			// no valid target defined...
+			return null;
+		}
+	}
+
+	/**
 	 * Overridden.
 	 */
 	public void setTarget(String newTarget) {
@@ -262,8 +276,46 @@ public class ProductCmptRelation extends IpsObjectPart implements
 				}
 			}
 		}
+
+		IProductCmpt target = findTarget();
+		if (!willBeValid(target, relation) && target != null && relation != null) {
+			String msg = NLS.bind("The product component {0} is not valid for the relation type {1}", target.getQualifiedName(), relation.getTargetRoleSingular());
+			list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, PROPERTY_TARGET));
+		}
+		
 	}
 
+	public static boolean willBeValid(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException {
+		boolean valid = false;
+
+		IRelation policyRelation = null;
+		if (relation != null) {
+			policyRelation = relation.findPolicyCmptTypeRelation();
+		}
+		
+		IPolicyCmptType type = null;
+		if (policyRelation != null) {
+			type = policyRelation.findTarget();
+		}
+		if (target != null && type != null) {
+			ITypeHierarchy hierarchy = type.getSupertypeHierarchy();
+			
+			IPolicyCmptType[] types = hierarchy.getAllSupertypesInclSelf(type);
+			
+			for (int i = 0; i < types.length && !valid; i++) {
+				valid = target.getPolicyCmptType().equals(types[i].getQualifiedName()); 
+			} 
+			
+			hierarchy = type.getSubtypeHierarchy();
+			types = hierarchy.getAllSubtypes(type);
+			for (int i = 0; i < types.length && !valid; i++) {
+				valid = target.getPolicyCmptType().equals(types[i].getQualifiedName()); 
+			} 
+		}
+		
+		return valid;
+	}
+	
 	/**
 	 * Overridden.
 	 */

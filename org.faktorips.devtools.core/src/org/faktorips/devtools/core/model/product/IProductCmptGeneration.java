@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 
 /**
@@ -141,6 +142,15 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IProductCmptRelation newRelation(String relation, IProductCmptRelation insertBefore);
     
     /**
+     * Checks whether a new relation with the given product component type relation and target  
+     * will be valid.
+     * 
+     * @return <code>true</code> if a new relation with the given values will be valid, <code>false</code> otherwise.
+     * @throws CoreException if a problem occur during the search of the type hierarchy.
+     */
+	public boolean canCreateValidRelation(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException;
+
+	/**
      * Moves the first given relation in front of the second one.
      */
     public void moveRelation(IProductCmptRelation toMove, IProductCmptRelation moveBefore);

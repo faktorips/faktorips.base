@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -225,6 +226,28 @@ public class TypeHierarchy implements ITypeHierarchy {
             return new IPolicyCmptType[0];
         }
         return node.subtypes;
+    }
+    
+    public IPolicyCmptType[] getAllSubtypes(IPolicyCmptType type) {
+        Node node = (Node) nodes.get(type);
+		if (node == null) {
+			return new IPolicyCmptType[0];
+		}
+		
+		ArrayList all = new ArrayList();
+		addSubtypes(node, all);
+		return (IPolicyCmptType[])all.toArray(new IPolicyCmptType[all.size()]);
+    }
+    
+    private void addSubtypes(Node node, List list) {
+    	if (node == null) {
+    		return;
+    	}
+    	
+    	list.addAll(Arrays.asList(node.subtypes));
+    	for (int i = 0; i < node.subtypes.length; i++) {
+			addSubtypes((Node)nodes.get(node.subtypes[i]), list);
+		}
     }
     
     private static class Node {

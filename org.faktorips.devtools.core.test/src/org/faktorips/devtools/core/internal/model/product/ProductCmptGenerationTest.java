@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -49,13 +50,14 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IIpsPackageFragmentRoot root;
+    private IIpsProject ipsProject;
     
     public void setUp() throws Exception {
         super.setUp();
-        IIpsProject project =  newIpsProject("TestProject");
+        ipsProject =  newIpsProject("TestProject");
         
-        root = project.getIpsPackageFragmentRoots()[0];
-        productCmpt = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "testProduct");
+        root = ipsProject.getIpsPackageFragmentRoots()[0];
+        productCmpt = (IProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "testProduct");
         generation = (IProductCmptGeneration)productCmpt.newGeneration();
     }
     
@@ -329,5 +331,24 @@ public class ProductCmptGenerationTest extends IpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    public void testCanCreateValidRelation() throws Exception {
+        assertFalse(generation.canCreateValidRelation(productCmpt, null));
+        
+        IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "target.TargetPolicy");
+        IProductCmpt target = newProductCmpt(ipsProject, "target.Target");
+        target.setPolicyCmptType(targetType.getQualifiedName());
+        
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "type");
+        
+        IRelation rel = policyCmptType.newRelation();
+        rel.setTarget(targetType.getQualifiedName());
+        rel.setTargetRoleSingular("testRelation");
+        rel.setTargetRoleSingularProductSide("testRelation");
+        
+        IProductCmptTypeRelation relation = policyCmptType.findProductCmptType().getRelation("testRelation");
+        
+        assertTrue(generation.canCreateValidRelation(target, relation));
     }
 }

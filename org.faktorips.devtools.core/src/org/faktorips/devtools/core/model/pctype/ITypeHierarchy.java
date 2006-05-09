@@ -113,4 +113,13 @@ public interface ITypeHierarchy {
      * does not contain any subtypes for the type.
      */
     public IPolicyCmptType[] getSubtypes(IPolicyCmptType type);
+    
+    /**
+     * Returns all direct and indirect subtypes for the given policy component type.
+     *
+     * @return An empty array if either type is <code>null</code> or the hierarchy
+     * does not contain any subtypes for the type.
+     */
+    public IPolicyCmptType[] getAllSubtypes(IPolicyCmptType type);
+
 }

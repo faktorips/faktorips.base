@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
@@ -42,13 +43,13 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     private IProductCmptGeneration generation;
     private IProductCmptRelation relation;
     private IPolicyCmptType policyCmptType;
-    
+    private IIpsProject ipsProject;
     /*
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
     	super.setUp();
-    	IIpsProject ipsProject = newIpsProject("TestProject");
+    	ipsProject = newIpsProject("TestProject");
     	policyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy");
     	productCmpt = (ProductCmpt)newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "TestProduct");
     	productCmpt.setPolicyCmptType(policyCmptType.getQualifiedName());
@@ -166,4 +167,24 @@ public class ProductCmptRelationTest extends IpsPluginTest {
     	assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }
     
+    public void testValidateInvalidTarget() throws Exception{
+        IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "target.TargetPolicy");
+        IProductCmpt target = newProductCmpt(ipsProject, "target.Target");
+        target.setPolicyCmptType(targetType.getQualifiedName());
+        IRelation rel = policyCmptType.newRelation();
+        rel.setTarget(targetType.getQualifiedName());
+        rel.setTargetRoleSingular("testRelation");
+        rel.setTargetRoleSingularProductSide("testRelation");
+        
+        IProductCmptRelation relation = generation.newRelation(rel.getTargetRoleSingular());
+        relation.setTarget(productCmpt.getQualifiedName());
+        
+        MessageList ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_INVALID_TARGET));
+        
+        relation.setTarget(target.getQualifiedName());
+        
+        ml = relation.validate();
+        assertNull(ml.getMessageByCode(IProductCmptRelation.MSGCODE_INVALID_TARGET));
+    }
 }

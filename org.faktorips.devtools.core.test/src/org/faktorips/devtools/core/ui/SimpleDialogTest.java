@@ -96,4 +96,14 @@ public class SimpleDialogTest extends IpsPluginTest implements ILogListener, ITe
 	public Object getAnswer() {
 		return null;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        plugin.getLog().removeLogListener(this);
+    }
+    
+    
 }
