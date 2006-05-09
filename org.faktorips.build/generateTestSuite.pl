@@ -10,13 +10,13 @@ use strict;
 my $testCasePattern = ".*Test\.java";
 my $testCaseExcludePattern = ".*Abstract.*";
 my $testSuiteFileName ="AutomatedSuite.java";
+my $basedir = "../plugins/" ;                   #path to project-sourcefolders
 
 my @projects = ( "org.faktorips.devtools.core.test", 
                  "org.faktorips.devtools.stdbuilder.test" 
                );
 
 my $debug = "true";               
-my $basedir = "../";
 
 
 #Skeleton 
