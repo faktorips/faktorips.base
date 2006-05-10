@@ -168,6 +168,32 @@ public class XmlUtil {
         return builder;
     }
     
+    
+    public final static DocumentBuilder getValidatingDocumentBuilder() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setExpandEntityReferences(false);
+        factory.setValidating(true);
+		DocumentBuilder builder;
+        try {
+			builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+        	throw new RuntimeException(e);
+        }
+        builder.setErrorHandler(new ErrorHandler() {
+            public void error(SAXParseException e) throws SAXException {
+                throw e;
+            }
+            public void fatalError(SAXParseException e) throws SAXException {
+                throw e;
+            }
+            public void warning(SAXParseException e) throws SAXException {
+                throw e;
+            }
+        });
+        return builder;
+    }
+    
     /**
      * Writes a XML document to a file.
      * <p>See also the <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java example</a>.</p>
