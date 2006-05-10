@@ -230,7 +230,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	
     	Comparable lower = parse(getLowerBound(), datatype, list, invalidObject, invalidProperty);
     	Comparable subLower = parse(subRange.getLowerBound(), datatype, list, invalidObject, invalidProperty);
-    	if (lower != null && subLower != null && lower.compareTo(subLower) > 0) {
+    	if (lower != null && subLower != null && !datatype.isNull(lower) && !datatype.isNull(subLower) && lower.compareTo(subLower) > 0) {
     		if (list != null) {
     			String msg = NLS.bind(Messages.Range_msgLowerBoundViolation, getLowerBound(), subRange.getLowerBound());
     			addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_LOWERBOUND));
@@ -240,14 +240,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	
     	Comparable upper = parse(getUpperBound(), datatype, list, invalidObject, invalidProperty);
     	Comparable subUpper = parse(subRange.getUpperBound(), datatype, list, invalidObject, invalidProperty);
-    	if (upper != null && subUpper != null && upper.compareTo(subUpper) < 0) {
+    	if (upper != null && subUpper != null && !datatype.isNull(upper) && !datatype.isNull(subUpper)  && upper.compareTo(subUpper) < 0) {
     		if (list != null) {
     			String msg = NLS.bind(Messages.Range_msgUpperBoundViolation, getUpperBound(), subRange.getUpperBound());
     			addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_UPPERBOUND));
     		}
     		isSubset = false;
     	}
-
+    	
     	if (subRange.getContainsNull() && !getContainsNull()) {
 			String msg = NLS.bind(Messages.RangeValueSet_msgNullNotContained, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 			addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_CONTAINS_NULL));

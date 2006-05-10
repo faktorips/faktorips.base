@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -148,8 +149,41 @@ public class RangeValueSetTest extends IpsPluginTest {
 	    
 	    range.setContainsNull(true);
 	    assertTrue(range.containsValueSet(subRange));
+        
+        range.setUpperBound("");
+        range.setLowerBound("");
+        range.setStep("");
+        
+        assertTrue(range.containsValueSet(subRange));
+        
+        subRange.setUpperBound("");
+        subRange.setLowerBound("");
+        subRange.setStep("");
+
+        assertTrue(range.containsValueSet(subRange));
 	}
 	
+    public void testContainsValueSetEmptyWithDecimal() throws Exception {
+        IAttribute attr = content.getCoverage().newAttribute();
+        attr.setName("attr");
+        attr.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        attr.setProductRelevant(true);
+        attr.setValueSetType(ValueSetType.RANGE);
+        
+        content.getCoverage().getIpsSrcFile().save(true, null);
+
+        IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
+        IConfigElement el = gen.newConfigElement();
+        el.setPcTypeAttribute("attr");
+        
+        RangeValueSet range = new RangeValueSet(el, 10);
+        range.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());
+        RangeValueSet subset = new RangeValueSet(el, 20);
+        subset.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());
+        
+        assertTrue(range.containsValueSet(subset));
+    }
+    
 	public void testValidate () throws Exception {
 	    RangeValueSet range = new RangeValueSet (intEl, 50);
 	    range.setLowerBound("20");
@@ -195,5 +229,5 @@ public class RangeValueSetTest extends IpsPluginTest {
 		range.validate(list);
 		assertNotNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
     }
-	
+    
 }
