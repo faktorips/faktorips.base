@@ -23,6 +23,7 @@ import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.parser.ASTAddNode;
 import org.faktorips.fl.parser.ASTArgListNode;
 import org.faktorips.fl.parser.ASTBooleanNode;
@@ -246,7 +247,12 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTMoneyNode, java.lang.Object)
      */
     public Object visit(ASTMoneyNode node, Object data) {
-        return generateConstant(node, DatatypeHelper.MONEY);
+        boolean isParable = ((ValueDatatype)DatatypeHelper.MONEY.getDatatype()).isParsable(node.getLastToken().toString());
+        if(isParable){
+            return generateConstant(node, DatatypeHelper.MONEY);
+        }
+        String text = ExprCompiler.localizedStrings.getString(ExprCompiler.WRONG_MONEY_LITERAL, compiler.getLocale(), node.getLastToken().toString());
+        return new CompilationResultImpl(Message.newError(ExprCompiler.SYNTAX_ERROR, text));
     }
 
     /** 

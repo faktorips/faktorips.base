@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -36,6 +37,7 @@ public class JavaSourceFileBuilderTest extends IpsPluginTest {
         ipsSrcFile = newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
         builder = new DumyJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(), "dumy",
                   new LocalizedStringsSet(JavaSourceFileBuilderTest.class));
+        builder.beforeBuildProcess(project, IncrementalProjectBuilder.INCREMENTAL_BUILD);
     }
 
     public void testBeforeBuild() throws Exception {

@@ -133,6 +133,12 @@ public class ExprCompiler {
      * The expression contains a function call to a function with wrong argument types.
      */
     public final static String WRONG_ARGUMENT_TYPES = PREFIX + "WrongArgumentTypes"; //$NON-NLS-1$
+    
+    /**
+     * The expresseion contains a literal that is identified by the parser as a money literal that
+     * doesn't have a valid currency.
+     */
+    public final static String WRONG_MONEY_LITERAL = PREFIX + "Money"; //$NON-NLS-1$
 
     /**
      * The expression contains a the expression <code>null</code>.

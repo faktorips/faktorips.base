@@ -177,11 +177,14 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
                     return result.getCodeFragment();
                 }
                 ConversionCodeGenerator conversion = compiler.getConversionCodeGenerator();
-                return conversion.getConversionCode(result.getDatatype(), attributeDatatype, result.getCodeFragment());
+                JavaCodeFragment convertedFrag = conversion.getConversionCode(result.getDatatype(), attributeDatatype, result.getCodeFragment());
+                if(convertedFrag == null){
+                    return new JavaCodeFragment("// Unable to convert the expression \"" + 
+                            result.getCodeFragment().getSourcecode() + "\" of datatype " + result.getDatatype() + 
+                            " to the datatype " + attributeDatatype);
+                }
+                return convertedFrag;
             }
-            addToBuildStatus(new IpsStatus(
-                    "The expression compiler reported errors while compiling the formula "
-                            + formula + " of config element " + formulaElement + "."));
             JavaCodeFragment fragment = new JavaCodeFragment();
             fragment
                     .appendln("// The expression compiler reported the following errors while compiling the formula:");

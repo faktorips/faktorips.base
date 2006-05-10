@@ -17,6 +17,8 @@
 
 package org.faktorips.fl;
 
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.Datatype;
@@ -35,7 +37,9 @@ public abstract class CompilerAbstractTest extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        compiler = new ExprCompiler();        
+        compiler = new ExprCompiler();
+        Locale.setDefault(Locale.ENGLISH);
+        compiler.setLocale(Locale.ENGLISH);
         processor = new ExprEvaluator(compiler);
     }
     

@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -100,7 +101,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 	private MultiStatus buildStatus;
 
-	private static JControlModel model;
+	private JControlModel model;
 
 	/**
 	 * Creates a new JavaSourceFileBuilder.
@@ -123,6 +124,32 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		this.kindId = kindId;
 		this.localizedStringsSet = localizedStringsSet;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+		model = null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+		initJControlModel(project);
+	}
+
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 
 	/**
 	 * {@inheritDoc}
@@ -685,11 +712,20 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		return folder.getFile(fileName + JAVA_EXTENSION);
 	}
 
-	private JControlModel getJControlModel() {
-
-		if (model != null) {
-			return model;
+	private void initJControlModel(IIpsProject project) throws CoreException{
+		IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml");
+		if(mergeFile.exists()){
+			try {
+				model = new JControlModel(XmlUtil.getDocument(mergeFile.getContents()).getDocumentElement());
+			} catch (Exception e) {
+				throw new CoreException(new IpsStatus(e));
+			}
+			return;
 		}
+		model = new JControlModel(getJMergeDefaultConfigDocument().getDocumentElement());
+	}
+
+	private org.w3c.dom.Document getJMergeDefaultConfigDocument(){
 		InputStream is = null;
 		try {
 			StringBuffer mergeFile = new StringBuffer();
@@ -698,16 +734,27 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 							'.', '/')).append("/merge.xml"); //$NON-NLS-1$
 			is = (InputStream) Platform.getBundle(IpsPlugin.PLUGIN_ID)
 					.getResource(mergeFile.toString()).getContent();
-			org.w3c.dom.Document doc = XmlUtil.getDocument(is);
-			model = new JControlModel(doc.getDocumentElement());
-			return model;
+			return XmlUtil.getDocument(is);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
 			closeStream(is);
 		}
+		
 	}
-
+	
+	private JControlModel getJControlModel(){
+	
+		if(model == null){
+			throw new IllegalStateException("The jmerge control model has not been set, " +
+					"while merging is activated. Possible reason for that might be that " +
+					"the builder initialization method beforeBuildProcess(IIpsProject, int) " +
+					"this class: " + JavaSourceFileBuilder.class + " has been overridden and " +
+							"a call to the super class method has been forgotten.");
+		}
+		return model;
+	}
+	
 	private void merge(IFile javaFile, InputStream oldContent,
 			InputStream newContent, String charset) throws CoreException {
 
