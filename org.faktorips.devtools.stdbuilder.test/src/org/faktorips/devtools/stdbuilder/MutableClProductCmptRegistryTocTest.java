@@ -17,8 +17,8 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.core.util.XmlAbstractTestCase;
-import org.faktorips.devtools.stdbuilder.MutableClRuntimeRepositoryToc;
+
+import org.faktorips.devtools.stdbuilder.test.XmlAbstractTestCase;
 import org.faktorips.runtime.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.TocEntryObject;
