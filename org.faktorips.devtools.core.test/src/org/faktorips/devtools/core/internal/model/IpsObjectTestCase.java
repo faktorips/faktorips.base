@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.util.XmlAbstractTestCase;
+import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 
 
 /**

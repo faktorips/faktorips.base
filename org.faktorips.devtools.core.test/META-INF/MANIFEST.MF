@@ -12,9 +12,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
- org.faktorips.devtools.core;visibility:=reexport,
  org.eclipse.jface.text,
- org.junit
+ org.junit,
+ org.faktorips.devtools.core
 Eclipse-AutoStart: true
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
