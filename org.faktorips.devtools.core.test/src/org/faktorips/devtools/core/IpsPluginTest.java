@@ -58,7 +58,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.util.XmlAbstractTestCase;
+import org.faktorips.devtools.core.test.XmlAbstractTestCase;
 import org.faktorips.util.StringUtil;
 
 /**
