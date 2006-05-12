@@ -201,6 +201,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 			public void widgetSelected(SelectionEvent e) {
 				try {
 					newPart();
+					
 				} catch (Exception ex) {
 					IpsPlugin.logAndShowErrorDialog(ex);
 				}
@@ -319,6 +320,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        refresh();
     }
 
     private void editPart() {
@@ -345,6 +347,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        refresh();
     }
 
     private void deletePart() {
@@ -366,6 +369,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        refresh();
     }
     
     /**
@@ -392,6 +396,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 		viewer.refresh();
 		table.setSelection(newSelection);
 		viewer.getControl().setFocus();
+        refresh();
     }
     
     /**
