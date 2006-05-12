@@ -217,7 +217,9 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 		
 			public void widgetSelected(SelectionEvent e) {
 				uiController.updateUI();
-				ruleUIController.updateUI();
+				if (ruleUIController != null) {
+					ruleUIController.updateUI();
+				}
 			}
 		});
         
