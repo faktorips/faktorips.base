@@ -1203,7 +1203,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodInitialize(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_INITIALIZE", getPcType(), builder);
-        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Datatype.VOID.getJavaClassName(),
+        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
                 getMethodNameInitialize(), new String[0], new String[0]);
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super." + getMethodNameInitialize() + "();");
