@@ -998,18 +998,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         buildMessageForRule(builder);
     }
 
-    String getPolicyCmptImplGetNumOfMethodName(IRelation r) {
-        return "getAnzahl" + StringUtils.capitalise(r.getTargetRolePlural());
-    }
-
-    String getPolicyCmptImplGetMethodName(IRelation r) {
-        return "get" + StringUtils.capitalise(r.getTargetRoleSingular());
-    }
-
-    String getPolicyCmptImplGetAllMethodName(IRelation r) {
-        return "get" + StringUtils.capitalise(r.getTargetRolePlural());
-    }
-
     private void createMethodValidateDependants(JavaCodeFragmentBuilder builder)
             throws CoreException {
         /*
@@ -1035,12 +1023,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                     if (r.is1ToMany()) {
                         IPolicyCmptType target = r.getIpsProject().findPolicyCmptType(r.getTarget());
                         body.append("if(");
-                        body.append(getPolicyCmptImplGetNumOfMethodName(r));
+                        body.append(interfaceBuilder.getMethodNameGetNumOfRefObjects(r));
                         body.append("() > 0) { ");
                         body.appendClassName(interfaceBuilder
                                 .getQualifiedClassName(target.getIpsSrcFile()));
                         body.append("[] rels = ");
-                        body.append(getPolicyCmptImplGetAllMethodName(r));
+                        body.append(interfaceBuilder.getMethodNameGetAllRefObjects(r));
                         body.append("();");
                         body.append("for (int i = 0; i < rels.length; i++)");
                         body.append("{ ml.add(rels[i].validate()); } }");
