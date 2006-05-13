@@ -44,6 +44,9 @@ public class ProductCmptTypeRefControl extends IpsObjectRefControl {
      * {@inheritDoc}
      */
     protected IIpsObject[] getPdObjects() throws CoreException {
+    	if (getIpsProject()==null) {
+    		return new IIpsObject[0];
+    	}
     	IIpsObject[] allProductCmptTypes = getIpsProject().findIpsObjects(IpsObjectType.PRODUCT_CMPT_TYPE);
     	ArrayList result = new ArrayList();
     	for (int i = 0; i < allProductCmptTypes.length; i++) {

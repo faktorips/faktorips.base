@@ -129,7 +129,11 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         
         nameComposite = toolkit.createLabelEditColumnComposite(pageControl);        
         fillNameComposite(nameComposite, toolkit);
-        setDefaults(selectedResource);
+        try {
+			setDefaults(selectedResource);
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
 
         validateInput = true;
     }
@@ -141,7 +145,7 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
      * @param selectedResource The resource that was selected in the current selection when
      * the wizard was opened.
      */
-    protected void setDefaults(IResource selectedResource) {
+    protected void setDefaults(IResource selectedResource) throws CoreException {
         if (selectedResource==null) {
             setPdPackageFragmentRoot(null);
             return;
@@ -177,8 +181,11 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
     
     protected Text addNameLabelField(UIToolkit toolkit) {
         toolkit.createFormLabel(nameComposite, Messages.IpsObjectPage_labelName); 
+        return addNameField(toolkit);
+    }
+    
+    protected Text addNameField(UIToolkit toolkit) {
         Text nameText = toolkit.createText(nameComposite);
-        
         nameText.setFocus();
         nameField = new TextField(nameText);
         nameField.addChangeListener(this);

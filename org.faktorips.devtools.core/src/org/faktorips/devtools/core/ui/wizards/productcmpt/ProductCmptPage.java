@@ -59,21 +59,23 @@ public class ProductCmptPage extends IpsObjectPage {
      */
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
 
-    	toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelConstNamePart);
+        toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelTemplate);
+        
+        typeRefControl = new ProductCmptTypeRefControl(null, nameComposite, toolkit);
+        TextButtonField pcTypeField = new TextButtonField(typeRefControl);
+        pcTypeField.addChangeListener(this);
+
+        toolkit.createLabel(nameComposite, Messages.ProductCmptPage_labelConstNamePart);
         constName = toolkit.createText(nameComposite);
         String label = NLS.bind(Messages.ProductCmptPage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
         toolkit.createLabel(nameComposite, label);
         versionId = toolkit.createText(nameComposite);
 
-        fullName = addNameLabelField(toolkit);
+        toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelFullName); 
+        
+        fullName = addNameField(toolkit);
 
-        toolkit.createFormLabel(nameComposite, Messages.ProductCmptPage_labelName);
-        
-        typeRefControl = new ProductCmptTypeRefControl(null, nameComposite, toolkit);
-        TextButtonField pcTypeField = new TextButtonField(typeRefControl);
-        pcTypeField.addChangeListener(this);
-        
-        updateEnablementState();
+        updateEnableState();
         
         versionId.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -94,38 +96,30 @@ public class ProductCmptPage extends IpsObjectPage {
     
     /**
 	 * {@inheritDoc}
+     * @throws CoreException 
 	 */
-	protected void setDefaults(IResource selectedResource) {
+	protected void setDefaults(IResource selectedResource) throws CoreException {
 		super.setDefaults(selectedResource);
-		try {
-			IIpsObject obj = getSelectedIpsObject();
-	        if (constName.isEnabled()) {
-	            constName.setFocus();
-	        }
-			if (!(obj instanceof IProductCmpt)) {
-				return;
+		IIpsObject obj = getSelectedIpsObject();
+		IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
+		if (!(obj instanceof IProductCmpt)) {
+			if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+				versionId.setText(namingStrategy.getNextVersionId(null));
+				typeRefControl.setFocus();
 			}
-			IProductCmpt productCmpt = (IProductCmpt)obj;
-
-			IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
-			if (namingStrategy != null) {
-				if (namingStrategy.supportsVersionId()) {
-					versionId.setText(namingStrategy.getNextVersionId(productCmpt));
-					constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt)));
-				}
-			} else {
-				setIpsObjectName(productCmpt.getName());
-			}
-			
-			typeRefControl.setText(productCmpt.findProductCmptType().getQualifiedName());
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
+			return;
 		}
-		
-        if (constName.isEnabled()) {
-            constName.setFocus();
-        }
-
+		IProductCmpt productCmpt = (IProductCmpt)obj;
+		if (namingStrategy != null) {
+			if (namingStrategy.supportsVersionId()) {
+				versionId.setText(namingStrategy.getNextVersionId(productCmpt));
+				constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt)));
+				constName.setFocus();
+			}
+		} else {
+			setIpsObjectName(productCmpt.getName());
+		}
+		typeRefControl.setText(productCmpt.findProductCmptType().getQualifiedName());
 	}
 
 	String getPolicyCmptType() {
@@ -151,7 +145,7 @@ public class ProductCmptPage extends IpsObjectPage {
         } else {
         	typeRefControl.setPdProject(null);
         }
-        updateEnablementState();
+        updateEnableState();
     }
     
     protected void validatePage() throws CoreException {
@@ -186,18 +180,16 @@ public class ProductCmptPage extends IpsObjectPage {
 	/**
 	 * Returns the currentyl active naming strategy. 
 	 */
-	private IProductCmptNamingStrategy getNamingStrategy() {
+	private IProductCmptNamingStrategy getNamingStrategy()  {
     	IIpsProject project = getIpsProject();
-    	IProductCmptNamingStrategy namingStrategy = null;
     	if (project != null) {
     		try {
-				namingStrategy = project.getProductCmptNamingStratgey();
+				return project.getProductCmptNamingStratgey();
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
     	}
-    	
-    	return namingStrategy;
+    	return null;
 	}
 
 	/**
@@ -205,10 +197,10 @@ public class ProductCmptPage extends IpsObjectPage {
 	 */
 	protected void packageChanged() {
 		super.packageChanged();
-		updateEnablementState();
+		updateEnableState();
 	}
 	
-	private void updateEnablementState() {
+	private void updateEnableState() {
 		IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
 		boolean enabled = namingStrategy != null && namingStrategy.supportsVersionId();
 		this.constName.setEnabled(enabled);
