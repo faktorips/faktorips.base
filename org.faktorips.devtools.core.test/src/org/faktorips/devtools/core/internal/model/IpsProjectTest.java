@@ -373,6 +373,7 @@ public class IpsProjectTest extends IpsPluginTest {
     	genNoref.setValidFrom(cal);
     	genTobereferenced.setValidFrom(cal);
     	gen1.newRelation("xxx").setTarget(tobereferenced.getQualifiedName());
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(cal);
     	
     	IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
     	assertEquals(result.length, 1);

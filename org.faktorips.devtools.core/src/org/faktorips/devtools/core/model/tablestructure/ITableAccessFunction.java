@@ -57,11 +57,6 @@ public interface ITableAccessFunction extends IIpsObjectPart {
      * Sets the function's return type.
      */
     public void setType(String newType);
-    
-    /**
-     * Sets the function's name.
-     */
-    public void setName(String newName);
 
     /**
      * Returns the function's arguments' types.

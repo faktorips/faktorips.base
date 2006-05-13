@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 
@@ -64,6 +65,10 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 * indicated function. Returns <code>null</code> if this builder set does
 	 * not support table access.
 	 * 
+	 * @param tableContents for table structures that allow multiple contents the table contents
+	 * 			is needed to identify for which table contents of a table structure a table
+	 * 			access function is called. Can be null for single content table structures 
+	 * 
 	 * @param fct
 	 *            The table access function code should be generated for.
 	 * @param argResults
@@ -72,7 +77,7 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 * @throws CoreException
 	 *             if an error occurs while generating the code.
 	 */
-	public CompilationResult getTableAccessCode(ITableAccessFunction fct,
+	public CompilationResult getTableAccessCode(ITableContents tableContents, ITableAccessFunction fct,
 			CompilationResult[] argResults) throws CoreException;
 
 	/**

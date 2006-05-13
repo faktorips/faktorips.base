@@ -395,7 +395,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
     private ITableAccessFunction createFunction(int id, IUniqueKey key, IColumn column) {
     	TableAccessFunction fct = new TableAccessFunction(this, id);
         fct.setAccessedColumn(column.getName());
-        fct.setName(getName() + "." + column.getName()); //$NON-NLS-1$
         fct.setType(column.getDatatype());
         StringBuffer description = new StringBuffer(Messages.TableStructure_descriptionStart); 
         IKeyItem[] items = key.getKeyItems();

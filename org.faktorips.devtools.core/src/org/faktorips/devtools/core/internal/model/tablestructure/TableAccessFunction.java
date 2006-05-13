@@ -56,8 +56,8 @@ public class TableAccessFunction extends IpsObjectPart implements ITableAccessFu
         return null;
     }
 
-    public void setName(String newName) {
-        name = newName;
+    public String getName(){
+    	return getTableStructure().getName() + '.' + getAccessedColumn();
     }
 
     public String getAccessedColumn() {

@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.FlFunction;
@@ -44,15 +45,12 @@ public class TableFunctionsResolver implements FunctionResolver {
     public FlFunction[] getFunctions() {
         List functions = new ArrayList();
         try {
-            IIpsObject[] tables = project.findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
-            for (int i = 0; i < tables.length; i++) {
-                ITableStructure table = (ITableStructure)tables[i];
-                ITableAccessFunction[] fcts = table.getAccessFunctions();
-                for (int j = 0; j < fcts.length; j++) {
-                    if (!fcts[j].validate().containsErrorMsg()) {
-                        functions.add(new TableAccessFunctionFlFunctionAdapter(fcts[j]));
-                    }
-                }
+        	IIpsObject[] tableContentses = project.findIpsObjects(IpsObjectType.TABLE_CONTENTS);
+            for(int t = 0; t < tableContentses.length; t++){
+            	
+            	ITableContents tableContents = (ITableContents)tableContentses[t];
+	            ITableStructure table = tableContents.findTableStructure();
+            	addTableAccessFunction(functions, table, tableContents);
             }
         } catch (CoreException e) {
             // if an error occurs while search for the function, the functions are not
@@ -62,4 +60,12 @@ public class TableFunctionsResolver implements FunctionResolver {
         return (FlFunction[])functions.toArray(new FlFunction[functions.size()]);
     }
 
+    private void addTableAccessFunction(List functions, ITableStructure table, ITableContents tableContents) throws CoreException{
+        ITableAccessFunction[] fcts = table.getAccessFunctions();
+        for (int j = 0; j < fcts.length; j++) {
+            if (!fcts[j].validate().containsErrorMsg()) {
+                functions.add(new TableAccessFunctionFlFunctionAdapter(tableContents, fcts[j]));
+            }
+        }
+    }
 }

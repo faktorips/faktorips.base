@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -65,7 +66,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CompilationResult getTableAccessCode(ITableAccessFunction fct,
+	public CompilationResult getTableAccessCode(ITableContents tableContents, ITableAccessFunction fct,
 			CompilationResult[] argResults) throws CoreException {
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();

@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
@@ -26,9 +28,15 @@ import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.product.TableFunctionsResolver;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.StringUtil;
 
@@ -36,7 +44,8 @@ public class FormulaCompletionProcessorTest extends IpsPluginTest {
 
 	private FormulaCompletionProcessor processor;
 	private IpsProject ipsProject;
-	
+	private ExprCompiler compiler;
+    
 	public void setUp() throws Exception{
 		super.setUp();
 		ipsProject = (IpsProject)newIpsProject("TestProject");
@@ -47,7 +56,7 @@ public class FormulaCompletionProcessorTest extends IpsPluginTest {
 		attr.setDatatype("String");
 		attr.setModifier(Modifier.PUBLISHED);
 		attr.setName("a");
-		ExprCompiler compiler = new ExprCompiler();
+		compiler = new ExprCompiler();
 		//the compiler is not further considered in this test case. It is just neccessary to obey to the constructor requirements
 		processor = new FormulaCompletionProcessor(attr, ipsProject, compiler);
 	}
@@ -73,7 +82,58 @@ public class FormulaCompletionProcessorTest extends IpsPluginTest {
 		assertTrue(expectedValues.contains("2"));
 		assertTrue(expectedValues.contains("3"));
 		assertTrue(expectedValues.contains(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
-
 	}
 
+    public void testDoComputeCompletionProposalsForMultipleTableContentsWithDateFormatName() throws Exception{
+        
+        ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "Testtable");
+        IColumn column =table.newColumn();
+        table.setMultipleContentsAllowed(true);
+        column.setName("first");
+        column.setDatatype("String");
+        column =table.newColumn();
+        column.setName("second");
+        column.setDatatype("String");
+        IUniqueKey tableKey = table.newUniqueKey();
+        tableKey.addKeyItem("second");
+        
+        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "TestTable_2006-07-19");
+        tableContents.setTableStructure(table.getQualifiedName());
+        tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
+        
+        compiler.add(new TableFunctionsResolver(ipsProject));
+        
+        ArrayList results = new ArrayList();
+        processor.doComputeCompletionProposals("TestTable_", 0, results);
+        assertEquals(1, results.size());
+    }
+    
+    public void testDoComputeCompletionProposalsForSingleTableContents() throws Exception{
+        
+        ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "Testtable");
+        IColumn column =table.newColumn();
+        table.setMultipleContentsAllowed(false);
+        column.setName("first");
+        column.setDatatype("String");
+        column =table.newColumn();
+        column.setName("second");
+        column.setDatatype("String");
+        IUniqueKey tableKey = table.newUniqueKey();
+        tableKey.addKeyItem("second");
+        
+        compiler.add(new TableFunctionsResolver(ipsProject));
+        
+        //there needs to be a table content available for the structure otherwise no completion is proposed
+        ArrayList results = new ArrayList();
+        processor.doComputeCompletionProposals("Testt", 0, results);
+        assertEquals(0, results.size());
+        
+        ITableContents tableContents = (ITableContents)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "TestTable_2006-07-19");
+        tableContents.setTableStructure(table.getQualifiedName());
+        tableContents.newGeneration((GregorianCalendar)GregorianCalendar.getInstance());
+
+        processor.doComputeCompletionProposals("TestT", 0, results);
+        assertEquals(1, results.size());
+    }
+    
 }

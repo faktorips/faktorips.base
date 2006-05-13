@@ -23,6 +23,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -36,16 +37,24 @@ import org.faktorips.util.message.Message;
 /**
  * An adapter that adapts a table access function to the FlFunction interfaces.
  * 
- * @author Jan Ortmann
+ * @author Jan Ortmann, Peter Erzberger
  */
 public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
 
     private ITableAccessFunction fct;
     private ExprCompiler compiler;
-    
-    public TableAccessFunctionFlFunctionAdapter(ITableAccessFunction fct) {
+    private ITableContents tableContents;
+
+    /**
+     * @param tableContents can be null. This indicates that it is a table access function for a table that doesn't allow multiple
+     * 						contents
+     * @param fct the table access function
+     */
+    public TableAccessFunctionFlFunctionAdapter(ITableContents tableContents, ITableAccessFunction fct) {
         ArgumentCheck.notNull(fct);
+        ArgumentCheck.notNull(tableContents);
         this.fct = fct;
+        this.tableContents = tableContents;
     }
 
     /**
@@ -57,7 +66,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
             if (!builderSet.isSupportTableAccess()) {
                 return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
             }
-            return builderSet.getTableAccessCode(fct, argResults);
+            return builderSet.getTableAccessCode(tableContents, fct, argResults);
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return new CompilationResultImpl(Message.newError("", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$
@@ -89,7 +98,7 @@ public class TableAccessFunctionFlFunctionAdapter implements FlFunction {
     }
 
     public String getName() {
-        return fct.getName();
+		return tableContents.getName() + "." + fct.getAccessedColumn(); //$NON-NLS-1$
     }
 
     public Datatype[] getArgTypes() {

@@ -239,13 +239,17 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         return null;
     }
 
+    /*
+     * The characters that are checked within this method have to be in sych with the identifier tokens defined
+     * in the ffl.jjt grammar
+     */ 
     private String getLastIdentifier(String s) {
         if (StringUtils.isEmpty(s)) {
             return ""; //$NON-NLS-1$
         }
         int i=s.length()-1;
         while (i>=0) {
-            if (!Character.isLetterOrDigit(s.charAt(i)) && s.charAt(i)!='.') {
+            if (!Character.isLetterOrDigit(s.charAt(i)) && s.charAt(i)!='.' && s.charAt(i)!='_' && s.charAt(i)!='-') {
                break; 
             }
             i--;
