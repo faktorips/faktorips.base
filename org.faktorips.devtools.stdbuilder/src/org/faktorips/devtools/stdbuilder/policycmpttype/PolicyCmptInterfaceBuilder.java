@@ -512,7 +512,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * e.g. getNumOfCoverages()
      */
     public String getMethodNameGetNumOfRefObjects(IRelation relation) {
-        return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", relation.getTargetRolePlural());
+        return getLocalizedText(relation, "METHOD_GET_NUM_OF_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
     }
 
     /**
@@ -551,7 +551,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * e.g. getCoverages()
      */
     public String getMethodNameGetAllRefObjects(IRelation relation) {
-        return getLocalizedText(relation, "METHOD_GET_ALL_REF_OBJECTS_NAME", relation.getTargetRolePlural());
+        return getLocalizedText(relation, "METHOD_GET_ALL_REF_OBJECTS_NAME", StringUtils.capitalise(relation.getTargetRolePlural()));
     }
 
     /**
@@ -565,7 +565,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             IRelation relation,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", relation.getTargetRoleSingular(), relation, methodsBuilder);
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT", StringUtils.capitalise(relation.getTargetRoleSingular()), relation, methodsBuilder);
         generateSignatureGetRefObject(relation, methodsBuilder);
         methodsBuilder.appendln(";");
     }
