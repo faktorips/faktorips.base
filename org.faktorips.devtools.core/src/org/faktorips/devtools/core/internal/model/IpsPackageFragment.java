@@ -227,6 +227,10 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     	if (template instanceof ITimedIpsObject) {
     		IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
     		if (source == null) {
+    			source = getFirstGeneration((ITimedIpsObject)template, date);
+    		}
+    		
+    		if (source == null) {
     			throw new CoreException(new IpsStatus("No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
     		}
     		file = createIpsFile(type, name, force, monitor);
@@ -256,6 +260,22 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     	return file;
 	}
 
+    /**
+     * Returns the first generation of the given timed ips object, if this generation is valid from 
+     * before the given date or <code>null</code> otherwise.
+     * 
+     * @param timed The timed ips object to get the first generation from.
+     * @param date The date the first generation of the timed ips objects valid date has to be before.
+     * @return The first generation or <code>null</code>.
+     */
+    private IIpsObjectGeneration getFirstGeneration(ITimedIpsObject timed, GregorianCalendar date) {
+    	IIpsObjectGeneration first = timed.getFirstGeneration();
+    	if ((first != null) && (!first.getValidFrom().before(date))) {
+    		first = null;
+    	}
+    	return first;
+    }
+    
 	/**
      * Searches all objects of the given type and adds them to the result. 
      */

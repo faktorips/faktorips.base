@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.product;
 
+import java.util.GregorianCalendar;
+
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 
@@ -50,6 +52,13 @@ public interface IProductCmptStructure {
 	 * @throws CycleException If a circle is detected.
 	 */
 	public void refresh() throws CycleException;
+	
+	/**
+	 * @return Returns the date this structure was created for. That means, all
+	 *         relations represented by this structure are valid at the returned
+	 *         date.
+	 */
+	public GregorianCalendar getValidAt();
 	
 	/**
 	 * Returns all nodes contained in this structure as plain array. The order of the nodes is unspecified.

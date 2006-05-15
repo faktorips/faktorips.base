@@ -76,9 +76,6 @@ public class MoveOperationTest extends IpsPluginTest {
         
         assertEquals(sourceRefs.length, targetRefs.length);
         
-        for (int i = 0; i < targetRefs.length; i++) {
-//            assertFalse(targetRefs[i].getIpsObject().getIpsSrcFile().isDirty());
-		}
     }
     
     /**
@@ -112,9 +109,6 @@ public class MoveOperationTest extends IpsPluginTest {
         
         assertEquals(sourceRefs.length, targetRefs.length);
         
-        for (int i = 0; i < targetRefs.length; i++) {
-//            assertFalse(targetRefs[i].getIpsObject().getIpsSrcFile().isDirty());
-		}
     }
     
     
@@ -146,9 +140,6 @@ public class MoveOperationTest extends IpsPluginTest {
         
         assertEquals(sourceRefs.length, targetRefs.length);
         
-        for (int i = 0; i < targetRefs.length; i++) {
-//            assertFalse(targetRefs[i].getIpsObject().getIpsSrcFile().isDirty());
-		}
     }
 
     /**
@@ -184,9 +175,6 @@ public class MoveOperationTest extends IpsPluginTest {
         
         assertEquals(sourceRefs.length, targetRefs.length);
         
-        for (int i = 0; i < targetRefs.length; i++) {
-//            assertFalse(targetRefs[i].getIpsObject().getIpsSrcFile().isDirty());
-		}
     }
     
     public void testMoveTableContent() throws CoreException, InvocationTargetException, InterruptedException {
@@ -224,6 +212,8 @@ public class MoveOperationTest extends IpsPluginTest {
     	assertTrue(pack.exists());
     	assertTrue(file.exists());
     	
+        int count = pack.getIpsParentPackageFragment().getIpsChildPackageFragments().length;
+        
     	new MoveOperation(new IIpsElement[] {pack}, new String[] {"test.renamedPackage"}).run(null);
     	
     	assertFalse(pack.exists());
@@ -233,6 +223,8 @@ public class MoveOperationTest extends IpsPluginTest {
     	file = ((IFolder)pack.getCorrespondingResource()).getFile("test.unknown");
     	assertTrue(pack.exists());
     	assertTrue(file.exists());
+        assertEquals(count, pack.getIpsParentPackageFragment().getIpsChildPackageFragments().length);
+        
     }
     
     public void testRenameEmptyFolder() throws Exception {

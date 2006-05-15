@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.product;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
@@ -115,11 +117,22 @@ public interface IProductCmpt extends ITimedIpsObject {
     public boolean containsFormula();
     
     /**
-     * Returns the product component structure representing the structure defined by relations. The 
+     * Returns the product component structure representing the structure defined by relations. 
+     * The relations are evaluated for the date defined by the user-set working date. The 
      * structure is rootet at this product.
+     * 
      * @throws CycleException If a circle is detected.
      */
     public IProductCmptStructure getStructure() throws CycleException;
+    
+    /**
+     * Returns the product component structure representing the structure defined by relations. 
+     * The relations are evaluted for the given daten. The 
+     * structure is rootet at this product.
+     * 
+     * @throws CycleException If a circle is detected.
+     */
+    public IProductCmptStructure getStructure(GregorianCalendar date) throws CycleException;
     
     /**
      * Returns the id this object is identified by at runtime. 

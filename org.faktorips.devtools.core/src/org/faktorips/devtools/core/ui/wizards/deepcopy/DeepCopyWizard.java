@@ -24,6 +24,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -72,7 +73,29 @@ public class DeepCopyWizard extends Wizard {
 		this.type = type;
 		
 		try {
-			structure = (ProductCmptStructure)product.getStructure();
+			// the working date lies before the valid from date of the first available generation 
+			// of the given product component - so we have to take this valid-from date rather
+			// then the working date to build the product component structure.
+			if (IpsPlugin.getDefault().getIpsPreferences().getWorkingDate().before(product.getFirstGeneration().getValidFrom())) {
+				String title = "Working date not used";
+				String msg = NLS
+						.bind(
+								"The working date configured in the preferences is before the valid-from "
+										+ "date of the first valid {0} of the selected product component. "
+										+ "The valid-from date of the first {0} of the root is used instead "
+										+ "to find all product components which are related to the selected one.",
+								IpsPlugin.getDefault().getIpsPreferences()
+										.getChangesOverTimeNamingConvention()
+										.getGenerationConceptNameSingular());
+				
+				MessageDialog.openInformation(getShell(), title, msg);
+				
+				structure = (ProductCmptStructure)product.getStructure(product.getFirstGeneration().getValidFrom());
+			}
+			else {
+				structure = (ProductCmptStructure)product.getStructure();
+			}
+			
 		} catch (CycleException e) {
 			IpsPlugin.log(e);
 		}

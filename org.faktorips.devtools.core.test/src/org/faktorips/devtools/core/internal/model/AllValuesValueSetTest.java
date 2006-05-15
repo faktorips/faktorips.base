@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -27,12 +28,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IAllValuesValueSet;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Document;
@@ -41,15 +45,35 @@ import org.xml.sax.SAXException;
 
 public class AllValuesValueSetTest extends IpsPluginTest {
 
-	IConfigElement ce;
-	DefaultTestContent content;
-	
+    private IAttribute attr;
+	private IConfigElement ce;
+
+    private IConfigElement ce2;
+    
+	private IIpsProject ipsProject;
+    private IProductCmptGeneration generation;
+    
 	public void setUp() throws Exception {
 		super.setUp();
-		content = new DefaultTestContent();
-		IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
+        ipsProject = super.newIpsProject("TestProject");
+        IPolicyCmptType policy = newPolicyCmptType(ipsProject, "test.Base");
+        attr = policy.newAttribute();
+        attr.setName("attr");
+        attr.setDatatype(Datatype.MONEY.getQualifiedName());
+        
+        IAttribute attr2 = policy.newAttribute();
+        attr2.setName("attr2");
+        attr2.setDatatype(Datatype.STRING.getQualifiedName());
+        
+        IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
+        cmpt.setPolicyCmptType(policy.getQualifiedName());
+        generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 		
-		ce = gen.newConfigElement();
+		ce = generation.newConfigElement();
+        ce.setPcTypeAttribute("attr");
+        
+        ce2 = generation.newConfigElement();
+        ce2.setPcTypeAttribute("attr2");
 	}
 	
 	public void testCreateFromXml() throws CoreException, SAXException, IOException, ParserConfigurationException {
@@ -71,61 +95,49 @@ public class AllValuesValueSetTest extends IpsPluginTest {
 	}
 	
 	public void testContainsValue() throws Exception {
-		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
-		IConfigElement config = gen.getConfigElement("sumInsured");
-	    AllValuesValueSet allValues = new AllValuesValueSet(config, 1);
+	    AllValuesValueSet allValues = new AllValuesValueSet(ce, 1);
 	    assertFalse(allValues.containsValue("abc"));
 	    assertTrue(allValues.containsValue("1EUR"));
 
-	    config.findPcTypeAttribute().setDatatype(Datatype.INTEGER.getQualifiedName());
+	    ce.findPcTypeAttribute().setDatatype(Datatype.INTEGER.getQualifiedName());
 	    assertFalse(allValues.containsValue("1EUR"));
 	    assertTrue(allValues.containsValue("99"));
  	}
 	
 	public void testContainsValueSet() throws Exception {
-		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
-		IConfigElement config = gen.getConfigElement("sumInsured");
-		AllValuesValueSet allValues = (AllValuesValueSet)config.getValueSet();
+		AllValuesValueSet allValues = (AllValuesValueSet)ce.getValueSet();
 		
 		assertTrue(allValues.containsValueSet(allValues));
-		assertTrue(allValues.containsValueSet(new AllValuesValueSet(config, 99)));
-		
-		gen = (IProductCmptGeneration)content.getBasicMotorProduct().getGenerations()[0];
-		config = gen.getConfigElement("inceptionDate");
-		
-		assertFalse(allValues.containsValueSet(config.getValueSet()));
+		assertTrue(allValues.containsValueSet(new AllValuesValueSet(ce, 99)));
+		assertFalse(allValues.containsValueSet(ce2.getValueSet()));
 	}
 	
 	public void testGetContainsNull() throws Exception {
-		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
-		IConfigElement config = gen.getConfigElement("sumInsured");
-		AllValuesValueSet allValues = (AllValuesValueSet)config.getValueSet();
+		AllValuesValueSet allValues = (AllValuesValueSet)ce.getValueSet();
 
 		// test with non-primitive datatype
 		assertTrue(allValues.getContainsNull());
 		
 		// test with no datatype
-		IAttribute attr = content.getCoverage().getAttribute("sumInsured");
 		attr.setDatatype("");
-		content.getCoverage().getIpsSrcFile().save(true, null);
 		assertTrue(allValues.getContainsNull());
 		
 		// test with primitive datatype
-		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
 		ArrayList list = new ArrayList();
 		list.addAll(Arrays.asList(vds));
 		list.add(new PrimitiveIntegerDatatype());
-		content.getProject().setValueDatatypes((ValueDatatype[])list.toArray(new ValueDatatype[list.size()]));
-		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-		content.getCoverage().getIpsSrcFile().save(true, null);
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPredefinedDatatypesUsed((ValueDatatype[])list.toArray(new ValueDatatype[list.size()]));
+        ipsProject.setProperties(properties);
+
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
 		assertFalse(allValues.getContainsNull());
 		
 	}
-	
+
 	public void testSetContainsNull() throws Exception {
-		IProductCmptGeneration gen = (IProductCmptGeneration)content.getStandardTplCoverage().getGenerations()[0];
-		IConfigElement config = gen.getConfigElement("sumInsured");
-		AllValuesValueSet allValues = (AllValuesValueSet)config.getValueSet();
+		AllValuesValueSet allValues = (AllValuesValueSet)ce.getValueSet();
 
 		allValues.setContainsNull(true);
 		
@@ -136,14 +148,15 @@ public class AllValuesValueSetTest extends IpsPluginTest {
 			// nothing to do
 		}
 		
-		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
 		ArrayList list = new ArrayList();
 		list.addAll(Arrays.asList(vds));
 		list.add(new PrimitiveIntegerDatatype());
-		content.getProject().setValueDatatypes((ValueDatatype[])list.toArray(new ValueDatatype[list.size()]));
-		IAttribute attr = content.getCoverage().getAttribute("sumInsured");
-		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-		content.getCoverage().getIpsSrcFile().save(true, null);
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPredefinedDatatypesUsed((ValueDatatype[])list.toArray(new ValueDatatype[list.size()]));
+        ipsProject.setProperties(properties);
+
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
 		
 		allValues.setContainsNull(false);
 		

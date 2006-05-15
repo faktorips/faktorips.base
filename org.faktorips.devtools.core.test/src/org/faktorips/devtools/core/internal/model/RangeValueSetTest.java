@@ -19,18 +19,22 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -39,23 +43,36 @@ import org.w3c.dom.Element;
 
 public class RangeValueSetTest extends IpsPluginTest {
 
+    private IAttribute attr;
 	private IConfigElement ce;
 	private IConfigElement intEl;
-	private DefaultTestContent content;
+
+    private IIpsProject ipsProject;
+    private IProductCmptGeneration generation;
+    
+    private IPolicyCmptType type;
 	
 	public void setUp() throws Exception {
 		super.setUp();
-        content = new DefaultTestContent();
-        IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
-        ce = gen.newConfigElement();
+        ipsProject = super.newIpsProject("TestProject");
+        type = newPolicyCmptType(ipsProject, "test.Base");
+        attr = type.newAttribute();
+        attr.setName("attr");
+        attr.setDatatype(Datatype.MONEY.getQualifiedName());
         
-        IAttribute attr = content.getCoverage().newAttribute();
-        attr.setName("test");
-        attr.setDatatype(Datatype.INTEGER.getQualifiedName());
-        attr.setProductRelevant(true);
+        IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
+        cmpt.setPolicyCmptType(type.getQualifiedName());
+        generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
         
-        content.getCoverage().getIpsSrcFile().save(true, null);
-        intEl = gen.newConfigElement();
+        ce = generation.newConfigElement();
+        ce.setPcTypeAttribute("attr");
+        
+        IAttribute attr2 = type.newAttribute();
+        attr2.setName("test");
+        attr2.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attr2.setProductRelevant(true);
+        
+        intEl = generation.newConfigElement();
         intEl.setPcTypeAttribute("test");
 	}
 	
@@ -164,17 +181,14 @@ public class RangeValueSetTest extends IpsPluginTest {
 	}
 	
     public void testContainsValueSetEmptyWithDecimal() throws Exception {
-        IAttribute attr = content.getCoverage().newAttribute();
-        attr.setName("attr");
+        IAttribute attr = type.newAttribute();
+        attr.setName("attrX");
         attr.setDatatype(Datatype.DECIMAL.getQualifiedName());
         attr.setProductRelevant(true);
         attr.setValueSetType(ValueSetType.RANGE);
         
-        content.getCoverage().getIpsSrcFile().save(true, null);
-
-        IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
-        IConfigElement el = gen.newConfigElement();
-        el.setPcTypeAttribute("attr");
+        IConfigElement el = generation.newConfigElement();
+        el.setPcTypeAttribute("attrX");
         
         RangeValueSet range = new RangeValueSet(el, 10);
         range.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());
@@ -213,14 +227,16 @@ public class RangeValueSetTest extends IpsPluginTest {
         range.validate(list);
         assertFalse(list.containsErrorMsg());
         
-		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
 		ArrayList vdlist = new ArrayList();
 		vdlist.addAll(Arrays.asList(vds));
 		vdlist.add(new PrimitiveIntegerDatatype());
-		content.getProject().setValueDatatypes((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
-		IAttribute attr = content.getCoverage().getAttribute("test");
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+        ipsProject.setProperties(properties);
+
+        IAttribute attr = intEl.findPcTypeAttribute();
 		attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-		content.getCoverage().getIpsSrcFile().save(true, null);
 
 		range.validate(list);
 		assertNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));

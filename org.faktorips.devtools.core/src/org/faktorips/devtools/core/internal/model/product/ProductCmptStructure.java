@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Implementation of the product component structure
@@ -40,11 +42,52 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
  */
 public class ProductCmptStructure implements IProductCmptStructure {
 	private Hashtable elementToNodeMapping;
-	StructureNode root;
+	private StructureNode root;
+	private GregorianCalendar workingDate;
 	
+	/**
+	 * Creates a new ProductCmptStructure for the given product component and
+	 * the user definde working date out of the IpsPreferences.
+	 * 
+	 * @param root The product component to create a structure for.
+	 * @throws CycleException if a cycle is detected.
+	 * @throws NullPointerException if the given product component is <code>null</code>.
+	 */
 	public ProductCmptStructure(IProductCmpt root) throws CycleException {
+		this(root, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+	}
+	
+	/**
+	 * Creates a new ProductCmptStructure for the given product component and
+	 * the given date.
+	 * 
+	 * @param root
+	 *            The product component to create a structure for.
+	 * @param date
+	 *            The date the structure has to be valid for. That means that
+	 *            the relations between the product components represented by
+	 *            this structure are valid for the given date.
+	 * @throws CycleException
+	 *             if a cycle is detected.
+	 * @throws NullPointerException
+	 *             if the given product component is <code>null</code> or the
+	 *             given date is <code>null</code>.
+	 */
+	public ProductCmptStructure(IProductCmpt root, GregorianCalendar date) throws CycleException {
+		ArgumentCheck.notNull(root);
+		ArgumentCheck.notNull(date);
+		
         this.elementToNodeMapping = new Hashtable();
+        this.workingDate = date;
+
         this.root = buildNode(root, null);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public GregorianCalendar getValidAt() {
+		return workingDate;
 	}
 
 	/**
@@ -141,8 +184,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 		if (element instanceof IProductCmpt) {
 			IProductCmpt cmpt = ((IProductCmpt)element);
 			IProductCmptGeneration activeGeneration = (IProductCmptGeneration) cmpt
-					.findGenerationEffectiveOn(IpsPlugin.getDefault()
-							.getIpsPreferences().getWorkingDate());
+					.findGenerationEffectiveOn(workingDate);
 			
 			if (activeGeneration == null) {
 				// no active generation found, so no nodes can be returned.

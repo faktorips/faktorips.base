@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import java.util.GregorianCalendar;
+
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPluginTest;
@@ -101,6 +103,7 @@ public class ProductCmptStructureTest extends IpsPluginTest {
     }
     
     public void testCircleDetection() throws Exception {
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2006, 10, 1));
     	DefaultTestContent content = new DefaultTestContent();
     	
     	// this has to work without any exception

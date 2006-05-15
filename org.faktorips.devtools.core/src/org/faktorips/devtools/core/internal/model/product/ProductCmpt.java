@@ -19,6 +19,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -249,6 +250,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 */
 	public IProductCmptStructure getStructure() throws CycleException {
 		return new ProductCmptStructure(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptStructure getStructure(GregorianCalendar date) throws CycleException {
+		return new ProductCmptStructure(this, date);
 	}
 
 	/**

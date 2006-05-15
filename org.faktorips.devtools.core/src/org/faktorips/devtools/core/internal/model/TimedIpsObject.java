@@ -60,6 +60,16 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectGeneration getFirstGeneration() {
+    	if (this.generations.size() > 0) {
+    	return this.getGenerations()[0];
+    	}    	
+    	return null;
+    }
+
     /** 
      * Overridden.
      */

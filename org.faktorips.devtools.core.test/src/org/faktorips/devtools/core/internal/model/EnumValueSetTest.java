@@ -19,18 +19,22 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPluginTest;
 import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -44,8 +48,15 @@ import org.w3c.dom.Element;
 public class EnumValueSetTest extends IpsPluginTest {
     
     private DefaultEnumType gender;
+    
+    private IPolicyCmptType type;
+    
+    private IAttribute attr;
     private IConfigElement ce;
-    private DefaultTestContent content;
+
+    private IIpsProject ipsProject;
+    private IProductCmptGeneration generation;
+    
 
     protected void setUp() throws Exception {
     	super.setUp();
@@ -53,9 +64,18 @@ public class EnumValueSetTest extends IpsPluginTest {
         new DefaultEnumValue(gender, "male");
         new DefaultEnumValue(gender, "female");
         
-        content = new DefaultTestContent();
-        IProductCmptGeneration gen = (IProductCmptGeneration)content.getComfortCollisionCoverageA().getGenerations()[0];
-        ce = gen.getConfigElement("sumInsured");
+        ipsProject = super.newIpsProject("TestProject");
+        type = newPolicyCmptType(ipsProject, "test.Base");
+        attr = type.newAttribute();
+        attr.setName("attr");
+        attr.setDatatype(Datatype.MONEY.getQualifiedName());
+        
+        IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
+        cmpt.setPolicyCmptType(type.getQualifiedName());
+        generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
+        
+        ce = generation.newConfigElement();
+        ce.setPcTypeAttribute("attr");
     }
 
     public void testContainsValue() {
@@ -114,7 +134,13 @@ public class EnumValueSetTest extends IpsPluginTest {
     	superset.addValue(null);
     	assertTrue(superset.containsValueSet(subset));
     	
-    	IConfigElement ce2 = ((IProductCmptGeneration)content.getStandardVehicle().getGenerations()[0]).getConfigElement("licensePlateNo");
+        IAttribute attr2 = type.newAttribute();
+        attr2.setName("attr2");
+        attr2.setDatatype(Datatype.STRING.getQualifiedName());
+        
+    	IConfigElement ce2 = generation.newConfigElement();
+        ce2.setPcTypeAttribute("attr2");
+        
     	subset = new EnumValueSet(ce2, 50);
     	subset.addValue("2EUR");
     	
@@ -219,11 +245,13 @@ public class EnumValueSetTest extends IpsPluginTest {
         assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_DUPLICATE_VALUE));
         
         set.removeValue(null);
-		ValueDatatype[] vds = content.getProject().getValueDatatypes(false);
+		ValueDatatype[] vds = ipsProject.getValueDatatypes(false);
 		ArrayList vdlist = new ArrayList();
 		vdlist.addAll(Arrays.asList(vds));
 		vdlist.add(new PrimitiveIntegerDatatype());
-		content.getProject().setValueDatatypes((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+        ipsProject.setProperties(properties);
         
         IAttribute attr = ce.findPcTypeAttribute();
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());

@@ -39,6 +39,11 @@ public interface ITimedIpsObject extends IIpsObject {
      */
     public IIpsObjectGeneration[] getGenerations();
     
+    /**
+     * @return Returns the first generation of this timed ips object or <code>null</code>, if no generation
+     * exists.
+     */
+    public IIpsObjectGeneration getFirstGeneration();
     
     /**
      * Returns the generation effective on the given date. That is the generation

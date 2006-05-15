@@ -128,7 +128,9 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Creates a new IpsSrcFile based on a given template. The filename is constructed by 
      * appending the type specific file extension to the given object name (separated by a dot). 
      * The content of the IpsSrcFile is copied from the given template. If the template is a 
-     * ITimedIpsObject, only the generation that is valid at the given date is copied. 
+     * ITimedIpsObject, only the generation that is valid at the given date is copied. If no
+     * generation is valid at the given date because the date lies before any valid generation
+     * of the given template, the first generation of the given template is used.  
      * 
 	 * @param name the file name
 	 * @param template the source for the contents to copy from

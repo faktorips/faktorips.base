@@ -85,7 +85,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	 * 
 	 * @param sources An array containing <code>IProductCmpt</code> or <code>IIpsPackageFragement</code>
 	 * objects to move.
-	 * @param targetRoot An array of the new, qualified names for the objects to move. The names are object-names, 
+	 * @param targets An array of the new, qualified names for the objects to move. The names are object-names, 
 	 * not filenames, so do not append any file extension to the name.
 	 * @throws CoreException if the both arrays are not of the same lenth.
 	 */
@@ -183,61 +183,13 @@ public class MoveOperation implements IRunnableWithProgress {
 				}
 				
 				if (toMove instanceof IProductCmpt) {
-					IProductCmpt product = (IProductCmpt)toMove;
-					IIpsSrcFile file = createTarget(product, this.targetNames[i]);
-					move(product, file, monitor);
+					moveProductCmpt((IProductCmpt)toMove, this.targetNames[i], monitor);
 				}
 				else if (toMove instanceof IIpsPackageFragment) {
-					IIpsPackageFragment pack = (IIpsPackageFragment)toMove;
-					String newName = this.targetNames[i];
-					IIpsPackageFragment parent = pack.getIpsParentPackageFragment();
-					
-					// first, find all products contained in this folder
-				    ArrayList files = new ArrayList();
-					getRelativeFileNames("", (IFolder)pack.getEnclosingResource(), files); //$NON-NLS-1$
-					
-					// create new package
-					IIpsPackageFragmentRoot root = parent.getRoot();
-					IIpsPackageFragment newPack = root.getIpsPackageFragment(buildPackageName(parent.getName(), newName, "")); //$NON-NLS-1$
-					if (!newPack.exists()) {
-						root.createPackageFragment(newPack.getName(), true, monitor);
-					}
-					
-					// second, move them all
-					for (Iterator iter = files.iterator(); iter.hasNext();) {
-						String[] fileInfos = (String[]) iter.next();
-						IIpsPackageFragment targetPackage = root.getIpsPackageFragment(buildPackageName("", newName, fileInfos[0])); //$NON-NLS-1$
-						if (!targetPackage.exists()) {
-							root.createPackageFragment(targetPackage.getName(), true, monitor);
-						}
-						IIpsSrcFile file = targetPackage.getIpsSrcFile(fileInfos[1]);
-						IIpsPackageFragment sourcePackage = root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])); //$NON-NLS-1$
-						IIpsSrcFile cmptFile = sourcePackage.getIpsSrcFile(fileInfos[1]);  //$NON-NLS-1$
-						if (cmptFile != null) {
-							// we got an IIpsSrcFile, so we have to move it correctly
-							if (cmptFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
-								IProductCmpt cmpt = (IProductCmpt)cmptFile.getIpsObject();
-								move(cmpt, file, monitor);
-							}
-							else if (cmptFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
-								ITableContents tblcontent = (ITableContents)cmptFile.getIpsObject();
-								move(tblcontent, file, monitor);
-							}
-						} else {
-							// we dont have a IIpsSrcFile, so move the file as resource operation
-							IFolder folder = (IFolder)sourcePackage.getEnclosingResource(); 
-							IFile rawFile = folder.getFile(fileInfos[1]);
-							IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath().append(fileInfos[1]);
-							rawFile.move(destination, true, monitor);
-						}
-					}
-
-					// third, remove remaining folders
-				    pack.getEnclosingResource().delete(true, monitor);
+					movePackageFragement((IIpsPackageFragment)toMove, this.targetNames[i], monitor);
 				}
 				else if (toMove instanceof ITableContents) {
-					IIpsSrcFile file = createTarget((ITableContents)toMove, this.targetNames[i]);
-					move((ITableContents)toMove, file, monitor);
+					moveTableContent((ITableContents)toMove, this.targetNames[i], monitor);
 				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
@@ -246,6 +198,68 @@ public class MoveOperation implements IRunnableWithProgress {
 
 	}
 	
+	private void movePackageFragement(IIpsPackageFragment pack, String newName, IProgressMonitor monitor) throws CoreException {
+		IIpsPackageFragment parent = pack.getIpsParentPackageFragment();
+		
+		// first, find all products contained in this folder
+	    ArrayList files = new ArrayList();
+		getRelativeFileNames("", (IFolder)pack.getEnclosingResource(), files); //$NON-NLS-1$
+		
+		IIpsPackageFragmentRoot root = parent.getRoot();
+		
+		if (files.size() == 0) {
+			// we have to move an empty package fragment - so we have to create the package now
+			// because it is not created as a side-effect of moving any contained objects...
+			IIpsPackageFragment newPack = root.getIpsPackageFragment(buildPackageName(parent.getName(), newName, "")); //$NON-NLS-1$
+			if (!newPack.exists()) {
+				root.createPackageFragment(newPack.getName(), true, monitor);
+			}			
+		}
+		
+		
+		// second, move them all
+		for (Iterator iter = files.iterator(); iter.hasNext();) {
+			String[] fileInfos = (String[]) iter.next();
+			IIpsPackageFragment targetPackage = root.getIpsPackageFragment(buildPackageName("", newName, fileInfos[0])); //$NON-NLS-1$
+			if (!targetPackage.exists()) {
+				root.createPackageFragment(targetPackage.getName(), true, monitor);
+			}
+			IIpsSrcFile file = targetPackage.getIpsSrcFile(fileInfos[1]);
+			IIpsPackageFragment sourcePackage = root.getIpsPackageFragment(buildPackageName(pack.getName(), "", fileInfos[0])); //$NON-NLS-1$
+			IIpsSrcFile cmptFile = sourcePackage.getIpsSrcFile(fileInfos[1]);  //$NON-NLS-1$
+			if (cmptFile != null) {
+				// we got an IIpsSrcFile, so we have to move it correctly
+				if (cmptFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
+					IProductCmpt cmpt = (IProductCmpt)cmptFile.getIpsObject();
+					move(cmpt, file, monitor);
+				}
+				else if (cmptFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
+					ITableContents tblcontent = (ITableContents)cmptFile.getIpsObject();
+					move(tblcontent, file, monitor);
+				}
+			} else {
+				// we dont have a IIpsSrcFile, so move the file as resource operation
+				IFolder folder = (IFolder)sourcePackage.getEnclosingResource(); 
+				IFile rawFile = folder.getFile(fileInfos[1]);
+				IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath().append(fileInfos[1]);
+				rawFile.move(destination, true, monitor);
+			}
+		}
+
+		// third, remove remaining folders
+	    pack.getEnclosingResource().delete(true, monitor);
+	}
+	
+	private void moveProductCmpt(IProductCmpt cmpt, String newName, IProgressMonitor monitor) {
+		IIpsSrcFile file = createTarget(cmpt, newName);
+		move(cmpt, file, monitor);
+	}
+	
+	private void moveTableContent(ITableContents content, String newName, IProgressMonitor monitor) {
+		IIpsSrcFile file = createTarget(content, newName);
+		move(content, file, monitor);
+	}
+
 	/**
 	 * Creates the IIpsSrcFile for the given target. The IpsObjectType associated with 
 	 * the new file is the one stored in the given source. The target is created in the 
