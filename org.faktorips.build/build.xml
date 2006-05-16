@@ -94,6 +94,7 @@
 	    	</delete>
 	    	
 	    	<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
+	    		<jvmarg value="-Djava.endorsed.dirs=${src}/../endorsed/"/>
 	    		<formatter type="xml" usefile="true"/>
 	    		<classpath>
 	    		    <pathelement location="${classes}"/>
