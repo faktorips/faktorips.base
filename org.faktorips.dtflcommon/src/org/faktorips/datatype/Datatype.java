@@ -52,6 +52,11 @@ public interface Datatype extends Comparable {
 	 */
 	public final static ValueDatatype DECIMAL = new DecimalDatatype();
 
+    /**
+     * Datatype representing {@link java.lang.Double}.
+     */
+    public static final ValueDatatype DOUBLE = new DoubleDatatype();
+    
 	/**
 	 * Datatype representing {@link Integer}.
 	 */
@@ -87,6 +92,7 @@ public interface Datatype extends Comparable {
      * only the date information (year, month, date) used.
      */
     public final static ValueDatatype GREGORIAN_CALENDAR_DATE = new GregorianCalendarDatatype("Date", false);
+
     
     /**
      * Returns the datatype's name.
