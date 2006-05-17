@@ -145,7 +145,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public int[] moveColumns(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(columns);
-        return mover.move(indexes, up);
+        int[] result = mover.move(indexes, up);
+        updateSrcFile();
+        return result;
     }
     
     private IColumn newColumnInternal(int id) {
@@ -216,7 +218,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public int[] moveRanges(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(ranges);
-        return mover.move(indexes, up);
+        int[] result = mover.move(indexes, up);
+        updateSrcFile();
+        return result;
     }
     
     private IColumnRange newColumnRangeInternal(int id) {
@@ -278,7 +282,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public int[] moveUniqueKeys(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(uniqueKeys);
-        return mover.move(indexes, up);
+        int[] result = mover.move(indexes, up);
+        updateSrcFile();
+        return result;
     }
     
     private IUniqueKey newUniqueKeyInternal(int id) {
@@ -340,7 +346,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public int[] moveForeignKeys(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(foreignKeys);
-        return mover.move(indexes, up);
+        int[] result = mover.move(indexes, up);
+        updateSrcFile();
+        return result;
     }
     
     private IForeignKey newForeignKeyInternal(int id) {
