@@ -100,16 +100,25 @@ public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
 		assertFalse(strategy.validateVersionId("2006-12").containsErrorMsg());
 		assertFalse(strategy.validateVersionId("2006-12b").containsErrorMsg());
 		assertTrue(strategy.validateVersionId("12-2006").containsErrorMsg());
+        
+        assertEquals(2, strategy.getReplacedCharacters().length);
+        assertEquals(' ', strategy.getReplacedCharacters()[0]);        
+        assertEquals('-', strategy.getReplacedCharacters()[1]);
+        assertEquals("x", strategy.getReplacement('-'));
+        assertEquals("y", strategy.getReplacement(' '));
 	}
 
 	public void testToXml() {
 		Document doc = newDocument();
+        strategy.putSpecialCharReplacement('#', "zzz");
 		Element el = strategy.toXml(doc);
 		assertEquals(IProductCmptNamingStrategy.XML_TAG_NAME, el.getNodeName());
 		strategy = new DateBasedProductCmptNamingStrategy();
-		strategy.initFromXml(el);
+        strategy.initFromXml(el);
 		assertEquals(" ", strategy.getVersionIdSeparator());
 		assertEquals("yyyy-MM-dd", strategy.getDateFormatPattern());
+        assertEquals(3, strategy.getReplacedCharacters().length);
+        
 	}
 	
 }

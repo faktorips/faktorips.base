@@ -1064,4 +1064,11 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 				"getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean hasNullObject() {
+		return false;
+	}
+
 }

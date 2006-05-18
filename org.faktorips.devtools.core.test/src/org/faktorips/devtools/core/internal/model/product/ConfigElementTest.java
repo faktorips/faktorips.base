@@ -467,6 +467,13 @@ public class ConfigElementTest extends IpsPluginTest {
 		public int compareTo(Object o) {
 			return -1;
 		}
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean hasNullObject() {
+            return false;
+        }
     	
     }
     

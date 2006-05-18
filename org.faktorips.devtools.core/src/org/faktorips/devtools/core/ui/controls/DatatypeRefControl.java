@@ -54,8 +54,16 @@ public class DatatypeRefControl extends TextButtonControl {
         completionProcessor.setIncludeVoid(includeVoid);        
     }
     
+    public void setPrimitivesAllowed(boolean includePrimitives) {
+    	completionProcessor.setIncludePrimitives(includePrimitives);
+    }
+    
+    public boolean getPrimitivesAllowed() {
+    	return completionProcessor.isIncludePrimitives();
+    }
+    
     public boolean isVoidAllowed() {
-        return completionProcessor.getIncludeVoid();
+        return completionProcessor.isIncludeVoid();
     }
     
     public void setOnlyValueDatatypesAllowed(boolean valuetypesOnly) {

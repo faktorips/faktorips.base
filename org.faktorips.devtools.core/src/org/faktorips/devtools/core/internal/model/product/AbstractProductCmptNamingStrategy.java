@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
@@ -31,14 +32,15 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
- * An abstract implementation that uses a special character to separate the
+ * An abstract implementation that uses a special String to separate the
  * constant part and the version id. 
  * <p>
  * When transforming a name to a Java identifier, special characters like 
  * blank and hypen (-) can be replaced with a String that is allowed
- * in a Java identifiers. The special characters can be registered along with
+ * in a Java identifier. These special characters can be registered along with
  * their replacement via the addSpecialCharReplacement() method.
  * <p>
  * Note that two special characters can't have the same replacement, as otherwise
@@ -108,7 +110,13 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		return separator;
 	}
 	
-	protected void putSpecialCharReplacement(char specialChar, String replacement) {
+	/**
+	 * Puts the replacement String that replaces the specialChar in Java identifiers.
+	 * 
+	 * @param specialChar A character that is not allowed in Java identifiers
+	 * @param replacement A String that replaces this specialChar and is valid in Java identifiers.
+	 */
+	public void putSpecialCharReplacement(char specialChar, String replacement) {
 		if (specialChar=='.') {
 			throw new IllegalArgumentException("The dot (.) is is prohibited in names, as it is used to separate name and package information in qualified names."); //$NON-NLS-1$
 		}
@@ -119,6 +127,28 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		}
 	}
 	
+	/**
+	 * Returns the replacement character which can be used in Java identifiers for the 
+	 * given character that can't be used. Returns <code>null</code> if no replacement
+	 * is defined for the given char.
+	 */
+	public String getReplacement(char c) {
+		return (String)specialCharReplacements.get(new Character(c));
+	}
+	
+	/**
+	 * Returns the characters that can be used in product names but not in Java identifiers
+	 * and therefore have to be replaced by String valid in Java identifiers.
+	 */
+	public char[] getReplacedCharacters() {
+		char[] chars = new char[specialCharReplacements.size()];
+		int i=0;
+		for (Iterator it=specialCharReplacements.keySet().iterator(); it.hasNext(); i++) {
+			chars[i] = ((Character)it.next()).charValue();
+		}
+		return chars;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -219,10 +249,6 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		return specialCharReplacements.containsKey(new Character(c));
 	}
 	
-	private String getReplacement(char c) {
-		return (String)specialCharReplacements.get(new Character(c));
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -230,6 +256,21 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		Element subEl = XmlUtil.getFirstElement(el);
 		separator = subEl.getAttribute("versionIdSeparator"); //$NON-NLS-1$
 		initSubclassFromXml(subEl);
+		// init replacement chars
+		Element replacementsEl = XmlUtil.getFirstElement(subEl, "JavaIdentifierCharReplacements");
+		if (replacementsEl==null) {
+			return;
+		}
+		specialCharReplacements.clear();
+		NodeList nl = replacementsEl.getChildNodes();
+		for (int i=0; i<nl.getLength(); i++) {
+			if (nl.item(i).getNodeName().equals("Replacement")) {
+				Element replacementEl = (Element)nl.item(i);
+				String replacedChar = replacementEl.getAttribute("replacedChar");
+				String replacement = replacementEl.getAttribute("replacement");
+				putSpecialCharReplacement(replacedChar.charAt(0), replacement);
+			}
+		}
 	}
 	
 	/**
@@ -249,6 +290,18 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		Element subEl = toXmlSubclass(doc); 
 		subEl.setAttribute("versionIdSeparator", separator); //$NON-NLS-1$
 		el.appendChild(subEl);
+		char[] chars = getReplacedCharacters();
+		if (chars.length==0) {
+			return el;
+		}
+		Element replacementsEl = doc.createElement("JavaIdentifierCharReplacements");			
+		subEl.appendChild(replacementsEl);
+		for (int i = 0; i < chars.length; i++) {
+			Element replacementEl = doc.createElement("Replacement");
+			replacementsEl.appendChild(replacementEl);
+			replacementEl.setAttribute("replacedChar", "" + chars[i]);
+			replacementEl.setAttribute("replacement", getReplacement(chars[i]));
+		}
 		return el;
 	}
 	

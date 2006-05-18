@@ -137,7 +137,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	}
 	
 	/**
-	 * Creates the input controlls for a product component to rename
+	 * Creates the input controls for a product component to rename
 	 */
 	private void createControlForProduct(UIToolkit toolkit, Composite parent, IProductCmpt product) {
 		if (namingStrategy != null && namingStrategy.supportsVersionId()) {
@@ -157,14 +157,19 @@ public class RenamePage extends WizardPage implements ModifyListener {
 					updateFullName();
 				}
 			});
-			versionId.setText(namingStrategy.getVersionId(product.getName()));
-			
 			constNamePart.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
 					updateFullName();
 				}
 			});
-			constNamePart.setText(namingStrategy.getKindId(product.getName()));
+			try {
+				versionId.setText(namingStrategy.getVersionId(product.getName()));
+				constNamePart.setText(namingStrategy.getKindId(product.getName()));
+			} catch (IllegalArgumentException e) {
+				constNamePart.setText(product.getName());
+				versionId.setText("");
+			}
+			
 		} else {
 			toolkit.createLabel(parent, Messages.RenamePage_newName);
 			newName = toolkit.createText(parent);

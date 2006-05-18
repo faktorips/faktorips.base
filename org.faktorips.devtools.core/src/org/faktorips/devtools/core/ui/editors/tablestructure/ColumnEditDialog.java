@@ -54,8 +54,7 @@ public class ColumnEditDialog extends IpsPartEditDialog {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -80,7 +79,8 @@ public class ColumnEditDialog extends IpsPartEditDialog {
         uiToolkit.createFormLabel(workArea, Messages.ColumnEditDialog_labelDatatype);
         DatatypeRefControl datatypeControl = uiToolkit.createDatatypeRefEdit(column.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
-        datatypeControl.setOnlyValueDatatypesAllowed(false);
+        datatypeControl.setPrimitivesAllowed(false);
+        datatypeControl.setOnlyValueDatatypesAllowed(true);
         
         // create fields
         nameField = new TextField(nameText);

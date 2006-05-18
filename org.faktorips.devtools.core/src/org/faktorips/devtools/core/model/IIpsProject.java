@@ -270,6 +270,16 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public ValueDatatype[] getValueDatatypes(boolean includeVoid);
 
     /**
+     * Returns the datatypes representing values. If this project depends on other ips projects
+     * the datatypes from the referenced projects are also returned, but each datatype is
+     * returned only once.
+     * 
+     * @param includeVoid <code>true</code> if <code>Datatype.VOID</code> should be included.
+     * @param includePrimitives <code>true</code> if primitive datatypes should be returned.
+     */
+    public ValueDatatype[] getValueDatatypes(boolean includeVoid, boolean includePrimitives);
+
+    /**
      * Returns all datatypes accessible on the project's path.
      * 
      * @param valuetypesOnly true if only value datatypes should be returned.
@@ -279,6 +289,17 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException;
     
+    /**
+     * Returns all datatypes accessible on the project's path.
+     * 
+     * @param valuetypesOnly true if only value datatypes should be returned.
+     * @param includeVoid    true if <code>Datatype.VOID</code> should be included.
+     * @param includePrimitives true if primitive Datatypes are included.
+     * 
+     * @throws CoreException if an exception occurs while searching for the datatypes.
+     */
+    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives) throws CoreException;
+
     /**
      * Returns all enumeration datatypes accessible on the project's path.
      * @throws CoreException if an exception occurs while searching for the datatypes.
@@ -331,7 +352,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an error occurs while retrieving the value set types, possible reasons
      * are that the datatypes files can't be read or the xml can't be parsed.
      * 
-     * @throws IllegalArgumentException if datatype is <code>null</code> or the datatype is not defined
+     * @throws NullPointerException if datatype is <code>null</code> or the datatype is not defined
      * in the project.
      */
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException;

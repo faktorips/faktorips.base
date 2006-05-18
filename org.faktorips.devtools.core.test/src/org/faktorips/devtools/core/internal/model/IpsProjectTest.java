@@ -166,6 +166,20 @@ public class IpsProjectTest extends IpsPluginTest {
 	    assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
     }
     
+    public void testGetValueDatatypes_boolean_boolean() throws CoreException {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName()});
+        ipsProject.setProperties(props);
+        ValueDatatype[] types = ipsProject.getValueDatatypes(false, false);
+        assertEquals(1, types.length);
+        assertEquals(Datatype.DECIMAL, types[0]);
+
+        types = ipsProject.getValueDatatypes(false, true);
+        assertEquals(2, types.length);
+        assertEquals(Datatype.DECIMAL, types[0]);
+        assertEquals(Datatype.PRIMITIVE_INT, types[1]);
+    }
+
     public void testGetDatatypeHelper() throws CoreException {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});

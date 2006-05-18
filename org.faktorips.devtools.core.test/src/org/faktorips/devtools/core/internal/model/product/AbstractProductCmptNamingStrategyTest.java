@@ -42,6 +42,13 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 		super.setUp();
 		namingStrategy = new TestNamingStrategy();
 	}
+    
+    public void testGetReplacedCharacters() {
+        assertEquals(2, namingStrategy.getReplacedCharacters().length);
+        
+        namingStrategy.putSpecialCharReplacement('#', "xx");
+        assertEquals(3, namingStrategy.getReplacedCharacters().length);
+    }
 
 	/*
 	 * Test method for 'org.faktorips.devtools.core.internal.model.product.AbstractProductCmptNamingStrategy.getProductCmptName(String, String)'
@@ -55,7 +62,6 @@ public class AbstractProductCmptNamingStrategyTest extends IpsPluginTest {
 	 */
 	public void testGetKindId() {
 		assertEquals("abc", namingStrategy.getKindId("abc - id"));
-
 	}
 
 	/*

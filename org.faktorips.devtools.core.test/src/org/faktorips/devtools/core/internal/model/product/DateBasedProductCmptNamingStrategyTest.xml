@@ -4,5 +4,10 @@
  Test data for DateBasedProductCmptNamingStrategyTest.java
 -->
 <ProductCmptNamingStrategy>
-	<DateBasedProductCmptNamingStrategy versionIdSeparator="-" dateFormatPattern="yyyy-MM" postfixAllowed="true"/>
+	<DateBasedProductCmptNamingStrategy versionIdSeparator="-" dateFormatPattern="yyyy-MM" postfixAllowed="true">
+		<JavaIdentifierCharReplacements>
+			<Replacement replacedChar="-" replacement="x"/>
+			<Replacement replacedChar=" " replacement="y"/>
+		</JavaIdentifierCharReplacements>
+	</DateBasedProductCmptNamingStrategy>
 </ProductCmptNamingStrategy>

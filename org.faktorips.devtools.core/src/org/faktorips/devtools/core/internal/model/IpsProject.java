@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +40,9 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
@@ -461,27 +464,42 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result);
     }
     
-    /**
-     * Finds all ips objects of the given type in the project and adds them to the result.
-     */
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
     	getIpsObjectPathInternal().findIpsObjects(this, type, result);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public ValueDatatype[] getValueDatatypes(boolean includeVoid) {
         Set result = new LinkedHashSet();
-        getValueDatatypes(includeVoid, result);
+        getValueDatatypes(includeVoid, true, result);
         return (ValueDatatype[])result.toArray(new ValueDatatype[result.size()]);
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	public ValueDatatype[] getValueDatatypes(boolean includeVoid, boolean includePrimitives) {
+        Set result = new LinkedHashSet();
+        getValueDatatypes(includeVoid, includePrimitives, result);
+        return (ValueDatatype[])result.toArray(new ValueDatatype[result.size()]);
+	}
 
-    private void getValueDatatypes(boolean includeVoid, Set result) {
+	private void getValueDatatypes(boolean includeVoid, boolean includePrimitives, Set result) {
         if (includeVoid) {
             result.add(Datatype.VOID);
         }
         getValueDatatypes(this, result, new HashSet());
+        if (!includePrimitives) {
+        	// remove primitives from the result
+        	for (Iterator it=result.iterator(); it.hasNext(); ) {
+        		ValueDatatype type = (ValueDatatype)it.next();
+        		if (type.isPrimitive()) {
+        			it.remove();
+        		}
+        	}
+        }
     }
     
     private void getValueDatatypes(IIpsProject ipsProject, Set result, Set visitedProjects){
@@ -500,12 +518,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid)
             throws CoreException {
+    	return findDatatypes(valuetypesOnly, includeVoid, true);
+    }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives) throws CoreException {
         Set result = new LinkedHashSet();
-        getValueDatatypes(includeVoid, result);
+        getValueDatatypes(includeVoid, includePrimitives, result);
         if (!valuetypesOnly) {
             List refDatatypes = new ArrayList();
             findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, refDatatypes);
@@ -514,9 +539,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         Datatype[] array = new Datatype[result.size()];
         result.toArray(array);
         return array;
-    }
+	}
 
-    /**
+	/**
      * {@inheritDoc}
      */
     public EnumDatatype[] findEnumDatatypes() throws CoreException{
@@ -546,7 +571,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Datatype findDatatype(String qualifiedName) throws CoreException {
         Datatype[] datatypes = findDatatypes(false, true);
@@ -559,15 +584,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException {
-        // TODO Jan. Testfall, noch mal pr?fen.
         return (ValueDatatype)findDatatype(qualifiedName);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         if (!(datatype instanceof ValueDatatype)) {
@@ -603,19 +627,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	}
 
 	/**
-     * Overridden.
-     */
+	 * {@inheritDoc}
+	 */
     public ValueSetType[] getValueSetTypes(ValueDatatype datatype) throws CoreException {
         ArgumentCheck.notNull(datatype);
-        if (datatype instanceof EnumDatatype) {
-            return new ValueSetType[] { ValueSetType.ALL_VALUES, ValueSetType.ENUM };
+        if (datatype instanceof NumericDatatype) {
+            return ValueSetType.getValueSetTypes();
         }
-        return ValueSetType.getValueSetTypes();
+        if (datatype instanceof MoneyDatatype) {
+            return ValueSetType.getValueSetTypes();
+        }
+        return new ValueSetType[] { ValueSetType.ALL_VALUES, ValueSetType.ENUM };
     }
 
-    /**
-     * Overridden.
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public IProductCmpt[] findProductCmpts(String qualifiedTypeName, boolean includeSubytpes)
             throws CoreException {
     	

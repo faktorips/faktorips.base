@@ -19,11 +19,13 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -105,8 +107,7 @@ public class Column extends IpsObjectPart implements IColumn {
 
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * {@inheritDoc}
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("TableColumn.gif"); //$NON-NLS-1$
@@ -115,22 +116,25 @@ public class Column extends IpsObjectPart implements IColumn {
     protected void validate(MessageList list) throws CoreException {
         super.validate(list);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$ //$NON-NLS-2$
-        ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list); //$NON-NLS-1$
+        Datatype type = ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list); //$NON-NLS-1$
+        if (type==null) {
+        	return;
+        }
+        if (type.isPrimitive()) {
+            String text = Messages.Column_msgPrimitvesArentSupported; 
+            list.add(new Message(MSGCODE_DATATYPE_IS_A_PRIMITTVE, text, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
+        }
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -139,7 +143,7 @@ public class Column extends IpsObjectPart implements IColumn {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);

@@ -35,6 +35,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
     
     private boolean includeVoid = false;
     private boolean valuetypesOnly = false;
+    private boolean includePrimitives = true;
 
     public DatatypeCompletionProcessor() {
     	setComputeProposalForEmptyPrefix(true);
@@ -44,7 +45,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
         includeVoid = value;
     }
     
-    public boolean getIncludeVoid() {
+    public boolean isIncludeVoid() {
         return includeVoid;
     }
     
@@ -57,13 +58,27 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
     }
 
 	/**
+	 * @return Returns the includePrimitives.
+	 */
+	public boolean isIncludePrimitives() {
+		return includePrimitives;
+	}
+
+	/**
+	 * @param includePrimitives The includePrimitives to set.
+	 */
+	public void setIncludePrimitives(boolean includePrimitives) {
+		this.includePrimitives = includePrimitives;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
         prefix = prefix.toLowerCase();
 		DefaultLabelProvider labelProvider = new DefaultLabelProvider();
         List foundTypes = new ArrayList();
-        Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid);
+        Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives);
         for (int i=0; i<types.length; i++) {
             if (types[i].getName().toLowerCase().startsWith(prefix)) {
             	foundTypes.add(types[i]);

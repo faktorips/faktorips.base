@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 
 /**
- *
+ * Editor to edit table structures.
  */
 public class TableStructureEditor extends IpsObjectEditor {
 

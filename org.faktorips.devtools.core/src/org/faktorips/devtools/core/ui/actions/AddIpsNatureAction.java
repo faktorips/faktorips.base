@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 
@@ -116,6 +117,8 @@ public class AddIpsNatureAction extends ActionDelegate {
 			props.setProductDefinitionProject(true);
 			props.setModelProject(true);
 			props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
+			DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true);
+			props.setProductCmptNamingStrategy(namingStrategy);
 			ipsProject.setProperties(props);
 			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model"); //$NON-NLS-1$
 			if (!ipsModelFolder.exists()) {
