@@ -36,11 +36,16 @@ public class MoneyDatatype extends ValueClassDatatype {
 	}
 	
 	/**
-	 * Overridden Method.
-	 * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+     * {@inheritDoc}
 	 */
 	public Object getValue(String s) {
 		return Money.valueOf(s);
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return true;
+    }
 }

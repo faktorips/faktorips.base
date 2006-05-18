@@ -20,7 +20,7 @@ package org.faktorips.datatype;
 /**
  * Datatype for the primitive <code>int</code>.
  */
-public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype {
+public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implements NumericDatatype {
 
     /** 
      * Overridden method.

@@ -33,7 +33,7 @@ public interface ValueDatatype extends Datatype {
 	 * Returns <code>true</code> if the given string can be parsed to a value of this datatype.
 	 * Returns <code>false</code> otherwise.
 	 */
-	public abstract boolean isParsable(String value);
+	public boolean isParsable(String value);
 	
 	/**
 	 * Parses the given String and returns the appropriate datatype's value.
@@ -41,7 +41,7 @@ public interface ValueDatatype extends Datatype {
 	 * 
 	 * @throws IllegalArgumentException if the string value can't be parsed.
 	 */
-	public abstract Object getValue(String value);
+	public Object getValue(String value);
 	
     /**
 	 * Converts the given value into a String that can be parsed back to the value 
@@ -51,13 +51,13 @@ public interface ValueDatatype extends Datatype {
 	 * 
 	 * @throws IllegalArgumentException if the value is not a value of this datatype.
 	 */
-	public abstract String valueToString(Object value);
+	public String valueToString(Object value);
     
 	/**
 	 * Returns <code>true</code> if the given object is <code>null</code> or the NullObject (if the
 	 * datatype value class makes use of the null object pattern.
 	 * Returns <code>false</code> otherwise.
 	 */
-	public abstract boolean isNull(Object value);
-
+	public boolean isNull(Object value);
+    
 }

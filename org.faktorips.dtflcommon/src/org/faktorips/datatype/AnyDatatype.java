@@ -16,64 +16,74 @@
  *******************************************************************************/
 
 package org.faktorips.datatype;
-
+ 
 import org.faktorips.util.message.MessageList;
 
 /**
- * Abstract super class for Datatype implementations.
- *   
+ * A datatype that is used to represent any type of data, similiar to <code>java.lang.Object.</code> 
+ * 
  * @author Jan Ortmann
  */
-public abstract class AbstractDatatype implements Datatype {
+public class AnyDatatype implements Datatype {
     
+    public final static AnyDatatype INSTANCE = new AnyDatatype();
+
+    private AnyDatatype() {
+        super();
+    }
+
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public MessageList validate() {
         return new MessageList();
     }
 
+    public String getName() {
+        return "any"; //$NON-NLS-1$
+    }
+
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
-	public boolean isVoid() {
-		return false;
-	}
+    public String getQualifiedName() {
+        return "any"; //$NON-NLS-1$
+    }
 
-	/**
-	 * Overridden.
-	 */
-	public int hashCode() {
-	    return getName().hashCode();
-	}
-	
-	/**
-	 * Overridden.
-	 */
-	public boolean equals(Object o) {
-		if (this==o) {
-			return true;
-		}
-		if (!(o instanceof Datatype)) {
-			return false;
-		}
-		return getQualifiedName().equals(((Datatype)o).getQualifiedName());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isVoid() {
+        return false;
+    }
 
-	/**
-	 * Returns the type's name. 
-	 */
-	public String toString() {
-		return getQualifiedName();
-	}
-	
-	/**
-	 * Compares the two type's alphabetically by their name.
-	 */
-	public int compareTo(Object o) {
-		Datatype type = (Datatype)o;
-		return getQualifiedName().compareTo(type.getQualifiedName());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValueDatatype() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getJavaClassName() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(Object o) {
+        return 0;
+    }
 
     /**
      * {@inheritDoc}
@@ -82,5 +92,4 @@ public abstract class AbstractDatatype implements Datatype {
         return false;
     }
 
-    
 }

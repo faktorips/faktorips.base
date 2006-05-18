@@ -106,7 +106,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     public boolean isNull(Object value) {
         if (value==null) {
             if (isNullObject) {
-//                throw new RuntimeException("Class " + clazz + " implements NullObject, so the value must not be null.");
+//                TODO: What's this? throw new RuntimeException("Class " + clazz + " implements NullObject, so the value must not be null.");
             }
             return true;
         }
@@ -132,5 +132,13 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
             return false;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return false;
+    }
+    
     
 }

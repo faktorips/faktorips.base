@@ -17,6 +17,7 @@
 
 package org.faktorips.datatype.classtypes;
 
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
 import org.faktorips.values.Decimal;
 
@@ -25,7 +26,7 @@ import org.faktorips.values.Decimal;
  * 
  * @author Jan Ortmann
  */
-public class DecimalDatatype extends ValueClassDatatype {
+public class DecimalDatatype extends ValueClassDatatype implements NumericDatatype {
 
 	public DecimalDatatype() {
 		super(Decimal.class);
@@ -36,11 +37,18 @@ public class DecimalDatatype extends ValueClassDatatype {
 	}
 
 	/**
-	 * Overridden Method.
-	 * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+     * {@inheritDoc}
 	 */
 	public Object getValue(String s) {
 		return Decimal.valueOf(s);
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return true;
+    }
+
+    
 }

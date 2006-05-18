@@ -18,13 +18,14 @@
 package org.faktorips.datatype.classtypes;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class DoubleDatatype extends ValueClassDatatype {
+public class DoubleDatatype extends ValueClassDatatype implements NumericDatatype {
 
     /**
      * @param clazz

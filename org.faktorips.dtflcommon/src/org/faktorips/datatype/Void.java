@@ -28,9 +28,8 @@ public class Void extends AbstractDatatype implements ValueDatatype {
 		return "void";
 	}
 	
-    /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getQualifiedName()
+    /** 
+     * {@inheritDoc}
      */
     public String getQualifiedName() {
         return "void";
@@ -41,29 +40,29 @@ public class Void extends AbstractDatatype implements ValueDatatype {
 	}
 	
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isPrimitive()
+     * {@inheritDoc}
      */
     public boolean isPrimitive() {
         return false;
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#isValueDatatype()
+    /** 
+     * {@inheritDoc}
      */
     public boolean isValueDatatype() {
         return true;
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getWrapperType()
+    /** 
+     * {@inheritDoc}
      */
     public Datatype getWrapperType() {
         return null;
     }
 	
+    /** 
+     * {@inheritDoc}
+     */
 	public String getJavaClassName() {
 		return "void";
 	}
@@ -76,18 +75,15 @@ public class Void extends AbstractDatatype implements ValueDatatype {
 		return "void";
 	}
 
-    /**
-     * Overridden Method.
-     * @see org.faktorips.datatype.ValueDatatype#valueToString(java.lang.Object)
+    /** 
+     * {@inheritDoc}
      */
     public String valueToString(Object value) {
         return "void";
     }
-    /**
-     * 
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#getValues(java.lang.String[])
+
+    /** 
+     * {@inheritDoc}
      */
     public Object[] getValues(String[] values) {
         Void [] elements = new Void[values.length];
@@ -98,22 +94,27 @@ public class Void extends AbstractDatatype implements ValueDatatype {
         return elements;
     }
 
-    /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#isParsable(java.lang.String)
+    /** 
+     * {@inheritDoc}
      */
     public boolean isParsable(String value) {
         return false;
     }
 
-    /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#isNull(java.lang.Object)
+    /** 
+     * {@inheritDoc}
      */
     public boolean isNull(Object value) {
         return value==null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return false;
+    }
+    
+    
 
 }

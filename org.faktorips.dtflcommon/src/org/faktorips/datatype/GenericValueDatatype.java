@@ -290,6 +290,13 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     public String getJavaClassName() {
         return getAdaptedClass().getName();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return specialNullValue!=null;
+    }
 
     public int compareTo(Object o) {
         return 0;

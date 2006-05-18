@@ -18,6 +18,7 @@
 package org.faktorips.datatype.classtypes;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
 
 /**
@@ -25,7 +26,7 @@ import org.faktorips.datatype.ValueClassDatatype;
  * 
  * @author Jan Ortmann
  */
-public class LongDatatype extends ValueClassDatatype {
+public class LongDatatype extends ValueClassDatatype implements NumericDatatype {
 
 	public LongDatatype() {
 		super(Long.class);

@@ -142,4 +142,11 @@ public interface Datatype extends Comparable {
      */
     public MessageList validate() throws Exception;
     
+    /**
+     * Returns <code>true</code> if the datatype has a special instance representing <code>null</code>,
+     * otherwise <code>false</code>.
+     * The design pattern is called the <em>NullObject</em> pattern.
+     */
+    public boolean hasNullObject();
+
 }

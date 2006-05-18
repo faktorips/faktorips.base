@@ -81,4 +81,13 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
             return false;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNullObject() {
+        return false;
+    }
+
+    
 }

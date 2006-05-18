@@ -20,6 +20,7 @@ package org.faktorips.codegen;
 import java.util.*;
 
 import org.faktorips.codegen.conversion.*;
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
 
@@ -75,6 +76,9 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         if (from.equals(to)) {
             return true;
         }
+        if (to instanceof AnyDatatype) {
+            return true;
+        }
         for (Iterator it=conversions.iterator(); it.hasNext(); ) {
             SingleConversionCg cg = (SingleConversionCg)it.next();
             if (cg.getFrom().equals(from) && cg.getTo().equals(to)) {
@@ -100,6 +104,9 @@ public class ConversionCodeGenerator implements ConversionMatrix {
             JavaCodeFragment fromValue) {
         
         if (from.equals(to)) {
+            return fromValue;
+        }
+        if (to instanceof AnyDatatype) {
             return fromValue;
         }
         for (Iterator it=conversions.iterator(); it.hasNext(); ) {
