@@ -463,20 +463,7 @@ public class RelationsSection extends IpsSection {
 					}
 				}
 			}
-			else if (toMove != null && insertAt instanceof IProductCmptRelation) {
-				try {
-					if (generation.canCreateValidRelation(toMove.findTarget(), ((IProductCmptRelation)insertAt).findProductCmptTypeRelation())) {
-						event.detail = oldDetail;
-					} 
-					else {
-						event.detail = DND.DROP_NONE;
-					}
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
-					event.detail = DND.DROP_NONE;
-				}
-			} 
-			else {
+			else if (!(toMove != null && insertAt instanceof IProductCmptRelation)) {
 				event.detail = DND.DROP_NONE;
 			}
 		}
@@ -504,6 +491,7 @@ public class RelationsSection extends IpsSection {
 				}
 			}
 			treeViewer.refresh();
+			treeViewer.expandAll();
 		}
 
 		public void dropAccept(DropTargetEvent event) {

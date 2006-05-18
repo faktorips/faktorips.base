@@ -279,7 +279,22 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	public boolean canCreateValidRelation(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException {
-		return ProductCmptRelation.willBeValid(target, relation) && this.getRelations(relation.getName()).length < relation.getMaxCardinality();
+		// it is not valid to create more than one relation with the same type and target.
+		if (!isFirstRelationOfThisType(relation, target)) {
+			return false;
+		}
+		
+		return this.getRelations(relation.getName()).length < relation.getMaxCardinality() && ProductCmptRelation.willBeValid(target, relation);
+	}
+	
+	private boolean isFirstRelationOfThisType(IProductCmptTypeRelation relation, IProductCmpt target) throws CoreException {
+		for (Iterator iter = relations.iterator(); iter.hasNext();) {
+			IProductCmptRelation rel = (IProductCmptRelation) iter.next();
+			if (rel.findProductCmptTypeRelation().equals(relation) && rel.getTarget().equals(target.getQualifiedName())) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	private ProductCmptRelation newRelationInternal(int id,

@@ -285,25 +285,49 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		
 	}
 
-	public static boolean willBeValid(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException {
+	/**
+	 * @param target
+	 *            The product component that will be used as target for the new
+	 *            relation.
+	 * @param relationType
+	 *            The type of the new relation.
+	 * @return <code>true</code> if it is possible to create a valid relation
+	 *         with the given parameters at this time, <code>false</code>
+	 *         otherwise.
+	 * @throws CoreException
+	 *             if an error occurs during supertype-evaluation
+	 */
+	public static boolean willBeValid(IProductCmpt target, IProductCmptTypeRelation relationType) throws CoreException {
+		if (target == null || relationType == null) {
+			return false;
+		}
+		
 		boolean valid = false;
 
 		IRelation policyRelation = null;
-		if (relation != null) {
-			policyRelation = relation.findPolicyCmptTypeRelation();
+		policyRelation = relationType.findPolicyCmptTypeRelation();
+		
+		IPolicyCmptType targetType = target.findPolicyCmptType();
+		if (targetType == null) {
+			return false;
 		}
+		
+		IPolicyCmptType[] targetTypes = targetType.getSupertypeHierarchy().getAllSupertypesInclSelf(targetType);
+		
 		
 		IPolicyCmptType type = null;
 		if (policyRelation != null) {
 			type = policyRelation.findTarget();
 		}
-		if (target != null && type != null) {
+		if (type != null) {
 			ITypeHierarchy hierarchy = type.getSupertypeHierarchy();
 			
 			IPolicyCmptType[] types = hierarchy.getAllSupertypesInclSelf(type);
 			
 			for (int i = 0; i < types.length && !valid; i++) {
-				valid = target.getPolicyCmptType().equals(types[i].getQualifiedName()); 
+				for (int j = 0; j < targetTypes.length && !valid; j++) {
+					valid = targetTypes[j].getQualifiedName().equals(types[i].getQualifiedName());
+				}
 			} 
 			
 			hierarchy = type.getSubtypeHierarchy();
