@@ -27,10 +27,11 @@ import org.faktorips.datatype.Datatype;
  */
 public class EqualsTest extends CompilerAbstractTest {
     
-    public void testDecimalDecimal() throws Exception {
-        execAndTestSuccessfull("7.45 = 7.45", Boolean.TRUE, Datatype.BOOLEAN);
-        execAndTestSuccessfull("7.4500 = 7.45", Boolean.TRUE, Datatype.BOOLEAN);
-        execAndTestSuccessfull("7.45 = 3.45", Boolean.FALSE, Datatype.BOOLEAN);
+    public void testEnumEnum() throws Exception {
+        compiler.setEnsureResultIsObject(false);
+        compiler.setIdentifierResolver(new TestEnumIdentifierResolver());
+        execAndTestSuccessfull("TestEnum.MONTH = TestEnum.MONTH", true);
+        execAndTestSuccessfull("TestEnum.MONTH = TestEnum.YEAR", false);
     }
 
     public void testDecimalInt() throws Exception {
@@ -38,6 +39,12 @@ public class EqualsTest extends CompilerAbstractTest {
         execAndTestSuccessfull("7.0 = 8", Boolean.FALSE, Datatype.BOOLEAN);
     }
     
+    public void testDecimalDecimal() throws Exception {
+        execAndTestSuccessfull("7.45 = 7.45", Boolean.TRUE, Datatype.BOOLEAN);
+        execAndTestSuccessfull("7.4500 = 7.45", Boolean.TRUE, Datatype.BOOLEAN);
+        execAndTestSuccessfull("7.45 = 3.45", Boolean.FALSE, Datatype.BOOLEAN);
+    }
+
     public void testIntDecimal() throws Exception {
         execAndTestSuccessfull("7 = 7.0", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7 = 7.1", Boolean.FALSE, Datatype.BOOLEAN);
@@ -82,6 +89,7 @@ public class EqualsTest extends CompilerAbstractTest {
         execAndTestSuccessfull("3.50EUR = 3.50EUR", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("3.50EUR = 2.40EUR", Boolean.FALSE, Datatype.BOOLEAN);
     }
+    
     
     
 }

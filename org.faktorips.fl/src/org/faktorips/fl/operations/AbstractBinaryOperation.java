@@ -19,6 +19,7 @@ package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BinaryOperation;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.ArgumentCheck;
 
 
@@ -27,6 +28,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractBinaryOperation implements BinaryOperation {
     
+    private ExprCompiler compiler;
     private String operator;
     private Datatype lhsDatatype;
     private Datatype rhsDatatype;
@@ -44,6 +46,21 @@ public abstract class AbstractBinaryOperation implements BinaryOperation {
         rhsDatatype = rhs;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void setCompiler(ExprCompiler compiler) {
+        ArgumentCheck.notNull(compiler);
+        this.compiler = compiler;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ExprCompiler getCompiler() {
+        return compiler;
+    }
+
     /**
      * Overridden method.
      * @see org.faktorips.fl.BinaryOperation#getOperator()

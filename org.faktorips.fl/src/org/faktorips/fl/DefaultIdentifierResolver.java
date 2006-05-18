@@ -52,13 +52,12 @@ public class DefaultIdentifierResolver implements IdentifierResolver {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.fl.IdentifierResolver#compile(java.lang.String, java.util.Locale)
-     */ 
+     * {@inheritDoc}
+     */
     public CompilationResult compile(String identifier, Locale locale) {
         FragmentDatatypeWrapper wrapper = (FragmentDatatypeWrapper)identifiers.get(identifier);
         if (wrapper!=null) {
-            return new CompilationResultImpl(wrapper.fragment, wrapper.datatype);
+            return new CompilationResultImpl(new JavaCodeFragment(wrapper.fragment), wrapper.datatype);
         } 
         String text = ExprCompiler.localizedStrings.getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale, identifier);
         return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));

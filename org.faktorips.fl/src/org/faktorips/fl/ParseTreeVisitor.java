@@ -407,21 +407,24 @@ class ParseTreeVisitor implements FlParserVisitor {
             }
             // match with implicit casting
             if (compiler.getConversionCodeGenerator().canConvert(lhsResult.getDatatype(), operations[i].getLhsDatatype())
-                && compiler.getConversionCodeGenerator().canConvert(rhsResult.getDatatype(), operations[i].getRhsDatatype())) {
+                && compiler.getConversionCodeGenerator().canConvert(rhsResult.getDatatype(), operations[i].getRhsDatatype())
+                && operation==null) { // we use the operation that matches with code conversion
                 operation = operations[i];
             }
         }
         if (operation!=null) {
             // use operation with implicit casting
             CompilationResultImpl convertedLhsResult = lhsResult;
-            if (!lhsResult.getDatatype().equals(operation.getLhsDatatype())) {
+            if (!lhsResult.getDatatype().equals(operation.getLhsDatatype()) 
+                    && (!(operation.getLhsDatatype() instanceof AnyDatatype)) ) {
                 JavaCodeFragment convertedLhs = compiler.getConversionCodeGenerator().
             	getConversionCode(lhsResult.getDatatype(), operation.getLhsDatatype(), lhsResult.getCodeFragment()); 
                 convertedLhsResult = new CompilationResultImpl(convertedLhs, operation.getLhsDatatype());
                 convertedLhsResult.addMessages(lhsResult.getMessages());
             }
             CompilationResultImpl convertedRhsResult = rhsResult;
-            if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())) {
+            if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())
+                && (!(operation.getRhsDatatype() instanceof AnyDatatype)) ) {
 	            JavaCodeFragment convertedRhs = compiler.getConversionCodeGenerator().
 	        		getConversionCode(rhsResult.getDatatype(), operation.getRhsDatatype(), rhsResult.getCodeFragment());
 	            convertedRhsResult = new CompilationResultImpl(convertedRhs, operation.getRhsDatatype());

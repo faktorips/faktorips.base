@@ -54,8 +54,7 @@ public abstract class AbstractFlFunction extends FunctionSignatureImpl implement
     }
     
     /**
-     * Overridden Method.
-     * @see org.faktorips.fl.FlFunction#setCompiler(org.faktorips.fl.ExprCompiler)
+     * {@inheritDoc}
      */
     public void setCompiler(ExprCompiler compiler) {
         ArgumentCheck.notNull(compiler);

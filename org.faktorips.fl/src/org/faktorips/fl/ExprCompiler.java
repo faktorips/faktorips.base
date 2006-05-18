@@ -29,6 +29,7 @@ import org.faktorips.codegen.CodeGenUtil;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.operations.AddDecimalDecimal;
@@ -43,7 +44,8 @@ import org.faktorips.fl.operations.DivideDecimalDecimal;
 import org.faktorips.fl.operations.DivideMoneyDecimal;
 import org.faktorips.fl.operations.EqualsDecimalDecimal;
 import org.faktorips.fl.operations.EqualsMoneyMoney;
-import org.faktorips.fl.operations.EqualsPrimtiveTypePrimitiveType;
+import org.faktorips.fl.operations.EqualsObjectDatatype;
+import org.faktorips.fl.operations.EqualsPrimtiveType;
 import org.faktorips.fl.operations.EqualsStringString;
 import org.faktorips.fl.operations.GreaterThanDecimalDecimal;
 import org.faktorips.fl.operations.GreaterThanMoneyMoney;
@@ -214,26 +216,26 @@ public class ExprCompiler {
         register(new MinusMoney());
 
         // add operation
-        register(new AddDecimalDecimal());
-        register(new AddDecimalInt());
-        register(new AddDecimalInteger());
-        register(new AddIntDecimal());
-        register(new AddIntegerDecimal());
         register(new AddIntInt());
+        register(new AddDecimalInt());
+        register(new AddIntDecimal());
+        register(new AddDecimalInteger());
+        register(new AddIntegerDecimal());
+        register(new AddDecimalDecimal());
         register(new AddMoneyMoney());
         register(new AddStringString());
 
         // subtract operation
-        register(new SubtractDecimalDecimal());
         register(new SubtractIntInt());
+        register(new SubtractDecimalDecimal());
         register(new SubtractMoneyMoney());
 
         // multiply operation
-        register(new MultiplyDecimalDecimal());
         register(new MultiplyIntInt());
         register(new MultiplyDecimalMoney());
         register(new MultiplyMoneyDecimal());
         register(new MultiplyIntegerMoney());
+        register(new MultiplyDecimalDecimal());
 
         // divide operation
         register(new DivideDecimalDecimal());
@@ -256,12 +258,12 @@ public class ExprCompiler {
         register(new LessThanOrEqualMoneyMoney());
 
         // equals operation
+        register(new EqualsPrimtiveType(Datatype.PRIMITIVE_INT));
+        register(new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN));
         register(new EqualsDecimalDecimal());
         register(new EqualsMoneyMoney());
         register(new EqualsStringString());
-        register(new EqualsPrimtiveTypePrimitiveType(Datatype.PRIMITIVE_INT));
-        register(new EqualsPrimtiveTypePrimitiveType(Datatype.PRIMITIVE_BOOLEAN));
-        
+        register(new EqualsObjectDatatype(AnyDatatype.INSTANCE));
         
         // not equals operation
         register(new NotEqualsDecimalDecimal());
@@ -278,6 +280,7 @@ public class ExprCompiler {
             binaryOperations.put(op.getOperator(), operatorOperations);
         }
         operatorOperations.add(op);
+        op.setCompiler(this);
     }
 
     /**

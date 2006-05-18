@@ -34,13 +34,13 @@ public class EqualsPrimitiveTypePrimitiveTypeTest extends CompilerAbstractTest {
     }
     
     public void testSuccessfull_int() throws Exception {
-        compiler.setBinaryOperations(new BinaryOperation[]{new EqualsPrimtiveTypePrimitiveType(Datatype.PRIMITIVE_INT)});
+        compiler.setBinaryOperations(new BinaryOperation[]{new EqualsPrimtiveType(Datatype.PRIMITIVE_INT)});
         execAndTestSuccessfull("1=2", false); 
         execAndTestSuccessfull("1=1", true); 
     }
 
     public void testSuccessfull_boolean() throws Exception {
-        compiler.setBinaryOperations(new BinaryOperation[]{new EqualsPrimtiveTypePrimitiveType(Datatype.PRIMITIVE_BOOLEAN)});
+        compiler.setBinaryOperations(new BinaryOperation[]{new EqualsPrimtiveType(Datatype.PRIMITIVE_BOOLEAN)});
         execAndTestSuccessfull("true=true", true); 
         execAndTestSuccessfull("false=true", false); 
     }

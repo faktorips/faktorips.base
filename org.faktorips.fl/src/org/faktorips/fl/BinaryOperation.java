@@ -24,6 +24,16 @@ import org.faktorips.datatype.Datatype;
  */
 public interface BinaryOperation {
     
+    /**
+     * Sets the compiler in which the operation is used.
+     */
+    public void setCompiler(ExprCompiler compiler);
+    
+    /**
+     * Returns the compiler this operation belongs to.
+     */
+    public ExprCompiler getCompiler();
+    
     public String getOperator();
     
     public Datatype getLhsDatatype();

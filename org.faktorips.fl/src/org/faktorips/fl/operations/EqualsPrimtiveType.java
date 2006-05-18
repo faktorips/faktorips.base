@@ -17,18 +17,19 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.util.ArgumentCheck;
 
 
 /**
  * Operation for the equality check for two decimals. 
  */
-public class EqualsAnyAny extends AbstractBinaryOperation {
+public class EqualsPrimtiveType extends AbstractBinaryOperation {
 
-    public EqualsAnyAny() {
-        super("=", AnyDatatype.INSTANCE, AnyDatatype.INSTANCE); //$NON-NLS-1$
+    public EqualsPrimtiveType(Datatype primitiveType) {
+        super("=", primitiveType, primitiveType); //$NON-NLS-1$
+        ArgumentCheck.isTrue(primitiveType.isPrimitive());
     }
 
     /** 
@@ -36,9 +37,8 @@ public class EqualsAnyAny extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".equalsIgnoreScale("); //$NON-NLS-1$
+        lhs.getCodeFragment().append("=="); //$NON-NLS-1$
         lhs.add(rhs);
-        lhs.getCodeFragment().append(')');
         lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);
         return lhs;
     }
