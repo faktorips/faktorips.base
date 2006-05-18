@@ -43,6 +43,7 @@ import org.faktorips.fl.operations.DivideDecimalDecimal;
 import org.faktorips.fl.operations.DivideMoneyDecimal;
 import org.faktorips.fl.operations.EqualsDecimalDecimal;
 import org.faktorips.fl.operations.EqualsMoneyMoney;
+import org.faktorips.fl.operations.EqualsPrimtiveTypePrimitiveType;
 import org.faktorips.fl.operations.EqualsStringString;
 import org.faktorips.fl.operations.GreaterThanDecimalDecimal;
 import org.faktorips.fl.operations.GreaterThanMoneyMoney;
@@ -258,7 +259,10 @@ public class ExprCompiler {
         register(new EqualsDecimalDecimal());
         register(new EqualsMoneyMoney());
         register(new EqualsStringString());
-
+        register(new EqualsPrimtiveTypePrimitiveType(Datatype.PRIMITIVE_INT));
+        register(new EqualsPrimtiveTypePrimitiveType(Datatype.PRIMITIVE_BOOLEAN));
+        
+        
         // not equals operation
         register(new NotEqualsDecimalDecimal());
         register(new NotEqualsMoneyMoney());
