@@ -31,6 +31,14 @@ public class IfTest extends FunctionAbstractTest {
         registerFunction(new If("IF", ""));
     }
     
+    public void testBooleanCondition() throws Exception {
+        registerFunction(new BooleanFct("TRUEOBJ", Boolean.TRUE));
+        registerFunction(new BooleanFct("FALSEOBJ", Boolean.FALSE));
+        execAndTestSuccessfull("IF(1=1; 2.1; 3.2)", Decimal.valueOf("2.1"), Datatype.DECIMAL);
+        execAndTestSuccessfull("IF(TRUEOBJ(); 2; 3)", new Integer(2), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(FALSEOBJ(); 2; 3)", new Integer(3), Datatype.INTEGER);
+    }
+    
     public void testDifferentDatatypes() throws Exception {
         execAndTestFail("IF(1=2; 10EUR; 1)", If.ERROR_MESSAGE_CODE);
     }
@@ -69,4 +77,6 @@ public class IfTest extends FunctionAbstractTest {
         execAndTestSuccessfull("IF(1=1; \"a\"; \"b\")", "a", Datatype.STRING);
         execAndTestSuccessfull("IF(1=2; \"a\"; \"b\")", "b", Datatype.STRING);
     }
+    
+    
 }

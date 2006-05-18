@@ -19,8 +19,8 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.AnyDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -40,8 +40,7 @@ public class If extends AbstractFlFunction {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.FlFunction#compile(org.faktorips.codegen.JavaCodeFragment[])
+     * {@inheritDoc}
      */
     public CompilationResult compile(CompilationResult[] argResults) {
         ArgumentCheck.length(argResults, 3);

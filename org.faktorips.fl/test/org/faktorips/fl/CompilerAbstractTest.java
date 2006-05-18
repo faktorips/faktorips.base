@@ -69,6 +69,31 @@ public abstract class CompilerAbstractTest extends TestCase {
     }
 
     /**
+     * Compiles the given expression and tests if the compilation was successfull
+     * and if the datatype is the expected one. After that the expression is executed
+     * and it is tested if it returns the expected value.
+     */
+    protected CompilationResult execAndTestSuccessfull(
+            String expression,
+            boolean expectedValue) throws Exception {
+        
+        CompilationResult result = compiler.compile(expression);
+        if (result.failed()) {
+            System.out.println(result);
+        }
+        assertTrue(result.successfull());
+        assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
+        
+        Object value = processor.evaluate(expression);
+        if (!(value instanceof Boolean)) {
+            System.out.println();
+            assertTrue(result + " ist keine Boolean!", value instanceof Boolean);
+        }
+        assertEquals(expectedValue, ((Boolean)value).booleanValue());
+        return result;
+    }
+
+    /**
      * Compiles the given expression and tests if the compilation failed and 
      * the compilation result contains a message with the indicated message code.
      */

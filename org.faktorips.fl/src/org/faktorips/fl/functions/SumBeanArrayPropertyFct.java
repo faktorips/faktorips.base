@@ -20,9 +20,9 @@ package org.faktorips.fl.functions;
 import java.lang.reflect.Method;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ArrayDatatype;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.AnyDatatype;
 import org.faktorips.fl.BeanDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.parser.ASTAddNode;
@@ -453,10 +454,14 @@ class ParseTreeVisitor implements FlParserVisitor {
         for (int i=0; i<argResults.length; i++) {
             
             Datatype functionDatatype = flFunction.hasVarArgs() ? flFunction.getArgTypes()[0] : flFunction.getArgTypes()[i];
-            JavaCodeFragment fragment = conversionCg.getConversionCode(
-                    argResults[i].getDatatype(), functionDatatype, argResults[i].getCodeFragment());
-            convertedArgs[i] = new CompilationResultImpl(fragment, functionDatatype);
-            convertedArgs[i].addMessages(argResults[i].getMessages());
+            if (functionDatatype instanceof AnyDatatype) {
+                convertedArgs[i] = (CompilationResultImpl)argResults[i];
+            } else {
+                JavaCodeFragment fragment = conversionCg.getConversionCode(
+                        argResults[i].getDatatype(), functionDatatype, argResults[i].getCodeFragment());
+                convertedArgs[i] = new CompilationResultImpl(fragment, functionDatatype);
+                convertedArgs[i].addMessages(argResults[i].getMessages());
+            }
         }
         return convertedArgs;
     }

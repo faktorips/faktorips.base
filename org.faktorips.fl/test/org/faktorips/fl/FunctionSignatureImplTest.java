@@ -19,6 +19,7 @@ package org.faktorips.fl;
 
 import junit.framework.TestCase;
 
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 
 /**

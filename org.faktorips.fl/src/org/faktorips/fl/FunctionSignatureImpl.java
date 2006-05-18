@@ -17,6 +17,7 @@
 
 package org.faktorips.fl;
 
+import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.ConversionMatrix;
 import org.faktorips.datatype.Datatype;
 

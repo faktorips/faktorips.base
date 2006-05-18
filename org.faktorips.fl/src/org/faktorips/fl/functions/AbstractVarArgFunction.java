@@ -43,9 +43,7 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
     }
 
     /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.fl.FlFunction#compile(org.faktorips.codegen.JavaCodeFragment[])
+     * {@inheritDoc}
      */
     public CompilationResult compile(CompilationResult[] argResults) {
 

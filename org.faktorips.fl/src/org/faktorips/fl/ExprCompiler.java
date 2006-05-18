@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.faktorips.codegen.CodeGenUtil;
 import org.faktorips.codegen.ConversionCodeGenerator;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -173,6 +174,8 @@ public class ExprCompiler {
     // true, if the expression's type should always be an object and not a primitive.
     private boolean ensureResultIsObject = true;
 
+    private DatatypeHelperProvider datatypeHelperProvider = new DefaultDatatypeHelperProvider();
+    
     /**
      * Creates a new compiler. Messages returned by the compiler are generated using the default
      * locale.
@@ -516,6 +519,31 @@ public class ExprCompiler {
         }
         return (UnaryOperation[])operatorOperations.toArray(new UnaryOperation[operatorOperations
                 .size()]);
+    }
+
+    /**
+     * @return Returns the datatypeHelperProvider.
+     */
+    public DatatypeHelperProvider getDatatypeHelperProvider() {
+        return datatypeHelperProvider;
+    }
+
+    /**
+     * @param provider The datatypeHelperProvider to set.
+     */
+    public void setDatatypeHelperProvider(DatatypeHelperProvider provider) {
+        this.datatypeHelperProvider = provider;
+    }
+
+    /**
+     * Returns the code generation helper for the given type or <code>null</code>
+     * if no helper is available.
+     */
+    public DatatypeHelper getDatatypeHelper(Datatype type) {
+        if (datatypeHelperProvider==null || type==null) {
+            return null;
+        }
+        return datatypeHelperProvider.getDatatypeHelper(type);
     }
 
 }

@@ -23,6 +23,7 @@ import java.util.Locale;
 import org.faktorips.fl.functions.Abs;
 import org.faktorips.fl.functions.And;
 import org.faktorips.fl.functions.If;
+import org.faktorips.fl.functions.IsEmpty;
 import org.faktorips.fl.functions.Or;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.WholeNumber;
@@ -58,6 +59,7 @@ public class ExcelFunctionsResolver extends DefaultFunctionResolver {
         add(new Round(getFctName("roundup"), getFctDescription("roundup"), BigDecimal.ROUND_UP)); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Round(getFctName("rounddown"), getFctDescription("rounddown"), BigDecimal.ROUND_UP)); //$NON-NLS-1$ //$NON-NLS-2$
         add(new WholeNumber(getFctName("wholenumber"), getFctDescription("wholenumber"))); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new IsEmpty(getFctName("isempty"), getFctDescription("isempty"))); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     private String getFctName(String key) {
