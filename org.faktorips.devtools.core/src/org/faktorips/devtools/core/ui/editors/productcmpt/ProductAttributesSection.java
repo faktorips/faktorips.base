@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Section to display and edit the product attributes
@@ -227,20 +228,15 @@ public class ProductAttributesSection extends IpsSection {
 			}
 			
 			if (datatype != null && datatype.equals(Datatype.BOOLEAN)) {
-				Combo combo = toolkit.createCombo(rootPane);
-				combo.add(Messages.ProductAttributesSection_true);
-				combo.add(Messages.ProductAttributesSection_false);
-				combo.add(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-				ComboField field = new ComboField(combo);
+				Combo combo = toolkit.createComboForBoolean(rootPane, true, Messages.ProductAttributesSection_true, Messages.ProductAttributesSection_false);
+				ComboField field = new BooleanComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				addFocusControl(combo);
 				editControls.add(combo);
 			}
 			else if (datatype != null && datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-				Combo combo = toolkit.createCombo(rootPane);
-				combo.add(Messages.ProductAttributesSection_true);
-				combo.add(Messages.ProductAttributesSection_false);
-				ComboField field = new ComboField(combo);
+				Combo combo = toolkit.createComboForBoolean(rootPane, false, Messages.ProductAttributesSection_true, Messages.ProductAttributesSection_false);
+				ComboField field = new BooleanComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
 				addFocusControl(combo);
 				editControls.add(combo);
@@ -268,5 +264,58 @@ public class ProductAttributesSection extends IpsSection {
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 	}
+	
+	class BooleanComboField extends ComboField {
+		
+		private String trueRepresentation;
+		private String falseRepresentation;
 
+		public BooleanComboField(Combo combo) {
+			this(combo, Messages.ProductAttributesSection_true, Messages.ProductAttributesSection_false);
+		}
+		
+		/**
+		 * @param combo
+		 */
+		public BooleanComboField(Combo combo, String trueRepresentation, String falseRepresentation) {
+			super(combo);
+			ArgumentCheck.notNull(trueRepresentation);
+			ArgumentCheck.notNull(falseRepresentation);
+			this.trueRepresentation = trueRepresentation;
+			this.falseRepresentation = falseRepresentation;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Object getValue() {
+			String s = (String)super.getValue();
+			if (s==null) {
+				return null;
+			} else if (s.equals(trueRepresentation)) {
+				return Boolean.TRUE.toString();
+			} else if (s.equals(falseRepresentation)) {
+					return Boolean.FALSE.toString();
+			}
+			throw new RuntimeException("Unknown value " + s);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void setValue(Object newValue) {
+			if (newValue==null) {
+				super.setValue(newValue);
+				return;
+			}
+			boolean bool = Boolean.valueOf((String)newValue).booleanValue();
+			if (bool) {
+				super.setValue(trueRepresentation);
+			} else {
+				super.setValue(falseRepresentation);
+			}
+		}
+		
+		
+	}
 }

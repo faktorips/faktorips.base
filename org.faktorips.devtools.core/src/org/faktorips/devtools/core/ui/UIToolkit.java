@@ -414,6 +414,16 @@ public class UIToolkit {
 		setComboValues(newCombo, enumValues.getAllValueIds(true));
 		return newCombo;
 	}
+	
+	public Combo createComboForBoolean(Composite parent, boolean inclNull, String trueRepresentation, String falseRepresentation) {
+		Combo newCombo = createCombo(parent);
+		if (inclNull) {
+			setComboValues(newCombo, new String[]{null, trueRepresentation, falseRepresentation});
+		} else {
+			setComboValues(newCombo, new String[]{trueRepresentation, falseRepresentation});
+		}
+		return newCombo;
+	}
 
 	/**
 	 * Replaces all occurences of <code>null</code> in the values by the defined
