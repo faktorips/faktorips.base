@@ -286,7 +286,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		if (!isFirstRelationOfThisType(relation, target)) {
 			return false;
 		}
-		
 		return this.getRelations(relation.getName()).length < relation.getMaxCardinality() && ProductCmptRelation.willBeValid(target, relation);
 	}
 	
