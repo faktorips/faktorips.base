@@ -227,7 +227,8 @@ public class XmlUtil {
 			trafo.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype);
 		trafo.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 		if (indentWidth > 0)
-			trafo.setOutputProperty(
+			trafo
+					.setOutputProperty(
 							"{http://xml.apache.org/xslt}indent-amount", "" + indentWidth); //$NON-NLS-1$
 
 		trafo.transform(src, res);
@@ -305,7 +306,7 @@ public class XmlUtil {
 	}
 
 	/**
-	 * Returns the node's first CDATA secton or <code>null</code> if the node
+	 * Returns the node's first CDATA section or <code>null</code> if the node
 	 * hasn't got one.
 	 */
 	public final static CDATASection getFirstCDataSection(Node node) {
@@ -314,6 +315,20 @@ public class XmlUtil {
 			if (nl.item(i).getNodeType() == Node.CDATA_SECTION_NODE) {
 				return (CDATASection) nl.item(i);
 			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the node's first CDATA section if the node has one. If not, this
+	 * returns the node's text child node or <code>null</code> if the node
+	 * hasn't got a text node.
+	 */
+	public final static String getCDATAorTextContent(Node node) {
+		if (XmlUtil.getFirstCDataSection(node) != null) {
+			return XmlUtil.getFirstCDataSection(node).getData();
+		} else if (XmlUtil.getTextNode(node) != null) {
+			return XmlUtil.getTextNode(node).getData();
 		}
 		return null;
 	}
