@@ -279,6 +279,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	public boolean canCreateValidRelation(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException {
+		if (relation==null) {
+			return false;
+		}
 		// it is not valid to create more than one relation with the same type and target.
 		if (!isFirstRelationOfThisType(relation, target)) {
 			return false;
