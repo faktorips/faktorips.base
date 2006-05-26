@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -110,18 +111,34 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+     * {@inheritDoc}
      */
     public IResource getCorrespondingResource() {
         return null;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public final MessageList validate() throws CoreException {
         MessageList result = new MessageList();
         validate(result);
         return result;
     }
+
+    /**
+	 * {@inheritDoc}
+	 */
+	public boolean isValid() throws CoreException {
+		return getValidationResultSeverity()!=Message.ERROR;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getValidationResultSeverity() throws CoreException {
+		return validate().getSeverity();
+	}
 
     /**
      * Validates the object part and reports invalid states by adding 

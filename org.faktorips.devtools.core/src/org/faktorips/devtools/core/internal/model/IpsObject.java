@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -147,8 +148,24 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         }
     }
     
+    
+    
     /**
-     * Overridden.
+	 * {@inheritDoc}
+	 */
+	public boolean isValid() throws CoreException {
+		return getValidationResultSeverity()!=Message.ERROR;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getValidationResultSeverity() throws CoreException {
+		return validate().getSeverity();
+	}
+
+	/**
+     * {@inheritDoc}
      */
     public MessageList validate() throws CoreException {
         MessageList result = new MessageList();

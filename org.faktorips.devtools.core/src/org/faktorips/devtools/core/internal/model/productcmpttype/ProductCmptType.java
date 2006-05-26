@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.memento.Memento;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,14 +72,14 @@ public class ProductCmptType implements IProductCmptType {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IPolicyCmptType findPolicyCmptyType() throws CoreException {
 		return policyCmptType;
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IProductCmptType findSupertype() throws CoreException {
 		IPolicyCmptType superPolicyCmptType = policyCmptType.findSupertype();
@@ -89,7 +90,7 @@ public class ProductCmptType implements IProductCmptType {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IProductCmptTypeRelation[] getRelations() {
 		IRelation[] relations = policyCmptType.getRelations();
@@ -103,7 +104,7 @@ public class ProductCmptType implements IProductCmptType {
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IAttribute[] getAttributes() {
 		IAttribute[] attributes = policyCmptType.getAttributes();
@@ -117,28 +118,28 @@ public class ProductCmptType implements IProductCmptType {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getPolicyCmptyType() {
 		return policyCmptType.getQualifiedName();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IpsObjectType getIpsObjectType() {
 		return IpsObjectType.PRODUCT_CMPT_TYPE;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsSrcFile getIpsSrcFile() {
 		return policyCmptType.getIpsSrcFile();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getQualifiedName() {
         String pack = StringUtil.getPackageName(policyCmptType.getQualifiedName());
@@ -149,42 +150,42 @@ public class ProductCmptType implements IProductCmptType {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public QualifiedNameType getQualifiedNameType() {
         return new QualifiedNameType(getQualifiedName(), getIpsObjectType());
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsPackageFragment getIpsPackageFragment() {
 		return policyCmptType.getIpsPackageFragment();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public QualifiedNameType[] dependsOn() throws CoreException {
 		return new QualifiedNameType[]{policyCmptType.getQualifiedNameType()};
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IType getJavaType(int kind) throws CoreException {
 		return null;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IType[] getAllJavaTypes() throws CoreException {
 		return null;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getName() {
 		if (StringUtils.isEmpty(policyCmptType.getUnqualifiedProductCmptType())) {
@@ -195,142 +196,165 @@ public class ProductCmptType implements IProductCmptType {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsModel getIpsModel() {
 		return policyCmptType.getIpsModel();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsProject getIpsProject() {
 		return policyCmptType.getIpsProject();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public boolean exists() {
 		return policyCmptType.exists();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IResource getCorrespondingResource() {
 		return policyCmptType.getCorrespondingResource();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IResource getEnclosingResource() {
 		return policyCmptType.getEnclosingResource();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsElement getParent() {
 		return policyCmptType.getParent();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsElement[] getChildren() throws CoreException {
 		return getRelations();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public boolean hasChildren() throws CoreException {
 		return getChildren().length>0;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public Image getImage() {
 		return getIpsObjectType().getImage();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public Object getExtPropertyValue(String propertyId) {
 		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setExtPropertyValue(String propertyId, Object value) {
 		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
+    /**
+	 * {@inheritDoc}
+	 */
+	public boolean isValid() throws CoreException {
+		return getValidationResultSeverity()!=Message.ERROR;
+	}
+	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
+	 */
+	public int getValidationResultSeverity() throws CoreException {
+		return validate().getSeverity();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 */
 	public MessageList validate() throws CoreException {
 		return new MessageList();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public Element toXml(Document doc) {
 		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void initFromXml(Element element) {
 		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public Memento newMemento() {
 		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setState(Memento memento) {
 		throw new RuntimeException("Not implemented yet!"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void setDescription(String newDescription) {
 		policyCmptType.setDescription(newDescription);
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getDescription() {
 		return policyCmptType.getDescription();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean equals(Object o) {
 		if (!(o instanceof ProductCmptType)) {
 			return false;
 		}
 		return ((ProductCmptType)o).policyCmptType.equals(policyCmptType);
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public int hashCode() {
 		return getName().hashCode();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
         return getParent().toString() + "/" + getName(); //$NON-NLS-1$
 	}
