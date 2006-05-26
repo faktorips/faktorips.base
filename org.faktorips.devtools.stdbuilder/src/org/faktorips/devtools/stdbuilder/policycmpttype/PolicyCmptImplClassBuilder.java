@@ -20,6 +20,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -181,6 +182,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         buildValidation(methodsBuilder);
+        generateMethodInitPropertiesFromXml(methodsBuilder);
     }
     
     protected void generateGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -1356,5 +1358,26 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendln("// TODO implement model method.");
         methodsBuilder.append("throw new RuntimeException(\"Not implemented yet!\");");
         methodsBuilder.closeBracket();
+    }
+    
+    private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.class, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
+        IAttribute[] attributes = getPolicyCmptType().getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if (i==0) {
+                builder.appendln("String value;");
+            }
+            IAttribute a = attributes[i];
+            Datatype datatype = a.findDatatype();
+            DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
+            builder.append("value = (String)propMap.get(");
+            builder.appendQuoted(a.getName());
+            builder.appendln(");");
+            builder.append(getFieldNameForAttribute(a) + " = ");
+            builder.append(helper.newInstanceFromExpression("value"));
+            builder.appendln(";");
+        }
+        builder.methodEnd();
     }
 }
