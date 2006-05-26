@@ -1369,14 +1369,19 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.appendln("String value;");
             }
             IAttribute a = attributes[i];
+            if (!a.isValid()) {
+                continue;
+            }
             Datatype datatype = a.findDatatype();
-            DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
-            builder.append("value = (String)propMap.get(");
+            DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
+            builder.append("if (propMap.containsKey(");
             builder.appendQuoted(a.getName());
-            builder.appendln(");");
+            builder.appendln(")) {");
+            String expr = "(String)propMap.get(\"" + a.getName() + "\")";
             builder.append(getFieldNameForAttribute(a) + " = ");
-            builder.append(helper.newInstanceFromExpression("value"));
+            builder.append(helper.newInstanceFromExpression(expr));
             builder.appendln(";");
+            builder.appendln("}");
         }
         builder.methodEnd();
     }
