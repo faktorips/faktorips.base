@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.StringUtil;
 
-public class FormulaCompletionProcessorTest extends IpsPluginTest {
+public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 
 	private FormulaCompletionProcessor processor;
 	private IpsProject ipsProject;

@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
  * 
  * @author Jan Ortmann
  */
-public class DefaultBuilderSetTest extends IpsPluginTest {
+public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
 	/*
 	 * @see IpsPluginTest#setUp()

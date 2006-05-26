@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class IpsObjectPartContainerTest extends IpsPluginTest {
+public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private TestIpsObjectPartContainer container;
     private IpsModel model;

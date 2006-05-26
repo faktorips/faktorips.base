@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IRangeValueSet;
@@ -41,7 +41,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class RangeValueSetTest extends IpsPluginTest {
+public class RangeValueSetTest extends AbstractIpsPluginTest {
 
     private IAttribute attr;
 	private IConfigElement ce;

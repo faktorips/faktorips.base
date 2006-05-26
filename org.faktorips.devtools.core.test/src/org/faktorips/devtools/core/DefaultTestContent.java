@@ -39,10 +39,10 @@ import org.xml.sax.SAXException;
 public class DefaultTestContent {
 
 	private IIpsProject project;
-	private IpsPluginTest helper;
+	private AbstractIpsPluginTest helper;
 	
 	public DefaultTestContent() throws CoreException, SAXException, IOException, ParserConfigurationException {
-		helper = new IpsPluginTest() {};
+		helper = new AbstractIpsPluginTest() {};
 		project = helper.newIpsProject("DefaultTestProject");
 		IFolder res = (IFolder)project.getIpsPackageFragmentRoots()[0].getEnclosingResource();
 		

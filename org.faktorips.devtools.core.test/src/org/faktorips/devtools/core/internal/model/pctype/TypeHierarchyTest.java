@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 /**
  *
  */
-public class TypeHierarchyTest extends IpsPluginTest {
+public class TypeHierarchyTest extends AbstractIpsPluginTest {
 
     private IIpsPackageFragmentRoot pdRootFolder;
     private IIpsPackageFragment pdFolder;

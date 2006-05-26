@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class DynamicValueDatatypeTest extends IpsPluginTest {
+public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
 
 	private IIpsProject ipsProject;
 	

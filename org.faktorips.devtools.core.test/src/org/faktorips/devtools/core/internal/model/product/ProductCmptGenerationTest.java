@@ -21,7 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.DefaultTestContent;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ProductCmptGenerationTest extends IpsPluginTest {
+public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;

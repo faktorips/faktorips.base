@@ -24,7 +24,7 @@ import java.util.Hashtable;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructur
  * 
  * @author Thorsten Guenther
  */
-public class DeepCopyOperationTest extends IpsPluginTest {
+public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 	
 	DefaultTestContent content;
 	

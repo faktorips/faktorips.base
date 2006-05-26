@@ -27,7 +27,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -49,7 +49,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Ortmann
  */
-public class IpsBuilderTest extends IpsPluginTest {
+public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     protected IIpsProject ipsProject;
     protected IIpsPackageFragmentRoot root;

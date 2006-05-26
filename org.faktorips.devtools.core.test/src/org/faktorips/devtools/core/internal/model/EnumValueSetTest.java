@@ -26,7 +26,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
 
 /**
  */
-public class EnumValueSetTest extends IpsPluginTest {
+public class EnumValueSetTest extends AbstractIpsPluginTest {
     
     private DefaultEnumType gender;
     

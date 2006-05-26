@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class NoVersionIdProductCmptNamingStrategyTest extends IpsPluginTest {
+public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginTest {
 
 	private NoVersionIdProductCmptNamingStrategy strategy = new NoVersionIdProductCmptNamingStrategy();
 	

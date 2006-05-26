@@ -19,13 +19,13 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class JavaSourceFileBuilderTest extends IpsPluginTest {
+public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
     private DumyJavaSourceFileBuilder builder;
     private IIpsProject project;

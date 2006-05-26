@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class IpsObjectPathTest extends IpsPluginTest {
+public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     

@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
-public class ProductCmptTypeTest extends IpsPluginTest {
+public class ProductCmptTypeTest extends AbstractIpsPluginTest {
 
 	private IIpsProject ipsProject;
 	private IPolicyCmptType policyCmptType;

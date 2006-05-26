@@ -20,14 +20,14 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 
 /**
  * 
  * @author Peter Erzberger
  */
-public class DynamicEnumDatatypeTest extends IpsPluginTest {
+public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
 
 	private DynamicEnumDatatype dataType;
 	

@@ -23,7 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.DefaultTestContent;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -39,7 +39,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Thorsten Guenther
  */
-public class MoveOperationTest extends IpsPluginTest {
+public class MoveOperationTest extends AbstractIpsPluginTest {
 	
 	DefaultTestContent content;
 	

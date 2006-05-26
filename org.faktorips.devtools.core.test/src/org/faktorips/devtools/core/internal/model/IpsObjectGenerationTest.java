@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.GregorianCalendar;
 
 import org.faktorips.devtools.core.DefaultTestContent;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.w3c.dom.Document;
@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class IpsObjectGenerationTest extends IpsPluginTest {
+public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     
     private ITimedIpsObject timedPdo;
     private IIpsObjectGeneration generation;

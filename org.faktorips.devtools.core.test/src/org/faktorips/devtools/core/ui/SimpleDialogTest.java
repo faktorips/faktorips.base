@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**
@@ -32,13 +32,14 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
  * 
  * @author Thorsten Guenther
  */
-public class SimpleDialogTest extends IpsPluginTest implements ILogListener, ITestAnswerProvider {
+public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListener, ITestAnswerProvider {
 
 	private DefaultTestContent content;
 	private IpsPlugin plugin;
 	private boolean answer = false;
 	
 	public void setUp() throws Exception {
+        super.setUp();
 		content = new DefaultTestContent();
 		plugin = IpsPlugin.getDefault();
 		plugin.getLog().addLogListener(this);

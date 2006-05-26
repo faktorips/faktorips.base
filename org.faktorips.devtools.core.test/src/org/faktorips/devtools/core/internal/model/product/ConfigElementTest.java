@@ -25,7 +25,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.IEnumValueSet;
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ConfigElementTest extends IpsPluginTest {
+public class ConfigElementTest extends AbstractIpsPluginTest {
 
 	private IPolicyCmptType policyCmptType;
     private IProductCmpt productCmpt;

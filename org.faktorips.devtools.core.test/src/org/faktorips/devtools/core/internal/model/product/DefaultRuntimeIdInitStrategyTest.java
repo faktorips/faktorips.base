@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import org.faktorips.devtools.core.DefaultTestContent;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 
 /**
@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
  * 
  * @author Thorsten Guenther
  */
-public class DefaultRuntimeIdInitStrategyTest extends IpsPluginTest {
+public class DefaultRuntimeIdInitStrategyTest extends AbstractIpsPluginTest {
 	
 	DefaultTestContent content;
 	DefaultRuntimeIdInitStrategy strategy;

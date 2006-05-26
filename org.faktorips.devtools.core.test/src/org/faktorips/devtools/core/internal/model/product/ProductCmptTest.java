@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ProductCmptTest extends IpsPluginTest {
+public class ProductCmptTest extends AbstractIpsPluginTest {
     
     private ProductCmpt productCmpt;
     private IIpsPackageFragmentRoot root;

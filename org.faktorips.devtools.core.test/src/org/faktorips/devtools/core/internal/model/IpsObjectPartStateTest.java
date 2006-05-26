@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 /**
  *
  */
-public class IpsObjectPartStateTest extends IpsPluginTest {
+public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
     
 	IAttribute attribute;
 	IPolicyCmptType pcType;

@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-public class IpsProjectPropertiesTest extends IpsPluginTest {
+public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
 	private IIpsProject ipsProject;
 	

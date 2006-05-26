@@ -21,7 +21,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class DateBasedProductCmptNamingStrategyTest extends IpsPluginTest  {
+public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTest  {
 
 	private IIpsProject ipsProject;
 	private DateBasedProductCmptNamingStrategy strategy;

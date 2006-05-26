@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
 /**
  *
  */
-public class AttributeTest extends IpsPluginTest {
+public class AttributeTest extends AbstractIpsPluginTest {
     
     private IIpsPackageFragmentRoot ipsRootFolder;
     private IIpsPackageFragment ipsFolder;

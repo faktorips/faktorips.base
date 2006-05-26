@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.faktorips.devtools.core.DefaultTestContent;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class RelationTest extends IpsPluginTest {
+public class RelationTest extends AbstractIpsPluginTest {
     
     private IPolicyCmptType pcType;
     private IRelation relation;

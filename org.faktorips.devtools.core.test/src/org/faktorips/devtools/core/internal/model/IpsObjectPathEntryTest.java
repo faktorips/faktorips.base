@@ -17,7 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.w3c.dom.Document;
@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Jan Ortmann
  */
-public class IpsObjectPathEntryTest extends IpsPluginTest {
+public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IpsObjectPath path;

@@ -30,7 +30,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
@@ -50,7 +50,7 @@ import org.faktorips.util.message.MessageList;
 /**
  *
  */
-public class IpsProjectTest extends IpsPluginTest {
+public class IpsProjectTest extends AbstractIpsPluginTest {
 
     private IpsProject ipsProject;
     private IIpsPackageFragmentRoot root;

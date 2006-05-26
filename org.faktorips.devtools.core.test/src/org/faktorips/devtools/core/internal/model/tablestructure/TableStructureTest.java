@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class TableStructureTest extends IpsPluginTest {
+public class TableStructureTest extends AbstractIpsPluginTest {
     
     private TableStructure table;
     

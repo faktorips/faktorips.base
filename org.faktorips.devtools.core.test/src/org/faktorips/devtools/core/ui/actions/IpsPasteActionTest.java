@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartState;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thorsten Guenther
  */
-public class IpsPasteActionTest extends IpsPluginTest {
+public class IpsPasteActionTest extends AbstractIpsPluginTest {
     
 	IpsCutAction cutAction;
     IpsPasteAction pasteAction;

@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.internal.model.product;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -40,7 +40,7 @@ import org.faktorips.util.message.MessageList;
 /**
  *
  */
-public class ConfigElementPluginTest extends IpsPluginTest {
+public class ConfigElementPluginTest extends AbstractIpsPluginTest {
 
     private ProductCmpt productCmpt;
     private IProductCmptGeneration generation;

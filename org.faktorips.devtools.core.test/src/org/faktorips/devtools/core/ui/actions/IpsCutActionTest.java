@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartState;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -47,7 +47,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thorsten Guenther
  */
-public class IpsCutActionTest extends IpsPluginTest {
+public class IpsCutActionTest extends AbstractIpsPluginTest {
     
 	IpsCutAction cutAction;
 	IAttribute attribute;

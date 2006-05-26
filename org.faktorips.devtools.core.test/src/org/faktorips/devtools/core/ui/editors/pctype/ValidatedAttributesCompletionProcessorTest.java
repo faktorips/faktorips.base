@@ -20,14 +20,14 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
-public class ValidatedAttributesCompletionProcessorTest extends IpsPluginTest {
+public class ValidatedAttributesCompletionProcessorTest extends AbstractIpsPluginTest {
 
 	private PolicyCmptType pcType;
 	

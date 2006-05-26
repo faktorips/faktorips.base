@@ -67,19 +67,19 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Jan Ortmann
  */
-public abstract class IpsPluginTest extends XmlAbstractTestCase {
+public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
 	/**
 	 * 
 	 */
-	public IpsPluginTest() {
+	public AbstractIpsPluginTest() {
 		super();
 	}
 
 	/**
 	 * @param name
 	 */
-	public IpsPluginTest(String name) {
+	public AbstractIpsPluginTest(String name) {
 		super(name);
 	}
 

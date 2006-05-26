@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.pctype.RelationType;
  * 
  * @author Jan Ortmann
  */
-public class RelationPluginTest extends IpsPluginTest {
+public class RelationPluginTest extends AbstractIpsPluginTest {
 
 	private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot root;

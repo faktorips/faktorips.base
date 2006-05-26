@@ -19,7 +19,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.util.CollectionUtil;
 
-public class TableContentsImplPluginTest extends IpsPluginTest {
+public class TableContentsImplPluginTest extends AbstractIpsPluginTest {
 
     protected void setUp() throws Exception {
         super.setUp();

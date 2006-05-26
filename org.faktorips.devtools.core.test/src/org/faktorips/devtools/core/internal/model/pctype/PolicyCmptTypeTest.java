@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class PolicyCmptTypeTest extends IpsPluginTest implements ContentsChangeListener {
+public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements ContentsChangeListener {
     
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;

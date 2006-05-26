@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 /**
  *
  */
-public class IpsObjectPartTest extends IpsPluginTest {
+public class IpsObjectPartTest extends AbstractIpsPluginTest {
     
 	private IIpsProject project;
 	private IProductCmpt productCmpt;

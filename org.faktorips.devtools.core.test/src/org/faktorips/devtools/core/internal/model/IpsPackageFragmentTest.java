@@ -29,7 +29,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -46,7 +46,7 @@ import org.faktorips.util.StringUtil;
 /**
  *
  */
-public class IpsPackageFragmentTest extends IpsPluginTest {
+public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot rootPackage;

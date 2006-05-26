@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -52,7 +52,7 @@ import org.faktorips.util.StringUtil;
 /**
  *
  */
-public class IpsModelTest extends IpsPluginTest implements ContentsChangeListener {
+public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChangeListener {
     
     private IpsModel model;
     private ContentChangeEvent lastEvent;
