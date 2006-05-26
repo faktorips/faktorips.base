@@ -23,7 +23,7 @@ import java.util.Locale;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptBuilderTest extends IpsPluginTest {
+public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IPolicyCmptType type;

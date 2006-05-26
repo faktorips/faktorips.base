@@ -22,14 +22,14 @@ import java.util.Locale;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
-public class TableImplBuilderTest extends IpsPluginTest {
+public class TableImplBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private ITableStructure structure;

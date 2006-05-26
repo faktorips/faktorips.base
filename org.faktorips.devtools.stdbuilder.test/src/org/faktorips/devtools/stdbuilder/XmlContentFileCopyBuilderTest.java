@@ -24,7 +24,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-public class XmlContentFileCopyBuilderTest extends IpsPluginTest {
+public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private ITableStructure structure;

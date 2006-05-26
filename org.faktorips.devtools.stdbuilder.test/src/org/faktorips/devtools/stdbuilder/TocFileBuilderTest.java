@@ -23,7 +23,7 @@ import java.util.Locale;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
  * 
  * @author Jan Ortmann
  */
-public class TocFileBuilderTest extends IpsPluginTest {
+public class TocFileBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private StandardBuilderSet builderSet;

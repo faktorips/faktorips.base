@@ -20,7 +20,7 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPluginTest;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
@@ -36,7 +36,7 @@ import org.faktorips.fl.ExprCompiler;
 /**
  * 
  */
-public class ParameterIdentifierResolverTest extends IpsPluginTest {
+public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
 
     private PolicyCmptType pcType;
     private IAttribute attribute;
