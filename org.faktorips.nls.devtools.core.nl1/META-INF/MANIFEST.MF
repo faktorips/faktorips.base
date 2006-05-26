@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Core Fragment
-Bundle-SymbolicName: org.faktorips.nls.devtools.core.nl1
-Bundle-Version: 0.9.14
-Bundle-Vendor: FaktorZehn GmbH
-Fragment-Host: org.faktorips.devtools.core;bundle-version="0.9.14"
-Bundle-Localization: nlfragment
-Bundle-ClassPath: nl1.jar
