@@ -131,11 +131,8 @@ public class ContentPage extends IpsObjectEditorPage {
          */
         public void setValue(Object rowElement, Object newValue) {
             IRow row = (IRow)rowElement;
-            if (newValue instanceof String) {
-                row.setValue(columnIndex, (String)newValue);
-                return;
-            }
-            throw new RuntimeException("Not implemented yet."); //$NON-NLS-1$
+            row.setValue(columnIndex, (String)newValue);
+            return;
         }
 
         /** 

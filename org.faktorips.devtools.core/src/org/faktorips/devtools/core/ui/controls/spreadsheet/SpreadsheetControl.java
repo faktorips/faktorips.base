@@ -665,7 +665,12 @@ public class SpreadsheetControl extends Composite {
             if (isSizingColumn(columnIndex)) {
                 return ""; //$NON-NLS-1$
             }
-            return columnInfos[columnIndex-1].getText(element);
+            String text = columnInfos[columnIndex-1].getText(element);
+            
+            if(text == null){
+            	return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            }
+            return text; 
         }
 
         public void addListener(ILabelProviderListener listener) {
