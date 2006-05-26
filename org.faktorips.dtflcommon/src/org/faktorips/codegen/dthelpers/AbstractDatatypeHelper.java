@@ -76,8 +76,9 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 		if (expression==null || expression.equals("")) {
 			return nullExpression();
 		}
-		// (expression==null || expression.equals("")) ? nullExpression() :
+		// ((expression==null) || (expression.equals(""))) ? nullExpression() :
 		// valueOfExpression(expression)
+        expression = '(' + expression + ')';
 		JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("(");
         fragment.append(expression);

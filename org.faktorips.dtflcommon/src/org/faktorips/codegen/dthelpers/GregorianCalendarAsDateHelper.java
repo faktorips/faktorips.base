@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
+import org.faktorips.values.DateUtil;
 
 
 /**
@@ -76,13 +77,10 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();        
-        fragment.append('(');
-        fragment.appendClassName(GregorianCalendar.class);
-        fragment.append(") new ");
-        fragment.appendClassName(GregorianCalendarDatatype.class);
-        fragment.append("(\"\", false).getValue(");
+        fragment.appendClassName(DateUtil.class);
+        fragment.append(".parseIsoDateStringToGregorianCalendar(");
         fragment.append(expression);
-        fragment.append(')');
+        fragment.append(")");
         return fragment;
     }
 
