@@ -1377,6 +1377,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.class, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
+        builder.append("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
         IAttribute[] attributes = getPolicyCmptType().getAttributes();
         for (int i = 0; i < attributes.length; i++) {
             IAttribute a = attributes[i];
@@ -1411,13 +1412,25 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodCreateChildFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, AbstractPolicyComponent.class, MethodNames.CREATE_CHILD_FROM_XML, new String[]{"childEl"}, new Class[]{Element.class});
+        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, 
+                AbstractPolicyComponent.class, 
+                MethodNames.CREATE_CHILD_FROM_XML, 
+                new String[]{"childEl"}, 
+                new Class[]{Element.class});
+        
+        builder.appendClassName(AbstractPolicyComponent.class);
+        builder.append(" newChild = super." + MethodNames.CREATE_CHILD_FROM_XML + "(childEl);");
+        builder.appendln("if (newChild!=null) {");
+        builder.appendln("return newChild;");
+        builder.appendln("}");
+        
         IRelation[] relations = getPolicyCmptType().getRelations();
         for (int i = 0; i < relations.length; i++) {
             IRelation relation = relations[i];
             if (!relation.isForwardComposition() 
                     || relation.isReadOnlyContainer()
-                    || !relation.isValid()) {
+                    || !relation.isValid()
+                    || relation.findTarget().isAbstract()) {
                 continue;
             }
             builder.append("if (");
@@ -1450,7 +1463,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, 
                 IUnresolvedReference.class, 
                 MethodNames.CREATE_UNRESOLVED_REFERENCE, 
-                argNames, argClasses);
+                argNames, 
+                argClasses, 
+                new Class[]{Exception.class});
+        
+        builder.appendClassName(IUnresolvedReference.class);
+        builder.appendln(" ref = super." + MethodNames.CREATE_UNRESOLVED_REFERENCE + "(objectId, targetRole, targetId);");
+        builder.appendln("if (ref!=null) {");
+        builder.appendln("return ref;");
+        builder.appendln("}");
         builder.appendln("return null;");
         builder.methodEnd();
     }
