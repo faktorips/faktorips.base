@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature.nls1"
       label="org.faktorips.feature.nls1"
-      version="0.9.14"
+      version="0.9.16"
       provider-name="FaktorZehn GmbH">
 
    <description url="http://www.example.com/description">

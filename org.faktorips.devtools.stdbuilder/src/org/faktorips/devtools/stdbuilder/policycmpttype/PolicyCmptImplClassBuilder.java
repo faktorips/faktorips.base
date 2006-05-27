@@ -20,6 +20,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClass
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IPolicyComponent;
+import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.AbstractPolicyComponent;
@@ -55,6 +57,7 @@ import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
@@ -181,6 +184,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         buildValidation(methodsBuilder);
+        generateMethodInitPropertiesFromXml(methodsBuilder);
+        generateMethodCreateChildFromXml(methodsBuilder);
+        generateMethodCreateUnresolvedReference(methodsBuilder);
     }
     
     protected void generateGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -1356,5 +1362,117 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.appendln("// TODO implement model method.");
         methodsBuilder.append("throw new RuntimeException(\"Not implemented yet!\");");
         methodsBuilder.closeBracket();
+    }
+    
+    /**
+     * protected void initPropertiesFromXml(HashMap propMap) {
+     *     if (propMap.containsKey("prop0")) {
+     *         prop0 = (String)propMap.get("prop0");
+     *     }
+     *     if (propMap.containsKey("prop1")) {
+     *         prop1 = (String)propMap.get("prop1");
+     *     }
+     * }
+     */
+    private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.class, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
+        builder.append("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
+        IAttribute[] attributes = getPolicyCmptType().getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            IAttribute a = attributes[i];
+            if (a.getAttributeType()==AttributeType.DERIVED 
+                    || a.getAttributeType()==AttributeType.CONSTANT
+                    || !a.isValid()) {
+                continue;
+            }
+            Datatype datatype = a.findDatatype();
+            DatatypeHelper helper = a.getIpsProject().getDatatypeHelper(datatype);
+            builder.append("if (propMap.containsKey(");
+            builder.appendQuoted(a.getName());
+            builder.appendln(")) {");
+            String expr = "(String)propMap.get(\"" + a.getName() + "\")";
+            builder.append(getFieldNameForAttribute(a) + " = ");
+            builder.append(helper.newInstanceFromExpression(expr));
+            builder.appendln(";");
+            builder.appendln("}");
+        }
+        builder.methodEnd();
+    }
+    
+    /**
+     * <pre>
+     * protected AbstractPolicyComponent createChildFromXml(Element childEl) {
+     *     if ("Coverage".equals(childEl.getNodeName())) {
+     *         (AbstractPolicyComponent)return newCovergae();
+     *     }
+     *     return null;    
+     * }
+     * </pre>
+     */
+    private void generateMethodCreateChildFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, 
+                AbstractPolicyComponent.class, 
+                MethodNames.CREATE_CHILD_FROM_XML, 
+                new String[]{"childEl"}, 
+                new Class[]{Element.class});
+        
+        builder.appendClassName(AbstractPolicyComponent.class);
+        builder.append(" newChild = super." + MethodNames.CREATE_CHILD_FROM_XML + "(childEl);");
+        builder.appendln("if (newChild!=null) {");
+        builder.appendln("return newChild;");
+        builder.appendln("}");
+        
+        IRelation[] relations = getPolicyCmptType().getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            IRelation relation = relations[i];
+            if (!relation.isForwardComposition() 
+                    || relation.isReadOnlyContainer()
+                    || !relation.isValid()
+                    || relation.findTarget().isAbstract()) {
+                continue;
+            }
+            builder.append("if (");
+            builder.appendQuoted(relation.getTargetRoleSingular());
+            builder.appendln(".equals(childEl.getNodeName())) {");
+            builder.append("return (");
+            builder.appendClassName(AbstractPolicyComponent.class);
+            builder.append(")");
+            builder.append(interfaceBuilder.getMethodNameNewChild(relation));
+            builder.appendln("();");
+            builder.appendln("}");
+        }
+        builder.appendln("return null;");
+        builder.methodEnd();
+    }
+    
+    /**
+     * <pre>
+     * protected abstract IUnresolvedReference createUnresolvedReference(
+     *     Object objectId,
+     *     String targetRole,
+     *     String targetId) throws Exception {
+     * }
+     * </pre>
+     */
+    private void generateMethodCreateUnresolvedReference(JavaCodeFragmentBuilder builder) throws CoreException {
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        String[] argNames = new String[]{"objectId", "targetRole", "targetId"};
+        Class[] argClasses= new Class[]{Object.class, String.class, String.class};
+        builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, 
+                IUnresolvedReference.class, 
+                MethodNames.CREATE_UNRESOLVED_REFERENCE, 
+                argNames, 
+                argClasses, 
+                new Class[]{Exception.class});
+        
+        builder.appendClassName(IUnresolvedReference.class);
+        builder.appendln(" ref = super." + MethodNames.CREATE_UNRESOLVED_REFERENCE + "(objectId, targetRole, targetId);");
+        builder.appendln("if (ref!=null) {");
+        builder.appendln("return ref;");
+        builder.appendln("}");
+        builder.appendln("return null;");
+        builder.methodEnd();
     }
 }

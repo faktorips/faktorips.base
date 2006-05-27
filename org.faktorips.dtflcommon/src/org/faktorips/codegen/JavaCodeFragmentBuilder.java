@@ -206,6 +206,37 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
+     * Creates the Java source code for a method signature.
+     * 
+     * @param modifier      Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType    The className that the methods returns an instance of 
+     *                      or <code>null</code> to indicate no return type in case of a constructor.
+     *                      The return type <code>void</code> is indictaed by <code>java.lang.Void.class</code>: 
+     * @param methodName
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     */
+    public void methodBegin(int modifier,
+            Class returnType,
+            String methodName,
+            String[] argName,
+            Class[] argClass,
+            Class[] exceptionClasses) {
+
+        String[] argClassNames = toStringArray(argClass);
+        String[] exceptionClassNames = toStringArray(exceptionClasses);
+        String returnTypeName = null;
+        if (returnType != null) {
+            if (returnType == Void.class) {
+                returnTypeName = "void";
+            } else {
+                returnTypeName = returnType.getName();
+            }
+        }
+        methodBegin(modifier, returnTypeName, methodName, argName, argClassNames, exceptionClassNames);
+    }
+
+    /**
      * Creates the Java source code for a method including signature, body and java doc.
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
@@ -422,6 +453,30 @@ public class JavaCodeFragmentBuilder {
     }
     
     /**
+     * Creates the Java source code for a method signature. If the method is non abstract the
+     * generated code ends with an opening bracket '{'. If the method is abstract the code ends with
+     * the argument list's closing bracket ')'.
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returns an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param methodName
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     */
+    public void methodBegin(int modifier,
+            String returnType,
+            String methodName,
+            String[] argName,
+            String[] argClass,
+            String[] exceptionClasses) {
+        signature(modifier, returnType, methodName, argName, argClass, exceptionClasses);
+        if (!Modifier.isAbstract(modifier)) {
+            openBracket();
+        }
+    }
+
+    /**
      * Creates the Java source code for a method signature. 
      * 
      * @param modifier Access modifier according to java.lang.reflect.Modifier.
@@ -470,6 +525,38 @@ public class JavaCodeFragmentBuilder {
         }
         append(')');
        
+    }
+    
+    /**
+     * Creates the Java source code for a method signature. 
+     * 
+     * @param modifier Access modifier according to java.lang.reflect.Modifier.
+     * @param returnType the className that the methods returns an instance of or null to indicate
+     *            no return type in case of a constructor.
+     * @param methodName
+     * @param argName Argument names.
+     * @param argClass Argument classes.
+     * @param javaDoc the java documentation for this method signature
+     * @param javaDocAnnotations annotations of the java documentation
+     */
+    public void signature(int modifier,
+            String returnType,
+            String methodName,
+            String[] argName,
+            String[] argClass,
+            String[] exceptionClasses) {
+        
+        signature(modifier, returnType, methodName, argName, argClass);
+        if (exceptionClasses==null || exceptionClasses.length==0) {
+            return;
+        }
+        append(" throws ");
+        for (int i=0, max=exceptionClasses.length; i<max; i++) {
+            if (i>0) {
+                append(", ");
+            }
+            appendClassName(exceptionClasses[i]);
+        }
     }
     
     /**

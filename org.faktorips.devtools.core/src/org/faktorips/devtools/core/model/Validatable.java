@@ -26,6 +26,26 @@ import org.faktorips.util.message.MessageList;
  */
 public interface Validatable {
 
+	/**
+	 * Returns <code>true</code> if this object does not contain any errors,
+	 * otherwise <code>false</code>. If the method returns <code>false</code> the
+	 * method <code>validate()</code> returns at least one error message.
+	 * 
+	 * @see #validate()
+     * @throws CoreException if an exception occurs while validating the object.
+	 */
+	public boolean isValid() throws CoreException;
+	
+	/**
+	 * Returns the resulting severity of the validation.
+	 * The returned severity is equal to the severity of the message list
+	 * returned by the validate() method.
+	 * 
+	 * @see #validate()
+	 * @throws CoreException
+	 */
+	public int getValidationResultSeverity() throws CoreException;
+	
     /**
      * Validates the object and all of it's parts. 
      * 
