@@ -100,15 +100,25 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
         assertEquals("coverage", copy.getProductCmptTypeRelation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
+        
+        relation.setMaxCardinality(Integer.MAX_VALUE);
+        element = relation.toXml(newDocument());
+        copy.initFromXml(element);
+        assertEquals(Integer.MAX_VALUE, copy.getMaxCardinality());
     }
 
     public void testInitFromXml() {
-        relation.initFromXml(getTestDocument().getDocumentElement());
+        relation.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName("Relation").item(0));
         assertEquals(42, relation.getId());
         assertEquals("FullCoverage", relation.getProductCmptTypeRelation());
         assertEquals("FullCoveragePlus", relation.getTarget());
         assertEquals(2, relation.getMinCardinality());
         assertEquals(3, relation.getMaxCardinality());
+
+        relation.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName("Relation").item(1));
+        assertEquals(43, relation.getId());
+        assertEquals(1, relation.getMinCardinality());
+        assertEquals(Integer.MAX_VALUE, relation.getMaxCardinality());
     }
 
     /**

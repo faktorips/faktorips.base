@@ -372,12 +372,6 @@ public class ProductCmptRelation extends IpsObjectPart implements
 				maxCardinality = 0;
 			}
 		}
-		try {
-			maxCardinality = Integer.parseInt(element
-					.getAttribute(PROPERTY_MAX_CARDINALITY));
-		} catch (NumberFormatException e) {
-			maxCardinality = 0;
-		}
 	}
 
 	/**
