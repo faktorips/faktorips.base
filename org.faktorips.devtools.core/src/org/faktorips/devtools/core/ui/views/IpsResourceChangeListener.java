@@ -80,14 +80,16 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
     	}
     	
         public void run() {
-            if (!viewer.getControl().isDisposed()) {
-            	System.out.println("refresh");
-                viewer.refresh();
-                if (res != null) {
-                	IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
-                	viewer.setSelection(new StructuredSelection(element), true);
-                }
-            }
+        	if (viewer == null || viewer.getControl().isDisposed()) {
+        		return;
+        	}
+        	viewer.refresh();
+        	if (res != null) {
+        		IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
+        		if (element != null) {
+        			viewer.setSelection(new StructuredSelection(element), true);
+        		}
+        	}
         }
     	
     }
