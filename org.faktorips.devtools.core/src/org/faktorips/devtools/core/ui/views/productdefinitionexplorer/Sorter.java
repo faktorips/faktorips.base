@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.FolderPropertiesPage;
 
 /**
@@ -33,6 +34,13 @@ import org.faktorips.devtools.core.ui.FolderPropertiesPage;
 public class Sorter extends ViewerSorter {
 
     public int compare(Viewer viewer, Object o1, Object o2) {
+    	if (o1 instanceof IIpsProject) {
+    		// if we have a project, the first given project is always lesser than the second one. 
+    		// this is a workarround for a strange behaviour of the ViewerSorter, which results
+    		// in switched projects sometimes, which is confusing for the user...
+    		return -1;
+    	}
+    	
 		if (!(o1 instanceof IIpsPackageFragment) && !(o2 instanceof IIpsPackageFragment)) {
 			// no folder involved, let the superclass decide
 			return super.compare(viewer, o1, o2);
