@@ -23,6 +23,13 @@
 			</patternset>
 		</fileset>
 
+			<!-- devtools.core depends on org.apache.poi -->
+			<fileset dir="../../org.apache.poi/" >
+			    <patternset> 
+			    		<include name="*.jar" />
+			    </patternset>
+			</fileset>
+		
 		<!-- devtools.core depends on org.faktorips.valuetypes -->
 		<fileset dir="../../org.faktorips.valuetypes/" >
 		    <patternset> 
