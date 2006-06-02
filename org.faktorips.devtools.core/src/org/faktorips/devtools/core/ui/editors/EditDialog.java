@@ -158,5 +158,13 @@ public abstract class EditDialog extends TitleAreaDialog {
 			parentEditor.setActive(true);
 		}
 	}
+	
+	/**
+	 * Returns the editor which is the parent editor to this one - which means
+	 * that the parent editor contains the control which has opened this editor.
+	 */
+	IpsObjectEditor getParentEditor() {
+		return parentEditor;
+	}
 }	
 

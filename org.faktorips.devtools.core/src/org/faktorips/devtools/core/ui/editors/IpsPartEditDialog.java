@@ -89,6 +89,9 @@ public abstract class IpsPartEditDialog extends EditDialog {
 		if (!dirty) {
 			uiController.getIpsObjectPart().getIpsObject().getIpsSrcFile().markAsClean();
 		}
+		if (getParentEditor() != null) {
+			getParentEditor().refresh();
+		}
     }
     
 	protected Control createContents(Composite parent) {
