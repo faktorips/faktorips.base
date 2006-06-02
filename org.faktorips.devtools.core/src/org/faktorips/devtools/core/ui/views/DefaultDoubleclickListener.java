@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 
 public class DefaultDoubleclickListener implements IDoubleClickListener {
@@ -68,6 +69,13 @@ public class DefaultDoubleclickListener implements IDoubleClickListener {
             }
             else if (obj instanceof StructureNode) {
             	openEditor(((StructureNode)obj).getWrappedElement());
+            }
+            else if (obj instanceof Object[]) {
+            	// handle the result of the reference-search which is an object-array...
+            	Object[] array = (Object[]) obj;
+            	if (array.length > 1 && array[0] instanceof IProductCmpt) {
+            		openEditor((IProductCmpt)array[0]);
+            	}
             }
 
         }

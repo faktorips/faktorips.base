@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
+import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 
 public class ReferencesToProductSearchResultPage extends AbstractTextSearchViewPage {
     SearchResultLabelProvider labelProvider;
@@ -56,6 +57,7 @@ public class ReferencesToProductSearchResultPage extends AbstractTextSearchViewP
         }
         viewer.setLabelProvider(labelProvider);
         viewer.setContentProvider(contentProvider);
+        viewer.addDoubleClickListener(new DefaultDoubleclickListener(viewer));
     }
 
     protected void configureTableViewer(TableViewer viewer) {
