@@ -438,7 +438,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      */
     public void generateMethodComputeValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_COMPUTE_VALUE", StringUtils.capitalise(a.getName()), a, methodsBuilder);
-        generateSignatureComputeValue(a, datatypeHelper,Modifier.ABSTRACT | Modifier.PUBLIC, methodsBuilder);
+        generateSignatureComputeValue(a, datatypeHelper,Modifier.ABSTRACT | Modifier.PUBLIC, false, methodsBuilder);
         methodsBuilder.appendln(";");
     }
     
@@ -448,12 +448,13 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * public abstract Money computePremium(Policy policy, Integer age)
      * </pre>
      */
-    public void generateSignatureComputeValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureComputeValue(IAttribute a, DatatypeHelper datatypeHelper, int modifier, boolean withFinalParameters, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         Parameter[] parameters = a.getFormulaParameters();
         String methodName = getMethodNameComputeValue(a);
         methodsBuilder.signature(modifier, datatypeHelper.getJavaClassName(),
                 methodName, BuilderHelper.extractParameterNames(parameters),
-                StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, a.getIpsProject(), policyCmptTypeImplBuilder));
+                StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, a.getIpsProject(), policyCmptTypeImplBuilder),
+                withFinalParameters);
     }
     
     public String getMethodNameComputeValue(IAttribute a) {

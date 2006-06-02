@@ -19,6 +19,7 @@ package org.faktorips.devtools.stdbuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.runtime.TableFunctionExecution;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
@@ -52,6 +54,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     private IIpsArtefactBuilder[] builders;
     private TableImplBuilder tableImplBuilder;
+    private TableRowBuilder tableRowBuilder;
     private PolicyCmptInterfaceBuilder policyCmptInterfaceBuilder;
 
     /**
@@ -73,9 +76,21 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public CompilationResult getTableAccessCode(ITableContents tableContents, ITableAccessFunction fct, CompilationResult[] argResults) throws CoreException {
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
+        DatatypeHelper returnTypeHelper = fct.getIpsProject().findDatatypeHelper(returnType.getQualifiedName());
         JavaCodeFragment code = new JavaCodeFragment();
-        CompilationResultImpl result = new CompilationResultImpl(code, returnType);
         ITableStructure tableStructure = fct.getTableStructure();
+        code.append("((");
+        code.appendClassName(returnType.getJavaClassName());
+        code.append(")");
+        code.append("(new ");
+        code.appendClassName(TableFunctionExecution.class);
+        code.append("()");
+        code.appendOpenBracket();
+        code.append("public Object execute()");
+        code.appendOpenBracket();
+        code.appendClassName(tableRowBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
+        code.append(" row = ");
+        CompilationResultImpl result = new CompilationResultImpl(code, returnType);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         if(tableStructure.isMultipleContentsAllowed()){
             code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() + "\").findRow(");
@@ -91,9 +106,20 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             code.append(argResults[i].getCodeFragment());
             result.addMessages(argResults[i].getMessages());
         }
-        code.append(").get");
+        code.append(");");
+        code.appendln();
+        code.append("if(row != null)");
+        code.appendOpenBracket();
+        code.append("return row.get");
         code.append(StringUtils.capitalise(fct.findAccessedColumn().getName()));
-        code.append("()");
+        code.append("();");
+        code.appendCloseBracket();
+        code.append("return ");
+        code.append(returnTypeHelper.nullExpression());
+        code.append(';');
+        code.appendCloseBracket();
+        code.appendCloseBracket();
+        code.append(").execute())");
         return result;
     }
 
@@ -139,7 +165,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         
         // table structure builders
         tableImplBuilder = new TableImplBuilder(this, KIND_TABLE_IMPL);
-        TableRowBuilder tableRowBuilder = new TableRowBuilder(this, KIND_TABLE_ROW);
+        tableRowBuilder = new TableRowBuilder(this, KIND_TABLE_ROW);
         tableImplBuilder.setTableRowBuilder(tableRowBuilder);
 
         // table content builders

@@ -298,6 +298,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return specialNullValue!=null;
     }
 
+    //TODO pk: this cannot be right
     public int compareTo(Object o) {
         return 0;
     }
