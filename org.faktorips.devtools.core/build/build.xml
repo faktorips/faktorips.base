@@ -26,7 +26,7 @@
 			<!-- devtools.core depends on org.apache.poi -->
 			<fileset dir="../../org.apache.poi/" >
 			    <patternset> 
-			    		<include name="*.jar" />
+			    		<include name="*.jar" /> 
 			    </patternset>
 			</fileset>
 		
