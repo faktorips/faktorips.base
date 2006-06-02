@@ -130,4 +130,11 @@ public class TableContentsGenerationImplTest extends IpsObjectTestCase {
 			//nothing to do :-)
 		}
     }
+    
+    public void testClear() {
+        generation.newRow();
+        generation.newRow();
+        generation.clear();
+        assertEquals(0, generation.getNumOfRows());
+    }
 }
