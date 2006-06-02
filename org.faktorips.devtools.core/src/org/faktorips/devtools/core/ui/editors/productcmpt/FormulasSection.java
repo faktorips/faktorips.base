@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -134,8 +135,8 @@ public class FormulasSection extends IpsSection {
 				.getIpsObject());
 		uiMasterController.add(ctrl);
 	
-		IConfigElement[] elements = generation
-				.getConfigElements(ConfigElementType.FORMULA);
+		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
+		Arrays.sort(elements, new ConfigElementComparator());
 	
 		if (elements.length == 0 && noFormulasLabel == null) {
 			noFormulasLabel = toolkit.createLabel(rootPane,

@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -133,6 +134,7 @@ public class DefaultsAndRangesSection extends IpsSection {
 		uiMasterController = new CompositeUIController();
 		
 		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.POLICY_ATTRIBUTE);
+		Arrays.sort(elements, new ConfigElementComparator());
 		
 		if (elements.length == 0) {
 			toolkit.createLabel(rootPane, Messages.PolicyAttributesSection_noDefaultsAndRangesDefined);

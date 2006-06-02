@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -183,6 +184,7 @@ public class ProductAttributesSection extends IpsSection {
 
 		// create a label and edit control for each config element
 		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.PRODUCT_ATTRIBUTE);
+		Arrays.sort(elements, new ConfigElementComparator());
 		for (int i = 0; i < elements.length; i++) {
 			addAndRegister(elements[i]);
 		}

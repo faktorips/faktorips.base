@@ -63,9 +63,14 @@ public class RelationsContentProvider implements ITreeContentProvider {
 				List result = new ArrayList();
     			while (pcType != null) {
 					IProductCmptTypeRelation[] relations = pcType.getRelations();
+					int index = 0;
 					for (int i = 0; i < relations.length; i++) {
 						if (!relations[i].isAbstract() && !relations[i].isAbstractContainer()) {
-							result.add(relations[i]);
+							// to get the relations of the supermost product component type
+							// put in the list as first, but with unchanged order for all relations
+							// found in one type...
+							result.add(index, relations[i]);
+							index++;
 						}
 					}
 					pcType = pcType.findSupertype();
