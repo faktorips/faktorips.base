@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.model.product;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;

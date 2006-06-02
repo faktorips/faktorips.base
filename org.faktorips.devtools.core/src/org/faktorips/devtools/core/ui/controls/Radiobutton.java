@@ -15,33 +15,25 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.tablecontents;
+package org.faktorips.devtools.core.ui.controls;
 
-import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.ui.UIToolkit;
+
+
 
 /**
  *
  */
-public interface ITableContentsGeneration extends IIpsObjectGeneration {
+public class Radiobutton extends AbstractCheckbox {
     
     /**
-     * Returns the rows that make up the table.
+     * @param parent
+     * @param toolkit
      */
-    public IRow[] getRows();
-
-    /**
-     * Returns the number of rows in the table.
-     */
-    public int getNumOfRows();
+    public Radiobutton(Composite parent, UIToolkit toolkit) {
+        super(parent, toolkit, SWT.RADIO);
+    }
     
-    /**
-     * Creates a new row.
-     */
-    public IRow newRow();
-    
-    /**
-     * removes all rows
-     */
-    public void clear();
-
 }

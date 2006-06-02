@@ -60,6 +60,10 @@ public class Messages extends NLS {
 
 	public static String TableStructureRefControl_description;
 
+	public static String TableContentsRefControl_title;
+
+	public static String TableContentsRefControl_description;
+
 	public static String IpsPckFragmentRootRefControl_title;
 
 	public static String DatatypeRefControl_title;
@@ -89,4 +93,16 @@ public class Messages extends NLS {
 	public static String ListChooser_buttonDown;
 
 	public static String RangeEditControl_labelIncludeNull;
+
+	public static String FileSelectionControl_titleBrowse;
+
+    public static String IpsProjectRefControl_labelBrowse;
+
+    public static String IpsProjectRefControl_labelDialogMessage;
+
+    public static String IpsProjectRefControl_msgNoProjectsFound;
+
+    public static String IpsProjectRefControl_msgNoProjectSelected;
+
+    public static String IpsProjectRefControl_labelDialogTitle;
 }

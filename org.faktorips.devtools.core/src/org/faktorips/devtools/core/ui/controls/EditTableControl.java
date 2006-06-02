@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.List;
 
-
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;

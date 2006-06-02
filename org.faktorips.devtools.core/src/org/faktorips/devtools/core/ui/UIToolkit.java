@@ -40,7 +40,10 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.Radiobutton;
+import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.values.EnumType;
 import org.faktorips.values.EnumValue;
@@ -288,23 +291,41 @@ public class UIToolkit {
 		return newText;
 	}
 
-	/**
-	 * Creates a new checkbox.
-	 */
-	public Checkbox createCheckbox(Composite parent) {
-		return new Checkbox(parent, this);
-	}
+    /**
+     * Creates a new checkbox.
+     */
+    public Checkbox createCheckbox(Composite parent) {
+        return new Checkbox(parent, this);
+    }
 
-	/**
-	 * Creates a new checkbox.
-	 */
-	public Checkbox createCheckbox(Composite parent, String text) {
-		Checkbox checkbox = new Checkbox(parent, this);
-		if (text != null) {
-			checkbox.setText(text);
-		}
-		return checkbox;
-	}
+    /**
+     * Creates a new checkbox.
+     */
+    public Checkbox createCheckbox(Composite parent, String text) {
+        Checkbox checkbox = new Checkbox(parent, this);
+        if (text != null) {
+            checkbox.setText(text);
+        }
+        return checkbox;
+    }
+
+    /**
+     * Creates a new radiobutton.
+     */
+    public Radiobutton createRadiobutton(Composite parent) {
+        return new Radiobutton(parent, this);
+    }
+
+    /**
+     * Creates a new radiobutton.
+     */
+    public Radiobutton createRadiobutton(Composite parent, String text) {
+        Radiobutton radiobutton = new Radiobutton(parent, this);
+        if (text != null) {
+            radiobutton.setText(text);
+        }
+        return radiobutton;
+    }
 
 	/**
 	 * Creates a new push button.
@@ -368,6 +389,21 @@ public class UIToolkit {
 			IIpsProject project, Composite parent) {
 		return new TableStructureRefControl(project, parent, this);
 	}
+
+    /**
+     * Creates a new TableContentsRefControl.
+     */
+    public TableContentsRefControl createTableContentsRefControl(
+            IIpsProject project, Composite parent) {
+        return new TableContentsRefControl(project, parent, this);
+    }
+
+    /**
+     * Creates a new IpsProjectRefControl.
+     */
+    public IpsProjectRefControl createIpsProjectRefControl(Composite parent) {
+        return new IpsProjectRefControl(parent, this);
+    }
 
 	/**
 	 * Creates a new DatatypeRefControl.

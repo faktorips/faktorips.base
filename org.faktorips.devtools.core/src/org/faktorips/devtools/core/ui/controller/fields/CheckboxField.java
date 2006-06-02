@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 
 
 /**
@@ -28,9 +28,9 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
  */
 public class CheckboxField extends DefaultEditField {
     
-    private Checkbox checkbox;
+    private AbstractCheckbox checkbox;
     
-    public CheckboxField(Checkbox checkbox) {
+    public CheckboxField(AbstractCheckbox checkbox) {
         this.checkbox = checkbox;
     }
 
@@ -42,7 +42,7 @@ public class CheckboxField extends DefaultEditField {
         return checkbox;
     }
     
-    public Checkbox getCheckbox() {
+    public AbstractCheckbox getCheckbox() {
         return checkbox;
     }
 

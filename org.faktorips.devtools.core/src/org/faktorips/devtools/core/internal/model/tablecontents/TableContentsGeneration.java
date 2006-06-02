@@ -168,4 +168,12 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 		
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void clear() {
+        rows.clear();
+        updateSrcFile();
+    }
 }

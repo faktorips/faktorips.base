@@ -224,6 +224,30 @@
 	    </wizard>
     </extension>
 
+    <extension
+        point = "org.eclipse.ui.exportWizards">
+     	<wizard
+	       id = "tableExportWizard"
+           name = "FaktorIPS table contents"
+    	   class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
+    	   icon="icons/TableContents.gif">
+    	   <description>Exports table contents</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+    </extension>
+
+    <extension
+        point = "org.eclipse.ui.importWizards">
+     	<wizard
+	       id = "tableImportWizard"
+           name = "FaktorIPS table contents"
+    	   class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
+    	   icon="icons/TableContents.gif">
+    	   <description>Imports table contents</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+    </extension>
+
 <!-- 
     Preference Pages
   -->
