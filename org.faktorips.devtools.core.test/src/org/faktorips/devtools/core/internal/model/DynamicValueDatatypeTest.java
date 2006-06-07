@@ -46,7 +46,7 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
 		assertEquals("foo.bar.MyDate", type.getAdaptedClassName());
 		assertEquals("getMyDate", type.getValueOfMethodName());
 		assertEquals("isMyDate", type.getIsParsableMethodName());
-		assertEquals("isMyDate", type.getIsParsableMethodName());
+        assertFalse(type.hasNullObject());
 	}
 
 	public void testCreateFromXml_EnumType() {
@@ -60,7 +60,23 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
 		assertEquals("getName", type.getGetNameMethodName());
 		assertEquals("getPaymentModes", type.getAllValuesMethodName());
 		assertTrue(type.isSupportingNames());
-		assertEquals("n", type.getSpecialNullValue()); 
+        assertFalse(type.hasNullObject());
 	}
 	
+    public void testCreateFromXml_NullObjectWithIdNotNull() {
+        Element docEl = getTestDocument().getDocumentElement();
+        Element el = XmlUtil.getElement(docEl, "Datatype", 2);
+        DynamicEnumDatatype type = (DynamicEnumDatatype)DynamicValueDatatype.createFromXml(ipsProject, el);
+        assertTrue(type.hasNullObject());
+        assertEquals("n", type.getNullObjectId());
+    }
+    
+    public void testCreateFromXml_NullObjectWithIdNull() {
+        Element docEl = getTestDocument().getDocumentElement();
+        Element el = XmlUtil.getElement(docEl, "Datatype", 3);
+        DynamicEnumDatatype type = (DynamicEnumDatatype)DynamicValueDatatype.createFromXml(ipsProject, el);
+        assertTrue(type.hasNullObject());
+        assertNull(type.getNullObjectId());
+    }
+    
 }

@@ -384,6 +384,36 @@ public class XmlUtil {
 				doc, parent, text);
 	}
 
+	/**
+	 * Returns the value for the given property from the given parent element.
+	 * The parent XML element must has the following format:
+	 * <pre>
+	 * 		<Parent>
+	 * 			<Property isNull="false">42</Property>
+	 * 		</Parent>
+	 * </pre>
+	 * 
+	 * @throws NullPointerException if parent or propertyName is <code>null</code>
+	 * or the parent element does not contain an element with the given propertyName.
+	 */
+	public String getValueFromElement(Element parent, String propertyName) {
+        Element propertyEl = XmlUtil.getFirstElement(parent, propertyName);
+        if (propertyEl==null) {
+        	throw new NullPointerException();
+        }
+		String isNull = parent.getAttribute("isNull"); //$NON-NLS-1$
+        if (Boolean.valueOf(isNull).booleanValue()) {
+            return null;
+        } else {
+            Text textNode = getTextNode(parent);
+            if (textNode==null) {
+                return "";
+            } else {
+                return textNode.getNodeValue();
+            }
+        }
+	}
+	
 	private XmlUtil() {
 	}
 

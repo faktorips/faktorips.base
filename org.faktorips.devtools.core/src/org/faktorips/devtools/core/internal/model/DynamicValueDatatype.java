@@ -35,6 +35,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 
 /**
@@ -92,9 +94,13 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		} else {
 			datatype.setToStringMethodName(null);
 		}
-		if (element.hasAttribute("specialNullValue")) { //$NON-NLS-1$
-			datatype.setSpecialNullValue(element
-					.getAttribute("specialNullValue")); //$NON-NLS-1$
+		Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId");
+		if (nullObjectEl==null) {
+			datatype.setNullObjectDefined(false);
+			datatype.setNullObjectId(null);
+		} else {
+			datatype.setNullObjectDefined(true);
+			datatype.setNullObjectId(ValueToXmlHelper.getValueFromElement(element, "NullObjectId"));
 		}
 		datatype.getAdaptedClass();
 		return datatype;
@@ -114,13 +120,11 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 			element.setAttribute("isParsableMethod", getIsParsableMethodName()); //$NON-NLS-1$
 		}
 		if (getToStringMethodName() != null) {
-			element
-					.setAttribute(
-							"valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
+			element.setAttribute("valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
 		}
-		if (getSpecialNullValue() != null) {
-			element.setAttribute("specialNullValue", getSpecialNullValue()); //$NON-NLS-1$			
-		}
+		if (hasNullObject()) {
+			ValueToXmlHelper.addValueToElement(getNullObjectId(), element, "NullObjectId");
+		}			
 	}
 
 	private IIpsProject ipsProject;

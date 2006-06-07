@@ -42,17 +42,17 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
     }
 
     public JavaCodeFragment nullExpression() {
+        GenericValueDatatype datatype = getGenericValueDatatype();
         JavaCodeFragment code = new JavaCodeFragment();
-        String nullValueId = getGenericValueDatatype().getSpecialNullValue();
-        if (nullValueId==null) {
+        if (!datatype.hasNullObject()) {
             code.append("null");
             return code;
         }
-        code.appendClassName(getGenericValueDatatype().getAdaptedClass());
+        code.appendClassName(datatype.getAdaptedClass());
         code.append('.');
-        code.append(getGenericValueDatatype().getValueOfMethodName());
+        code.append(datatype.getValueOfMethodName());
         code.append('(');
-        code.appendQuoted(nullValueId);
+        code.appendQuoted(datatype.getNullObjectId());
         code.append(')');
         return code;
     }

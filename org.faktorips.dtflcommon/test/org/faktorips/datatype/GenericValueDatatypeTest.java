@@ -41,7 +41,7 @@ public class GenericValueDatatypeTest extends TestCase {
         datatype.setIsParsableMethodName("unknwonMethod");
         datatype.setToStringMethodName("unknwonMethod");
         datatype.setValueOfMethodName("unknwonMethod");
-        datatype.setSpecialNullValue("unkownValue");
+        datatype.setNullObjectDefined(false);
         MessageList list = datatype.validate();
         assertEquals(3, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_GETVALUE_METHOD_NOT_FOUND));
@@ -53,12 +53,13 @@ public class GenericValueDatatypeTest extends TestCase {
         datatype.setIsParsableMethodName("isParsable");
         datatype.setToStringMethodName("getId");
         datatype.setValueOfMethodName("getPaymentMode");
-        datatype.setSpecialNullValue("unkownValue");
+        datatype.setNullObjectDefined(true);
+        datatype.setNullObjectId("unkownValue");
         MessageList list = datatype.validate();
         assertEquals(1, list.getNoOfMessages());
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_NOT_FOUND));
         
-        datatype.setSpecialNullValue(PaymentMode.ANNUAL.getId());
+        datatype.setNullObjectId(PaymentMode.ANNUAL.getId());
         list = datatype.validate();
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL));
     }

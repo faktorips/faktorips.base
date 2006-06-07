@@ -49,8 +49,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     }
 
     /**
-     * Overridden IMethod.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPathEntry#getIpsObjectPath()
+     * {@inheritDoc}
      */
     public IIpsObjectPath getIpsObjectPath() {
         return path;

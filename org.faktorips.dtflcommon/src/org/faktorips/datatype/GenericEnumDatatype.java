@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.commons.lang.ObjectUtils;
+
 /**
  * Generic enum datatype. See the superclass for more Details.
  * 
@@ -85,20 +87,35 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 			for (int i = 0; i < ids.length; i++) {
                 ids[i] = this.valueToString(values[i]);
 			}
-
-            
+            int indexOfNull = getIndeoxOfNullOrNullObject(ids);
             ArrayList result = new ArrayList();
             result.addAll(Arrays.asList(ids));
-            if (!includeNull && result.contains(null)) {
-                result.remove(null);
-            } else if (includeNull && !result.contains(null)) {
-                result.add(null);
+            if (!includeNull && indexOfNull>=0) {
+                result.remove(indexOfNull);
+            } else if (includeNull && indexOfNull==-1) {
+                if (hasNullObject()) {
+                    result.add(getNullObjectId());
+                } else {
+                    result.add(null);
+                }
             }
 			return (String[])result.toArray(new String[result.size()]);
 		} catch (Exception e) {
 			throw new RuntimeException("Error invoking method " + getAllValuesMethodName, e);
 		}
 	}
+    
+    private int getIndeoxOfNullOrNullObject(String valueIds[]) {
+        for (int i = 0; i < valueIds.length; i++) {
+            if (valueIds[i]==null) {
+                return i;
+            }
+            if (hasNullObject() && ObjectUtils.equals(valueIds[i], getNullObjectId())) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 	Method getGetAllValuesMethod() {
 		if (getAllValuesMethod == null && getAllValuesMethodName != null) {

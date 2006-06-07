@@ -47,7 +47,10 @@ import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 
 /**
- *
+ * Editor to a edit a product component.
+ * 
+ * @author Jan Ortmann
+ * @author Thorsten Guenther
  */
 public class ProductCmptEditor extends TimedIpsObjectEditor {
 

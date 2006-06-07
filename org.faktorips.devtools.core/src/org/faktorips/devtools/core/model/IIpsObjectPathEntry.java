@@ -35,6 +35,11 @@ public interface IIpsObjectPathEntry {
     public final static String TYPE_PROJECT_REFERENCE = "project"; //$NON-NLS-1$
     
     /**
+     * Type constant indicating a jar file containing the model files.
+     */
+    public final static String TYPE_JAR = "jar";  //$NON-NLS-1$
+
+    /**
      * Returns the object path this is an entry of.
      */
     public IIpsObjectPath getIpsObjectPath();

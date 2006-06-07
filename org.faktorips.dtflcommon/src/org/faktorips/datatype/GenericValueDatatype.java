@@ -49,7 +49,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     private String valueOfMethodName = "valueOf";
     private String isParsableMethodName = "isParsable";
     private String toStringMethodName = "toString";
-    private String specialNullValue = null;
+    
+    private boolean nullObjectDefined = false;
+    private String nullObjectId = null;
     
     protected Method valueOfMethod;
     protected Method isParsableMethod;
@@ -104,17 +106,17 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
             return list;
         }
-        if (specialNullValue!=null) {
+        if (nullObjectDefined) {
             try {
-                Object value = getValue(specialNullValue);
+                Object value = getValue(nullObjectId);
                 if (value instanceof NullObject) {
                     if (!((NullObject)value).isNull()) {
-                        String text = "The string " + specialNullValue + " does not represent the special null value.";
+                        String text = "The string " + nullObjectId + " does not represent the special null value.";
                         list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL, text));
                     }
                 }
             } catch (RuntimeException e) {
-                String text = "The null value string " + specialNullValue + " is not a value defined by the datatype.";
+                String text = "The null value string " + nullObjectId + " is not a value defined by the datatype.";
                 list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_NOT_FOUND, text));
             }
         }
@@ -130,12 +132,33 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         isParsableMethod = null;
     }
 
-    public String getSpecialNullValue() {
-        return specialNullValue;
+    /**
+     * Returns <code>true</code> if the datatype has a special instance representing
+     * null. (This is known as the NullObject pattern). 
+     */
+    public boolean hasNullObject() {
+        return nullObjectDefined;
     }
 
-    public void setSpecialNullValue(String nullValueId) {
-        this.specialNullValue = nullValueId;
+    /**
+     * Sets if this datatype is an application of the NullObject pattern.
+     */
+    public void setNullObjectDefined(boolean flag) {
+        this.nullObjectDefined = flag;
+    }
+    
+    /**
+     * Returns the String identification of the special NullObject.
+     */
+    public String getNullObjectId() {
+        return nullObjectId;
+    }
+
+    /**
+     * Sets the String identification of the special NullObject.
+     */
+    public void setNullObjectId(String specialNullValueId) {
+        this.nullObjectId = specialNullValueId;
     }
 
     public String getValueOfMethodName() {
@@ -204,7 +227,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     public Object getValue(String value) {
-        if (value==null && specialNullValue==null) {
+        if (!nullObjectDefined && value==null) {
             return null;
         }
         try {
@@ -261,10 +284,10 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (value==null) {
             return true;
         }
-        if (specialNullValue==null) {
+        if (!nullObjectDefined) {
             return false;
         }
-        return value.equals(getValue(specialNullValue));
+        return value.equals(getValue(nullObjectId));
     }
 
     public String getName() {
@@ -291,14 +314,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return getAdaptedClass().getName();
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public boolean hasNullObject() {
-        return specialNullValue!=null;
-    }
-
-    //TODO pk: this cannot be right
+    // TODO pk: this cannot be right
     public int compareTo(Object o) {
         return 0;
     }
