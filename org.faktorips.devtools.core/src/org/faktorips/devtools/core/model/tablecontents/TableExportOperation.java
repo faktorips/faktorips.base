@@ -73,7 +73,7 @@ public class TableExportOperation implements IWorkspaceRunnable {
         monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentGeneration.getNumOfRows());
         
         HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet(contents.getName());
+        HSSFSheet sheet = workbook.createSheet();
         
         monitor.worked(1);
         
