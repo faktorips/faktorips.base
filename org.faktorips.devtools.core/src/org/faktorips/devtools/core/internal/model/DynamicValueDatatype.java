@@ -144,7 +144,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 
 	public void setAdaptedClassName(String className) {
 		this.className = className;
-		removeCachedData();
+		clearCache();
 	}
 
 	public void setAdaptedClass(Class clazz) {
@@ -155,8 +155,8 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		return className;
 	}
 
-	protected void removeCachedData() {
-		super.removeCachedData();
+	protected void clearCache() {
+		super.clearCache();
 		adaptedClass = null;
 	}
 
@@ -185,7 +185,6 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 
 	private void accumulateClasspath(IJavaProject project, List urlsList)
 			throws JavaModelException, MalformedURLException {
-		// IPath root = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 		IPath projectPath = project.getProject().getLocation();
 		IPath root = projectPath.removeLastSegments(project.getProject()
 				.getFullPath().segmentCount());
@@ -250,7 +249,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 			ipsProject.getProject().getWorkspace()
 					.removeResourceChangeListener(changeListener);
 			changeListener = null;
-			removeCachedData();
+			clearCache();
 		}
 	}
 

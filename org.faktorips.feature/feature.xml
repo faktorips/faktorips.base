@@ -38,8 +38,7 @@
          id="org.faktorips.devtools.core"
          download-size="0"
          install-size="0"
-         version="0.9.18"
-         unpack="false"/>
+         version="0.9.18"/>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder"
