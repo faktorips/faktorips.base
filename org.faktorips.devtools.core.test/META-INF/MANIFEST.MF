@@ -14,8 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.launching,
  org.eclipse.jface.text,
  org.junit,
- org.faktorips.devtools.core,
- org.apache.poi
+ org.faktorips.devtools.core
 Eclipse-AutoStart: true
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
