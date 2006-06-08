@@ -17,6 +17,7 @@
 
 package org.faktorips.datatype;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,18 +40,41 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 	protected Method getAllValuesMethod;
 
 	protected Method getNameMethod;
-
+    
+    private boolean cacheData;
+    private String[] cachedValueIds = null;
+    private String[] cachedValueNames = null;
+    
 	public GenericEnumDatatype() {
 		super();
 	}
+    
+	/**
+     * Returns <code>true</code> if the values' id and names are cached, <code>false</code> otherwise.
+     */
+    public boolean isCacheData() {
+        return cacheData;
+    }
 
-	public String getGetAllValuesMethodName() {
+    /**
+     * Sets to <code>true</code> if the values' ids and names should be cached, otherwise <code>false</code>.
+     * Setting <code>false</code> also clears the cache.
+     */
+    public void setCacheData(boolean cacheData) {
+        this.cacheData = cacheData;
+        if (!cacheData) {
+            clearCache();
+        }
+    }
+    
+    public String getGetAllValuesMethodName() {
 		return getAllValuesMethodName;
 	}
 
 	public void setGetAllValuesMethodName(String getAllValuesMethodName) {
 		this.getAllValuesMethodName = getAllValuesMethodName;
 		getAllValuesMethod = null;
+        clearCache();
 	}
 
 	/**
@@ -66,6 +90,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 	public void setGetNameMethodName(String getNameMethodName) {
 		this.getNameMethod = null;
 		this.getNameMethodName = getNameMethodName;
+        clearCache();
 	}
 
 
@@ -78,15 +103,18 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 
 	public void setIsSupportingNames(boolean isSupportingNames) {
 		this.isSupportingNames = isSupportingNames;
+        clearCache();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public String[] getAllValueIds(boolean includeNull) {
 		try {
-			Object[] values = (Object[]) getGetAllValuesMethod().invoke(null, new Object[0]);
-			String[] ids = new String[values.length];
-			for (int i = 0; i < ids.length; i++) {
-                ids[i] = this.valueToString(values[i]);
-			}
+			String[] ids = getAllValueIdsFromCache();
+            if (ids==null) { // caching disabled
+                ids = getAllValueIdsFromClass();
+            }
             int indexOfNull = getIndeoxOfNullOrNullObject(ids);
             ArrayList result = new ArrayList();
             result.addAll(Arrays.asList(ids));
@@ -105,6 +133,18 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 		}
 	}
     
+    /**
+     * Returns the value id's from the underlying enum class' via it's getAllValuesMethod().
+     */
+    private String[] getAllValueIdsFromClass() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        Object[] values = (Object[]) getGetAllValuesMethod().invoke(null, new Object[0]);
+        String[] ids = new String[values.length];
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = this.valueToString(values[i]);
+        }
+        return ids;
+    }
+
     private int getIndeoxOfNullOrNullObject(String valueIds[]) {
         for (int i = 0; i < valueIds.length; i++) {
             if (valueIds[i]==null) {
@@ -154,16 +194,108 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
                     "This enumeration type does not support a getName(String) method, enumeration type class: "
                             + getAdaptedClass());
         }
-		try {
+        String[] ids = getAllValueIdsFromCache();
+        if (ids!=null) {
+            for (int i = 0; i < ids.length; i++) {
+                if (ObjectUtils.equals(id, ids[i])) {
+                    String[] names = getAllValueNamesFromCache();
+                    return names[i];
+                }
+            }
+        }
+        return getValueNameFromClass(id);
+    }
+    
+    private String getValueNameFromClass(String id) {
+        try {
             Object value = getValue(id);
             if (value==null) {
                 return null;
             }
             return (String)getGetNameMethod().invoke(value, new Object[0]);
 
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to invoke the method " + getNameMethodName
-					+ " on the class: " + getAdaptedClass());
-		}
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName
+                    + " on the class: " + getAdaptedClass(), e);
+        }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isParsable(String value) {
+        String[] ids = getAllValueIdsFromCache();
+        if (ids==null) {
+            return super.isParsable(value);
+        }
+        for (int i = 0; i < ids.length; i++) {
+            if (ObjectUtils.equals(value, ids[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns all value ids from the cache. If caching is enabled, but the cache is empty, the
+     * cahce is populated with the date. If caching is disabled, the method returns <code>null</code>.
+     * <p>
+     * Package private to allows testing.
+     */
+    String[] getAllValueIdsFromCache() {
+        if (!cacheData) {
+            return null;
+        }
+        if (cachedValueIds==null) {
+            initCache();
+        }
+        return cachedValueIds;
+    }
+    
+    /**
+     * Returns all value names from the cache. If caching is enabled, but the cache is empty, the
+     * cahce is populated with the date. If caching is disabled, the method returns <code>null</code>.
+     * <p>
+     * Package private to allows testing.
+     */
+    String[] getAllValueNamesFromCache() {
+        if (!isSupportingNames) {
+            throw new RuntimeException("Datatype " + this + " does not support names.");
+        }
+        if (!cacheData) {
+            return null;
+        }
+        if (cachedValueNames==null) {
+            initCache();
+        }
+        return cachedValueNames;
+    }
+    
+    
+    private void initCache() {
+        String[] ids;
+        try {
+            ids = getAllValueIdsFromClass();    
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing cache for datatype " + this, e);
+        }
+        cachedValueIds = new String[ids.length];
+        if (isSupportingNames) {
+            cachedValueNames = new String[ids.length];
+        }
+        for (int i = 0; i < ids.length; i++) {
+            cachedValueIds[i] = ids[i];
+            if (isSupportingNames) {
+                cachedValueNames[i] = getValueNameFromClass(ids[i]);
+            }
+        }
+    }
+    
+    protected void clearCache() {
+        super.clearCache();
+        this.getAllValuesMethod = null;
+        cachedValueIds = null;
+        cachedValueNames = null;
+    }
+    
 }

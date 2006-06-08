@@ -204,9 +204,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             getValueOfMethod().invoke(null, new Object[]{value});
             return true; // getValue() has executed without exception, the value can be parsed.
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error executing method " + valueOfMethod);
+            throw new RuntimeException("Error executing method " + valueOfMethod, e);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error executing method " + valueOfMethod);
+            throw new RuntimeException("Error executing method " + valueOfMethod, e);
         } catch (InvocationTargetException e) {
             return false; // getValue() has thrown an exception, the value can't be parsed.
         }
@@ -233,7 +233,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         try {
             return getValueOfMethod().invoke(null, new Object[]{value});
         } catch (Exception e) {
-            throw new RuntimeException("Error invoking method " + valueOfMethod, e);
+            throw new RuntimeException("Error invoking method to get the value " + valueOfMethod, e);
         }
     }
     
@@ -323,7 +323,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return qualifiedName;
     }
     
-    protected void removeCachedData() {
+    protected void clearCache() {
         isParsableMethod = null;
         valueOfMethod = null;
         toStringMethod = null;
