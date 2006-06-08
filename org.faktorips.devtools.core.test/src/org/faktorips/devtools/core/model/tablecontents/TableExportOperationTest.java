@@ -59,7 +59,7 @@ public class TableExportOperationTest extends AbstractIpsPluginTest {
     public void testRun() throws Exception {
         op.run(new NullProgressMonitor());
         HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(new File(filename)));
-        HSSFSheet sheet = workbook.getSheet(table.getName());
+        HSSFSheet sheet = workbook.getSheetAt(0);
         ITableContentsGeneration generation = (ITableContentsGeneration)table.getGenerations()[0];
         IRow[] contentRows = generation.getRows();
         for (int i = 1; i < contentRows.length; i++) { // first row is the header
