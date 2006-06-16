@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -155,12 +156,16 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @return
      * @throws CycleException 
      */
-    private StructureNode[] buildChildNodes(IProductCmptRelation[] relations, StructureNode parent) throws CycleException {
+    private StructureNode[] buildChildNodes(IProductCmptRelation[] relations, StructureNode parent, IProductCmptTypeRelation type) throws CycleException {
 		ArrayList children = new ArrayList();
         for (int i = 0; i < relations.length; i ++) {
 			try {
 				IProductCmpt p = (IProductCmpt)relations[i].getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, relations[i].getTarget());
 				if (p != null) {
+					if(type.getRelationType().equals(RelationType.ASSOZIATION)){
+						children.add(new StructureNode(p, parent));
+						continue;
+					}
 					children.add(buildNode(p, parent));
 				}
 			} catch (CoreException e) {
@@ -217,7 +222,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 				StructureNode node = new StructureNode(type, parent);
 				ArrayList relationsList = (ArrayList)mapping.get(type.getName());
 				IProductCmptRelation[] rels = new IProductCmptRelation[relationsList.size()];
-				node.setChildren(buildChildNodes((IProductCmptRelation[])relationsList.toArray(rels), node));
+				node.setChildren(buildChildNodes((IProductCmptRelation[])relationsList.toArray(rels), node, type));
 				children.add(node);
 				this.elementToNodeMapping.put(type, node);
 			}
@@ -234,7 +239,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 * @author Thorsten Guenther
 	 */
 	public class StructureNode implements IProductCmptStructure.IStructureNode{
-		private StructureNode[] children;
+		private StructureNode[] children = new StructureNode[0];
 		private StructureNode parent;
 		private IIpsElement wrapped;
 		
