@@ -39,7 +39,14 @@ public class XlsTableImportIntoNewOperationTest extends AbstractIpsPluginTest {
         project = newIpsProject("test");
         file = project.getProject().getFile("Test.xls");
         file.create(getClass().getResourceAsStream("Test.xls"), true, null);
-        workbook = new HSSFWorkbook(new FileInputStream(file.getRawLocation().toOSString()));
+        FileInputStream excelFile = null;
+        try{
+            excelFile = new FileInputStream(file.getRawLocation().toOSString());
+            workbook = new HSSFWorkbook(excelFile);
+        }
+        finally{
+            excelFile.close();
+        }
         contents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Test");
         contents.setTableStructure("Test");
         contents.newColumn("AAA");
