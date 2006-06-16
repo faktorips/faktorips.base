@@ -29,8 +29,9 @@ import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.datatype.ValueDatatypeArray;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
@@ -186,12 +187,28 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
         assertEquals(DecimalHelper.class, helper.getClass());
+        helper = ipsProject.getDatatypeHelper(new ValueDatatypeArray(Datatype.DECIMAL, 1));
+        assertNull(helper);
+        
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
         assertNull(helper);
         
         createRefProject();
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
         assertEquals(MoneyHelper.class, helper.getClass());
+    }
+    
+    public void testFindDatatypeString() throws Exception{
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});
+        ipsProject.setProperties(props);
+        Datatype type = ipsProject.findDatatype(Datatype.DECIMAL.getQualifiedName());
+        assertNotNull(type);
+        assertEquals(type, Datatype.DECIMAL);
+        type = ipsProject.findDatatype(Datatype.DECIMAL.getQualifiedName() + "[]");
+        assertTrue(type instanceof ValueDatatypeArray);
+        ValueDatatypeArray arrayType = (ValueDatatypeArray)type;
+        assertEquals(Datatype.DECIMAL, arrayType.getBasicDatatype());
     }
     
     public void testFindDatatypes() throws CoreException {

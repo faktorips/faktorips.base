@@ -47,7 +47,18 @@ public abstract class AbstractXlsTableImportOperation implements IWorkspaceRunna
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
             File importFile = new File(filename);
-            HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(importFile));
+            FileInputStream fis = null;
+            HSSFWorkbook workbook = null;
+            try{
+            	fis = new FileInputStream(importFile);
+            	workbook = new HSSFWorkbook(fis);
+            }
+            finally{
+            	if(fis != null){
+            		fis.close();
+            	}
+            }
+            
             HSSFSheet sheet = workbook.getSheetAt(0);
             short numberOfCols = getNumberOfCols(sheet);
             ITableContentsGeneration generation = getImportGeneration(numberOfCols, monitor);

@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class ArrayDatatype extends AbstractDatatype {
+public class ValueDatatypeArray extends AbstractDatatype implements ValueDatatype {
 
     // The primitive datatype
     private Datatype datatype;
@@ -71,9 +71,16 @@ public class ArrayDatatype extends AbstractDatatype {
     }
     
     /**
+     * Returns if the provided string represents an ArrayDatatype.
+     */
+    public final static boolean isArrayDatatype(String datatypeName){
+        return getDimension(datatypeName) != 0;
+    }
+    
+    /**
      * Constructs a new array datatype based on the guven underlying datatype and the dimension. 
      */
-    public ArrayDatatype(Datatype datatype, int dimension) {
+    public ValueDatatypeArray(Datatype datatype, int dimension) {
         super();
         ArgumentCheck.notNull(datatype);
         this.datatype = datatype;
@@ -136,7 +143,7 @@ public class ArrayDatatype extends AbstractDatatype {
      * @see org.faktorips.datatype.Datatype#isValueDatatype()
      */
     public boolean isValueDatatype() {
-        return false;
+        return true;
     }
 
     /**
@@ -146,6 +153,54 @@ public class ArrayDatatype extends AbstractDatatype {
      */
     public String getJavaClassName() {
         return datatype.getJavaClassName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Datatype getWrapperType() {
+        return null;
+    }
+
+    /**
+     * Null is parsable. Other values are not supported yet.
+     * {@inheritDoc}
+     */
+    public boolean isParsable(String value) {
+        if(value == null){
+            return true;
+        }
+        //parsing of array value datatypes is not supported yet.
+        return false;
+    }
+
+    /**
+     * If the value is null, null will be returned. Other values are not supported yet.
+     * {@inheritDoc}
+     */
+    public Object getValue(String value) {
+        if(value == null){
+            return null;
+        }
+        throw new RuntimeException("No supported yet.");
+    }
+
+    /**
+     * If the value is null, null will be returned. Other values are not supported yet.
+     * {@inheritDoc}
+     */
+    public String valueToString(Object value) {
+        if(value == null){
+            return null;
+        }
+        throw new RuntimeException("No supported yet.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isNull(Object value) {
+        return value == null;
     }
 
 }

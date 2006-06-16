@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.tablecontents;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -38,7 +39,16 @@ public class XlsTableImportIntoNewOperationTest extends AbstractIpsPluginTest {
         super.setUp();
         project = newIpsProject("test");
         file = project.getProject().getFile("Test.xls");
-        file.create(getClass().getResourceAsStream("Test.xls"), true, null);
+        InputStream is = null;
+        try{
+            is = getClass().getResourceAsStream("Test.xls"); 
+            file.create(is, true, null);
+        }
+        finally{
+            if(is != null){
+                is.close();
+            }
+        }
         FileInputStream excelFile = null;
         try{
             excelFile = new FileInputStream(file.getRawLocation().toOSString());
