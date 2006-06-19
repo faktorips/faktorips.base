@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.util.StringUtil;
 
 
 /**
@@ -72,6 +73,7 @@ abstract class IpsObjectRefControl extends TextButtonControl {
         try {
             PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), dialogTitle, dialogMessage);
             dialog.setElements(getPdObjects());
+            dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
             if (dialog.open()==Window.OK) {
                 if (dialog.getResult().length>0) {
                     IIpsObject pdObject = (IIpsObject)dialog.getResult()[0];
