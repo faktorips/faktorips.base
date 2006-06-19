@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.faktorips.feature_0.9.17.jar" id="org.faktorips.feature" version="0.9.17">
+   <feature url="features/org.faktorips.feature_0.9.18.jar" id="org.faktorips.feature" version="0.9.18">
       <category name="FaktorIPS"/>
    </feature>
-   <feature url="features/org.faktorips.feature.nls1_0.9.17.jar" id="org.faktorips.feature.nls1" version="0.9.17">
+   <feature url="features/org.faktorips.feature.nls1_0.9.18.jar" id="org.faktorips.feature.nls1" version="0.9.18">
       <category name="FaktorIPS"/>
    </feature>
    <category-def name="FaktorIPS" label="FaktorIPS">
