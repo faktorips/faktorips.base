@@ -90,6 +90,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             	OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPcType(), getShell());
                 if (dialog.open()==Window.OK) {
                     getPcType().overrideAttributes(dialog.getSelectedAttributes());
+                    refresh();
                 }
             } catch (Exception e) {
                 IpsPlugin.logAndShowErrorDialog(e);
