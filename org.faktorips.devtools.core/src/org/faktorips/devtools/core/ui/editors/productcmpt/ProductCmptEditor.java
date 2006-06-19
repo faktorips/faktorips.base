@@ -388,7 +388,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Enable the properties page if the given generation is editable or disable the page 
 	 * if not. 
 	 */
-	private void setPropertiesEnabled(IProductCmptGeneration generation) {
+	protected void setPropertiesEnabled(IProductCmptGeneration generation) {
 		setPropertiesEnabled(isEditableGeneration(generation));
 	}
 

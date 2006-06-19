@@ -79,6 +79,11 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 	// flag that controls if parts can be moved.
 	private boolean canMove;
 	
+	// Table to show the content
+	private Table table;
+	
+	// listener to start editing on double click.
+	private MouseAdapter editDoubleClickListener;
 	
 	// flag that control if the edit button is shown (edit is also possible
 	// via double click.
@@ -123,12 +128,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
      * @see org.faktorips.devtools.core.ui.forms.ViewerButtonSection#createViewer(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
      */
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
-		final Table table = toolkit.getFormToolkit().createTable(parent, SWT.NONE);
-		table.addMouseListener(new MouseAdapter() {
-		    public void mouseDoubleClick(MouseEvent e) {
-		        editPart();
-		    }
-		});
+		table = toolkit.getFormToolkit().createTable(parent, SWT.NONE);
+		setEditDoubleClickListenerEnabled(true);
+
 		TableViewer viewer = new TableViewer(table);
 		viewer.setContentProvider(createContentProvider());
 		ILabelProvider lp = createLabelProvider();
@@ -143,6 +145,27 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite {
 		};
 		
 		return viewer;
+    }
+    
+    /**
+     * Enable or disable the listener to start editing on double click.
+     * 
+     * @param enabled <code>true</code> to enable editing on double click.
+     */
+    protected void setEditDoubleClickListenerEnabled(boolean enabled) {
+    	if (enabled) {
+    		if (editDoubleClickListener == null) {
+    			editDoubleClickListener = new MouseAdapter() {
+    			    public void mouseDoubleClick(MouseEvent e) {
+    			        editPart();
+    			    }
+    			};
+    		}
+    		table.addMouseListener(editDoubleClickListener);
+    	}
+    	else if (editDoubleClickListener != null) {
+    		table.removeMouseListener(editDoubleClickListener);
+    	}
     }
     
     /**

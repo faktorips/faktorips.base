@@ -128,6 +128,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                 UIToolkit toolkit) {
             super(ipsObject, parent, false, true, true, false, true, toolkit);
 
+            super.setEditDoubleClickListenerEnabled(false);
+            
             getViewer().getControl().addMouseListener(new MouseAdapter() {
 				public void mouseDoubleClick(MouseEvent e) {
 					Object selected = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
@@ -213,14 +215,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 		 */
 		protected void updateButtonEnabledStates() {
 			super.updateButtonEnabledStates();
-			boolean editable = ((ProductCmptEditor)page.getEditor()).isEditableGeneration(getSelectedGeneration());
-			if (page.getProductCmpt().getGenerations().length == 1 || !editable) {
-				deleteButton.setEnabled(false);
-			}
-			
-			if (!editable) {
-				editButton.setEnabled(false);
-			}
+			deleteButton.setEnabled(!(page.getProductCmpt().getGenerations().length == 1));
 		}
     	
     	private class ContentProvider implements IStructuredContentProvider {

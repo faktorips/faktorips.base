@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import org.eclipse.jface.dialogs.IPageChangedListener;
+import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
@@ -73,7 +75,12 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	 */
     public PropertiesPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, Messages.PropertiesPage_properties);
-        
+        editor.addPageChangedListener(new IPageChangedListener() {
+		    public void pageChanged(PageChangedEvent event) {
+		    	setEnabled(((ProductCmptEditor)getIpsObjectEditor()).isEditableGeneration(getActiveGeneration()));
+		    }
+		});
+
     }
     
     /**
@@ -158,5 +165,5 @@ public class PropertiesPage extends IpsObjectEditorPage {
     private IProductCmptGeneration getActiveGeneration() {
     	return (IProductCmptGeneration)((ProductCmptEditor)getEditor()).getActiveGeneration();
     }
-    
+
 }

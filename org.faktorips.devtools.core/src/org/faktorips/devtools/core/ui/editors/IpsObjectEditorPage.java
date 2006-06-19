@@ -52,18 +52,18 @@ public abstract class IpsObjectEditorPage extends FormPage {
         super(editor, id, tabPageName);
     }
     
-    protected IpsObjectEditor getPdObjectEditor() {
+    protected IpsObjectEditor getIpsObjectEditor() {
         return (IpsObjectEditor)getEditor();
     }
     
-    protected IIpsObject getPdObject() {
-        return getPdObjectEditor().getIpsObject();
+    protected IIpsObject getIpsObject() {
+        return getIpsObjectEditor().getIpsObject();
     }
     
 	protected final void createFormContent(IManagedForm managedForm) {
 		super.createFormContent(managedForm);
 		ScrolledForm form = managedForm.getForm();
-		form.setText(getPdObjectEditor().getUniformPageTitle());
+		form.setText(getIpsObjectEditor().getUniformPageTitle());
 		FormToolkit toolkit = managedForm.getToolkit();
 		createPageContent(form.getBody(), new UIToolkit(toolkit));
 	}
