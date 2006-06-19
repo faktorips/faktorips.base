@@ -65,10 +65,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
-import org.faktorips.devtools.core.ui.actions.IpsCutAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
-import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
@@ -238,31 +235,13 @@ public class RelationsSection extends IpsSection {
 		MenuManager menumanager = new MenuManager();
 		menumanager.setRemoveAllWhenShown(false);
 
-		IAction action = new IpsCutAction(treeViewer, site.getShell());
-		
-		site.getActionBars().setGlobalActionHandler(ActionFactory.CUT.getId(), action);
-		actions.add(action);
-				
-		action = new IpsCopyAction(treeViewer, site.getShell());
-		site.getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), action);
-		actions.add(action);
-		
-		action = new IpsPasteAction(treeViewer, site.getShell());
-		site.getActionBars().setGlobalActionHandler(
-				ActionFactory.PASTE.getId(), action);
-		actions.add(action);
-		
-		action = new IpsDeleteAction(treeViewer);
-		site.getActionBars().setGlobalActionHandler(
-				ActionFactory.DELETE.getId(), action);
+		IAction action = new IpsDeleteAction(treeViewer);
+		site.getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), action);
 		actions.add(action);
 
 		menumanager.add(new NewProductCmptRelationAction(site.getShell(),
 				treeViewer, this));
 
-		menumanager.add(ActionFactory.CUT.create(site.getWorkbenchWindow()));
-		menumanager.add(ActionFactory.COPY.create(site.getWorkbenchWindow()));
-		menumanager.add(ActionFactory.PASTE.create(site.getWorkbenchWindow()));
 		menumanager.add(ActionFactory.DELETE.create(site.getWorkbenchWindow()));
 
 		menumanager.add(new Separator());
