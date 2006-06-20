@@ -197,7 +197,7 @@ public class RelationsSection extends IpsSection {
 			relationRootPane.setLayout(layout);
 	
 			Tree tree = toolkit.getFormToolkit().createTree(relationRootPane,
-					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
+					SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 			GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 			tree.setLayoutData(layoutData);
 	
