@@ -226,14 +226,14 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
                 if (getTableStructure().hasColumn(keyItems[j])) {
                     keyClassName.append(StringUtils.capitalise(keyItems[j]));
-                    keyClassParameterNames.add(keyItems[j]);
+                    keyClassParameterNames.add(StringUtils.uncapitalise(keyItems[j]));
                     keyClassParameterTypes.add(getJavaClassName(keyItems[j]));
-                    parameters.add(keyItems[j]);
+                    parameters.add(StringUtils.uncapitalise(keyItems[j]));
                     isColumn = true;
                     continue;
                 }
 
-                IColumnRange range = getTableStructure().getRange(keyItems[j]);
+                IColumnRange range = getTableStructure().getRange(StringUtils.uncapitalise(keyItems[j]));
                 parameters.add(range.getParameterName());
                 fRanges.put(range.getParameterName(), range);
             }
@@ -358,6 +358,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private void createAddRowMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         IColumn[] columns = getTableStructure().getColumns();
+        String textVariableName = createAddRowMethodTextVariableName(columns);
         for (int i = 0; i < columns.length; i++) {
             IColumn column = columns[i];
             Datatype columnDatatype = findDatatype(column.getDatatype());
@@ -378,7 +379,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 methodBody.appendClassName(Text.class);
                 methodBody.append(' ');
             }
-            methodBody.append("text = ");
+            methodBody.append(textVariableName);
+            methodBody.append(" = ");
             methodBody.appendClassName(XmlUtil.class);
             methodBody.append(".getTextNode(valueElement);");
 
@@ -389,9 +391,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(helper.nullExpression());
             methodBody.append(" : ");
             if (columnDatatype instanceof StringDatatype) {
-                methodBody.append("text == null ? \"\" : text.getData()");
+                methodBody.append(textVariableName);
+                methodBody.append(" == null ? \"\" : ");
+                methodBody.append(textVariableName);
+                methodBody.append(".getData()");
             } else {
-                methodBody.append(helper.newInstanceFromExpression("text.getData()"));
+                methodBody.append(helper.newInstanceFromExpression(textVariableName + ".getData()"));
             }
             methodBody.append(';');
         }
@@ -411,6 +416,21 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.method(Modifier.PROTECTED, Void.TYPE, "addRow",
                 new String[] { "valueElements" }, new Class[] { NodeList.class }, methodBody,
                 getLocalizedText(getIpsObject(), ADD_ROW_JAVADOC));
+    }
+    
+    private String createAddRowMethodTextVariableName(IColumn[] columns) {
+        String baseText = "text";
+        String text = baseText;
+        i: for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            for (int j = 0; j < columns.length; j++) {
+                if (text.equalsIgnoreCase(columns[j].getName())) {
+                    text = baseText + i;
+                    continue i;
+                }
+            }
+            break;
+        }
+        return text;
     }
 
     private void createFindMethods(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
