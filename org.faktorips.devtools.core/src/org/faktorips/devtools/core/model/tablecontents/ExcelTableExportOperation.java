@@ -20,7 +20,10 @@ package org.faktorips.devtools.core.model.tablecontents;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -29,27 +32,31 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.extsystems.ExternalDataFormat;
 
 /**
  * 
  * @author Thorsten Waertel
  */
-public class TableExportOperation implements IWorkspaceRunnable {
+public class ExcelTableExportOperation implements IWorkspaceRunnable {
     
     // The maximum number of rows allowed in an Excel sheet
     private static final int MAX_ROWS = 65535;
     
     private ITableContents contents;
     private String filename;
+    private HSSFWorkbook workbook;
+    private HSSFCellStyle dateStyle = null;
 
 	/**
 	 * 
 	 */
-	public TableExportOperation(ITableContents contents, String filename) {
+	public ExcelTableExportOperation(ITableContents contents, String filename) {
 		super();
         this.contents = contents;
         this.filename = filename;
@@ -72,7 +79,7 @@ public class TableExportOperation implements IWorkspaceRunnable {
         
         monitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentGeneration.getNumOfRows());
         
-        HSSFWorkbook workbook = new HSSFWorkbook();
+        workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet();
         
         monitor.worked(1);
@@ -87,7 +94,7 @@ public class TableExportOperation implements IWorkspaceRunnable {
         
         monitor.worked(1);
         
-        createDataCells(sheet, currentGeneration, monitor);
+        createDataCells(sheet, currentGeneration, structure, monitor);
 
         try {
             workbook.write(new FileOutputStream(new File(filename)));
@@ -112,7 +119,7 @@ public class TableExportOperation implements IWorkspaceRunnable {
     }
     
     private void createDataCells(HSSFSheet sheet, ITableContentsGeneration generation,
-            IProgressMonitor monitor) throws CoreException {
+            ITableStructure structure, IProgressMonitor monitor) throws CoreException {
         if (generation.getNumOfRows() > MAX_ROWS) {
             throw new CoreException(new IpsStatus(NLS.bind(Messages.TableExportOperation_errTooMuchRows,
                     new Object[] { new Integer(generation.getNumOfRows()), contents.getName(), new Integer(MAX_ROWS) })));
@@ -121,9 +128,32 @@ public class TableExportOperation implements IWorkspaceRunnable {
             HSSFRow sheetRow = sheet.createRow(i + 1); // row 0 already used for header
             IRow contentsRow = generation.getRows()[i];
             for (int j = 0; j < contents.getNumOfColumns(); j++) {
-                sheetRow.createCell((short) j).setCellValue(contentsRow.getValue(j));
+                HSSFCell cell = sheetRow.createCell((short) j);
+                fillCell(cell, contentsRow.getValue(j), structure.getIpsProject().findDatatype(structure.getColumns()[j].getDatatype()));
             }
             monitor.worked(1);
         }
+    }
+    
+    private void fillCell(HSSFCell cell, String ipsValue, Datatype datatype) {
+    	Object obj = ExternalDataFormat.XLS.getExternalDataValue(ipsValue, datatype);
+    	if (obj instanceof Date) {
+    		cell.setCellValue((Date) obj);
+    		if (dateStyle == null) {
+				dateStyle = workbook.createCellStyle();
+				dateStyle.setDataFormat((short) 27); // user defined style dd.MM.yyyy, hopefully works on other excel installations than KQV's as well :-)
+    		}
+    		cell.setCellStyle(dateStyle);
+    		return;
+    	}
+    	if (obj instanceof Double) {
+    		cell.setCellValue(((Double) obj).doubleValue());
+    		return;
+    	}
+    	if (obj instanceof Boolean) {
+    		cell.setCellValue(((Boolean) obj).booleanValue());
+    		return;
+    	}
+    	cell.setCellValue(obj.toString());
     }
 }

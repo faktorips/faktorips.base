@@ -34,8 +34,8 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.TableExportOperation;
-import org.faktorips.devtools.core.model.tablecontents.TableFileFormat;
+import org.faktorips.devtools.core.model.tablecontents.ExcelTableExportOperation;
+import org.faktorips.devtools.extsystems.ExternalDataFormat;
 
 /**
  * 
@@ -93,9 +93,9 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){
 
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
-                    TableFileFormat fileFormat = TableFileFormat.getAttributeType(format);
-                    if (fileFormat == TableFileFormat.XLS) {
-                        TableExportOperation teo = new TableExportOperation(exportContents, exportFilename);
+                    ExternalDataFormat fileFormat = ExternalDataFormat.getAttributeType(format);
+                    if (fileFormat == ExternalDataFormat.XLS) {
+                        ExcelTableExportOperation teo = new ExcelTableExportOperation(exportContents, exportFilename);
                         teo.run(monitor);
                     }
 				}

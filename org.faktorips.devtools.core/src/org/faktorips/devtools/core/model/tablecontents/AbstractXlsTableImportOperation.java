@@ -20,8 +20,10 @@ package org.faktorips.devtools.core.model.tablecontents;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -29,15 +31,20 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.extsystems.ExternalDataFormat;
 
 public abstract class AbstractXlsTableImportOperation implements IWorkspaceRunnable {
     
     private String filename;
+    private ITableStructure structure;
 
     protected abstract ITableContentsGeneration getImportGeneration(short numberOfCols, IProgressMonitor monitor) throws CoreException;
+    protected abstract ITableStructure getStructure() throws CoreException;
     
-    public AbstractXlsTableImportOperation(String filename) {
+    public AbstractXlsTableImportOperation(String filename) throws CoreException {
         this.filename = filename;
     }
     
@@ -45,6 +52,7 @@ public abstract class AbstractXlsTableImportOperation implements IWorkspaceRunna
      * {@inheritDoc}
      */
     public void run(IProgressMonitor monitor) throws CoreException {
+        this.structure = getStructure();
         try {
             File importFile = new File(filename);
             FileInputStream fis = null;
@@ -69,7 +77,7 @@ public abstract class AbstractXlsTableImportOperation implements IWorkspaceRunna
         }
     }
 
-    private void fillGeneration(ITableContentsGeneration generation, HSSFSheet sheet, IProgressMonitor monitor) {
+    private void fillGeneration(ITableContentsGeneration generation, HSSFSheet sheet, IProgressMonitor monitor) throws CoreException {
         for (int i = 1; ; i++) {
             HSSFRow sheetRow = sheet.getRow(i);
             if (sheetRow == null) {
@@ -81,7 +89,7 @@ public abstract class AbstractXlsTableImportOperation implements IWorkspaceRunna
                 if (cell == null) {
                     break;
                 }
-                genRow.setValue(j, cell.getStringCellValue());
+                genRow.setValue(j, readCell(cell, generation.getIpsProject().findDatatype(structure.getColumns()[j].getDatatype())));
             }
         }
     }
@@ -101,4 +109,16 @@ public abstract class AbstractXlsTableImportOperation implements IWorkspaceRunna
         }
     }
 
+    private String readCell(HSSFCell cell, Datatype datatype) {
+    	if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+    		if (HSSFDateUtil.isCellDateFormatted(cell)) {
+        		return ExternalDataFormat.XLS.getIpsValue(Date.class, cell.getDateCellValue(), datatype);
+    		}
+    		return ExternalDataFormat.XLS.getIpsValue(Double.class, new Double(cell.getNumericCellValue()), datatype);
+    	}
+    	if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+    		return ExternalDataFormat.XLS.getIpsValue(Boolean.class, Boolean.valueOf(cell.getBooleanCellValue()), datatype);
+    	}
+    	return ExternalDataFormat.XLS.getIpsValue(String.class, cell.getStringCellValue(), datatype);
+    }
 }

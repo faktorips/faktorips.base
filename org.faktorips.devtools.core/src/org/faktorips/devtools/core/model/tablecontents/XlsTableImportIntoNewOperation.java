@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -37,8 +38,9 @@ public class XlsTableImportIntoNewOperation extends AbstractXlsTableImportOperat
     
 	/**
 	 * Constructor for Import
+	 * @throws CoreException 
 	 */
-	public XlsTableImportIntoNewOperation(String filename, IIpsPackageFragment pack, String tableStructureName, String tableContentsName) {
+	public XlsTableImportIntoNewOperation(String filename, IIpsPackageFragment pack, String tableStructureName, String tableContentsName) throws CoreException {
 		super(filename);
         this.pack = pack;
         this.tableStructureName = tableStructureName;
@@ -53,4 +55,8 @@ public class XlsTableImportIntoNewOperation extends AbstractXlsTableImportOperat
         }
         return (ITableContentsGeneration) contents.newGeneration(new GregorianCalendar());
     }
+
+	protected ITableStructure getStructure() throws CoreException {
+		return (ITableStructure) pack.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableStructureName);
+	}
 }

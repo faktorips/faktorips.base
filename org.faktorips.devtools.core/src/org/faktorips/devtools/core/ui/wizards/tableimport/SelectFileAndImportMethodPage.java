@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.tablecontents.TableFileFormat;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -40,6 +39,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
+import org.faktorips.devtools.extsystems.ExternalDataFormat;
 
 /**
  * 
@@ -227,8 +227,8 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         filenameField.addChangeListener(this);
         
         toolkit.createFormLabel(filenameComposite, Messages.SelectFileAndImportMethodPage_labelFileFormat);
-        fileFormatControl = toolkit.createCombo(filenameComposite, TableFileFormat.getEnumType());
-        fileFormatControl.setText(TableFileFormat.getEnumType().getValues()[0].getId());
+        fileFormatControl = toolkit.createCombo(filenameComposite, ExternalDataFormat.getEnumType());
+        fileFormatControl.setText(ExternalDataFormat.getEnumType().getValues()[0].getId());
         fileFormatField = new ComboField(fileFormatControl);
         fileFormatField.addChangeListener(this);
         

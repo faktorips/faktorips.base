@@ -82,7 +82,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             final boolean append = filePage.isImportExistingAppend();
             final IIpsPackageFragment pack = newContentsPage.getIpsPackageFragment();
             final String structure = newContentsPage.getTableStructureName();
-            final String contents = importExisting ? selectContentsPage.getTableContents().getName() : newContentsPage.getTableContentsName();
+            final String contents = importExisting ? selectContentsPage.getTableContents().getQualifiedName() : newContentsPage.getTableContentsName();
             final IIpsProject project = selectContentsPage.getIpsProject();
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){
 
@@ -119,7 +119,13 @@ public class TableImportWizard extends Wizard implements IImportWizard {
             // set the comleted state on the opposite page to true so that the wizard can finish normally
             selectContentsPage.setPageComplete(!filePage.isImportIntoExisting());
             newContentsPage.setPageComplete(filePage.isImportIntoExisting());
-            return filePage.isImportIntoExisting() ? (IWizardPage) selectContentsPage : (IWizardPage) newContentsPage;
+            // Validate the returned Page so that finished state is already set to true if all default settings are correct
+            if (filePage.isImportIntoExisting()) {
+            	selectContentsPage.validatePage();
+            	return selectContentsPage;
+            }
+            newContentsPage.validatePage();
+            return newContentsPage;
         }
         return null;
     }

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 /**
  * 
@@ -29,22 +30,22 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 public class XlsTableImportIntoExistingOperation extends AbstractXlsTableImportOperation {
     
     private boolean append;
-    private String tableContentsName;
     private IIpsProject project;
+    private ITableContents contents;
     
 	/**
 	 * Constructor for Import
+	 * @throws CoreException 
 	 */
 	public XlsTableImportIntoExistingOperation(String filename, boolean append,
-            IIpsProject project, String tableContentsName) {
+            IIpsProject project, String tableContentsName) throws CoreException {
 		super(filename);
         this.append = append;
         this.project = project;
-        this.tableContentsName = tableContentsName;
-	}
+        contents = (ITableContents) project.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentsName);
+    }
 
     protected ITableContentsGeneration getImportGeneration(short numberOfCols, IProgressMonitor monitor) throws CoreException {
-        ITableContents contents = (ITableContents) project.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentsName);
         while (contents.getNumOfColumns() < numberOfCols) {
             contents.newColumn(null);
         }
@@ -54,4 +55,8 @@ public class XlsTableImportIntoExistingOperation extends AbstractXlsTableImportO
         }
         return generation;
     }
+
+    protected ITableStructure getStructure() throws CoreException {
+		return (ITableStructure) project.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, contents.getTableStructure());
+	}
 }

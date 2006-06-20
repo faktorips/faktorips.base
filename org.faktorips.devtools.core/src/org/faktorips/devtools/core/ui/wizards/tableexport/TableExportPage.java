@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.TableFileFormat;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -47,6 +46,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
+import org.faktorips.devtools.extsystems.ExternalDataFormat;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -125,8 +125,8 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         contentsField.addChangeListener(this);
         
         toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelFileFormat);
-        fileFormatControl = toolkit.createCombo(lowerComposite, TableFileFormat.getEnumType());
-        fileFormatControl.setText(TableFileFormat.getEnumType().getValues()[0].getId());
+        fileFormatControl = toolkit.createCombo(lowerComposite, ExternalDataFormat.getEnumType());
+        fileFormatControl.setText(ExternalDataFormat.getEnumType().getValues()[0].getId());
         fileFormatField = new ComboField(fileFormatControl);
         fileFormatField.addChangeListener(this);
 
@@ -200,7 +200,7 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
             setFilename(new File(
                     System.getProperty("user.home") +  //$NON-NLS-1$
                     File.separator + StringUtil.unqualifiedName(contentsName) + 
-                    TableFileFormat.getAttributeType(fileFormatField.getText()).getExtension()).getAbsolutePath());
+                    ExternalDataFormat.getAttributeType(fileFormatField.getText()).getDefaultFileExtension()).getAbsolutePath());
         }
     }
     

@@ -174,11 +174,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
             setPdPackageFragmentRoot(null);
             return;
         }
-        try {
-            validatePage();    
-        } catch (CoreException coreEx) {
-            IpsPlugin.logAndShowErrorDialog(coreEx);
-        }
+        validatePage();    
     }
     
     public String getPackage() {
@@ -251,12 +247,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
             contentsChanged();
         }
         if (validateInput) { // don't validate during control creating!
-            try {
-                validatePage();    
-            } catch (CoreException coreEx) {
-                IpsPlugin.logAndShowErrorDialog(coreEx);
-            }
-            
+            validatePage();    
         }
         updatePageComplete();
     }
@@ -265,7 +256,7 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
      * Validates the page and generates error messages if needed. 
      * Can be overridden in subclasses to add specific validation logic.s 
      */
-    protected void validatePage() throws CoreException {
+    protected void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
 		setErrorMessage(null);
         validateSourceRoot();
@@ -283,14 +274,19 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
         updatePageComplete();
     }
     
-    private void validateContent() throws CoreException {
+    private void validateContent() {
         if (contentsField.getText().length() == 0) {
             setErrorMessage(Messages.NewContentsPage_msgEmptyContent);
             return;
         }
         IIpsPackageFragment pack = packageControl.getPdPackageFragment();
-        if (pack.getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, StringUtil.qualifiedName(pack.getName(), contentsField.getText())) != null) {
-            setErrorMessage(NLS.bind(Messages.NewContentsPage_msgExistingContent, contentsField.getText()));
+        try {
+	        if (pack.getIpsProject().findIpsObject(IpsObjectType.TABLE_CONTENTS, StringUtil.qualifiedName(pack.getName(), contentsField.getText())) != null) {
+	            setErrorMessage(NLS.bind(Messages.NewContentsPage_msgExistingContent, contentsField.getText()));
+	        }
+        } catch (CoreException e) {
+        	IpsPlugin.logAndShowErrorDialog(e);
+        	setErrorMessage(e.getMessage());
         }
     }
     
