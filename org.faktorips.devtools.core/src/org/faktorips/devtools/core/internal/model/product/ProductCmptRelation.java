@@ -230,6 +230,10 @@ public class ProductCmptRelation extends IpsObjectPart implements
 	}
 
 	protected void validate(MessageList list) throws CoreException {
+		if (isDeleted()) {
+			return;
+		}
+		
 		super.validate(list);
 		IProductCmptTypeRelation relation = findProductCmptTypeRelation();
 		IRelation relType = null;

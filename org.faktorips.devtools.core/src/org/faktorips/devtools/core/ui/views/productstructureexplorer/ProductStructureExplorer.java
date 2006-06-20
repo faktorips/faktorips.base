@@ -96,7 +96,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		}
     		
 			public void run() {
-				tree.refresh();
+				refresh();
 		        tree.expandAll();
 			}
 
@@ -114,7 +114,6 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 			public void run() {
 				contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
 				tree.refresh();
-		        tree.expandAll();
 			}
 
 			public String getToolTipText() {
@@ -208,10 +207,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		((GridData)tree.getTree().getLayoutData()).exclude = false;
     		tree.getTree().getParent().layout();
 			tree.setInput(product.getStructure());
+            tree.expandAll();
 		} catch (CycleException e) {
 			handleCircle(e);
 		}
-        tree.expandAll();
     }
     
     /**
@@ -251,7 +250,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             		tree.getTree().setVisible(true);
             		((GridData)tree.getTree().getLayoutData()).exclude = false;
             		tree.getTree().getParent().layout();
-               		tree.refresh();
+               		tree.setInput(input);
+                    tree.expandAll();
                 }
             }
         });

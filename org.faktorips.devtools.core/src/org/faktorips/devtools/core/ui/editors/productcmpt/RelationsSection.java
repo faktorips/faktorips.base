@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -71,7 +73,6 @@ import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -136,6 +137,11 @@ public class RelationsSection extends IpsSection {
 	 * Collection of all actions supported by this section
 	 */
 	private List actions = new ArrayList();
+	
+	/**
+	 * Listener to update the cardinality-pane on selection changes.
+	 */
+	private SelectionChangedListener selectionChangedListener;
 
 	/**
 	 * Creates a new RelationsSection which displays relations for the given
@@ -197,13 +203,15 @@ public class RelationsSection extends IpsSection {
 	
 			RelationsLabelProvider labelProvider = new RelationsLabelProvider();
 	
+			selectionChangedListener = new SelectionChangedListener();
+			
 			treeViewer = new TreeViewer(tree);
 			treeViewer.setContentProvider(new RelationsContentProvider());
 			treeViewer.setLabelProvider(new MyMessageCueLabelProvider(
 					labelProvider));
 			treeViewer.setInput(generation);
 			treeViewer
-					.addSelectionChangedListener(new SelectionChangedListener());
+					.addSelectionChangedListener(selectionChangedListener);
 			treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE,
 					new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() },
 					new DropListener());
@@ -212,8 +220,6 @@ public class RelationsSection extends IpsSection {
 					new DragListener(treeViewer));
 			treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
 			treeViewer.expandAll();
-			treeViewer.addDoubleClickListener(new DefaultDoubleclickListener(
-					treeViewer));
 	
 			new MessageService(treeViewer);
 	
@@ -223,8 +229,34 @@ public class RelationsSection extends IpsSection {
 			cardinalityPanel.setEnabled(false);
 	
 			addFocusControl(treeViewer.getTree());
+			registerDoubleClickListener();
 		}
 		toolkit.getFormToolkit().paintBordersFor(relationRootPane);
+	}
+
+	/**
+	 * register a double click listener to open the edit-dialog to edit the relation. 
+	 */
+	private void registerDoubleClickListener() {
+		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				if (!(event.getSelection() instanceof IStructuredSelection)) {
+					return;
+				}
+				
+				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+				Object selected = selection.getFirstElement();
+				
+				if (!(selected instanceof IProductCmptRelation)) {
+					return;
+				}
+				
+				RelationEditDialog dialog = new RelationEditDialog((IProductCmptRelation)selected, site.getShell());
+				dialog.open();
+				refresh();
+
+			}
+		});
 	}
 
 	/**
@@ -270,6 +302,10 @@ public class RelationsSection extends IpsSection {
 		if (fGenerationDirty && treeViewer != null) {
 			treeViewer.setInput(generation);
 			treeViewer.expandAll();
+		}
+		
+		if (selectionChangedListener != null && selectionChangedListener.uiController != null) {
+			selectionChangedListener.uiController.updateUI();
 		}
 	}
 
