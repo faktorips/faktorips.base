@@ -18,46 +18,104 @@
 package org.faktorips.devtools.core.model.tablecontents;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.resources.IFile;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.util.StringUtil;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 public class XlsTableImportIntoExistingOperationTest extends AbstractIpsPluginTest {
     
     private IFile file;
     private IIpsProject project;
-    private IIpsPackageFragment pack;
     private HSSFWorkbook workbook;
+    private ITableContents contents;
 
     protected void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("test");
         file = project.getProject().getFile("Test.xls");
-        file.create(getClass().getResourceAsStream("Test.xls"), true, null);
-        pack = project.getSourceIpsPackageFragmentRoots()[0].createPackageFragment("test", true, null);
-        workbook = new HSSFWorkbook(new FileInputStream(file.getRawLocation().toOSString()));
+        InputStream is = null;
+        try{
+            is = getClass().getResourceAsStream("Test.xls"); 
+            file.create(is, true, null);
+        }
+        finally{
+            if(is != null){
+                is.close();
+            }
+        }
+        FileInputStream excelFile = null;
+        try{
+            excelFile = new FileInputStream(file.getRawLocation().toOSString());
+            workbook = new HSSFWorkbook(excelFile);
+        }
+        finally{
+            excelFile.close();
+        }
+        contents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Test");
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Test");
+        structure.newColumn().setDatatype(Datatype.STRING.getQualifiedName());
+        structure.newColumn().setDatatype(Datatype.STRING.getQualifiedName());
+        contents.setTableStructure(structure.getQualifiedName());
+        contents.newColumn("AAA");
+        contents.newColumn("BBB");
+        ITableContentsGeneration gen = (ITableContentsGeneration)contents.newGeneration();
+        gen.newRow();
+        gen.newRow();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    protected void tearDown() throws Exception {
+        project.getProject().delete(true, true, null);
+        super.tearDown();
+    }
+
+
+
     /*
      * Test method for 'org.faktorips.devtools.core.model.tablecontents.TableImportOperation.run(IProgressMonitor)'
      */
-    public void testRun() throws Exception {
-        XlsTableImportIntoNewOperation op = new XlsTableImportIntoNewOperation(file.getRawLocation().toOSString(), pack, "Test", "Test");
+    public void testRunReplace() throws Exception {
+        XlsTableImportIntoExistingOperation op = new XlsTableImportIntoExistingOperation(file.getRawLocation().toOSString(), false, project, contents.getQualifiedName());
         op.run(null);
-        ITableContents contents = (ITableContents)project.findIpsObject(IpsObjectType.TABLE_CONTENTS, StringUtil.qualifiedName(pack.getName(), "Test"));
         ITableContentsGeneration gen = (ITableContentsGeneration)contents.getGenerations()[0];
         IRow[] rows = gen.getRows();
         HSSFSheet sheet = workbook.getSheetAt(0);
         for (int i = 0; i < rows.length; i++) {
             IRow contentRow = rows[i];
             HSSFRow sheetRow = sheet.getRow(i + 1); // first row is the header
+            if (sheetRow == null) {
+                fail();
+            }
+            for (short j = 0; j < (short)contents.getNumOfColumns(); j++) {
+                assertEquals(contentRow.getValue(j), sheetRow.getCell(j).getStringCellValue());
+            }
+        }
+        
+        assertEquals("Test", contents.getTableStructure());
+    }
+
+    /*
+     * Test method for 'org.faktorips.devtools.core.model.tablecontents.TableImportOperation.run(IProgressMonitor)'
+     */
+    public void testRunAppend() throws Exception {
+        XlsTableImportIntoExistingOperation op = new XlsTableImportIntoExistingOperation(file.getRawLocation().toOSString(), true, project, contents.getQualifiedName());
+        op.run(null);
+        ITableContentsGeneration gen = (ITableContentsGeneration)contents.getGenerations()[0];
+        IRow[] rows = gen.getRows();
+        HSSFSheet sheet = workbook.getSheetAt(0);
+        for (int i = 2; i < rows.length; i++) {
+            IRow contentRow = rows[i];
+            HSSFRow sheetRow = sheet.getRow(i - 1); // first row is the header
             if (sheetRow == null) {
                 fail();
             }

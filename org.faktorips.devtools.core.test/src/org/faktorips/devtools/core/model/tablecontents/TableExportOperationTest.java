@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.tablecontents;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -32,7 +33,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 public class TableExportOperationTest extends AbstractIpsPluginTest {
     
     String filename;
-    TableExportOperation op;
+    ExcelTableExportOperation op;
     ITableContents table;
     
     protected void setUp() throws Exception {
@@ -50,7 +51,7 @@ public class TableExportOperationTest extends AbstractIpsPluginTest {
         gen.newRow();
         gen.newRow();
         filename = table.getName() + ".xls";
-        op = new TableExportOperation(table, filename);
+        op = new ExcelTableExportOperation(table, filename);
     }
 
     /*
@@ -58,7 +59,9 @@ public class TableExportOperationTest extends AbstractIpsPluginTest {
      */
     public void testRun() throws Exception {
         op.run(new NullProgressMonitor());
-        HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(new File(filename)));
+        InputStream is = new FileInputStream(new File(filename));
+        HSSFWorkbook workbook = new HSSFWorkbook(is);
+        is.close();
         HSSFSheet sheet = workbook.getSheetAt(0);
         ITableContentsGeneration generation = (ITableContentsGeneration)table.getGenerations()[0];
         IRow[] contentRows = generation.getRows();
