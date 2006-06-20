@@ -39,6 +39,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	private ValueDatatype datatype;
 
 	private String[] ids;
+	
+	private String invalidValue;
 
 	public AbstractEnumDatatypeBasedField(Combo combo, ValueDatatype datatype) {
 		super(combo);
@@ -96,10 +98,17 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		}
 
 		if (myNames != null && myNames.length > 0) {
-			getCombo().setItems(myNames);
+			setItems(myNames);
 			return;
 		}
-		getCombo().setItems(ids);
+		setItems(ids);
+	}
+	
+	private void setItems(String[] items) {
+		getCombo().setItems(items);
+		if (invalidValue != null) {
+			getCombo().add((String)super.prepareObjectForSet(getValueName(invalidValue)));
+		}
 	}
 
 	/**
@@ -118,6 +127,12 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		if (getCombo().getSelectionIndex() == -1) {
 			return null;
 		}
+		
+		if (getCombo().getSelectionIndex() >= ids.length) {
+			// we have the invalid value selected...
+			return invalidValue;
+		}
+		
 		return super.prepareObjectForGet(ids[getCombo().getSelectionIndex()]);
 	}
 
@@ -142,5 +157,15 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		} else {
 			return noNullId;
 		}
+	}
+
+	/**
+	 * Set the given value as aditional value which must not be contained in the underlying value set. 
+	 * The given value is added to the values contained in the combo-box.
+	 * 
+	 * @param value The value to add (which means the id of the value).
+	 */
+	public void setInvalidValue(String value) {
+		invalidValue = value;
 	}
 }

@@ -36,7 +36,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IEnumValueSet;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -48,9 +51,11 @@ import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Section to display and edit the product attributes
@@ -240,6 +245,22 @@ public class ProductAttributesSection extends IpsSection {
 				Combo combo = toolkit.createComboForBoolean(rootPane, false, Messages.ProductAttributesSection_true, Messages.ProductAttributesSection_false);
 				ComboField field = new BooleanComboField(combo);
 				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
+				addFocusControl(combo);
+				editControls.add(combo);
+			}
+			else if (toDisplay.getValueSet().getValueSetType() == ValueSetType.ENUM) {
+				Combo combo = toolkit.createCombo(rootPane);
+				EnumValueSetField field = new EnumValueSetField(combo, (IEnumValueSet)toDisplay.getValueSet(), (ValueDatatype)datatype);
+				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
+				
+				// check if the currently set value is invalid because not contained in the value set and,
+				// if so, add the value to the values supported by the field, so the user can see
+				// the invalid value
+				MessageList ml = toDisplay.validate();
+				if (ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET) != null) {
+					field.setInvalidValue(toDisplay.getValue());
+				}
+				
 				addFocusControl(combo);
 				editControls.add(combo);
 			}
