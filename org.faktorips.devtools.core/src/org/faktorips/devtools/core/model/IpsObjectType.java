@@ -36,53 +36,41 @@ import org.faktorips.util.ArgumentCheck;
  */
 public final class IpsObjectType {
     
-    // the human readable type's name
-    private String name;
-    
-    // Name of xml elements that represent objects of this type. 
-    private String xmlElementName;
-    
-    // extension of files that store objects of this type
-    private String fileExtension;
-    
-    // name of the image file
-    private String image;
-    
     /**
      * Type for Policy component type.
      */
     public final static IpsObjectType BUSINESS_FUNCTION = 
-        new IpsObjectType("BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", "BusinessFunction.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, "ipsbf", false, "BusinessFunction.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     /**
      * Type for Policy component type.
      */
     public final static IpsObjectType POLICY_CMPT_TYPE = 
-        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("PolicyCmptType", Messages.IpsObjectType_namePolicyClass, "ipspct", true, "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
 
     /**
      * Type for product component type.
      */
     public final static IpsObjectType PRODUCT_CMPT_TYPE = 
-        new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("ProductCmptType", Messages.IpsObjectType_nameProductClass, "ipsproductcmpttype", false, "PolicyCmptType.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
 
     /**
      * Type for table structures.
      */
     public final static IpsObjectType TABLE_STRUCTURE = 
-        new IpsObjectType("TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", "TableStructure.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("TableStructure", Messages.IpsObjectType_nameTableStructure, "ipstablestructure", false, "TableStructure.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     /**
      * Type for product components.
      */
     public final static IpsObjectType PRODUCT_CMPT = 
-        new IpsObjectType("ProductCmpt", Messages.IpsObjectType_nameProductComponent, "ipsproduct", "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("ProductCmpt", Messages.IpsObjectType_nameProductComponent, "ipsproduct", false, "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     /**
      * Type for tables contents objects.
      */
     public final static IpsObjectType TABLE_CONTENTS = 
-        new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", "TableContents.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+        new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", false, "TableContents.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
     public final static IpsObjectType[] ALL_TYPES = new IpsObjectType[]
     	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS};
@@ -116,6 +104,23 @@ public final class IpsObjectType {
 		return null;
 	}
 	
+    // the human readable type's name
+    private String name;
+    
+    // Name of xml elements that represent objects of this type. 
+    private String xmlElementName;
+    
+    // extension of files that store objects of this type
+    private String fileExtension;
+    
+    // name of the image file
+    private String image;
+    
+    private boolean datatype = false;
+	
+	/**
+	 * Creates the ips object for the given file.
+	 */
 	public final IIpsObject newObject(IIpsSrcFile file) {
 	    if (this==BUSINESS_FUNCTION) {
 	        return new BusinessFunctionImpl(file);
@@ -162,6 +167,14 @@ public final class IpsObjectType {
 	}
 	
 	/**
+	 * Returns <code>true</code> if the ips objects of this type are also datatypes,
+	 * otherwise <code>false</code>. 
+	 */
+	public boolean isDatatype() {
+		return datatype;
+	}
+	
+	/**
 	 * Returns the type's image.
 	 */
 	public final Image getImage() {
@@ -180,8 +193,7 @@ public final class IpsObjectType {
 	}
 	
 	/**
-	 * Overridden method.
-	 * @see java.lang.Object#toString()
+	 * {@inheritDoc}
 	 */
 	public final String toString() {
 		return xmlElementName;
@@ -191,6 +203,7 @@ public final class IpsObjectType {
             String xmlElementName, 
             String name, 
             String fileExtension,
+            boolean datatype,
             String image) {
         
     	ArgumentCheck.notNull(xmlElementName);
@@ -201,6 +214,7 @@ public final class IpsObjectType {
         this.xmlElementName = xmlElementName;
         this.name = name;
         this.fileExtension = fileExtension;
+        this.datatype = datatype;
         this.image = image;
     }
     
