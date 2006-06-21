@@ -178,8 +178,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 		}
 
 		try {
-			Datatype datatype = attribute.getIpsProject().findDatatype(
-					attribute.getDatatype());
+			Datatype datatype = attribute.findDatatype();
 			if (datatype == null) {
 				String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgErrorNoDatatypeForAttribute, attribute.getDatatype(), attributeName);
 				return new CompilationResultImpl(Message.newError(

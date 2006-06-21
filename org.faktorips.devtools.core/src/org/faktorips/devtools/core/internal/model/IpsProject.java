@@ -548,6 +548,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public EnumDatatype[] findEnumDatatypes() throws CoreException{
     	//TODO this implementation can be improved and instanceof can be avoided. Therefore the storage of EnumDatatypes an Datatypes
     	//has to be separated within the IpsModel class
+    	
     	Datatype[] datatypes = findDatatypes(true, false);
     	ArrayList enumDatatypeList = new ArrayList();
     	for (int i = 0; i < datatypes.length; i++) {
@@ -575,20 +576,20 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public Datatype findDatatype(String qualifiedName) throws CoreException {
-    	
     	int arrayDimension = ValueDatatypeArray.getDimension(qualifiedName);
     	if(arrayDimension > 0){
     		qualifiedName = ValueDatatypeArray.getBasicDatatypeName(qualifiedName);
     	}
-        Datatype[] datatypes = findDatatypes(false, true);
-        Datatype returnValue = null;
-        for (int i = 0; i < datatypes.length; i++) {
-            if (datatypes[i].getQualifiedName().equals(qualifiedName)) {
-                returnValue = datatypes[i];
-                break;
+        Datatype returnValue = findValueDatatype(qualifiedName);
+        if (returnValue==null) {
+            Datatype[] datatypes = findDatatypes(false, true);
+            for (int i = 0; i < datatypes.length; i++) {
+                if (datatypes[i].getQualifiedName().equals(qualifiedName)) {
+                    returnValue = datatypes[i];
+                    break;
+                }
             }
         }
-        
         if(arrayDimension > 0){
         	if(returnValue instanceof ValueDatatype){
         		return new ValueDatatypeArray(returnValue, arrayDimension);
@@ -603,7 +604,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException {
-        return (ValueDatatype)findDatatype(qualifiedName);
+    	return findValueDatatype(this, qualifiedName, new HashSet());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, HashSet visitedProjects) throws CoreException {
+            ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatype(ipsProject, qualifiedName);
+            if (datatype!=null) {
+            	return datatype;
+            }
+            IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
+            for (int i = 0; i < projects.length; i++) {
+                if(!visitedProjects.contains(projects[i])){
+                	visitedProjects.add(projects[i]);
+                	datatype = findValueDatatype((IpsProject)projects[i], qualifiedName, visitedProjects);
+                	if (datatype!=null) {
+                		return datatype;
+                	}
+                }
+            }
+            return null;
     }
 
     /**

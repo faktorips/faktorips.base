@@ -101,11 +101,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	// project name.
 	private HashMap projectDatatypesMap = new HashMap();
 
-	// a map containing a map per ips project. The map's key is the project
-	// name.
-	// The maps contained in the map, contain the datatype as keys and the
-	// datatype helper as
-	// values.
+	// a map containing a map per ips project. The map's key is the project name.
+	// The maps contained in the map, contain the datatypes as keys and the
+	// datatype helper as values.
 	private HashMap projectDatatypeHelpersMap = new HashMap();
 
 	// the artefact builder sets that are registered with the artefact builder
@@ -321,9 +319,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.IIpsModel#getAllSourcePckFragmentRoots()
+	 * {@inheritDoc}
 	 */
 	public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots()
 			throws CoreException {
@@ -350,6 +346,25 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 		datatypes.addAll(set);
 		return;
+	}
+
+	/**
+	 * Adds the value datatypes defined for the IPS project to the set of
+	 * datatypes.
+	 */
+	public ValueDatatype getValueDatatype(IIpsProject ipsProject, String qName) {
+		Set set = (Set) projectDatatypesMap.get(ipsProject.getName());
+		if (set == null) {
+			getDatatypes(ipsProject);
+			set = (Set) projectDatatypesMap.get(ipsProject.getName());
+		}
+		for (Iterator it=set.iterator(); it.hasNext(); ) {
+			Datatype type = (Datatype)it.next();
+			if (type.getQualifiedName().equals(qName) && type instanceof ValueDatatype) {
+				return (ValueDatatype)type;
+			}
+		}
+		return null;
 	}
 
 	/**

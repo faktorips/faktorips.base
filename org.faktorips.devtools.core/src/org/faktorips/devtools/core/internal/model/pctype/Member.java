@@ -40,8 +40,7 @@ public abstract class Member extends IpsObjectPart implements IMember {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMember#getIpsObject()
+     * {@inheritDoc}
      */
     public IIpsObject getIpsObject() {
         return (IIpsObject)parent;

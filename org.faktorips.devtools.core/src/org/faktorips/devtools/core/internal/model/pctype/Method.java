@@ -100,16 +100,14 @@ public class Method extends Member implements IMethod {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#getDatatype()
+     * {@inheritDoc}
      */
     public String getDatatype() {
         return datatype;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IAttribute#setDatatype(java.lang.String)
+     * {@inheritDoc}
      */
     public void setDatatype(String newDatatype) {
         this.datatype = newDatatype;

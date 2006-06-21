@@ -113,49 +113,43 @@ public class Attribute extends Member implements IAttribute {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getDatatype() {
-    	if (overwrites) {
-    		Attribute superAttr = getSupertypeAttribute();
+    	if (!overwrites) {
+    		return datatype;
+    	}
+		IAttribute superAttr;
+		try {
+			superAttr = findSupertypeAttribute();
     		if (superAttr != null) {
     			return superAttr.getDatatype();
     		}
-    		return ""; //$NON-NLS-1$
-    	}
-        return datatype;
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
+		return ""; //$NON-NLS-1$
     }
     
     /**
-     * Returns the first found attribute with the same name in supertypes or <code>null</code>
+     * Returns the first attribute found with the same name in the supertypes hierarchy or <code>null</code>
      * if no such attribute exists.
+     * @throws CoreException 
+     * 
+     * @throws CoreException if an error occurs while searching the attribute.
      */
-    private Attribute getSupertypeAttribute() {
-		IPolicyCmptType type = this.getPolicyCmptType();
-
-		if (type == null) {
+    private IAttribute findSupertypeAttribute() throws CoreException {
+		IPolicyCmptType supertype = getPolicyCmptType().findSupertype();
+		if (supertype == null) {
 			return null;
 		}
-		
-		try {
-			// get the supertype because the findAttribute-Method of TypeHierarchy 
-			// searches the given type, too. So we can avoid to find this attribute.
-			type = type.findSupertype();
-			if (type == null) {
-				return null;
-			}
-
-			Attribute attr = (Attribute)type.getSupertypeHierarchy().findAttribute(type, name); 
-			
-			return attr;
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-			return null;
-		}
+		// use the supertype to searchc because the findAttribute-Method of TypeHierarchy 
+		// searches the given type, too. So we can avoid to find this attribute.
+		return supertype.getSupertypeHierarchy().findAttribute(supertype, name); 
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setDatatype(String newDatatype) {
         String oldDatatype = datatype;
@@ -164,14 +158,14 @@ public class Attribute extends Member implements IAttribute {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
-    public Datatype findDatatype() throws CoreException {
-        return getIpsProject().findDatatype(getDatatype());
+    public ValueDatatype findDatatype() throws CoreException {
+        return getIpsProject().findValueDatatype(getDatatype());
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setAttributeType(AttributeType newType) {
         AttributeType oldType = attributeType;
@@ -180,49 +174,59 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public AttributeType getAttributeType() {
-    	if (overwrites) {
-    		Attribute superAttr = getSupertypeAttribute();
-    		if (superAttr != null) {
-    			return superAttr.getAttributeType();
-    		}
-    		return AttributeType.CHANGEABLE;
+    	if (!overwrites) {
+    		return attributeType;
     	}
-        return attributeType;
+		IAttribute superAttr;
+		try {
+			superAttr = findSupertypeAttribute();
+			if (superAttr != null) {
+				return superAttr.getAttributeType();
+			}
+			return AttributeType.CHANGEABLE;
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
     }
 
     /**
-     * Overridden method.
+     * {@inheritDoc}
      */
     public boolean isChangeable() {
 		return getAttributeType()==AttributeType.CHANGEABLE;
 	}
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
 	public boolean isDerivedOrComputed() {
         return getAttributeType()==AttributeType.DERIVED || getAttributeType()==AttributeType.COMPUTED;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Modifier getModifier() {
-    	if (overwrites) {
-    		Attribute superAttr = getSupertypeAttribute();
-    		if (superAttr != null) {
-    			return superAttr.getModifier();
-    		}
-    		return Modifier.PUBLISHED;
+    	if (!overwrites) {
+    		return modifier;
     	}
-        return modifier;
+		IAttribute superAttr;
+		try {
+			superAttr = findSupertypeAttribute();
+			if (superAttr != null) {
+				return superAttr.getModifier();
+			}
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
+		return Modifier.PUBLISHED;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setModifier(Modifier newModifier) {
         Modifier oldModifier = modifier;
@@ -231,21 +235,26 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isProductRelevant() {
-    	if (overwrites) {
-    		Attribute superAttr = getSupertypeAttribute();
-    		if (superAttr != null) {
-    			return superAttr.isProductRelevant();
-    		}
-    		return true;
+    	if (!overwrites) {
+    		return productRelevant;
     	}
-        return productRelevant;
+		IAttribute superAttr;
+		try {
+			superAttr = findSupertypeAttribute();
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
+		if (superAttr != null) {
+			return superAttr.isProductRelevant();
+		}
+		return true;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setProductRelevant(boolean newValue) {
         boolean oldValue = productRelevant;
@@ -254,14 +263,14 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getDefaultValue() {
         return defaultValue;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setDefaultValue(String newValue) {
         String oldValue = defaultValue;
@@ -270,14 +279,14 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IValueSet getValueSet() {
         return valueSet;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setValueSetType(ValueSetType type) {
     	if (valueSet != null && type == valueSet.getValueSetType()) {
@@ -288,7 +297,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public ConfigElementType getConfigElementType() {
         if (!isProductRelevant()) {
@@ -307,7 +316,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Image getImage() {
         if (getModifier() == Modifier.PRIVATE) {
@@ -318,7 +327,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Parameter[] getFormulaParameters() {
         Parameter[] copy = new Parameter[parameters.length];
@@ -327,14 +336,14 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public int getNumOfFormulaParameters() {
         return parameters.length;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setFormulaParameters(Parameter[] params) {
         parameters = new Parameter[params.length];
@@ -343,7 +352,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void validate(MessageList result) throws CoreException {
     	super.validate(result);
@@ -351,57 +360,23 @@ public class Attribute extends Member implements IAttribute {
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
-        Datatype datatypeObject = ValidationUtils.checkDatatypeReference(getDatatype(), false, this,
+        ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
-        if (datatypeObject == null) {
-            if (!StringUtils.isEmpty(defaultValue)) {
+        if (datatypeObject != null) {
+        	validateDefaultValueAndValueSet(datatypeObject, result);
+        } else {
+        	if (!StringUtils.isEmpty(defaultValue)) {
                 String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);
                 result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
-            } else {
-            }
-        } else {
-            if (!datatypeObject.isValueDatatype()) {
-                if (!StringUtils.isEmpty(getDatatype())) {
-                    String text = NLS.bind(Messages.Attribute_msgValueNotParsable_InvalidDatatype, defaultValue);
-                    result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE, text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
-                } else {
-                }
-            } else {
-                ValueDatatype valueDatatype = (ValueDatatype)datatypeObject;
-                if (!valueDatatype.isParsable(defaultValue)) {
-                	String defaultValueInMsg = defaultValue;
-                	if (defaultValue==null) {
-                		defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-                	} else if (defaultValue.equals("")) { //$NON-NLS-1$
-                		defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
-                	}
-                    String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, getDatatype());
-                    result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
-                    return;
-                }
-                if (valueSet != null) {
-                    valueSet.validate(result);
-
-                    if (valueSet.containsValue(defaultValue) == false) {
-                        result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
-                                Message.ERROR, this,
-                                PROPERTY_DEFAULT_VALUE));
-                    }
-                    
-                    if (overwrites) {
-                    	getSupertypeAttribute().getValueSet().containsValueSet(valueSet, result, valueSet, null);
-                    }
-                }
-            }
+        	}
         }
         
         if (isDerivedOrComputed() && isProductRelevant() && parameters.length == 0) {
             String text = Messages.Attribute_msgNoInputparams;
             result.add(new Message(MSGCODE_NO_INPUT_PARAMETERS, text, Message.WARNING, this)); //$NON-NLS-1$
         }
-
         for (int i = 0; i < parameters.length; i++) {
-            validate(parameters[i], result);
+            validateParameter(parameters[i], result);
         }
 
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
@@ -409,20 +384,46 @@ public class Attribute extends Member implements IAttribute {
         	result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
         }
         
-        Attribute superAttr = getSupertypeAttribute();
-        if (!overwrites && superAttr != null) {
-        	IPolicyCmptType type = superAttr.getPolicyCmptType();
-        	String text = NLS.bind(Messages.Attribute_msgNameCollision, type!=null?type.getQualifiedName():Messages.Attribute_msgpartUnknown, superAttr.getName());
-        	result.add(new Message(MSGCODE_NAME_COLLISION, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
+        IAttribute superAttr = findSupertypeAttribute();
+        if (overwrites) {
+        	if (superAttr == null) {
+            	String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
+            	result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
+        	} else {
+            	superAttr.getValueSet().containsValueSet(valueSet, result, valueSet, null);
+        	}
+        } else {
+            if (superAttr != null) {
+            	IPolicyCmptType type = (IPolicyCmptType)superAttr.getIpsObject();
+            	String text = NLS.bind(Messages.Attribute_msgNameCollision, type!=null?type.getQualifiedName():Messages.Attribute_msgpartUnknown, superAttr.getName());
+            	result.add(new Message(MSGCODE_NAME_COLLISION, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
+            }
         }
-        
-        if (overwrites && superAttr == null) {
-        	String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
-        	result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
+    }
+    
+    private void validateDefaultValueAndValueSet(ValueDatatype valueDatatype, MessageList result) throws CoreException {
+        if (!valueDatatype.isParsable(defaultValue)) {
+        	String defaultValueInMsg = defaultValue;
+        	if (defaultValue==null) {
+        		defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        	} else if (defaultValue.equals("")) { //$NON-NLS-1$
+        		defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
+        	}
+            String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, getDatatype());
+            result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+            return;
+        }
+        if (valueSet != null) {
+            valueSet.validate(result);
+            if (!valueSet.containsValue(defaultValue)) {
+                result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
+                        Message.ERROR, this,
+                        PROPERTY_DEFAULT_VALUE));
+            }
         }
     }
 
-    private void validate(Parameter param, MessageList result) throws CoreException {
+    private void validateParameter(Parameter param, MessageList result) throws CoreException {
         if (!isDerivedOrComputed() && !isProductRelevant()) {
             String text = Messages.Attribute_msgNoParamsNeccessary;
             result.add(new Message(MSGCODE_NO_PARAMETERS_NECCESSARY, text, Message.WARNING, param)); //$NON-NLS-1$

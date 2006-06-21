@@ -18,7 +18,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IValueDatatypeProvider;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -142,22 +142,24 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
 			+ "NameCollsion"; //$NON-NLS-1$
     
     /**
-	 * Returns the attribute's datatype.
+	 * Returns the attribute's datatype. Note that only value datatypes are allowed as
+	 * attribute datatype.
 	 */
     public String getDatatype();
     
     /**
-     * Sets the attribute's datatype.
+     * Sets the attribute's datatype. Note that only value datatypes are allowed as
+	 * attribute datatype.
      */
     public void setDatatype(String newDatatype);
     
     /**
-     * Returns the attribute's datatype or <code>null</code> if the datatype name
+     * Returns the attribute's value datatype or <code>null</code> if the datatype name
      * can't be resolved.
      * 
      * @throws CoreException if an error occurs while searching for the datatype.
      */
-    public Datatype findDatatype() throws CoreException;
+    public ValueDatatype findDatatype() throws CoreException;
     
     /**
      * Returns the attribute's type.

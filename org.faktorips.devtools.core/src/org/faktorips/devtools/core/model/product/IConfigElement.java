@@ -71,11 +71,6 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider {
     public final static String MSGCODE_WRONG_FORMULA_DATATYPE = MSGCODE_PREFIX + "WrongFormulaDatatype"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the datatype is not a value datatype.
-     */
-    public final static String MSGCODE_NOT_A_VALUEDATATYPE = MSGCODE_PREFIX + "NotAValudDatatype"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the datatype is invalid. (E.g. the definition
      * of a dynamic datatype can be wrong.)
      */

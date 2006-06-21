@@ -262,9 +262,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 	private void validateValue(IAttribute attribute, MessageList list)
 			throws CoreException {
-		String datatype = attribute.getDatatype();
-		Datatype datatypeObject = getIpsProject().findDatatype(datatype);
-		if (datatypeObject == null) {
+		
+		ValueDatatype valueDatatype = attribute.findDatatype();
+		if (valueDatatype == null) {
 			if (!StringUtils.isEmpty(value)) {
 				String text = Messages.ConfigElement_msgUndknownDatatype;
 				list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
@@ -272,15 +272,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			}
 			return;
 		}
-		if (!datatypeObject.isValueDatatype()) {
-			if (!StringUtils.isEmpty(datatype)) {
-				String text = Messages.ConfigElement_msgNoValueDatatype;
-				list.add(new Message(IConfigElement.MSGCODE_NOT_A_VALUEDATATYPE, text, Message.WARNING, this,
-						PROPERTY_VALUE));
-				return;
-			}
-		}
-		ValueDatatype valueDatatype = (ValueDatatype) datatypeObject;
 		try {
 			if (valueDatatype.validate().containsErrorMsg()) {
 				String text = Messages.ConfigElement_msgInvalidDatatype;
