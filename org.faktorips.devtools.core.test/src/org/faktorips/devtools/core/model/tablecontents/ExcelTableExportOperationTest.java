@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
-public class TableExportOperationTest extends AbstractIpsPluginTest {
+public class ExcelTableExportOperationTest extends AbstractIpsPluginTest {
     
     String filename;
     ExcelTableExportOperation op;
