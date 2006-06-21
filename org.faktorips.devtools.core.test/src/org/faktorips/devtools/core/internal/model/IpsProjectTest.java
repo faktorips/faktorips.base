@@ -54,6 +54,7 @@ import org.faktorips.util.message.MessageList;
 public class IpsProjectTest extends AbstractIpsPluginTest {
 
     private IpsProject ipsProject;
+    private IpsProject baseProject;
     private IIpsPackageFragmentRoot root;
     
     /*
@@ -63,6 +64,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
+        
+        baseProject = (IpsProject)this.newIpsProject("BaseProject");
+        IIpsProjectProperties props = baseProject.getProperties();
+        props.setPredefinedDatatypesUsed(new String[]{"Integer"});
+        baseProject.setProperties(props);
+    }
+    
+    private void makeIpsProjectDependOnBaseProject() throws CoreException {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        IIpsObjectPath path = props.getIpsObjectPath();
+        path.newIpsProjectRefEntry(baseProject);
+        ipsProject.setProperties(props);
+        
     }
     
     public void testValidate() throws Exception {
@@ -179,6 +193,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(2, types.length);
         assertEquals(Datatype.DECIMAL, types[0]);
         assertEquals(Datatype.PRIMITIVE_INT, types[1]);
+    }
+
+    public void testFindValueDatatype() throws CoreException {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName()});
+        ipsProject.setProperties(props);
+
+        assertEquals(Datatype.DECIMAL, ipsProject.findDatatype("Decimal"));
+        assertNull(ipsProject.findDatatype("Unknown"));
+        assertNull(ipsProject.findDatatype("Integer"));
+        
+        makeIpsProjectDependOnBaseProject();
+        assertEquals(Datatype.INTEGER, ipsProject.findDatatype("Integer"));
     }
 
     public void testGetDatatypeHelper() throws CoreException {

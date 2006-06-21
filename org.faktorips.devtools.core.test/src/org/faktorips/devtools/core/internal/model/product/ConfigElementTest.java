@@ -167,29 +167,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_MISSING_FORMULA));
     }
 
-    public void testValidate_NotAValueDatatype() throws CoreException {
-    	IConfigElement ce = generation.newConfigElement();
-    	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
-    	ce.setValue("1");
-    	ce.setPcTypeAttribute("valueTest");
-    	IAttribute attr = policyCmptType.newAttribute();
-    	attr.setName("valueTest");
-    	attr.setAttributeType(AttributeType.CONSTANT);
-    	attr.setDatatype("TestPolicy");
-
-    	policyCmptType.getIpsSrcFile().save(true, null);
-    	productCmpt.getIpsSrcFile().save(true, null);
-    	
-    	MessageList ml = ce.validate();
-    	assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_NOT_A_VALUEDATATYPE));
-    	
-    	attr.setDatatype("Decimal");
-    	policyCmptType.getIpsSrcFile().save(true, null);
-
-    	ml = ce.validate();
-    	assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_NOT_A_VALUEDATATYPE));
-    }
-    
     public void testValidate_ValueNotParsable() throws CoreException {
     	IConfigElement ce = generation.newConfigElement();
     	ce.setType(ConfigElementType.PRODUCT_ATTRIBUTE);

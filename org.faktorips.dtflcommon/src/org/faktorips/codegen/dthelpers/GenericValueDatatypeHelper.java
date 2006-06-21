@@ -32,7 +32,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
 
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment code = new JavaCodeFragment();
-        code.appendClassName(getGenericValueDatatype().getAdaptedClass());
+        code.appendClassName(getGenericValueDatatype().getJavaClassName());
         code.append('.');
         code.append(getGenericValueDatatype().getValueOfMethodName());
         code.append('(');
@@ -48,7 +48,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
             code.append("null");
             return code;
         }
-        code.appendClassName(datatype.getAdaptedClass());
+        code.appendClassName(datatype.getJavaClassName());
         code.append('.');
         code.append(datatype.getValueOfMethodName());
         code.append('(');

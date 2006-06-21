@@ -41,7 +41,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 
 	protected Method getNameMethod;
     
-    private boolean cacheData;
+    private boolean cacheData = false;
     private String[] cachedValueIds = null;
     private String[] cachedValueNames = null;
     
@@ -157,7 +157,12 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         return -1;
     }
 
-	Method getGetAllValuesMethod() {
+    /**
+     * Returns the method to get all enum values from the adapted class.
+     *  
+     * @hrows RuntimeException if the method can't be found.
+     */
+	public Method getGetAllValuesMethod() {
 		if (getAllValuesMethod == null && getAllValuesMethodName != null) {
 			try {
 				getAllValuesMethod = getAdaptedClass().getMethod(getAllValuesMethodName,
@@ -173,7 +178,12 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 		return getAllValuesMethod;
 	}
 
-	Method getGetNameMethod() {
+    /**
+     * Returns the method to get the name for a given valueId from the adapted class.
+     *  
+     * @hrows RuntimeException if the method can't be found.
+     */
+	public Method getGetNameMethod() {
 		if (getNameMethod == null && getNameMethodName != null) {
 			try {
 				getNameMethod = getAdaptedClass().getMethod(getNameMethodName, new Class[0]);
@@ -224,12 +234,15 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      * {@inheritDoc}
      */
     public boolean isParsable(String value) {
+        if (value==null) {
+            return true;
+        }
         String[] ids = getAllValueIdsFromCache();
         if (ids==null) {
             return super.isParsable(value);
         }
         for (int i = 0; i < ids.length; i++) {
-            if (ObjectUtils.equals(value, ids[i])) {
+            if (value.equals(ids[i])) {
                 return true;
             }
         }
@@ -272,7 +285,10 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
     
     
-    private void initCache() {
+    /**
+     * Initializes the cache with the data from the underlying class. 
+     */
+    public void initCache() {
         String[] ids;
         try {
             ids = getAllValueIdsFromClass();    

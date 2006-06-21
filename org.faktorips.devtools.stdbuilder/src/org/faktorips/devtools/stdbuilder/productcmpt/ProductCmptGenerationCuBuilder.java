@@ -147,7 +147,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      */
     private void generateMethodComputeValue(IConfigElement formulaElement, JavaCodeFragmentBuilder builder) throws CoreException {
         IAttribute attribute = formulaElement.findPcTypeAttribute();
-        Datatype datatype = attribute.getIpsProject().findDatatype(attribute.getDatatype());
+        Datatype datatype = attribute.findDatatype();
         DatatypeHelper datatypeHelper = attribute.getIpsProject().getDatatypeHelper(datatype);
 
         String javaDoc = getLocalizedText(formulaElement, COMPUTE_METHOD_JAVADOC, StringUtils
