@@ -20,7 +20,7 @@ package org.faktorips.fl.functions;
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.ValueDatatypeArray;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -79,7 +79,7 @@ public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
             fragment.append("}");
             TestBeanDatatype beanDatatype = new TestBeanDatatype(SimpleBean.class.getName());
             beanDatatype.add(new TestPropertyDatatype("value", Datatype.DECIMAL)); 
-            return new CompilationResultImpl(fragment, new ValueDatatypeArray(beanDatatype, 1));
+            return new CompilationResultImpl(fragment, new ArrayOfValueDatatype(beanDatatype, 1));
         }
     }
 }

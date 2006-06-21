@@ -26,29 +26,29 @@ import junit.framework.TestCase;
 public class ArrayDatatypeTest extends TestCase {
 
     public void testGetDimenion() {
-        assertEquals(0, ValueDatatypeArray.getDimension("Money"));
-        assertEquals(1, ValueDatatypeArray.getDimension("Money[]"));
-        assertEquals(2, ValueDatatypeArray.getDimension("Money[][]"));
+        assertEquals(0, ArrayOfValueDatatype.getDimension("Money"));
+        assertEquals(1, ArrayOfValueDatatype.getDimension("Money[]"));
+        assertEquals(2, ArrayOfValueDatatype.getDimension("Money[][]"));
     }
     
     public void testGetBasicDatatypeName() {
-        assertEquals("Money", ValueDatatypeArray.getBasicDatatypeName("Money"));
-        assertEquals("Money", ValueDatatypeArray.getBasicDatatypeName("Money[]"));
-        assertEquals("Money", ValueDatatypeArray.getBasicDatatypeName("Money[][]"));
+        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money"));
+        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[]"));
+        assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[][]"));
     }
     
     public void testGetName() {
-        ValueDatatypeArray datatype = new ValueDatatypeArray(Datatype.MONEY, 2);
+        ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
         assertEquals("Money[][]", datatype.getName());
     }
 
     public void testGetQualifiedName() {
-        ValueDatatypeArray datatype = new ValueDatatypeArray(Datatype.MONEY, 2);
+        ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
         assertEquals("Money[][]", datatype.getQualifiedName());
     }
 
     public void testGetJavaClassName() {
-        ValueDatatypeArray datatype = new ValueDatatypeArray(Datatype.MONEY, 2);
+        ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
         assertEquals(Datatype.MONEY.getJavaClassName(), datatype.getJavaClassName());
     }
 

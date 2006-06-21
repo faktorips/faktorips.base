@@ -29,7 +29,7 @@ import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.ValueDatatypeArray;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
@@ -214,7 +214,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
         assertEquals(DecimalHelper.class, helper.getClass());
-        helper = ipsProject.getDatatypeHelper(new ValueDatatypeArray(Datatype.DECIMAL, 1));
+        helper = ipsProject.getDatatypeHelper(new ArrayOfValueDatatype(Datatype.DECIMAL, 1));
         assertNull(helper);
         
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
@@ -233,8 +233,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNotNull(type);
         assertEquals(type, Datatype.DECIMAL);
         type = ipsProject.findDatatype(Datatype.DECIMAL.getQualifiedName() + "[]");
-        assertTrue(type instanceof ValueDatatypeArray);
-        ValueDatatypeArray arrayType = (ValueDatatypeArray)type;
+        assertTrue(type instanceof ArrayOfValueDatatype);
+        ArrayOfValueDatatype arrayType = (ArrayOfValueDatatype)type;
         assertEquals(Datatype.DECIMAL, arrayType.getBasicDatatype());
     }
     

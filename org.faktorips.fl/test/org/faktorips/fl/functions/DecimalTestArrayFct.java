@@ -18,7 +18,7 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.ValueDatatypeArray;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -37,7 +37,7 @@ public class DecimalTestArrayFct extends AbstractFlFunction {
     private Decimal[] values;
     
     public DecimalTestArrayFct() {
-        super(name, "", new ValueDatatypeArray(Datatype.DECIMAL, 1), new Datatype[]{});
+        super(name, "", new ArrayOfValueDatatype(Datatype.DECIMAL, 1), new Datatype[]{});
     }
 
     public void setValues(Decimal[] values) {

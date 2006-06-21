@@ -18,7 +18,7 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.ValueDatatypeArray;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -39,7 +39,7 @@ public class SumDecimal extends AbstractFlFunction {
      * @throws IllegalArgumentException if name is <code>null</code>.
      */
     public SumDecimal(String name, String description) {
-        super(name, description, Datatype.DECIMAL, new Datatype[] {new ValueDatatypeArray(Datatype.DECIMAL, 1)});
+        super(name, description, Datatype.DECIMAL, new Datatype[] {new ArrayOfValueDatatype(Datatype.DECIMAL, 1)});
     }
 
     /** 

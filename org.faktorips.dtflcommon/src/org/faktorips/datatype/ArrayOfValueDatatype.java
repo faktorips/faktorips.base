@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class ValueDatatypeArray extends AbstractDatatype implements ValueDatatype {
+public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatatype {
 
     // The primitive datatype
     private Datatype datatype;
@@ -80,7 +80,7 @@ public class ValueDatatypeArray extends AbstractDatatype implements ValueDatatyp
     /**
      * Constructs a new array datatype based on the guven underlying datatype and the dimension. 
      */
-    public ValueDatatypeArray(Datatype datatype, int dimension) {
+    public ArrayOfValueDatatype(Datatype datatype, int dimension) {
         super();
         ArgumentCheck.notNull(datatype);
         this.datatype = datatype;

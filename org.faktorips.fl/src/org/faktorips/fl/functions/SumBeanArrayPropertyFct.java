@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.AnyDatatype;
-import org.faktorips.datatype.ValueDatatypeArray;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BeanDatatype;
 import org.faktorips.fl.CompilationResult;
@@ -54,7 +54,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
     public CompilationResult compile(CompilationResult[] argResults) {
         ArgumentCheck.notNull(argResults[0]);
         ArgumentCheck.notNull(argResults[1]);
-        ValueDatatypeArray array = (ValueDatatypeArray)argResults[0].getDatatype();        
+        ArrayOfValueDatatype array = (ArrayOfValueDatatype)argResults[0].getDatatype();        
         BeanDatatype bean = (BeanDatatype)array.getBasicDatatype();
         PropertyDatatype property = (PropertyDatatype)argResults[1].getDatatype();
         if (bean.getProperty(property.getName())==null) {

@@ -42,7 +42,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.ValueDatatypeArray;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -576,9 +576,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public Datatype findDatatype(String qualifiedName) throws CoreException {
-    	int arrayDimension = ValueDatatypeArray.getDimension(qualifiedName);
+    	int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
     	if(arrayDimension > 0){
-    		qualifiedName = ValueDatatypeArray.getBasicDatatypeName(qualifiedName);
+    		qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
     	}
         Datatype returnValue = findValueDatatype(qualifiedName);
         if (returnValue==null) {
@@ -592,7 +592,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         if(arrayDimension > 0){
         	if(returnValue instanceof ValueDatatype){
-        		return new ValueDatatypeArray(returnValue, arrayDimension);
+        		return new ArrayOfValueDatatype(returnValue, arrayDimension);
         	}
         	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + 
         			"\" specifies an array of a non value datatype. This is currently not supported.");
@@ -633,7 +633,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         if (!(datatype instanceof ValueDatatype) || 
-        	  datatype instanceof ValueDatatypeArray) {
+        	  datatype instanceof ArrayOfValueDatatype) {
             return null;
         }
         DatatypeHelper helper = ((IpsModel)getIpsModel()).getDatatypeHelper(this,
@@ -676,7 +676,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype instanceof MoneyDatatype) {
             return ValueSetType.getValueSetTypes();
         }
-        if(datatype instanceof ValueDatatypeArray){
+        if(datatype instanceof ArrayOfValueDatatype){
         	return new ValueSetType[] {ValueSetType.ALL_VALUES};
         }
         return new ValueSetType[] { ValueSetType.ALL_VALUES, ValueSetType.ENUM };
