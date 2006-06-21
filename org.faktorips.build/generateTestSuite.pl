@@ -58,6 +58,7 @@ foreach $project (@projects){
 
 	my $importstatements="";
 	my $testcases="";
+	@files="";
 
 	debug("scanning for testclasses in $project...");
 	find(\&generateList, $basedir . $project);
