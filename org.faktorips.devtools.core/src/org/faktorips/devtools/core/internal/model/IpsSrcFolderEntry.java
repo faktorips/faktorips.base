@@ -66,28 +66,28 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getType() {
         return TYPE_SRC_FOLDER;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder getSourceFolder() {
         return sourceFolder;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject ipsProject) {
         return ipsProject.getIpsPackageFragmentRoot(sourceFolder.getName());
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder getOutputFolderForGeneratedJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -97,21 +97,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder getSpecificOutputFolderForGeneratedJavaFiles() {
         return outputFolderGenerated;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setSpecificOutputFolderForGeneratedJavaFiles(IFolder outputFolder) {
         this.outputFolderGenerated = outputFolder;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getBasePackageNameForGeneratedJavaClasses() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -121,21 +121,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getSpecificBasePackageNameForGeneratedJavaClasses() {
         return basePackageGenerated;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setSpecificBasePackageNameForGeneratedJavaClasses(String name) {
         this.basePackageGenerated = name;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder getOutputFolderForExtensionJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -145,21 +145,21 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFolder getSpecificOutputFolderForExtensionJavaFiles() {
         return outputFolderExtension;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setSpecificOutputFolderForExtensionJavaFiles(IFolder outputFolder) {
         outputFolderExtension = outputFolder;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getBasePackageNameForExtensionJavaClasses() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -169,42 +169,42 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getSpecificBasePackageNameForExtensionJavaClasses() {
         return basePackageExtension;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setSpecificBasePackageNameForExtensionJavaClasses(String name) {
         basePackageExtension = name;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IIpsProject ipsProject, IpsObjectType type, String qualifiedName) throws CoreException {
         return getIpsPackageFragmentRoot(ipsProject).findIpsObject(type, qualifiedName);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException {
         return getIpsPackageFragmentRoot(ipsProject).findIpsObject(nameType);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result) throws CoreException {
         ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot(ipsProject)).findIpsObjects(type, result);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void findIpsObjectsStartingWith(IIpsProject ipsProject, IpsObjectType type, String prefix, boolean ignoreCase, List result)
             throws CoreException {
@@ -213,7 +213,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void initFromXml(Element element, IProject project) {
         String sourceFolderPath = element.getAttribute("sourceFolder"); //$NON-NLS-1$
@@ -229,7 +229,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Element toXml(Document doc) {
         Element element = doc.createElement(IpsObjectPathEntry.XML_ELEMENT);

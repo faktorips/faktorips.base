@@ -58,8 +58,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#containsSourceFiles()
+     * {@inheritDoc}
      */
     public boolean containsSourceFiles() {
         return true;
@@ -74,8 +73,8 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         return entry.getOutputFolderForGeneratedJavaFiles();
     }
 
-    /**
-     * Overridden.
+    /** 
+     * {@inheritDoc}
      */
     public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
         if (!exists()) {
@@ -93,9 +92,8 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment " + this)); //$NON-NLS-1$
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getIpsProject()
+    /** 
+     * {@inheritDoc}
      */
     public IIpsProject getIpsProject() {
         return (IIpsProject)parent;
@@ -126,9 +124,8 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         return false;
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getIpsPackageFragments()
+    /** 
+     * {@inheritDoc}
      */
     public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
@@ -141,7 +138,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     }
     
     /*
-     * Creates the PdFolders based on the contents of the given platform folder
+     * Creates the packages based on the contents of the given platform folder
      * and adds them to the list.
      * This is an application of the collecting parameter pattern. 
      */
@@ -158,24 +155,22 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         }
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#getIpsPackageFragment(java.lang.String)
+    /** 
+     * {@inheritDoc}
      */
     public IIpsPackageFragment getIpsPackageFragment(String name) {
         return new IpsPackageFragment(this, name);
     }
     
-    /**
-     * Overridden
+    /** 
+     * {@inheritDoc}
      */
     public IIpsPackageFragment getIpsDefaultPackageFragment() {
 		return this.getIpsPackageFragment(""); //$NON-NLS-1$
 	}
 
-	/** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#createPackageFragment(java.lang.String, boolean, org.eclipse.core.runtime.IProgressMonitor)
+    /** 
+     * {@inheritDoc}
      */
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor) throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
@@ -190,42 +185,36 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+     * {@inheritDoc}
      */
     public IResource getCorrespondingResource() {
         IProject project = (IProject)getParent().getCorrespondingResource();
         return project.getFolder(getName());
     }
     
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+    /** 
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() throws CoreException {
         return getIpsPackageFragments();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * {@inheritDoc}
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#findIpsObject(org.faktorips.devtools.core.model.IpsObjectType, java.lang.String)
+     * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
         return new QualifiedNameType(qualifiedName, type).findIpsObject(this);
     }
 
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragmentRoot#findIpsObject(org.faktorips.devtools.core.model.QualifiedNameType)
+    /** 
+     * {@inheritDoc}
      */
     public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
         return nameType.findIpsObject(this);
