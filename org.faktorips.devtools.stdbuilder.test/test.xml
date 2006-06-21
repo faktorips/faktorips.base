@@ -26,7 +26,7 @@
   <!-- This target defines the tests that need to be run. -->
   <target name="suite">
 
-    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
+    <ant output="/dev/null" target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${fips-tests-workspace}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" value="org.faktorips.devtools.stdbuilder.test.AutomatedSuite"/>	  
