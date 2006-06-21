@@ -270,6 +270,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 * {@inheritDoc}
 	 */
 	public void setRuntimeId(String runtimeId) {
-		this.runtimeId = runtimeId;
+        String oldId = this.runtimeId;
+        this.runtimeId = runtimeId;
+        valueChanged(oldId, runtimeId);
 	}
 }

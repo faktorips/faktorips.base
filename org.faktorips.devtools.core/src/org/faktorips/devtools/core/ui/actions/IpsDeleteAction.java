@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -46,6 +47,12 @@ public class IpsDeleteAction extends IpsAction {
 
     public void run(IStructuredSelection selection) {
     	Tree tree = source.getTree();
+    	
+    	if (tree.isDisposed()) {
+    		IpsPlugin.log(new IpsStatus("Tree disposed!"));
+    		return;
+    	}
+    	
     	TreeItem[] items = tree.getSelection();
     	Indexer start = null;
     	

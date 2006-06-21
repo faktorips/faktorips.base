@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -40,6 +41,9 @@ import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 
 /**
  * Action to paste IpsElements or resources.
@@ -177,7 +181,9 @@ public class IpsPasteAction extends IpsAction {
     	Validator validator = new Validator(targetPath, resource, extension);
     	
     	int doCopy = InputDialog.OK;
-    	if (validator.isValid(suggestedName) != null) {
+    	boolean nameChangeRequired = validator.isValid(suggestedName) != null;
+    	
+    	if (nameChangeRequired) {
     		for (int count = 0; validator.isValid(suggestedName) != null; count++) {
     			if (count == 0) {
     				suggestedName = Messages.IpsPasteAction_suggestedNamePrefixSimple + nameWithoutExtension;
@@ -193,8 +199,26 @@ public class IpsPasteAction extends IpsAction {
     		nameWithoutExtension = dialog.getValue();
     	}
     	if (doCopy == InputDialog.OK) {
-    		resource.copy(targetPath.append(nameWithoutExtension + extension), true, null);
+    		IPath finalTargetPath = targetPath.append(nameWithoutExtension + extension);
+    		resource.copy(finalTargetPath, true, null);
+
+    		if (nameChangeRequired) {
+    			// The name of the resource was changed - if the copied object is a product
+    			// component, the runtime-id has to be updated.
+				IFile newFile = ResourcesPlugin.getWorkspace().getRoot()
+						.getFile(finalTargetPath);
+				IIpsElement target = IpsPlugin.getDefault().getIpsModel()
+						.getIpsElement(newFile);
+				if (target instanceof IIpsSrcFile
+						&& ((IIpsSrcFile) target).getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
+					IProductCmpt cmpt = (IProductCmpt) ((IIpsSrcFile) target)
+							.getIpsObject();
+					cmpt.setRuntimeId(nameWithoutExtension);
+					((IIpsSrcFile) target).save(true, null);
+				}
+			}
     	}
+    	
     }
 
     /**
