@@ -52,6 +52,8 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
     
     public ProductCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
+        //TODO pk 2006-06-21 merge enabled at least until generator has been extended for validation and information capabilities  
+        setMergeEnabled(true);
     }
     
     public void setInterfaceBuilder(ProductCmptInterfaceBuilder builder) {
