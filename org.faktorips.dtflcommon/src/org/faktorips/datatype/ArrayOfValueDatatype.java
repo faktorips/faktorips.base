@@ -44,6 +44,9 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
      * @return
      */
     public final static int getDimension(String datatypeName) {
+        if (datatypeName==null) {
+            return 0;
+        }
         int dimension = 0;
         while (datatypeName.endsWith("[]")) {
             dimension++;

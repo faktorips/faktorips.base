@@ -576,41 +576,53 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public Datatype findDatatype(String qualifiedName) throws CoreException {
+        Datatype type = findValueDatatype(qualifiedName);
+        if (type!=null) {
+        	return type;
+        }
     	int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
     	if(arrayDimension > 0){
     		qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
     	}
-        Datatype returnValue = findValueDatatype(qualifiedName);
-        if (returnValue==null) {
-            Datatype[] datatypes = findDatatypes(false, true);
-            for (int i = 0; i < datatypes.length; i++) {
-                if (datatypes[i].getQualifiedName().equals(qualifiedName)) {
-                    returnValue = datatypes[i];
-                    break;
-                }
-            }
+    	IpsObjectType[] objectTypes = IpsObjectType.ALL_TYPES;
+    	for (int i = 0; i < objectTypes.length; i++) {
+			if (objectTypes[i].isDatatype()) {
+	    		type = (Datatype)findIpsObject(objectTypes[i], qualifiedName);
+				if (type!=null) {
+					break;
+				}
+			}
+		}
+        if (arrayDimension==0) {
+        	return type;
         }
-        if(arrayDimension > 0){
-        	if(returnValue instanceof ValueDatatype){
-        		return new ArrayOfValueDatatype(returnValue, arrayDimension);
-        	}
-        	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + 
-        			"\" specifies an array of a non value datatype. This is currently not supported.");
-        }
-        return returnValue;
+    	if(type instanceof ValueDatatype){
+    		return new ArrayOfValueDatatype(type, arrayDimension);
+    	}
+    	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + 
+    			"\" specifies an array of a non value datatype. This is currently not supported.");
     }
 
     /**
      * {@inheritDoc}
      */
     public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException {
-    	return findValueDatatype(this, qualifiedName, new HashSet());
+    	int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
+    	if(arrayDimension > 0){
+    		qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+    	}
+    	ValueDatatype type = findValueDatatype(this, qualifiedName, new HashSet());
+        if (arrayDimension==0) {
+        	return type;
+        }
+    	if(type instanceof ValueDatatype){
+    		return new ArrayOfValueDatatype(type, arrayDimension);
+    	}
+    	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + 
+    			"\" specifies an array of a non value datatype. This is currently not supported.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, HashSet visitedProjects) throws CoreException {
+    private ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, HashSet visitedProjects) throws CoreException {
             ValueDatatype datatype = ((IpsModel)getIpsModel()).getValueDatatype(ipsProject, qualifiedName);
             if (datatype!=null) {
             	return datatype;

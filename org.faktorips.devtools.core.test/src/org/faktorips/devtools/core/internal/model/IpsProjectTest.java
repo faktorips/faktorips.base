@@ -195,17 +195,46 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.PRIMITIVE_INT, types[1]);
     }
 
-    public void testFindValueDatatype() throws CoreException {
+    public void testFindDatatype() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName()});
         ipsProject.setProperties(props);
 
+        IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "Policy");
+        pcType.getIpsSrcFile().save(true, null);
+        assertEquals(pcType, ipsProject.findDatatype("Policy"));
+
+        assertEquals(Datatype.DECIMAL, ipsProject.findDatatype("Decimal"));
+        ArrayOfValueDatatype type = (ArrayOfValueDatatype)ipsProject.findDatatype("Decimal[][]");
+        assertEquals(Datatype.DECIMAL, type.getBasicDatatype());
+        assertEquals(2, type.getDimension());
         assertEquals(Datatype.DECIMAL, ipsProject.findDatatype("Decimal"));
         assertNull(ipsProject.findDatatype("Unknown"));
         assertNull(ipsProject.findDatatype("Integer"));
         
         makeIpsProjectDependOnBaseProject();
         assertEquals(Datatype.INTEGER, ipsProject.findDatatype("Integer"));
+        
+    }
+
+    public void testFindValueDatatype() throws CoreException {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName()});
+        ipsProject.setProperties(props);
+
+        assertEquals(Datatype.DECIMAL, ipsProject.findValueDatatype("Decimal"));
+        ArrayOfValueDatatype type = (ArrayOfValueDatatype)ipsProject.findValueDatatype("Decimal[][]");
+        assertEquals(Datatype.DECIMAL, type.getBasicDatatype());
+        assertEquals(2, type.getDimension());
+        assertEquals(Datatype.DECIMAL, ipsProject.findValueDatatype("Decimal"));
+        assertNull(ipsProject.findValueDatatype("Unknown"));
+        assertNull(ipsProject.findValueDatatype("Integer"));
+        
+        makeIpsProjectDependOnBaseProject();
+        assertEquals(Datatype.INTEGER, ipsProject.findDatatype("Integer"));
+        
+        newPolicyCmptType(ipsProject, "Policy");
+        assertNull(ipsProject.findValueDatatype("Policy"));
     }
 
     public void testGetDatatypeHelper() throws CoreException {
