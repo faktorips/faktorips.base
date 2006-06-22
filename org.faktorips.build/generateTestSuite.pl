@@ -68,9 +68,13 @@ foreach $project (@projects){
 		my $classname = getClassName($file);
 		my $package = getPackage($file);
 		$package =~ s/\s//;
-		my $fullclassname = $package . "." . $classname;
-		$importstatements = $importstatements . "\nimport $fullclassname;";
-		$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $classname. ".class);";
+		
+		if ( ($package != "") || ($classname != "")){
+		
+			my $fullclassname = $package . "." . $classname;
+			$importstatements = $importstatements . "\nimport $fullclassname;";
+			$testcases = $testcases . "\n\t\tsuite.addTestSuite(" . $classname. ".class);";
+		}
 	}
 	
 	$skeleton = $skel;
