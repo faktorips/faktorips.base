@@ -198,16 +198,19 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         String filename = type.getFileName(ipsObjectName);
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
         
-        if (type == IpsObjectType.PRODUCT_CMPT) {
-        	((IProductCmpt)ipsObject).setRuntimeId(ipsObject.getIpsProject().getRuntimeId((IProductCmpt)ipsObject));
-        }
-        
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         Element element = ipsObject.toXml(doc);
         try {
             String encoding = getIpsProject().getXmlFileCharset();
             String contents = XmlUtil.nodeToString(element, encoding);
-            return createIpsFile(filename, contents, force, monitor);
+            IIpsSrcFile result = createIpsFile(filename, contents, force, monitor);
+            
+            if (type == IpsObjectType.PRODUCT_CMPT) {
+            	((IProductCmpt)ipsObject).setRuntimeId(ipsObject.getIpsProject().getRuntimeId((IProductCmpt)ipsObject));
+            	result.save(force, monitor);
+            }
+            
+            return result;
         } catch (TransformerException e) {
             throw new RuntimeException(e); 
             // This is a programing error, rethrow as runtime exception

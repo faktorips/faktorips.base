@@ -78,7 +78,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
 			// first, we assume that the given path leads to a file
 			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
 			IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-			if (element.exists()) {
+			if (element != null && element.exists()) {
 				elements.add(element);
 			}
 			else {

@@ -226,9 +226,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
-        if (StringUtils.isEmpty(runtimeId)) {
-        	throw new RuntimeException("RuntimeId not set in " + getQualifiedName()); //$NON-NLS-1$
-        }
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
     }
 

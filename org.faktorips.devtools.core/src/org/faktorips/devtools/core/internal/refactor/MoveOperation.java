@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.util.StringUtil;
 
 /**
  * Moves (and renames) product components.
@@ -204,18 +205,8 @@ public class MoveOperation implements IRunnableWithProgress {
 		// first, find all products contained in this folder
 	    ArrayList files = new ArrayList();
 		getRelativeFileNames("", (IFolder)pack.getEnclosingResource(), files); //$NON-NLS-1$
-		
+
 		IIpsPackageFragmentRoot root = parent.getRoot();
-		
-		if (files.size() == 0) {
-			// we have to move an empty package fragment - so we have to create the package now
-			// because it is not created as a side-effect of moving any contained objects...
-			IIpsPackageFragment newPack = root.getIpsPackageFragment(buildPackageName(parent.getName(), newName, "")); //$NON-NLS-1$
-			if (!newPack.exists()) {
-				root.createPackageFragment(newPack.getName(), true, monitor);
-			}			
-		}
-		
 		
 		// second, move them all
 		for (Iterator iter = files.iterator(); iter.hasNext();) {
@@ -242,7 +233,15 @@ public class MoveOperation implements IRunnableWithProgress {
 				IFolder folder = (IFolder)sourcePackage.getEnclosingResource(); 
 				IFile rawFile = folder.getFile(fileInfos[1]);
 				IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath().append(fileInfos[1]);
-				rawFile.move(destination, true, monitor);
+				if (rawFile.exists()) {
+					rawFile.move(destination, true, monitor);
+				}
+				else {
+					if (!((IFolder)targetPackage.getCorrespondingResource()).getFolder(fileInfos[1]).exists()) {
+						IFolder rawFolder = folder.getFolder(fileInfos[1]);
+						rawFolder.move(destination, true, monitor);
+					}
+				}
 			}
 		}
 
@@ -302,6 +301,11 @@ public class MoveOperation implements IRunnableWithProgress {
 	 */
 	private void getRelativeFileNames(String path, IFolder folder, ArrayList result) throws CoreException {
 		IResource[] members = folder.members();
+		
+		if (members.length == 0) {
+			result.add(new String[] {StringUtil.getPackageName(path), StringUtil.unqualifiedName(path)});
+		}
+		
 		for (int i = 0; i < members.length; i++) {
 			if (members[i].getType() == IResource.FOLDER) {
 				getRelativeFileNames(path + "." + members[i].getName(), (IFolder)members[i], result); //$NON-NLS-1$

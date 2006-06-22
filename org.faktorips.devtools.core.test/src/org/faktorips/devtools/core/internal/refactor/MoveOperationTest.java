@@ -267,4 +267,38 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
             // success
         }
     }
+    
+    public void testMovePackageInRootContainingEmptyPackage() throws Exception {
+        IIpsPackageFragmentRoot root = content.getProject().getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragment target = root.createPackageFragment("target", true, null);
+        IIpsPackageFragment source = root.createPackageFragment("source", true, null);
+        newProductCmpt(root, "source.TestProduct");
+        root.createPackageFragment("source.empty", true, null);
+        
+        new MoveOperation(new IIpsElement[] {source}, target).run(null);
+        
+        assertFalse(source.exists());
+        assertTrue(root.getIpsPackageFragment("target.source").exists());
+        assertTrue(root.getIpsPackageFragment("target.source.empty").exists());
+        assertTrue(content.getProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
+        
+    }
+    
+    public void testMovePackageContainingEmptyPackage() throws Exception {
+        IIpsPackageFragmentRoot root = content.getProject().getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragment target = root.createPackageFragment("target", true, null);
+        IIpsPackageFragment source = root.createPackageFragment("parent.source", true, null);
+        newProductCmpt(root, "parent.source.TestProduct");
+        root.createPackageFragment("parent.source.empty", true, null);
+        
+        new MoveOperation(new IIpsElement[] {source}, target).run(null);
+        
+        assertFalse(source.exists());
+        assertTrue(root.getIpsPackageFragment("parent").exists());
+        assertTrue(root.getIpsPackageFragment("target.source").exists());
+        assertTrue(root.getIpsPackageFragment("target.source.empty").exists());
+        assertTrue(content.getProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
+        
+    }
+    
 }
