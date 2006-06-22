@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -241,7 +242,10 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 		ArrayList vdlist = new ArrayList();
 		vdlist.addAll(Arrays.asList(vds));
 		vdlist.add(datatype);
-		project.setValueDatatypes((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setPredefinedDatatypesUsed((ValueDatatype[])vdlist.toArray(new ValueDatatype[vdlist.size()]));
+        project.setProperties(properties);
 		
 		InvalidDatatypeHelper idh = new InvalidDatatypeHelper();
     	idh.setDatatype(datatype);
