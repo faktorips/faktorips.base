@@ -18,7 +18,7 @@
 package org.faktorips.util;
 
 import org.w3c.dom.Node;
-      
+       
 
 /**
  * A class that provides static methods to check method arguments, e.g.
