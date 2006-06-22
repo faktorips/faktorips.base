@@ -126,7 +126,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 		RangeValueSet range = new RangeValueSet(intEl, 50);
 		range.setLowerBound("10");
 		range.setUpperBound("20");
-		range.setStep("2");
+		range.setStep("3");
 		
 		RangeValueSet subRange = new RangeValueSet(intEl, 100);
 		subRange.setLowerBound("10");
