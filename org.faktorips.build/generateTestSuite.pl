@@ -69,7 +69,7 @@ foreach $project (@projects){
 		my $package = getPackage($file);
 		$package =~ s/\s//;
 		
-		if ( ($package != "") || ($classname != "")){
+		if ( ($package ne "") || ($classname ne "")){
 		
 			my $fullclassname = $package . "." . $classname;
 			$importstatements = $importstatements . "\nimport $fullclassname;";
