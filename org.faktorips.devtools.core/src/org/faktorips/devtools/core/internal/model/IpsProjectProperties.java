@@ -70,7 +70,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	private String[] predefinedDatatypesUsed = new String[0];
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
-
+    private boolean javaProjectContainsClassesForDynamicDatatypes = false;
 
     /**
      * Default constructor.
@@ -288,6 +288,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		projectEl.setAttribute("modelProject", "" + modelProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
+		projectEl.setAttribute("javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes);
 		Element generatedCodeEl = doc.createElement(GENERATED_CODE_TAG_NAME);
 		projectEl.appendChild(generatedCodeEl);
 		generatedCodeEl.setAttribute("docLanguage", javaSrcLanguage.toString()); //$NON-NLS-1$
@@ -321,7 +322,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
-        
+        javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue();  //$NON-NLS-1$
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
     	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$
@@ -459,4 +460,21 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		}
 		this.runtimeIdPrefix = runtimeIdPrefix;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isJavaProjectContainsClassesForDynamicDatatypes() {
+		return javaProjectContainsClassesForDynamicDatatypes;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setJavaProjectContainsClassesForDynamicDatatypes(
+			boolean newValue) {
+		this.javaProjectContainsClassesForDynamicDatatypes = newValue;
+	}
+	
+	
 }

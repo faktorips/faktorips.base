@@ -66,6 +66,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		props.setModelProject(true);
 		props.setProductDefinitionProject(true);
 		props.setJavaSrcLanguage(Locale.ITALIAN);
+        props.setJavaProjectContainsClassesForDynamicDatatypes(true);
 		props.setChangesOverTimeNamingConventionIdForGeneratedCode("myConvention");
 		props.setBuilderSetId("myBuilder");
 		props.setRuntimeIdPrefix("newRuntimeIdPrefix");
@@ -82,6 +83,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
+        assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
 		assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
 		assertEquals("myBuilder", props.getBuilderSetId());
 		assertTrue(props.getProductCmptNamingStrategy() instanceof DateBasedProductCmptNamingStrategy);
@@ -132,6 +134,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertTrue(props.isModelProject());
 		assertTrue(props.isProductDefinitionProject());
 		assertEquals(Locale.ITALIAN, props.getJavaSrcLanguage());
+        assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
 		assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
 		assertEquals("testPrefix", props.getRuntimeIdPrefix());
 		

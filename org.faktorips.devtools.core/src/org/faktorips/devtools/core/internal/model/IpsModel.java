@@ -120,6 +120,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	private Map changesOverTimeNamingConventionMap = null;
 
 	private Map dependencyGraphForProjectsMap = new HashMap();
+	
+	// map containing ClassLoaderProviders per IpsProject
+	private Map classLoaderProviderMap = new HashMap();
 
 	IpsModel() {
 		super(null, "IpsModel"); //$NON-NLS-1$
@@ -1055,5 +1058,20 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					IChangesOverTimeNamingConvention.PM);
 			changesOverTimeNamingConventionMap.put(pm.getId(), pm);
 		}
+	}
+	
+	/**
+	 * Returns the ClassLoaderProvider for the given ips project.
+	 * 
+	 * @throws NullPointerException if ipsProject is <code>null</code>.
+	 */
+	public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
+		ArgumentCheck.notNull(ipsProject);
+		ClassLoaderProvider provider = (ClassLoaderProvider)classLoaderProviderMap.get(ipsProject);
+		if (provider==null) {
+			provider = new ClassLoaderProvider(ipsProject);
+			classLoaderProviderMap.put(ipsProject, provider);
+		}
+		return provider;
 	}
 }

@@ -204,6 +204,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         pcType.getIpsSrcFile().save(true, null);
         assertEquals(pcType, ipsProject.findDatatype("Policy"));
 
+        assertEquals(Datatype.VOID, ipsProject.findDatatype("void"));
+        
         assertEquals(Datatype.DECIMAL, ipsProject.findDatatype("Decimal"));
         ArrayOfValueDatatype type = (ArrayOfValueDatatype)ipsProject.findDatatype("Decimal[][]");
         assertEquals(Datatype.DECIMAL, type.getBasicDatatype());

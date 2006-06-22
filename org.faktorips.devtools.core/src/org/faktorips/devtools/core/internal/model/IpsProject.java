@@ -38,11 +38,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -576,7 +576,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public Datatype findDatatype(String qualifiedName) throws CoreException {
-        Datatype type = findValueDatatype(qualifiedName);
+    	if (qualifiedName.equals(Datatype.VOID.getQualifiedName())) {
+    		return Datatype.VOID;
+    	}
+    	Datatype type = findValueDatatype(qualifiedName);
         if (type!=null) {
         	return type;
         }
@@ -854,5 +857,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		result.add(list);
 		return result;
 	}
-	
+
+	/**
+	 * Returns the ClassLoaderProvider for the Java project that belongs to this ips project.
+	 */
+	public ClassLoaderProvider getClassLoaderProviderForJavaProject() {
+		return ((IpsModel)getIpsModel()).getClassLoaderProvider(this);
+	}
 }

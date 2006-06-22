@@ -198,5 +198,23 @@ public interface IIpsProjectProperties {
 	 * @throws NullPointerException if the given prefix is <code>null</code>.
 	 */
 	public void setRuntimeIdPrefix(String runtimeIdPrefix);
+	
+	/**
+	 * Returns <code>true</code> if the Java project belonging the ips project, contains
+	 * (value) classes that are used as defined dynamic datatype, otherwise <code>false</code>.
+	 * <p>
+	 * Note that is preferable to develop and access these classes either in a seperate Java project or
+	 * to provide them as Jar.
+	 * 
+	 * @see DynamicValueDatatype
+	 * @see org.faktorips.devtools.core.internal.model.ClassLoaderProvider
+	 */
+	public boolean isJavaProjectContainsClassesForDynamicDatatypes();
+
+	/**
+	 * @see #isJavaProjectContainsClassesForDynamicDatatypes()
+	 */
+	public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue);
+	
 
 }
