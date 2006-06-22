@@ -63,7 +63,7 @@ public class GenerationsPage extends IpsObjectEditorPage {
 		
 		final GenerationsSection generationsSection 
 			= new GenerationsSection(this, formBody, toolkit);
-		final DescriptionSection descSection = new DescriptionSection(getProductCmpt(), formBody, toolkit);
+		final DescriptionSection descSection = new DescriptionSection(null, formBody, toolkit);
 		generationsSection.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {

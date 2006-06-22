@@ -65,7 +65,7 @@ public class RulesPage extends IpsObjectEditorPage {
 		
 		final RulesSection rulesSection 
 			= new RulesSection(this, formBody, toolkit);
-		final DescriptionSection descSection = new DescriptionSection(getProductCmpt(), formBody, toolkit);
+		final DescriptionSection descSection = new DescriptionSection(null, formBody, toolkit);
 		rulesSection.addSelectionChangedListener(new ISelectionChangedListener() {
 			private final Described EMPTY = new Described() {
 			
