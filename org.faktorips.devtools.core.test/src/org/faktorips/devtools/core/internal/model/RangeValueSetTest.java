@@ -84,8 +84,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 		range.initFromXml(element);
 		assertEquals("42", range.getLowerBound());
 		assertEquals("trulala", range.getUpperBound());
-        //Fehler eingebaut war 4 ist 5
-		assertEquals("5",range.getStep());
+		assertEquals("4",range.getStep());
 		assertTrue(range.getContainsNull());
 	}
 
