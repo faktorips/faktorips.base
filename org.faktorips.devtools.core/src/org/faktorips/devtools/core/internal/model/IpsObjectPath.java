@@ -118,6 +118,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Overridden.
      */
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
+    	
        IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length+1];
        System.arraycopy(entries, 0, newEntries, 0, entries.length);
@@ -130,6 +131,16 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Overridden.
      */
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject referencedIpsProject) {
+    	if(containsProjectRefEntry(referencedIpsProject)){
+    		for (int i = 0; i < entries.length; i++) {
+    			IIpsObjectPathEntry entry = entries[i];
+    			if(entry instanceof IpsProjectRefEntry) {
+    				IpsProjectRefEntry ref = (IpsProjectRefEntry) entry;
+    				if(ref.getReferencedIpsProject().equals(referencedIpsProject))
+    					return ref;
+    			}
+    		}
+    	}
         IIpsProjectRefEntry newEntry = new IpsProjectRefEntry(this, referencedIpsProject);
         IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length+1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);
@@ -137,7 +148,40 @@ public class IpsObjectPath implements IIpsObjectPath {
         entries = newEntries;
         return newEntry;
     }
-    
+
+    /**
+     * Overridden.
+     */
+	public boolean containsProjectRefEntry(IIpsProject ipsProject){
+		for (int i = 0; i < entries.length; i++) {
+			IIpsObjectPathEntry entry = entries[i];
+			if(entry instanceof IpsProjectRefEntry) {
+				IpsProjectRefEntry ref = (IpsProjectRefEntry) entry;
+				if(ref.getReferencedIpsProject().equals(ipsProject))
+					return true;
+			}
+		}
+		return false;
+	}
+
+    /**
+     * Overridden.
+     */
+	public void removeProjectRefEntry(IIpsProject ipsProject){
+		for (int i = 0; i < entries.length; i++) {
+			IIpsObjectPathEntry entry = entries[i];
+			if(entry instanceof IpsProjectRefEntry) {
+				IpsProjectRefEntry ref = (IpsProjectRefEntry) entry;
+				if(ref.getReferencedIpsProject().equals(ipsProject)){
+			        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length-1];
+			        System.arraycopy(entries, 0, newEntries, 0, i);
+			        System.arraycopy(entries, i+1, newEntries, i, entries.length-i-1);
+			        entries = newEntries;
+				}
+			}
+		}
+	}
+	
     /**
      * Overridden.
      */

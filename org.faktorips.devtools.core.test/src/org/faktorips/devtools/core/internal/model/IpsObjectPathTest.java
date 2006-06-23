@@ -70,9 +70,45 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
         IIpsProjectRefEntry entry1 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry1.getIpsObjectPath());
+        assertEquals(2, path.getEntries().length); // the same project should not be added twice
+        assertEquals(entry0, path.getEntries()[1]);
+        assertEquals(entry1, path.getEntries()[1]);
+
+        IIpsProjectRefEntry entry2 = path.newIpsProjectRefEntry(this.newIpsProject("TestProject2"));
+        assertEquals(path, entry2.getIpsObjectPath());
         assertEquals(3, path.getEntries().length);
         assertEquals(entry0, path.getEntries()[1]);
-        assertEquals(entry1, path.getEntries()[2]);
+        assertEquals(entry2, path.getEntries()[2]);
+    }
+
+    public void testContainsProjectRefEntry() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        assertTrue(path.containsProjectRefEntry(ipsProject));
+
+        IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
+        assertFalse(path.containsProjectRefEntry(ipsProject2));
+        
+        path.removeProjectRefEntry(ipsProject);
+        assertFalse(path.containsProjectRefEntry(ipsProject));
+    }
+
+    public void testRemoveProjectRefEntry() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IIpsProjectRefEntry entry0 = path.newIpsProjectRefEntry(ipsProject);
+        assertEquals(path, entry0.getIpsObjectPath());
+        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        assertEquals(entry0, path.getEntries()[1]);
+        assertTrue(path.containsProjectRefEntry(ipsProject));
+        path.removeProjectRefEntry(ipsProject);
+        assertFalse(path.containsProjectRefEntry(ipsProject));
+        assertEquals(1, path.getEntries().length);
+
+        IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
+        assertFalse(path.containsProjectRefEntry(ipsProject2));
+        path.removeProjectRefEntry(ipsProject2);
+        assertFalse(path.containsProjectRefEntry(ipsProject2));
+        assertEquals(1, path.getEntries().length);
     }
     
     public void testGetReferencedIpsProjects() throws CoreException {

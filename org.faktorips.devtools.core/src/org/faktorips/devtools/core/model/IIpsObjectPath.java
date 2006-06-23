@@ -60,7 +60,17 @@ public interface IIpsObjectPath {
      * Factory method that creates a new project reference entry and adds it to the list of entries.
      */
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject project);
-    
+
+    /**
+     * @return true if this path contains a reference to the given project.
+     */
+	public boolean containsProjectRefEntry(IIpsProject ipsProject);
+
+	/**
+	 * Removes the given project from the list of entries if contained.
+	 */
+	public void removeProjectRefEntry(IIpsProject ipsProject);
+	
     /**
      * Returns true if the output folder and base package are defined per source folder, otherwise false.
      */
