@@ -267,7 +267,7 @@ public class RelationsSection extends IpsSection {
 		MenuManager menumanager = new MenuManager();
 		menumanager.setRemoveAllWhenShown(false);
 
-		IAction action = new IpsDeleteAction(treeViewer);
+		IAction action = new IpsDeleteAction();
 		site.getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), action);
 		actions.add(action);
 

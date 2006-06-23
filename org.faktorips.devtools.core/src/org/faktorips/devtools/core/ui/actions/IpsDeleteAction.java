@@ -17,14 +17,11 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.action.Action;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -35,18 +32,19 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 
-public class IpsDeleteAction extends IpsAction {
-	TreeViewer source;
-	
-    public IpsDeleteAction(TreeViewer selectionProvider) {
-        super(selectionProvider);
-    	source = selectionProvider;
-    }
+public class IpsDeleteAction extends Action {
 
-    public void run(IStructuredSelection selection) {
-    	Tree tree = source.getTree();
+    /**
+	 * {@inheritDoc}
+	 */
+	public void runWithEvent(Event event) {
+		if (!(event.widget instanceof Tree)) {
+			return;
+		}
+    	Tree tree = (Tree)event.widget;
     	
     	if (tree.isDisposed()) {
     		IpsPlugin.log(new IpsStatus("Tree disposed!"));
@@ -70,10 +68,9 @@ public class IpsDeleteAction extends IpsAction {
     	}
 
     	
-        List selectedObjects = selection.toList();
-
-        for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
-            Object selected = iter.next();
+    	for (int i = 0; i < items.length; i++) {
+			
+            Object selected = items[i].getData();
 
             if (!(selected instanceof IProductCmptTypeRelation)) {
             	if (selected instanceof IIpsObjectPart) {
@@ -95,10 +92,10 @@ public class IpsDeleteAction extends IpsAction {
             	}
             }
         }
+    	
+    	tree.deselectAll();
+    	getIpsSection(tree).refresh();
 
-        source.setSelection(StructuredSelection.EMPTY);
-        source.refresh();
-        
         // select the item the path to was stored before.
         if (start != null)  {
         	TreeItem toSetAt = tree.getItem(start.index);
@@ -120,7 +117,7 @@ public class IpsDeleteAction extends IpsAction {
         		next = next.next;
         		
         		if (next == null && index > 0) {
-        			toSetAt = item.getItem(index -1);
+        			toSetAt = item.getItem(index);
         		}
         		
         		item = toSetAt;
@@ -130,8 +127,6 @@ public class IpsDeleteAction extends IpsAction {
         		tree.setSelection(new TreeItem[] {toSetAt});
         	}
         }
-
-
     }
     
     private class Indexer {
@@ -142,5 +137,16 @@ public class IpsDeleteAction extends IpsAction {
     		this.index = index;
     		this.next = next;
     	}
+    }
+    
+    private IpsSection getIpsSection(Composite child) {
+    	if (child == null) {
+    		return null;
+    	}
+    	if (child instanceof IpsSection) {
+    		return (IpsSection)child;
+    	}
+    	return getIpsSection(child.getParent());
+    		
     }
 }
