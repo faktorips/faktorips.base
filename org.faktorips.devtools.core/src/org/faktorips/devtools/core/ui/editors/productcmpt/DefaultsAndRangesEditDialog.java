@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
@@ -35,6 +37,9 @@ import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.EnumValueSetChooser;
 import org.faktorips.devtools.core.ui.controls.RangeEditControl;
@@ -48,7 +53,7 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
     private IConfigElement configElement;
     
     // edit fields
-    private TextField defaultValueField;
+    private DefaultEditField defaultValueField;
 
     private boolean viewOnly;
     
@@ -89,10 +94,26 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         uiToolkit.createFormLabel(workArea, Messages.PolicyAttributeEditDialog_defaultValue);
-        Text defaultValueText = uiToolkit.createText(workArea);
-        defaultValueText.setEnabled(!viewOnly);
+        
+        try {
+			IValueSet valueSet = getValueSet();
+			ValueDatatype datatype = configElement.findPcTypeAttribute().findDatatype();
+			Combo combo = uiToolkit.createCombo(workArea);
+			if (valueSet.getValueSetType() == ValueSetType.ENUM) {
+				defaultValueField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
+			}
+			else if (datatype instanceof EnumDatatype) {
+				defaultValueField = new EnumDatatypeField(combo, (EnumDatatype)datatype);
+			}
+			else {
+				Text defaultValueText = uiToolkit.createText(workArea);
+				defaultValueText.setEnabled(!viewOnly);
+				defaultValueField = new TextField(defaultValueText);
+			}
+		} catch (CoreException e) {
+			IpsPlugin.log(e);
+		}
 
-        defaultValueField = new TextField(defaultValueText);
         Control valueSetControl = createValueSetControl(workArea);
         if (valueSetControl != null) {
             GridData valueSetGridData = new GridData(GridData.FILL_BOTH);
@@ -135,11 +156,31 @@ public class DefaultsAndRangesEditDialog extends IpsPartEditDialog {
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
+     * {@inheritDoc}
      */
     protected void connectToModel() {
         super.connectToModel();
         uiController.add(defaultValueField, IConfigElement.PROPERTY_VALUE);
+    }
+
+    /**
+     * @return the most restrictive valueset defined for this config element and the
+     * underlying attribute.
+     * @throws CoreException If an error occured during the search for the attribute.
+     */
+    private IValueSet getValueSet() throws CoreException {
+        IValueSet valueSet = configElement.getValueSet();
+        
+        if (valueSet.getValueSetType() != ValueSetType.ALL_VALUES) {
+        	return valueSet;
+        }
+        
+        IAttribute attribute = configElement.findPcTypeAttribute();
+        if (attribute!=null) {
+            return attribute.getValueSet();
+        }
+        
+        return null;
+    	
     }
 }
