@@ -17,19 +17,17 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
-import org.faktorips.devtools.extsystems.ValueConverter;
 
 /**
  * 
  * @author Thorsten Waertel
  */
-public abstract class NumericValueConverter extends ValueConverter {
+public class DoubleValueConverter extends NumericValueConverter {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getExternalDataValue(String ipsValue) {
-		return new Double(ipsValue);
+	public String getIpsValue(Object externalDataValue) {
+		return ((Double) externalDataValue).toString();
 	}
-
 }

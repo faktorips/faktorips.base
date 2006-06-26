@@ -17,19 +17,18 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
-import org.faktorips.devtools.extsystems.ValueConverter;
 
 /**
  * 
  * @author Thorsten Waertel
  */
-public abstract class NumericValueConverter extends ValueConverter {
+public class LongValueConverter extends NumericValueConverter {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object getExternalDataValue(String ipsValue) {
-		return new Double(ipsValue);
+	public String getIpsValue(Object externalDataValue) {
+		// TODO generate warning message if cast of given double value requires rounding
+		return Integer.toString((int) ((Double) externalDataValue).doubleValue());
 	}
-
 }

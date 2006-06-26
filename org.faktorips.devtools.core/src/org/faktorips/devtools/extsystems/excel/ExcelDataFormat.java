@@ -36,13 +36,15 @@ public class ExcelDataFormat extends ExternalDataFormat {
 	public ExcelDataFormat() {
 		super(enumType, ID);
 		setValueConverter(Date.class, Datatype.GREGORIAN_CALENDAR_DATE, new DateValueConverter());
-		ValueConverter numericConverter = new NumericValueConverter();
-		setValueConverter(Double.class, Datatype.DOUBLE, numericConverter);
-		setValueConverter(Double.class, Datatype.DECIMAL, numericConverter);
-		setValueConverter(Double.class, Datatype.INTEGER, numericConverter);
-		setValueConverter(Double.class, Datatype.LONG, numericConverter);
-		setValueConverter(Double.class, Datatype.PRIMITIVE_INT, numericConverter);
-		setValueConverter(Double.class, Datatype.MONEY, numericConverter);
+		ValueConverter doubleConverter = new DoubleValueConverter();
+		setValueConverter(Double.class, Datatype.DOUBLE, doubleConverter);
+		setValueConverter(Double.class, Datatype.DECIMAL, doubleConverter);
+		setValueConverter(Double.class, Datatype.MONEY, doubleConverter);
+		ValueConverter intConverter = new IntegerValueConverter();
+		setValueConverter(Double.class, Datatype.INTEGER, intConverter);
+		setValueConverter(Double.class, Datatype.PRIMITIVE_INT, intConverter);
+		ValueConverter longConverter = new LongValueConverter();
+		setValueConverter(Double.class, Datatype.LONG, longConverter);
 		ValueConverter booleanConverter = new BooleanValueConverter();
 		setValueConverter(Boolean.class, Datatype.BOOLEAN, booleanConverter);
 		setValueConverter(Boolean.class, Datatype.PRIMITIVE_BOOLEAN, booleanConverter);
