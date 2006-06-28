@@ -76,6 +76,7 @@ import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
+import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
@@ -148,6 +149,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget {
         MenuManager subMm = new MenuManager(Messages.ProductExplorer_submenuNew);
         subMm.add(new NewFolderAction(this.getSite().getShell(), tree));
         subMm.add(new NewProductComponentAction(this.getSite().getWorkbenchWindow()));
+        subMm.add(new NewTableContentAction(this.getSite().getWorkbenchWindow()));
         subMm.add(new IpsDeepCopyAction(this.getSite().getShell(), tree, DeepCopyWizard.TYPE_NEW_VERSION));
         subMm.add(new IpsDeepCopyAction(this.getSite().getShell(), tree, DeepCopyWizard.TYPE_COPY_PRODUCT));
         menumanager.add(subMm);

@@ -64,4 +64,5 @@ public class Messages extends NLS {
 	public static String IpsDeepCopyAction_nameNewVersion;
 	public static String IpsDeepCopyAction_titleNoVersion;
 	public static String IpsDeepCopyAction_msgNoVersion;
+	public static String NewTableContentAction_name;
 }
