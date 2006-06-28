@@ -38,6 +38,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -647,9 +648,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
-        if (!(datatype instanceof ValueDatatype) || 
-        	  datatype instanceof ArrayOfValueDatatype) {
+        if (!(datatype instanceof ValueDatatype)) {
             return null;
+        }
+        if(datatype instanceof ArrayOfValueDatatype){
+        	return new ArrayOfValueDatatypeHelper(datatype);
         }
         DatatypeHelper helper = ((IpsModel)getIpsModel()).getDatatypeHelper(this,
             (ValueDatatype)datatype);
