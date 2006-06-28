@@ -29,7 +29,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     // The primitive datatype
     private Datatype datatype;
     
-    // the dimenion of the array
+    // The dimension of the array
     private int dimension;
     
     /**
