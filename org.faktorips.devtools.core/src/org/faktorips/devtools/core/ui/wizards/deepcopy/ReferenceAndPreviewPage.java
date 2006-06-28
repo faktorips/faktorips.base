@@ -228,6 +228,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 				toolkit.createFormLabel(inputRoot, label);
 				versionId = toolkit.createText(inputRoot);
+				versionId.setText(namingStrategy.getNextVersionId(structure.getRoot()));
 				versionId.addModifyListener(listener);
 			} 
 		}
