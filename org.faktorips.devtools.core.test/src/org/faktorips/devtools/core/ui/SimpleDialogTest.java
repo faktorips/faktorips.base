@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDialog;
 
 /**
  * Testcase to test some simple GUI-functions like opening an editor.
@@ -36,7 +37,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 
 	private DefaultTestContent content;
 	private IpsPlugin plugin;
-	private boolean answer = false;
+	private int answer = GenerationSelectionDialog.CHOICE_BROWSE;
 	
 	public void setUp() throws Exception {
         super.setUp();
@@ -59,12 +60,12 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 		plugin.openEditor(file);
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		
-		answer = false;
+		answer = GenerationSelectionDialog.CHOICE_BROWSE;
 		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 10, 1));
 		plugin.openEditor(content.getComfortCollisionCoverageA().getIpsSrcFile());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 
-		answer = true;
+		answer = GenerationSelectionDialog.CHOICE_CREATE;
 		plugin.openEditor(content.getComfortCollisionCoverageA().getIpsSrcFile());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 	}
@@ -81,7 +82,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 	 * {@inheritDoc}
 	 */
 	public boolean getBooleanAnswer() {
-		return answer;
+		return false;
 	}
 
 	/**
@@ -98,6 +99,10 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 		return null;
 	}
 
+    public int getIntAnswer() {
+        return answer;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -105,6 +110,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
         super.tearDown();
         plugin.getLog().removeLogListener(this);
     }
+
     
     
 }
