@@ -79,13 +79,13 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		} else {
 			datatype.setToStringMethodName(null);
 		}
-		Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId");
+		Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId"); //$NON-NLS-1$
 		if (nullObjectEl==null) {
 			datatype.setNullObjectDefined(false);
 			datatype.setNullObjectId(null);
 		} else {
 			datatype.setNullObjectDefined(true);
-			datatype.setNullObjectId(ValueToXmlHelper.getValueFromElement(element, "NullObjectId"));
+			datatype.setNullObjectId(ValueToXmlHelper.getValueFromElement(element, "NullObjectId")); //$NON-NLS-1$
 		}
 		// datatype.getAdaptedClass();
 		return datatype;
@@ -108,7 +108,7 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 			element.setAttribute("valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
 		}
 		if (hasNullObject()) {
-			ValueToXmlHelper.addValueToElement(getNullObjectId(), element, "NullObjectId");
+			ValueToXmlHelper.addValueToElement(getNullObjectId(), element, "NullObjectId"); //$NON-NLS-1$
 		}			
 	}
 

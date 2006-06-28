@@ -713,7 +713,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	}
 
 	private void initJControlModel(IIpsProject project) throws CoreException{
-		IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml");
+		IFile mergeFile = project.getJavaProject().getProject().getFile("merge.xml"); //$NON-NLS-1$
 		if(mergeFile.exists()){
 			try {
 				model = new JControlModel(XmlUtil.getDocument(mergeFile.getContents()).getDocumentElement());
@@ -746,11 +746,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	private JControlModel getJControlModel(){
 	
 		if(model == null){
-			throw new IllegalStateException("The jmerge control model has not been set, " +
-					"while merging is activated. Possible reason for that might be that " +
-					"the builder initialization method beforeBuildProcess(IIpsProject, int) " +
-					"this class: " + JavaSourceFileBuilder.class + " has been overridden and " +
-							"a call to the super class method has been forgotten.");
+			throw new IllegalStateException("The jmerge control model has not been set, " + //$NON-NLS-1$
+					"while merging is activated. Possible reason for that might be that " + //$NON-NLS-1$
+					"the builder initialization method beforeBuildProcess(IIpsProject, int) " + //$NON-NLS-1$
+					"this class: " + JavaSourceFileBuilder.class + " has been overridden and " + //$NON-NLS-1$ //$NON-NLS-2$
+							"a call to the super class method has been forgotten."); //$NON-NLS-1$
 		}
 		return model;
 	}

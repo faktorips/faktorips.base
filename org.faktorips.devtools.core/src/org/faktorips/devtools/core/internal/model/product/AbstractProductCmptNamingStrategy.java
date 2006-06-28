@@ -257,17 +257,17 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		separator = subEl.getAttribute("versionIdSeparator"); //$NON-NLS-1$
 		initSubclassFromXml(subEl);
 		// init replacement chars
-		Element replacementsEl = XmlUtil.getFirstElement(subEl, "JavaIdentifierCharReplacements");
+		Element replacementsEl = XmlUtil.getFirstElement(subEl, "JavaIdentifierCharReplacements"); //$NON-NLS-1$
 		if (replacementsEl==null) {
 			return;
 		}
 		specialCharReplacements.clear();
 		NodeList nl = replacementsEl.getChildNodes();
 		for (int i=0; i<nl.getLength(); i++) {
-			if (nl.item(i).getNodeName().equals("Replacement")) {
+			if (nl.item(i).getNodeName().equals("Replacement")) { //$NON-NLS-1$
 				Element replacementEl = (Element)nl.item(i);
-				String replacedChar = replacementEl.getAttribute("replacedChar");
-				String replacement = replacementEl.getAttribute("replacement");
+				String replacedChar = replacementEl.getAttribute("replacedChar"); //$NON-NLS-1$
+				String replacement = replacementEl.getAttribute("replacement"); //$NON-NLS-1$
 				putSpecialCharReplacement(replacedChar.charAt(0), replacement);
 			}
 		}
@@ -294,13 +294,13 @@ public abstract class AbstractProductCmptNamingStrategy implements
 		if (chars.length==0) {
 			return el;
 		}
-		Element replacementsEl = doc.createElement("JavaIdentifierCharReplacements");			
+		Element replacementsEl = doc.createElement("JavaIdentifierCharReplacements");			 //$NON-NLS-1$
 		subEl.appendChild(replacementsEl);
 		for (int i = 0; i < chars.length; i++) {
-			Element replacementEl = doc.createElement("Replacement");
+			Element replacementEl = doc.createElement("Replacement"); //$NON-NLS-1$
 			replacementsEl.appendChild(replacementEl);
-			replacementEl.setAttribute("replacedChar", "" + chars[i]);
-			replacementEl.setAttribute("replacement", getReplacement(chars[i]));
+			replacementEl.setAttribute("replacedChar", "" + chars[i]); //$NON-NLS-1$ //$NON-NLS-2$
+			replacementEl.setAttribute("replacement", getReplacement(chars[i])); //$NON-NLS-1$
 		}
 		return el;
 	}

@@ -77,13 +77,10 @@ public class DeepCopyWizard extends Wizard {
 			// of the given product component - so we have to take this valid-from date rather
 			// then the working date to build the product component structure.
 			if (IpsPlugin.getDefault().getIpsPreferences().getWorkingDate().before(product.getFirstGeneration().getValidFrom())) {
-				String title = "Working date not used";
+				String title = Messages.DeepCopyWizard_titleWorkingDateNotUsed;
 				String msg = NLS
 						.bind(
-								"The working date configured in the preferences is before the valid-from "
-										+ "date of the first valid {0} of the selected product component. "
-										+ "The valid-from date of the first {0} of the root is used instead "
-										+ "to find all product components which are related to the selected one.",
+								Messages.DeepCopyWizard_msgWorkingDateNotUsed,
 								IpsPlugin.getDefault().getIpsPreferences()
 										.getChangesOverTimeNamingConvention()
 										.getGenerationConceptNameSingular());

@@ -47,7 +47,7 @@ public class IpsDeleteAction extends Action {
     	Tree tree = (Tree)event.widget;
     	
     	if (tree.isDisposed()) {
-    		IpsPlugin.log(new IpsStatus("Tree disposed!"));
+    		IpsPlugin.log(new IpsStatus("Tree disposed!")); //$NON-NLS-1$
     		return;
     	}
     	

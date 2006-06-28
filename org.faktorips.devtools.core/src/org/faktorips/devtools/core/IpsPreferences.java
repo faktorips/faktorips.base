@@ -33,6 +33,21 @@ import org.faktorips.util.ArgumentCheck;
 public class IpsPreferences {
     
 	/**
+     * Constant identifiying the working mode
+     */
+    public final static String WORKING_MODE = IpsPlugin.PLUGIN_ID + ".workingmode"; //$NON-NLS-1$
+	
+	/**
+     * Constant identifiying the working mode edit
+     */
+    public final static String WORKING_MODE_EDIT = "edit"; //$NON-NLS-1$
+
+    /**
+     * Constant identifiying the working mode browse
+     */
+    public final static String WORKING_MODE_BROWSE = "browse"; //$NON-NLS-1$
+    
+	/**
      * Constant identifiying the working date preference
      */
     public final static String WORKING_DATE = IpsPlugin.PLUGIN_ID + ".workingdate"; //$NON-NLS-1$
@@ -175,4 +190,20 @@ public class IpsPreferences {
     public boolean canNavigateToModel() {
     	return prefStore.getBoolean(NAVIGATE_TO_MODEL);
     }
+    
+    /**
+	 * Returns <code>true</code> if the currently set working mode is edit, <code>false</code>
+	 * otherwise
+	 */
+	public boolean isWorkingModeEdit() {
+		return prefStore.getString(WORKING_MODE).equals(WORKING_MODE_EDIT);
+	}
+
+	/**
+	 * Returns <code>true</code> if the currently set working mode is browse, <code>false</code>
+	 * otherwise.
+	 */
+	public boolean isWorkingModeBrowse() {
+		return prefStore.getString(WORKING_MODE).equals(WORKING_MODE_BROWSE);
+	}
 }

@@ -42,59 +42,59 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
     
     public void testGregorianCalendarToXmlDateString() {
-        assertEquals("", XmlUtil.gregorianCalendarToXmlDateString(null));
+        assertEquals("", XmlUtil.gregorianCalendarToXmlDateString(null)); //$NON-NLS-1$
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
-        assertEquals("2005-09-09", XmlUtil.gregorianCalendarToXmlDateString(date));
+        assertEquals("2005-09-09", XmlUtil.gregorianCalendarToXmlDateString(date)); //$NON-NLS-1$
         date = new GregorianCalendar(2005, 9, 10);
-        assertEquals("2005-10-10", XmlUtil.gregorianCalendarToXmlDateString(date));
+        assertEquals("2005-10-10", XmlUtil.gregorianCalendarToXmlDateString(date)); //$NON-NLS-1$
     }
     
     public void testParse() {
-        assertNull(XmlUtil.parseXmlDateStringToGregorianCalendar(""));
+        assertNull(XmlUtil.parseXmlDateStringToGregorianCalendar("")); //$NON-NLS-1$
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
-        assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-09-09"));
-        assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-9-9"));
+        assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-09-09")); //$NON-NLS-1$
+        assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-9-9")); //$NON-NLS-1$
         date = new GregorianCalendar(2005, 9, 10);
-        assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-10-10"));
+        assertEquals(date, XmlUtil.parseXmlDateStringToGregorianCalendar("2005-10-10")); //$NON-NLS-1$
     }
 
     public void testNodeToString() throws TransformerException {
         Document doc = newDocument();
-        XmlUtil.nodeToString(doc, "Cp1252");
+        XmlUtil.nodeToString(doc, "Cp1252"); //$NON-NLS-1$
     }
     
     public void testGetFirstElement() throws TransformerException, UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
         Document doc = getTestDocument();
-        Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
         assertNotNull(docElement);
-        Element testElement = XmlUtil.getFirstElement(docElement, "TestElement");
+        Element testElement = XmlUtil.getFirstElement(docElement, "TestElement"); //$NON-NLS-1$
         assertNotNull(testElement);
-        assertEquals("öäüÖÄÜß", testElement.getAttribute("value"));
-        assertNull(XmlUtil.getFirstElement(docElement, "UnkownElement"));
+        assertEquals("öäüÖÄÜß", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(XmlUtil.getFirstElement(docElement, "UnkownElement")); //$NON-NLS-1$
     }
     
     public void testGetElement() throws TransformerException, UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {
         Document doc = getTestDocument();
-        Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
 
-        Element testElement = XmlUtil.getElement(docElement, "TestElement", 0);
+        Element testElement = XmlUtil.getElement(docElement, "TestElement", 0); //$NON-NLS-1$
         assertNotNull(testElement);
-        assertEquals("öäüÖÄÜß", testElement.getAttribute("value"));
+        assertEquals("öäüÖÄÜß", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
         
-        testElement = XmlUtil.getElement(docElement, "TestElement", 1);
+        testElement = XmlUtil.getElement(docElement, "TestElement", 1); //$NON-NLS-1$
         assertNotNull(testElement);
-        assertEquals("2", testElement.getAttribute("value"));
+        assertEquals("2", testElement.getAttribute("value")); //$NON-NLS-1$ //$NON-NLS-2$
         
     }
     
     public void testGetTextNode() {
         Document doc = getTestDocument();
-        Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
-        Element testElement = XmlUtil.getFirstElement(docElement, "TestElement");
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
+        Element testElement = XmlUtil.getFirstElement(docElement, "TestElement"); //$NON-NLS-1$
 
         Text text = XmlUtil.getTextNode(testElement);
         assertNotNull(text);
-        assertEquals("blabla", text.getData());
+        assertEquals("blabla", text.getData()); //$NON-NLS-1$
     }
     
 

@@ -92,4 +92,6 @@ public class Messages extends NLS {
 
 	public static String AbstractProductCmptNamingStrategy_emptyKindId;
 
+	public static String ProductCmptRelation_msgInvalidTarget;
+
 }

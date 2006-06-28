@@ -283,7 +283,7 @@ public class ProductCmptRelation extends IpsObjectPart implements
 
 		IProductCmpt target = findTarget();
 		if (!willBeValid(target, relation) && target != null && relation != null) {
-			String msg = NLS.bind("The product component {0} is not valid for the relation type {1}", target.getQualifiedName(), relation.getTargetRoleSingular());
+			String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target.getQualifiedName(), relation.getTargetRoleSingular());
 			list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, PROPERTY_TARGET));
 		}
 		

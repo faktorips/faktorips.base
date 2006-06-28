@@ -31,6 +31,11 @@ public interface ITestAnswerProvider {
 	public boolean getBooleanAnswer();
 	
 	/**
+	 * Returns the answer as int.
+	 */
+	public int getIntAnswer();
+	
+	/**
 	 * Returns the answer as String.
 	 */
 	public String getStringAnswer();

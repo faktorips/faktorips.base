@@ -117,7 +117,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 			props.setProductDefinitionProject(true);
 			props.setModelProject(true);
 			props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
-			DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true);
+			DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
 			props.setProductCmptNamingStrategy(namingStrategy);
 			ipsProject.setProperties(props);
 			IFolder ipsModelFolder = ipsProject.getProject().getFolder("model"); //$NON-NLS-1$

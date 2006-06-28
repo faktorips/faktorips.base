@@ -30,7 +30,7 @@ import org.faktorips.devtools.extsystems.ValueConverter;
  */
 public class DateValueConverter extends ValueConverter {
 	
-	private final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	private final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
 
 	/**
 	 * {@inheritDoc}

@@ -229,7 +229,7 @@ public class XmlUtil {
 		if (indentWidth > 0)
 			trafo
 					.setOutputProperty(
-							"{http://xml.apache.org/xslt}indent-amount", "" + indentWidth); //$NON-NLS-1$
+							"{http://xml.apache.org/xslt}indent-amount", "" + indentWidth); //$NON-NLS-1$ //$NON-NLS-2$
 
 		trafo.transform(src, res);
 	}
@@ -407,7 +407,7 @@ public class XmlUtil {
         } else {
             Text textNode = getTextNode(parent);
             if (textNode==null) {
-                return "";
+                return ""; //$NON-NLS-1$
             } else {
                 return textNode.getNodeValue();
             }

@@ -30,8 +30,8 @@ import org.faktorips.devtools.extsystems.ValueConverter;
  */
 public class ExcelDataFormat extends ExternalDataFormat {
 	
-	public final static String DEFAULT_EXTENSION = ".xls";
-	public final static String ID = "Excel";
+	public final static String DEFAULT_EXTENSION = ".xls"; //$NON-NLS-1$
+	public final static String ID = "Excel"; //$NON-NLS-1$
 	
 	public ExcelDataFormat() {
 		super(enumType, ID);

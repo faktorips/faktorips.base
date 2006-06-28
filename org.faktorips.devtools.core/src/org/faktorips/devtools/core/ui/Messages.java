@@ -93,4 +93,10 @@ public class Messages extends NLS {
 	public static String FaktorIpsPreferencePage_labelEditGenerationsWithSuccessor;
 
 	public static String FaktorIpsPreferencePage_labelCanNavigateToModel;
+
+	public static String FaktorIpsPreferencePage_titleWorkingMode;
+
+	public static String FaktorIpsPreferencePage_labelWorkingModeBrowse;
+
+	public static String FaktorIpsPreferencePage_labelWorkingModeEdit;
 }

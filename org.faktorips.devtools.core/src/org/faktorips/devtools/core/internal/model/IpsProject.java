@@ -603,8 +603,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	if(type instanceof ValueDatatype){
     		return new ArrayOfValueDatatype(type, arrayDimension);
     	}
-    	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + 
-    			"\" specifies an array of a non value datatype. This is currently not supported.");
+    	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName +  //$NON-NLS-1$
+    			"\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
     /**
@@ -622,8 +622,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     	if(type instanceof ValueDatatype){
     		return new ArrayOfValueDatatype(type, arrayDimension);
     	}
-    	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + 
-    			"\" specifies an array of a non value datatype. This is currently not supported.");
+    	throw new IllegalArgumentException("The qualified name: \"" + qualifiedName +  //$NON-NLS-1$
+    			"\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
     private ValueDatatype findValueDatatype(IpsProject ipsProject, String qualifiedName, HashSet visitedProjects) throws CoreException {

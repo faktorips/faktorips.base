@@ -50,7 +50,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
     private CardinalityField maxCardinalityField;
 
     private ProductCmptRefControl targetControl;
-    private IProductCmpt[] toExclude;
+    private IProductCmpt[] toExclude = new IProductCmpt[0];
     
     /**
      * @param parentShell

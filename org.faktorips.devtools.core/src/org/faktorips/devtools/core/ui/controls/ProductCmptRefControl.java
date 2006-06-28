@@ -72,10 +72,17 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
 	/**
-	 * @param cmpts
+	 * Set all product components to exclude from result.
+	 * 
+	 * @param cmpts All product components to exclude. 
 	 */
 	public void setProductCmptsToExclude(IProductCmpt[] cmpts) {
-		toExclude = cmpts;
+		if (cmpts == null) {
+			toExclude = new IProductCmpt[0];
+		}
+		else {
+			toExclude = cmpts;
+		}
 	}
 
 }

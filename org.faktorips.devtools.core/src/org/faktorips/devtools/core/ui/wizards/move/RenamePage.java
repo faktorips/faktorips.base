@@ -167,7 +167,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 				constNamePart.setText(namingStrategy.getKindId(product.getName()));
 			} catch (IllegalArgumentException e) {
 				constNamePart.setText(product.getName());
-				versionId.setText("");
+				versionId.setText(""); //$NON-NLS-1$
 			}
 			
 		} else {

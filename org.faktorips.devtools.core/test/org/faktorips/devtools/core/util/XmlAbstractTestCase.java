@@ -57,10 +57,10 @@ public abstract class XmlAbstractTestCase extends TestCase {
             if (index > -1) {
                 className = className.substring(index+1);
             }
-            String resourceName = className + ".xml";
+            String resourceName = className + ".xml"; //$NON-NLS-1$
             InputStream is = getClass().getResourceAsStream(resourceName);
             if (is==null) {
-                throw new RuntimeException("Can't find resource " + resourceName);
+                throw new RuntimeException("Can't find resource " + resourceName); //$NON-NLS-1$
             }
             return getDocumentBuilder().parse(is);
         } catch (Exception e) {

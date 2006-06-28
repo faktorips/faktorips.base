@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbench;
@@ -41,6 +42,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 	 * {@inheritDoc}
 	 */
 	protected void createFieldEditors() {
+		
 		StringFieldEditor workingDateField = new StringFieldEditor(
 				IpsPreferences.WORKING_DATE,
 				Messages.FaktorIpsPreferencePage_labelWorkingDate,
@@ -95,6 +97,13 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				IpsPreferences.NAVIGATE_TO_MODEL,
 				Messages.FaktorIpsPreferencePage_labelCanNavigateToModel, getFieldEditorParent());
 		addField(canNavigateToModel);
+		
+		RadioGroupFieldEditor workingMode = new RadioGroupFieldEditor(
+				IpsPreferences.WORKING_MODE, Messages.FaktorIpsPreferencePage_titleWorkingMode, 2, new String[][] {
+						{ Messages.FaktorIpsPreferencePage_labelWorkingModeBrowse, IpsPreferences.WORKING_MODE_BROWSE },
+						{ Messages.FaktorIpsPreferencePage_labelWorkingModeEdit, IpsPreferences.WORKING_MODE_EDIT } },
+				getFieldEditorParent(), true);
+		addField(workingMode);
 	}
 
 	/**

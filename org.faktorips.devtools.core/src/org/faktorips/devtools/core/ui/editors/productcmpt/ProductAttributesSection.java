@@ -320,7 +320,7 @@ public class ProductAttributesSection extends IpsSection {
 			} else if (s.equals(falseRepresentation)) {
 					return Boolean.FALSE.toString();
 			}
-			throw new RuntimeException("Unknown value " + s);
+			throw new RuntimeException("Unknown value " + s); //$NON-NLS-1$
 		}
 
 		/**
