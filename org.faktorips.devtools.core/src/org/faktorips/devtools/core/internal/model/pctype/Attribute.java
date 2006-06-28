@@ -384,6 +384,16 @@ public class Attribute extends Member implements IAttribute {
         	result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
         }
         
+        IAttribute[] allAttributes = getPolicyCmptType().getAttributes();
+		for (int i = 0; i < allAttributes.length; i++) {
+			if (allAttributes[i] != this
+					&& collideNames(allAttributes[i].getName(), name)) {
+				String txt = Messages.Attribute_msgNameCollisionLocal;
+				result.add(new Message(MSGCODE_NAME_COLLISION_LOCAL, txt,
+						Message.ERROR, this, PROPERTY_NAME));
+			}
+		}
+        
         IAttribute superAttr = findSupertypeAttribute();
         if (overwrites) {
         	if (superAttr == null) {
@@ -400,6 +410,22 @@ public class Attribute extends Member implements IAttribute {
             }
         }
     }
+    
+    private boolean collideNames(String name1, String name2) {
+		if (name1.equals(name2)) {
+			return true;
+		}
+
+		if (Math.min(name1.length(), name2.length()) > 1) {
+			if ((name1.substring(1).equals(name2.substring(1)) && name1
+					.substring(0, 1).equalsIgnoreCase(name2.substring(0, 1)))) {
+				return true;
+			}
+		}
+
+		return false;
+
+	}
     
     private void validateDefaultValueAndValueSet(ValueDatatype valueDatatype, MessageList result) throws CoreException {
         if (!valueDatatype.isParsable(defaultValue)) {

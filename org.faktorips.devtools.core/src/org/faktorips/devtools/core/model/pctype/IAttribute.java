@@ -142,6 +142,13 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
 			+ "NameCollsion"; //$NON-NLS-1$
     
     /**
+	 * Validation message code to indicate that the attribute has a name equal to 
+	 * a name of an attribute in the same type. 
+	 */
+	public final static String MSGCODE_NAME_COLLISION_LOCAL = MSGCODE_PREFIX
+			+ "NameCollsionLocal"; //$NON-NLS-1$
+
+	/**
 	 * Returns the attribute's datatype. Note that only value datatypes are allowed as
 	 * attribute datatype.
 	 */
