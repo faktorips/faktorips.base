@@ -81,7 +81,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     }
     
     /**
-     * Constructs a new array datatype based on the guven underlying datatype and the dimension. 
+     * Constructs a new array datatype based on the given underlying datatype and the dimension. 
      */
     public ArrayOfValueDatatype(Datatype datatype, int dimension) {
         super();
