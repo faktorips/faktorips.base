@@ -327,6 +327,9 @@
       <datatypeDefinition 
 		        datatypeClass="org.faktorips.datatype.PrimitiveIntegerDatatype"
       			helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
+      <datatypeDefinition 
+		        datatypeClass="org.faktorips.datatype.ArrayOfValueDatatype"
+      			helperClass="org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper"/>      			
    </extension>
 
 <!-- 
