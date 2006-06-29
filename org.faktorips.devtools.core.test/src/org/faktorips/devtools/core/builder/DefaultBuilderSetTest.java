@@ -77,6 +77,10 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 		 */
 		public void initialize() throws CoreException {
 		}
+
+        public void clean() throws CoreException {
+            
+        }
 		
 	}
 }

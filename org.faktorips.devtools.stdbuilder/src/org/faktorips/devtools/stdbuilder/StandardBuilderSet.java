@@ -235,4 +235,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
         throw new RuntimeException("No builder of class " + builderClass + " defined.");
     }
+
+    /**
+     * Does nothing.
+     * {@inheritDoc}
+     */
+    public void clean() throws CoreException {
+    }
 }

@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+  *
+  * Alle Rechte vorbehalten.
+  *
+  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+  * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
+  * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
+  * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+  *   http://www.faktorips.org/legal/cl-v01.html
+  * eingesehen werden kann.
+  *
+  * Mitwirkende:
+  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+  *
+  *******************************************************************************/
 
 package org.faktorips.devtools.core.builder;
 
@@ -64,7 +64,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 	public final static String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder"; //$NON-NLS-1$
 
 	private static boolean lastBuildWasCancelled = false;
-	
+
 	public IpsBuilder() {
 		super();
 	}
@@ -82,14 +82,17 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		}
 		getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
 		MessageList list = getIpsProject().validate();
-		createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);
+		createMarkersFromMessageList(getProject(), list,
+				IpsPlugin.PROBLEM_MARKER);
 		if (!getIpsProject().canBeBuild()) {
-			IMarker marker = getProject().createMarker(IpsPlugin.PROBLEM_MARKER);
+			IMarker marker = getProject()
+					.createMarker(IpsPlugin.PROBLEM_MARKER);
 			String msg = Messages.IpsBuilder_msgInvalidProperties;
 			updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
 			return getProject().getReferencedProjects();
 		}
-		buildStatus = applyBuildCommand(buildStatus, new BeforeBuildProcessCommand(kind));
+		buildStatus = applyBuildCommand(buildStatus,
+				new BeforeBuildProcessCommand(kind));
 		if (kind == IncrementalProjectBuilder.FULL_BUILD
 				|| kind == IncrementalProjectBuilder.CLEAN_BUILD
 				|| getDelta(getProject()) == null) {
@@ -210,8 +213,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 	 * {@inheritDoc}
 	 */
 	protected void clean(IProgressMonitor monitor) throws CoreException {
-		// since the introduction of JMerge the generated java source files
-		// don't have to be deleted anymore
+		getIpsProject().getArtefactBuilderSet().clean();
 	}
 
 	private void removeEmptyFolders(IFolder parent, boolean removeThisParent,
@@ -266,20 +268,22 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		createMarkersFromMessageList(resource, list, IMarker.PROBLEM);
 	}
 
-	private void createMarkersFromMessageList(IResource resource, MessageList list, String markerType) throws CoreException {
+	private void createMarkersFromMessageList(IResource resource,
+			MessageList list, String markerType) throws CoreException {
 		for (int i = 0; i < list.getNoOfMessages(); i++) {
 			Message msg = list.getMessage(i);
 			IMarker marker = resource.createMarker(markerType);
 			updateMarker(marker, msg.getText(), getMarkerSeverity(msg));
 		}
 	}
-	
-	private void updateMarker(IMarker marker, String text, int severity) throws CoreException {
+
+	private void updateMarker(IMarker marker, String text, int severity)
+			throws CoreException {
 		marker.setAttributes(
-				new String[]{IMarker.MESSAGE, IMarker.SEVERITY},
-				new Object[]{text, new Integer(severity)});
+				new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+				new Object[] { text, new Integer(severity) });
 	}
-	
+
 	private int getMarkerSeverity(Message msg) {
 		int msgSeverity = msg.getSeverity();
 		if (msgSeverity == Message.ERROR) {
@@ -396,8 +400,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 	/**
 	 * Builds all IpsSrcFiles that are dependant on the provided
 	 * QualifiedNameType according to the provided dependency graph. The
-	 * QualifiedNameType of IpsSrcFiled that have been built are collected
-	 * in the provided parameter <code>alreadyBuild</code>. This method calls
+	 * QualifiedNameType of IpsSrcFiled that have been built are collected in
+	 * the provided parameter <code>alreadyBuild</code>. This method calls
 	 * itself recursively along the dependency chain.
 	 */
 	private void buildDependants(MultiStatus buildStatus,

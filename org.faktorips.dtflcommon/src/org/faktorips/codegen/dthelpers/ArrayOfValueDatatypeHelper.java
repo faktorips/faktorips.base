@@ -20,6 +20,12 @@ package org.faktorips.codegen.dthelpers;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 
+/**
+ * A helpper class for <code>ArrayOfValueDatatype</code>. ValueOf and newInstance expressions are not
+ * supported by this helper. A call to these method returns a "null" fragment.
+ * 
+ * @author Peter Erzberger
+ */
 public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
     public ArrayOfValueDatatypeHelper() {
@@ -30,14 +36,27 @@ public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
+    /**
+     * Returns a "null" fragment.
+     * 
+     * {@inheritDoc}
+     */
     protected JavaCodeFragment valueOfExpression(String expression) {
         return nullExpression();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public JavaCodeFragment nullExpression() {
         return new JavaCodeFragment("null");
     }
 
+    /**
+     * Returns a "null" fragment.
+     * 
+     * {@inheritDoc}
+     */
     public JavaCodeFragment newInstance(String value) {
         return nullExpression();
     }

@@ -106,4 +106,10 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void clean() throws CoreException {
+		// do nothing
+	}
 }
