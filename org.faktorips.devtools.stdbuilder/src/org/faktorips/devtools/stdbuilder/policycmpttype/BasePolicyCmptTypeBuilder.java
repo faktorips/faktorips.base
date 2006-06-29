@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
@@ -34,11 +26,10 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
-    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
-            LocalizedStringsSet stringsSet) {
+    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
         super(builderSet, kindId, stringsSet);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -46,7 +37,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+
         AttributeType type = attribute.getAttributeType();
         if (type == AttributeType.CHANGEABLE) {
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
@@ -60,23 +51,22 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             throw new RuntimeException("Unkown attribute type " + type);
         }
     }
-    
+
     protected abstract void generateCodeForConstantAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-     
+
     protected abstract void generateCodeForChangeableAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-        
-    
+
     protected abstract void generateCodeForDerivedAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-    
+
     protected abstract void generateCodeForComputedAttribute(IAttribute attribute,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
@@ -85,43 +75,57 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     /**
      * {@inheritDoc}
      */
-    protected void generateCodeForRelation(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+    protected void generateCodeForRelation(IRelation relation,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        generateCodeForRelationInCommon(relation, fieldsBuilder, methodsBuilder);
         if (relation.is1ToMany()) {
             generateCodeFor1ToManyRelation(relation, fieldsBuilder, methodsBuilder);
         } else {
             generateCodeFor1To1Relation(relation, fieldsBuilder, methodsBuilder);
         }
+       
     }
 
     /**
-     * Generates the code for a 1-to-many relation. The method is called for every 
-     * valid relation defined in the policy component type we currently build sourcecode for.
+     * Generations the code for a relation unspecific to the cardinality of the relation. 
+     * The method is called for every valid relation defined in the policy component type
+     * we currently build sourcecode for.
+     * 
+     * @param relation
+     * @param fieldsBuilder
+     * @param methodsBuilder
+     * @throws Exception
      */
-    protected abstract void generateCodeFor1ToManyRelation(
-            IRelation relation,
+    protected abstract void generateCodeForRelationInCommon(IRelation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
 
     /**
-     * Generates the code for a 1-to-many relation. The method is called for every 
-     * valid relation defined in the policy component type we currently build sourcecode for.
+     * Generates the code for a 1-to-many relation. The method is called for every valid relation
+     * defined in the policy component type we currently build sourcecode for.
      */
-    protected abstract void generateCodeFor1To1Relation(
-            IRelation relation,
+    protected abstract void generateCodeFor1ToManyRelation(IRelation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception;
-    
+
     /**
-     * Methods to create a new child object should be generated if the relation
-     * is a composite and the target is not abstract. If the target is configurable
-     * by product a second method with the product component type as argument should
-     * also be generated.
+     * Generates the code for a 1-to-many relation. The method is called for every valid relation
+     * defined in the policy component type we currently build sourcecode for.
      */
-    protected void generateNewChildMethodsIfApplicable(
-            IRelation relation,
-            IPolicyCmptType target, 
+    protected abstract void generateCodeFor1To1Relation(IRelation relation,
+            JavaCodeFragmentBuilder fieldsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws Exception;
+
+    /**
+     * Methods to create a new child object should be generated if the relation is a composite and
+     * the target is not abstract. If the target is configurable by product a second method with the
+     * product component type as argument should also be generated.
+     */
+    protected void generateNewChildMethodsIfApplicable(IRelation relation,
+            IPolicyCmptType target,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
+
         if (!relation.getRelationType().isComposition()) {
             return;
         }
@@ -133,23 +137,22 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             generateMethodNewChild(relation, target, true, methodsBuilder);
         }
     }
-    
+
     /**
-     * Generates a method to create a new child object for a parent obejct and attach
-     * it to the parent.
+     * Generates a method to create a new child object for a parent obejct and attach it to the
+     * parent.
      * 
      * @param relation The parent to child relation
-     * @param target   The child type.
-     * @param inclProductCmptArg <code>true</code> if the product component type should be included as arg.
-     * @param builder  The builder sourcecode can be appended to.
+     * @param target The child type.
+     * @param inclProductCmptArg <code>true</code> if the product component type should be
+     *            included as arg.
+     * @param builder The builder sourcecode can be appended to.
      * 
      * @throws CoreException
      */
-    public abstract void generateMethodNewChild(
-            IRelation relation, 
+    public abstract void generateMethodNewChild(IRelation relation,
             IPolicyCmptType target,
             boolean inclProductCmptArg,
             JavaCodeFragmentBuilder builder) throws CoreException;
-    
-    
+
 }

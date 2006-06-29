@@ -57,6 +57,7 @@ import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
@@ -416,6 +417,18 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append(getFieldNameForAttribute(a));
         methodsBuilder.append(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
         methodsBuilder.closeBracket();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForRelationInCommon(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if(relation.isProductRelevant() &&
+           !relation.isReadOnlyContainer() &&
+           !relation.isReverseComposition()){
+            generateFieldGetMaxCardinalityFor(relation, fieldsBuilder);
+            generateMethodGetMaxCardinalityFor(relation, methodsBuilder);
+        }
     }
 
     /**
@@ -1475,4 +1488,40 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("return null;");
         builder.methodEnd();
     }
+    
+    public void generateMethodGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder methodsBuilder){
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetMaxCardinalityFor(relation, methodsBuilder);
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendOpenBracket();
+        frag.append("return ");
+        frag.append(getFieldNameGetMaxCardinalityFor(relation));
+        frag.append(";");
+        frag.appendCloseBracket();
+        methodsBuilder.append(frag);
+    }
+    
+    protected void generateFieldGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder attrBuilder){
+        String comment = getLocalizedText(relation, "FIELD_MAX_CARDINALITY_JAVADOC", relation.getTargetRoleSingular());
+        attrBuilder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        String fieldName = getFieldNameGetMaxCardinalityFor(relation);
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.append("new ");
+        frag.appendClassName(IntegerRange.class);
+        frag.append("(");
+        frag.append(relation.getMinCardinality());
+        frag.append(", ");
+        frag.append(relation.getMaxCardinality());
+        frag.append(")");
+        attrBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, IntegerRange.class, fieldName, frag);
+        attrBuilder.appendln();
+    }
+
+    /**
+     * Returns the name for the field GetMaxCardinalityFor + single target role of the provided relation
+     */
+    protected String getFieldNameGetMaxCardinalityFor(IRelation relation){
+        return getLocalizedText(getPcType(), "FIELD_MAX_CARDINALITY_NAME", relation.getTargetRoleSingular());
+    }
+
 }

@@ -39,6 +39,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBui
 import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.IntegerRange;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
@@ -450,6 +451,17 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return getLocalizedText(a, "PARAM_NEWVALUE_NAME", a.getName());
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    protected void generateCodeForRelationInCommon(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+        if(relation.isProductRelevant() && 
+           !relation.isReadOnlyContainer() && 
+           !relation.getRelationType().isReverseComposition()){
+            generateMethodGetMaxCardinalityFor(relation, methodsBuilder);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -874,4 +886,20 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
     }
     
+    public void generateSignatureGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder methodsBuilder){
+        String methodName = getMethodNameGetMaxCardinalityFor(relation);
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName, new String[0], new String[0]);
+        
+    }
+    
+    public String getMethodNameGetMaxCardinalityFor(IRelation relation){
+        return getLocalizedText(relation, "METHOD_GET_MAX_CARDINALITY_NAME", StringUtils.capitalise(relation.getTargetRoleSingular()));
+    }
+    
+    public void generateMethodGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder methodsBuilder){
+        String[] replacements = new String[]{relation.getTargetRoleSingular()};
+        appendLocalizedJavaDoc("METHOD_GET_MAX_CARDINALITY", replacements, getPcType(), methodsBuilder);
+        generateSignatureGetMaxCardinalityFor(relation, methodsBuilder);
+        methodsBuilder.appendln(";");
+    }
 }
