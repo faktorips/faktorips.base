@@ -24,12 +24,13 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
@@ -246,7 +247,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
         assertEquals(DecimalHelper.class, helper.getClass());
         helper = ipsProject.getDatatypeHelper(new ArrayOfValueDatatype(Datatype.DECIMAL, 1));
-        assertNull(helper);
+        assertNotNull(helper);
+        assertEquals(ArrayOfValueDatatypeHelper.class, helper.getClass());
         
         helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
         assertNull(helper);
