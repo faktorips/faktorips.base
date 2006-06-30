@@ -849,6 +849,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         String[][] params = interfaceBuilder.getParamGetCardinalityFor1ToManyRelation(relation);
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendOpenBracket();
+        frag.append("if(");
+        frag.append(params[0][0]);
+        frag.append(" != null)");
+        frag.appendOpenBracket();
         frag.append("return ");
         frag.append('(');
         frag.appendClassName(IntegerRange.class);
@@ -857,6 +861,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         frag.append(".get(");
         frag.append(params[0][0]);
         frag.append(".getId());");
+        frag.appendCloseBracket();
+        frag.append("return null;");
         frag.appendCloseBracket();
         methodsBuilder.append(frag);
     }
