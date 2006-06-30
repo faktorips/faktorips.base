@@ -46,6 +46,7 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
 /**
@@ -475,7 +476,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             generateMethodGet1RelatedCmpt(relation, methodsBuilder);
             generateMethodSet1RelatedCmpt(relation, methodsBuilder);
         }
-        generateMethodGetNumOfRelatedProductCmpts(relation, methodsBuilder);        
+        generateMethodGetNumOfRelatedProductCmpts(relation, methodsBuilder);  
+        generateMethodGetCardinalityFor(relation, methodsBuilder);
+        generateFieldCardinalityFor(relation, memberVarsBuilder);
     }
     
     private String getFieldNameToManyRelation(IProductCmptTypeRelation relation) throws CoreException {
@@ -816,5 +819,32 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         builder.appendln("return numOf;");
         builder.closeBracket();
     }
+    
+    private void generateMethodGetCardinalityFor(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), 
+                relation, methodsBuilder);
+        interfaceBuilder.generateSignatureGetCardinalityFor(relation, methodsBuilder);
+        String[][] params = interfaceBuilder.getParamGetCardinalityFor(relation);
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendOpenBracket();
+        frag.append("return ");
+        frag.append('(');
+        frag.appendClassName(IntegerRange.class);
+        frag.append(')');
+        frag.append(getFieldNameCardinalityFor(relation));
+        frag.append(".get(");
+        frag.append(params[0][0]);
+        frag.append(".getId());");
+        frag.appendCloseBracket();
+        methodsBuilder.append(frag);
+    }
 
+    public String getFieldNameCardinalityFor(IProductCmptTypeRelation relation) throws CoreException{
+        return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findPolicyCmptTypeRelation().getTargetRoleSingular());
+    }
+    
+    private void generateFieldCardinalityFor(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder fieldsBuilder) throws CoreException{
+        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), relation, fieldsBuilder);
+        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityFor(relation));
+    }
 }

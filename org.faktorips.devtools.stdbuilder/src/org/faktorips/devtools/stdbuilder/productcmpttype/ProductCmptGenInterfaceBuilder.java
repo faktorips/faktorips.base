@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.IntegerRange;
 
 /**
  * Builder that generates Java sourcefiles (compilation units) containing the sourcecode for the
@@ -200,6 +201,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
             generateMethodGet1RelatedCmpt(relation, methodsBuilder);
         }
         generateMethodGetNumOfRelatedCmpts(relation, methodsBuilder);
+        generateMethodGetCardinalityFor(relation, methodsBuilder);
     }
     
     /**
@@ -354,5 +356,30 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
 
     public String getMethodNameGetRelatedCmptAtIndex(IProductCmptTypeRelation relation) {
         return getJavaNamingConvention().getGetterMethodName(relation.getTargetRoleSingular(), Datatype.INTEGER);
+    }
+    
+    public String getMethodNameGetCardinalityFor(IProductCmptTypeRelation relation) throws CoreException{
+        return getJavaNamingConvention().getGetterMethodName(
+                getLocalizedText(relation, "METHOD_GET_CARDINALITY_FOR_NAME", 
+                relation.findPolicyCmptTypeRelation().getTargetRoleSingular()), IntegerRange.class);
+    }
+    
+    public String[][] getParamGetCardinalityFor(IProductCmptTypeRelation relation) throws CoreException{
+        String paramName = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
+        return new String[][]{new String[]{"productCmpt"}, new String[]{paramName}};
+    }
+    
+    public void generateSignatureGetCardinalityFor(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        String methodName = getMethodNameGetCardinalityFor(relation);
+        String[][] params = getParamGetCardinalityFor(relation);
+        methodsBuilder.signature(Modifier.PUBLIC, IntegerRange.class.getName(), methodName, 
+                params[0], params[1]);
+    }
+    
+    private void generateMethodGetCardinalityFor(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), 
+                relation, methodsBuilder);
+        generateSignatureGetCardinalityFor(relation, methodsBuilder);
+        methodsBuilder.append(';');
     }
 }
