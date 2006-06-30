@@ -197,11 +197,12 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         if (relation.is1ToMany()) {
             generateMethodGetManyRelatedCmpts(relation, methodsBuilder);
             generateMethodGetRelatedCmptAtIndex(relation, methodsBuilder);
+            generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
         } else {
             generateMethodGet1RelatedCmpt(relation, methodsBuilder);
+            generateMethodGetCardinalityFor1To1Relation(relation, methodsBuilder);
         }
         generateMethodGetNumOfRelatedCmpts(relation, methodsBuilder);
-        generateMethodGetCardinalityFor(relation, methodsBuilder);
     }
     
     /**
@@ -364,22 +365,38 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
                 relation.findPolicyCmptTypeRelation().getTargetRoleSingular()), IntegerRange.class);
     }
     
-    public String[][] getParamGetCardinalityFor(IProductCmptTypeRelation relation) throws CoreException{
+    public String[][] getParamGetCardinalityFor1ToManyRelation(IProductCmptTypeRelation relation) throws CoreException{
         String paramName = productCmptTypeInterfaceBuilder.getQualifiedClassName(relation.findTarget());
         return new String[][]{new String[]{"productCmpt"}, new String[]{paramName}};
     }
     
-    public void generateSignatureGetCardinalityFor(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    public void generateSignatureGetCardinalityFor1ToManyRelation(
+            IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
         String methodName = getMethodNameGetCardinalityFor(relation);
-        String[][] params = getParamGetCardinalityFor(relation);
+        String[][] params = getParamGetCardinalityFor1ToManyRelation(relation);
         methodsBuilder.signature(Modifier.PUBLIC, IntegerRange.class.getName(), methodName, 
                 params[0], params[1]);
     }
     
-    private void generateMethodGetCardinalityFor(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    private void generateMethodGetCardinalityFor1ToManyRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
         appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), 
                 relation, methodsBuilder);
-        generateSignatureGetCardinalityFor(relation, methodsBuilder);
+        generateSignatureGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
         methodsBuilder.append(';');
     }
+    
+    public void generateSignatureGetCardinalityFor1To1Relation(
+            IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        String methodName = getMethodNameGetCardinalityFor(relation);
+        methodsBuilder.signature(Modifier.PUBLIC, IntegerRange.class.getName(), methodName, 
+                new String[0], new String[0]);
+    }
+    
+    private void generateMethodGetCardinalityFor1To1Relation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), 
+                relation, methodsBuilder);
+        generateSignatureGetCardinalityFor1To1Relation(relation, methodsBuilder);
+        methodsBuilder.append(';');
+    }
+
 }
