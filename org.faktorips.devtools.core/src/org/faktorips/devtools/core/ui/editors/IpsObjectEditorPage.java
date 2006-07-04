@@ -66,6 +66,9 @@ public abstract class IpsObjectEditorPage extends FormPage {
 		form.setText(getIpsObjectEditor().getUniformPageTitle());
 		FormToolkit toolkit = managedForm.getToolkit();
 		createPageContent(form.getBody(), new UIToolkit(toolkit));
+		form.setExpandHorizontal(true);
+		form.setExpandVertical(true);
+		form.reflow(true);
 	}
 	
 	protected abstract void createPageContent(Composite formBody, UIToolkit toolkit);
