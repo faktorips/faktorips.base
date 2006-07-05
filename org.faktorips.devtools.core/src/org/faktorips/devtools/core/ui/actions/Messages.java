@@ -57,6 +57,7 @@ public class Messages extends NLS {
 	public static String RenameAction_name;
 	public static String MoveAction_name;
 	public static String NewProductCmptRelationAction_name;
+	public static String NewPolicyComponentTypeAction_name;
 	public static String ChangeWorkingDateAction_title;
 	public static String ChangeWorkingDateAction_description;
 	public static String ChangeWorkingDateAction_errorFallbackMessageParameter;

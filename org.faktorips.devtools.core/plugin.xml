@@ -366,6 +366,13 @@
             class="org.faktorips.devtools.core.ui.views.attrtable.AttributesTable"
             id="org.faktorips.devtools.core.ui.views.attributesTable"
             name="%org.faktorips.devtools.core.ui.views.attributesTable"/>
+      <view
+            allowMultiple="true"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer"
+            icon="icons/ModelExplorer.png"
+            id="org.faktorips.devtools.core.ui.views.modelExplorer"
+            name="%org.faktorips.devtools.core.ui.views.modelExplorer"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
