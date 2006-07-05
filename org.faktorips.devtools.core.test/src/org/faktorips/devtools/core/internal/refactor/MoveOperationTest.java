@@ -212,7 +212,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	assertTrue(pack.exists());
     	assertTrue(file.exists());
     	
-        int count = pack.getIpsParentPackageFragment().getIpsChildPackageFragments().length;
+        int count = pack.getParentIpsPackageFragment().getIpsChildPackageFragments().length;
         
     	new MoveOperation(new IIpsElement[] {pack}, new String[] {"test.renamedPackage"}).run(null);
     	
@@ -223,7 +223,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	file = ((IFolder)pack.getCorrespondingResource()).getFile("test.unknown");
     	assertTrue(pack.exists());
     	assertTrue(file.exists());
-        assertEquals(count, pack.getIpsParentPackageFragment().getIpsChildPackageFragments().length);
+        assertEquals(count, pack.getParentIpsPackageFragment().getIpsChildPackageFragments().length);
         
     }
     

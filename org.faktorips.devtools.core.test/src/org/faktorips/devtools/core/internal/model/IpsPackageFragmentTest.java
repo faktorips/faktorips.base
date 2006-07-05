@@ -210,14 +210,16 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetIpsParentPackageFragment() throws CoreException {
-    	IIpsPackageFragment testPackage = this.rootPackage.createPackageFragment("products.test", true, null);
-    	assertEquals(testPackage.getName(), "products.test");
-    	testPackage = testPackage.getIpsParentPackageFragment();
-    	assertEquals(testPackage.getName(), "products");
-    	testPackage = testPackage.getIpsParentPackageFragment();
-    	assertEquals(testPackage.getName(), "");
-    	assertNull(testPackage.getIpsParentPackageFragment());
+    public void testGetParentIpsPackageFragment() throws CoreException {
+    	IIpsPackageFragment testPackage = this.rootPackage.createPackageFragment("products.test.subtest", true, null);
+    	assertEquals("products.test.subtest", testPackage.getName());
+    	testPackage = testPackage.getParentIpsPackageFragment();
+    	assertEquals("products.test", testPackage.getName());
+        testPackage = testPackage.getParentIpsPackageFragment();
+        assertEquals("products", testPackage.getName());
+        testPackage = testPackage.getParentIpsPackageFragment();
+        assertEquals("", testPackage.getName());
+    	assertNull(testPackage.getParentIpsPackageFragment());
     }
     
     public void testGetIpsChildPackageFragments() throws CoreException {
