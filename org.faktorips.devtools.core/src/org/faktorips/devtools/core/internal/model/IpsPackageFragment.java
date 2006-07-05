@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.GregorianCalendar;
@@ -105,7 +106,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     /**
      * Overridden
      */
-	public IIpsPackageFragment getIpsParentPackageFragment() {
+	public IIpsPackageFragment getParentIpsPackageFragment() {
 		IFolder folder = (IFolder)getCorrespondingResource();
 		
 		// if the default-package is asked for its parent, null is returned
@@ -119,8 +120,10 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 		if (parent.equals(defaultPackage)) {
 			return this.getRoot().getIpsDefaultPackageFragment();
 		}
-		
-		return new IpsPackageFragment(this.getParent(), folder.getParent().getName());
+		// use the parentfolders path ("/" replaced with ".") as name of the parentPackageFragment
+		String fragmentName= folder.getParent().getProjectRelativePath().removeFirstSegments(1).toString();
+		fragmentName= fragmentName.replace(File.separatorChar, '.');
+		return new IpsPackageFragment(this.getParent(), fragmentName);
 	}
 
 	/**

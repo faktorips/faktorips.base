@@ -40,7 +40,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Returns the packagefragment which contains this one or null if this one is the default-package.
      */
-    public IIpsPackageFragment getIpsParentPackageFragment();
+    public IIpsPackageFragment getParentIpsPackageFragment();
     
     /**
      * Returns all packagfragments which are contained in this one.

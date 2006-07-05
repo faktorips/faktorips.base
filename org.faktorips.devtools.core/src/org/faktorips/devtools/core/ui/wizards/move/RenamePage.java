@@ -319,7 +319,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 			name = ((IIpsObject)this.renameObject).getIpsPackageFragment().getName();
 		}
 		else if (this.renameObject instanceof IIpsPackageFragment) {
-			IIpsPackageFragment parent = ((IIpsPackageFragment)this.renameObject).getIpsParentPackageFragment();
+			IIpsPackageFragment parent = ((IIpsPackageFragment)this.renameObject).getParentIpsPackageFragment();
 			if (parent != null) {
 				name = parent.getName();
 			}

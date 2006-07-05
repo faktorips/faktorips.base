@@ -136,7 +136,7 @@ public class ProductContentProvider implements ITreeContentProvider {
             // package-fragment. If such an fragment is asked for its parent, the project is returned! That 
             // is not what we need here - the parent of org.faktorips.example in our case here has to be
             // org.faktorips
-            parent = ((IIpsPackageFragment)element).getIpsParentPackageFragment(); 
+            parent = ((IIpsPackageFragment)element).getParentIpsPackageFragment(); 
             if (parent == null) {
                 // no further parents in package-hirachy, return parent in object-hirachy
                 parent = ((IIpsElement)element).getParent();

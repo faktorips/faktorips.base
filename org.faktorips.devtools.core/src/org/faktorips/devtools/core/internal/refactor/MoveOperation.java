@@ -200,7 +200,7 @@ public class MoveOperation implements IRunnableWithProgress {
 	}
 	
 	private void movePackageFragement(IIpsPackageFragment pack, String newName, IProgressMonitor monitor) throws CoreException {
-		IIpsPackageFragment parent = pack.getIpsParentPackageFragment();
+		IIpsPackageFragment parent = pack.getParentIpsPackageFragment();
 		
 		// first, find all products contained in this folder
 	    ArrayList files = new ArrayList();
