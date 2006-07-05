@@ -127,11 +127,11 @@ public abstract class DefaultEditField implements EditField {
     }
 
     /**
-     * Returns null if the given object is the null-representation-string, 
-     * the unmodified object otherwise.
+     * Returns null if the given value is the null-representation-string, 
+     * the unmodified value otherwise.
      */
     Object prepareObjectForGet(Object value) {
-    	if (supportNull && value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+    	if (supportNull && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)) {
     		return null;
     	}
     	return value;
