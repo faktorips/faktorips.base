@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsCutAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
@@ -45,13 +46,15 @@ import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
+import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
 
 /**
- * The ModelExplorer is a Viewart for displaying ProductComponents,
+ * The ModelExplorer is a ViewPart for displaying ProductComponents, TableContents
  * TableStructures and PolicyComponentTypes along with their Attributes. The
- * view uses a TreeViewer to represent the hierarchical datastructure. The View
+ * view uses a TreeViewer to represent the hierarchical datastructure. It
  * can be configured to show the tree of PackageFragments in a hierarchical
  * (default) or a flat layout style.
  * 
@@ -232,9 +235,11 @@ public class ModelExplorer extends ViewPart {
 	 */
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
 		super.init(site, memento);
-		IMemento layout = memento.getChild(LAYOUT_MEMENTO);
-		if (layout != null) {
-			isFlatLayout = layout.getInteger(LAYOUT_STYLE_KEY).intValue() == FLAT_LAYOUT;
+		if(memento!=null){
+			IMemento layout = memento.getChild(LAYOUT_MEMENTO);
+			if (layout != null) {
+				isFlatLayout = layout.getInteger(LAYOUT_STYLE_KEY).intValue() == FLAT_LAYOUT;
+			}
 		}
 	}
 
