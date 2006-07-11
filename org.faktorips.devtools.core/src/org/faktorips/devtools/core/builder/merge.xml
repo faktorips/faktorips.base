@@ -21,7 +21,7 @@
         in the generated content. If available JMerge looks for a Member with the same name in the target content.
         If also available the target content gets overridden by the generated content. 
      -->
-		<merge:pull sourceMarkup="^gen$" sourceGet="Method/getBody" targetPut="Method/setBody"/>    	
+		<merge:pull sourceMarkup="^gen$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>    	
     <merge:pull sourceMarkup="^gen$" sourceGet="Member/getFlags" targetPut="Member/setFlags"/>
     <merge:pull sourceMarkup="^gen$" sourceGet="Type/getSuperclass" targetPut="Type/setSuperclass"/>
     <merge:pull sourceMarkup="^gen$" sourceGet="Field/getType" targetPut="Field/setType"/>
@@ -29,7 +29,6 @@
     <merge:pull sourceMarkup="^gen$" sourceGet="Method/getExceptions" targetPut="Method/addException"/>
     <merge:pull sourceMarkup="^gen$" sourceGet="Field/getInitializer" targetPut="Field/setInitializer"/>
     <merge:pull sourceMarkup="^gen$" sourceGet="Member/getComment" targetPut="Member/setComment"/>
-        
         
     <!--
         The sweep rule looks in the target content if there exist Members that are indicated with the "generated"
