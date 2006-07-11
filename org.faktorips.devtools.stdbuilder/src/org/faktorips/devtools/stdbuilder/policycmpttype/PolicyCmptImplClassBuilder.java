@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -32,6 +31,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.MessageFragment;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -228,6 +228,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.methodEnd();
     }
 
+    protected void generateCodeForAttribute(IAttribute attribute,
+            DatatypeHelper datatypeHelper,
+            JavaCodeFragmentBuilder memberVarsBuilder,
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        
+        if(Modifier.PUBLIC.equals(attribute.getModifier())){
+            interfaceBuilder.generateFieldConstantForProperty(attribute, memberVarsBuilder);
+        }
+        super.generateCodeForAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
+    }
     /**
      * {@inheritDoc}
      */
@@ -1013,8 +1023,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void buildValidation(JavaCodeFragmentBuilder builder) throws CoreException {
         createMethodValidateSelf(builder, getPcType().getAttributes());
         createMethodValidateDependants(builder);
-        buildExecRule(builder);
-        buildMessageForRule(builder);
+        generateMethodExecRule(builder);
+        generateMethodCreateMessageForRule(builder);
     }
 
     private void createMethodValidateDependants(JavaCodeFragmentBuilder builder)
@@ -1032,7 +1042,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.append("super.");
         body.append(methodName);
-        body.append("(ml);");
+        body.append("(ml, businessFunction);");
         for (int i = 0; i < relations.length; i++) {
             IRelation r = relations[i];
             if (!r.validate().containsErrorMsg()) {
@@ -1050,11 +1060,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                         body.append(interfaceBuilder.getMethodNameGetAllRefObjects(r));
                         body.append("();");
                         body.append("for (int i = 0; i < rels.length; i++)");
-                        body.append("{ ml.add(rels[i].validate()); } }");
+                        body.append("{ ml.add(rels[i].validate(businessFunction)); } }");
                     } else {
                         String field = getFieldNameForRelation(r);
                         body.append("if (" + field + "!=null) {");
-                        body.append("ml.add(" + field + ".validate());");
+                        body.append("ml.add(" + field + ".validate(businessFunction));");
                         body.append("}");
                     }
                 }
@@ -1065,14 +1075,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 .getName());
 
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
-            methodName, new String[] { "ml" }, new String[] { MessageList.class.getName() }, body,
+            methodName, new String[] { "ml", "businessFunction" }, 
+            new String[] { MessageList.class.getName(), String.class.getName() }, body,
             javaDoc, ANNOTATION_GENERATED);
     }
 
     private void createMethodValidateSelf(JavaCodeFragmentBuilder builder, IAttribute[] attributes)
             throws CoreException {
         /*
-         * public void validateSelf(MessageList ml) { super.validateSelf(ml); }
+         * public void validateSelf(MessageList ml, String businessFunction) { super.validateSelf(ml, businessFunction); }
          */
         String methodName = "validateSelf";
         String javaDoc = getLocalizedText(getIpsObject(), VALIDATESELF_IMPLEMENTATION_JAVADOC, getPcType()
@@ -1081,21 +1092,22 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.append("super.");
         body.append(methodName);
-        body.append("(ml);");
+        body.append("(ml, businessFunction);");
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
             body.append("execRule");
             body.append(StringUtils.capitalise(r.getName()));
-            body.append("(ml);");
+            body.append("(ml, businessFunction);");
         }
         // buildValidationValueSet(body, attributes); wegschmeissen ??
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
-            methodName, new String[] { "ml" }, new String[] { MessageList.class.getName() }, body,
+            methodName, new String[] { "ml", "businessFunction" }, 
+            new String[] { MessageList.class.getName(), String.class.getName() }, body,
             javaDoc, ANNOTATION_GENERATED);
     }
 
-    private void buildMessageForRule(JavaCodeFragmentBuilder builder) throws JavaModelException {
+    private void generateMethodCreateMessageForRule(JavaCodeFragmentBuilder builder) throws JavaModelException {
         // nur Behandlung der Fehlermeldungen in dieser Klasse
         // Eigentliche Pruefung muss in Extension-Klassen impl. werden
         // protected Message createMessageForRulePlzVorhanden(Object p0, Object p1) {
@@ -1105,45 +1117,37 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // MessageFormat mf = new MessageFormat("Die Postleitzahl muss eingegeben werden.");
         // return new Message("HRP01", mf.format(replacements), Message.ERROR); }
         IValidationRule[] rules = getPcType().getRules();
-
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
-            String[] paramNameList = BuilderHelper.extractMessageParameters(r.getMessageText());
-            String[] paramTypeList = new String[paramNameList.length];
             JavaCodeFragment body = new JavaCodeFragment();
-            if (paramNameList.length > 0) {
-                body.append("Object[] replacements = new Object[");
-                body.append(paramNameList.length);
-                body.append("];");
-                for (int j = 0; j < paramNameList.length; j++) {
-                    paramTypeList[j] = Object.class.getName();
-                    body.append("replacements[");
-                    body.append(j);
-                    body.append("] = ");
-                    body.append(paramNameList[j]);
-                    body.append(';');
+            MessageFragment msgFrag = MessageFragment.createMessageFragment(r.getMessageText());
+            body.append(msgFrag.getFrag());
+            String[] validatedAttributes = r.getValidatedAttributes();
+            body.appendClassName(String.class);
+            body.append("[] validatedAttributes = new ");
+            body.appendClassName(String.class);
+            body.append("[]{");
+            for (int j = 0; j < validatedAttributes.length; j++) {
+                IAttribute attr = getPcType().getAttribute(validatedAttributes[j]);
+                String propertyConstName = interfaceBuilder.getPropertyName(attr);
+                body.append(propertyConstName);
+                if(j < validatedAttributes.length -1){
+                    body.append(',');
                 }
-                body.appendClassName(MessageFormat.class);
-                body.append(" mf = new ");
-                body.appendClassName(MessageFormat.class);
-                body.append("(\"");
-                body.append(BuilderHelper.transformMessage(r.getMessageText()));
-                body.append("\");");
             }
+            body.appendln("};");
             body.append("return new ");
             body.appendClassName(Message.class);
             body.append("(\"");
             body.append(r.getMessageCode());
             body.append("\", ");
-            if (paramNameList.length > 0) {
-                body.append("mf.format(replacements), ");
-            } else {
-                body.append('\"');
-                body.append(r.getMessageText());
-                body.append("\", ");
-            }
-
+            body.append(msgFrag.getMsgTextExpression());
+            body.append(", ");
             body.append(r.getMessageSeverity().getJavaSourcecode());
+            body.append(", ");
+            body.append("this");
+            body.append(", ");
+            body.append("validatedAttributes");
             body.append(");");
 
             String methodName = "createMessageForRule" + StringUtils.capitalise(r.getName());
@@ -1151,7 +1155,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             String javaDoc = getLocalizedText(r, CREATEMESSAGEFOR_POLICY_JAVADOC, r.getName());
 
             builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
-                methodName, paramNameList, paramTypeList, body, javaDoc, ANNOTATION_GENERATED);
+                methodName, msgFrag.getParameterNames(), msgFrag.getParameterClasses(), 
+                body, javaDoc, ANNOTATION_GENERATED);
         }
     }
 
@@ -1307,9 +1312,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.closeBracket();
     }
 
-    /**
-     * 
-     */
     private String getMethodNameGetValueFromProductCmpt(IAttribute a, DatatypeHelper datatype) throws CoreException {
         String methodName;
         if (a.getAttributeType() == AttributeType.CHANGEABLE) {
@@ -1319,10 +1321,54 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         return interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType()) + "()." + methodName + "()";
     }
+    
+    private String[] createDefaultParameterAssignments(IValidationRule rule, JavaCodeFragment frag) throws CoreException{
+        
+        IPolicyCmptType pc = getPcType();
+        MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText());
 
-    // --from ext
-    private void buildExecRule(JavaCodeFragmentBuilder builder) throws JavaModelException {
-        // private void execRulePlzVorhanden(MessageList ml) {
+        String[] parameterValues = msgFrag.getParameterValues();
+        String[] parameterNames = msgFrag.getParameterNames();
+        String[] validatedAttr = rule.getValidatedAttributes();
+        
+        for (int j = 0; j < parameterValues.length; j++) {
+            frag.appendClassName(String.class);
+            frag.append(' ');
+            frag.append(parameterNames[j]);
+            frag.append(" = ");
+            int index = msgFrag.considerParameterAsIndex(j);
+            if(index != -1){
+                
+                if(index < validatedAttr.length){
+                    IAttribute attr = pc.getAttribute(validatedAttr[index]);
+                    addVariableAssignment(pc, attr, frag);
+                    continue;
+                }
+                frag.append(" \"\";");
+                continue;
+            }
+            
+            IAttribute attr = pc.getAttribute(parameterValues[j]);
+            if(attr != null){
+                addVariableAssignment(pc, attr, frag);
+            }
+        }
+        return parameterNames;
+    }
+
+    private void addVariableAssignment(IPolicyCmptType pc, IAttribute attr, JavaCodeFragment frag) throws CoreException{
+        //TODO introduce getMethodCallExpGetPropertyValue
+        frag.append(interfaceBuilder.getMethodNameGetPropertyValue(attr, attr.findDatatype()));
+        frag.append("()");
+        frag.append(" == null ? ");
+        frag.append("\"\" : ");
+        frag.append(interfaceBuilder.getMethodNameGetPropertyValue(attr, attr.findDatatype()));
+        frag.append("().toString()");
+        frag.appendln(";");
+    }
+    
+    private void generateMethodExecRule(JavaCodeFragmentBuilder builder) throws CoreException {
+        // private void execRulePlzVorhanden(MessageList ml, businessFunction) {
         // if (false) {
         // ml.add(createMessageForRulePlzVorhanden()); } }
         IValidationRule[] rules = getPcType().getRules();
@@ -1330,31 +1376,29 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             IValidationRule r = rules[i];
             String javaDoc = getLocalizedText(getIpsObject(), EXECMESSAGE_POLICY_JAVADOC, r.getName());
             JavaCodeFragment body = new JavaCodeFragment();
+            String[] paramList = createDefaultParameterAssignments(r, body);
+            body.appendln();
+            body.appendln("//begin-user-code");
             body.append("if(true) ");
             body.appendOpenBracket();
             body.append("ml.add(createMessageForRule");
             body.append(StringUtils.capitalise(r.getName()));
             body.append('(');
-            String[] paramList = BuilderHelper.extractMessageParameters(r.getMessageText());
             for (int j = 0; j < paramList.length; j++) {
                 if (j > 0) {
                     body.append(", ");
                 }
-                body.append('\"');
                 body.append(paramList[j]);
-                body.append('\"');
             }
             body.append("));");
             body.appendCloseBracket();
-
+            body.appendln();
+            body.appendln("//end-user-code");
             builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.VOID.getJavaClassName(),
-                "execRule" + StringUtils.capitalise(r.getName()), new String[] { "ml" },
-                new String[] { MessageList.class.getName() }, body, javaDoc, ANNOTATION_MODIFIABLE);
+                "execRule" + StringUtils.capitalise(r.getName()), new String[] { "ml", "businessFunction" },
+                new String[] { MessageList.class.getName(), String.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
         }
     }
-
-    // --
-
 
     /**
      * {@inheritDoc}

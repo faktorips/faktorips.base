@@ -281,7 +281,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.append("if (relationElements != null) {");
                 if (r.is1ToMany()) {
                     String fieldName = getFieldNameToManyRelation(r);
-                    String cardinalityFieldName = getFieldNameCardinalityFor1ToManyRelation(r);
+                    String cardinalityFieldName = getFieldNameCardinalityForRelation(r);
                     builder.append(fieldName);
                     builder.appendln(" = new ");
                     builder.appendClassName(String.class);
@@ -306,15 +306,24 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     builder.appendln("element);");
                     builder.appendln("}");
                 } else {
-                    builder.append(getFieldNameTo1Relation(r));
-                    builder.append(" = ((");
+                    String fieldName = getFieldNameTo1Relation(r);
+                    String cardFieldName = getFieldNameCardinalityForRelation(r);
                     builder.appendClassName(Element.class);
-                    builder.append(")relationElements.get(0)).getAttribute(\"" + IProductCmptRelation.PROPERTY_TARGET_RUNTIME_ID + "\");");
-                    builder.append(getFieldNameCardinalityFor1To1Relation(r));
+                    builder.append(" element = (");
+                    builder.appendClassName(Element.class);
+                    builder.appendln(")relationElements.get(0);");
+                    builder.append(fieldName);
                     builder.append(" = ");
-                    builder.append("getCardinality((");
-                    builder.appendClassName(Element.class);
-                    builder.appendln(")relationElements.get(0));");
+                    builder.appendln("element.getAttribute(\"" + IProductCmptRelation.PROPERTY_TARGET_RUNTIME_ID + "\");");
+                    builder.append(cardFieldName);
+                    builder.append(" = new ");
+                    builder.appendClassName(HashMap.class);
+                    builder.appendln("(1);");
+                    builder.append("addToCardinalityMap(");
+                    builder.append(cardFieldName);
+                    builder.append(", ");
+                    builder.append(fieldName);
+                    builder.appendln(", element);");
                 }
                 builder.appendln("}");
             }
@@ -491,15 +500,15 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             generateMethodGetManyRelatedCmpts(relation, methodsBuilder);
             generateMethodGetRelatedCmptAtIndex(relation, methodsBuilder);
             generateMethodAddRelatedCmpt(relation, methodsBuilder);
-            generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
-            generateFieldCardinalityFor1ToManyRelation(relation, memberVarsBuilder);
         } else {
             generateFieldTo1Relation(relation, memberVarsBuilder);
             generateMethodGet1RelatedCmpt(relation, methodsBuilder);
             generateMethodSet1RelatedCmpt(relation, methodsBuilder);
-            generateMethodGetCardinalityFor1To1Relation(relation, methodsBuilder);
-            generateFieldCardinalityFor1To1Relation(relation, memberVarsBuilder);
+//            generateMethodGetCardinalityFor1To1Relation(relation, methodsBuilder);
+//            generateFieldCardinalityFor1To1Relation(relation, memberVarsBuilder);
         }
+        generateMethodGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
+        generateFieldCardinalityForRelation(relation, memberVarsBuilder);
         generateMethodGetNumOfRelatedProductCmpts(relation, methodsBuilder);  
     }
     
@@ -843,10 +852,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
     
     private void generateMethodGetCardinalityFor1ToManyRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), 
-                relation, methodsBuilder);
-        interfaceBuilder.generateSignatureGetCardinalityFor1ToManyRelation(relation, methodsBuilder);
-        String[][] params = interfaceBuilder.getParamGetCardinalityFor1ToManyRelation(relation);
+        methodsBuilder.javaDoc("@inheritDoc", ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetCardinalityForRelation(relation, methodsBuilder);
+        String[][] params = interfaceBuilder.getParamGetCardinalityForRelation(relation);
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendOpenBracket();
         frag.append("if(");
@@ -857,7 +865,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         frag.append('(');
         frag.appendClassName(IntegerRange.class);
         frag.append(')');
-        frag.append(getFieldNameCardinalityFor1ToManyRelation(relation));
+        frag.append(getFieldNameCardinalityForRelation(relation));
         frag.append(".get(");
         frag.append(params[0][0]);
         frag.append(".getId());");
@@ -867,38 +875,17 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.append(frag);
     }
 
-    public String getFieldNameCardinalityFor1ToManyRelation(IProductCmptTypeRelation relation) throws CoreException{
+    public String getFieldNameCardinalityForRelation(IProductCmptTypeRelation relation) throws CoreException{
         return getLocalizedText(relation, "FIELD_CARDINALITIES_FOR_NAME", relation.findPolicyCmptTypeRelation().getTargetRoleSingular());
     }
     
-    private void generateFieldCardinalityFor1ToManyRelation(
+    private void generateFieldCardinalityForRelation(
             IProductCmptTypeRelation relation, JavaCodeFragmentBuilder fieldsBuilder) throws CoreException{
         appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), relation, fieldsBuilder);
-        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityFor1ToManyRelation(relation));
-    }
-
-    private void generateMethodGetCardinalityFor1To1Relation(
-            IProductCmptTypeRelation relation, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), 
-                relation, methodsBuilder);
-        interfaceBuilder.generateSignatureGetCardinalityFor1To1Relation(relation, methodsBuilder);
-        JavaCodeFragment frag = new JavaCodeFragment();
-        frag.appendOpenBracket();
-        frag.append("return ");
-        frag.append(getFieldNameCardinalityFor1To1Relation(relation));
-        frag.append(";");
-        frag.appendCloseBracket();
-        methodsBuilder.append(frag);
-    }
-    
-    public String getFieldNameCardinalityFor1To1Relation(IProductCmptTypeRelation relation) throws CoreException{
-        return getLocalizedText(relation, "FIELD_CARDINALITY_FOR_NAME", relation.findPolicyCmptTypeRelation().getTargetRoleSingular());
-    }
-
-    private void generateFieldCardinalityFor1To1Relation(
-            IProductCmptTypeRelation relation, JavaCodeFragmentBuilder fieldsBuilder) throws CoreException{
-        appendLocalizedJavaDoc("FIELD_CARDINALITY_FOR", relation.findPolicyCmptTypeRelation().getTargetRoleSingular(), 
-                relation, fieldsBuilder);
-        fieldsBuilder.varDeclaration(Modifier.PRIVATE, IntegerRange.class, getFieldNameCardinalityFor1To1Relation(relation));
+        JavaCodeFragment expression = new JavaCodeFragment();
+        expression.append(" new ");
+        expression.appendClassName(HashMap.class);
+        expression.append("(0);");
+        fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityForRelation(relation), expression);
     }
 }

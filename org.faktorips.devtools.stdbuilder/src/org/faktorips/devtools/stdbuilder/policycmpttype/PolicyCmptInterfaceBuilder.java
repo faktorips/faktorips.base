@@ -304,6 +304,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         if (!(attribute.getModifier() == org.faktorips.devtools.core.model.pctype.Modifier.PUBLISHED)) {
             return;
         }
+        generateFieldConstantForProperty(attribute, memberVarsBuilder);
         super.generateCodeForAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
     }
 
@@ -901,5 +902,20 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         appendLocalizedJavaDoc("METHOD_GET_MAX_CARDINALITY", replacements, getPcType(), methodsBuilder);
         generateSignatureGetMaxCardinalityFor(relation, methodsBuilder);
         methodsBuilder.appendln(";");
+    }
+    
+    public String getPropertyName(IAttribute a){
+        return getLocalizedText(a, "FIELD_PROPERTY_NAME", StringUtils.capitalise(a.getName()));
+    }
+    
+    public void generateFieldConstantForProperty(IAttribute a, JavaCodeFragmentBuilder membersBuilder){
+        appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", a.getName(), a, membersBuilder);
+        membersBuilder.append("public final static ");
+        membersBuilder.appendClassName(String.class);
+        membersBuilder.append(' ');
+        membersBuilder.append(getPropertyName(a));
+        membersBuilder.append(" = \"");
+        membersBuilder.append(a.getName());
+        membersBuilder.appendln("\";");
     }
 }
