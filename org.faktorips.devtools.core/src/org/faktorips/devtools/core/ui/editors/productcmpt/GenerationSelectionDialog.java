@@ -25,6 +25,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -71,6 +72,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		prefs = IpsPlugin.getDefault().getIpsPreferences();
 		generationConceptName = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
 		setBlockOnOpen(false);
+		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
 	/**
@@ -90,6 +92,11 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		choices.put(createButton, new Integer(CHOICE_CREATE));
 		
 		if (cmpt.findGenerationEffectiveOn(prefs.getWorkingDate()) != null) {
+			// neccessary to get the same space between create- and browse-line
+			// and browse- and switch-line.
+			new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
+			new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
+			
 			browseButton = new Button(selectPane, SWT.RADIO);
 			browseButton.addSelectionListener(new MySelectionListener(null));
 			Label l2 = new Label(selectPane, SWT.NONE);
@@ -133,7 +140,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		String description = Messages.bind(Messages.GenerationSelectionDialog_description, prefs
 					.getFormattedWorkingDate(), generationConceptName);
 		setTitle(description);
-		
 		initSelectionFromPreferences();
 		
 		return workArea;

@@ -94,8 +94,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	public ProductCmptEditor() {
 		super();
-		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(
-				new WorkingDateChangeListener());
+		propertyChangeListener = new MyPropertyChangeListener();
+		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(propertyChangeListener);
 		enabledImage = IpsPlugin.getDefault().getImage("ProductCmpt.gif"); //$NON-NLS-1$
 		disabledImage = IpsPlugin.getDefault()
 				.getImage("lockedProductCmpt.gif"); //$NON-NLS-1$
@@ -150,18 +150,25 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (isSrcFileUsable()) {
 			setActiveGeneration(getPreferredGeneration(), false);
 		} 
+
+		browseOnly = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
 		
-		propertyChangeListener = new IPropertyChangeListener() {
+//		propertyChangeListener = new IPropertyChangeListener() {
+//		
+//			public void propertyChange(PropertyChangeEvent event) {
+//				if (event.getProperty().equals(IpsPreferences.WORKING_DATE)) {
+//					generationManuallySet = false;
+//					browseOnly = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
+//				}
+//				else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+//					generationManuallySet = false;
+//					browseOnly = ((Boolean)event.getNewValue()).booleanValue();
+//					setPropertiesEnabled((IProductCmptGeneration)getActiveGeneration());
+//				}
+//			}
+//		};
 		
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(IpsPreferences.WORKING_DATE) || event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
-					browseOnly = false;
-					generationManuallySet = false;
-				}
-			}
-		};
-		
-		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(propertyChangeListener);
+//		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(propertyChangeListener);
 	}
 
 	/**
@@ -411,6 +418,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Set the enablement-state of the properties page.
 	 */
 	private void setPropertiesEnabled(boolean enabled) {
+		enabled = enabled && !browseOnly;
 		if (enabled) {
 			this.setTitleImage(enabledImage);
 		} else {
@@ -422,11 +430,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	}
 	
 	/**
-	 * Listener to the working-date-property. If changes occur, check if correct generation is displayed.
+	 * Listener to properties with effects on this editor. If changes occur, check if correct generation is displayed.
 	 * 
 	 * @author Thorsten Guenther
 	 */
-	private class WorkingDateChangeListener implements IPropertyChangeListener {
+	private class MyPropertyChangeListener implements IPropertyChangeListener {
 
 		public void propertyChange(PropertyChangeEvent event) {
 			if (!active) {
@@ -435,14 +443,22 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 			String property = event.getProperty();
 			if (property.equals(IpsPreferences.WORKING_DATE)) {
+				generationManuallySet = false;
+				browseOnly = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
 				checkGeneration();
 				generationsPage.refresh();
+				refresh();
 			} else if (property
 					.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
 					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
+				refresh();
+			} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+				generationManuallySet = false;
+				browseOnly = ((Boolean) event.getNewValue()).booleanValue();
+				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
+				refresh();
 			}
-
 		}
 	}
 

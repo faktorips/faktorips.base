@@ -222,6 +222,11 @@ public class ProductAttributesSection extends IpsSection {
 	 * Creates a new label and input for the given config element and links the input with the config element.
 	 */
 	private void addAndRegister(IConfigElement toDisplay) {
+		if (toDisplay == null) {
+			// this can happen if the config element has no corresponding attribute... 
+			return;
+		}
+		
 		toolkit.createLabel(rootPane, StringUtils.capitalise(toDisplay.getPcTypeAttribute()));	
 		
 		IpsPartUIController controller = new IpsPartUIController(toDisplay);
