@@ -26,14 +26,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 
 /**
@@ -104,6 +107,22 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      */
     protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
+        
+        //TODO the generateCodeForAttribute method of the abstract builder needs to discriminate against
+        //the published modifier
+        if(!datatypeHelper.getDatatype().isPrimitive() &&     
+           !ValueSetType.ALL_VALUES.equals(a.getValueSet().getValueSetType())){
+           
+           if(datatypeHelper.getDatatype() instanceof EnumDatatype){
+               generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
+           }
+           else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
+               generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
+           }
+           else if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
+               generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
+           }
+        }
     }
     
     /**
@@ -385,4 +404,39 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         generateSignatureGetCardinalityForRelation(relation, methodsBuilder);
         methodsBuilder.append(';');
     }
+    
+    public String getMethodNameGetRangeFor(IAttribute a, Datatype datatype){
+        return getJavaNamingConvention().getGetterMethodName(getLocalizedText(a, 
+                "METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalise(a.getName())), datatype);
+    }
+    
+    private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        appendLocalizedJavaDoc("METHOD_GET_RANGE_FOR", a.getName(), a, methodsBuilder);
+        generateSignatureGetRangeFor(a, helper, methodsBuilder);
+        methodsBuilder.append(';');
+    }
+    
+    public void generateSignatureGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        String methodName = getMethodNameGetRangeFor(a, helper.getDatatype());
+        String rangeClassName = helper.getRangeJavaClassName();
+        methodsBuilder.signature(Modifier.PUBLIC, rangeClassName, methodName, new String[]{"businessFunction"}, new String[]{String.class.getName()});
+    }
+
+    public String getMethodNameGetAllowedValuesFor(IAttribute a, Datatype datatype){
+        return getJavaNamingConvention().getGetterMethodName(getLocalizedText(
+                a, "METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalise(a.getName())), datatype);
+    }
+    
+    private void generateMethodGetAllowedValuesFor(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        appendLocalizedJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", a.getName(), a, methodsBuilder);
+        generateSignatureGetAllowedValuesFor(a, datatype, methodsBuilder);
+        methodsBuilder.append(';');
+    }
+    
+    public void generateSignatureGetAllowedValuesFor(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        String methodName = getMethodNameGetAllowedValuesFor(a, datatype);
+        methodsBuilder.signature(Modifier.PUBLIC, EnumValueSet.class.getName(), methodName, 
+                new String[]{"businessFunction"}, new String[]{String.class.getName()});
+    }
+    
 }

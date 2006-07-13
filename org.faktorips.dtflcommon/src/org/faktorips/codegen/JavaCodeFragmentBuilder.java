@@ -787,13 +787,12 @@ public class JavaCodeFragmentBuilder {
                 append(' ');
             }
         }
-        fragment.append(' ');
         fragment.append(varName);
         if (expression != null) {
             fragment.append(" = ");
             fragment.append(expression);
         }
-        fragment.append(";");
+        fragment.appendln(";");
     }
 
     /**

@@ -29,9 +29,11 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -47,6 +49,7 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -334,6 +337,18 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateFieldDefaultValue(a, datatypeHelper, memberVarsBuilder);
         generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
+        
+        if(!datatypeHelper.getDatatype().isPrimitive()){
+            if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
+                generateFieldRangeFor(a , datatypeHelper, memberVarsBuilder);
+                generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
+            }
+            else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType()) ||
+                    datatypeHelper.getDatatype() instanceof EnumDatatype){
+                generateFieldAllowedValuesFor(a, memberVarsBuilder);
+                generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
+            }
+        }
     }
     
     /**
@@ -888,4 +903,47 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         expression.append("(0);");
         fieldsBuilder.varDeclaration(Modifier.PRIVATE, Map.class, getFieldNameCardinalityForRelation(relation), expression);
     }
+    
+    private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        methodsBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetRangeFor(a, helper, methodsBuilder);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendOpenBracket();
+        body.append("return ");
+        body.append(getFieldNameRangeFor(a));
+        body.appendln(';');
+        body.appendCloseBracket();
+        methodsBuilder.append(body);
+    }
+    
+    public String getFieldNameRangeFor(IAttribute a){
+        return getLocalizedText(a, "FIELD_RANGE_FOR_NAME", StringUtils.capitalise(a.getName()));
+    }
+    
+    private void generateFieldRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder memberVarBuilder){
+        appendLocalizedJavaDoc("FIELD_RANGE_FOR", a.getName(), a, memberVarBuilder);
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameRangeFor(a)); 
+    }
+
+    private void generateMethodGetAllowedValuesFor(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+        methodsBuilder.javaDoc("{@inheritDoc}", ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureGetAllowedValuesFor(a, datatype, methodsBuilder);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendOpenBracket();
+        body.append("return ");
+        body.append(getFieldNameAllowedValuesFor(a));
+        body.appendln(';');
+        body.appendCloseBracket();
+        methodsBuilder.append(body);
+    }
+    
+    public String getFieldNameAllowedValuesFor(IAttribute a){
+        return getLocalizedText(a, "FIELD_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalise(a.getName()));
+    }
+    
+    private void generateFieldAllowedValuesFor(IAttribute a, JavaCodeFragmentBuilder memberVarBuilder){
+        appendLocalizedJavaDoc("FIELD_ALLOWED_VALUES_FOR", a.getName(), a, memberVarBuilder);
+        memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor(a)); 
+    }
+
 }
