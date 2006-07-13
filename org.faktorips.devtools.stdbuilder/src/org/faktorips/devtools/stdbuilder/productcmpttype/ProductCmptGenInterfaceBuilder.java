@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -157,7 +158,8 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     void generateMethodGetValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        String[] replacements = new String[]{a.getName(), a.getDescription()};
+        String description = StringUtils.isEmpty(a.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + a.getDescription();
+        String[] replacements = new String[]{a.getName(), description};
         appendLocalizedJavaDoc("METHOD_GET_VALUE", replacements, a, builder);
         generateSignatureGetValue(a, datatypeHelper, builder);
         builder.append(';');

@@ -123,6 +123,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	
 	// map containing ClassLoaderProviders per IpsProject
 	private Map classLoaderProviderMap = new HashMap();
+	
+	// validation result cache
+	private ValidationResultCache validationResultCache = new ValidationResultCache();
 
 	IpsModel() {
 		super(null, "IpsModel"); //$NON-NLS-1$
@@ -1073,5 +1076,12 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			classLoaderProviderMap.put(ipsProject, provider);
 		}
 		return provider;
+	}
+	
+	/**
+	 * Returns the cache for the validation result. 
+	 */
+	public ValidationResultCache getValidationResultCache() {
+		return validationResultCache;
 	}
 }

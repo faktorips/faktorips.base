@@ -36,12 +36,12 @@ public class ValidationResultCache {
 	}
 	
 	/**
-	 * Puts the validation result for the given ips object part container into the chache.
-	 * Overwrittes any old data for the given container. If result is <code>null</code>,
-	 * any cached data for the container is removed.
+	 * Puts a copy of the given the validation result for the given ips object part container 
+	 * into the chache. Overwrittes any old data for the given container. If result is <code>null</code>,
+	 * any cached data for the container is removed. 
 	 * 
 	 * @param container  The container to that the result belongs
-	 * @param result	 The validation result
+	 * @param result	 The validation result to put into the cache.
 	 * 
 	 * @throws NullPointerException if container is <code>null</code>.
 	 */
@@ -74,6 +74,11 @@ public class ValidationResultCache {
 	/**
 	 * Removes the data from the cache that is stale because the given container
 	 * has changed. Does nothing if the given container is <code>null</code>.
+	 * <p>
+	 * Implementation note: At the moment we clear the whole cache if an object part
+	 * container changes as due to the dependencies between objects other the validation 
+	 * result of other objects can also change if one object is changed. We might use
+	 * the exact dependencies between objects to solve this more efficiently.  
 	 */
 	public void removeStaleData(IIpsObjectPartContainer changedContainer) {
 		data = new HashMap(1000);

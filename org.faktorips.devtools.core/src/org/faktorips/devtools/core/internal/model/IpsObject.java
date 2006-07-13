@@ -132,6 +132,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * Updates the source file's (string) content with the object's xml text representation.
      */
     protected void updateSrcFile() {
+    	IpsModel model = (IpsModel)getIpsModel();
+    	model.getValidationResultCache().removeStaleData(this);
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
         try {
             Element element = toXml(doc);
@@ -147,8 +149,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             // already loaded. Everything else is a programing error.
         }
     }
-    
-    
     
     /**
 	 * {@inheritDoc}

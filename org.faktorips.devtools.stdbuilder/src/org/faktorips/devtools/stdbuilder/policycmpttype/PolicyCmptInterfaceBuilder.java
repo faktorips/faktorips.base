@@ -20,6 +20,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -382,7 +383,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
-        appendLocalizedJavaDoc("METHOD_GETVALUE", a.getName(), a, methodsBuilder);
+        String description = StringUtils.isEmpty(a.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + a.getDescription();
+        String[] replacements = new String[]{a.getName(), description};
+        appendLocalizedJavaDoc("METHOD_GETVALUE", replacements, a, methodsBuilder);
         generateSignatureGetPropertyValue(a, datatypeHelper, methodsBuilder);
         methodsBuilder.appendln(";");
     }
@@ -422,7 +425,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        appendLocalizedJavaDoc("METHOD_SETVALUE", a.getName(), a, methodsBuilder);
+        String description = StringUtils.isEmpty(a.getDescription()) ? "" : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR + a.getDescription();
+        String[] replacements = new String[]{a.getName(), description};
+        appendLocalizedJavaDoc("METHOD_SETVALUE", replacements, a, methodsBuilder);
         generateSignatureSetPropertyValue(a, datatypeHelper, methodsBuilder);
         methodsBuilder.appendln(";");
     }

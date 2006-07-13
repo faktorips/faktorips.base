@@ -52,7 +52,11 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         code.append('.');
         code.append(datatype.getValueOfMethodName());
         code.append('(');
-        code.appendQuoted(datatype.getNullObjectId());
+        if (datatype.getNullObjectId()==null) {
+            code.append("null");
+        } else {
+            code.appendQuoted(datatype.getNullObjectId());
+        }
         code.append(')');
         return code;
     }

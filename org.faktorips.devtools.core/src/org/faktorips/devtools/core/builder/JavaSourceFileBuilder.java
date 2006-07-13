@@ -139,17 +139,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		initJControlModel(project);
 	}
 
-
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
-
 
 	/**
 	 * {@inheritDoc}
@@ -477,8 +472,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	}
 
 	/**
-	 * Inserts the localized Javadoc inclusing the annotations into the given 
-	 * JavaCodeFragmentBuikder. 
+	 * Inserts the localized Javadoc including the annotations into the given 
+	 * JavaCodeFragmentBuilder. 
 	 * <p>
 	 * Calling this method is only allowed during the build cycle. If it is called outside the build
 	 * cycle a RuntimeException is thrown. In addition if no LocalizedStringSet
