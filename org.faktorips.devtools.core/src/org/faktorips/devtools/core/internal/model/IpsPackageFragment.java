@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.GregorianCalendar;
@@ -64,16 +63,14 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#getRoot()
+     * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot getRoot() {
         return (IIpsPackageFragmentRoot)getParent();
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+    /**
+     * {@inheritDoc}
      */
     public IResource getCorrespondingResource() {
         String path = name.replace('.', IPath.SEPARATOR);
@@ -82,8 +79,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
     
     /**
-     * Overridden
-     * @throws CoreException 
+     * {@inheritDoc}
      */
     public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException {
     	IFolder folder = (IFolder)getCorrespondingResource();
@@ -104,7 +100,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 	}
 
     /**
-     * Overridden
+     * {@inheritDoc}
      */
 	public IIpsPackageFragment getParentIpsPackageFragment() {
 		int lastIndex= getName().lastIndexOf("."); //$NON-NLS-1$
@@ -120,9 +116,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 		}
 	}
 
-	/**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+    /**
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
@@ -146,15 +141,15 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         return shrinked;
     }
     
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsPackageFragment.gif"); //$NON-NLS-1$
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsSrcFile getIpsSrcFile(String name) {
     	
@@ -165,8 +160,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         return null;
     }
 
-    /** 
-     * Overridden.
+    /**
+     * {@inheritDoc}
      */
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
@@ -175,9 +170,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         return getIpsSrcFile(name);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#createPdFile(java.lang.String, boolean, org.eclipse.core.runtime.IProgressMonitor)
+    /**
+     * {@inheritDoc}
      */
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor) throws CoreException {
         try {
@@ -339,21 +333,22 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsPackageFragment#getRelativePath()
+     * {@inheritDoc}
      */
     public IPath getRelativePath() {
         return new Path(getName().replace('.', '/'));
     }
     
     /**
-     * Overridden
+     * {@inheritDoc}
      */
 	public String getFolderName() {
 		return this.getCorrespondingResource().getName();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public boolean isDefaultPacakge() {
 		return this.name.equals(""); //$NON-NLS-1$
 	}
