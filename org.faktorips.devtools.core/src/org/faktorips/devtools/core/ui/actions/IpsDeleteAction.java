@@ -94,7 +94,10 @@ public class IpsDeleteAction extends Action {
         }
     	
     	tree.deselectAll();
-    	getIpsSection(tree).refresh();
+    	IpsSection section = getIpsSection(tree);
+    	if (section != null) {
+    		section.refresh();
+    	}
 
         // select the item the path to was stored before.
         if (start != null)  {
