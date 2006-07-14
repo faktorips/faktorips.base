@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.search.ui.NewSearchUI;
+import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure.StructureNode;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.search.ReferencesToProductSearchQuery;
 
@@ -61,12 +62,17 @@ public class FindReferenceAction extends Action {
 
 		Object selected = ((IStructuredSelection) sel).getFirstElement();
 
-		if (!(selected instanceof IProductCmpt)) {
-			// we only support product components
+		IProductCmpt referenced = null;
+		if (selected instanceof StructureNode && ((StructureNode)selected).getWrappedElement() instanceof IProductCmpt) {
+			referenced = (IProductCmpt)((StructureNode) selected).getWrappedElement();
+		}
+		else if (selected instanceof IProductCmpt) {
+			referenced = (IProductCmpt) selected;
+		}
+		else {
 			return;
 		}
 
-		IProductCmpt referenced = (IProductCmpt) selected;
 
 		if (referenced != null) {
 			NewSearchUI.activateSearchResultView();
