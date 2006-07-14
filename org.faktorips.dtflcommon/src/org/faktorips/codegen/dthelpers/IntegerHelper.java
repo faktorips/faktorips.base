@@ -44,9 +44,8 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
+    /**
+     * {@inheritDoc}
      */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
@@ -61,24 +60,43 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public JavaCodeFragment nullExpression() {
 		return new JavaCodeFragment("null");
 	}
 
-    /* (non-Javadoc)
-     * @see org.faktorips.codegen.DatatypeHelper#getRangeJavaClassName()
+    /**
+     * {@inheritDoc}
      */
     public String getRangeJavaClassName() {
         return IntegerRange.class.getName();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment newRangeInstance(String lowerBound, String upperBound, String step, String containsNull) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendClassName(getRangeJavaClassName());
+        frag.append(".valueOf(");
+        frag.append(lowerBound);
+        frag.append(", ");
+        frag.append(upperBound);
+        frag.append(", ");
+        frag.append(step);
+        frag.append(", ");
+        frag.append(containsNull);
+        frag.append(")");
+        return frag;
+    }
+
 }

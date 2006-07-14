@@ -130,6 +130,19 @@ public interface DatatypeHelper {
     /**
      * Returns the qualified Java class name of the range class of the datatype this is a helper for. 
      */
-    public abstract String getRangeJavaClassName();    	
+    public String getRangeJavaClassName();
+    
+    /**
+     * Returns a <code>JavaCodeFragment</code> with containing the source code to create a new
+     * instance of a type specific range.
+     *  
+     * @param lowerBoundExp the lower bound expression of the range. Can be <code>null</code> to indicate that the lower bound is open 
+     * @param upperBoundExp the upper bound expression of the range. Can be <code>null</code> to indicate that the upper bound is open.
+     * @param stepExp the minimum increment expression for values within the lower and upper bounds. Can be <code>null</code> 
+     *          to indicate that this is a continuous range.
+     * @param containsNullExp the containsNull expression
+     * @return the code fragment to create a new range instance. Can be null to indicate that a range is not supported.
+     */
+    public JavaCodeFragment newRangeInstance(String lowerBoundExp, String upperBoundExp, String stepExp, String containsNullExp);
 
 }

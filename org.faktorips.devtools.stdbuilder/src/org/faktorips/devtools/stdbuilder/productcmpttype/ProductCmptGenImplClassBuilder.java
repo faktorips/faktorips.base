@@ -18,6 +18,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -43,12 +46,15 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
+import org.faktorips.runtime.internal.EnumValues;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
+import org.faktorips.runtime.internal.Range;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.DefaultEnumValueSet;
 import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
@@ -210,7 +216,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 builder.appendln(" value = null;");
                 attributeFound = true;
             }
-            Datatype datatype = getProductCmptType().getIpsProject().findDatatype(a.getDatatype());
+            ValueDatatype datatype = a.findDatatype();
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
             String memberVarName;
             if (a.isChangeable()) {
@@ -232,6 +238,55 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             builder.append(" = ");
             builder.append(helper.newInstanceFromExpression("value"));
             builder.appendln(";");
+            
+            ValueSetType valueSetType = a.getValueSet().getValueSetType();
+            JavaCodeFragment frag = new JavaCodeFragment();
+            if(ValueSetType.RANGE.equals(valueSetType)){
+                //Range range = ValueToXmlHelper.getRangeFromElement(configElement, "ValueSet");
+//                rangeForAttrProdRelevantPublishedWithRange = 
+//                    DecimalRange.valueOf(range.getLower(), range.getUpper(), range.getStep(), range.containsNull());
+                frag.appendClassName(Range.class);
+                frag.append(" range = ");
+                frag.appendClassName(ValueToXmlHelper.class);
+                frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
+                frag.append(getFieldNameRangeFor(a));
+                frag.append(" = ");
+                JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance("range.getLower()", "range.getUpper()", "range.getStep()", "range.containsNull()");
+                if(newRangeInstanceFrag == null){
+                    throw new CoreException(new IpsStatus("The " + helper + " for the datatype " +  datatype.getName() + " doesn't support ranges."));
+                }
+                frag.append(newRangeInstanceFrag);
+                frag.appendln(";");
+            }
+            else if(ValueSetType.ENUM.equals(valueSetType)){
+//                EnumValues values = ValueToXmlHelper.getEnumValueSetFromElement(configElement, "ValueSet");
+//                ArrayList enumValues = new ArrayList();
+//                for (int i = 0; i < values.getNumberOfValues(); i++) {
+//                    enumValues.add(Decimal.valueOf(values.getValue(i)));
+//                }
+//                allowedValuesForAttrProdRelevantPublishedWithEnumSet = new DefaultEnumValueSet(enumValues, values.containsNull(), Decimal.NULL);
+                frag.appendClassName(EnumValues.class);
+                frag.append(" values = ");
+                frag.appendClassName(ValueToXmlHelper.class);
+                frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
+                frag.appendClassName(ArrayList.class);
+                frag.append(" enumValues = new ");
+                frag.appendClassName(ArrayList.class);
+                frag.append("();");
+                frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)");
+                frag.appendOpenBracket();
+                frag.append("enumValues.add(");
+                frag.append(helper.newInstanceFromExpression("values.getValue(i)"));
+                frag.appendln(");");
+                frag.appendCloseBracket();
+                frag.append(getFieldNameAllowedValuesFor(a));
+                frag.append(" = new ");
+                frag.appendClassName(DefaultEnumValueSet.class);
+                frag.append("(enumValues, values.containsNull(), ");
+                frag.append(helper.nullExpression());
+                frag.appendln(");");
+            }
+            builder.append(frag);
             builder.closeBracket();
         }
         builder.methodEnd();

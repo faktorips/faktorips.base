@@ -100,4 +100,22 @@ public class MoneyHelper extends AbstractDatatypeHelper {
     public String getRangeJavaClassName() {
         return MoneyRange.class.getName();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment newRangeInstance(String lowerBound, String upperBound, String step, String containsNull) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.appendClassName(getRangeJavaClassName());
+        frag.append(".valueOf(");
+        frag.append(lowerBound);
+        frag.append(", ");
+        frag.append(upperBound);
+        frag.append(", ");
+        frag.append(step);
+        frag.append(", ");
+        frag.append(containsNull);
+        frag.append(")");
+        return frag;
+    }
 }

@@ -77,5 +77,4 @@ public class BooleanHelper extends AbstractDatatypeHelper {
 	public JavaCodeFragment nullExpression() {
 		return new JavaCodeFragment("null");
 	}
-
 }

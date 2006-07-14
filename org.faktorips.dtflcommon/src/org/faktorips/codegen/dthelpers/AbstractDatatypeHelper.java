@@ -105,6 +105,14 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      */
     public String getRangeJavaClassName() {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @return <code>null</code>
+     */
+    public JavaCodeFragment newRangeInstance(String lowerBound, String upperBound, String step, String containsNull) {
+        return null;
     }	
-   
 }

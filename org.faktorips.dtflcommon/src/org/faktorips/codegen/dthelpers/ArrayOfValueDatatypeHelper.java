@@ -60,5 +60,4 @@ public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
     public JavaCodeFragment newInstance(String value) {
         return nullExpression();
     }
-
 }
