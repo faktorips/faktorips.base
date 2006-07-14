@@ -85,6 +85,29 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 */
 	public final static String[] ANNOTATION_MODIFIABLE = new String[] { "modifiable" }; //$NON-NLS-1$
 
+	/**
+	 * This constant is supposed to be used as a javadoc annotation. It becomes
+	 * relevant if the merging capabilities are activated. It indicates that within a
+	 * generated piece of code only the parts that are outside the braces defined
+	 * by the markers <code>//begin-user-code</code> and <code>//end-user-code</code>
+	 * are regenerated with the next generation. 
+	 */
+	public final static String[] ANNOTATION_RESTRAINED_MODIFIABLE = new String[]{ "restrainedmodifiable" }; //$NON-NLS-1$
+	
+	/**
+	 * This constant is supposed to be used to indicate the beginning of a section within 
+	 * generated code that a user can modify and will not be overridden by the generator 
+	 * at the next generation.
+	 */
+	public final static String MARKER_BEGIN_USER_CODE = "//begin-user-code";
+
+	/**
+	 * This constant is supposed to be used to indicate the end of a section within 
+	 * generated code that a user can modify and will not be overridden by the generator 
+	 * at the next generation.
+	 */
+	public final static String MARKER_END_USER_CODE = "//end-user-code";
+
 	final protected static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
 
 	private boolean mergeEnabled;

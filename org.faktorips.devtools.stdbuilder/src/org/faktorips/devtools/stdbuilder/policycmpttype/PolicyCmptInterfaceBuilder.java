@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
@@ -139,8 +140,19 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodSetProductCmpt(methodsBuilder);
             generateMethodGetProductCmptGeneration(getProductCmptType(), methodsBuilder);
         }
+        generateCodeForValidationRules(memberVarsBuilder);
     }
 
+    /**
+     * Generates the code for the rules of the ProductCmptType assigned to this builder.
+     */
+    protected void generateCodeForValidationRules(JavaCodeFragmentBuilder memberVarsBuilder){
+        IValidationRule[] rules = getPcType().getRules();
+        for (int i = 0; i < rules.length; i++) {
+            generateFieldForMsgCode(rules[i], memberVarsBuilder);
+        }
+    }
+    
     /**
      * Code sample:
      * <pre>
@@ -910,7 +922,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     public String getPropertyName(IAttribute a){
-        return getLocalizedText(a, "FIELD_PROPERTY_NAME", StringUtils.capitalise(a.getName()));
+        return getLocalizedText(a, "FIELD_PROPERTY_NAME", StringUtils.upperCase(a.getName()));
     }
     
     public void generateFieldConstantForProperty(IAttribute a, JavaCodeFragmentBuilder membersBuilder){
@@ -921,6 +933,21 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         membersBuilder.append(getPropertyName(a));
         membersBuilder.append(" = \"");
         membersBuilder.append(a.getName());
+        membersBuilder.appendln("\";");
+    }
+    
+    public String getFieldNameForMsgCode(IValidationRule rule){
+        return getLocalizedText(rule, "FIELD_MSG_CODE_NAME", StringUtils.upperCase(rule.getName()));
+    }
+    
+    private void generateFieldForMsgCode(IValidationRule rule, JavaCodeFragmentBuilder membersBuilder){
+        appendLocalizedJavaDoc("FIELD_MSG_CODE", rule.getName(), rule, membersBuilder);
+        membersBuilder.append("public final static ");
+        membersBuilder.appendClassName(String.class);
+        membersBuilder.append(' ');
+        membersBuilder.append(getFieldNameForMsgCode(rule));
+        membersBuilder.append(" = \"");
+        membersBuilder.append(rule.getMessageCode());
         membersBuilder.appendln("\";");
     }
 }

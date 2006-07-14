@@ -69,6 +69,13 @@ public class MessageFragment{
 	}
 
 	/**
+	 * Returns the number of paramters.
+	 */
+	public int getNumberOfParameters(){
+		return parameterNames.length;
+	}
+	
+	/**
 	 * Returns the qualified java names for the classes of the parametes.
 	 */
 	public String[] getParameterClasses(){
