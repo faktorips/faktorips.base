@@ -41,6 +41,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBui
 import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
@@ -346,6 +347,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
         generateMethodSetPropertyValue(attribute, datatypeHelper, methodsBuilder);
+//      TODO disable for version 0.9.21        
+//        if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
+//            generateMethodGetMaxRangeFor(attribute, datatypeHelper, methodsBuilder);
+//        }
+//        else if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
+//                datatypeHelper.getDatatype() instanceof EnumDatatype){
+//            generateMethodMaxAllowedValuesFor(attribute, datatypeHelper, methodsBuilder);
+//        }
     }
     
     /**
@@ -952,5 +961,39 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         membersBuilder.append(" = \"");
         membersBuilder.append(rule.getMessageCode());
         membersBuilder.appendln("\";");
+    }
+    
+    public String getMethodNameGetMaxRangeFor(IAttribute a, Datatype datatype){
+        String name = getLocalizedText(a, "METHOD_GET_MAX_RANGE_FOR_NAME", a.getName());
+        return getJavaNamingConvention().getGetterMethodName(
+                StringUtils.capitalise(name), datatype);
+    }
+    
+    public void generateSignatureGetMaxRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, helper.getRangeJavaClassName(), 
+                getMethodNameGetMaxRangeFor(a, helper.getDatatype()), new String[0], new String[0]);
+    }
+    
+    protected void generateMethodGetMaxRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
+        appendLocalizedJavaDoc("METHOD_GET_MAX_RANGE_FOR", a.getName(), a, methodsBuilder);
+        generateSignatureGetMaxRangeFor(a, helper, methodsBuilder);
+        methodsBuilder.append(';');
+    }
+    
+    public String getMethodNameMaxAllowedValuesFor(IAttribute a, Datatype datatype){
+        String name = getLocalizedText(a, "METHOD_GET_MAX_ALLOWED_VALUES_FOR_NAME", a.getName());
+        return getJavaNamingConvention().getGetterMethodName(
+                StringUtils.capitalise(name), datatype);
+    }
+    
+    public void generateSignatureMaxAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
+        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, EnumValueSet.class.getName(), 
+                getMethodNameMaxAllowedValuesFor(a, helper.getDatatype()), new String[0], new String[0]);
+    }
+    
+    protected void generateMethodMaxAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
+        appendLocalizedJavaDoc("METHOD_GET_MAX_ALLOWED_VALUES_FOR", a.getName(), a, methodsBuilder);
+        generateSignatureMaxAllowedValuesFor(a, helper, methodsBuilder);
+        methodsBuilder.append(';');
     }
 }

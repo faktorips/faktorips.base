@@ -1613,4 +1613,26 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return getLocalizedText(getPcType(), "FIELD_MAX_CARDINALITY_NAME", relation.getTargetRoleSingular());
     }
 
+    public String getFieldNameMaxRangeFor(IAttribute a){
+        return getLocalizedText(a, "FIELD_MAX_RANGE_FOR_NAME", StringUtils.uncapitalise(a.getName()));
+    }
+
+//TODO disable for version 0.9.21    
+//    private void generateFieldMaxRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder membersBuilder){
+//        JavaCodeFragment frag = new JavaCodeFragment();
+//        RangeValueSet range = (RangeValueSet)a.getValueSet();
+//        frag.append(helper.newRangeInstance(helper.newInstance(range.getLowerBound()), 
+//                helper.newInstance(range.getUpperBound()), helper.newInstance(range.getStep()), 
+//                String.valueOf(range.getContainsNull())));
+//        membersBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameMaxRangeFor(a), frag);
+//    }
+    
+    public String getFieldNameMaxAllowedValuesFor(IAttribute a){
+        return getLocalizedText(a, "FIELD_MAX_ALLOWED_VALUES_FOR_NAME", StringUtils.uncapitalise(a.getName()));
+    }
+    
+//  TODO disable for version 0.9.21    
+//    private void generateFieldMaxAllowedValuesFor(IAttribute a, JavaCodeFragmentBuilder memebersBuilder){
+//        
+//    }
 }
