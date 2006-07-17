@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -239,54 +240,48 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             builder.append(helper.newInstanceFromExpression("value"));
             builder.appendln(";");
             
-            ValueSetType valueSetType = a.getValueSet().getValueSetType();
-            JavaCodeFragment frag = new JavaCodeFragment();
-            if(ValueSetType.RANGE.equals(valueSetType)){
-                //Range range = ValueToXmlHelper.getRangeFromElement(configElement, "ValueSet");
-//                rangeForAttrProdRelevantPublishedWithRange = 
-//                    DecimalRange.valueOf(range.getLower(), range.getUpper(), range.getStep(), range.containsNull());
-                frag.appendClassName(Range.class);
-                frag.append(" range = ");
-                frag.appendClassName(ValueToXmlHelper.class);
-                frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
-                frag.append(getFieldNameRangeFor(a));
-                frag.append(" = ");
-                JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance("range.getLower()", "range.getUpper()", "range.getStep()", "range.containsNull()");
-                if(newRangeInstanceFrag == null){
-                    throw new CoreException(new IpsStatus("The " + helper + " for the datatype " +  datatype.getName() + " doesn't support ranges."));
+            if(AttributeType.CHANGEABLE.equals(a.getAttributeType())){
+                ValueSetType valueSetType = a.getValueSet().getValueSetType();
+                JavaCodeFragment frag = new JavaCodeFragment();
+                if(ValueSetType.RANGE.equals(valueSetType)){
+                    frag.appendClassName(Range.class);
+                    frag.append(" range = ");
+                    frag.appendClassName(ValueToXmlHelper.class);
+                    frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
+                    frag.append(getFieldNameRangeFor(a));
+                    frag.append(" = ");
+                    JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance("range.getLower()", "range.getUpper()", "range.getStep()", "range.containsNull()");
+                    if(newRangeInstanceFrag == null){
+                        throw new CoreException(new IpsStatus("The " + helper + " for the datatype " +  datatype.getName() + " doesn't support ranges."));
+                    }
+                    frag.append(newRangeInstanceFrag);
+                    frag.appendln(";");
                 }
-                frag.append(newRangeInstanceFrag);
-                frag.appendln(";");
+                else if(ValueSetType.ENUM.equals(valueSetType)){
+                    frag.appendClassName(EnumValues.class);
+                    frag.append(" values = ");
+                    frag.appendClassName(ValueToXmlHelper.class);
+                    frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
+                    frag.appendClassName(ArrayList.class);
+                    frag.append(" enumValues = new ");
+                    frag.appendClassName(ArrayList.class);
+                    frag.append("();");
+                    frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)");
+                    frag.appendOpenBracket();
+                    frag.append("enumValues.add(");
+                    frag.append(helper.newInstanceFromExpression("values.getValue(i)"));
+                    frag.appendln(");");
+                    frag.appendCloseBracket();
+                    frag.append(getFieldNameAllowedValuesFor(a));
+                    frag.append(" = new ");
+                    frag.appendClassName(DefaultEnumValueSet.class);
+                    frag.append("(enumValues, values.containsNull(), ");
+                    frag.append(helper.nullExpression());
+                    frag.appendln(");");
+                }
+                builder.append(frag);
             }
-            else if(ValueSetType.ENUM.equals(valueSetType)){
-//                EnumValues values = ValueToXmlHelper.getEnumValueSetFromElement(configElement, "ValueSet");
-//                ArrayList enumValues = new ArrayList();
-//                for (int i = 0; i < values.getNumberOfValues(); i++) {
-//                    enumValues.add(Decimal.valueOf(values.getValue(i)));
-//                }
-//                allowedValuesForAttrProdRelevantPublishedWithEnumSet = new DefaultEnumValueSet(enumValues, values.containsNull(), Decimal.NULL);
-                frag.appendClassName(EnumValues.class);
-                frag.append(" values = ");
-                frag.appendClassName(ValueToXmlHelper.class);
-                frag.appendln(".getEnumValueSetFromElement(configElement, \"ValueSet\");");
-                frag.appendClassName(ArrayList.class);
-                frag.append(" enumValues = new ");
-                frag.appendClassName(ArrayList.class);
-                frag.append("();");
-                frag.append("for (int i = 0; i < values.getNumberOfValues(); i++)");
-                frag.appendOpenBracket();
-                frag.append("enumValues.add(");
-                frag.append(helper.newInstanceFromExpression("values.getValue(i)"));
-                frag.appendln(");");
-                frag.appendCloseBracket();
-                frag.append(getFieldNameAllowedValuesFor(a));
-                frag.append(" = new ");
-                frag.appendClassName(DefaultEnumValueSet.class);
-                frag.append("(enumValues, values.containsNull(), ");
-                frag.append(helper.nullExpression());
-                frag.appendln(");");
-            }
-            builder.append(frag);
+            
             builder.closeBracket();
         }
         builder.methodEnd();
