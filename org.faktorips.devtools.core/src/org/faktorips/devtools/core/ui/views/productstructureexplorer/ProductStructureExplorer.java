@@ -52,10 +52,10 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
+import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
-import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
@@ -158,7 +158,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         ProductStructureLabelProvider labelProvider = new ProductStructureLabelProvider();
         tree.setLabelProvider(new DecoratingLabelProvider(labelProvider, new IpsProblemsLabelDecorator()));
         
-        tree.addDoubleClickListener(new DefaultDoubleclickListener(tree));
+        tree.addDoubleClickListener(new TreeViewerDoubleclickListener(tree));
         tree.expandAll();
         tree.addDragSupport(DND.DROP_LINK, new Transfer[] {FileTransfer.getInstance()}, new IpsElementDragListener(tree));
         tree.addDropSupport(DND.DROP_LINK, new Transfer[] {FileTransfer.getInstance()}, new ProductCmptDropListener());
@@ -166,7 +166,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
         menumanager.add(new OpenEditorAction(tree));
-        menumanager.add(new FindReferenceAction(tree));
+        menumanager.add(new FindProductReferencesAction(tree));
         menumanager.add(new ShowAttributesAction());
         
         Menu menu = menumanager.createContextMenu(tree.getControl());

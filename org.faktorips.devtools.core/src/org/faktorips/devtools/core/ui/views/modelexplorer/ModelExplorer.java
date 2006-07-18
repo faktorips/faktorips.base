@@ -1,8 +1,5 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.ui.actions.RefreshAction;
@@ -13,10 +10,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
@@ -30,12 +23,8 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
+import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsCutAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
@@ -45,8 +34,11 @@ import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
+import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
+import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 /**
  * The ModelExplorer is a ViewPart for displaying ProductComponents, TableContents
@@ -101,8 +93,7 @@ public class ModelExplorer extends ViewPart {
 		treeViewer.setLabelProvider(labelProvider);
 		treeViewer.setSorter(new ModelSorter());
 		treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
-		treeViewer.addDoubleClickListener(new ModelDoubleclickListener(
-				treeViewer));
+		treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
 
 		DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(
 				labelProvider, IpsPlugin.getDefault().getWorkbench()
@@ -182,9 +173,12 @@ public class ModelExplorer extends ViewPart {
 		manager.add(ActionFactory.DELETE.create(this.getSite()
 				.getWorkbenchWindow()));
 		manager.add(new Separator());
-//		manager.add(new ShowStructureAction(treeViewer));
-//		manager.add(new FindReferenceAction(treeViewer));
-//		manager.add(new ShowAttributesAction());
+		manager.add(new ShowStructureAction(treeViewer));
+		MenuManager refMenu= new MenuManager(Messages.ModelExplorer_submenueReferences);
+		refMenu.add(new FindProductReferencesAction(treeViewer));
+		refMenu.add(new FindPolicyReferencesAction(treeViewer));
+		manager.add(refMenu);
+		manager.add(new ShowAttributesAction());
 		manager.add(new Separator());
 		manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS
@@ -269,61 +263,4 @@ public class ModelExplorer extends ViewPart {
 		}
 	}
 
-	/**
-	 * Doubleclicklistener that opens the an editor for the clicked IPSElement.
-	 * If the clicked handle does not contain an IpsSrcFile, getParent() is
-	 * called recursively until a valid SrcFile is found. The listener expands
-	 * or collapses the modelExplorerTree in case IPSPackageFragments,
-	 * IPSPackageFragmentRoots or IPSOrojects are doubleclicked.
-	 * 
-	 * @author Stefan Widmaier
-	 */
-	private class ModelDoubleclickListener implements IDoubleClickListener {
-		private TreeViewer tree;
-
-		public ModelDoubleclickListener(TreeViewer tree) {
-			this.tree = tree;
-		}
-
-		public void doubleClick(DoubleClickEvent event) {
-			if (event.getSelection() instanceof StructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection) event
-						.getSelection();
-				Object selectedObject = selection.getFirstElement();
-				if (selectedObject instanceof IIpsPackageFragment
-						|| selectedObject instanceof IIpsPackageFragmentRoot
-						|| selectedObject instanceof IIpsProject) {
-					List list = Arrays
-							.asList(tree.getVisibleExpandedElements());
-					if (list.contains(selectedObject)) {
-						tree.collapseToLevel(selectedObject, 1);
-					} else {
-						tree.expandToLevel(selectedObject, 1);
-					}
-				} else if (selectedObject instanceof IIpsElement) {
-					openEditor((IIpsElement) selectedObject);
-				}
-			}
-		}
-
-		private void openEditor(IIpsElement e) {
-			for (; e != null && !(e instanceof IIpsSrcFile); e = e.getParent())
-				;
-			try {
-				if (e != null) {
-					IpsObjectType type = ((IIpsSrcFile) e)
-							.getQualifiedNameType().getIpsObjectType();
-
-					if (IpsPlugin.getDefault().getIpsPreferences()
-							.canNavigateToModel()
-							|| (type == IpsObjectType.PRODUCT_CMPT || type == IpsObjectType.TABLE_CONTENTS
-							|| type == IpsObjectType.POLICY_CMPT_TYPE || type == IpsObjectType.TABLE_STRUCTURE)) {
-						IpsPlugin.getDefault().openEditor((IIpsSrcFile) e);
-					}
-				}
-			} catch (PartInitException e1) {
-				IpsPlugin.logAndShowErrorDialog(e1);
-			}
-		}
-	}
 }

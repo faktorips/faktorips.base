@@ -62,12 +62,14 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.ui.actions.FindReferenceAction;
+import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsCutAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
@@ -82,7 +84,7 @@ import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
-import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
@@ -126,7 +128,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget {
 		tree.setLabelProvider(decoratingLabelProvider);
 
         tree.setInput(IpsPlugin.getDefault().getIpsModel());
-        tree.addDoubleClickListener(new DefaultDoubleclickListener(tree));
+        tree.addDoubleClickListener(new ProductDoubleClickListener(tree));
         tree.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new IpsElementDragListener(tree));
         tree.addDropSupport(DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new DropListener());
         tree.setSorter(new Sorter());
@@ -162,7 +164,7 @@ public class ProductExplorer extends ViewPart implements IShowInTarget {
         menumanager.add(ActionFactory.DELETE.create(this.getSite().getWorkbenchWindow()));
         menumanager.add(new Separator());
         menumanager.add(new ShowStructureAction());
-        menumanager.add(new FindReferenceAction(tree));
+        menumanager.add(new FindProductReferencesAction(tree));
         menumanager.add(new ShowAttributesAction());
         menumanager.add(new Separator());
 
@@ -409,6 +411,34 @@ public class ProductExplorer extends ViewPart implements IShowInTarget {
 		public ImageDescriptor getImageDescriptor() {
 			return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
 		}
+    }
+    /**
+     * Special DoubleClicklistener for opening product components and tablecontents
+     * in the ProductDefinitionExplorer. 
+     */
+    private class ProductDoubleClickListener extends TreeViewerDoubleclickListener{
+    	public ProductDoubleClickListener(TreeViewer tree){
+    		super(tree);
+    	}
+    	protected void openEditor(IIpsElement e) {
+    		IIpsObject ipsObject= null;
+    		if(e instanceof IIpsObjectPart){
+    			ipsObject= ((IIpsObjectPart)e).getIpsObject();
+    		}else if(e instanceof IIpsObject){
+    			ipsObject= (IIpsObject)e;
+    		}
+    		if(ipsObject != null){
+    			IpsObjectType type= ipsObject.getIpsObjectType();
+    			if(IpsPlugin.getDefault().getIpsPreferences().canNavigateToModel()
+    				|| type == IpsObjectType.PRODUCT_CMPT || type == IpsObjectType.TABLE_CONTENTS) {
+    				try {
+    					IpsPlugin.getDefault().openEditor(ipsObject.getIpsSrcFile());
+    				} catch (PartInitException e1) {
+    					IpsPlugin.logAndShowErrorDialog(e1);
+    				}
+    			}
+    		}
+    	}
     }
     
 }
