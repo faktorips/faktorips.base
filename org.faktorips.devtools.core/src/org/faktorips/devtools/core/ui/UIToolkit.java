@@ -54,6 +54,8 @@ import org.faktorips.values.EnumValue;
 public class UIToolkit {
 
 	private FormToolkit formToolkit;
+	
+	private static final int DEFAULT_WIDTH = 100;
 
 	/**
 	 * Creates a new toolkit.
@@ -188,8 +190,10 @@ public class UIToolkit {
 				newLabel.setText(text);
 			}
 		}
-		newLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_END));
+		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.VERTICAL_ALIGN_END);
+		gridData.widthHint = DEFAULT_WIDTH;
+		newLabel.setLayoutData(gridData);
 		return newLabel;
 	}
 
@@ -207,8 +211,10 @@ public class UIToolkit {
 		layout.marginWidth = 0;
 		c.setLayout(layout);
 		Label newLabel = this.createLabel(c, text);
-		newLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_END));
+		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.VERTICAL_ALIGN_END);
+		gridData.widthHint = DEFAULT_WIDTH;
+		newLabel.setLayoutData(gridData);
 		return newLabel;
 	}
 
@@ -269,7 +275,9 @@ public class UIToolkit {
 		} else {
 			newText = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		}
-		newText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.widthHint = DEFAULT_WIDTH;
+		newText.setLayoutData(gridData);
 		return newText;
 
 	}
@@ -287,7 +295,9 @@ public class UIToolkit {
 		}
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.heightHint = 60;
+		gridData.widthHint = DEFAULT_WIDTH;
 		newText.setLayoutData(gridData);
+		
 		return newText;
 	}
 
@@ -420,8 +430,9 @@ public class UIToolkit {
 	 */
 	public Combo createCombo(Composite parent) {
 		Combo newCombo = new Combo(parent, SWT.READ_ONLY);
-		newCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_END));
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_END);
+		gridData.widthHint = DEFAULT_WIDTH;
+		newCombo.setLayoutData(gridData);
 		return newCombo;
 	}
 
