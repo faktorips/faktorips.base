@@ -18,9 +18,9 @@
 package org.faktorips.devtools.core.ui.editors.pctype.relationwizard;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.controller.EditField;
 
@@ -51,6 +51,18 @@ public class PropertiesPage extends AbstractPropertiesPage {
 		wizard.addToUiControllerRelation(maxCardinalityProdRelevantField, IRelation.PROPERTY_MAX_CARDINALITY_PRODUCTSIDE); 	
 		wizard.addToUiControllerRelation(targetRoleSingularProdRelevantField, IRelation.PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE);
 		wizard.addToUiControllerRelation(targetRolePluralProdRelevantField, IRelation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
+		
+		// add listener on model, 
+		//   if the model changed check if the next button could be enabled if the relation is valid
+		wizard.getRelation().getIpsModel().addChangeListener(new ContentsChangeListener(){
+			public void contentsChanged(ContentChangeEvent event) {
+				if (!wizard.isReverseRelationPageDisplayed()){
+					// check only until the next page wasn't displayed
+					if (getContainer() != null)
+						getContainer().updateButtons();
+				}
+			}	
+		});
 	}
 
 	/**
@@ -90,14 +102,9 @@ public class PropertiesPage extends AbstractPropertiesPage {
 	}
 
 	/**
-	 * Adds a focus listener which could updates the button state if case of focus lost from the field.
+	 * {@inheritDoc}
 	 */
 	protected void addFocusListenerUpdateButtons(EditField field) {
-		field.getControl().addFocusListener(new FocusAdapter(){
-			public void focusLost(FocusEvent e) {
-				getContainer().updateButtons();
-			}
-		});
 	}
 	
 	/**
