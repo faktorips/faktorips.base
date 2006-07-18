@@ -127,13 +127,8 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         // PolCmptType attributes are returned as children, polCmptType contains three children
         children= flatProvider.getChildren(polCmptType);
         assertEquals(3, children.length);  
-
-        /* TODO TblStr und TblCont erstellen?!
-         * Werden IPSObjects gegeben? PolCompType, TblStr, ProdCmp, TblCont?
-         * Werden Atrtribute gegeben von PolComType?
-         * Inhalte von Tabellen? (Zeilen?)
-         * 
-         */
+        
+        // TODO Tests using TableContents and TableStructures 
     }
 
     /*
@@ -188,16 +183,17 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         // Test for Projects
         assertTrue(flatProvider.hasChildren(proj));
         assertTrue(hierarchyProvider.hasChildren(proj));
-        // TODO leere Projekte enthalten Kinder? warscheinlich defaultpackageroot?
-//        assertFalse(flatProvider.hasChildren(modelProj));
-//        assertFalse(hierarchyProvider.hasChildren(modelProj));
+        // an empty project returns its default PackageFragmentRoot
+        assertTrue(flatProvider.hasChildren(modelProj));
+        assertTrue(hierarchyProvider.hasChildren(modelProj));
         // Test for PackageFragmentRoots
         assertTrue(flatProvider.hasChildren(root));
         assertTrue(hierarchyProvider.hasChildren(root));
         // in flat layout getChildren 
         // an empty PFragmentRoot in flat layout returns at least one child, the default packageFragment
         assertTrue(flatProvider.hasChildren(emptyRoot));
-        // a PFragmentRoot in hierarchical layout returns the children of the defaultPackageFragment, an empty PFragmentRoot thus returns no children
+        // a PackageFragmentRoot in hierarchical layout returns the children (files) of the defaultPackageFragment, 
+        // an empty PackageFragmentRoot thus returns no children
         assertFalse(hierarchyProvider.hasChildren(emptyRoot));
         // hierarchichal tests
         assertTrue(hierarchyProvider.hasChildren(subPackage));

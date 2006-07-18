@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.IpsProject;
@@ -74,10 +75,9 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         img= polCmptType.getImage();
         assertTrue(img==flatProvider.getImage(polCmptType));
         assertTrue(img==hierarchyProvider.getImage(polCmptType));
-        img= subPackage.getImage();
-        // TODO warum Images fuer PackageFragments nicht konsistent?
-//        assertTrue(img==flatProvider.getImage(subPackage));
-//        assertTrue(img==hierarchyProvider.getImage(subPackage));
+        img= IpsPlugin.getDefault().getImage("folder_open.gif");
+        assertTrue(img==flatProvider.getImage(subPackage));
+        assertTrue(img==hierarchyProvider.getImage(subPackage));
     }
 
     /*
