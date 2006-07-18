@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.search;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 
 /**
@@ -33,9 +34,14 @@ public class SearchResultContentProvider implements ITreeContentProvider {
      */
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof Object[]) {
-            return new Object[] {((Object[])parentElement)[1]};
+        	Object[] elementArray= (Object[])parentElement;
+        	if(elementArray.length > 1){
+        		IIpsElement[] children= new IIpsElement[elementArray.length-1];
+        		System.arraycopy(elementArray, 1, children, 0, elementArray.length-1);
+        		return children;
+        	}
         }
-        return new Object[0];
+        return new IIpsElement[0];
     }
 
 
@@ -43,19 +49,25 @@ public class SearchResultContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object getParent(Object element) {
-        if (element instanceof IProductCmptGeneration) {
-            return ((IProductCmptGeneration)element).getProductCmpt(); 
-        }
-        else {
-            return null;
-        }
+    	if(element instanceof IIpsElement){
+	        if (element instanceof IProductCmptGeneration) {
+	            return ((IProductCmptGeneration)element).getProductCmpt(); 
+	        }else {
+	        	// was ist parent von PCType? supertype? kann man den ohne Suche finden?
+	        	return ((IIpsElement)element).getParent();
+	        }
+    	}
+    	return null;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean hasChildren(Object element) {
-        return (element instanceof Object[]);
+    	if(element instanceof Object[]){
+    		return ((Object[])element).length > 1;
+    	}
+        return false;
     }
 
     /**
@@ -69,8 +81,8 @@ public class SearchResultContentProvider implements ITreeContentProvider {
      * {@inheritDoc}
      */
     public Object[] getElements(Object inputElement) {
-        if (inputElement instanceof ReferencesToProductSearchResult) {
-            ReferencesToProductSearchResult result = (ReferencesToProductSearchResult) inputElement;
+        if (inputElement instanceof ReferenceSearchResult) {
+            ReferenceSearchResult result = (ReferenceSearchResult) inputElement;
             return result.getElements(); 
         }
         return new Object[0];

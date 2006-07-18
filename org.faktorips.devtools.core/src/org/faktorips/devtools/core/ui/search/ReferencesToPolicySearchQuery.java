@@ -18,30 +18,31 @@
 package org.faktorips.devtools.core.ui.search;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
  * 
- * 
  * @author Stefan Widmaier
  */
-public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
-    
-    public ReferencesToProductSearchQuery(IProductCmpt referenced) {
-        super(referenced);
-    }
-    /**
-     * @inheritDoc
-     */
-	protected IIpsElement[] findReferences() throws CoreException{
-    	return referenced.getIpsProject().findReferencingProductCmptGenerations(referenced.getQualifiedName());
+public class ReferencesToPolicySearchQuery extends ReferenceSearchQuery {
+
+	public ReferencesToPolicySearchQuery(IPolicyCmptType referenced) {
+		super(referenced);
 	}
+
     /**
      * @inheritDoc
      */
-    protected Object[] getDataForResult(IIpsElement object) {
-        return new Object[]{((IProductCmptGeneration)object).getProductCmpt(), object};
+	protected IIpsElement[] findReferences() throws CoreException {
+		return referenced.getIpsProject().findReferencingPolicyCmptTypes((PolicyCmptType)referenced);
+	}
+
+    /**
+     * @inheritDoc
+     */
+	protected Object[] getDataForResult(IIpsElement object) throws CoreException {
+		return new Object[]{object};
 	}
 }

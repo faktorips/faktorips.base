@@ -23,18 +23,17 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
-import org.faktorips.devtools.core.ui.views.DefaultDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
-public class ReferencesToProductSearchResultPage extends AbstractTextSearchViewPage {
+public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
     SearchResultLabelProvider labelProvider;
     SearchResultContentProvider contentProvider;
     
-    public ReferencesToProductSearchResultPage() {
+    public ReferenceSearchResultPage() {
         super(AbstractTextSearchViewPage.FLAG_LAYOUT_TREE);
     }
     
@@ -57,7 +56,7 @@ public class ReferencesToProductSearchResultPage extends AbstractTextSearchViewP
         }
         viewer.setLabelProvider(labelProvider);
         viewer.setContentProvider(contentProvider);
-        viewer.addDoubleClickListener(new DefaultDoubleclickListener(viewer));
+        viewer.addDoubleClickListener(new TreeViewerDoubleclickListener(viewer));
     }
 
     protected void configureTableViewer(TableViewer viewer) {
@@ -69,15 +68,16 @@ public class ReferencesToProductSearchResultPage extends AbstractTextSearchViewP
         mgr.appendToGroup(IContextMenuConstants.GROUP_SHOW, new ShowStructureAction(getViewer()));
         super.fillContextMenu(mgr);
     }
-
+    
     public IIpsSrcFile getIpsSrcFileForSelection() {
         Object selection = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
-        if (selection instanceof IProductCmptGeneration) {
-            return ((IProductCmptGeneration)selection).getProductCmpt().getIpsSrcFile();
+        // retrieve first element of the selection
+        if (selection instanceof Object[]) {
+            selection= ((Object[])selection)[0];
         }
-        else if (selection instanceof Object[]) {
-            return ((IProductCmpt)((Object[])selection)[0]).getIpsSrcFile();
-        }
+        if(selection instanceof IIpsObjectPart){
+        	return ((IIpsObjectPart)selection).getIpsObject().getIpsSrcFile();
+        } 
         return null;
     }
 }

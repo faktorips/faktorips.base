@@ -29,7 +29,7 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
-    public static String ReferencesToProductSearchQuery_ok;
-    public static String ReferencesToProductSearchQuery_labelPrefix;
-    public static String ReferencesToProductSearchResult_label;
+    public static String ReferenceSearchQuery_ok;
+    public static String ReferenceSearchQuery_labelPrefix;
+    public static String ReferenceSearchResult_label;
 }

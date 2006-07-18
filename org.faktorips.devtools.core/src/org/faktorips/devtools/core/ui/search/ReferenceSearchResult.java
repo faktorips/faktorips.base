@@ -23,16 +23,16 @@ import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.IEditorMatchAdapter;
 import org.eclipse.search.ui.text.IFileMatchAdapter;
 
-public class ReferencesToProductSearchResult extends AbstractTextSearchResult {
+public class ReferenceSearchResult extends AbstractTextSearchResult {
 
-    private ReferencesToProductSearchQuery query;
+    private ReferenceSearchQuery query;
     
-    public ReferencesToProductSearchResult(ReferencesToProductSearchQuery query) {
+    public ReferenceSearchResult(ReferenceSearchQuery query) {
         this.query = query;
     }
     
     public String getLabel() {
-        return "" + super.getMatchCount() + Messages.ReferencesToProductSearchResult_label + this.query.getReferencedName(); //$NON-NLS-1$
+        return "" + super.getMatchCount() + Messages.ReferenceSearchResult_label + this.query.getReferencedName(); //$NON-NLS-1$
     }
 
     public String getTooltip() {
