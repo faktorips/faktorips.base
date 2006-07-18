@@ -259,6 +259,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException if an exception occurs while searching.
      */
     public IProductCmptGeneration[] findReferencingProductCmptGenerations(String qualifiedProductCmptName) throws CoreException;
+
+    /**
+     * Returns the supertype of the given policy component type, and all policy component types 
+     * that refer to the given policy component type. Returns an empty array if no references or 
+     * supertypes are found.
+     * 
+     * @throws CoreException if an exception occurs while searching.
+     */
+    public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException;
     
     /**
      * Returns the datatypes representing values. If this project depends on other ips projects

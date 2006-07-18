@@ -48,6 +48,7 @@ import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdInitStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -64,6 +65,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
@@ -812,6 +814,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	/**
 	 * {@inheritDoc}
 	 */
+	public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException{
+		ArrayList list= new ArrayList();
+		// get referenced PCTypes
+		IIpsObject[] pcTypes= findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
+		for(int i=0; i<pcTypes.length; i++){
+			IRelation[] relations= ((PolicyCmptType) pcTypes[i]).getRelations();
+			for(int x=0; x<relations.length; x++){
+				if(relations[x].getTarget().equals(pcType.getQualifiedName())){
+					list.add(pcTypes[i]);
+				}
+			}
+		}
+		String superType= pcType.getSupertype();
+		if(!superType.equals("")){
+			list.add(findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, superType));
+		}
+		return (PolicyCmptType[])list.toArray(new PolicyCmptType[0]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException {
 		return getPropertiesInternal().getProductCmptNamingStrategy();
 	}
@@ -867,4 +891,5 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	public ClassLoaderProvider getClassLoaderProviderForJavaProject() {
 		return ((IpsModel)getIpsModel()).getClassLoaderProvider(this);
 	}
+
 }
