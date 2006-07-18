@@ -152,7 +152,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     
 	/**
 	 * Saves the repository's table of contents to a file. The table of contents file is needed
-	 * by the FaktorIPS runtime to load the product component's.
+	 * by the FaktorIPS runtime to load the product components and table data.
 	 * 
 	 * @throws CoreException if an error occurs while writing the toc to the file.
 	 */

@@ -18,7 +18,10 @@
 package org.faktorips.devtools.stdbuilder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.faktorips.runtime.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContents;
@@ -41,7 +44,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void internalAddEntry(TocEntryObject entry) {
         super.internalAddEntry(entry);
@@ -110,7 +113,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
             return true;
         }
         
-        throw new IllegalArgumentException("Unknown  toc entry type " + entry);
+        throw new IllegalArgumentException("Unknown toc entry type " + entry);
 	}
 	
 	/**
@@ -158,10 +161,19 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
 	 */
 	public Element toXml(Document doc) {
 	    Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
-	    ArrayList allEntries = new ArrayList(pcIdTocEntryMap.size() + tableContentNameTocEntryMap.size());
-	    allEntries.addAll(pcIdTocEntryMap.values());
-	    allEntries.addAll(tableContentNameTocEntryMap.values());
-        for (Iterator it=allEntries.iterator(); it.hasNext(); ) {
+        Comparator c = new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                TocEntryObject e1 = (TocEntryObject)o1;
+                TocEntryObject e2 = (TocEntryObject)o2;
+                return e1.getIpsObjectId().compareTo(e2.getIpsObjectId());
+            }
+            
+        };
+	    SortedSet sortedEntries = new TreeSet(c);
+        sortedEntries.addAll(pcIdTocEntryMap.values());
+        sortedEntries.addAll(tableContentNameTocEntryMap.values());
+        for (Iterator it=sortedEntries.iterator(); it.hasNext(); ) {
             TocEntryObject entry = (TocEntryObject)it.next();
             element.appendChild(entry.toXml(doc));
         }

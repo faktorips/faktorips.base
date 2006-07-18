@@ -18,6 +18,9 @@
 package org.faktorips.devtools.stdbuilder;
 
 
+import javax.xml.transform.TransformerException;
+
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.test.XmlAbstractTestCase;
 import org.faktorips.runtime.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.ReadonlyTableOfContents;
@@ -28,7 +31,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
+public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
 
     private MutableClRuntimeRepositoryToc toc;
     
@@ -168,17 +171,36 @@ public class MutableClProductCmptRegistryTocTest extends XmlAbstractTestCase {
         
     }
     
-    public void testToXml() {
+    public void testToXml() throws TransformerException {
         TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
         TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
+        
         Element tocElement = toc.toXml(newDocument());
         assertNotNull(tocElement);
         AbstractReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContents();
         readOnlyToc.initFromXml(tocElement);
         TocEntryObject[] entries = readOnlyToc.getProductCmptTocEntries();
         assertEquals(2, entries.length);
+        
+        // test if the two xml representations are identical regradless of the order in that the entries
+        // where added
+        // to do so we have to make sure, we have to entries that are stored in the same bucket in the map
+        String s1 = "" + (char)1 + (char)0;
+        String s2 = "" + (char)0 + (char)31;
+        assertEquals(s1.hashCode(), s2.hashCode()); // so they must habe the same hashcode
+        toc = new MutableClRuntimeRepositoryToc();
+        entry0 = TocEntryObject.createProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
+        entry1 = TocEntryObject.createProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        toc.addOrReplaceTocEntry(entry0);
+        toc.addOrReplaceTocEntry(entry1);
+        String tocString = XmlUtil.nodeToString(toc.toXml(newDocument()), "UTF-8");
+        MutableClRuntimeRepositoryToc toc2 = new MutableClRuntimeRepositoryToc();
+        toc2.addOrReplaceTocEntry(entry1);
+        toc2.addOrReplaceTocEntry(entry0);
+        String toc2String = XmlUtil.nodeToString(toc2.toXml(newDocument()), "UTF-8");
+        assertEquals(tocString, toc2String);
     }
 
 }
