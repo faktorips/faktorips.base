@@ -153,22 +153,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 		browseOnly = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
 		
-//		propertyChangeListener = new IPropertyChangeListener() {
-//		
-//			public void propertyChange(PropertyChangeEvent event) {
-//				if (event.getProperty().equals(IpsPreferences.WORKING_DATE)) {
-//					generationManuallySet = false;
-//					browseOnly = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
-//				}
-//				else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
-//					generationManuallySet = false;
-//					browseOnly = ((Boolean)event.getNewValue()).booleanValue();
-//					setPropertiesEnabled((IProductCmptGeneration)getActiveGeneration());
-//				}
-//			}
-//		};
-		
-//		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(propertyChangeListener);
 	}
 
 	/**
@@ -455,7 +439,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				refresh();
 			} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
 				generationManuallySet = false;
-				browseOnly = ((Boolean) event.getNewValue()).booleanValue();
+				browseOnly = ((String)event.getNewValue()).equals(IpsPreferences.WORKING_MODE_BROWSE);
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
 				refresh();
 			}
@@ -590,7 +574,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			switch (choice) {
 			case GenerationSelectionDialog.CHOICE_BROWSE:
 				setActiveGeneration(cmpt.findGenerationEffectiveOn(workingDate), false);
-				browseOnly = true;
 				break;
 
 			case GenerationSelectionDialog.CHOICE_CREATE:
