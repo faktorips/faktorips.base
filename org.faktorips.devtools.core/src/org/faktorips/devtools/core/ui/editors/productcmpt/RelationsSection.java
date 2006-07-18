@@ -447,6 +447,12 @@ public class RelationsSection extends IpsSection {
 			if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
 				// we have a file transfer
 				String[] filenames = (String[]) FileTransfer.getInstance().nativeToJava(event.currentDataType);
+
+				// Under some platforms, the data is not available during dragOver.
+				if (filenames == null) {
+					return;
+				}
+				
 				for (int i = 0; i < filenames.length; i++) {
 					IFile file = getFile(filenames[i]);
 					try {
