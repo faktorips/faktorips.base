@@ -24,10 +24,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**
- * Open selected product component in editor.
+ * Opens a selected product component in an editor.
  * 
  * @author Thorsten Guenther
  */
@@ -63,6 +64,9 @@ public class OpenEditorAction extends Action {
         		Object selected = ((IStructuredSelection)selection).getFirstElement();
         		if (selected instanceof IIpsObject) {
         			return ((IIpsObject)selected).getIpsSrcFile();
+        		}
+        		if(selected instanceof IIpsObjectPart){
+        			return ((IIpsObjectPart)selected).getIpsObject().getIpsSrcFile();
         		}
         	}
         }

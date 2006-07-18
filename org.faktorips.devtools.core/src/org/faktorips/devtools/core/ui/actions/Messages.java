@@ -29,8 +29,10 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
-    public static String FindReferenceAction_description;
-    public static String FindReferenceAction_name;
+    public static String FindProductReferencesAction_description;
+    public static String FindProductReferencesAction_name;
+    public static String FindPolicyReferencesAction_description;
+    public static String FindPolicyReferencesAction_name;
     public static String ShowAttributesAction_description;
     public static String ShowAttributesAction_name;
     public static String ShowStructureAction_description;

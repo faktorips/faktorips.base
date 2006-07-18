@@ -21,6 +21,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizardAction;
 
+/**
+ * Opens the wizard for creating a new PolicyCmptType.
+ * 
+ * @author Stefan Widmaier
+ */
 public class NewPolicyComponentTypeAction extends Action {
 	private IWorkbenchWindow window;
 	
