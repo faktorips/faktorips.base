@@ -415,9 +415,9 @@
    <extension
          point="org.eclipse.search.searchResultViewPages">
       <viewPage
-            class="org.faktorips.devtools.core.ui.search.ReferencesToProductSearchResultPage"
-            id="org.faktorips.devtools.core.ui.search.ReferencesToProductSearchResult"
-            searchResultClass="org.faktorips.devtools.core.ui.search.ReferencesToProductSearchResult"/>
+            class="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
+            id="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
+            searchResultClass="org.faktorips.devtools.core.ui.search.ReferenceSearchResult"/>
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
