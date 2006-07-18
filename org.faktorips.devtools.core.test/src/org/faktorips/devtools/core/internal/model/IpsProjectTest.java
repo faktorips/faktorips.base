@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -469,6 +471,37 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced.getQualifiedName());
     	assertEquals(result.length, 1);
     	assertEquals(result[0], gen1);
+    }
+    public void testFindReferencingPolicyCmptTypes() throws CoreException{
+        IPolicyCmptType pcTypeReferenced = newPolicyCmptType(root, "tobereferenced");
+        IPolicyCmptType pcType = newPolicyCmptType(root, "TestPCType");
+        IRelation relation= pcType.newRelation();
+        relation.setTarget(pcTypeReferenced.getQualifiedName());
+
+        IPolicyCmptType pcType2 = newPolicyCmptType(root, "TestPCType2");
+        IRelation relation2= pcType2.newRelation();
+        relation2.setTarget(pcTypeReferenced.getQualifiedName());
+        
+        IPolicyCmptType pcType3 = newPolicyCmptType(root, "TestPCType3");
+        IRelation relation3= pcType3.newRelation();
+        relation3.setTarget(pcTypeReferenced.getQualifiedName());
+        
+        IPolicyCmptType pcTypeNoRef = newPolicyCmptType(root, "TestPCTypeNoRef");
+        
+        IPolicyCmptType[] results= ipsProject.findReferencingPolicyCmptTypes(pcTypeReferenced);
+        assertEquals(3, results.length);
+        
+        HashSet resultSet= new HashSet();
+        resultSet.add(results[0]);
+        resultSet.add(results[1]);
+        resultSet.add(results[2]);
+        HashSet expectedSet= new HashSet();
+        expectedSet.add(pcType);
+        expectedSet.add(pcType2);
+        expectedSet.add(pcType3);
+        
+        assertEquals(expectedSet, resultSet);
+        assertFalse(resultSet.contains(pcTypeNoRef));
     }
     
     public void testFindEnumDatatypes() throws CoreException{
