@@ -19,6 +19,8 @@ package org.faktorips.fl;
 
 import junit.framework.TestCase;
 
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
 
 
@@ -33,4 +35,15 @@ public class ExprEvaluatorTest extends TestCase {
         assertEquals(Decimal.valueOf("10.123"), o);
     }
 
+    public void testExecuteWithVariables() throws Exception {
+        ExprCompiler compiler = new ExprCompiler();
+        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
+        resolver.register("a", new JavaCodeFragment("new Integer(42)"), Datatype.INTEGER);
+        compiler.setIdentifierResolver(resolver);
+        ExprEvaluator processor = new ExprEvaluator(compiler);
+        Object o = processor.evaluate("a * 2");
+        
+        assertEquals(new Integer(84), o);
+    }
+    
 }
