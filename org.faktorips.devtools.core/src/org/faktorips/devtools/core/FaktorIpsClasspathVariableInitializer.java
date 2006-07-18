@@ -62,7 +62,7 @@ public class FaktorIpsClasspathVariableInitializer extends
 		add(new Mapping(VARNAME_RUNTIME_SRC, "org.faktorips.runtime", "/faktorips-runtimesrc.zip")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
-	private void add(Mapping m) {
+	protected void add(Mapping m) {
 		varMapping.put(m.getVarName(), m);
 	}
 	
@@ -109,13 +109,13 @@ public class FaktorIpsClasspathVariableInitializer extends
 		}
 	}
 	
-	private class Mapping {
+	protected class Mapping {
 		
 		private String varName;
 		private String pluginId;
 		private String jarName;
 		
-		Mapping(String varName, String pluginId, String jarName) {
+		public Mapping(String varName, String pluginId, String jarName) {
 			this.varName = varName;
 			this.pluginId = pluginId;
 			this.jarName = jarName;
