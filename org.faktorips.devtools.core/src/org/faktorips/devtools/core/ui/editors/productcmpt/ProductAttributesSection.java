@@ -181,7 +181,9 @@ public class ProductAttributesSection extends IpsSection {
 	 * {@inheritDoc}
 	 */
 	protected void performRefresh() {
-		uiMasterController.updateUI();
+		if (uiMasterController != null) {
+			uiMasterController.updateUI();
+		}
 	}
 
 	private void createEditControls() {
@@ -203,6 +205,10 @@ public class ProductAttributesSection extends IpsSection {
 	 */
 	public void setEnabled(boolean enabled) {
 		if (isEnabled() == enabled) {
+			return;
+		}
+		
+		if (isDisposed()) {
 			return;
 		}
 		

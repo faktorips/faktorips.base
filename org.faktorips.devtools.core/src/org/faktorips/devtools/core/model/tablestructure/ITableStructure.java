@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsObject;
 
 /**
@@ -24,7 +25,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
  */
 public interface ITableStructure extends IIpsObject {
     
-    public final static String PROPERTY_MULTIPLE_CONTENTS_ALLOWED = "multipleContentsAllowed"; //$NON-NLS-1$
+    public final static String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
 	
 	/**
 	 * Returns <code>true</code> if multiple table contents are allowed 
@@ -33,9 +34,23 @@ public interface ITableStructure extends IIpsObject {
 	public boolean isMultipleContentsAllowed();
 	
 	/**
-	 * Sets if multiple table contents are allowed for this structure.
+	 * Set the type for this table structure represented by the given id. If no type
+	 * is found for the given id, the type is not modifed.
+	 * 
+	 * @param typeId The id for the new type.
+	 */            
+	public void setTableStructureType(TableStructureType type);
+
+	/**
+	 * @return The type of this table structure.
+	 */                          
+	public TableStructureType getTableStructureType();
+
+	/**
+	 * @return <code>true</code> if the type of this table structure is either ENUMTYPE_MODEL
+	 * or ENUMTYPE_PRODUCTDEFINTION
 	 */
-	public void setMultipleContentsAllowed(boolean newValue);
+	public boolean isEnumType();
 	
 	/**
      * Returns the functions to access the table in the formula language.

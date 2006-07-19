@@ -44,7 +44,9 @@ import org.w3c.dom.Element;
  */
 public class TableStructure extends IpsObject implements ITableStructure {
     
-    private boolean multipleTableContentsAllowed;
+	
+	
+    private TableStructureType type = TableStructureType.SINGLE_CONTENT;
     private List columns = new ArrayList(2);
     private List ranges = new ArrayList(0);
     private List uniqueKeys = new ArrayList(1);
@@ -85,18 +87,23 @@ public class TableStructure extends IpsObject implements ITableStructure {
 	 * {@inheritDoc}
 	 */
 	public boolean isMultipleContentsAllowed() {
-		return multipleTableContentsAllowed;
+		return type == TableStructureType.MULTIPLE_CONTENTS;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setMultipleContentsAllowed(boolean newValue) {
-		boolean oldValue = multipleTableContentsAllowed;
-		multipleTableContentsAllowed = newValue;
-		valueChanged(oldValue, newValue);
+	public void setTableStructureType(TableStructureType type) {
+		if (type == null) {
+			return;
+		}
+		
+		TableStructureType oldType = this.type;
+		this.type = type;
+		valueChanged(oldType, type);
 	}
 
+	public TableStructureType getTableStructureType() {
+		return type;
+	}
+	
 	/** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getColumns()
@@ -443,7 +450,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_MULTIPLE_CONTENTS_ALLOWED, "" + multipleTableContentsAllowed); //$NON-NLS-1$
+        newElement.setAttribute(PROPERTY_TYPE, type.getId()); //$NON-NLS-1$
     }
 
     /**
@@ -453,7 +460,22 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        multipleTableContentsAllowed = Boolean.valueOf(element.getAttribute(PROPERTY_MULTIPLE_CONTENTS_ALLOWED)).booleanValue();
+        
+        String typeId = element.getAttribute(PROPERTY_TYPE);
+        
+        if (typeId.length() > 0) {
+        	type = TableStructureType.getTypeForId(typeId);
+        }
+        else {
+        	// Code for migrating old table structures
+        	// TODO remove migration code
+        	if (Boolean.valueOf(element.getAttribute("multipleContentsAllowed")).booleanValue()) {
+        		type = TableStructureType.MULTIPLE_CONTENTS;
+        	}
+        	else {
+        		type = TableStructureType.SINGLE_CONTENT;
+        	}
+        }
     }
 
     /**
@@ -523,5 +545,14 @@ public class TableStructure extends IpsObject implements ITableStructure {
             return newForeignKeyInternal(this.getNextPartId());
         }
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isEnumType() {
+		return type == TableStructureType.ENUMTYPE_MODEL || type == TableStructureType.ENUMTYPE_PRODUCTDEFINTION;
+		
+		
 	}
 }

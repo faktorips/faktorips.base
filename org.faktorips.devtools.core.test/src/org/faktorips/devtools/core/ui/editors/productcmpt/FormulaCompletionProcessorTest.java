@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.TableFunctionsResolver;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -87,7 +88,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         
         ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "Testtable");
         IColumn column =table.newColumn();
-        table.setMultipleContentsAllowed(true);
+        table.setTableStructureType(TableStructureType.MULTIPLE_CONTENTS);
         column.setName("first");
         column.setDatatype("String");
         column =table.newColumn();
@@ -111,7 +112,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         
         ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "Testtable");
         IColumn column =table.newColumn();
-        table.setMultipleContentsAllowed(false);
+        table.setTableStructureType(TableStructureType.SINGLE_CONTENT);
         column.setName("first");
         column.setDatatype("String");
         column =table.newColumn();

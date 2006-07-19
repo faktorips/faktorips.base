@@ -186,7 +186,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
      */
     public void testToXmlDocument() {
         table.setDescription("blabla");
-        table.setMultipleContentsAllowed(true);
+        table.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
         IColumn column1 = table.newColumn();
         column1.setName("ageFrom");
         IColumn column2 = table.newColumn();
@@ -202,7 +202,8 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         
         assertEquals("blabla", copy.getDescription());
-        assertTrue(copy.isMultipleContentsAllowed());
+        assertFalse(copy.isMultipleContentsAllowed());
+        assertEquals(TableStructureType.ENUMTYPE_MODEL, copy.getTableStructureType());
         assertEquals(2, copy.getNumOfColumns());
         assertEquals("ageFrom", copy.getColumns()[0].getName());
         assertEquals("ageTo", copy.getColumns()[1].getName());
