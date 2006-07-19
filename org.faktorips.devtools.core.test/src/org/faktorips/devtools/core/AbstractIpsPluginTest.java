@@ -285,7 +285,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 			((IPolicyCmptType) ipsObject)
 					.setUnqualifiedProductCmptType(unqualifiedName
 							+ "ProductCmpt");
-            file.save(true, null);
 		}
 		return ipsObject;
 	}
