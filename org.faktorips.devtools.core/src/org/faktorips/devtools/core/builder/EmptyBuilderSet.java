@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 
@@ -112,4 +113,13 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 	public void clean() throws CoreException {
 		// do nothing
 	}
+	
+    /**
+     * {@inheritDoc}
+     */
+    public String getClassNameForTableBasedEnum(ITableStructure structure) {
+        return null;
+    }
+	
+	
 }

@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 /**
  * 
@@ -81,6 +82,13 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         public void clean() throws CoreException {
             
         }
-		
+	
+        /**
+         * {@inheritDoc}
+         */
+        public String getClassNameForTableBasedEnum(ITableStructure structure) {
+            return null;
+        }
+        
 	}
 }

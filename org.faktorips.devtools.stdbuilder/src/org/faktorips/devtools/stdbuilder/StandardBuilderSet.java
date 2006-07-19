@@ -242,4 +242,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public void clean() throws CoreException {
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getClassNameForTableBasedEnum(ITableStructure structure) {
+        return null;
+    }
+    
+    
 }

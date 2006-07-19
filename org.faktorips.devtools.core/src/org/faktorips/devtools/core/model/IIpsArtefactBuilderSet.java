@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.CompilationResult;
 
 /**
@@ -87,6 +88,15 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 * formula language identifier resolver.
 	 */
 	public IParameterIdentifierResolver getFlParameterIdentifierResolver();
+
+	/**
+	 * Returns the qualified classname for the enum type that is defined by the given
+	 * table structure.
+	 * 
+	 * @throws NullPointerException if structure is <code>null</code>.
+	 * @throws IllegalArgumentException if the structure does not define an enum type. 
+	 */
+	public String getClassNameForTableBasedEnum(ITableStructure structure);
 	
 	/**
 	 * Returns the file that contain the runtime repository toc file.

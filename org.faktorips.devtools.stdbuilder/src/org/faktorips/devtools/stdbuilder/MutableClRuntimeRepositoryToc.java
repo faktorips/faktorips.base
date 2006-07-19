@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.SortedSet;

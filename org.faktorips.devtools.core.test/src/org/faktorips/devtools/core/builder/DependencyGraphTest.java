@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.util.CollectionUtil;
 public class DependencyGraphTest extends AbstractIpsPluginTest {
 
     private IIpsPackageFragmentRoot root;
-    private IIpsProject pdProject;
+    private IIpsProject ipsProject;
     private DependencyGraph graph;
     private IPolicyCmptType a;
     private IPolicyCmptType b;
@@ -40,8 +40,8 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     
     public void setUp() throws Exception{
         super.setUp();
-        pdProject = this.newIpsProject("TestProject");
-        root = pdProject.getIpsPackageFragmentRoots()[0];
+        ipsProject = this.newIpsProject("TestProject");
+        root = ipsProject.getIpsPackageFragmentRoots()[0];
         a = newPolicyCmptType(root, "A");
         b = newPolicyCmptType(root, "B");
         c = newPolicyCmptType(root, "C");
@@ -49,7 +49,9 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         a.newRelation().setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
         c.newRelation().setTarget(b.getQualifiedName());
-        graph = new DependencyGraph(pdProject);
+        a.getIpsSrcFile().save(true, null);
+        c.getIpsSrcFile().save(true, null);
+        graph = new DependencyGraph(ipsProject);
     }
     
     /*

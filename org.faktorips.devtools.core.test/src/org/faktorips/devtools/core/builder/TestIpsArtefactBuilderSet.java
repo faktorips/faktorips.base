@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 
@@ -106,6 +107,13 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
 
     public void clean() throws CoreException {
         cleanCalled = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getClassNameForTableBasedEnum(ITableStructure structure) {
+        return null;
     }
 
 }
