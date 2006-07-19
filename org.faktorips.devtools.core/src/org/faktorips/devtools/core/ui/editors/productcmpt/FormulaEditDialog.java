@@ -34,7 +34,6 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
@@ -45,7 +44,6 @@ import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 
 
 /**
@@ -148,28 +146,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl = new ChangeParametersControl(c, SWT.NONE, Messages.FormulaEditDialog_availableParameters, configElement.getIpsProject()) {
 
             public MessageList validate(int paramIndex) throws CoreException {
-                MessageList result = new MessageList();
-                MessageList list = configElement.validate();
-                for (int i=0; i<list.getNoOfMessages(); i++) {
-                    if (isMessageForParameter(list.getMessage(i), paramIndex)) {
-                        result.add(list.getMessage(i));
-                    }
-                }
-                return result;
+                return new MessageList();
             }
-            
-            private boolean isMessageForParameter(Message msg, int paramIndex) {
-                ObjectProperty[] op = msg.getInvalidObjectProperties(); 
-                for (int j=0; j<op.length; j++) {
-                    if (op[j].getObject() instanceof Parameter) {
-                        if (((Parameter)op[j].getObject()).getIndex()==paramIndex) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-            
             
         };
         parametersControl.setCanAddParameters(false);
