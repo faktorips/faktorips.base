@@ -84,6 +84,8 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
      */
     public void testUpdate() throws Exception {
         a.getRelations()[0].delete();
+        a.getIpsSrcFile().save(true, null);
+        
         QualifiedNameType[] dependants = graph.getDependants(a.getQualifiedNameType());
         //not only the changed IpsObject has to be updated in the dependency graph but also all dependants of it
         graph.update(a.getQualifiedNameType());
