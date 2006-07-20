@@ -90,17 +90,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
         
-        Object val = datatype.getValue(value);
         for (Iterator it=elements.iterator(); it.hasNext(); ) {
             String each = (String)it.next();
-            if (datatype.isParsable(each)) {
-                Object eachVal = datatype.getValue(each);
-                if (eachVal == null && val == null) {
-                	return true;
-                }
-                else if (eachVal != null && eachVal.equals(val)) {
-                    return true;
-                }
+            if (datatype.areValuesEqual(each, value)) {
+            	return true;
             }
         }
         if (list != null) {
@@ -118,7 +111,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	if (datatype == null || subDatatype == null) {
     		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, Message.WARNING, invalidObject, invalidProperty));
+    			addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, invalidProperty);
     		}
     		return false;
     	}
@@ -262,12 +255,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	if (value == null) {
     		return false;
     	}
-    	
-    	Object valueObj = datatype.getValue(null);
-    	if (valueObj != null) {
-    		return valueObj.toString().equals(value);
-    	}
-    	return false;
+
+    	return datatype.isNull(value);
     }
 
     private String getNotNullValue(String value) {

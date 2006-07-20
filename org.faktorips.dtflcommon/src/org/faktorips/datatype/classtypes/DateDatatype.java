@@ -91,4 +91,11 @@ public class DateDatatype extends ValueClassDatatype {
     public Date getDateValue(String value) {
         return (Date) getValue(value);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
 }

@@ -131,4 +131,20 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return TestEnum.class.getName();
     }
 
+    public boolean isNull(String value) {
+        return false;
+    }
+
+    public boolean supportsCompare() {
+        return false;
+    }
+
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        return 0;
+    }
+
+    public boolean areValuesEqual(String valueA, String valueB) {
+        return false;
+    }
+
 }

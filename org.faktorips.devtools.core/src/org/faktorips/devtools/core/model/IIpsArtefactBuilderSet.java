@@ -19,7 +19,9 @@ package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
+import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -98,6 +100,16 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 */
 	public String getClassNameForTableBasedEnum(ITableStructure structure);
 	
+	/**
+	 * Returns the datatype helper used for the enum type that is defined by a 
+	 * table structure. 
+	 * 
+	 * @throws NullPointerException if structure is <code>null</code>.
+	 * @throws IllegalArgumentException if the structure does not define an enum type. 
+	 */
+	public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype);
+	
+
 	/**
 	 * Returns the file that contain the runtime repository toc file.
 	 * Note that the file might not exists.

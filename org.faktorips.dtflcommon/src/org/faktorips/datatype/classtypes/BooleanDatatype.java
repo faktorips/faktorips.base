@@ -45,4 +45,8 @@ public class BooleanDatatype extends ValueClassDatatype {
 		return Boolean.valueOf(s);
 	}
 
+    public boolean supportsCompare() {
+        return false;
+    }
+
 }

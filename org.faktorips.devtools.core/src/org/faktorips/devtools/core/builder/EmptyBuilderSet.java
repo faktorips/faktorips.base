@@ -19,8 +19,10 @@ package org.faktorips.devtools.core.builder;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -120,6 +122,13 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     public String getClassNameForTableBasedEnum(ITableStructure structure) {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
+		return null;
+	}
 	
 	
 }

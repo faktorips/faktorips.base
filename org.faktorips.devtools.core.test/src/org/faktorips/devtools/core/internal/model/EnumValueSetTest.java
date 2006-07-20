@@ -69,6 +69,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         attr = type.newAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
+        type.getIpsSrcFile().save(true, null);
         
         IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
         cmpt.setPolicyCmptType(type.getQualifiedName());
@@ -137,6 +138,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         IAttribute attr2 = type.newAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
+        type.getIpsSrcFile().save(true, null);
         
     	IConfigElement ce2 = generation.newConfigElement();
         ce2.setPcTypeAttribute("attr2");
@@ -346,27 +348,6 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Object getValue(String value) {
-			return null;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public String valueToString(Object value) {
-			return null;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean isNull(Object value) {
-			return false;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
 		public String getName() {
 			return null;
 		}
@@ -408,6 +389,26 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 		public String getValueName(String id) {
 			throw new RuntimeException("Not supported");
 		}
+
+
+        public boolean isNull(String value) {
+            return false;
+        }
+
+
+        public boolean supportsCompare() {
+            return false;
+        }
+
+
+        public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+            return 0;
+        }
+
+
+        public boolean areValuesEqual(String valueA, String valueB) {
+            return false;
+        }
 
     }
 }

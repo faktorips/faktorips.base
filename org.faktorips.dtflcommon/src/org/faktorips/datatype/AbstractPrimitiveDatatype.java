@@ -17,6 +17,7 @@
 
 package org.faktorips.datatype;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -55,15 +56,6 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.ValueDatatype#isNull(java.lang.Object)
-     */
-    public boolean isNull(Object value) {
-        return false;
-    }
-    
-    /**
      * If the value is <code>null</code> or an empty string, <code>false</code> is
      * returned.
      * 
@@ -89,5 +81,30 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         return false;
     }
 
-    
+    public abstract Object getValue(String value);
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean areValuesEqual(String valueA, String valueB) {
+        return ObjectUtils.equals(getValue(valueA), getValue(valueB));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        if (!supportsCompare()) {
+            throw new UnsupportedOperationException("Datatype " + getQualifiedName() + " does not support comparison of values");
+        }
+        return ((Comparable)getValue(valueA)).compareTo(getValue(valueB));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isNull(String value) {
+        return false;
+    }
+
 }

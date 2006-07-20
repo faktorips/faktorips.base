@@ -17,6 +17,7 @@
 
 package org.faktorips.datatype;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -202,8 +203,30 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     /**
      * {@inheritDoc}
      */
-    public boolean isNull(Object value) {
+    public boolean isNull(String value) {
         return value == null;
+    }
+
+    public boolean supportsCompare() {
+        if (datatype.isValueDatatype() && ((ValueDatatype)datatype).supportsCompare()) {
+            return true;
+        }
+        return false;
+    }
+
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        if (!supportsCompare()) {
+            throw new UnsupportedOperationException("The datatype " + datatype.getQualifiedName() + " does not support comparison for values.");
+        }
+        
+        return ((ValueDatatype)datatype).compare(valueA, valueB);
+    }
+
+    public boolean areValuesEqual(String valueA, String valueB) {
+        if (datatype.isValueDatatype()) {
+            return ((ValueDatatype)datatype).areValuesEqual(valueA, valueB);
+        }
+        return ObjectUtils.equals(valueA, valueB);
     }
 
 }

@@ -17,6 +17,7 @@
 
 package org.faktorips.datatype;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.util.StringUtil;
 import org.faktorips.values.NullObject;
 
@@ -103,13 +104,16 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     /**
      * Overridden.
      */
-    public boolean isNull(Object value) {
+    public boolean isNull(String valueString) {
+        Object value = getValue(valueString);
+        
         if (value==null) {
             if (isNullObject) {
 //                TODO: What's this? throw new RuntimeException("Class " + clazz + " implements NullObject, so the value must not be null.");
             }
             return true;
         }
+        
         if (!(value instanceof NullObject)) {
             return false;
         }
@@ -120,11 +124,11 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
      * Overridden.
      */
     public boolean isParsable(String value) {
-        if (isNull(value)) {
-            return true;
-        }
-        
         try {
+            if (isNull(value)) {
+                return true;
+            }
+            
             getValue(value);
             return true;
             
@@ -140,5 +144,23 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
         return false;
     }
     
-    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean areValuesEqual(String valueA, String valueB) {
+        return ObjectUtils.equals(getValue(valueA), getValue(valueB));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        if (!supportsCompare()) {
+            throw new UnsupportedOperationException("Datatype " + getQualifiedName() + " does not support comparison of values");
+        }
+        return ((Comparable)getValue(valueA)).compareTo(getValue(valueB));
+    }
+
+
+    public abstract Object getValue(String value);
 }

@@ -35,6 +35,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 
 
@@ -241,7 +243,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         newPolicyCmptType(ipsProject, "Policy");
         assertNull(ipsProject.findValueDatatype("Policy"));
     }
-
+    
+    public void testFindValueDatatypeTableBasedEunm() throws CoreException {
+        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "table.Structure");
+        structure.setTableStructureType(TableStructureType.ENUMTYPE_MODEL);
+        structure.getIpsSrcFile().save(true, null);
+        
+        assertNotNull(ipsProject.findValueDatatype("table.Structure"));
+        assertNull(ipsProject.findValueDatatype("table.Structurex"));
+    }
+    
     public void testGetDatatypeHelper() throws CoreException {
     	IIpsProjectProperties props = ipsProject.getProperties();
     	props.setPredefinedDatatypesUsed(new String[]{Datatype.DECIMAL.getQualifiedName()});

@@ -401,18 +401,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 			return true;
 		}
 
-		public Object getValue(String value) {
-			return value;
-		}
-
-		public String valueToString(Object value) {
-			return value.toString();
-		}
-
-		public boolean isNull(Object value) {
-			return false;
-		}
-
 		public String getName() {
 			return getQualifiedName();
 		}
@@ -453,6 +441,22 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
          * {@inheritDoc}
          */
         public boolean hasNullObject() {
+            return false;
+        }
+
+        public boolean isNull(String value) {
+            return false;
+        }
+
+        public boolean supportsCompare() {
+            return false;
+        }
+
+        public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+            return 0;
+        }
+
+        public boolean areValuesEqual(String valueA, String valueB) {
             return false;
         }
     	

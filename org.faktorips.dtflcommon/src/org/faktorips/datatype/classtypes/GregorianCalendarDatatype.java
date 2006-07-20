@@ -75,4 +75,11 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
         	+ "-" + (date<10?"0"+date:""+date);
 		
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
 }

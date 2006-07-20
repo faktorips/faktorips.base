@@ -54,4 +54,10 @@ public class DoubleDatatype extends ValueClassDatatype implements NumericDatatyp
 		return Double.valueOf(s);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
 }

@@ -81,8 +81,20 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
      * @param invalidProperty The name of the property the message is created for. Can be null.
      */
     protected void addMsg(MessageList list, String id, String text, Object invalidObject, String invalidProperty) {
+    	addMsg(list, Message.ERROR, id, text, invalidObject, invalidProperty);
+    }
+
+    /**
+     * Creates a new message with severity ERROR and adds the new message to the given message list.
+     * 
+     * @param list The message list to add the new message to 
+     * @param id The message code
+     * @param text The message text
+     * @param invalidObject The object this message is for. Can be null if no relation to an object exists.
+     * @param invalidProperty The name of the property the message is created for. Can be null.
+     */
+    protected void addMsg(MessageList list, int severity, String id, String text, Object invalidObject, String invalidProperty) {
     	Message msg;
-    	int severity = Message.ERROR;
     	
     	if (invalidObject == null) {
     		msg = new Message(id, text, severity);
@@ -96,7 +108,8 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
     	
     	list.add(msg);
     }
-
+    
+    
     /**
      * This operation is not supported for value sets. An Attribute or Config Element has
      * to have a value set allways, so it can not be deleted. To remove any restrictins 

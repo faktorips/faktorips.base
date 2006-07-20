@@ -62,4 +62,11 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
         return Integer.valueOf(value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
+
 }

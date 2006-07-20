@@ -17,56 +17,50 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import org.faktorips.values.DefaultEnumType;
+import org.faktorips.values.DefaultEnumValue;
+import org.faktorips.values.EnumType;
+
 /**
  * This enumeration defines all possible value for the type of the table structure. 
  * 
  * @author Thorsten Guenther
  */
-public class TableStructureType {
+public class TableStructureType extends DefaultEnumValue {
 	/**
 	 * Single content - for this table structure only on table content is allowed.
 	 */
-	public static final TableStructureType SINGLE_CONTENT = new TableStructureType("singleContent", "Single Content");
+	public static final TableStructureType SINGLE_CONTENT;
 	
 	/**
 	 * Multiple contents - for this table structure one or more table contents are allowed.
 	 */
-	public static final TableStructureType MULTIPLE_CONTENTS = new TableStructureType("multipleContents", "Multiple Contents");
+	public static final TableStructureType MULTIPLE_CONTENTS;
 	
 	/**
 	 * EnumType, values are model-defined - this table structure represents an EnumType. All values of this EnumType
 	 * are defined in the model.
 	 */
-	public static final TableStructureType ENUMTYPE_MODEL = new TableStructureType("enumTypeModel", "EnumType (values are part of the model)");
+	public static final TableStructureType ENUMTYPE_MODEL;
 	
 	/**
 	 * EnumType, values are part of the product definition - this table structure represents an EnumType.
 	 */
-	public static final TableStructureType ENUMTYPE_PRODUCTDEFINTION = new TableStructureType("enumTypeProductDefinition", "EnumType (values are part of the product definiton");
+	public static final TableStructureType ENUMTYPE_PRODUCTDEFINTION;
 
-	private static TableStructureType[] allValues = {SINGLE_CONTENT, MULTIPLE_CONTENTS, ENUMTYPE_MODEL, ENUMTYPE_PRODUCTDEFINTION};
+    private final static DefaultEnumType enumType; 
+    
+    static {
+        enumType = new DefaultEnumType("TableStructureType", TableStructureType.class); //$NON-NLS-1$
+        SINGLE_CONTENT = new TableStructureType(enumType, "singleContent", "Single Content");
+        MULTIPLE_CONTENTS = new TableStructureType(enumType, "multipleContents", "Multiple Contents");
+        ENUMTYPE_MODEL = new TableStructureType(enumType, "enumTypeModel", "EnumType (values are part of the model)");
+        ENUMTYPE_PRODUCTDEFINTION = new TableStructureType(enumType, "enumTypeProductDefinition", "EnumType (values are part of the product definiton");
+    }
+
 	
-	private String name;
-	private String id;
-	
-	private TableStructureType(String id, String name) {
-		this.name = new String(name);
-		this.id = id;
-	}
-	
-	/**
-	 * @return The name (human readable text) for this type. This value can be used for labels in the UI, for 
-	 * example.
-	 */
-	public String getName() {
-		return new String(name);
-	}
-	
-	/**
-	 * @return The id for this type. Used for persistance-purposes, for example. 
-	 */
-	public String getId() {
-		return new String(id);
+	private TableStructureType(DefaultEnumType type, String id, String name) {
+		super(type, id, name);
 	}
 	
 	/**
@@ -75,14 +69,14 @@ public class TableStructureType {
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 */
 	public TableStructureType getType(int index) throws IndexOutOfBoundsException {
-		return allValues[index];
+		return (TableStructureType)enumType.getEnumValue(index);
 	}
 	
 	/**
 	 * @return The numer of types avaliable.
 	 */
 	public int getNumberOfTypes() {
-		return allValues.length;
+		return enumType.getNumOfValues();
 	}
 	
 	/**
@@ -91,32 +85,20 @@ public class TableStructureType {
 	 * @throws IllegalArgumentException If the given id does not represent a valid type.
 	 */
 	public static TableStructureType getTypeForId(String id) throws IllegalArgumentException {
-		if (id.equals(SINGLE_CONTENT.getId())) {
-			return SINGLE_CONTENT;
-		}
-		else if (id.equals(MULTIPLE_CONTENTS.getId())) {
-			return MULTIPLE_CONTENTS;
-		}
-		else if (id.equals(ENUMTYPE_MODEL.getId())) {
-			return ENUMTYPE_MODEL;
-		}
-		else if (id.equals(ENUMTYPE_PRODUCTDEFINTION.getId())) {
-			return ENUMTYPE_PRODUCTDEFINTION;
-		}
-		throw new IllegalArgumentException("Unknown type-id " + id);
+		return (TableStructureType)enumType.getEnumValue(id);
 	}
 	
 	/**
 	 * @return All types defined as array.
 	 */
 	public static TableStructureType[] getAll() {
-		return allValues;
+		return (TableStructureType[]) enumType.getValues();
 	}
-	
+
 	/**
-	 * {@inheritDoc}
+	 * @return The datatype these values are based on.
 	 */
-	public String toString() {
-		return new String(name);
-	}
+    public final static EnumType getEnumType() {
+        return enumType;
+    }
 }

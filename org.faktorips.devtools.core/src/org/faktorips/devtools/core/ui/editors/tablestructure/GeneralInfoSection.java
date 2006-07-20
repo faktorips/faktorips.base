@@ -17,12 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -32,7 +26,7 @@ import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureT
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -47,7 +41,7 @@ public class GeneralInfoSection extends IpsSection {
 	
     private IpsObjectUIController uiController;
 
-    private ComboViewerField typeField; 
+    private EnumValueField typeField; 
 	
 	public GeneralInfoSection(
 			ITableStructure tableStructure, 
@@ -70,62 +64,8 @@ public class GeneralInfoSection extends IpsSection {
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
         toolkit.createFormLabel(composite, "Type of table:");
-        Combo combo = toolkit.createCombo(composite);
-        
-        combo.add(TableStructureType.SINGLE_CONTENT.getName());
-        combo.add(TableStructureType.MULTIPLE_CONTENTS.getName());
-        combo.add(TableStructureType.ENUMTYPE_MODEL.getName());
-        combo.add(TableStructureType.ENUMTYPE_PRODUCTDEFINTION.getName());
-        
-        ComboViewer viewer = new ComboViewer(combo);
-        viewer.setContentProvider(new IStructuredContentProvider() {
-		
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				((ComboViewer)viewer).add(TableStructureType.getAll());
-			}
-		
-			public void dispose() {
-				// nothing to do
-			}
-
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof String) {
-					return TableStructureType.getAll();
-				}
-				return null;
-			}
-		});
-        
-        viewer.setLabelProvider(new ILabelProvider() {
-		
-			public void removeListener(ILabelProviderListener listener) {
-				// nothing to do
-			}
-		
-			public boolean isLabelProperty(Object element, String property) {
-				return true;
-			}
-		
-			public void dispose() {
-				// nothing to do
-			}
-		
-			public void addListener(ILabelProviderListener listener) {
-				// nothing to do
-			}
-
-			public Image getImage(Object element) {
-				return null;
-			}
-
-			public String getText(Object element) {
-				return ((TableStructureType)element).getName();
-			}
-		
-		});
-        
-        viewer.setInput("");
-        typeField = new ComboViewerField(viewer);
+        Combo combo = toolkit.createCombo(composite, TableStructureType.getEnumType());
+        typeField = new EnumValueField(combo, TableStructureType.getEnumType());
         
         uiController = new IpsObjectUIController(tableStructure);
         uiController.add(typeField, ITableStructure.PROPERTY_TYPE);

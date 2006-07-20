@@ -24,6 +24,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -247,7 +248,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * {@inheritDoc}
      */
     public String getClassNameForTableBasedEnum(ITableStructure structure) {
-        return null;
+        // TODO real implementation
+        return "org.faktorips.integrationtest.tables.TableAsEnumTypeDatatype";
+    }
+
+    public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
+        return new TableStructureEnumDatatypeHelper(datatype);
     }
     
     

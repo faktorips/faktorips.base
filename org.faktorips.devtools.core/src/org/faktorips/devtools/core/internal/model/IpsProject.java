@@ -72,6 +72,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdInitStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -494,6 +495,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (includeVoid) {
             result.add(Datatype.VOID);
         }
+        
+        // add enum types defined in tables
+		try {
+			IIpsObject[] structures = findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
+	        for (int i = 0; i < structures.length; i++) {
+				if (((ITableStructure)structures[i]).isEnumType()) {
+					result.add(new TableStructureEnumDatatypeAdapter((ITableStructure)structures[i], this));
+				}
+			}
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
+        
         getValueDatatypes(this, result, new HashSet());
         if (!includePrimitives) {
         	// remove primitives from the result
@@ -633,6 +647,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (datatype!=null) {
             	return datatype;
             }
+            
+            ITableStructure structure = (ITableStructure)ipsProject.findIpsObject(IpsObjectType.TABLE_STRUCTURE, qualifiedName);
+            if (structure != null && structure.isEnumType()) {
+            	return new TableStructureEnumDatatypeAdapter(structure, ipsProject);
+            }
+            
             IIpsProject[] projects = ((IpsProject)ipsProject).getIpsObjectPathInternal().getReferencedIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 if(!visitedProjects.contains(projects[i])){
@@ -655,6 +675,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         if(datatype instanceof ArrayOfValueDatatype){
         	return new ArrayOfValueDatatypeHelper(datatype);
+        }
+        if (datatype instanceof TableStructureEnumDatatypeAdapter) {
+        	try {
+				return getArtefactBuilderSet().getDatatypeHelperForTableBasedEnum((TableStructureEnumDatatypeAdapter)datatype);
+			} catch (CoreException e) {
+				throw new RuntimeException(e);
+			}
         }
         DatatypeHelper helper = ((IpsModel)getIpsModel()).getDatatypeHelper(this,
             (ValueDatatype)datatype);

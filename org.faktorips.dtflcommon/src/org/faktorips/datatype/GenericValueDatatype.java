@@ -280,7 +280,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return toStringMethod;
     }
 
-    public boolean isNull(Object value) {
+    public boolean isNull(String value) {
         if (value==null) {
             return true;
         }
@@ -327,6 +327,31 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         isParsableMethod = null;
         valueOfMethod = null;
         toStringMethod = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean areValuesEqual(String valueA, String valueB) {
+        return getValue(valueA).equals(getValue(valueB));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        if (!supportsCompare()) {
+            throw new UnsupportedOperationException("The class " + getAdaptedClassName() + " does not implement " + Comparable.class.getName());
+        }
+
+        return ((Comparable)getValue(valueA)).compareTo(valueB);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return Comparable.class.isAssignableFrom(this.getAdaptedClass());
     }
     
 }

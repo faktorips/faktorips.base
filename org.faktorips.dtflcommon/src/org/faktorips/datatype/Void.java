@@ -17,6 +17,8 @@
 
 package org.faktorips.datatype;
 
+import org.apache.commons.lang.ObjectUtils;
+
 /**
  * The datatype void representing <code>java.lang.Void</code>.
  *  
@@ -101,18 +103,30 @@ public class Void extends AbstractDatatype implements ValueDatatype {
         return false;
     }
 
-    /** 
-     * {@inheritDoc}
-     */
-    public boolean isNull(Object value) {
-        return value==null;
-    }
-
     /**
      * {@inheritDoc}
      */
     public boolean hasNullObject() {
         return false;
+    }
+
+    /** 
+     * {@inheritDoc}
+     */
+    public boolean isNull(String value) {
+        return value == null;
+    }
+
+    public boolean supportsCompare() {
+        return false;
+    }
+
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("The datatype " + getQualifiedName() + " does not support comparison for values");
+    }
+
+    public boolean areValuesEqual(String valueA, String valueB) {
+        return ObjectUtils.equals(valueA, valueB);
     }
     
     

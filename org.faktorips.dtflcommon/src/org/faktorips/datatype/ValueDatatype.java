@@ -17,6 +17,7 @@
 
 package org.faktorips.datatype;
 
+
 /**
  *
  */
@@ -36,28 +37,31 @@ public interface ValueDatatype extends Datatype {
 	public boolean isParsable(String value);
 	
 	/**
-	 * Parses the given String and returns the appropriate datatype's value.
-	 * Returns <code>null</code> or a NullObject, if the given String value is <code>null</code>.
-	 * 
-	 * @throws IllegalArgumentException if the string value can't be parsed.
-	 */
-	public Object getValue(String value);
-	
-    /**
-	 * Converts the given value into a String that can be parsed back to the value 
-	 * via the <code>getValue()</code> method.
-	 * <p> 
-	 * If the value is null, the method returns null.
-	 * 
-	 * @throws IllegalArgumentException if the value is not a value of this datatype.
-	 */
-	public String valueToString(Object value);
-    
-	/**
-	 * Returns <code>true</code> if the given object is <code>null</code> or the NullObject (if the
-	 * datatype value class makes use of the null object pattern.
+	 * Returns <code>true</code> if the given string is <code>null</code> or the representation of the NullObject 
+     * (if the datatype value class makes use of the null object pattern.
 	 * Returns <code>false</code> otherwise.
 	 */
-	public boolean isNull(Object value);
+	public boolean isNull(String value);
     
+    /**
+     * @return <code>true</code> if this datatype is able to compare two values.
+     */
+    public boolean supportsCompare();
+    
+    /**
+     * @param valueA The value to compare to valueB
+     * @param valueB The value to compare to valueA
+     * @return A value less than 0 if valueA is less than valueB, 0 if valueA is equal to valueB 
+     * and a value greater than 0 if valueA is greater than valueB.
+     * @throws UnsupportedOperationException if compare is not supported by this datatype. 
+     * @see supportsCompare()
+     */
+    public int compare(String valueA, String valueB) throws UnsupportedOperationException;
+    
+    /**
+     * @return <code>true</code> if the both given strings represent the same value defined by this datatype.
+     * The String " 1" (a blank followed by the char '1') and "1" (just the char '1') are equal if the 
+     * datatype is an Integer, but will not be equal if the datatype is a String.
+     */
+    public boolean areValuesEqual(String valueA, String valueB);
 }

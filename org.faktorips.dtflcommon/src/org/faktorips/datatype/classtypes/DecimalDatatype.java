@@ -50,5 +50,12 @@ public class DecimalDatatype extends ValueClassDatatype implements NumericDataty
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
+
     
 }

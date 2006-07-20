@@ -50,4 +50,11 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
 		return Integer.valueOf(s);
 	}
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
 }

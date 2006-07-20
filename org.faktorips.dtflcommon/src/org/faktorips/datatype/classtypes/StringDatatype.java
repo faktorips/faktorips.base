@@ -41,4 +41,12 @@ public class StringDatatype extends ValueClassDatatype {
 	public Object getValue(String value) {
 		return value;
 	}
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
 }

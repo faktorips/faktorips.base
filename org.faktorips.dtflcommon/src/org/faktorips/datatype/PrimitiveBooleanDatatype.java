@@ -62,4 +62,11 @@ public class PrimitiveBooleanDatatype extends AbstractPrimitiveDatatype {
         return Boolean.valueOf(value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return false;
+    }
+
 }

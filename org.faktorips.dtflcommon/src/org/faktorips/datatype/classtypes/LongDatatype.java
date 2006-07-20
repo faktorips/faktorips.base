@@ -47,4 +47,11 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
 		return Long.valueOf(s);
 	}
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
 }

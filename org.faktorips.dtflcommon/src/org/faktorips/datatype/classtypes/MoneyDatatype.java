@@ -48,4 +48,11 @@ public class MoneyDatatype extends ValueClassDatatype {
     public boolean hasNullObject() {
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsCompare() {
+        return true;
+    }
 }

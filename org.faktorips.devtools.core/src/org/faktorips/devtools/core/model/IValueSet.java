@@ -70,14 +70,13 @@ public interface IValueSet extends IIpsObjectPart {
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set. 
      */
-    public final static String MSGCODE_NOT_COMPARABLE = MSGCODE_PREFIX + "NotComparable"; //$NON-NLS-1$
-    
-    /**
-     * Validation message code to indicate that the lower bound of the subset is less than the lower
-     * bound of this value set. 
-     */
     public final static String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
     
+    /**
+     * Validation message code to indicate that the datatype does not support comparision for its values.
+     */
+    public final static String MSGCODE_DATATYPE_NOT_COMPARABLE = MSGCODE_PREFIX + "DatatypeNotComparable"; //$NON-NLS-1$
+
     /**
      * Validation message code to indicate that the datatype this value set is based on does not support
      * <code>null</code>-values, but this valueset is marked to contain a <code>null</code>-value. 
