@@ -13,6 +13,8 @@ plugin@org.faktorips.devtools.core.test=HEAD,/usr/local/cvsroot
 plugin@de.bbv.cm.CMPlugin=HEAD,/usr/local/cvsroot
 plugin@de.bbv.faktorips.runtime=HEAD,/usr/local/cvsroot
 plugin@de.bbv.faktorips.devtools=HEAD,/usr/local/cvsroot
+plugin@de.bbv.faktorips.pm.filterapplication=HEAD,/usr/local/cvsroot
+plugin@org.faktorips.devtools.msgpm=HEAD,/usr/local/cvsroot
 plugin@org.apache.poi=HEAD,/user/local/cvsroot
 
 
