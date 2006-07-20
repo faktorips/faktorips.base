@@ -43,12 +43,6 @@ public interface IRangeValueSet extends IValueSet {
 			+ "NoStepDefinedInSubset"; //$NON-NLS-1$
 
 	/**
-	 * Validation message code to indicate that the steps of the both value sets are not equal. 
-	 */
-	public final static String MSGCODE_STEP_MISMATCH = MSGCODE_PREFIX
-			+ "StepMismatch"; //$NON-NLS-1$
-
-	/**
 	 * Validation message code to indicate that the upper bound of the subset is greater than the
 	 * upper bound of this value set. 
 	 */
@@ -62,6 +56,52 @@ public interface IRangeValueSet extends IValueSet {
 	public final static String MSGCODE_LOWER_BOUND_VIOLATION = MSGCODE_PREFIX
 			+ "LowerBoundViolation"; //$NON-NLS-1$
 
+	
+	/**
+	 * Validation message code to indicate that the datatype of the attribute this range is based on
+	 * is not a numeric datatype (ranges are only possible for numeric datatypes). 
+	 */
+	public final static String MSGCODE_NOT_NUMERIC_DATATYPE = MSGCODE_PREFIX
+			+ "notNumericDatatype"; //$NON-NLS-1$
+
+	/**
+	 * Validation message code to indicate that the range definde by the lower and upper bound
+	 * is not devisible wihtout remainder using the step. 
+	 */
+	public final static String MSGCODE_STEP_RANGE_MISMATCH = MSGCODE_PREFIX
+			+ "stepRangeMissmatch"; //$NON-NLS-1$
+	
+	/**
+	 * Validation message code to indicate that the step of this range is not divisible without
+	 * remainder by the step of another range.
+	 */
+	public final static String MSGCODE_STEP_MISMATCH = MSGCODE_PREFIX
+			+ "stepMissmatch"; //$NON-NLS-1$
+	
+	/**
+	 * Validation message code to indicate that the lower bound of an other range is not divisible without
+	 * remainder by the step of this range.
+	 */
+	public final static String MSGCODE_LOWERBOUND_MISMATCH = MSGCODE_PREFIX
+			+ "lowerBoundMissmatch"; //$NON-NLS-1$
+	
+	/**
+	 * Validation message code to indicate that the upper bound of an other range is not divisible without
+	 * remainder by the step of this range.
+	 */
+	public final static String MSGCODE_UPPERBOUND_MISMATCH = MSGCODE_PREFIX
+			+ "upperBoundMissmatch"; //$NON-NLS-1$
+	
+	/**
+	 * Validation message code to indicate that a value is not divisible without remainder by the
+	 * step of this range.
+	 */
+	public final static String MSGCODE_STEP_VIOLATION = MSGCODE_PREFIX
+			+ "stepViolation"; //$NON-NLS-1$
+	
+	
+	
+	
 	public final static String PROPERTY_UPPERBOUND = "upperBound"; //$NON-NLS-1$
 
 	public final static String PROPERTY_LOWERBOUND = "lowerBound"; //$NON-NLS-1$

@@ -18,7 +18,9 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -26,7 +28,10 @@ import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -175,8 +180,16 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         } catch (IllegalArgumentException e) {
             return false;
         }
-        // TODO Implement an test when step is set to a non zero value. Not until values and 
-        // step can calculate...
+        
+        NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
+        if (!StringUtils.isEmpty(getStep()) && numDatatype != null && !numDatatype.divisibleWithoutRemainder(value, getStep())) {
+        	String msg = NLS.bind("The value {0} is not divisible without remainder by the step {1} of this range.", value, getStep());
+        	if (list != null) {
+        		addMsg(list, MSGCODE_STEP_VIOLATION, msg, invalidObject, invalidProperty);
+        	}
+        	return false;
+        	
+        }
         return true;
     }
     
@@ -215,25 +228,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     				isSubset = false;
     			}
     		} else {
-    			
     			String step = getStep();
     			String subStep = subRange.getStep();
     			
     			validateParsable(datatype, step, list, invalidObject, invalidProperty);
     			validateParsable(datatype, subStep, list, invalidObject, invalidProperty);
-    			
-    			// TODO if subStep is an integer multiple of step (if possible for the datatype...)
-    			// the step and subStep can be non-equal, anyway the subSet can be a real subset of this
-    			// range. This is only possible to test if the values have to implement another
-    			// interface then Comparable...
-    			
-    			if (datatype.compare(step, subStep) != 0) {
-    				if (list != null) {
-    					String msg = NLS.bind(Messages.Range_msgStepMismatch, getStep(), subRange.getStep());
-    					addMsg(list, MSGCODE_STEP_MISMATCH, msg, invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
-    				}
-    				isSubset = false;
-    			}
     		}
     	}
     	
@@ -267,10 +266,50 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     		isSubset = false;
     	}
     	
-    	// TODO if step != "", the lower and upper bound of the subset must be divisible without remainder
-    	// by this step. Not until values and step can calculate...
+    	String step = getStep();
+    	String subStep = subRange.getStep();
     	
-        return isSubset;
+		NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
+
+		if (StringUtils.isEmpty(subStep) && !StringUtils.isEmpty(step)) {
+    		isSubset = false;
+    	}
+    	else if (!StringUtils.isEmpty(subStep) && !StringUtils.isEmpty(step) && numDatatype != null) {
+    		if (!numDatatype.divisibleWithoutRemainder(subStep, step)) {
+    			if (list != null) {
+    				String msg = NLS.bind("The step of the range {0} is not divisible without remainder by the step of the range {1}", subRange.toShortString(), toShortString());
+    				ObjectProperty[] props = new ObjectProperty[2];
+    				props[0] = new ObjectProperty(this, PROPERTY_STEP);
+    				props[1] = new ObjectProperty(subRange, PROPERTY_STEP);
+    				list.add(new Message(MSGCODE_STEP_MISMATCH, msg, Message.ERROR, props));
+    			}
+    			isSubset = false;
+    		}
+    		if (!numDatatype.divisibleWithoutRemainder(subLower, step)) {
+    			if (list != null) {
+    				String msg = NLS.bind("The lower bound of the range {0} is not divisble without remainder by the step of the range {1}", subRange.toShortString(), toShortString());
+    				ObjectProperty[] props = new ObjectProperty[2];
+    				props[0] = new ObjectProperty(this, PROPERTY_STEP);
+    				props[1] = new ObjectProperty(subRange, PROPERTY_LOWERBOUND);
+    				list.add(new Message(MSGCODE_LOWERBOUND_MISMATCH, msg, Message.ERROR, props));
+    			}
+    			
+    			isSubset = false;
+    		}
+    		if (!numDatatype.divisibleWithoutRemainder(subUpper, step)) {
+    			if (list != null) {
+    				String msg = NLS.bind("The upper bound of the range {0} is not divisble without remainder by the step of the range {1}", subRange.toShortString(), toShortString());
+    				ObjectProperty[] props = new ObjectProperty[2];
+    				props[0] = new ObjectProperty(this, PROPERTY_STEP);
+    				props[1] = new ObjectProperty(subRange, PROPERTY_UPPERBOUND);
+    				list.add(new Message(MSGCODE_UPPERBOUND_MISMATCH, msg, Message.ERROR, props));
+    			}
+
+    			isSubset = false;
+    		}
+    	}
+
+		return isSubset;
 	}
     
     private String getProperty(String original, String alternative) {
@@ -298,7 +337,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                     new String[]{PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND, PROPERTY_STEP}));
             return;
         }
-        
+
         if (datatype.isPrimitive() && getContainsNull()) {
         	String text = Messages.RangeValueSet_msgNullNotSupported;
         	list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
@@ -321,6 +360,41 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         				new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND}));
         		return;
         	}
+        }
+
+        NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
+        if (numDatatype != null && !StringUtils.isEmpty(upperValue) && !StringUtils.isEmpty(lowerValue) && !StringUtils.isEmpty(getStep())) {
+        	String range = numDatatype.substract(upperValue, lowerValue);
+        	if (!numDatatype.divisibleWithoutRemainder(range, step)) {
+        		String msg = NLS.bind("The range ({0} - {1}) is not divisible without remainder by step {2}", new String[] {lowerValue, upperValue, getStep()});
+        		list.add(new Message(MSGCODE_STEP_RANGE_MISMATCH, msg, Message.ERROR, this, new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND, PROPERTY_STEP}));
+        	}
+        }
+    }
+    
+    private NumericDatatype getAndValidateNumericDatatype(ValueDatatype datatype, MessageList list) {
+        if (!(datatype instanceof NumericDatatype)) {
+            IAttribute attr = null;
+            if (getParent() instanceof IConfigElement) {
+            	try {
+					attr = ((IConfigElement)getParent()).findPcTypeAttribute();
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+				}
+            }
+            else if (getParent() instanceof IAttribute) {
+            	attr = (IAttribute)getParent();
+            }
+
+            String text = "Ranges can only be defined for numeric datatypes";
+        	
+            Object obj = attr==null?(Object)this:attr;
+        	list.add(new Message(MSGCODE_NOT_NUMERIC_DATATYPE, text, Message.ERROR, obj, IAttribute.PROPERTY_DATATYPE));
+        	
+        	return null;
+        }
+        else {
+        	return (NumericDatatype)datatype;
         }
     }
 

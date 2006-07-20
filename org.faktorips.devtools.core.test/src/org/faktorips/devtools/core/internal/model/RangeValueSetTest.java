@@ -120,6 +120,15 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 	    
 	    range.setContainsNull(true);
 	    assertTrue(range.containsValue(null));
+        
+        range.setStep("2");
+        range.setUpperBound("26");
+        assertTrue(range.containsValue("20"));
+        assertTrue(range.containsValue("24"));
+        assertTrue(range.containsValue("26"));
+        assertFalse(range.containsValue("18"));
+        assertFalse(range.containsValue("21"));
+        assertFalse(range.containsValue("28"));
  	}
 	
 	public void testContainsValueSet() {
@@ -138,23 +147,23 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 		assertFalse(range.containsValueSet(subRange));
 		
 		subRange.setStep("2");
-		subRange.setLowerBound("9");
+		subRange.setLowerBound("8");
 		assertFalse(range.containsValueSet(subRange));
 
-		subRange.setLowerBound("15");
+		subRange.setLowerBound("14");
 		assertTrue(range.containsValueSet(subRange));
 
-		subRange.setUpperBound("17");
+		subRange.setUpperBound("18");
 		assertTrue(range.containsValueSet(subRange));
 		
-		subRange.setUpperBound("23");
+		subRange.setUpperBound("24");
 		assertFalse(range.containsValueSet(subRange));
 
 	    MessageList list = new MessageList();
 	    range.containsValueSet(subRange, list, null, null);
 	    assertTrue(list.containsErrorMsg());
 	    
-	    subRange.setUpperBound("17");
+	    subRange.setUpperBound("18");
 	    list.clear();
 	    range.containsValueSet(subRange, list, null, null);
 	    assertFalse(list.containsErrorMsg());   
@@ -246,4 +255,24 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 		assertNotNull(list.getMessageByCode(IRangeValueSet.MSGCODE_NULL_NOT_SUPPORTED));
     }
     
+    public void testContainsValueSetStep() {
+        RangeValueSet range = new RangeValueSet(intEl, 50);
+        range.setLowerBound("10");
+        range.setUpperBound("20");
+        range.setStep("2");
+        
+        RangeValueSet subRange = new RangeValueSet(intEl, 100);
+        subRange.setLowerBound("12");
+        subRange.setUpperBound("20");
+        subRange.setStep("2");
+
+        assertTrue(range.containsValueSet(subRange));
+        
+        subRange.setStep("4");
+        assertTrue(range.containsValueSet(subRange));
+
+        subRange.setUpperBound("21");
+        subRange.setStep("3");
+        assertFalse(range.containsValueSet(subRange));
+    }
 }
