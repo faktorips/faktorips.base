@@ -154,7 +154,6 @@ public class GenericValueDatatypeTest extends TestCase {
         datatype.setValueOfMethodName("getPaymentMode");
         assertFalse(datatype.isNull(PaymentMode.ANNUAL.getId()));
         assertTrue(datatype.isNull(null));
-        
     }
 
     private class InvalidType extends GenericValueDatatype {
