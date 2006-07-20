@@ -12,7 +12,7 @@ plugin@org.faktorips.devtools.stdbuilder.test=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.core.test=HEAD,/usr/local/cvsroot
 plugin@de.bbv.cm.CMPlugin=HEAD,/usr/local/cvsroot
 plugin@de.bbv.faktorips.runtime=HEAD,/usr/local/cvsroot
-plugin@de.bbv.faktorips=HEAD,/usr/local/cvsroot
+plugin@de.bbv.faktorips.devtools=HEAD,/usr/local/cvsroot
 plugin@org.apache.poi=HEAD,/user/local/cvsroot
 
 
