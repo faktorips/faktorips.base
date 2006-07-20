@@ -57,4 +57,40 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
     public boolean supportsCompare() {
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String substract(String minuend, String subtrahend) {
+        if (minuend == null || subtrahend == null) {
+            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+        }
+
+        int result = ((Integer)getValue(minuend)).intValue() - ((Integer)getValue(subtrahend)).intValue();
+        return Integer.toString(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean divisibleWithoutRemainder(String dividend, String divisor) {
+        if (dividend == null || divisor == null) {
+            throw new NullPointerException("dividend and divisor both can not be null.");
+        }
+        Integer intA = (Integer)getValue(dividend);
+        Integer intB = (Integer)getValue(divisor);
+        
+        if (intA == null) {
+            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to an Integer");
+        }
+        
+        if (intB == null) {
+            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to an Integer");
+        }
+        
+        int a = intA.intValue();
+        int b = intB.intValue();
+
+        return Math.IEEEremainder(a, b) == 0;
+    }
 }

@@ -24,5 +24,29 @@ package org.faktorips.datatype;
  */
 public interface NumericDatatype extends ValueDatatype {
 
+    
+    /**
+     * Subtraction
+     * @param minuend The value to be reduced.
+     * @param subtrahend The value to be used to reduce the minuend
+     * @return The result of "minuend - subtrahend".
+     * 
+     * @throws NullPointerException if at least one of minuend and subtrahend is <code>null</code>
+     * @throws NumberFormatException if at least one of minuend and subtrahend can not be converted
+     * into a number of this datatype. 
+     */
+    public String substract(String minuend, String subtrahend);
 
+    /**
+     * @param dividend The value to be devided
+     * @param divisor The value to be used to divide the dividend
+     * @return <code>true</code> if dividend can be divided by the divisor without remainder, 
+     * <code>false</code> otherwise.
+     * 
+     * @throws NullPointerException if at least one of dividend and divisor is <code>null</code>
+     * @throws NumberFormatException if at least one of dividend and divisor can not be converted
+     * into a number of this datatype. 
+     */
+    public boolean divisibleWithoutRemainder(String dividend, String divisor);
+    
 }

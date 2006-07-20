@@ -69,4 +69,27 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String substract(String minuend, String subtrahend) {
+        if (minuend == null || subtrahend == null) {
+            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+        }
+        int result = ((Integer)getValue(minuend)).intValue() - ((Integer)getValue(subtrahend)).intValue();
+        return Integer.toString(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean divisibleWithoutRemainder(String dividend, String divisor) {
+        if (dividend == null || divisor == null) {
+            throw new NullPointerException("dividend and divisor both can not be null.");
+        }
+        int a = ((Integer)getValue(dividend)).intValue();
+        int b = ((Integer)getValue(divisor)).intValue();
+        return Math.IEEEremainder(a, b) == 0;
+    }
+
 }

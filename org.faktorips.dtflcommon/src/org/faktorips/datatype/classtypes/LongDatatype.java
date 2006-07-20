@@ -54,4 +54,40 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
     public boolean supportsCompare() {
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String substract(String minuend, String subtrahend) {
+        if (minuend == null || subtrahend == null) {
+            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+        }
+
+        long result = ((Long)getValue(minuend)).longValue() - ((Long)getValue(subtrahend)).longValue();
+        return Long.toString(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean divisibleWithoutRemainder(String dividend, String divisor) {
+        if (dividend == null || divisor == null) {
+            throw new NullPointerException("dividend and divisor both can not be null.");
+        }
+        Long longA = (Long)getValue(dividend);
+        Long longB = (Long)getValue(divisor);
+        
+        if (longA == null) {
+            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to a Long");
+        }
+        
+        if (longB == null) {
+            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to a Long");
+        }
+        
+        long a = longA.longValue();
+        long b = longB.longValue();
+
+        return Math.IEEEremainder(a, b) == 0;
+    }
 }

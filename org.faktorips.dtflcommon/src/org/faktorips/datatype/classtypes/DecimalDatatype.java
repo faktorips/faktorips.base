@@ -17,6 +17,8 @@
 
 package org.faktorips.datatype.classtypes;
 
+import java.math.BigDecimal;
+
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
 import org.faktorips.values.Decimal;
@@ -54,6 +56,43 @@ public class DecimalDatatype extends ValueClassDatatype implements NumericDataty
      * {@inheritDoc}
      */
     public boolean supportsCompare() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String substract(String minuend, String subtrahend) {
+        if (minuend == null || subtrahend == null) {
+            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+        }
+        return ((Decimal)getValue(minuend)).subtract((Decimal)getValue(subtrahend)).toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean divisibleWithoutRemainder(String dividend, String divisor) {
+        if (dividend == null || divisor == null) {
+            throw new NullPointerException("dividend and divisor both can not be null.");
+        }
+        Decimal a = (Decimal)getValue(dividend);
+        Decimal b = (Decimal)getValue(divisor);
+        
+        if (a == null) {
+            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to a Double");
+        }
+        
+        if (b == null) {
+            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to a Double");
+        }
+
+        try {
+            a.divide(b, 0, BigDecimal.ROUND_UNNECESSARY);
+        }
+        catch (ArithmeticException e) {
+            return false;
+        }
         return true;
     }
 
