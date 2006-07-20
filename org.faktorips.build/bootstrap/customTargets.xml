@@ -39,6 +39,13 @@
 	</ant>
 </target>
 
+<target name="de.bbv.faktorips.feature">
+	<ant antfile="${assembleScriptName}" dir="${buildDirectory}">
+		<property name="zipargs" value="" />
+	</ant>
+</target>
+	
+	
 <!-- ===================================================================== -->
 <!-- Check out map files from correct repository -->
 <!-- Replace values for cvsRoot, package and mapVersionTag as desired. -->
