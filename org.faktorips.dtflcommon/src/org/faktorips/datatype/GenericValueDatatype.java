@@ -333,6 +333,14 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      * {@inheritDoc}
      */
     public boolean areValuesEqual(String valueA, String valueB) {
+        
+        if(valueA == null && valueB == null){
+            return true;
+        }
+        if(valueA == null && valueB != null ||
+           valueA != null && valueB == null){
+            return false;
+        }
         return getValue(valueA).equals(getValue(valueB));
     }
 

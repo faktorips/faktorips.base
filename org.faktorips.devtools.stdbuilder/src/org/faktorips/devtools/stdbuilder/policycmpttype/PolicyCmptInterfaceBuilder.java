@@ -26,9 +26,14 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -41,6 +46,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBui
 import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.DefaultEnumValueSet;
 import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 
@@ -347,14 +353,16 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
         generateMethodSetPropertyValue(attribute, datatypeHelper, methodsBuilder);
-//      TODO disable for version 0.9.21        
-//        if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
-//            generateMethodGetMaxRangeFor(attribute, datatypeHelper, methodsBuilder);
-//        }
-//        else if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
-//                datatypeHelper.getDatatype() instanceof EnumDatatype){
-//            generateMethodMaxAllowedValuesFor(attribute, datatypeHelper, methodsBuilder);
-//        }
+        if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
+            generateFieldMaxRangeFor(attribute, datatypeHelper, memberVarsBuilder);
+            productCmptGenInterfaceBuilder.generateMethodGetRangeFor(attribute, datatypeHelper, methodsBuilder);
+        }
+        else if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
+                datatypeHelper.getDatatype() instanceof EnumDatatype){
+            generateFieldMaxAllowedValuesFor(attribute, datatypeHelper, memberVarsBuilder);
+            productCmptGenInterfaceBuilder.generateMethodGetAllowedValuesFor(
+                    attribute, datatypeHelper.getDatatype(), methodsBuilder);
+        }
     }
     
     /**
@@ -482,10 +490,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForRelationInCommon(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if(relation.isProductRelevant() && 
-           !relation.isReadOnlyContainer() && 
+        if(!relation.isReadOnlyContainer() && 
            !relation.getRelationType().isReverseComposition()){
-            generateMethodGetMaxCardinalityFor(relation, methodsBuilder);
+            generateFieldGetMaxCardinalityFor(relation, fieldsBuilder);
         }
     }
 
@@ -963,37 +970,100 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         membersBuilder.appendln("\";");
     }
     
-    public String getMethodNameGetMaxRangeFor(IAttribute a, Datatype datatype){
-        String name = getLocalizedText(a, "METHOD_GET_MAX_RANGE_FOR_NAME", a.getName());
-        return getJavaNamingConvention().getGetterMethodName(
-                StringUtils.capitalise(name), datatype);
+    public String getFieldNameMaxRangeFor(IAttribute a){
+        return getLocalizedText(a, "FIELD_MAX_RANGE_FOR_NAME", StringUtils.upperCase(a.getName()));
     }
     
-    public void generateSignatureGetMaxRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, helper.getRangeJavaClassName(), 
-                getMethodNameGetMaxRangeFor(a, helper.getDatatype()), new String[0], new String[0]);
+    public void generateFieldMaxRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder membersBuilder){
+        appendLocalizedJavaDoc("FIELD_MAX_RANGE_FOR", a.getName(), a, membersBuilder);
+        RangeValueSet range = (RangeValueSet)a.getValueSet();
+        JavaCodeFragment containsNullFrag = new JavaCodeFragment();
+        containsNullFrag.append(range.getContainsNull());
+        JavaCodeFragment frag = helper.newRangeInstance(helper.newInstance(range.getLowerBound()), 
+                helper.newInstance(range.getUpperBound()), helper.newInstance(range.getStep()), 
+                containsNullFrag);
+        membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | 
+                                      java.lang.reflect.Modifier.FINAL | 
+                                      java.lang.reflect.Modifier.STATIC, 
+                                      helper.getRangeJavaClassName(), 
+                                      getFieldNameMaxRangeFor(a), frag);
     }
     
-    protected void generateMethodGetMaxRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
-        appendLocalizedJavaDoc("METHOD_GET_MAX_RANGE_FOR", a.getName(), a, methodsBuilder);
-        generateSignatureGetMaxRangeFor(a, helper, methodsBuilder);
-        methodsBuilder.append(';');
+    public String getFieldNameMaxAllowedValuesFor(IAttribute a){
+        return getLocalizedText(a, "FIELD_MAX_ALLOWED_VALUES_FOR_NAME", StringUtils.upperCase(a.getName()));
+    }
+
+    public void generateFieldMaxAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder membersBuilder){
+        appendLocalizedJavaDoc("FIELD_MAX_ALLOWED_VALUES_FOR", a.getName(), a, membersBuilder);
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.append("new ");
+        frag.appendClassName(DefaultEnumValueSet.class);
+        frag.append("(");
+        frag.append("new ");
+        frag.appendClassName(helper.getJavaClassName());
+        frag.append("[] ");
+        frag.appendOpenBracket();
+        String[] valueIds = new String[0];
+        if(a.getValueSet() instanceof IEnumValueSet){
+            IEnumValueSet set = (IEnumValueSet)a.getValueSet();
+            valueIds = set.getValues();    
+        }
+        else if(helper.getDatatype() instanceof EnumDatatype){
+            valueIds = ((EnumDatatype)helper.getDatatype()).getAllValueIds(true);
+        }
+        
+        for (int i = 0; i < valueIds.length; i++) {
+            frag.append(helper.newInstance(valueIds[i]));
+            if(i < valueIds.length - 1){
+                frag.append(", ");
+            }
+        }
+        frag.appendCloseBracket();
+        frag.append(", ");
+        boolean containsNull = false;
+        //TODO this code has to go into the EnumValueSet class
+        ValueDatatype datatype = (ValueDatatype)helper.getDatatype();
+        for (int i = 0; i < valueIds.length; i++) {
+            if(datatype.isNull(valueIds[i])){
+                containsNull = true;
+                break;
+            }
+        }
+        frag.append(containsNull);
+        frag.append(", ");
+        frag.append(helper.newInstance(null));
+        frag.appendln(")");
+        membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | 
+                java.lang.reflect.Modifier.FINAL | 
+                java.lang.reflect.Modifier.STATIC, 
+                EnumValueSet.class, 
+                getFieldNameMaxAllowedValuesFor(a), frag);
+
     }
     
-    public String getMethodNameMaxAllowedValuesFor(IAttribute a, Datatype datatype){
-        String name = getLocalizedText(a, "METHOD_GET_MAX_ALLOWED_VALUES_FOR_NAME", a.getName());
-        return getJavaNamingConvention().getGetterMethodName(
-                StringUtils.capitalise(name), datatype);
+    protected void generateFieldGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder attrBuilder){
+        appendLocalizedJavaDoc("FIELD_MAX_CARDINALITY", relation.getTargetRoleSingular(), relation, attrBuilder);
+        String fieldName = getFieldNameGetMaxCardinalityFor(relation);
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.append("new ");
+        frag.appendClassName(IntegerRange.class);
+        frag.append("(");
+        frag.append(relation.getMinCardinality());
+        frag.append(", ");
+        frag.append(relation.getMaxCardinality());
+        frag.append(")");
+        attrBuilder.varDeclaration(
+                java.lang.reflect.Modifier.PUBLIC | 
+                java.lang.reflect.Modifier.FINAL | 
+                java.lang.reflect.Modifier.STATIC, IntegerRange.class, fieldName, frag);
+        attrBuilder.appendln();
     }
-    
-    public void generateSignatureMaxAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, EnumValueSet.class.getName(), 
-                getMethodNameMaxAllowedValuesFor(a, helper.getDatatype()), new String[0], new String[0]);
+
+    /**
+     * Returns the name for the field GetMaxCardinalityFor + single target role of the provided relation
+     */
+    public String getFieldNameGetMaxCardinalityFor(IRelation relation){
+        return getLocalizedText(getPcType(), "FIELD_MAX_CARDINALITY_NAME", 
+                StringUtils.upperCase(relation.getTargetRoleSingular()));
     }
-    
-    protected void generateMethodMaxAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder){
-        appendLocalizedJavaDoc("METHOD_GET_MAX_ALLOWED_VALUES_FOR", a.getName(), a, methodsBuilder);
-        generateSignatureMaxAllowedValuesFor(a, helper, methodsBuilder);
-        methodsBuilder.append(';');
-    }
-}
+ }

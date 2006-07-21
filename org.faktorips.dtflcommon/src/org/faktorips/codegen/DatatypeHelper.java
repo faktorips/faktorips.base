@@ -143,6 +143,7 @@ public interface DatatypeHelper {
      * @param containsNullExp the containsNull expression
      * @return the code fragment to create a new range instance. Can be null to indicate that a range is not supported.
      */
-    public JavaCodeFragment newRangeInstance(String lowerBoundExp, String upperBoundExp, String stepExp, String containsNullExp);
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, 
+            JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp);
 
 }

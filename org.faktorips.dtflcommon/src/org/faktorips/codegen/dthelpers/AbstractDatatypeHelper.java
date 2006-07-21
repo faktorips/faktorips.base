@@ -107,12 +107,12 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         return null;
     }
 
+    
     /**
      * {@inheritDoc}
-     * 
      * @return <code>null</code>
      */
-    public JavaCodeFragment newRangeInstance(String lowerBound, String upperBound, String step, String containsNull) {
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
         return null;
-    }	
+    }
 }

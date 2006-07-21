@@ -110,8 +110,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         
         //TODO the generateCodeForAttribute method of the abstract builder needs to discriminate against
         //the published modifier
-        if(!datatypeHelper.getDatatype().isPrimitive() &&     
-           !ValueSetType.ALL_VALUES.equals(a.getValueSet().getValueSetType())){
+        if(!datatypeHelper.getDatatype().isPrimitive()){
            
            if(datatypeHelper.getDatatype() instanceof EnumDatatype){
                generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
@@ -410,7 +409,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
                 "METHOD_GET_RANGE_FOR_NAME", StringUtils.capitalise(a.getName())), datatype);
     }
     
-    private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    public void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
         appendLocalizedJavaDoc("METHOD_GET_RANGE_FOR", a.getName(), a, methodsBuilder);
         generateSignatureGetRangeFor(a, helper, methodsBuilder);
         methodsBuilder.append(';');
@@ -427,7 +426,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
                 a, "METHOD_GET_ALLOWED_VALUES_FOR_NAME", StringUtils.capitalise(a.getName())), datatype);
     }
     
-    private void generateMethodGetAllowedValuesFor(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
+    public void generateMethodGetAllowedValuesFor(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder methodsBuilder) throws CoreException{
         appendLocalizedJavaDoc("METHOD_GET_ALLOWED_VALUES_FOR", a.getName(), a, methodsBuilder);
         generateSignatureGetAllowedValuesFor(a, datatype, methodsBuilder);
         methodsBuilder.append(';');

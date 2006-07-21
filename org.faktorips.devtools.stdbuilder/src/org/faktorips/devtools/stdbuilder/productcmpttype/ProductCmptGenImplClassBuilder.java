@@ -250,7 +250,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     frag.appendln(".getRangeFromElement(configElement, \"ValueSet\");");
                     frag.append(getFieldNameRangeFor(a));
                     frag.append(" = ");
-                    JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance("range.getLower()", "range.getUpper()", "range.getStep()", "range.containsNull()");
+                    JavaCodeFragment newRangeInstanceFrag = helper.newRangeInstance(
+                            new JavaCodeFragment("range.getLower()"), new JavaCodeFragment("range.getUpper()"),
+                            new JavaCodeFragment("range.getStep()"), new JavaCodeFragment("range.containsNull()"));
                     if(newRangeInstanceFrag == null){
                         throw new CoreException(new IpsStatus("The " + helper + " for the datatype " +  datatype.getName() + " doesn't support ranges."));
                     }

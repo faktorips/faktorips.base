@@ -106,17 +106,17 @@ public class DecimalHelper extends AbstractDatatypeHelper {
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newRangeInstance(String lowerBound, String upperBound, String step, String containsNull) {
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.appendClassName(getRangeJavaClassName());
         frag.append(".valueOf(");
-        frag.append(lowerBound);
+        frag.append(lowerBoundExp);
         frag.append(", ");
-        frag.append(upperBound);
+        frag.append(upperBoundExp);
         frag.append(", ");
-        frag.append(step);
+        frag.append(stepExp);
         frag.append(", ");
-        frag.append(containsNull);
+        frag.append(containsNullExp);
         frag.append(")");
         return frag;
     }

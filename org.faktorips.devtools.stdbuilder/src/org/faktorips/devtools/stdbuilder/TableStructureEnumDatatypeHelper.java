@@ -110,10 +110,7 @@ public class TableStructureEnumDatatypeHelper implements DatatypeHelper {
     /**
      * {@inheritDoc}
      */
-    public JavaCodeFragment newRangeInstance(String lowerBoundExp,
-            String upperBoundExp,
-            String stepExp,
-            String containsNullExp) {
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
         return null;
     }
 

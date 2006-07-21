@@ -28,12 +28,14 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.MessageFragment;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
@@ -56,7 +58,6 @@ import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
@@ -263,6 +264,19 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
+        if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
+            if(Modifier.PUBLIC.equals(attribute.getModifier())){
+                interfaceBuilder.generateFieldMaxRangeFor(attribute, datatypeHelper, memberVarsBuilder);
+            }
+            generateMethodGetRangeFor(attribute, datatypeHelper, methodsBuilder);
+        }
+        if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
+                datatypeHelper.getDatatype() instanceof EnumDatatype){
+            if(Modifier.PUBLIC.equals(attribute.getModifier())){
+                interfaceBuilder.generateFieldMaxAllowedValuesFor(attribute, datatypeHelper, memberVarsBuilder);
+            }
+            generateMethodGetAllowedValuesFor(attribute, datatypeHelper, methodsBuilder);
+        }
         generateFieldForAttribute(attribute, datatypeHelper, memberVarsBuilder);
         generateMethodAttributeGetterFromMemberVar(attribute, datatypeHelper, methodsBuilder);
         generateMethodAttributeSetter(attribute, datatypeHelper, methodsBuilder);
@@ -432,12 +446,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected void generateCodeForRelationInCommon(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-        if(relation.isProductRelevant() &&
-           !relation.isReadOnlyContainer() &&
-           !relation.isReverseComposition()){
-            generateFieldGetMaxCardinalityFor(relation, fieldsBuilder);
-            generateMethodGetMaxCardinalityFor(relation, methodsBuilder);
-        }
     }
 
     /**
@@ -1578,61 +1586,51 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.methodEnd();
     }
     
-    public void generateMethodGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder methodsBuilder){
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureGetMaxCardinalityFor(relation, methodsBuilder);
-        JavaCodeFragment frag = new JavaCodeFragment();
-        frag.appendOpenBracket();
-        frag.append("return ");
-        frag.append(getFieldNameGetMaxCardinalityFor(relation));
-        frag.append(";");
-        frag.appendCloseBracket();
-        methodsBuilder.append(frag);
+    private void generateMethodGetRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_RESTRAINED_MODIFIABLE);
+        productCmptGenInterfaceBuilder.generateSignatureGetRangeFor(a, helper, methodBuilder);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendOpenBracket();
+        body.appendln(MARKER_BEGIN_USER_CODE);
+        body.append("return ");
+        if(a.isProductRelevant()){
+            
+            body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getPcType().findProductCmptType()));
+            body.append("().");
+            body.append(productCmptGenInterfaceBuilder.getMethodNameGetRangeFor(a, helper.getDatatype()));
+            body.appendln("(businessFunction);");
+        }
+        else{
+            body.append(interfaceBuilder.getFieldNameMaxRangeFor(a));
+            body.appendln(";");
+            
+        }
+        body.appendln(MARKER_END_USER_CODE);
+        body.appendCloseBracket();
+        methodBuilder.append(body);
     }
     
-    protected void generateFieldGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder attrBuilder){
-        String comment = getLocalizedText(relation, "FIELD_MAX_CARDINALITY_JAVADOC", relation.getTargetRoleSingular());
-        attrBuilder.javaDoc(comment, JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        String fieldName = getFieldNameGetMaxCardinalityFor(relation);
-        JavaCodeFragment frag = new JavaCodeFragment();
-        frag.append("new ");
-        frag.appendClassName(IntegerRange.class);
-        frag.append("(");
-        frag.append(relation.getMinCardinality());
-        frag.append(", ");
-        frag.append(relation.getMaxCardinality());
-        frag.append(")");
-        attrBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, IntegerRange.class, fieldName, frag);
-        attrBuilder.appendln();
+    private void generateMethodGetAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder methodBuilder) throws CoreException{
+        methodBuilder.javaDoc("{@inheritDoc}", ANNOTATION_RESTRAINED_MODIFIABLE);
+        productCmptGenInterfaceBuilder.generateSignatureGetAllowedValuesFor(a, helper.getDatatype(), methodBuilder);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendOpenBracket();
+        body.appendln(MARKER_BEGIN_USER_CODE);
+        body.append("return ");
+        if(a.isProductRelevant()){
+            
+            body.append(interfaceBuilder.getMethodNameGetProductCmptGeneration(getPcType().findProductCmptType()));
+            body.append("().");
+            body.append(productCmptGenInterfaceBuilder.getMethodNameGetAllowedValuesFor(a, helper.getDatatype()));
+            body.appendln("(businessFunction);");
+        }
+        else{
+            body.append(interfaceBuilder.getFieldNameMaxAllowedValuesFor(a));
+            body.appendln(";");
+            
+        }
+        body.appendln(MARKER_END_USER_CODE);
+        body.appendCloseBracket();
+        methodBuilder.append(body);
     }
-
-    /**
-     * Returns the name for the field GetMaxCardinalityFor + single target role of the provided relation
-     */
-    protected String getFieldNameGetMaxCardinalityFor(IRelation relation){
-        return getLocalizedText(getPcType(), "FIELD_MAX_CARDINALITY_NAME", relation.getTargetRoleSingular());
-    }
-
-    public String getFieldNameMaxRangeFor(IAttribute a){
-        return getLocalizedText(a, "FIELD_MAX_RANGE_FOR_NAME", StringUtils.uncapitalise(a.getName()));
-    }
-
-//TODO disable for version 0.9.21    
-//    private void generateFieldMaxRangeFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder membersBuilder){
-//        JavaCodeFragment frag = new JavaCodeFragment();
-//        RangeValueSet range = (RangeValueSet)a.getValueSet();
-//        frag.append(helper.newRangeInstance(helper.newInstance(range.getLowerBound()), 
-//                helper.newInstance(range.getUpperBound()), helper.newInstance(range.getStep()), 
-//                String.valueOf(range.getContainsNull())));
-//        membersBuilder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, helper.getRangeJavaClassName(), getFieldNameMaxRangeFor(a), frag);
-//    }
-    
-    public String getFieldNameMaxAllowedValuesFor(IAttribute a){
-        return getLocalizedText(a, "FIELD_MAX_ALLOWED_VALUES_FOR_NAME", StringUtils.uncapitalise(a.getName()));
-    }
-    
-//  TODO disable for version 0.9.21    
-//    private void generateFieldMaxAllowedValuesFor(IAttribute a, JavaCodeFragmentBuilder memebersBuilder){
-//        
-//    }
 }
