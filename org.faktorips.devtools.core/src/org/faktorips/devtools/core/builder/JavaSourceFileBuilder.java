@@ -99,14 +99,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * generated code that a user can modify and will not be overridden by the generator 
 	 * at the next generation.
 	 */
-	public final static String MARKER_BEGIN_USER_CODE = "//begin-user-code";
+	public final static String MARKER_BEGIN_USER_CODE = "//begin-user-code"; //$NON-NLS-1$
 
 	/**
 	 * This constant is supposed to be used to indicate the end of a section within 
 	 * generated code that a user can modify and will not be overridden by the generator 
 	 * at the next generation.
 	 */
-	public final static String MARKER_END_USER_CODE = "//end-user-code";
+	public final static String MARKER_END_USER_CODE = "//end-user-code"; //$NON-NLS-1$
 
 	final protected static String JAVA_EXTENSION = ".java"; //$NON-NLS-1$
 

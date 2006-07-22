@@ -52,10 +52,10 @@ public class TableStructureType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("TableStructureType", TableStructureType.class); //$NON-NLS-1$
-        SINGLE_CONTENT = new TableStructureType(enumType, "singleContent", "Single Content");
-        MULTIPLE_CONTENTS = new TableStructureType(enumType, "multipleContents", "Multiple Contents");
-        ENUMTYPE_MODEL = new TableStructureType(enumType, "enumTypeModel", "EnumType (values are part of the model)");
-        ENUMTYPE_PRODUCTDEFINTION = new TableStructureType(enumType, "enumTypeProductDefinition", "EnumType (values are part of the product definiton");
+        SINGLE_CONTENT = new TableStructureType(enumType, "singleContent", Messages.TableStructureType_labelSingleContent); //$NON-NLS-1$
+        MULTIPLE_CONTENTS = new TableStructureType(enumType, "multipleContents", Messages.TableStructureType_lableMultipleContents); //$NON-NLS-1$
+        ENUMTYPE_MODEL = new TableStructureType(enumType, "enumTypeModel", Messages.TableStructureType_labelEnumTypeModel); //$NON-NLS-1$
+        ENUMTYPE_PRODUCTDEFINTION = new TableStructureType(enumType, "enumTypeProductDefinition", Messages.TableStructureType_labelEnumTypeProductDefinition); //$NON-NLS-1$
     }
 
 	

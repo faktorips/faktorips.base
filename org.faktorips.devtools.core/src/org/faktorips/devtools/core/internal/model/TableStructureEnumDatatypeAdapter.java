@@ -92,7 +92,7 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 	 * Not supported
 	 */
 	public String getValueName(String id) {
-		throw new UnsupportedOperationException("Not supported.");
+		throw new UnsupportedOperationException("Not supported."); //$NON-NLS-1$
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 	}
 
 	public int compare(String valueA, String valueB) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException("TableStructureEnumDatatype " + getQualifiedName() + "does not support comparison for values");
+		throw new UnsupportedOperationException("TableStructureEnumDatatype " + getQualifiedName() + "does not support comparison for values"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public boolean areValuesEqual(String valueA, String valueB) {
@@ -212,7 +212,7 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 				}
 			}
 		} catch (CoreException e) {
-			throw new RuntimeException("Error during search for table contents for " + table.getQualifiedName(), e);
+			throw new RuntimeException("Error during search for table contents for " + table.getQualifiedName(), e); //$NON-NLS-1$
 		}
 		
 		IUniqueKey[] keys = table.getUniqueKeys();

@@ -854,7 +854,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 			}
 		}
 		String superType= pcType.getSupertype();
-		if(!superType.equals("")){
+		if(!superType.equals("")){ //$NON-NLS-1$
 			list.add(findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, superType));
 		}
 		return (PolicyCmptType[])list.toArray(new PolicyCmptType[0]);

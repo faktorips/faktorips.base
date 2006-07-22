@@ -122,36 +122,36 @@ public class MessageFragment{
      */
 	public final static MessageFragment createMessageFragment(String messageText){
 		
-        Pattern p = Pattern.compile("\\[[^\\]]*\\]");
+        Pattern p = Pattern.compile("\\[[^\\]]*\\]"); //$NON-NLS-1$
         Matcher m = p.matcher(messageText);
 		JavaCodeFragment frag = new JavaCodeFragment();
 		frag.appendClassName(StringBuffer.class);
-		frag.append(" text = ");
-		frag.append("new ");
+		frag.append(" text = "); //$NON-NLS-1$
+		frag.append("new "); //$NON-NLS-1$
 		frag.appendClassName(StringBuffer.class);
-		frag.appendln("();");
+		frag.appendln("();"); //$NON-NLS-1$
 		int beginIndex = 0;
 		int numberOfParams = 0;
 		ArrayList paraNames = new ArrayList();
 		ArrayList paraValues = new ArrayList();
 		while (m.find()){
-			frag.append("text.append(\"");
+			frag.append("text.append(\""); //$NON-NLS-1$
 			frag.append(messageText.subSequence(beginIndex, m.start()).toString());
-			frag.appendln("\");");
-			frag.append("text.append(");
-			String paraName = "param" + numberOfParams++;
+			frag.appendln("\");"); //$NON-NLS-1$
+			frag.append("text.append("); //$NON-NLS-1$
+			String paraName = "param" + numberOfParams++; //$NON-NLS-1$
 			frag.append(paraName);
-			frag.appendln(");");
+			frag.appendln(");"); //$NON-NLS-1$
 			paraNames.add(paraName);
 			paraValues.add(messageText.subSequence(m.start() + 1, m.end() - 1).toString());
 		    beginIndex = m.end();
 		}
 		if(beginIndex < messageText.length()){
-			frag.append("text.append(\"");
+			frag.append("text.append(\""); //$NON-NLS-1$
 			frag.append(messageText.subSequence(beginIndex, messageText.length()).toString());
-			frag.appendln("\");");
+			frag.appendln("\");"); //$NON-NLS-1$
 		}
 		return new MessageFragment(frag, (String[])paraNames.toArray(new String[paraNames.size()]), 
-				(String[])paraValues.toArray(new String[paraValues.size()]), "text.toString()");
+				(String[])paraValues.toArray(new String[paraValues.size()]), "text.toString()"); //$NON-NLS-1$
 	}
 }

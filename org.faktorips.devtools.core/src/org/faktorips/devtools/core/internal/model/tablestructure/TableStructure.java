@@ -469,7 +469,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         else {
         	// Code for migrating old table structures
         	// TODO remove migration code
-        	if (Boolean.valueOf(element.getAttribute("multipleContentsAllowed")).booleanValue()) {
+        	if (Boolean.valueOf(element.getAttribute("multipleContentsAllowed")).booleanValue()) { //$NON-NLS-1$
         		type = TableStructureType.MULTIPLE_CONTENTS;
         	}
         	else {

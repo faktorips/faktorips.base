@@ -53,7 +53,7 @@ public class GeneralInfoSection extends IpsSection {
         this.tableStructure = tableStructure;
         
         initControls();
-        setText("General information");
+        setText(Messages.GeneralInfoSection_labelGeneralInfoSection);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class GeneralInfoSection extends IpsSection {
         client.setLayout(new GridLayout(1, false));
         Composite composite = toolkit.createLabelEditColumnComposite(client);
 
-        toolkit.createFormLabel(composite, "Type of table:");
+        toolkit.createFormLabel(composite, Messages.GeneralInfoSection_labelTableType);
         Combo combo = toolkit.createCombo(composite, TableStructureType.getEnumType());
         typeField = new EnumValueField(combo, TableStructureType.getEnumType());
         

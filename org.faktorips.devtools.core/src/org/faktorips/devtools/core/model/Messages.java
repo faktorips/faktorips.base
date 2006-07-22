@@ -103,4 +103,18 @@ public class Messages extends NLS {
 	public static String AllValuesValueSet_msgUnknowndDatatype;
 
 	public static String AllValuesValueSet_msgNoSubset;
+
+	public static String RangeValueSet_msgDatatypeNotComparable;
+
+	public static String RangeValueSet_msgStepViolation;
+
+	public static String RangeValueSet_msgStepMismatch;
+
+	public static String RangeValueSet_msgLowerboundMismatch;
+
+	public static String RangeValueSet_msgUpperboundMismatch;
+
+	public static String RangeValueSet_msgStepRangeMismatch;
+
+	public static String RangeValueSet_msgDatatypeNotNumeric;
 }

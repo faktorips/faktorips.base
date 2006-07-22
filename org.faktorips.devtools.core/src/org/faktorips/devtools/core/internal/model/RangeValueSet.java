@@ -157,7 +157,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	}
 
     	if (!datatype.supportsCompare()) {
-    		String msg = NLS.bind("The datatype {0} does not support the compare-operation.", datatype.getQualifiedName());
+    		String msg = NLS.bind(Messages.RangeValueSet_msgDatatypeNotComparable, datatype.getQualifiedName());
     		list.add(new Message(MSGCODE_DATATYPE_NOT_COMPARABLE, msg, Message.ERROR, invalidObject, invalidProperty));
     		return false;
     	}
@@ -183,7 +183,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         
         NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
         if (!StringUtils.isEmpty(getStep()) && numDatatype != null && !numDatatype.divisibleWithoutRemainder(value, getStep())) {
-        	String msg = NLS.bind("The value {0} is not divisible without remainder by the step {1} of this range.", value, getStep());
+        	String msg = NLS.bind(Messages.RangeValueSet_msgStepViolation, value, getStep());
         	if (list != null) {
         		addMsg(list, MSGCODE_STEP_VIOLATION, msg, invalidObject, invalidProperty);
         	}
@@ -277,7 +277,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     	else if (!StringUtils.isEmpty(subStep) && !StringUtils.isEmpty(step) && numDatatype != null) {
     		if (!numDatatype.divisibleWithoutRemainder(subStep, step)) {
     			if (list != null) {
-    				String msg = NLS.bind("The step of the range {0} is not divisible without remainder by the step of the range {1}", subRange.toShortString(), toShortString());
+    				String msg = NLS.bind(Messages.RangeValueSet_msgStepMismatch, subRange.toShortString(), toShortString());
     				ObjectProperty[] props = new ObjectProperty[2];
     				props[0] = new ObjectProperty(this, PROPERTY_STEP);
     				props[1] = new ObjectProperty(subRange, PROPERTY_STEP);
@@ -287,7 +287,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     		}
     		if (!numDatatype.divisibleWithoutRemainder(subLower, step)) {
     			if (list != null) {
-    				String msg = NLS.bind("The lower bound of the range {0} is not divisble without remainder by the step of the range {1}", subRange.toShortString(), toShortString());
+    				String msg = NLS.bind(Messages.RangeValueSet_msgLowerboundMismatch, subRange.toShortString(), toShortString());
     				ObjectProperty[] props = new ObjectProperty[2];
     				props[0] = new ObjectProperty(this, PROPERTY_STEP);
     				props[1] = new ObjectProperty(subRange, PROPERTY_LOWERBOUND);
@@ -298,7 +298,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     		}
     		if (!numDatatype.divisibleWithoutRemainder(subUpper, step)) {
     			if (list != null) {
-    				String msg = NLS.bind("The upper bound of the range {0} is not divisble without remainder by the step of the range {1}", subRange.toShortString(), toShortString());
+    				String msg = NLS.bind(Messages.RangeValueSet_msgUpperboundMismatch, subRange.toShortString(), toShortString());
     				ObjectProperty[] props = new ObjectProperty[2];
     				props[0] = new ObjectProperty(this, PROPERTY_STEP);
     				props[1] = new ObjectProperty(subRange, PROPERTY_UPPERBOUND);
@@ -366,7 +366,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (numDatatype != null && !StringUtils.isEmpty(upperValue) && !StringUtils.isEmpty(lowerValue) && !StringUtils.isEmpty(getStep())) {
         	String range = numDatatype.substract(upperValue, lowerValue);
         	if (!numDatatype.divisibleWithoutRemainder(range, step)) {
-        		String msg = NLS.bind("The range ({0} - {1}) is not divisible without remainder by step {2}", new String[] {lowerValue, upperValue, getStep()});
+        		String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch, new String[] {lowerValue, upperValue, getStep()});
         		list.add(new Message(MSGCODE_STEP_RANGE_MISMATCH, msg, Message.ERROR, this, new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND, PROPERTY_STEP}));
         	}
         }
@@ -386,7 +386,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             	attr = (IAttribute)getParent();
             }
 
-            String text = "Ranges can only be defined for numeric datatypes";
+            String text = Messages.RangeValueSet_msgDatatypeNotNumeric;
         	
             Object obj = attr==null?(Object)this:attr;
         	list.add(new Message(MSGCODE_NOT_NUMERIC_DATATYPE, text, Message.ERROR, obj, IAttribute.PROPERTY_DATATYPE));

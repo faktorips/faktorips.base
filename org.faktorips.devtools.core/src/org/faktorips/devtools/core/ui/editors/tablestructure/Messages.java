@@ -58,4 +58,6 @@ public class Messages extends NLS {
 	public static String RangeEditDialog_groupAvailableColsTitle;
 	public static String TableStructureEditor_title;
 	public static String RangeEditDialog_RangeEditDialog_parameterName;
+	public static String GeneralInfoSection_labelGeneralInfoSection;
+	public static String GeneralInfoSection_labelTableType;
 }

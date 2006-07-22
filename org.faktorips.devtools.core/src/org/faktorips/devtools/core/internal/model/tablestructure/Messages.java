@@ -69,4 +69,12 @@ public class Messages extends NLS {
 	public static String ColumnRange_msgParameterEmpty;
 
 	public static String Column_msgPrimitvesArentSupported;
+
+	public static String TableStructureType_labelSingleContent;
+
+	public static String TableStructureType_lableMultipleContents;
+
+	public static String TableStructureType_labelEnumTypeModel;
+
+	public static String TableStructureType_labelEnumTypeProductDefinition;
 }
