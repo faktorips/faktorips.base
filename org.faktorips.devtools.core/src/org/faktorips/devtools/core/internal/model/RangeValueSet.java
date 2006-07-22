@@ -364,7 +364,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
         NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
         if (numDatatype != null && !StringUtils.isEmpty(upperValue) && !StringUtils.isEmpty(lowerValue) && !StringUtils.isEmpty(getStep())) {
-        	String range = numDatatype.substract(upperValue, lowerValue);
+        	String range = numDatatype.subtract(upperValue, lowerValue);
         	if (!numDatatype.divisibleWithoutRemainder(range, step)) {
         		String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch, new String[] {lowerValue, upperValue, getStep()});
         		list.add(new Message(MSGCODE_STEP_RANGE_MISMATCH, msg, Message.ERROR, this, new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND, PROPERTY_STEP}));

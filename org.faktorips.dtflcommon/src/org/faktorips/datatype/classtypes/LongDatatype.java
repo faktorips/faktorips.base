@@ -58,7 +58,7 @@ public class LongDatatype extends ValueClassDatatype implements NumericDatatype 
     /**
      * {@inheritDoc}
      */
-    public String substract(String minuend, String subtrahend) {
+    public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
             throw new NullPointerException("Minuend and subtrahend both can not be null.");
         }
