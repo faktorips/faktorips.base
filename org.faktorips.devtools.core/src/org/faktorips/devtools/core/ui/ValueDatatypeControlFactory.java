@@ -57,7 +57,7 @@ public abstract class ValueDatatypeControlFactory {
 	 * Creates a control that allows to edit a value of the value datatype
 	 * this is a factory for.
 	 * 
-	 * @param toolki The toolkit used to create the control.
+	 * @param toolkit The toolkit used to create the control.
 	 * @param parent The parent composite to which the control is added.
 	 * @param datatype The value datatype a control should be created for.
 	 * @param valueSet An optional valueset. 

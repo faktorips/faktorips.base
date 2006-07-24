@@ -38,10 +38,15 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsModelManager;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
 
@@ -83,6 +88,13 @@ public class IpsPlugin extends AbstractUIPlugin {
     
     private IpsModelManager manager;
 
+    /** Factories for creating controls depending on the datatype */
+    private ValueDatatypeControlFactory[] controlFactories = new ValueDatatypeControlFactory[] {
+    	new BooleanControlFactory(),
+    	new EnumDatatypeControlFactory(),
+    	new DefaultControlFactory()
+    };
+    
     /**
      * Returns the shared instance.
      */
@@ -330,5 +342,28 @@ public class IpsPlugin extends AbstractUIPlugin {
     public Locale getUsedLanguagePackLocale() {
     	Locale retValue = new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry, Messages.IpsPlugin_languagePackVariant);
     	return retValue;
+    }
+    
+    /**
+     * Returns a control factory that can create controls (and edit fields) for the given datatype.
+     * 
+     * @throws RuntimeException if no factory is found for the given datatype.
+     */
+    public ValueDatatypeControlFactory getValueDatatypeControlFactory(ValueDatatype datatype) {
+    	ValueDatatypeControlFactory[] factories = getValueDatatypeControlFactories();
+    	for (int i = 0; i < factories.length; i++) {
+			if (factories[i].isFactoryFor(datatype)) {
+				return factories[i];
+			}
+		}
+    	throw new RuntimeException(Messages.IpsPlugin_errorNoDatatypeControlFactoryFound + datatype);
+    }
+    
+    /**
+     * Returns all controls factories. 
+     */
+    // TODO control factories sollten ueber einen extension point definiert sein und geladen werden.
+    private ValueDatatypeControlFactory[] getValueDatatypeControlFactories() {
+    	return controlFactories;
     }
 }
