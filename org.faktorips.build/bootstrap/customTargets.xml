@@ -17,10 +17,6 @@
 		<property name="id" value="org.faktorips.feature.test"/>
 	</ant>
 	
-	<ant antfile="${genericTargets}" target="${target}" >
-		<property name="type" value="feature" />
-		<property name="id" value="de.bbv.faktorips.feature"/>
-	</ant>
 
 
 </target>
@@ -44,10 +40,6 @@
 	</ant>
 </target>
 
-<target name="assemble.de.bbv.faktorips.feature">
-	<ant antfile="${assembleScriptName}" dir="${buildDirectory}">
-		<property name="zipargs" value="" />
-	</ant>
 </target>
 	
 	
