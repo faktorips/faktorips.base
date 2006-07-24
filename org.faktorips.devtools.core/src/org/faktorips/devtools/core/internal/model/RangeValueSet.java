@@ -356,7 +356,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         	// range is not unbounded on one side
         	if (datatype.compare(lowerValue, upperValue) > 0) {
         		String text = Messages.Range_msgLowerboundGreaterUpperbound;
-        		list.add(new Message(MSGCODE_LBOUND_GREATER_UBOUND, text, Message.WARNING, this, 
+        		list.add(new Message(MSGCODE_LBOUND_GREATER_UBOUND, text, Message.ERROR, this, 
         				new String[] { PROPERTY_LOWERBOUND, PROPERTY_UPPERBOUND}));
         		return;
         	}
