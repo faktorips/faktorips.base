@@ -92,8 +92,6 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
             	else if (array.length >= 1 && array[0] instanceof IPolicyCmptType) {
             		openEditor((IPolicyCmptType)array[0]);
             	}
-            }else{
-            	System.out.println("No rule applicable for "+selectedObject+" ("+selectedObject.getClass()+")");
             }
 		}
 	}
