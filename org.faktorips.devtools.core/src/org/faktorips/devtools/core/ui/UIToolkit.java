@@ -55,7 +55,7 @@ public class UIToolkit {
 
 	private FormToolkit formToolkit;
 	
-	private static final int DEFAULT_WIDTH = 100;
+	public static final int DEFAULT_WIDTH = 100;
 
 	/**
 	 * Creates a new toolkit.
@@ -192,7 +192,6 @@ public class UIToolkit {
 		}
 		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_END);
-		gridData.widthHint = DEFAULT_WIDTH;
 		newLabel.setLayoutData(gridData);
 		return newLabel;
 	}
@@ -213,7 +212,6 @@ public class UIToolkit {
 		Label newLabel = this.createLabel(c, text);
 		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
 				| GridData.VERTICAL_ALIGN_END);
-		gridData.widthHint = DEFAULT_WIDTH;
 		newLabel.setLayoutData(gridData);
 		return newLabel;
 	}

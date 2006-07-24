@@ -195,6 +195,8 @@ public class DefaultsAndRangesSection extends IpsSection {
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
 	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell(), controller);
 	    			evc.setText(valueSet.toShortString());
+	    			GridData data = (GridData)evc.getLayoutData();
+	    			data.widthHint = UIToolkit.DEFAULT_WIDTH;
 	    			addFocusControl(evc.getTextControl());
 	    			this.editControls.add(evc);
 	    		}
