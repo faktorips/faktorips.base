@@ -68,8 +68,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 	private DescriptionPage descriptionPage;
 
-	private boolean browseOnly = false;
-
 	/**
 	 * Flag that indicates whether this editor is currently active or not.
 	 */
@@ -88,6 +86,23 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	private boolean generationManuallySet = false;
 	
 	private IPropertyChangeListener propertyChangeListener;
+
+	/**
+	 * Flag that is <code>true</code> if this editor is enabled (what means that the properties-page is editable).
+	 */
+	private boolean enabled = true;
+	
+	/**
+	 * Storage for the decision of the user to browse an old generation to supress repeating 
+	 * questions to the user. 
+	 */
+	private boolean browseOldGeneration = false;
+	
+	/**
+	 * Storage for the decision of the user not to fix differences existing between attributes
+	 * and config elements to supress repeating questions to the user.
+	 */
+	private boolean dontFixDifferencesBetweenAttributeAndConfigElement = false;
 	
 	/**
 	 * Creates a new editor for product components.
@@ -150,9 +165,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (isSrcFileUsable()) {
 			setActiveGeneration(getPreferredGeneration(), false);
 		} 
-
-		browseOnly = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
-		
 	}
 
 	/**
@@ -206,8 +218,22 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Does what the methodname says :-)
 	 */
 	private void checkForInconsistenciesBetweenAttributeAndConfigElements() {
+		if (!this.enabled) {
+    		// no modifications for read-only-editors
+			return;
+		}
+		
+		if (dontFixDifferencesBetweenAttributeAndConfigElement) {
+		    // user decided not to fix the differences some time ago...
+			return;
+		}
 		
 		if (!getIpsSrcFile().isMutable()) {
+			return;
+		}
+		
+		if (getContainer() == null) {
+			// dont do anything, we will be called again later.
 			return;
 		}
 		
@@ -313,6 +339,9 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 					model.addChangeListener(this);
 				}
 			}
+			else {
+				dontFixDifferencesBetweenAttributeAndConfigElement = true;
+			}
 
 		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(e);
@@ -336,7 +365,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			String filename = getIpsSrcFile()==null?"null":getIpsSrcFile().getName(); //$NON-NLS-1$
 			return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, filename);
 		}
-//		checkGeneration();
 		return Messages.ProductCmptEditor_productComponent
 				+ getProductCmpt().getName();
 	}
@@ -361,10 +389,16 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (generation == null) {
 			// no generation for the _exact_ current working date.
 
-			if (browseOnly) {
+			if (browseOldGeneration) {
 				// check happned before and user decided not to create a new generation - dont bother 
 				// the user with repeating questions.
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
+				return;
+			}
+			
+			if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse()) {
+				// Editor is on browse-mode.
+				setPropertiesEnabled(false);
 				return;
 			}
 			
@@ -402,14 +436,15 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Set the enablement-state of the properties page.
 	 */
 	private void setPropertiesEnabled(boolean enabled) {
-		enabled = enabled && !browseOnly;
-		if (enabled) {
+		this.enabled = enabled && !IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
+		if (this.enabled) {
 			this.setTitleImage(enabledImage);
+			checkForInconsistenciesBetweenAttributeAndConfigElements();
 		} else {
 			this.setTitleImage(disabledImage);
 		}
 		if (propertiesPage != null) {
-			propertiesPage.setEnabled(enabled);
+			propertiesPage.setEnabled(this.enabled);
 		}
 	}
 	
@@ -428,7 +463,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			String property = event.getProperty();
 			if (property.equals(IpsPreferences.WORKING_DATE)) {
 				generationManuallySet = false;
-				browseOnly = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
+				browseOldGeneration = false;
 				checkGeneration();
 				generationsPage.refresh();
 				refresh();
@@ -439,7 +474,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				refresh();
 			} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
 				generationManuallySet = false;
-				browseOnly = ((String)event.getNewValue()).equals(IpsPreferences.WORKING_MODE_BROWSE);
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
 				refresh();
 			}
@@ -573,6 +607,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
 			switch (choice) {
 			case GenerationSelectionDialog.CHOICE_BROWSE:
+				browseOldGeneration = true;
 				setActiveGeneration(cmpt.findGenerationEffectiveOn(workingDate), false);
 				break;
 

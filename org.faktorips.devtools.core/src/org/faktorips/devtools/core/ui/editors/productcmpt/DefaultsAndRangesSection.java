@@ -154,18 +154,6 @@ public class DefaultsAndRangesSection extends IpsSection {
 			
 			IValueSet valueSet = elements[i].getValueSet();
 			
-			// if the config element has an all values valueset and the valueset
-			// of the underlying attribute is not an all values valuese, the valueset
-			// is changed to a copy of the underlying attribute valueset. This is
-			// because all value valuesets onyl apply on datatypes, not on other
-			// valuesets.
-			if (attribute != null
-					&& valueSet.getValueSetType() == ValueSetType.ALL_VALUES
-					&& attribute.getValueSet().getValueSetType() != ValueSetType.ALL_VALUES) {
-				elements[i].setValueSetCopy(attribute.getValueSet());
-				valueSet = elements[i].getValueSet();
-			}
-	
 			toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
 			toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
 	

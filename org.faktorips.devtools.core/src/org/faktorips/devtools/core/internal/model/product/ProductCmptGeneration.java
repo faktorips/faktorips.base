@@ -115,6 +115,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			element.setPcTypeAttribute(attributes[i].getName());
 			element.setType(attributes[i].getConfigElementType());
 			element.setValue(attributes[i].getDefaultValue());
+			element.setValueSetCopy(attributes[i].getValueSet());
 		}
 		IConfigElement[] elements = delta
 				.getConfigElementsWithMissingAttributes();
