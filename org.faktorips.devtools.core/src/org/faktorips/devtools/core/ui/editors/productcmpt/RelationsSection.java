@@ -17,10 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -67,7 +63,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
 import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
@@ -81,7 +76,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class RelationsSection extends IpsSection {
+public class RelationsSection extends IpsSection{
 
 	/**
 	 * the generation the displayed informations are based on.
@@ -134,11 +129,6 @@ public class RelationsSection extends IpsSection {
 	private Menu emptyMenu;
 	
 	/**
-	 * Collection of all actions supported by this section
-	 */
-	private List actions = new ArrayList();
-	
-	/**
 	 * Listener to update the cardinality-pane on selection changes.
 	 */
 	private SelectionChangedListener selectionChangedListener;
@@ -163,10 +153,11 @@ public class RelationsSection extends IpsSection {
 		this.site = site;
 		fGenerationDirty = true;
 		fEnabled = true;
-
 		initControls();
 
 		setText(Messages.PropertiesPage_relations);
+		
+		site.setSelectionProvider(treeViewer);
 	}
 
 	/**
@@ -266,10 +257,6 @@ public class RelationsSection extends IpsSection {
 
 		MenuManager menumanager = new MenuManager();
 		menumanager.setRemoveAllWhenShown(false);
-
-		IAction action = new IpsDeleteAction();
-		site.getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), action);
-		actions.add(action);
 
 		menumanager.add(new NewProductCmptRelationAction(site.getShell(),
 				treeViewer, this));
@@ -405,7 +392,6 @@ public class RelationsSection extends IpsSection {
 			} else {
 				cardinalityPanel.setEnabled(false);
 			}
-
 		}
 	}
 
@@ -698,10 +684,11 @@ public class RelationsSection extends IpsSection {
 			treeViewer.getTree().setMenu(emptyMenu);
 		}
 		cardinalityPanel.setEnabled(enabled);
-		
-		for (Iterator iter = actions.iterator(); iter.hasNext();) {
-			IAction action = (IAction) iter.next();
-			action.setEnabled(enabled);
+
+		// disabele IPSDeleteAction
+		IAction delAction= site.getActionBars().getGlobalActionHandler(ActionFactory.DELETE.getId());
+		if(delAction!=null){
+			delAction.setEnabled(enabled);
 		}
 		
 	}

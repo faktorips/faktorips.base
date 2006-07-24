@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 
 /**
- * Doubleclicklistener for a TreeViewer that opens the an editor for the selected/clicked Object.
+ * Doubleclicklistener for a TreeViewer that opens an editor for the selected/clicked Object.
  * The listener expands or collapses the tree view in case IPSPackageFragments,
  * IPSPackageFragmentRoots or IPSProjects are clicked.
  * 

@@ -26,8 +26,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
-import org.faktorips.devtools.core.ui.actions.IpsCutAction;
-import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
+import org.faktorips.devtools.core.ui.actions.IpsDeleteAndSaveAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
 import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
@@ -50,25 +49,48 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
  * @author Stefan Widmaier
  */
 
-public class ModelExplorer extends ViewPart {
+public class ModelExplorer extends ViewPart{
 	private static final int HIERARCHICAL_LAYOUT = 0;
-
+	
 	private static final int FLAT_LAYOUT = 1;
-
+	
+	/**
+	 * Used for saving the current layout style in a eclipse memento.
+	 */
 	private static final String LAYOUT_MEMENTO = "layout"; //$NON-NLS-1$
 
+	/**
+	 * Used for saving the current layout style in a eclipse memento.
+	 */
 	private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
-
+	
+	/**
+	 * The TreeViewer displaying the object model.
+	 */
 	private TreeViewer treeViewer;
-
+	
+	/**
+	 * Content provider for the tree viewer. 
+	 */
 	private ModelContentProvider contentProvider = new ModelContentProvider();
 
+	/**
+	 * Label provider for the tree viewer. 
+	 */
 	private ModelLabelProvider labelProvider = new ModelLabelProvider();
-
+	
+	/**
+	 * Filter used in flat layout, where it filters out empty packageFragments.
+	 */
 	private ViewerFilter emptyPackageFilter = new EmptyPackageFilter();
-
+	
+	private IpsResourceChangeListener resourceListener;
+	
+	/**
+	 * Flag that indicates whether the current layout style is flat (true) or hierarchical (false).
+	 */
 	private boolean isFlatLayout = false;
-
+	
 	public ModelExplorer() {
 		super();
 	}
@@ -94,7 +116,7 @@ public class ModelExplorer extends ViewPart {
 		treeViewer.setSorter(new ModelSorter());
 		treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 		treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
-
+		
 		DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(
 				labelProvider, IpsPlugin.getDefault().getWorkbench()
 						.getDecoratorManager().getLabelDecorator());
@@ -103,20 +125,32 @@ public class ModelExplorer extends ViewPart {
 		treeViewer.setLabelProvider(decoProvider);
 
 		this.getSite().setSelectionProvider(treeViewer);
+		resourceListener= new IpsResourceChangeListener(treeViewer);
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-				new IpsResourceChangeListener(treeViewer),
-				IResourceChangeEvent.POST_CHANGE);
-
+				resourceListener, IResourceChangeEvent.POST_CHANGE);
 		/*
 		 * Use the current value of isFlatLayout, which is set while loading the
 		 * memento/viewState before this method is called
 		 */
 		setFlatLayout(isFlatLayout);
+		
+		
+//		getSite().getPage().addPartListener(fPartListener);
+//		IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+		
 
 		createMenu();
 		createContextMenu();
 	}
 
+//	public void contentsChanged(ContentChangeEvent event) {
+//		try {
+//			treeViewer.refresh(event.getIpsSrcFile().getIpsObject());
+//		} catch (CoreException e) {
+//			e.printStackTrace();
+//		}
+////		treeViewer.refresh();
+//	}
 	/**
 	 * Create menu for layout styles.
 	 */
@@ -139,9 +173,9 @@ public class ModelExplorer extends ViewPart {
 	}
 
 	private void createContextMenu() {
-		getViewSite().getActionBars().setGlobalActionHandler(
-				ActionFactory.CUT.getId(),
-				new IpsCutAction(treeViewer, this.getSite().getShell()));
+//		getViewSite().getActionBars().setGlobalActionHandler(
+//				ActionFactory.CUT.getId(),
+//				new IpsCutAction(treeViewer, this.getSite().getShell()));
 		getViewSite().getActionBars().setGlobalActionHandler(
 				ActionFactory.COPY.getId(),
 				new IpsCopyAction(treeViewer, this.getSite().getShell()));
@@ -149,7 +183,7 @@ public class ModelExplorer extends ViewPart {
 				ActionFactory.PASTE.getId(),
 				new IpsPasteAction(treeViewer, this.getSite().getShell()));
 		getViewSite().getActionBars().setGlobalActionHandler(
-				ActionFactory.DELETE.getId(), new IpsDeleteAction());
+				ActionFactory.DELETE.getId(), new IpsDeleteAndSaveAction(treeViewer));
 
 		MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(false);
@@ -164,8 +198,8 @@ public class ModelExplorer extends ViewPart {
 				.getWorkbenchWindow()));
 		manager.add(newMenu);
 		manager.add(new Separator());
-		manager.add(ActionFactory.CUT.create(this.getSite()
-				.getWorkbenchWindow()));
+//		manager.add(ActionFactory.CUT.create(this.getSite()
+//				.getWorkbenchWindow()));
 		manager.add(ActionFactory.COPY.create(this.getSite()
 				.getWorkbenchWindow()));
 		manager.add(ActionFactory.PASTE.create(this.getSite()
@@ -262,5 +296,13 @@ public class ModelExplorer extends ViewPart {
 			return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
 		}
 	}
+	
+	public void dispose() {
+		super.dispose();
+		// unregister listeners
+//		IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
+	}
+
 
 }

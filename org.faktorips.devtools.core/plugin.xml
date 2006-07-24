@@ -182,11 +182,12 @@
             id="policyCmptTypeEditor">
       </editor>
       <editor
-            name="Product Component Editor"
-            icon="icons/ProductCmpt.gif"
-            extensions="ipsproduct"
             class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
-            id="productCmptEditor">
+            contributorClass="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorActionContributor"
+            extensions="ipsproduct"
+            icon="icons/ProductCmpt.gif"
+            id="productCmptEditor"
+            name="Product Component Editor">
       </editor>
       <editor
             name="Table Structure Editor"

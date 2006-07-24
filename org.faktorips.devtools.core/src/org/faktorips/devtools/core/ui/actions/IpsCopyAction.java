@@ -55,7 +55,9 @@ public class IpsCopyAction extends IpsAction {
 
             if (selected instanceof IIpsObjectPart) {
                 part = (IIpsObjectPart)selected;
-                copiedObjects.add(new IpsObjectPartState(part).toString());
+                // TODO to be refactored with IpsDeleteAction, when inserting and deleting Attributes is allowed. See FS#330
+//                copiedObjects.add(new IpsObjectPartState(part).toString());
+                
             }
             else if (selected instanceof IIpsElement) {
             	
