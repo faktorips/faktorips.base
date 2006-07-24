@@ -1513,6 +1513,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     /**
      * <pre>
      * protected AbstractPolicyComponent createChildFromXml(Element childEl) {
+     *     AbstractPolicyComponent newChild ) super.createChildFromXml(childEl);
+     *     if (newChild!=null) {
+     *         return newChild;
+     *     }
+     *     String className = childEl.getAttribute("class");
+     *     if (className.length>0) {
+     *         try {
+     *             AbstractCoverage abstractCoverage = (AbstractCoverage)Class.forName(className).newInstance();
+     *             addAbstractCoverage(abstractCoverage);
+     *             initialize();
+     *         } catch (Exception e) {
+     *             throw new RuntimeException(e);
+     *         }
+     *     }
      *     if ("Coverage".equals(childEl.getNodeName())) {
      *         (AbstractPolicyComponent)return newCovergae();
      *     }
@@ -1533,24 +1547,42 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("if (newChild!=null) {");
         builder.appendln("return newChild;");
         builder.appendln("}");
-        
+
         IRelation[] relations = getPolicyCmptType().getRelations();
         for (int i = 0; i < relations.length; i++) {
             IRelation relation = relations[i];
             if (!relation.isForwardComposition() 
                     || relation.isReadOnlyContainer()
-                    || !relation.isValid()
-                    || relation.findTarget().isAbstract()) {
+                    || !relation.isValid()) {
                 continue;
             }
             builder.append("if (");
             builder.appendQuoted(relation.getTargetRoleSingular());
             builder.appendln(".equals(childEl.getNodeName())) {");
-            builder.append("return (");
-            builder.appendClassName(AbstractPolicyComponent.class);
-            builder.append(")");
-            builder.append(interfaceBuilder.getMethodNameNewChild(relation));
-            builder.appendln("();");
+            IPolicyCmptType target = relation.findTarget();
+            if (target.isAbstract()) {
+                builder.appendln("String className = childEl.getAttribute(\"class\");");
+                builder.appendln("if (className.length()>0) {");
+                builder.appendln("try {");
+                builder.appendClassName(getQualifiedClassName(target));
+                String varName = StringUtils.uncapitalise(relation.getTargetRoleSingular());
+                builder.append(" " + varName + "=(");
+                builder.appendClassName(getQualifiedClassName(target));
+                builder.appendln(")Class.forName(className).newInstance();");
+                builder.append(interfaceBuilder.getMethodNameAddObject(relation) + "(" + varName + ");");
+                builder.appendln(varName + ".initialize();");
+                builder.appendln("return " + varName + ";");
+                builder.appendln("} catch (Exception e) {");
+                builder.appendln("throw new RuntimeException(e);");
+                builder.appendln("}"); // catch
+                builder.appendln("}"); // if
+            } else {
+                builder.append("return (");
+                builder.appendClassName(AbstractPolicyComponent.class);
+                builder.append(")");
+                builder.append(interfaceBuilder.getMethodNameNewChild(relation));
+                builder.appendln("();");
+            }
             builder.appendln("}");
         }
         builder.appendln("return null;");
