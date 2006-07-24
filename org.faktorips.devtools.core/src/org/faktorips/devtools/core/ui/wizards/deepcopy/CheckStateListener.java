@@ -22,7 +22,8 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
+import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 
 /**
@@ -89,9 +90,13 @@ public class CheckStateListener implements ICheckStateListener {
 	}
 
 	private Object getTreeItemContent(TreeItem in) {
-		if (in.getData() instanceof IStructureNode) {
-			return ((IStructureNode)in.getData()).getWrappedElement();
+		if (in.getData() instanceof IProductCmptReference) {
+			return ((IProductCmptReference)in.getData()).getProductCmpt();
 		}
+		else if (in.getData() instanceof IProductCmptTypeRelationReference) {
+			return ((IProductCmptTypeRelationReference)in.getData()).getRelation();
+		}
+		
 		return null;
 	}
 	

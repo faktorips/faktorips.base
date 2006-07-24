@@ -32,13 +32,13 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
 
 public class DeepCopyOperation implements IWorkspaceRunnable{
 
-	private IStructureNode[] toCopy;
-	private IStructureNode[] toRefer;
+	private IProductCmptReference[] toCopy;
+	private IProductCmptReference[] toRefer;
 	private Map handleMap;
 	private IProductCmpt copiedRoot;
 	
@@ -50,7 +50,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 	 * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing resources!). Keys are the
 	 * nodes given in <code>toCopy</code>.
 	 */
-	public DeepCopyOperation(IStructureNode[] toCopy, IStructureNode[] toRefer, Map handleMap) {
+	public DeepCopyOperation(IProductCmptReference[] toCopy, IProductCmptReference[] toRefer, Map handleMap) {
 		this.toCopy = toCopy;
 		this.toRefer = toRefer;
 		this.handleMap = handleMap;
@@ -69,7 +69,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		
 		Hashtable referMap = new Hashtable();
 		for (int i = 0; i < toRefer.length; i++) {
-			referMap.put(((IProductCmpt)toRefer[i].getWrappedElement()).getQualifiedName(), toRefer[i]);
+			referMap.put((toRefer[i].getProductCmpt()).getQualifiedName(), toRefer[i]);
 		}
 		
 		monitor.worked(1);
@@ -85,7 +85,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 				IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
 				String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
 				try {
-					file = targetPackage.createIpsFileFromTemplate(newName, (IProductCmpt)toCopy[i].getWrappedElement(), date, false, monitor);
+					file = targetPackage.createIpsFileFromTemplate(newName, toCopy[i].getProductCmpt(), date, false, monitor);
 				} catch (CoreException e) {
 					// the file could not be created from template, so create an empty file
 					file = targetPackage.createIpsFile(IpsObjectType.PRODUCT_CMPT, newName, false, monitor);
@@ -103,13 +103,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		Hashtable nameMap = new Hashtable();
 		for (int i = 0; i < products.length; i++) {
 			if (products[i] != null) {
-				nameMap.put(((IProductCmpt)toCopy[i].getWrappedElement()).getQualifiedName(), products[i].getQualifiedName());
+				nameMap.put(toCopy[i].getProductCmpt().getQualifiedName(), products[i].getQualifiedName());
 			}
 		}
 
 		for (int i = 0; i < products.length; i++) {
 			if (products[i] != null) {
-				fixRelations(products[i], (IStructureNode)copied.get(products[i]), nameMap, referMap);
+				fixRelations(products[i], (IProductCmptReference)copied.get(products[i]), nameMap, referMap);
 				products[i].getIpsSrcFile().save(true, monitor);
 				monitor.worked(1);
 			}
@@ -118,15 +118,15 @@ public class DeepCopyOperation implements IWorkspaceRunnable{
 		monitor.done();
 	}
 	
-	private void fixRelations(IProductCmpt product, IStructureNode source, Hashtable nameMap, Hashtable referMap) {
+	private void fixRelations(IProductCmpt product, IProductCmptReference source, Hashtable nameMap, Hashtable referMap) {
 		IProductCmptGeneration generation = (IProductCmptGeneration)product.getGenerations()[0];
 		IProductCmptRelation[] relations = generation.getRelations();
 		
 		for (int i = 0; i < relations.length; i++) {
 			String target = relations[i].getTarget();
-			IStructureNode node = (IStructureNode)referMap.get(target);
+			IProductCmptReference node = (IProductCmptReference)referMap.get(target);
 			while (node != null && node != source) {
-				node = node.getParent();
+				node = node.getStructure().getParentProductCmptReference(node);
 			}
 
 			if (referMap.containsKey(target) && node != null) {

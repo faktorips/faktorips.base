@@ -53,9 +53,10 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
@@ -167,7 +168,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		setPageComplete(false);
 		this.errorElements = new Hashtable();
 		try {
-			this.namingStrategy = structure.getRoot().getIpsProject().getProductCmptNamingStratgey();
+			this.namingStrategy = structure.getRoot().getProductCmpt().getIpsProject().getProductCmptNamingStratgey();
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
@@ -200,10 +201,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
 		toolkit.createFormLabel(inputRoot, IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate());
 		toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-		targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getIpsPackageFragment().getRoot(), inputRoot);
+		targetInput = toolkit.createPdPackageFragmentRefControl(structure.getRoot().getProductCmpt().getIpsPackageFragment().getRoot(), inputRoot);
 		
-		int ignore = getSegmentsToIgnore(structure.toArray(true));
-		IIpsPackageFragment pack = structure.getRoot().getIpsPackageFragment();
+		int ignore = getSegmentsToIgnore((IProductCmptReference[])structure.toArray(true));
+		IIpsPackageFragment pack = structure.getRoot().getProductCmpt().getIpsPackageFragment();
 		int segments = pack.getRelativePath().segmentCount();
 		
 		if (segments - ignore >= 0) {
@@ -228,7 +229,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 				toolkit.createFormLabel(inputRoot, label);
 				versionId = toolkit.createText(inputRoot);
-				versionId.setText(namingStrategy.getNextVersionId(structure.getRoot()));
+				versionId.setText(namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt()));
 				versionId.addModifyListener(listener);
 			} 
 		}
@@ -280,7 +281,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 			tree.setChecked(checkState[i], true);
 		}
 		
-		IStructureNode root = structure.getRootNode();
+		IProductCmptReference root = structure.getRoot();
 		checkStateListener.updateCheckState(tree, root, tree.getChecked(root));
 		
 		tree.update(sourcePage.getCheckedNodes(), new String[] {"label"}); //$NON-NLS-1$
@@ -308,23 +309,23 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	/**
 	 * Returns all product components to copy.
 	 */
-	public IStructureNode[] getProductsToCopy() {
+	public IProductCmptReference[] getProductsToCopy() {
 		List allChecked = Arrays.asList(tree.getCheckedElements());
 		ArrayList result = new ArrayList();
 		
 		for (Iterator iter = allChecked.iterator(); iter.hasNext();) {
-			IStructureNode element = (IStructureNode)iter.next();
-			if (((IStructureNode)element).getWrappedElement() instanceof IProductCmpt) {
+			Object element = iter.next();
+			if (element instanceof IProductCmptReference) {
 				result.add(element);
 			}
 		}
-		return (IStructureNode[])result.toArray(new IStructureNode[result.size()]);
+		return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
 	}
 
 	/**
 	 * Returns all product components where a reference to has to be kept.
 	 */
-	public IStructureNode[] getProductsToRefer() {
+	public IProductCmptReference[] getProductsToRefer() {
 		Object[] checked = sourcePage.getCheckedNodes();
 		List toProcess = Arrays.asList(checked);
 		List toCopy = Arrays.asList(tree.getCheckedElements());
@@ -332,14 +333,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		ArrayList result = new ArrayList();
 		
 		for (Iterator iter = toProcess.iterator(); iter.hasNext();) {
-			IStructureNode element = (IStructureNode) iter.next();
+			Object element = iter.next();
 			
-			if (!toCopy.contains(element) && element.getWrappedElement() instanceof IProductCmpt) {
+			if (!toCopy.contains(element) && element instanceof IProductCmptReference) {
 				result.add(element);
 			}
 		}
 		
-		return (IStructureNode[])result.toArray(new IStructureNode[result.size()]);
+		return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
 	}
 
 	/**
@@ -349,12 +350,12 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * @return 0 if no elements are contained in toCopy, number of all segments, if only one product
 	 * component is contained in toCopy and the calculated value as described above for all other cases.
 	 */
-	private int getSegmentsToIgnore(IStructureNode[] toCopy) {
+	private int getSegmentsToIgnore(IProductCmptReference[] toCopy) {
 		if (toCopy.length == 0) {
 			return 0;
 		}
 		
-		IPath refPath = ((IProductCmpt)toCopy[0].getWrappedElement()).getIpsPackageFragment().getRelativePath();
+		IPath refPath = toCopy[0].getProductCmpt().getIpsPackageFragment().getRelativePath();
 		if (toCopy.length == 1) {
 			return refPath.segmentCount();
 		}
@@ -362,7 +363,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		int ignore = Integer.MAX_VALUE;
 		for (int i = 1; i < toCopy.length; i++) {
 			int tmpIgnore;
-			IPath nextPath = ((IProductCmpt)toCopy[i].getWrappedElement()).getIpsPackageFragment().getRelativePath();
+			IPath nextPath = toCopy[i].getProductCmpt().getIpsPackageFragment().getRelativePath();
 			tmpIgnore = nextPath.matchingFirstSegments(refPath);
 			if (tmpIgnore < ignore) {
 				ignore = tmpIgnore;
@@ -445,7 +446,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		StringBuffer message = new StringBuffer();
 		this.errorElements.clear();
 
-		IStructureNode[] toCopy = getProductsToCopy();
+		IProductCmptReference[] toCopy = getProductsToCopy();
 		
 		int segmentsToIgnore = getSegmentsToIgnore(toCopy);
 		IIpsPackageFragment base = getTargetPackage();
@@ -453,10 +454,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		Hashtable filenameMap = new Hashtable();
 		
 		for (int i = 0; i < toCopy.length; i++) {
-			String packageName = buildTargetPackageName(base, (IProductCmpt)toCopy[i].getWrappedElement(), segmentsToIgnore);
+			String packageName = buildTargetPackageName(base, toCopy[i].getProductCmpt(), segmentsToIgnore);
 			IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
 			if (targetPackage.exists()) {
-				String newName = getNewName(toCopy[i].getWrappedElement().getName(), (IProductCmpt)toCopy[i].getWrappedElement());
+				String newName = getNewName(toCopy[i].getProductCmpt().getName(), toCopy[i].getProductCmpt());
 				IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
 				if (file.exists()) {
 					message = new StringBuffer();
@@ -468,10 +469,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
 					addMessage(toCopy[i], message.toString());
 				}
 				String name = file.getEnclosingResource().getFullPath().toString();
-				IStructureNode node = (IStructureNode)filenameMap.get(name);
-				if (node != null && node.getWrappedElement() != toCopy[i].getWrappedElement()) {
+				IProductCmptReference node = (IProductCmptReference)filenameMap.get(name);
+				if (node != null && node.getProductCmpt() != toCopy[i].getProductCmpt()) {
 					addMessage(toCopy[i], Messages.ReferenceAndPreviewPage_msgNameCollision);
-					addMessage((IStructureNode)filenameMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
+					addMessage((IProductCmptReference)filenameMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
 				} else {
 					filenameMap.put(name, toCopy[i]);
 				}
@@ -484,7 +485,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * Adds an error message for the given product. If a message allready exists, the
 	 * new message is appended.
 	 */
-	private void addMessage(IStructureNode product, String msg) {
+	private void addMessage(IProductCmptSturctureReference product, String msg) {
 		if (msg == null || msg.length() == 0) {
 			return;
 		}
@@ -519,16 +520,16 @@ public class ReferenceAndPreviewPage extends WizardPage {
 			throw new CoreException(status);
 		}
 		
-		IStructureNode[] toCopy = getProductsToCopy();
+		IProductCmptReference[] toCopy = getProductsToCopy();
 		Hashtable result = new Hashtable();
 		
 		int segmentsToIgnore = getSegmentsToIgnore(toCopy);
 		IIpsPackageFragment base = getTargetPackage();
 
 		for (int i = 0; i < toCopy.length; i++) {
-			String packageName = buildTargetPackageName(base, (IProductCmpt)toCopy[i].getWrappedElement(), segmentsToIgnore);
+			String packageName = buildTargetPackageName(base, toCopy[i].getProductCmpt(), segmentsToIgnore);
 			IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
-			String newName = getNewName(toCopy[i].getWrappedElement().getName(), (IProductCmpt)toCopy[i].getWrappedElement());
+			String newName = getNewName(toCopy[i].getProductCmpt().getName(), toCopy[i].getProductCmpt());
 			IIpsSrcFile file = targetPackage.getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(newName));
 			result.put(toCopy[i], file);
 		}
@@ -566,7 +567,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	/**
 	 * Returns whether an error message exists for the given object or not.
 	 */
-	private boolean isInError(IStructureNode object) {
+	private boolean isInError(IProductCmptSturctureReference object) {
 		return errorElements.containsKey(object);
 	}
 	
@@ -574,7 +575,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 	 * Returns the error message for the given object or <code>null</code>, if
 	 * no message exists.
 	 */
-	private String getErrorMessage(IStructureNode object) {
+	private String getErrorMessage(IProductCmptSturctureReference object) {
 		return (String)errorElements.get(object);
 	}
 
@@ -594,8 +595,11 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		}
 		
 		private Object getWrapped(Object in) {
-			if (in instanceof IStructureNode) {
-				return ((IStructureNode)in).getWrappedElement();
+			if (in instanceof IProductCmptReference) {
+				return ((IProductCmptReference)in).getProductCmpt();
+			}
+			else if (in instanceof IProductCmptTypeRelationReference) {
+				return ((IProductCmptTypeRelationReference)in).getRelation();
 			}
 			return null;
 		}
@@ -607,7 +611,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				if (!tree.getChecked(element)) {
 					return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
 				}
-				if (isInError((IStructureNode)element)) {
+				if (isInError((IProductCmptSturctureReference)element)) {
 					return IpsPlugin.getDefault().getImage("error_tsk.gif"); //$NON-NLS-1$
 				}
 			}
@@ -622,8 +626,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
 				if (tree.getChecked(element)) {
 					name = getNewName(name, (IProductCmpt)wrapped);
 				}
-				if (isInError((IStructureNode)element)) {
-					name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert + getErrorMessage((IStructureNode)element);
+				if (isInError((IProductCmptSturctureReference)element)) {
+					name = name + Messages.ReferenceAndPreviewPage_errorLabelInsert + getErrorMessage((IProductCmptSturctureReference)element);
 				}
 				return name;
 			}
@@ -659,40 +663,40 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		}
 
 		public Object[] getChildren(Object parentElement) {
-			IStructureNode[] children = (IStructureNode[])super.getChildren(parentElement);
+			IProductCmptSturctureReference[] children = (IProductCmptSturctureReference[])super.getChildren(parentElement);
 			ArrayList result = new ArrayList();
 			for (int i = 0; i < children.length; i++) {
 				if (isChecked(children[i])
-						|| (!(children[i].getWrappedElement() instanceof IProductCmpt) && !isUncheckedSubtree(new IStructureNode[] { children[i] }))) {
+						|| (!(children[i] instanceof IProductCmptReference) && !isUncheckedSubtree(new IProductCmptSturctureReference[] { children[i] }))) {
 					result.add(children[i]);
 				}
 			}
-			return (IStructureNode[])result.toArray(new IStructureNode[result.size()]);
+			return (IProductCmptSturctureReference[])result.toArray(new IProductCmptSturctureReference[result.size()]);
 		}
 
-		private boolean isUncheckedSubtree(IStructureNode[] children) {
+		private boolean isUncheckedSubtree(IProductCmptSturctureReference[] children) {
 			boolean unchecked = true;
 			for (int i = 0; i < children.length && unchecked; i++) {
-				if (children[i].getWrappedElement() instanceof IProductCmpt) {
+				if (children[i] instanceof IProductCmptReference) {
 					if (isChecked(children[i])) {
 						return false;
 					}
-				} else if (children[i].getWrappedElement() instanceof IProductCmptTypeRelation) {
-					unchecked = unchecked && isUncheckedSubtree(children[i].getChildren());
+				} else if (children[i] instanceof IProductCmptTypeRelationReference) {
+					unchecked = unchecked && isUncheckedSubtree(structure.getChildProductCmptReferences(children[i]));
 				}
 			}
 			return unchecked;
 		}
 		
 		public Object getParent(Object element) {
-			if (!(element instanceof IStructureNode)) {
+			Object parent = super.getParent(element);
+			
+			if (parent == null) {
 				return null;
 			}
 			
-			IStructureNode parent = ((IStructureNode)element).getParent();
-
-			while (!isChecked(parent)) {
-				parent = parent.getParent();
+			while (!isChecked((IProductCmptSturctureReference)parent)) {
+				parent = super.getParent(parent);
 			}
 			return parent;
 		}
@@ -703,7 +707,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof IProductCmptStructure) {
-				IStructureNode node = ((IProductCmptStructure)inputElement).getRootNode();
+				IProductCmptReference node = ((IProductCmptStructure)inputElement).getRoot();
 				if (isChecked(node)) {
 					return new Object[] {node};
 				}
@@ -715,14 +719,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
 			checkedNodes = null;
 		}
 
-		public void setCheckedNodes(IStructureNode[] checked) {
+		public void setCheckedNodes(IProductCmptSturctureReference[] checked) {
 			checkedNodes = new Hashtable();
 			for (int i = 0; i < checked.length; i ++) {
 				checkedNodes.put(checked[i], checked[i]);
 			}
 		}
 
-		private boolean isChecked(IStructureNode node) {
+		private boolean isChecked(IProductCmptSturctureReference node) {
 			return checkedNodes.get(node) != null;
 		}
 	}

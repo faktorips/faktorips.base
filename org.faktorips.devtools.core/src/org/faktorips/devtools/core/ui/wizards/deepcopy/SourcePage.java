@@ -31,9 +31,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
+import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureLabelProvider;
 
@@ -122,37 +123,49 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 		}
 	}
 	
-	public IStructureNode[] getCheckedNodes() {
-		return (IStructureNode[])Arrays.asList(tree.getCheckedElements()).toArray(new IStructureNode[0]);
+	public IProductCmptSturctureReference[] getCheckedNodes() {
+		return (IProductCmptSturctureReference[])Arrays.asList(tree.getCheckedElements()).toArray(new IProductCmptSturctureReference[0]);
 	}
 	
 	public void checkStateChanged(CheckStateChangedEvent event) {
 		
 		// we have to check or uncheck all items which represent the same ipselement
 		// because the decision of copy or not copy is global.
-		IIpsElement changed = ((IStructureNode)event.getElement()).getWrappedElement();
-		IStructureNode root = structure.getRootNode();
+		IProductCmptSturctureReference changed = (IProductCmptSturctureReference)event.getElement();
+		IProductCmptReference root = structure.getRoot();
 		
-		if (!(changed instanceof IProductCmpt)) {
-			IStructureNode[] children = ((IStructureNode)event.getElement()).getChildren();
+		if (!(changed instanceof IProductCmptReference)) {
+			IProductCmptTypeRelationReference[] children = structure.getChildProductCmptTypeRelationReferences((IProductCmptSturctureReference)event.getElement());
 			for (int i = 0; i < children.length; i++) {
-				setCheckState(children[i].getWrappedElement(), new IStructureNode[] {root}, event.getChecked());				
+				setCheckState(children[i].getRelation(), new IProductCmptReference[] {root}, event.getChecked());				
 			}
 		} else {
-			setCheckState(changed, new IStructureNode[] {root}, event.getChecked());
+			setCheckState(((IProductCmptReference)changed).getProductCmpt(), new IProductCmptReference[] {root}, event.getChecked());
 		}
 		
 		setPageComplete(); 
 	}		
 	
-	private void setCheckState(IIpsElement toCompareWith, IStructureNode[] nodes, boolean checked) {
-		for (int i = 0; i < nodes.length; i++) {
-			setCheckState(toCompareWith, nodes[i].getChildren(), checked);
-			if (nodes[i].getWrappedElement().equals(toCompareWith)) {
-				tree.setChecked(nodes[i], checked);
-				checkStateListener.updateCheckState(tree, nodes[i], checked);
+	private void setCheckState(IIpsElement toCompareWith, IProductCmptSturctureReference[] nodes, boolean checked) {
+		if (nodes instanceof IProductCmptReference[]) {
+			for (int i = 0; i < nodes.length; i++) {
+				setCheckState(toCompareWith, structure.getChildProductCmptTypeRelationReferences(nodes[i]), checked);
+				if (((IProductCmptReference)nodes[i]).getProductCmpt().equals(toCompareWith)) {
+					tree.setChecked(nodes[i], checked);
+					checkStateListener.updateCheckState(tree, nodes[i], checked);
+				}
 			}
 		}
+		else {
+			for (int i = 0; i < nodes.length; i++) {
+				setCheckState(toCompareWith, structure.getChildProductCmptReferences(nodes[i]), checked);
+				if (((IProductCmptTypeRelationReference)nodes[i]).getRelation().equals(toCompareWith)) {
+					tree.setChecked(nodes[i], checked);
+					checkStateListener.updateCheckState(tree, nodes[i], checked);
+				}
+			}
+		}
+		
 	}
 }
 

@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -31,8 +32,11 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
+import org.faktorips.devtools.core.model.product.IProductCmptSturctureReference;
+import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.ArgumentCheck;
 
@@ -42,8 +46,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Thorsten Guenther
  */
 public class ProductCmptStructure implements IProductCmptStructure {
-	private Hashtable elementToNodeMapping;
-	private StructureNode root;
+	private ProductCmptReference root;
 	private GregorianCalendar workingDate;
 	
 	/**
@@ -78,7 +81,6 @@ public class ProductCmptStructure implements IProductCmptStructure {
 		ArgumentCheck.notNull(root);
 		ArgumentCheck.notNull(date);
 		
-        this.elementToNodeMapping = new Hashtable();
         this.workingDate = date;
 
         this.root = buildNode(root, null);
@@ -94,14 +96,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmpt getRoot() {
-		return (IProductCmpt)root.getWrappedElement();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public IStructureNode getRootNode() {
+	public IProductCmptReference getRoot() {
 		return root;
 	}
 	
@@ -109,25 +104,46 @@ public class ProductCmptStructure implements IProductCmptStructure {
 	 * {@inheritDoc}
 	 */
 	public void refresh() throws CycleException {
-	    this.elementToNodeMapping = new Hashtable();
-	    this.root = buildNode(root.getWrappedElement(), null);
+	    this.root = buildNode(root.getProductCmpt(), null);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IStructureNode[] toArray(boolean prodcutCmptOnly) {
+	public IProductCmptSturctureReference[] toArray(boolean productCmptOnly) {
 		List result = new ArrayList();
-		addChildrenToList(root, result, prodcutCmptOnly);
-		return (IStructureNode[])result.toArray(new IStructureNode[result.size()]);
+		addChildrenToList(root, result, productCmptOnly);
+		
+		if (productCmptOnly) {
+			return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
+		}
+		return (IProductCmptSturctureReference[])result.toArray(new IProductCmptSturctureReference[result.size()]);
 	}
 	
-	private void addChildrenToList(IStructureNode parent, List list, boolean productCmptOnly) {
-		IStructureNode[] children = parent.getChildren();
+	/**
+	 * Requests all children from the given parent and add them to the given list.
+	 * 
+	 * @param parent The parent to get the children from.
+	 * @param list The list to add the children to.
+	 * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>s.
+	 */
+	private void addChildrenToList(IProductCmptSturctureReference parent, List list, boolean productCmptOnly) {
+		if (!productCmptOnly) {
+			addChildrenToList(getChildProductCmptTypeRelationReferences(parent), list, productCmptOnly);
+		}
+		addChildrenToList(getChildProductCmptReferences(parent), list, productCmptOnly);
+	}
+	
+	/**
+	 * Adds all given references to the given list and requests the children for the added ones 
+	 * revursively.
+	 * @param children The array of child-references to add to the list.
+	 * @param list The list to add the chlidren to.
+	 * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>s.
+	 */
+	private void addChildrenToList(IProductCmptSturctureReference[] children, List list, boolean productCmptOnly) {
 		for (int i = 0; i < children.length; i++) {
-			if ((productCmptOnly && children[i].getWrappedElement() instanceof IProductCmpt) || !productCmptOnly) {
-				list.add(children[i]);
-			}
+			list.add(children[i]);
 			addChildrenToList(children[i], list, productCmptOnly);
 		}
 	}
@@ -139,11 +155,9 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @param parent The parent-node for the new one.
 	 * @throws CycleException 
      */
-    private StructureNode buildNode(IIpsElement element, StructureNode parent) throws CycleException {
-    	StructureNode node = new StructureNode(element, parent);
-    	node.setChildren(buildChildNodes(element, node));
-		this.elementToNodeMapping.put(element, node);
-
+    private ProductCmptReference buildNode(IProductCmpt cmpt, ProductCmptStructureReference parent) throws CycleException {
+    	ProductCmptReference node = new ProductCmptReference(this, parent, cmpt);
+    	node.setChildren(buildChildNodes(cmpt, node));
     	return node;
     }
 
@@ -156,14 +170,14 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @return
      * @throws CycleException 
      */
-    private StructureNode[] buildChildNodes(IProductCmptRelation[] relations, StructureNode parent, IProductCmptTypeRelation type) throws CycleException {
+    private ProductCmptStructureReference[] buildChildNodes(IProductCmptRelation[] relations, ProductCmptStructureReference parent, IProductCmptTypeRelation type) throws CycleException {
 		ArrayList children = new ArrayList();
         for (int i = 0; i < relations.length; i ++) {
 			try {
 				IProductCmpt p = (IProductCmpt)relations[i].getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, relations[i].getTarget());
 				if (p != null) {
 					if(type.getRelationType().equals(RelationType.ASSOZIATION)){
-						children.add(new StructureNode(p, parent));
+						children.add(new ProductCmptReference(this, parent, p));
 						continue;
 					}
 					children.add(buildNode(p, parent));
@@ -172,8 +186,8 @@ public class ProductCmptStructure implements IProductCmptStructure {
 				IpsPlugin.log(e);
 			}
         }
-		StructureNode[] result = new StructureNode[children.size()];
-		return (StructureNode[])children.toArray(result);
+        ProductCmptStructureReference[] result = new ProductCmptStructureReference[children.size()];
+		return (ProductCmptStructureReference[])children.toArray(result);
     }
     
     /**
@@ -183,7 +197,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
      * @param parent The parent node for the new children.
      * @throws CycleException 
      */
-	private StructureNode[] buildChildNodes(IIpsElement element, StructureNode parent) throws CycleException {
+	private ProductCmptStructureReference[] buildChildNodes(IIpsElement element, ProductCmptStructureReference parent) throws CycleException {
 		ArrayList children = new ArrayList();
 		
 		if (element instanceof IProductCmpt) {
@@ -193,7 +207,7 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			
 			if (activeGeneration == null) {
 				// no active generation found, so no nodes can be returned.
-				return new StructureNode[0];
+				return new ProductCmptStructureReference[0];
 			}
 			
 			IProductCmptRelation[] relations = activeGeneration.getRelations();
@@ -219,91 +233,85 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			
 			for (Iterator iter = typeList.iterator(); iter.hasNext();) {
 				IProductCmptTypeRelation type = (IProductCmptTypeRelation) iter.next();
-				StructureNode node = new StructureNode(type, parent);
+				ProductCmptStructureReference node = new ProductCmptTypeRelationReference(this, parent, type);
 				ArrayList relationsList = (ArrayList)mapping.get(type.getName());
 				IProductCmptRelation[] rels = new IProductCmptRelation[relationsList.size()];
 				node.setChildren(buildChildNodes((IProductCmptRelation[])relationsList.toArray(rels), node, type));
 				children.add(node);
-				this.elementToNodeMapping.put(type, node);
 			}
 		}
 		
-		StructureNode[] result = new StructureNode[children.size()];
-		return (StructureNode[])children.toArray(result);
-    }   
-	
+		ProductCmptStructureReference[] result = new ProductCmptStructureReference[children.size()];
+		return (ProductCmptStructureReference[])children.toArray(result);
+    }
+
 	/**
-	 * Class to allow the content provider to evaluate the structure of the data to display once and
-	 * cache this information using this class.
-	 * 
-	 * @author Thorsten Guenther
+	 * {@inheritDoc}
 	 */
-	public class StructureNode implements IProductCmptStructure.IStructureNode{
-		private StructureNode[] children = new StructureNode[0];
-		private StructureNode parent;
-		private IIpsElement wrapped;
-		
-		/**
-		 * Creates a new Node.
-		 */
-		StructureNode(IIpsElement wrapped, StructureNode parent) throws CycleException {
-			this.parent = parent;
-			this.wrapped = wrapped;
-			detectCycle(new ArrayList());
+	public IProductCmptReference getParentProductCmptReference(IProductCmptSturctureReference child) {
+		ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
+		ProductCmptStructureReference result = ref.getParent();
+		if (result instanceof IProductCmptReference) {
+			return (IProductCmptReference)result;
 		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public IStructureNode getParent() {
-			return parent;
+		else if (result != null) {
+			return (IProductCmptReference)result.getParent();
 		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public IStructureNode[] getChildren() {
-			return children;
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptTypeRelationReference getParentProductCmptTypeRelationReference(IProductCmptSturctureReference child) {
+		ProductCmptStructureReference ref = (ProductCmptStructureReference)child;
+		ProductCmptStructureReference result = ref.getParent();
+		if (result instanceof IProductCmptTypeRelationReference) {
+			return (IProductCmptTypeRelationReference)result;
 		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public IIpsElement getWrappedElement() {
-			return wrapped;
-		}		
-		
-		void setChildren(StructureNode[] children) {
-			this.children = children;
+		else if (result != null) {
+			return (IProductCmptTypeRelationReference)result.getParent();
 		}
-		
-		private void detectCycle(ArrayList seenElements) throws CycleException {
-			if (!(wrapped instanceof IProductCmptTypeRelation) && seenElements.contains(wrapped)) {
-				seenElements.add(wrapped);
-				throw new CycleException((IIpsElement[])seenElements.toArray(new IIpsElement[seenElements.size()]));
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptReference[] getChildProductCmptReferences(IProductCmptSturctureReference parent) {
+		if (parent instanceof IProductCmptTypeRelationReference) {
+			IProductCmptSturctureReference[] children = ((ProductCmptTypeRelationReference)parent).getChildren();
+			IProductCmptReference[] result = new IProductCmptReference[children.length];
+			System.arraycopy(children, 0, result, 0, children.length);
+			return result;
+		}
+		else {
+			ProductCmptStructureReference children[] = ((ProductCmptReference)parent).getChildren();
+			ArrayList result = new ArrayList();
+			for (int i = 0; i < children.length; i++) {
+				result.addAll(Arrays.asList(children[i].getChildren()));
 			}
-			else {
-				seenElements.add(wrapped);
-				if (parent != null) {
-					parent.detectCycle(seenElements);
-				}
-			}
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean equals(Object o) {
-			if (!(o instanceof StructureNode)) {
-				return false;
-			}
-			StructureNode other = (StructureNode)o;
-			return ((children == null && other.children == null) || (children != null && children
-					.equals(other.children)))
-					&& ((parent == null && other.parent == null) || (parent != null && parent
-							.equals(other.parent)))
-					&& ((wrapped == null && other.wrapped == null) || (wrapped != null && wrapped
-							.equals(other.wrapped)));
+			return (IProductCmptReference[])result.toArray(new IProductCmptReference[result.size()]);
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProductCmptTypeRelationReference[] getChildProductCmptTypeRelationReferences(IProductCmptSturctureReference parent) {
+		if (parent instanceof IProductCmptReference) {
+			IProductCmptSturctureReference[] children = ((ProductCmptReference)parent).getChildren();
+			IProductCmptTypeRelationReference[] result = new IProductCmptTypeRelationReference[children.length];
+			System.arraycopy(children, 0, result, 0, children.length);
+			return result;
+		}
+		else {
+			ProductCmptStructureReference children[] = ((ProductCmptTypeRelationReference)parent).getChildren();
+			ArrayList result = new ArrayList();
+			for (int i = 0; i < children.length; i++) {
+				result.addAll(Arrays.asList(children[i].getChildren()));
+			}
+			return (IProductCmptTypeRelationReference[])result.toArray(new IProductCmptTypeRelationReference[result.size()]);
+		}
+	}   
 }

@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.internal.model.product.DeepCopyOperation;
 import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 
 /**
  * A wizard to create a deep copy from a given product component.
@@ -120,10 +120,10 @@ public class DeepCopyWizard extends Wizard {
 	 */
 	public boolean performFinish() {
 		try {
-			final IStructureNode[] toCopy = previewPage.getProductsToCopy();
-			final IStructureNode[] toRefer = previewPage.getProductsToRefer();
+			final IProductCmptReference[] toCopy = previewPage.getProductsToCopy();
+			final IProductCmptReference[] toRefer = previewPage.getProductsToRefer();
 			final Map handles = previewPage.getHandles();
-			schedulingRule = structure.getRoot().getIpsProject().getCorrespondingResource();
+			schedulingRule = structure.getRoot().getProductCmpt().getIpsProject().getCorrespondingResource();
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule){
 
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {

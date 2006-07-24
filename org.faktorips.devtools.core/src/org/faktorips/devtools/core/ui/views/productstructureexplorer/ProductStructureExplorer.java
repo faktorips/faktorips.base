@@ -113,7 +113,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     		
 			public void run() {
 				contentProvider.setRelationTypeShowing(!contentProvider.isRelationTypeShowing());
-				tree.refresh();
+				refresh();
 			}
 
 			public String getToolTipText() {

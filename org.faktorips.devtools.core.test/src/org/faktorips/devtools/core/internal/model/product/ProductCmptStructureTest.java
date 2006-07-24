@@ -93,7 +93,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     }
 
     public void testGetRoot() {
-    	IProductCmpt root = structure.getRoot();
+    	IProductCmpt root = structure.getRoot().getProductCmpt();
     	assertSame(productCmpt, root);
     }
     

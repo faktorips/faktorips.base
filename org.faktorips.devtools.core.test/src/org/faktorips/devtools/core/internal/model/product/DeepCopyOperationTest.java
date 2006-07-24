@@ -22,16 +22,16 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
-import org.faktorips.devtools.core.model.product.IProductCmptStructure.IStructureNode;
 
 /**
  * Tests for product component structure.
@@ -57,30 +57,18 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
      * @throws CycleException 
      */
     public void testCopyAll() throws CoreException, InvocationTargetException, InterruptedException, CycleException {
-    	IStructureNode[] toCopy = new IStructureNode[5];
-    	int count = 0;
-
     	IProductCmptStructure structure = content.getComfortMotorProduct().getStructure();
-    	IStructureNode node = structure.getRootNode();
-    	IStructureNode[] children = node.getChildren();
-    	for (int i = 0; i < children.length; i++) {
-			IStructureNode[] children2 = children[i].getChildren();
-			for (int j = 0; j < children2.length; j++) {
-				toCopy[count] = children2[j];
-				count++;
-			}
-		}
-    	toCopy[count] = node;
-    	
+        IProductCmptReference[] toCopy = (IProductCmptReference[])structure.toArray(true);
+
         Hashtable handles = new Hashtable();
 
         for (int i = 0; i < toCopy.length; i++) {
-        	IProductCmpt cmpt = (IProductCmpt)toCopy[i].getWrappedElement();
+        	IProductCmpt cmpt = toCopy[i].getProductCmpt();
         	handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
         	assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
 		}
         
-        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IStructureNode[0], handles);
+        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
         dco.run(null);
         
         for (int i = 0; i < toCopy.length; i++) {
@@ -88,7 +76,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         	assertTrue(src.exists());
 
         	// we have a race condition, because files are written async. So loop for some times...
-        	count = 0;
+        	int count = 0;
         	if (src.isDirty() && count < 100) {
         		count ++;
         	}
@@ -104,39 +92,32 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
      * @throws CycleException 
      */
     public void testCopySome() throws CoreException, InvocationTargetException, InterruptedException, CycleException {
-    	IStructureNode[] toCopy = new IStructureNode[3];
-    	IStructureNode[] toRefer = new IStructureNode[2];
+    	IProductCmptReference[] toCopy = new IProductCmptReference[3];
+        IProductCmptReference[] toRefer = new IProductCmptReference[2];
     	int copyCount = 0;
     	int refCount = 0;
 
     	IProductCmptStructure structure = content.getComfortMotorProduct().getStructure();
-    	IStructureNode node = structure.getRootNode();
-    	IStructureNode[] children = node.getChildren();
+        IProductCmptReference node = structure.getRoot();
+        IProductCmptReference[] children = structure.getChildProductCmptReferences(node);
     	for (int i = 0; i < children.length; i++) {
-			IStructureNode[] children2 = children[i].getChildren();
-			for (int j = 0; j < children2.length; j++) {
-				if (children2[j].getWrappedElement().equals(
-						content.getComfortMotorProduct())
-						|| children2[j].getWrappedElement().equals(
-								content.getStandardVehicle())
-						|| children2[j].getWrappedElement().equals(
-								content.getComfortCollisionCoverageA())) {
-					toCopy[copyCount] = children2[j];
-					copyCount++;
-				} else if (children2[j].getWrappedElement().equals(
-						content.getComfortCollisionCoverageB()) || children2[j].getWrappedElement().equals(
-								content.getStandardTplCoverage())) {
-					toRefer[refCount] = children2[j];
-					refCount ++;
-				}
-			}
-		}
+            if (children[i].getProductCmpt().equals(content.getComfortMotorProduct())
+                    || children[i].getProductCmpt().equals(content.getStandardVehicle())
+                    || children[i].getProductCmpt().equals(content.getComfortCollisionCoverageA())) {
+                toCopy[copyCount] = children[i];
+                copyCount++;
+            } else if (children[i].getProductCmpt().equals(content.getComfortCollisionCoverageB())
+                    || children[i].getProductCmpt().equals(content.getStandardTplCoverage())) {
+                toRefer[refCount] = children[i];
+                refCount++;
+            }
+        }
     	toCopy[copyCount] = node;
 
     	Hashtable handles = new Hashtable();
 
         for (int i = 0; i < toCopy.length; i++) {
-        	IProductCmpt cmpt = (IProductCmpt)toCopy[i].getWrappedElement();
+        	IProductCmpt cmpt = toCopy[i].getProductCmpt();
         	handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
         	assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
 		}
@@ -167,32 +148,20 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
     
     public void testCopyWithNoGeneration() throws Exception {
-        IStructureNode[] toCopy = new IStructureNode[5];
-        int count = 0;
-
         IProductCmptStructure structure = content.getComfortMotorProduct().getStructure();
-        IStructureNode node = structure.getRootNode();
-        IStructureNode[] children = node.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            IStructureNode[] children2 = children[i].getChildren();
-            for (int j = 0; j < children2.length; j++) {
-                toCopy[count] = children2[j];
-                count++;
-            }
-        }
-        toCopy[count] = node;
+        IProductCmptReference[] toCopy = (IProductCmptReference[])structure.toArray(true);
         
         Hashtable handles = new Hashtable();
 
         for (int i = 0; i < toCopy.length; i++) {
-            IProductCmpt cmpt = (IProductCmpt)toCopy[i].getWrappedElement();
+            IProductCmpt cmpt = toCopy[i].getProductCmpt();
             handles.put(toCopy[i], cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + cmpt.getName() + ".ipsproduct"));
             assertFalse(((IIpsSrcFile)handles.get(toCopy[i])).exists());
         }
         
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(1990, 1, 1));
         
-        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IStructureNode[0], handles);
+        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
         dco.run(null);
         
         for (int i = 0; i < toCopy.length; i++) {
@@ -200,7 +169,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             assertTrue(src.exists());
 
             // we have a race condition, because files are written async. So loop for some times...
-            count = 0;
+            int count = 0;
             if (src.isDirty() && count < 100) {
                 count ++;
             }

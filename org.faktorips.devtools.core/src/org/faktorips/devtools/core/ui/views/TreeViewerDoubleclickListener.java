@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.product.ProductCmptStructure.StructureNode;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -38,7 +37,9 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptReference;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.IProductCmptTypeRelationReference;
 
 /**
  * Doubleclicklistener for a TreeViewer that opens the an editor for the selected/clicked Object.
@@ -73,9 +74,13 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
 				openEditor((IIpsElement) selectedObject);
 			}
 			// for usage with StructureExplorer: open ProductComponents contained in StructureNodes
-            else if (selectedObject instanceof StructureNode) {
-            	openEditor(((StructureNode)selectedObject).getWrappedElement());
-            }else if (selectedObject instanceof IProductCmptRelation) {
+            else if (selectedObject instanceof IProductCmptReference) {
+            	openEditor(((IProductCmptReference)selectedObject).getProductCmpt());
+            }
+            else if (selectedObject instanceof IProductCmptTypeRelationReference) {
+            	openEditor(((IProductCmptTypeRelationReference)selectedObject).getRelation());
+            }
+            else if (selectedObject instanceof IProductCmptRelation) {
             	try {
             		IProductCmptRelation rel = (IProductCmptRelation)selectedObject;
 					openEditor(rel.getIpsProject().findIpsObject(IpsObjectType.PRODUCT_CMPT, rel.getTarget()));
