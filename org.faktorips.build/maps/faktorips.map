@@ -1,6 +1,5 @@
 feature@org.faktorips.feature=HEAD,/usr/local/cvsroot
 feature@org.faktorips.feature.test=HEAD,/usr/local/cvsroot/
-feature@de.bbv.faktorips.feature=HEAD,/usr/local/cvsroot/
 plugin@org.faktorips.devtools.core=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.stdbuilder=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.dtflcommon=HEAD,/usr/local/cvsroot
@@ -10,11 +9,6 @@ plugin@org.faktorips.util=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.valuetypes=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.stdbuilder.test=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.core.test=HEAD,/usr/local/cvsroot
-plugin@de.bbv.cm.CMPlugin=HEAD,/usr/local/cvsroot
-plugin@de.bbv.faktorips.runtime=HEAD,/usr/local/cvsroot
-plugin@de.bbv.faktorips.devtools=HEAD,/usr/local/cvsroot
-plugin@de.bbv.faktorips.pm.filterapplication=HEAD,/usr/local/cvsroot
-plugin@org.faktorips.devtools.msgpm=HEAD,/usr/local/cvsroot
 plugin@org.apache.poi=HEAD,/user/local/cvsroot
 
 
