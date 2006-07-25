@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
  * The ProductCmptEditorActionContributor distinguishes between multiple instances 
  * of ProductCmptEditor and organizes actions accordingly.
  * The contributor makes sure retargetable actions for the ProductCmptEditor always
- * use the currently active editor as a selectionprovider. </b>
+ * use the currently active editor as a selectionprovider. <p>
  * Note: The contributor uses the selectionprovider returned by the editorsite.
  * Which GUI element actually provides the selection is up to the Editor.
  * In the future the selection should be retrieved unsing the SelectionService.

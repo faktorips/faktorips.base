@@ -41,13 +41,14 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * This action is designed to be used with views and editors that contain a <code>TreeViewer</code>
- * and use it as a selectionprovider for this action.  </b>
+ * and use it as a selectionprovider for this action.  <p>
  * IpsDeleteAction deletes all selected IpsObjectPartContainers in the ObjectModel without 
  * saving the changes. After deletion the topmost sibling (if any), or the topmost parent 
- * of the deleted items are selected in the tree.  </b>
+ * of the deleted items are selected in the tree.  <p>
  * This Action is primarily used in Editors, thus no changes to objects are saved (to the filesystem). 
  * See <code>IpsDeleteAndSaveAction</code> for an action that saves changes after deleting.
  * @see org.faktorips.devtools.core.ui.actions.IpsDeleteAndSaveAction
+ * TODO Refactoring: Implement IpsAction; make action independant of GUI/Tree.
  * @author Thorsten Guenther
  * @author Stefan Widmaier
  */
