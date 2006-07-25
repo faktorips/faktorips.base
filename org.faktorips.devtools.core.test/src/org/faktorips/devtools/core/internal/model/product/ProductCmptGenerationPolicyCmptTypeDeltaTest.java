@@ -224,14 +224,26 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
-        // a1=range, ce1=allvalues=> no mismatch
+        // a1=range, ce1=range=> no mismatch
+        a1.setValueSetType(ValueSetType.RANGE);
+        valueSet = (IRangeValueSet)a1.getValueSet();
+        valueSet.setLowerBound("10");
+        valueSet.setUpperBound("20");
+        ce1.setValueSetType(ValueSetType.RANGE);
+        valueSet = (IRangeValueSet)ce1.getValueSet();
+        valueSet.setLowerBound("10");
+        valueSet.setUpperBound("20");
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
+        assertTrue(delta.isEmpty());
+        
+        // a1=range, ce1=allvalues=> mismatch
         a1.setValueSetType(ValueSetType.RANGE);
         valueSet = (IRangeValueSet)a1.getValueSet();
         valueSet.setLowerBound("10");
         valueSet.setUpperBound("20");
         ce1.setValueSetType(ValueSetType.ALL_VALUES);
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
-        assertTrue(delta.isEmpty());
+        assertEquals(1, delta.getElementsWithValueSetMismatch().length);
         
         // value set mismatch between a1 (range), ce1 (enum),
         // but corresponding attribute is not product relevant => this is not a mismatch as this reported otherwise
