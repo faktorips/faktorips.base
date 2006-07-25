@@ -433,12 +433,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
         interfaceBuilder.generateSignatureSetPropertyValue(a, datatypeHelper, methodsBuilder);
         methodsBuilder.openBracket();
+        methodsBuilder.appendln(MARKER_BEGIN_USER_CODE);
+        methodsBuilder.appendln(MARKER_END_USER_CODE);
         methodsBuilder.append("this.");
         methodsBuilder.append(getFieldNameForAttribute(a));
-        methodsBuilder.append(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
+        methodsBuilder.appendln(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
         methodsBuilder.closeBracket();
     }
 
@@ -1560,28 +1562,31 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.appendQuoted(relation.getTargetRoleSingular());
             builder.appendln(".equals(childEl.getNodeName())) {");
             IPolicyCmptType target = relation.findTarget();
-            if (target.isAbstract()) {
-                builder.appendln("String className = childEl.getAttribute(\"class\");");
-                builder.appendln("if (className.length()>0) {");
-                builder.appendln("try {");
-                builder.appendClassName(getQualifiedClassName(target));
-                String varName = StringUtils.uncapitalise(relation.getTargetRoleSingular());
-                builder.append(" " + varName + "=(");
-                builder.appendClassName(getQualifiedClassName(target));
-                builder.appendln(")Class.forName(className).newInstance();");
-                builder.append(interfaceBuilder.getMethodNameAddObject(relation) + "(" + varName + ");");
+            builder.appendln("String className = childEl.getAttribute(\"class\");");
+            builder.appendln("if (className.length()>0) {");
+            builder.appendln("try {");
+            builder.appendClassName(getQualifiedClassName(target));
+            String varName = StringUtils.uncapitalise(relation.getTargetRoleSingular());
+            builder.append(" " + varName + "=(");
+            builder.appendClassName(getQualifiedClassName(target));
+            builder.appendln(")Class.forName(className).newInstance();");
+            builder.append(interfaceBuilder.getMethodNameAddObject(relation) + "(" + varName + ");");
+            if (target.isConfigurableByProductCmptType()) {
                 builder.appendln(varName + ".initialize();");
-                builder.appendln("return " + varName + ";");
-                builder.appendln("} catch (Exception e) {");
-                builder.appendln("throw new RuntimeException(e);");
-                builder.appendln("}"); // catch
-                builder.appendln("}"); // if
-            } else {
+            }
+            builder.appendln("return " + varName + ";");
+            builder.appendln("} catch (Exception e) {");
+            builder.appendln("throw new RuntimeException(e);");
+            builder.appendln("}"); // catch
+            builder.appendln("}"); // if
+            if (!target.isAbstract()) {
                 builder.append("return (");
                 builder.appendClassName(AbstractPolicyComponent.class);
                 builder.append(")");
                 builder.append(interfaceBuilder.getMethodNameNewChild(relation));
                 builder.appendln("();");
+            } else {
+                builder.appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
             }
             builder.appendln("}");
         }
