@@ -899,6 +899,18 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     public String getMethodNameSetObject(IRelation relation) {
         return getLocalizedText(relation, "METHOD_SET_OBJECT_NAME", relation.getTargetRoleSingular());
     }
+    
+    /**
+     * Returns the name of the method that adds an object to a toMany relation or that sets
+     * the object in a to1 relation respectively.
+     */
+    public String getMethodNameAddOrSetObject(IRelation relation) {
+        if (relation.is1ToMany()) {
+            return getMethodNameAddObject(relation);
+        } else {
+            return getMethodNameSetObject(relation);
+        }
+    }
 
     /**
      * Returns the name of the paramter for the method that tests if an object is references in a multi-value relation,
