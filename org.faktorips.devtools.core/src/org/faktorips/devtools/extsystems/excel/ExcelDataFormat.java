@@ -36,10 +36,11 @@ public class ExcelDataFormat extends ExternalDataFormat {
 	public ExcelDataFormat() {
 		super(enumType, ID);
 		setValueConverter(Date.class, Datatype.GREGORIAN_CALENDAR_DATE, new DateValueConverter());
+		StringValueConverter stringConverter = new StringValueConverter();
+		setValueConverter(String.class, Datatype.MONEY, stringConverter);
 		ValueConverter doubleConverter = new DoubleValueConverter();
 		setValueConverter(Double.class, Datatype.DOUBLE, doubleConverter);
 		setValueConverter(Double.class, Datatype.DECIMAL, doubleConverter);
-		setValueConverter(Double.class, Datatype.MONEY, doubleConverter);
 		ValueConverter intConverter = new IntegerValueConverter();
 		setValueConverter(Double.class, Datatype.INTEGER, intConverter);
 		setValueConverter(Double.class, Datatype.PRIMITIVE_INT, intConverter);
