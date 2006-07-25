@@ -1571,9 +1571,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.appendClassName(getQualifiedClassName(target));
             builder.appendln(")Class.forName(className).newInstance();");
             builder.append(interfaceBuilder.getMethodNameAddOrSetObject(relation) + "(" + varName + ");");
-            if (target.isConfigurableByProductCmptType()) {
-                builder.appendln(varName + ".initialize();");
-            }
             builder.appendln("return " + varName + ";");
             builder.appendln("} catch (Exception e) {");
             builder.appendln("throw new RuntimeException(e);");
