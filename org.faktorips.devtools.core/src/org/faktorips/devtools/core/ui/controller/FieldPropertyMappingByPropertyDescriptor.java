@@ -107,7 +107,7 @@ class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
         }
     }
     
-    private Object getPropertyValue() {
+    protected Object getPropertyValue() {
         try {
             Method getter = property.getReadMethod();
             return getter.invoke(object, new Object[0]);

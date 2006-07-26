@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.product;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -216,6 +217,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
 
         // a1=enum, ce1=enum => no mismatch
         a1.setValueSetType(ValueSetType.ENUM);
+        a1.setDatatype(Datatype.INTEGER.getQualifiedName());
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
@@ -227,6 +229,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         // a1=range, ce1=range=> no mismatch
         a1.setValueSetType(ValueSetType.RANGE);
         valueSet = (IRangeValueSet)a1.getValueSet();
+        a1.setDatatype(Datatype.INTEGER.getQualifiedName());
         valueSet.setLowerBound("10");
         valueSet.setUpperBound("20");
         ce1.setValueSetType(ValueSetType.RANGE);
@@ -236,6 +239,19 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
+        // a1=range 10-20, ce1=range 0-10 => mismatch
+        a1.setValueSetType(ValueSetType.RANGE);
+        valueSet = (IRangeValueSet)a1.getValueSet();
+        a1.setDatatype(Datatype.INTEGER.getQualifiedName());
+        valueSet.setLowerBound("10");
+        valueSet.setUpperBound("20");
+        ce1.setValueSetType(ValueSetType.RANGE);
+        valueSet = (IRangeValueSet)ce1.getValueSet();
+        valueSet.setLowerBound("0");
+        valueSet.setUpperBound("10");
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
+        assertEquals(1, delta.getElementsWithValueSetMismatch().length);
+
         // a1=range, ce1=allvalues=> mismatch
         a1.setValueSetType(ValueSetType.RANGE);
         valueSet = (IRangeValueSet)a1.getValueSet();

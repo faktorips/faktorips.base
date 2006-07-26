@@ -99,15 +99,19 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
                 /*
 				 * if the config element has an all values valueset and the
 				 * valueset of the underlying attribute is not an all values
-				 * valuese, the valueset has to be changed to a copy of the underlying
-				 * attribute valueset. This is because all value valuesets only
-				 * apply on datatypes, not on other valuesets.
+				 * valuese, the valueset has to be changed to a copy of the
+				 * underlying attribute valueset. This is because all value
+				 * valuesets only apply on datatypes, not on other valuesets.
 				 */
                 if (!(attribute.getValueSet().getValueSetType() == ValueSetType.ALL_VALUES) && (elements[i].getValueSet().getValueSetType() == ValueSetType.ALL_VALUES)) {
                 	valueSetMismatchs.add(elements[i]);
                 }
+                
                 if (!(attribute.getValueSet().getValueSetType() == ValueSetType.ALL_VALUES) && !(elements[i].getValueSet().getValueSetType() == ValueSetType.ALL_VALUES)) {
                     if (!attribute.getValueSet().getValueSetType().equals(elements[i].getValueSet().getValueSetType())) {
+                        valueSetMismatchs.add(elements[i]);
+                    }
+                    else if (!attribute.getValueSet().containsValueSet(elements[i].getValueSet())) {
                         valueSetMismatchs.add(elements[i]);
                     }
                 }
