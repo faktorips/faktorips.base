@@ -58,8 +58,10 @@ public class PropertiesPage extends AbstractPropertiesPage {
 			public void contentsChanged(ContentChangeEvent event) {
 				if (!wizard.isReverseRelationPageDisplayed()){
 					// check only until the next page wasn't displayed
-					if (getContainer() != null)
-						getContainer().updateButtons();
+					if (event.getIpsSrcFile().equals(wizard.getRelation().getIpsObject().getIpsSrcFile())){
+						if (getContainer() != null)
+							getContainer().updateButtons();
+					}
 				}
 			}	
 		});

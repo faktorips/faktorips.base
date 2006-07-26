@@ -158,7 +158,9 @@ public class NewPcTypeRelationWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			boolean saveTargetAutomatically = false;
-			if (targetPolicyCmptType != null){
+			if (targetPolicyCmptType != null && 
+					! targetPolicyCmptType.getIpsSrcFile().equals(relation.getIpsObject().getIpsSrcFile())){
+				// there is a target selected and the target is not the object this new relation belongs to
 				if (targetIsDirty){
 					// target policy component type was dirty before editing by the wizard,
 					//   ask to save automatically
@@ -334,6 +336,8 @@ public class NewPcTypeRelationWizard extends Wizard {
 		if (reverseRelation != null){
 			relation.setReverseRelation(reverseRelation.getTargetRoleSingular());
 			reverseRelation.setReverseRelation(relation.getTargetRoleSingular());
+		}else{
+			relation.setReverseRelation(""); //$NON-NLS-1$
 		}
 		this.reverseRelation = reverseRelation;
 	}

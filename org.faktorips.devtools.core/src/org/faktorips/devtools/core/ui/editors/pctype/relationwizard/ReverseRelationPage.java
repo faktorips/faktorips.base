@@ -33,7 +33,8 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 	private Button newReverseRelation;
 	private Button useExistingRelation;
 	private Button noReverseRelation;
-
+	private Button prevSelection;
+		
 	public ReverseRelationPage(NewPcTypeRelationWizard newPcTypeRelationWizard) {
 		super(PAGE_ID, Messages.NewPcTypeRelationWizard_reverseRelation_title,
 				Messages.NewPcTypeRelationWizard_reverseRelation_description,
@@ -65,6 +66,7 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 		
 		// set the default selection
 		noReverseRelation.setSelection(true);
+		prevSelection = noReverseRelation;
 	}
 
 	/**
@@ -90,16 +92,24 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 		public void widgetSelected(SelectionEvent e) {
 			// if no reverse relation is selected then disable next wizard page
 			// other wise enable next wizard page
-			wizard.setNoneReverseRelation();
-			if (e.getSource() == useExistingRelation) {
-				wizard.storeReverseRelation(null);
-				wizard.restoreMementoTargetBeforeChange();
-				wizard.setExistingReverseRelation();
-				wizard.updateDescriptionReverseRelationPropertiesPage(Messages.NewPcTypeRelationWizard_reverseRelationProp_description_existing);
-			}else if(e.getSource() == newReverseRelation){
-				wizard.setNewReverseRelation();
+			if (prevSelection != e.getSource()){
+				prevSelection = (Button) e.getSource();
+				if (e.getSource() == useExistingRelation) {
+					wizard.storeReverseRelation(null);
+					wizard.restoreMementoTargetBeforeChange();
+					wizard.setExistingReverseRelation();
+					wizard.updateDescriptionReverseRelationPropertiesPage(Messages.NewPcTypeRelationWizard_reverseRelationProp_description_existing);
+				}else if(e.getSource() == newReverseRelation){
+					wizard.restoreMementoTargetBeforeChange();
+					wizard.setNewReverseRelation();
+				}else if(e.getSource() == noReverseRelation){
+					wizard.storeReverseRelation(null);
+					wizard.restoreMementoTargetBeforeChange();
+					wizard.setNoneReverseRelation();
+				}
+				if (getWizard().getContainer() != null)
+					getWizard().getContainer().updateButtons();
 			}
-			getContainer().updateButtons();
 		}
 
 		/**
