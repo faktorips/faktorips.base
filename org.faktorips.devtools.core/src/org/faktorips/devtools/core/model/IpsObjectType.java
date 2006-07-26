@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.internal.model.testcase.TestCase;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.util.ArgumentCheck;
 
 
@@ -72,8 +74,22 @@ public final class IpsObjectType {
     public final static IpsObjectType TABLE_CONTENTS = 
         new IpsObjectType("TableContents", Messages.IpsObjectType_nameTableContents, "ipstablecontents", false, "TableContents.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
     
+    /**
+     * Type for test case types.
+     */
+    public final static IpsObjectType TEST_CASE_TYPE =  
+        new IpsObjectType("TestCaseType", "Test Case Type", "ipstestcasetype", false, "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+    // TODO Joerg: NLS and correct image
+
+    /**
+     * Type for test cases.
+     */
+    public final static IpsObjectType TEST_CASE =  
+        new IpsObjectType("TestCase", "Test Case", "ipstestcase", false, "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+    // TODO Joerg: NLS and correct image
+
     public final static IpsObjectType[] ALL_TYPES = new IpsObjectType[]
-    	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS};
+    	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS, TEST_CASE_TYPE, TEST_CASE};
     
     /**
      * Returns the IpsObjectType that has the given file extension. 
@@ -137,6 +153,12 @@ public final class IpsObjectType {
 	    if (this==TABLE_CONTENTS) {
 	        return new TableContents(file);
 	    }
+	    if (this==TEST_CASE_TYPE) {
+	        return new TestCaseType(file);
+	    }
+	    if (this==TEST_CASE) {
+	        return new TestCase(file);
+	    }	    
 	    throw new RuntimeException("Can't create object for type " + this); //$NON-NLS-1$
 	}
 
