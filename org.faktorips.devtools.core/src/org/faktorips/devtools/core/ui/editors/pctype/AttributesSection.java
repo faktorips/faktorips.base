@@ -66,37 +66,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
     public class AttributesComposite extends IpsPartsComposite {
         private Button overrideButton;
 
-        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
-            super.createButtons(buttons, toolkit);
-            createButtonSpace(buttons, toolkit);
-    		overrideButton = toolkit.createButton(buttons, Messages.MethodsSection_button);
-    		overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
-    		overrideButton.addSelectionListener(new SelectionListener() {
-    			public void widgetSelected(SelectionEvent e) {
-    				try {
-    					overrideClicked();
-    				} catch (Exception ex) {
-    					IpsPlugin.logAndShowErrorDialog(ex);
-    				}
-    			}
-    			public void widgetDefaultSelected(SelectionEvent e) {
-    			}
-    		});
-    		return true;
-        }
-        
-        private void overrideClicked() {
-            try {
-            	OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPcType(), getShell());
-                if (dialog.open()==Window.OK) {
-                    getPcType().overrideAttributes(dialog.getSelectedAttributes());
-                    refresh();
-                }
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        }
-
         public AttributesComposite(IIpsObject pdObject, Composite parent,
                 UIToolkit toolkit) {
             super(pdObject, parent, toolkit);
@@ -149,6 +118,37 @@ public class AttributesSection extends SimpleIpsPartsSection {
             return new AttributeLabelProvider();
         }
         
+        protected boolean createButtons(Composite buttons, UIToolkit toolkit) {
+            super.createButtons(buttons, toolkit);
+            createButtonSpace(buttons, toolkit);
+    		overrideButton = toolkit.createButton(buttons, Messages.MethodsSection_button);
+    		overrideButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING));
+    		overrideButton.addSelectionListener(new SelectionListener() {
+    			public void widgetSelected(SelectionEvent e) {
+    				try {
+    					overrideClicked();
+    				} catch (Exception ex) {
+    					IpsPlugin.logAndShowErrorDialog(ex);
+    				}
+    			}
+    			public void widgetDefaultSelected(SelectionEvent e) {
+    			}
+    		});
+    		return true;
+        }
+        
+        private void overrideClicked() {
+            try {
+            	OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPcType(), getShell());
+                if (dialog.open()==Window.OK) {
+                    getPcType().overrideAttributes(dialog.getSelectedAttributes());
+                    refresh();
+                }
+            } catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+
         /**
          * Overridden method.
          * @see org.faktorips.devtools.core.ui.editors.IpsPartsComposite#createContentProvider()
