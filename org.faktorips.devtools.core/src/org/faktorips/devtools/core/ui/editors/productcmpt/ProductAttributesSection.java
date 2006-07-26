@@ -28,33 +28,28 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IEnumValueSet;
-import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Section to display and edit the product attributes
@@ -243,42 +238,20 @@ public class ProductAttributesSection extends IpsSection {
 			if (attr != null) {
 				datatype = attr.findDatatype();
 			}
-			
-			if (datatype != null && datatype.equals(Datatype.BOOLEAN)) {
-				Combo combo = toolkit.createComboForBoolean(rootPane, true, Messages.ProductAttributesSection_true, Messages.ProductAttributesSection_false);
-				ComboField field = new BooleanComboField(combo);
-				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
-				addFocusControl(combo);
-				editControls.add(combo);
-			}
-			else if (datatype != null && datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-				Combo combo = toolkit.createComboForBoolean(rootPane, false, Messages.ProductAttributesSection_true, Messages.ProductAttributesSection_false);
-				ComboField field = new BooleanComboField(combo);
-				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
-				addFocusControl(combo);
-				editControls.add(combo);
-			}
-			else if (toDisplay.getValueSet().getValueSetType() == ValueSetType.ENUM) {
-				Combo combo = toolkit.createCombo(rootPane);
-				EnumValueSetField field = new EnumValueSetField(combo, (IEnumValueSet)toDisplay.getValueSet(), (ValueDatatype)datatype);
-				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
-				
-				addFocusControl(combo);
-				editControls.add(combo);
-			}
-			else if (datatype != null && datatype instanceof EnumDatatype) {
-				Combo combo = toolkit.createCombo(rootPane);
-				EnumDatatypeField field = new EnumDatatypeField(combo, (EnumDatatype)datatype);
-				controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);		
-				addFocusControl(combo);
-				editControls.add(combo);
+			ValueDatatypeControlFactory ctrlFactory;
+			if (datatype != null && datatype.isValueDatatype()) {
+				ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory((ValueDatatype)datatype);
 			}
 			else {
-				Text text = toolkit.createText(rootPane);
-				addFocusControl(text);
-				editControls.add(text);
-				controller.add(new TextField(text), toDisplay, IConfigElement.PROPERTY_VALUE);		
+				ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(null);
 			}
+			
+			EditField field = ctrlFactory.createEditField(toolkit, rootPane, (ValueDatatype)datatype, (ValueSet)toDisplay.getValueSet());
+			Control ctrl = field.getControl();
+			controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
+			addFocusControl(ctrl);
+			editControls.add(ctrl);
+			
 		} catch (CoreException e) {
 			Text text = toolkit.createText(rootPane);
 			addFocusControl(text);
@@ -288,59 +261,5 @@ public class ProductAttributesSection extends IpsSection {
 		
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
-	}
-	
-	class BooleanComboField extends ComboField {
-		
-		private String trueRepresentation;
-		private String falseRepresentation;
-
-		public BooleanComboField(Combo combo) {
-			this(combo, Messages.ProductAttributesSection_true, Messages.ProductAttributesSection_false);
-		}
-		
-		/**
-		 * @param combo
-		 */
-		public BooleanComboField(Combo combo, String trueRepresentation, String falseRepresentation) {
-			super(combo);
-			ArgumentCheck.notNull(trueRepresentation);
-			ArgumentCheck.notNull(falseRepresentation);
-			this.trueRepresentation = trueRepresentation;
-			this.falseRepresentation = falseRepresentation;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object getValue() {
-			String s = (String)super.getValue();
-			if (s==null) {
-				return null;
-			} else if (s.equals(trueRepresentation)) {
-				return Boolean.TRUE.toString();
-			} else if (s.equals(falseRepresentation)) {
-					return Boolean.FALSE.toString();
-			}
-			throw new RuntimeException("Unknown value " + s); //$NON-NLS-1$
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void setValue(Object newValue) {
-			if (newValue==null) {
-				super.setValue(newValue);
-				return;
-			}
-			boolean bool = Boolean.valueOf((String)newValue).booleanValue();
-			if (bool) {
-				super.setValue(trueRepresentation);
-			} else {
-				super.setValue(falseRepresentation);
-			}
-		}
-		
-		
-	}
+	}	
 }
