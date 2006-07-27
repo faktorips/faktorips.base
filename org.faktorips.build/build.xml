@@ -107,6 +107,7 @@
 						<patternset id="test.sources">
 						    <exclude name="**/*.java"/>
 							<exclude name="**/*AbstractTest*"/>
+							<exclude name="**/*IpsTest*" />
 						    <include name="**/*Test.class"/>
 						</patternset>
 					</fileset>
