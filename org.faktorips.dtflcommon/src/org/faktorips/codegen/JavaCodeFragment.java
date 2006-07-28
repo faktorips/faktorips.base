@@ -221,13 +221,24 @@ public class JavaCodeFragment {
     }
     
     /**
-	 * Appends the unqualified class name to the sourcecode and updates the import 
-	 * declaration (if neccessary).
+	 * Appends the unqualified class name to the source code and updates the import 
+	 * declaration (if neccessary). A [] appended at the end of the qualified class name indicates
+     * the array of this type. The brackets are added correctly at the end of
+     * the class name in the source code. 
 	 * 
 	 * @throws NullPointerException if qualifiedClassName is null.
 	 */
 	public void appendClassName(String qualifiedClassName) {
-	    append(StringUtil.unqualifiedName(qualifiedClassName));
+        
+        int bracketIndex = qualifiedClassName.indexOf("[]");
+        if (bracketIndex > -1) {
+            qualifiedClassName = qualifiedClassName.substring(0, bracketIndex);
+            append(StringUtil.unqualifiedName(qualifiedClassName));
+            append("[]");
+        }
+        else{
+            append(StringUtil.unqualifiedName(qualifiedClassName));
+        }
 	    importDecl.add(qualifiedClassName);
 	}
 	

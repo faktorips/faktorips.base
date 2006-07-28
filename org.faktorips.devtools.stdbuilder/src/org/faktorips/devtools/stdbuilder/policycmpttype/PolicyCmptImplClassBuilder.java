@@ -53,6 +53,7 @@ import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.AbstractPolicyComponent;
 import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.runtime.internal.MethodNames;
@@ -1133,20 +1134,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             MessageFragment msgFrag = MessageFragment.createMessageFragment(r.getMessageText());
             createDefaultParameterAssignments(r, body, parameterName);
             body.append(msgFrag.getFrag());
-            String[] validatedAttributes = r.getValidatedAttributes();
-            body.appendClassName(String.class);
-            body.append("[] validatedAttributes = new ");
-            body.appendClassName(String.class);
-            body.append("[]{");
-            for (int j = 0; j < validatedAttributes.length; j++) {
-                IAttribute attr = getPcType().getSupertypeHierarchy().findAttribute(getPcType(), validatedAttributes[j]);
-                String propertyConstName = interfaceBuilder.getPropertyName(attr, attr.findDatatype());
-                body.append(propertyConstName);
-                if(j < validatedAttributes.length -1){
-                    body.append(',');
-                }
-            }
-            body.appendln("};");
             body.append("return new ");
             body.appendClassName(Message.class);
             body.append('(');
@@ -1156,17 +1143,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             body.append(", ");
             body.append(r.getMessageSeverity().getJavaSourcecode());
             body.append(", ");
-            body.append("this");
-            body.append(", ");
-            body.append("validatedAttributes");
-            body.append(");");
+            body.append("objectProperties);");
 
             String methodName = "createMessageForRule" + StringUtils.capitalise(r.getName());
 
             String javaDoc = getLocalizedText(r, CREATEMESSAGEFOR_POLICY_JAVADOC, r.getName());
 
             builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
-                methodName, new String[]{"parameters"}, new String[]{String.class.getName() + "[]"}, 
+                methodName, new String[]{"parameters", "objectProperties"}, new String[]{
+                String.class.getName() + "[]", 
+                ObjectProperty.class.getName() + "[]"}, 
                 body, javaDoc, ANNOTATION_GENERATED);
         }
     }
@@ -1335,58 +1321,27 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     
     private String[] createDefaultParameterAssignments(IValidationRule rule, JavaCodeFragment frag, String parameterName) throws CoreException{
         
-        IPolicyCmptType pc = getPcType();
         MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText());
 
         String[] parameterValues = msgFrag.getParameterValues();
         String[] parameterNames = msgFrag.getParameterNames();
-        String[] validatedAttr = rule.getValidatedAttributes();
         
         for (int j = 0; j < parameterValues.length; j++) {
             frag.appendClassName(String.class);
             frag.append(' ');
             frag.append(parameterNames[j]);
             frag.append(" = ");
-            int index = msgFrag.considerParameterAsIndex(j);
-            if(index != -1){
-                
-                if(index < validatedAttr.length){
-                    IAttribute attr = pc.getAttribute(validatedAttr[index]);
-                    addVariableAssignment(pc, attr, frag, parameterName, j);
-                    continue;
-                }
-                addVariableAssignment(pc, null, frag, parameterName, j);
-                continue;
-            }
-            
-            IAttribute attr = pc.getAttribute(parameterValues[j]);
-            addVariableAssignment(pc, attr, frag, parameterName, j);
+            frag.append(parameterName);
+            frag.append("[");
+            frag.append(j);
+            frag.append("] != null ? ");
+            frag.append(parameterName);
+            frag.append("[");
+            frag.append(j);
+            frag.append("] : ");
+            frag.append(" \"\";");
         }
         return parameterNames;
-    }
-
-    private void addVariableAssignment(IPolicyCmptType pc, IAttribute attr, JavaCodeFragment frag, 
-            String parameterName, int parameterIndex) throws CoreException{
-        //TODO introduce getMethodCallExpGetPropertyValue
-        frag.append(parameterName);
-        frag.append("[");
-        frag.append(parameterIndex);
-        frag.append("] != null ? ");
-        frag.append(parameterName);
-        frag.append("[");
-        frag.append(parameterIndex);
-        frag.append("] : ");
-        if(attr == null){
-            frag.append(" \"\";");
-            return;
-        }
-        frag.append(interfaceBuilder.getMethodNameGetPropertyValue(attr, attr.findDatatype()));
-        frag.append("()");
-        frag.append(" == null ? ");
-        frag.append("\"\" : ");
-        frag.append(interfaceBuilder.getMethodNameGetPropertyValue(attr, attr.findDatatype()));
-        frag.append("().toString()");
-        frag.appendln(";");
     }
     
     /**
@@ -1413,13 +1368,38 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             String javaDoc = getLocalizedText(getIpsObject(), EXECMESSAGE_POLICY_JAVADOC, r.getName());
             JavaCodeFragment body = new JavaCodeFragment();
             body.appendln();
+            MessageFragment msgFrag = MessageFragment.createMessageFragment(r.getMessageText());
+            String[] msgParamValues = msgFrag.getParameterValues();
+            for (int j = 0; j < msgParamValues.length; j++) {
+                body.append("// parameters[");
+                body.append(j);
+                body.append("] ");
+                body.appendln(msgParamValues[j]);
+            }
             body.appendClassName(String.class);
             body.append("[] parameters = new ");
             body.appendClassName(String.class);
             body.append("[");
-            MessageFragment msgFrag = MessageFragment.createMessageFragment(r.getMessageText());
             body.append(msgFrag.getNumberOfParameters());
             body.appendln("];");
+            body.appendClassName(ObjectProperty.class);
+            body.append("[] objectProperties = new ");
+            body.appendClassName(ObjectProperty.class);
+            body.append("[]{");
+            String[] validatedAttributes = r.getValidatedAttributes();
+            for (int j = 0; j < validatedAttributes.length; j++) {
+                IAttribute attr = getPcType().getSupertypeHierarchy().findAttribute(getPcType(), validatedAttributes[j]);
+                String propertyConstName = interfaceBuilder.getPropertyName(attr, attr.findDatatype());
+                body.append(" new ");
+                body.appendClassName(ObjectProperty.class);
+                body.append("(this, ");
+                body.append(propertyConstName);
+                body.append(")");
+                if(j < validatedAttributes.length -1){
+                    body.append(',');
+                }
+            }
+            body.appendln("};");
             String[] businessFunctions = r.getBusinessFunctions();
             if(businessFunctions.length > 0){
                 body.append("if(");
@@ -1437,12 +1417,32 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 body.append(")");
                 body.appendOpenBracket();
             }
+
             body.appendln("//begin-user-code");
-            body.append("if(true) ");
+            body.append("if(");
+            if(r.isCheckValueAgainstValueSetRule()){
+                IAttribute attr = getPcType().getAttribute(r.getValidatedAttributeAt(0));
+                Datatype attrDatatype = attr.findDatatype();
+                if(attr.getValueSet().getValueSetType().equals(ValueSetType.ENUM)){
+                    body.append(productCmptGenInterfaceBuilder.getMethodNameGetAllowedValuesFor(attr, attr.findDatatype()));
+                    
+                }
+                else if(attr.getValueSet().getValueSetType().equals(ValueSetType.RANGE)){
+                    body.append(productCmptGenInterfaceBuilder.getMethodNameGetRangeFor(attr, attrDatatype));
+                }
+                body.append("(");
+                body.append(parameterBusinessFunction);
+                body.append(").contains(");
+                body.append(interfaceBuilder.getMethodNameGetPropertyValue(attr, attrDatatype));
+                body.append("()))");
+            }
+            else{
+                body.append("true) ");
+            }
             body.appendOpenBracket();
             body.append("ml.add(createMessageForRule");
             body.append(StringUtils.capitalise(r.getName()));
-            body.appendln("(parameters));");
+            body.appendln("(parameters, objectProperties));");
             body.appendCloseBracket();
             body.appendln();
             body.appendln("//end-user-code");

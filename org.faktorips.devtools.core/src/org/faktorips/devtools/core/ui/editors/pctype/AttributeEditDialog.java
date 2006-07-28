@@ -171,7 +171,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     	for (int i = 0; i < rules.length; i++) {
 			String[] attributes = rules[i].getValidatedAttributes();
 			for (int j = 0; j < attributes.length; j++) {
-				if (attributes[j].equals(attribute.getName())) {
+				if (attributes[j].equals(attribute.getName()) && 
+					rules[i].isCheckValueAgainstValueSetRule()) {
 					return rules[i];
 				}
 			}

@@ -99,6 +99,13 @@ public class JavaCodeFragmentTest extends TestCase
         assertEquals("List", fragment.getSourcecode());
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
         assertTrue(fragment.getImportDeclaration().isCovered(List.class));
+        
+        fragment = new JavaCodeFragment();
+        fragment.appendClassName(List.class.getName()+"[]");
+        assertEquals("List[]", fragment.getSourcecode());
+        assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
+        assertTrue(fragment.getImportDeclaration().isCovered(List.class));
+        
     }
     
     public void testAppendInnerClassName() {

@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.extsystems.ExternalDataFormat;
@@ -118,6 +119,12 @@ public abstract class AbstractXlsTableImportOperation implements IWorkspaceRunna
     	}
     	if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
     		return ExternalDataFormat.XLS.getIpsValue(Boolean.class, Boolean.valueOf(cell.getBooleanCellValue()), datatype);
+    	}
+    	if(cell.getCellType() == HSSFCell.CELL_TYPE_STRING){
+    		String value = cell.getStringCellValue();
+    		if(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)){
+    			return null;
+    		}
     	}
     	return ExternalDataFormat.XLS.getIpsValue(String.class, cell.getStringCellValue(), datatype);
     }

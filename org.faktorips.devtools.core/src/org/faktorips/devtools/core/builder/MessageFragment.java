@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 
 /**
@@ -47,7 +48,6 @@ public class MessageFragment{
 	 */
 	private MessageFragment(JavaCodeFragment frag, String[] parameterNames, String[] parameterValues, String msgTextExpr) {
 		super();
-		// TODO Auto-generated constructor stub
 		this.frag = frag;
 		this.parameterNames = parameterNames;
 		this.parameterValues = parameterValues;
@@ -122,6 +122,7 @@ public class MessageFragment{
      */
 	public final static MessageFragment createMessageFragment(String messageText){
 		
+		messageText = StringUtils.escape(messageText);
         Pattern p = Pattern.compile("\\[[^\\]]*\\]"); //$NON-NLS-1$
         Matcher m = p.matcher(messageText);
 		JavaCodeFragment frag = new JavaCodeFragment();

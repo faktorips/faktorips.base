@@ -104,7 +104,11 @@ public class TableExportWizard extends Wizard implements IExportWizard {
 			getContainer().run(true, true, operation);
 			
 		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the export process.",e)); //$NON-NLS-1$
+			Throwable throwable = e;
+			if(e instanceof InvocationTargetException){
+				throwable = ((InvocationTargetException)e).getCause();
+			}
+			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the export process.", throwable)); //$NON-NLS-1$
 		}
 		//this implementation of this method should always return true since this causes the wizard dialog to close.
 		//in either case if an exception arises or not it doesn't make sense to keep the dialog up

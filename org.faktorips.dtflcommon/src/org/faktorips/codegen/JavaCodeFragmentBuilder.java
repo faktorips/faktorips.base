@@ -524,15 +524,8 @@ public class JavaCodeFragmentBuilder {
         append(Modifier.toString(modifier));
         append(' ');
         if (returnType != null) {
-            int bracketIndex = returnType.indexOf("[]");
-            if (bracketIndex != -1) {
-                appendClassName(returnType.substring(0, bracketIndex));
-                append("[]");
-                append(' ');
-            } else {
                 appendClassName(returnType);
                 append(' ');
-            }
         }
         append(methodName);
         append('(');
@@ -777,15 +770,8 @@ public class JavaCodeFragmentBuilder {
             fragment.append(' ');
         }
         if (className != null) {
-            int bracketIndex = className.indexOf("[]");
-            if (bracketIndex != -1) {
-                appendClassName(className.substring(0, bracketIndex));
-                append("[]");
-                append(' ');
-            } else {
                 appendClassName(className);
                 append(' ');
-            }
         }
         fragment.append(varName);
         if (expression != null) {
