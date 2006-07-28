@@ -38,9 +38,9 @@ public class ConfigElementType extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("ConfigElementType", ConfigElementType.class); //$NON-NLS-1$
-        PRODUCT_ATTRIBUTE = new ConfigElementType(enumType, "productAttribute", "Product IAttribute"); //$NON-NLS-1$ //$NON-NLS-2$
-        POLICY_ATTRIBUTE = new ConfigElementType(enumType, "policyAttribute", "Policy IAttribute"); //$NON-NLS-1$ //$NON-NLS-2$
-        FORMULA = new ConfigElementType(enumType, "formula", "Formula"); //$NON-NLS-1$ //$NON-NLS-2$
+        PRODUCT_ATTRIBUTE = new ConfigElementType(enumType, "productAttribute", Messages.ConfigElementType_productAttribute); //$NON-NLS-1$
+        POLICY_ATTRIBUTE = new ConfigElementType(enumType, "policyAttribute", Messages.ConfigElementType_policyAttribute); //$NON-NLS-1$
+        FORMULA = new ConfigElementType(enumType, "formula", Messages.ConfigElementType_formula); //$NON-NLS-1$
     }
     
     public final static EnumType getEnumType() {

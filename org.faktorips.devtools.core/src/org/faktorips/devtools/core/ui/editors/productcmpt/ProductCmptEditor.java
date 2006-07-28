@@ -19,9 +19,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
@@ -43,14 +41,12 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
 
 /**
  * Editor to a edit a product component.
@@ -103,6 +99,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * and config elements to supress repeating questions to the user.
 	 */
 	private boolean dontFixDifferencesBetweenAttributeAndConfigElement = false;
+	
+	/**
+	 * Flag indicating an open delta-dialog if <code>true</code>.
+	 */
+	private boolean deltasShowing = false;
 	
 	/**
 	 * Creates a new editor for product components.
@@ -218,7 +219,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Does what the methodname says :-)
 	 */
 	private void checkForInconsistenciesBetweenAttributeAndConfigElements() {
-		if (!this.enabled) {
+		if (!this.enabled || !getIpsSrcFile().isMutable() || deltasShowing) {
     		// no modifications for read-only-editors
 			return;
 		}
@@ -228,123 +229,61 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			return;
 		}
 		
-		if (!getIpsSrcFile().isMutable()) {
-			return;
-		}
-		
 		if (getContainer() == null) {
 			// dont do anything, we will be called again later.
 			return;
 		}
 		
-		IProductCmptGeneration generation = (IProductCmptGeneration) getActiveGeneration();
-		if (generation == null) {
-			return;
+		IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
+		IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
+		for (int i = 0; i < generations.length; i++) {
+			generations[i] = (IProductCmptGeneration)gen[i];
 		}
-		IProductCmptGenerationPolicyCmptTypeDelta delta;
-		try {
-			delta = generation.computeDeltaToPolicyCmptType();
-		} catch (CoreException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-			return;
+
+		IProductCmptGenerationPolicyCmptTypeDelta[] deltas = new IProductCmptGenerationPolicyCmptTypeDelta[generations.length];
+		boolean deltaFound = false;
+		for (int i = 0; i < generations.length; i++) {			
+			try {
+				deltas[i] = ((IProductCmptGeneration)generations[i]).computeDeltaToPolicyCmptType();
+				deltaFound = deltaFound || (deltas[i] != null && !deltas[i].isEmpty()); 
+			} catch (CoreException e) {
+				IpsPlugin.logAndShowErrorDialog(e);
+				deltas[i] = null;
+			}
 		}
-		if (delta == null || delta.isEmpty()) {
+
+		if (!deltaFound) {
 			return;
 		}
 
-		try {
-			StringBuffer msg = new StringBuffer();
-			IAttribute[] newAttributes = delta
-					.getAttributesWithMissingConfigElements();
-			if (newAttributes.length > 0) {
-				msg
-						.append(Messages.ProductCmptEditor_msgNotContainingAttributes);
-				msg.append(SystemUtils.LINE_SEPARATOR);
-				for (int i = 0; i < newAttributes.length; i++) {
-					msg.append(" - "); //$NON-NLS-1$
-					msg.append(newAttributes[i].getName());
-					msg.append(SystemUtils.LINE_SEPARATOR);
+		deltasShowing = true;
+		Shell shell = getSite().getShell();
+		ProductCmptDeltaDialog dialog = new ProductCmptDeltaDialog(generations, deltas, shell);
+		
+		int result = dialog.open();
+		
+		boolean fix = result == ProductCmptDeltaDialog.OK;
+		if (fix) {
+			IIpsModel model = getProductCmpt().getIpsModel();
+			model.removeChangeListener(ProductCmptEditor.this);
+			try {
+				for (int i = 0; i < generations.length; i++) {
+					try {
+						generations[i].fixDifferences(deltas[i]);
+					} catch (CoreException e) {
+						IpsPlugin.log(e);
+					}
 				}
+				setDirty(getIpsSrcFile().isDirty());
+				refreshStructure();
+				refresh();
+				getContainer().update();
+			} finally {
+				model.addChangeListener(ProductCmptEditor.this);
 			}
-			IConfigElement[] elements = delta
-					.getConfigElementsWithMissingAttributes();
-			if (elements.length > 0) {
-				if (msg.toString().length() > 0) {
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-				msg.append(Messages.ProductCmptEditor_msgAttributesNotFound);
-				msg.append(SystemUtils.LINE_SEPARATOR);
-				for (int i = 0; i < elements.length; i++) {
-					msg.append(" - "); //$NON-NLS-1$
-					msg.append(elements[i].getName());
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-			}
-			elements = delta.getTypeMismatchElements();
-			if (elements.length > 0) {
-				if (msg.toString().length() > 0) {
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-				msg.append(Messages.ProductCmptEditor_msgTypeMismatch);
-				msg.append(SystemUtils.LINE_SEPARATOR);
-				for (int i = 0; i < elements.length; i++) {
-					msg.append(" - "); //$NON-NLS-1$
-					msg.append(elements[i].getName());
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-			}
-			elements = delta.getElementsWithValueSetMismatch();
-			if (elements.length > 0) {
-				if (msg.toString().length() > 0) {
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-				msg
-						.append(Messages.ProductCmptEditor_msgValueAttributeMismatch);
-				msg.append(SystemUtils.LINE_SEPARATOR);
-				for (int i = 0; i < elements.length; i++) {
-					msg.append(" - "); //$NON-NLS-1$
-					msg.append(elements[i].getName());
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-			}
-			IProductCmptRelation[] relations = delta
-					.getRelationsWithMissingPcTypeRelations();
-			if (relations.length > 0) {
-				if (msg.toString().length() > 0) {
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-				msg.append(Messages.ProductCmptEditor_msgNoRelationDefined);
-				msg.append(SystemUtils.LINE_SEPARATOR);
-				for (int i = 0; i < relations.length; i++) {
-					msg.append(" - "); //$NON-NLS-1$
-					msg.append(relations[i].getName());
-					msg.append(SystemUtils.LINE_SEPARATOR);
-				}
-			}
-
-			msg.append(SystemUtils.LINE_SEPARATOR);
-			msg.append(Messages.ProductCmptEditor_msgFixIt);
-			boolean fix = MessageDialog.openConfirm(getContainer().getShell(),
-					getPartName(), msg.toString());
-			if (fix) {
-				IIpsModel model = getProductCmpt().getIpsModel();
-				model.removeChangeListener(this);
-				try {
-					generation.fixDifferences(delta);
-					setDirty(getIpsSrcFile().isDirty());
-					refreshStructure();
-					refresh();
-					getContainer().update();
-				} finally {
-					model.addChangeListener(this);
-				}
-			}
-			else {
-				dontFixDifferencesBetweenAttributeAndConfigElement = true;
-			}
-
-		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(e);
+		}
+		else {
+			dontFixDifferencesBetweenAttributeAndConfigElement = true;
 		}
 	}
 
@@ -565,9 +504,22 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 	}
 	
+	private abstract class AbstractCloseHandler extends ShellAdapter implements DisposeListener {
+		public void widgetDisposed(DisposeEvent e) {
+			finish();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void shellClosed(ShellEvent e) {
+			finish();
+		}
+
+		protected abstract void finish();
+	}
 	
-	
-	private class CloseHandler extends ShellAdapter implements DisposeListener {
+	private class CloseHandler extends AbstractCloseHandler {
 		private GenerationSelectionDialog dialog;
 		
 		public CloseHandler(GenerationSelectionDialog dialog) {
@@ -585,7 +537,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			finish();
 		}
 		
-		private void finish() {
+		protected void finish() {
 			boolean ok = true;
 			int choice = GenerationSelectionDialog.CHOICE_BROWSE;
 			if (IpsPlugin.getDefault().isTestMode()) {
