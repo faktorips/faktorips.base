@@ -39,10 +39,22 @@ sub createDevelBuild(){
 	copyToDir($develPublishDir);
 	
 	#write site.xml
-	my $sitexml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<site>\n\t<feature url=\"".$jarfile."\" id=\"".$projectName."\" version=\"".$version."\"/>\n</site>";
-
+	checkoutUpdateSite($develPublishDir);
+	
+	open(fbuf,"<$develPublishDir/site.xml");
+	my @content = <fbuf>;
+	close(fbuf)
+	
+	foreach $line (@content){
+		if ($line =~ m/feature/ig){
+			$line =~ s/version=".*?"/version="$version"/ig;
+		}
+	}
+	
+	unlink("$develPublishDir/site.xml");
+	
 	open(fbuf, ">$develPublishDir/site.xml");
-	print fbuf $sitexml;
+	print fbuf @content;
 	close(fbuf);
 }
 
