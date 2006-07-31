@@ -94,11 +94,12 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	/**
 	 * Returns the qualified classname for the enum type that is defined by the given
 	 * table structure.
+	 * @throws CoreException 
 	 * 
 	 * @throws NullPointerException if structure is <code>null</code>.
 	 * @throws IllegalArgumentException if the structure does not define an enum type. 
 	 */
-	public String getClassNameForTableBasedEnum(ITableStructure structure);
+	public String getClassNameForTableBasedEnum(ITableStructure structure) throws CoreException;
 	
 	/**
 	 * Returns the datatype helper used for the enum type that is defined by a 

@@ -17,6 +17,9 @@
 
 package org.faktorips.datatype;
 
+import org.faktorips.datatype.classtypes.MoneyDatatype;
+import org.faktorips.values.Money;
+
 import junit.framework.TestCase;
 
 /**
@@ -40,17 +43,17 @@ public class ArrayOfValueDatatypeTest extends TestCase {
     
     public void testGetName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
-        assertEquals("Money[][]", datatype.getName());
+        assertEquals(datatype.getBasicDatatype().getName() + "[][]", datatype.getName());        
     }
 
     public void testGetQualifiedName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
-        assertEquals("Money[][]", datatype.getQualifiedName());
+        assertEquals(datatype.getBasicDatatype().getQualifiedName() + "[][]", datatype.getQualifiedName());
     }
 
     public void testGetJavaClassName() {
-        ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
-        assertEquals(Datatype.MONEY.getJavaClassName(), datatype.getJavaClassName());
+        ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);        
+        assertEquals(datatype.getBasicDatatype().getJavaClassName() + "[][]", datatype.getJavaClassName());
     }
 
 }

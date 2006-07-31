@@ -156,7 +156,11 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
      * @see org.faktorips.datatype.Datatype#getJavaClassName()
      */
     public String getJavaClassName() {
-        return datatype.getJavaClassName();
+        StringBuffer buffer = new StringBuffer(datatype.getJavaClassName());
+        for (int i=0; i<dimension; i++) {
+            buffer.append("[]");
+        }
+        return buffer.toString();
     }
 
     /**
