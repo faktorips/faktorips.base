@@ -122,12 +122,11 @@ sub getJarFile(){
 sub getDevCount(){
 	my $file = $versionMarkerFile . ".devel";
 	system("touch ". $file);
-	open (fbuf, ">$file");
-	my $version = <fbuf>;
+	my $version = `cat $file`;
+	$version = chomp($version);
 	if ($version eq "") {$version = 1; }
 	my $nextversion = $version++;
-	print fbuf $nextversion;
-	close (fbuf);
+	system("echo ". $nextversion . " > ".$file);
 	return "dev-" . $version;
 }
 
