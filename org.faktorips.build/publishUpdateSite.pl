@@ -43,7 +43,7 @@ sub createDevelBuild(){
 	
 	open(fbuf,"<$develPublishDir/site.xml");
 	my @content = <fbuf>;
-	close(fbuf)
+	close(fbuf);
 	
 	foreach $line (@content){
 		if ($line =~ m/feature/ig){
