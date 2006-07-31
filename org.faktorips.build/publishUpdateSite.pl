@@ -134,7 +134,7 @@ sub getDevCount(){
 #returns: 
 sub checkoutUpdateSite(){
     my $dir = $_[0];
-    my $query = "cvs -d ".$cvsRoot." checkout -d ".$dir. " ".$updateSiteModule."/site.xml";
+    my $query = "rm -rf ". $dir ."/* && cvs -d ".$cvsRoot." checkout -d ".$dir. " ".$updateSiteModule."/site.xml";
     print "executing: $query\n";
     system($query);
     return $dir . "/site.xml";
