@@ -103,8 +103,8 @@ sub isReleaseBuild(){
 #parameter: target dir
 sub copyToDir(){
 	my $target = $_[0];
-	my $query = "cp -r ". $binaryDir . " ". $target;
-	print "copying: ".$query;
+	my $query = "cp -rf ". $binaryDir . "/* ". $target;
+	print "copying: ".$query ."\n";
 
 	system ($query);
 }
