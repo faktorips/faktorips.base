@@ -23,7 +23,7 @@ import org.faktorips.util.ArgumentCheck;
 
 
 /**
- * The abs() function.
+ * The abs() function. 
  */
 public class Abs extends AbstractFlFunction {
     
