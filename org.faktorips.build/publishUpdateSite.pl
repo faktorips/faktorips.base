@@ -10,8 +10,8 @@ my $updateSiteModule  = "org.faktorips.updatesite";                             
 my $cvsRoot           = "/usr/local/cvsroot/";                                   #cvsroot
 my $projectName       = "org.faktorips.feature";                                 #name of feature
 
-my $releasePublishDir = "/var/www/localhost/htdocs/update/";                       #directory where release-updatesites are stored
-my $develPublishDir   = "/var/www/localhost/htdocs/update/devel/";                   #directory where successfull builds are stored
+my $releasePublishDir = "/var/www/localhost/htdocs/update/faktorips/";                       #directory where release-updatesites are stored
+my $develPublishDir   = "/var/www/localhost/htdocs/update/faktorips/devel/";                   #directory where successfull builds are stored
 my $tempDir           = "/tmp/updatesite/";                                      #temporary directory
 my $versionMarkerFile = "/etc/build/" . $updateSiteModule . "_versiontag";       #file which stores the versiontag (no changes needed)
 
