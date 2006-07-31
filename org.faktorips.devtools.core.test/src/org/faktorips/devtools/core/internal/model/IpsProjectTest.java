@@ -499,20 +499,45 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         IPolicyCmptType pcTypeNoRef = newPolicyCmptType(root, "TestPCTypeNoRef");
         
+        IPolicyCmptType pcTypeSuper = newPolicyCmptType(root, "TestPCTypeSuper");
+        pcTypeReferenced.setSupertype("TestPCTypeSuper");
+        
         IPolicyCmptType[] results= ipsProject.findReferencingPolicyCmptTypes(pcTypeReferenced);
-        assertEquals(3, results.length);
+        assertEquals(4, results.length);
         
         HashSet resultSet= new HashSet();
         resultSet.add(results[0]);
         resultSet.add(results[1]);
         resultSet.add(results[2]);
+        resultSet.add(results[3]);
         HashSet expectedSet= new HashSet();
+        expectedSet.add(pcType);
+        expectedSet.add(pcType2);
+        expectedSet.add(pcType3);
+        expectedSet.add(pcTypeSuper);
+
+        assertEquals(expectedSet, resultSet);
+        assertFalse(resultSet.contains(pcTypeNoRef));
+        assertFalse(resultSet.contains(null));
+
+        // test references with faulty supertype 
+        pcTypeReferenced.setSupertype("incorrectQualifiedName");
+        
+        results= ipsProject.findReferencingPolicyCmptTypes(pcTypeReferenced);
+        assertEquals(3, results.length);
+        
+        resultSet= new HashSet();
+        resultSet.add(results[0]);
+        resultSet.add(results[1]);
+        resultSet.add(results[2]);
+        expectedSet= new HashSet();
         expectedSet.add(pcType);
         expectedSet.add(pcType2);
         expectedSet.add(pcType3);
         
         assertEquals(expectedSet, resultSet);
         assertFalse(resultSet.contains(pcTypeNoRef));
+        assertFalse(resultSet.contains(null));
     }
     
     public void testFindEnumDatatypes() throws CoreException{
