@@ -229,17 +229,15 @@ public class JavaCodeFragment {
 	 * @throws NullPointerException if qualifiedClassName is null.
 	 */
 	public void appendClassName(String qualifiedClassName) {
+        append(StringUtil.unqualifiedName(qualifiedClassName));
         
         int bracketIndex = qualifiedClassName.indexOf("[]");
         if (bracketIndex > -1) {
-            qualifiedClassName = qualifiedClassName.substring(0, bracketIndex);
-            append(StringUtil.unqualifiedName(qualifiedClassName));
-            append("[]");
+            importDecl.add(qualifiedClassName.substring(0, bracketIndex));
         }
         else{
-            append(StringUtil.unqualifiedName(qualifiedClassName));
+            importDecl.add(qualifiedClassName);
         }
-	    importDecl.add(qualifiedClassName);
 	}
 	
 	/**
