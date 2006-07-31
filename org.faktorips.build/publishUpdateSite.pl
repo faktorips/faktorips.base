@@ -113,6 +113,7 @@ sub copyToDir(){
 sub getJarFile(){
 	my $query = "find ". $binaryDir . " | grep feature | grep jar | grep -v test";
 	my $path = `$query`;
+	$path =~ s/\.\.\/updateSite\///;
 	return $path;
 }
 
