@@ -104,6 +104,7 @@ sub isReleaseBuild(){
 sub copyToDir(){
 	my $target = $_[0];
 	my $query = "cp -r ". $binaryDir . " ". $target;
+	print "copying: ".$query;
 
 	system ($query);
 }
@@ -112,7 +113,6 @@ sub copyToDir(){
 sub getJarFile(){
 	my $query = "find ". $binaryDir . " | grep feature | grep jar | grep -v test";
 	my $path = `$query`;
-	$path =~ s /\.\///ig;
 	return $path;
 }
 
