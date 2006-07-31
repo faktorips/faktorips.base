@@ -73,7 +73,8 @@ sub isReleaseBuild(){
 	close (fbuf);
 
 	#get version from site.xml
-	$sitexml =~ m/<feature.*?version="(.*?)".*?>/ig;
+	$sitexml =~ s/<?xml version="1.0" encoding="UTF-8"?>//ig;
+	$sitexml =~ m/version="(.*?)"/ig;
 	$version = $1;
 
 	#get last release version
