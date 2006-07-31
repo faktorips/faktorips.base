@@ -162,7 +162,9 @@
 	
 	
 <target name="copySiteXmlFromCvs" unless="isNightlyBuild">
-  <!-- connect to CVS and fetch site.xml, copy to ${UpdateSiteStagingLocation}/site.xml afterwards -->
+    <exec executable="/usr/bin/perl" dir="${buildDirectory}/org.faktorips.build/">
+            <arg line="publishUpdateSite.pl" />
+    </exec>
 </target>
 	
 <target name="createNightlyBuildSiteXml" if="isNightlyBuild">
