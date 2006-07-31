@@ -1100,18 +1100,27 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 .getName());
 
         JavaCodeFragment body = new JavaCodeFragment();
+        body.append("if(!");
         body.append("super.");
         body.append(methodName);
-        body.append("(ml, businessFunction);");
+        body.append("(ml, businessFunction))");
+        body.appendOpenBracket();
+        body.append(" return false;");
+        body.appendCloseBracket();
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
+            body.append("if(!");
             body.append("execRule");
             body.append(StringUtils.capitalise(r.getName()));
-            body.append("(ml, businessFunction);");
+            body.append("(ml, businessFunction))");
+            body.appendOpenBracket();
+            body.append(" return false;");
+            body.appendCloseBracket();
         }
+        body.appendln(" return true;");
         // buildValidationValueSet(body, attributes); wegschmeissen ??
-        builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
+        builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
             methodName, new String[] { "ml", "businessFunction" }, 
             new String[] { MessageList.class.getName(), String.class.getName() }, body,
             javaDoc, ANNOTATION_GENERATED);
@@ -1444,12 +1453,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             body.append(StringUtils.capitalise(r.getName()));
             body.appendln("(parameters, objectProperties));");
             body.appendCloseBracket();
-            body.appendln();
+            body.appendln(" return true;");
             body.appendln("//end-user-code");
             if(businessFunctions.length > 0){
                 body.appendCloseBracket();
+                body.appendln(" return true;");
             }
-            builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.VOID.getJavaClassName(),
+            builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
                 "execRule" + StringUtils.capitalise(r.getName()), new String[] { "ml", parameterBusinessFunction },
                 new String[] { MessageList.class.getName(), String.class.getName() }, body, javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
         }
