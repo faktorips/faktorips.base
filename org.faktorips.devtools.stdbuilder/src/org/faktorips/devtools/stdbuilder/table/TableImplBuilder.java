@@ -233,7 +233,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     continue;
                 }
 
-                IColumnRange range = getTableStructure().getRange(StringUtils.uncapitalise(keyItems[j]));
+                IColumnRange range = getTableStructure().getRange(keyItems[j]);
+                
                 parameters.add(range.getParameterName());
                 fRanges.put(range.getParameterName(), range);
             }
