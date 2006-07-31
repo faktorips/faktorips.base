@@ -73,7 +73,7 @@ sub isReleaseBuild(){
 	close (fbuf);
 
 	#get version from site.xml
-	$sitexml =~ s/<?xml version="1.0" encoding="UTF-8"?>//ig;
+	$sitexml =~ s/<\?xml.*?\?>//ig;
 	$sitexml =~ m/version="(.*?)"/ig;
 	$version = $1;
 
