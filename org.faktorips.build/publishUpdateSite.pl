@@ -121,7 +121,7 @@ sub getJarFile(){
 #parameter: filename
 sub getDevCount(){
 	my ($Sekunden, $Minuten, $Stunden, $Monatstag, $Monat, $Jahr, $Wochentag, $Jahrestag, $Sommerzeit) = localtime(time);
-	
+	$Jahr = $Jahr + 1900;
 	return "dev-" . $Monatstag . "-" . $Monat . "-". $Jahr ."-".$Stunden.":".$Minuten.":".$Sekunden ;
 }
 
