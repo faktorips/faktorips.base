@@ -66,19 +66,23 @@ sub createReleaseBuild(){
 #returns: 1 or 0
 sub isReleaseBuild(){
 	my $file = $_[0];
+	my $version = -1;
 	
 	#read site.xml
 	open (fbuf, "<$file");
-	my $sitexml = <fbuf>;
+	my @sitexml = <fbuf>;
 	close (fbuf);
 
 	#get version from site.xml
-	print $sitexml;
-	$sitexml =~ s/<\?xml.*?\?>//ig;
-	print $sitexml;
-	$sitexml =~ m/version="(.*?)"/ig;
-	$version = $1;
 
+	foreach $line (@sitexml){
+		if ($line =~ m/feature/ig){
+			$line =~ m/version="(.*?)"/ig;
+			$version = $1;
+			#only recognize the first feature
+			break;
+		}
+    }
 	#get last release version
 	system("touch ". $versionMarkerFile);
 	my $lastrelease = `cat $versionMarkerFile`;
