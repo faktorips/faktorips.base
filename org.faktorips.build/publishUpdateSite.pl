@@ -83,7 +83,7 @@ sub isReleaseBuild(){
 
 	#compare both
 	if ($lastrelease ne $version){
-		print "new release ".$version." detected\n"
+		print "new release ".$version." detected\n"; 
 		system ("echo ".$version." > ".$versionMarkerFile);
 		return 1;
 	}
