@@ -120,14 +120,9 @@ sub getJarFile(){
 #returns current version count and increments same.
 #parameter: filename
 sub getDevCount(){
-	my $file = $versionMarkerFile . ".devel";
-	system("touch ". $file);
-	my $version = `cat $file`;
-	$version = chomp($version);
-	if ($version eq "") {$version = 1; }
-	my $nextversion = $version++;
-	system("echo ". $nextversion . " > ".$file);
-	return "dev-" . $version;
+	my ($Sekunden, $Minuten, $Stunden, $Monatstag, $Monat, $Jahr, $Wochentag, $Jahrestag, $Sommerzeit) = localtime(time);
+	
+	return "dev-" . $Monatstag . "-" . $Monat . "-". .$Jahr ."-".Stunden.":".$Minuten.":".Sekunden;
 }
 
 #fetches the site.xml from cvs to the given dir
