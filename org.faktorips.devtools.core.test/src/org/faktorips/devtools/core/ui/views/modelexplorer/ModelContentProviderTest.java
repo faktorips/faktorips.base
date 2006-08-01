@@ -26,16 +26,26 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.IpsProject;
+import org.faktorips.devtools.core.internal.model.pctype.Attribute;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 
 /*
  * Testrichtlinie: immer so testen, dass TextContent erweitert werden kann. nie ueber alle Elemente iterieren, sondern nur welche erwarten
  */
 public class ModelContentProviderTest extends AbstractIpsPluginTest {
-    private ModelContentProvider flatProvider= new ModelContentProvider(true);
-    private ModelContentProvider hierarchyProvider= new ModelContentProvider(false);
+    private ModelExplorerConfiguration config= new ModelExplorerConfiguration(new Class[] { PolicyCmptType.class
+            , TableStructure.class, ProductCmpt.class
+            , TableContents.class, Attribute.class
+            , Relation.class}
+            , new Class[0], ModelExplorerConfiguration.ALLOW_MODEL_PROJECTS);
+    
+    private ModelContentProvider flatProvider= new ModelContentProvider(config, true);
+    private ModelContentProvider hierarchyProvider= new ModelContentProvider(config, false);
 
     private IpsProject proj; 
     private IpsProject modelProj;
@@ -217,13 +227,13 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.getElements(Object)'
      */
     public void testGetElements() throws CoreException {
-        // getElement returns all model-projects
+        // getElement returns all IPS-projects managed by the model
         Object[] children= hierarchyProvider.getElements(new Object());
-        assertEquals(2, children.length);
-        
-        // getElement returns all model-projects
+        assertEquals(3, children.length);
+
+        // getElement returns all IPS-projects managed by the model
         children= flatProvider.getElements(new Object());
-        assertEquals(2, children.length);
+        assertEquals(3, children.length);
     }
 
     /*

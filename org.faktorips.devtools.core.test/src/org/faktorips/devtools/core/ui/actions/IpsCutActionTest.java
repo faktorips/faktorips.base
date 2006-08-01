@@ -80,7 +80,6 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
         assertEquals(current, stored);
         
         assertEquals(0, pcType.getNumOfAttributes());
-        
     }
     
     private class TestSelectionProvider implements ISelectionProvider {
