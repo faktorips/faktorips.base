@@ -107,7 +107,9 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 
 		switchButton = new Button(selectPane, SWT.RADIO);
 		Composite switchPane = new Composite(selectPane, SWT.NONE);
-		switchPane.setLayout(new GridLayout(2, false));
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.marginWidth = 0;
+		switchPane.setLayout(gridLayout);
 		Label l3 = new Label(switchPane, SWT.NONE);
 		l3.setText(Messages.bind(Messages.GenerationSelectionDialog_labelSwitch, generationConceptName));
 		l3.addMouseListener(new ActivateButtonOnClickListener(switchButton));
