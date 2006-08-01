@@ -27,7 +27,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Abstract base class for artefact builders.
- *  
+ * 
  * @author Jan Ortmann
  */
 public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
