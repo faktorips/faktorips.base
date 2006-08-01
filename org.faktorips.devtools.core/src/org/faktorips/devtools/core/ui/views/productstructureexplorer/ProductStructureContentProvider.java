@@ -39,7 +39,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 	 * Flag to tell the content provider to show (<code>true</code>) or not to show the
 	 * Relation-Type as Node.
 	 */
-	private boolean fShowRelationType = false;
+	private boolean fShowRelationType = true;
 	
 	private IProductCmptReference root;
 	

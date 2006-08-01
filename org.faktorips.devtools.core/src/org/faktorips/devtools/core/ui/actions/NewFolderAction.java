@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
-import org.faktorips.devtools.core.ui.Messages;
 
 /**
  * Create a new Folder
@@ -67,14 +66,14 @@ public class NewFolderAction extends IpsAction {
 			}
 			
 			if (res == null) {
-				MessageDialog.openError(shell, Messages.NewFolderActionDelegate_titleNewFolder, Messages.NewFolderActionDelegate_msgNoParentFound);
+				MessageDialog.openError(shell, Messages.NewFolderAction_titleNewFolder, Messages.NewFolderAction_msgNoParentFound);
 				return;
 			}
 			
 			String parent = res.getName(); 
-			String message = Messages.bind(Messages.NewFolderActionDelegate_descriptionNewFolder, parent);
+			String message = Messages.bind(Messages.NewFolderAction_descriptionNewFolder, parent);
 			Validator validator = new Validator((IFolder)res);
-			InputDialog d = new InputDialog(shell, Messages.NewFolderActionDelegate_titleNewFolder, message, Messages.NewFolderActionDelegate_valueNewFolder, validator);
+			InputDialog d = new InputDialog(shell, Messages.NewFolderAction_titleNewFolder, message, Messages.NewFolderAction_valueNewFolder, validator);
 			d.open();
 			if (d.getReturnCode() == InputDialog.OK) {
 				IFolder newFolder = getFolder((IFolder)res, d.getValue());
@@ -114,9 +113,13 @@ public class NewFolderAction extends IpsAction {
 		 * {@inheritDoc}
 		 */
 		public String isValid(String newText) {
+			int pointIndex= newText.indexOf(".");
+			if(pointIndex!=-1){
+				return NLS.bind(org.faktorips.devtools.core.ui.actions.Messages.NewFolderAction_msgFolderNameMustNotContainDots, newText);
+			}
 			IFolder folder = getFolder(parent, newText);
 			if (folder.exists()) {
-				return NLS.bind(Messages.NewFolderActionDelegate_msgFolderAllreadyExists, folder.getFullPath().toOSString());
+				return NLS.bind(Messages.NewFolderAction_msgFolderAllreadyExists, folder.getFullPath().toOSString());
 			}
 			return null;
 		}

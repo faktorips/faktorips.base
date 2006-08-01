@@ -18,8 +18,6 @@
 package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IViewPart;
@@ -38,25 +36,23 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
  * 
  * @author Stefan Widmaier
  */
-public class ShowStructureAction extends Action {
+public class ShowStructureAction extends IpsAction {
 	
-    private ISelectionProvider selectionProvider;
-    
-    public ShowStructureAction() {
-        super();
+    public ShowStructureAction(ISelectionProvider selectionProvider) {
+    	super(selectionProvider);
         this.setDescription(Messages.ShowStructureAction_description);
         this.setText(Messages.ShowStructureAction_name);
         this.setToolTipText(this.getDescription());
     }
     
-    public ShowStructureAction(ISelectionProvider selectionProvider) {
-        this();
-        this.selectionProvider = selectionProvider;
-    }
-    
-    public void run() {
-        IIpsSrcFile file = getIpsSrcFileForSelection();
-        if (file == null) {
+
+	public void run(IStructuredSelection selection) {
+		IIpsObject ipsObject= getIpsObjectForSelection(selection);
+		if(!(ipsObject instanceof IProductCmpt) || ipsObject==null){
+			return;
+		}
+		IIpsSrcFile file= ipsObject.getIpsSrcFile();
+		if (file == null) {
         	return;
         }
         try {
@@ -67,18 +63,5 @@ public class ShowStructureAction extends Action {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-    }
-    
-    private IIpsSrcFile getIpsSrcFileForSelection() {
-        if (this.selectionProvider != null) {
-        	ISelection selection = this.selectionProvider.getSelection();
-        	if (selection instanceof IStructuredSelection) {
-        		Object selected = ((IStructuredSelection)selection).getFirstElement();
-        		if (selected instanceof IProductCmpt) {
-        			return ((IIpsObject)selected).getIpsSrcFile();
-        		}
-        	}
-        }
-        return null;
-    }
+	}
 }

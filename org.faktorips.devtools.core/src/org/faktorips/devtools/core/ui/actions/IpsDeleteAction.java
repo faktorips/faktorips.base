@@ -40,13 +40,13 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * This action is designed to be used with views and editors that contain a <code>TreeViewer</code>
- * and use it as a selectionprovider for this action.  <p>
- * IpsDeleteAction deletes all selected IpsObjectPartContainers in the ObjectModel without 
- * saving the changes. After deletion the topmost sibling (if any), or the topmost parent 
- * of the deleted items are selected in the tree.  <p>
+ * This action is designed for use with views and editors that contain a <code>TreeViewer</code>
+ * as selectionprovider.  <p>
+ * IpsDeleteAction deletes all selected IpsObjectPartContainers in the object-model without 
+ * saving the changes to sourcefiles. After deletion the topmost sibling (if any), or the topmost
+ * parent of the deleted items are selected in the tree.  <p>
  * This Action is primarily used in Editors, thus no changes to objects are saved (to the filesystem). 
- * See <code>IpsDeleteAndSaveAction</code> for an action that saves changes after deleting.
+ * See <code>IpsDeleteAndSaveAction</code> for an action that saves changes after deletion.
  * @see org.faktorips.devtools.core.ui.actions.IpsDeleteAndSaveAction
  * TODO Refactoring: Implement IpsAction; make action independant of GUI/Tree.
  * @author Thorsten Guenther
@@ -57,7 +57,7 @@ public class IpsDeleteAction extends Action {
 	private ISelectionProvider selectionProvider;
 	
 	/**
-	 * Constructs a DeleteAction with the given SelectionProvider. This SelectionProvider
+	 * Creates a DeleteAction with the given SelectionProvider. This SelectionProvider
 	 * is used to retrieve the selected objects that are deleted from the object model
 	 * while executing the run() method.
 	 */
@@ -104,7 +104,7 @@ public class IpsDeleteAction extends Action {
      * TODO IpsDeleteAction should be used consistently in all editors and viewparts. 
      * On the one hand this means the editors (their Pages and Sections) need to be connected 
      * to the SelectionService, on the other hand problems with multiple instances of IpsObjects
-     * (data synchronization) must be solved. <p/>
+     * (data synchronization) must be solved. <p>
      * See Flyspray entry FS#330.
      */
 	private void deleteResourceForSelection(Object[] items){
@@ -135,6 +135,7 @@ public class IpsDeleteAction extends Action {
             }
         }
 	}
+	
 	private Indexer createIndexer(Tree tree){
 		TreeItem[] items = tree.getSelection();
 		Indexer start= null;
@@ -193,7 +194,7 @@ public class IpsDeleteAction extends Action {
 	
 	/**
 	 * Class used to store the path to the topmost deleted item. This path is used
-	 * later to select the parent or next sibling (if any) in the tree.
+	 * after deletion to select the parent or next sibling (if any) in the tree.
 	 * 
 	 */
     private class Indexer {

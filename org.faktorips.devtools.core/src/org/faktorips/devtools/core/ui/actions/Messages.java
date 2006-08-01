@@ -68,4 +68,11 @@ public class Messages extends NLS {
 	public static String IpsDeepCopyAction_titleNoVersion;
 	public static String IpsDeepCopyAction_msgNoVersion;
 	public static String NewTableContentAction_name;
+	public static String NewFolderAction_titleNewFolder;
+	public static String NewFolderAction_descriptionNewFolder;
+	public static String NewFolderAction_valueNewFolder;
+	public static String NewFolderAction_msgNoParentFound;
+	public static String NewFolderAction_msgFolderAllreadyExists;
+	public static String NewFolderAction_name;
+	public static String NewFolderAction_msgFolderNameMustNotContainDots;
 }

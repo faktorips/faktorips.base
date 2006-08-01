@@ -71,7 +71,7 @@ public class AttributesTable extends ViewPart {
         //nothing to do.
 	}
     
-    protected void show(IPolicyCmptType type) {
+    public void setPolicyCmptType(IPolicyCmptType type) {
     	if (type == null) {
     		return;
     	}

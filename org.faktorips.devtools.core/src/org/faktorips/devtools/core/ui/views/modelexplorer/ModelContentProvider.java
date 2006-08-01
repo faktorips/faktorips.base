@@ -16,16 +16,12 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 /**
  * Class for calculation the content of the ModelExplorer tree. The returned
  * Lists of PackageFragments are dependant on the current layout style indicated
  * by the <code>isFlatLayout</code> flag.
- * 
  * @author Stefan Widmaier
  * 
  */
@@ -35,10 +31,14 @@ public class ModelContentProvider implements ITreeContentProvider {
 
 	private boolean isFlatLayout = false;
 	
-	public ModelContentProvider(){
-		super();
-	}
-	public ModelContentProvider(boolean flatLayout){
+	private ModelExplorerConfiguration configuration;
+	
+	/**
+	 * Constructs a ModelContentProvider with the given Configuration and the given 
+	 * layout style.
+	 */
+	public ModelContentProvider(ModelExplorerConfiguration config, boolean flatLayout){
+		configuration= config;
 		isFlatLayout= flatLayout;
 	}
 
@@ -100,9 +100,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 				if (objects.length > 1) {
 					IpsPlugin.log(new IpsStatus(Messages.ModelContentProvider_tooManyIpsObjectsFoundInSrcFile));
 				}
-				if (objects.length >= 1
-						&& (objects[0] instanceof IPolicyCmptType || objects[0] instanceof ITableStructure
-								|| objects[0] instanceof IProductCmpt || objects[0] instanceof ITableContents)) {
+				if (objects.length >= 1){
 					pcts.add(objects[0]);
 				}
 			}
@@ -120,44 +118,65 @@ public class ModelContentProvider implements ITreeContentProvider {
 		IIpsElement parent;
 		
         if(!isFlatLayout && element instanceof IIpsPackageFragment){
-        		// For hierarchical layout return the PackageFragment that represents the parentfolder of this PackageFragments folder
-        		// eg. org.faktorips is parent of org.faktorips.example
-                parent = ((IIpsPackageFragment)element).getParentIpsPackageFragment(); 
-//                System.out.println("PackageFragment: "+element+", parent: "+parent+", "+parent.getClass());
+    		/* For hierarchical layout return the PackageFragment that represents the 
+    		 * parentfolder of this PackageFragments folder, eg. org.faktorips is parent of 
+    		 * org.faktorips.example.  
+    		 */
+        	parent = ((IIpsPackageFragment)element).getParentIpsPackageFragment(); 
         }else{
-            parent= ((IIpsElement)element).getParent();
-//            System.out.println("normal getParent: "+parent+", "+parent.getClass());        	
+            parent= ((IIpsElement)element).getParent();       	
         }
 
         // skip srcfiles in the object hierarchy, as in getChildren()
         if (parent != null) {
 	        if (parent instanceof IIpsSrcFile) {
 	            parent = parent.getParent();
-//	          System.out.println("after skipping srcFile: "+parent+", "+parent.getClass());
 	        }
         }
 		return parent;
 	}
-
+	
+	/**
+	 * For IIpsElements this method returns true if the element contains 
+	 * at least one child, that is of a type allowed by the ModelExplorerConfiguration.
+	 */
 	public boolean hasChildren(Object element) {
-		return getChildren(element).length > 0;
+		if (element instanceof IIpsElement){
+			if (element instanceof IAttribute
+					|| element instanceof IProductCmpt) {
+				return false;
+			}
+			Object[] children= getChildren(element); // TODO handling for arbitrary resources
+			/* If an element contains only objects that are not 
+			 * allowed by the configuration, it should be marked as empty.
+			 * e.g. a PackageFragment contains only ProductCmpts or a
+			 * PolicyCmptType contains only Attributes.
+			 */
+			boolean hasChildren= false;
+			for(int i=0, size=children.length; i<size; i++){
+				// element contains at least one child 
+				if(configuration.isAllowedIpsElementType(children[i].getClass())){
+					// at least one object is allowed: element has children
+					hasChildren= true;
+					break;
+				}
+			}
+			return hasChildren;
+		}else{
+			// resource types
+			return false;
+		}
 	}
 
 	/**
 	 * Returns all model-projects currently managed by the IpsModel.
+	 * The IpsProjects are filtered by the <code>ModelExplorerFilter</code>.
+	 * @see ModelExplorerFilter
 	 * {@inheritDoc}
 	 */
 	public Object[] getElements(Object inputElement) {
         try {
-			IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-			ArrayList filteredProjects= new ArrayList();
-			for(int i=0, size=projects.length; i<size; i++){
-				IIpsProject proj= projects[i];
-				if(proj.isModelProject()){
-					filteredProjects.add(proj);
-				}
-			}
-			return filteredProjects.toArray();
+        	return IpsPlugin.getDefault().getIpsModel().getIpsProjects();
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 			return EMPTY_ARRAY;

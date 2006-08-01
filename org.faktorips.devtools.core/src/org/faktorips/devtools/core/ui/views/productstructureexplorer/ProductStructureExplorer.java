@@ -167,7 +167,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         menumanager.setRemoveAllWhenShown(false);
         menumanager.add(new OpenEditorAction(tree));
         menumanager.add(new FindProductReferencesAction(tree));
-        menumanager.add(new ShowAttributesAction());
+        menumanager.add(new ShowAttributesAction(tree)); 
         
         Menu menu = menumanager.createContextMenu(tree.getControl());
         tree.getControl().setMenu(menu);

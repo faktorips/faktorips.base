@@ -36,4 +36,6 @@ public class Messages extends NLS {
 	public static String ModelExplorer_submenueReferences;
 	public static String ModelExplorer_actionFlatLayout;
 	public static String ModelExplorer_actionHierarchicalLayout;
+	public static String ModelExplorer_submenuRefactor;
+	public static String ModelExplorer_errorTitle;
 }

@@ -17,36 +17,30 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**
  * Opens a selected product component in an editor.
  * 
  * @author Thorsten Guenther
+ * @author Stefan Widmaier
  */
-public class OpenEditorAction extends Action {
+public class OpenEditorAction extends IpsAction {
 
-	ISelectionProvider selectionProvider;
-    
     public OpenEditorAction(ISelectionProvider selectionProvider) {
-        super();
+        super(selectionProvider);
         super.setText(Messages.OpenEditorAction_name);
         super.setDescription(Messages.OpenEditorAction_description);
         super.setToolTipText(Messages.OpenEditorAction_tooltip);
-        this.selectionProvider = selectionProvider;
     }
     
-    public void run() {
+    public void run(IStructuredSelection selection) {
         try {
-            IIpsSrcFile file = getIpsSrcFileForSelection();
+            IIpsSrcFile file = getIpsSrcFileForSelection(selection);
 
             if (file != null) {
                 IpsPlugin.getDefault().openEditor(file);
@@ -56,21 +50,4 @@ public class OpenEditorAction extends Action {
             IpsPlugin.logAndShowErrorDialog(e2);
         }
     }
-    
-    private IIpsSrcFile getIpsSrcFileForSelection() {
-        if (this.selectionProvider != null) {
-        	ISelection selection = this.selectionProvider.getSelection();
-        	if (selection instanceof IStructuredSelection) {
-        		Object selected = ((IStructuredSelection)selection).getFirstElement();
-        		if (selected instanceof IIpsObject) {
-        			return ((IIpsObject)selected).getIpsSrcFile();
-        		}
-        		if(selected instanceof IIpsObjectPart){
-        			return ((IIpsObjectPart)selected).getIpsObject().getIpsSrcFile();
-        		}
-        	}
-        }
-        return null;
-    }
-
 }

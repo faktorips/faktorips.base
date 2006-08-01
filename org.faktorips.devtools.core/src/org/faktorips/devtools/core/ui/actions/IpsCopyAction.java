@@ -43,6 +43,7 @@ public class IpsCopyAction extends IpsAction {
         super(selectionProvider);
         clipboard = new Clipboard(shell.getDisplay());
     }
+    
 
     public void run(IStructuredSelection selection) {
         List selectedObjects = selection.toList();
@@ -55,7 +56,7 @@ public class IpsCopyAction extends IpsAction {
 
             if (selected instanceof IIpsObjectPart) {
                 part = (IIpsObjectPart)selected;
-                // TODO to be refactored with IpsDeleteAction, when inserting and deleting Attributes is allowed. See FS#330
+                // TODO to be refactored with IpsDeleteAction, when inserting and deleting of attributes is allowed. See FS#330
 //                copiedObjects.add(new IpsObjectPartState(part).toString());
                 
             }
@@ -71,5 +72,9 @@ public class IpsCopyAction extends IpsAction {
         if (copiedObjects.size() > 0 || copiedResources.size() > 0) {
             clipboard.setContents(getDataArray(copiedObjects, copiedResources), getTypeArray(copiedObjects, copiedResources));
         }
+    }
+
+    public void setEnabled(boolean enabled) {
+    	super.setEnabled(enabled);
     }
 }

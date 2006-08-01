@@ -34,11 +34,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String NewFolderActionDelegate_titleNewFolder;
-
-	public static String NewFolderActionDelegate_descriptionNewFolder;
-
-	public static String NewFolderActionDelegate_valueNewFolder;
 
 	public static String DatatypeCompletionProcessor_msgNoProjectContext;
 
@@ -59,10 +54,6 @@ public class Messages extends NLS {
 	public static String PdObjectSelectionDialog_labelMatches;
 
 	public static String PdObjectSelectionDialog_labelQualifier;
-
-	public static String NewFolderActionDelegate_msgNoParentFound;
-
-	public static String NewFolderActionDelegate_msgFolderAllreadyExists;
 
 	public static String DatatypeSelectionDialog_title;
 
@@ -85,8 +76,6 @@ public class Messages extends NLS {
 	public static String FolderPropertiesPage_labelSortNumber;
 
 	public static String FolderPropertiesPage_msgSortNumberInvalid;
-
-	public static String NewFolderAction_name;
 
 	public static String FaktorIpsPreferencePage_labelEditRecentGenerations;
 

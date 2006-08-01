@@ -36,8 +36,22 @@ import org.faktorips.devtools.core.ImageImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 
+/**
+ * Problemdecorator for Ips-projects. This decorator marks IpsObjects themselves,
+ * packagefragments, packagefragmentroots and IpsProjects the objects are 
+ * located in with warning and error icons if problems are detected.<p>
+ * The IpsProblemsLabelDecorator is configurable for flat or hierarchical
+ * layout styles in treeviewers. 
+ * 
+ * @author Stefan Widmaier
+ */
 public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightLabelDecorator {
-
+	/**
+	 * Indicates if the LabelDecorator works with a flat or hierarchical viewstructure.
+	 * True means flat layout, false means hierarchical layout.
+	 * Default is false for use with the hierarchical StructureExplorer.
+	 */
+	private boolean isFlatLayout= false;
 	/**
 	 * {@inheritDoc}
 	 */	
@@ -66,8 +80,17 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 			}
 	
 			int flag = 0;
-			
-			IMarker[] markers = res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+			 
+			IMarker[] markers;
+			if(isFlatLayout){
+				/* In flat layout every packagefragment is represented in its own treeitem, 
+				 * thus packagefragments of parentfolders should not be decorated. 
+				 * Only search the packagefragments children (files) for problems.
+				 */
+				markers= res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+			}else{
+				markers= res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+			}
 			for (int i= 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
 				if (markers[i].exists()) {
 					int prio = markers[i].getAttribute(IMarker.SEVERITY, -1);
@@ -132,6 +155,13 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}		
+	}
+
+	/**
+	 * Sets the layout style the Decorator should work on.
+	 */
+	public void setFlatLayout(boolean isFlatLayout) {
+		this.isFlatLayout = isFlatLayout;
 	}
 
 }

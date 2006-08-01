@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.search.ui.NewSearchUI;
@@ -29,12 +27,9 @@ import org.faktorips.devtools.core.ui.search.ReferencesToProductSearchQuery;
  * Find all product components which refer to the selected one.
  * 
  * @author Thorsten Guenther
+ * @author Stefan Widmaier
  */
-public class FindProductReferencesAction extends Action {
-	/**
-	 * The selection provider to get the selection from if requested to run.
-	 */
-	private ISelectionProvider selectionProvider;
+public class FindProductReferencesAction extends IpsAction {
 	
 	/**
 	 * Creates a new action to find references to a product component. The 
@@ -44,20 +39,14 @@ public class FindProductReferencesAction extends Action {
 	 * Note: Only <code>IStructuredSelection</code>s are supported.
 	 */
     public FindProductReferencesAction(ISelectionProvider selectionProvider) {
-        super();
-        this.selectionProvider = selectionProvider;
+        super(selectionProvider);
         this.setDescription(Messages.FindProductReferencesAction_description);
         this.setText(Messages.FindProductReferencesAction_name);
         this.setToolTipText(this.getDescription());
     }
     
-    public void run() {
-        ISelection sel = selectionProvider.getSelection();
-		if (!(sel instanceof IStructuredSelection)) {
-			// we dont support simple selection
-			return;
-		}
-		Object selected = ((IStructuredSelection) sel).getFirstElement();
+    public void run(IStructuredSelection selection) {
+		Object selected = getIpsObjectForSelection(selection);
 		if(selected!=null){
 			if (selected instanceof IProductCmpt) {
 				NewSearchUI.activateSearchResultView();
