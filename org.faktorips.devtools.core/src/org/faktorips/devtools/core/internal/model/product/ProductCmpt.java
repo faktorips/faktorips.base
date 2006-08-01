@@ -198,24 +198,26 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         
         if(containsFormula()){
         	IPolicyCmptType pcType = findPolicyCmptType();
-        	IAttribute[] attributes = pcType.getAttributes();
-        	for (int i = 0; i < attributes.length; i++) {
-				if(ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())){
-					Parameter[] parameters = attributes[i].getFormulaParameters();
-					for (int j = 0; j < parameters.length; j++) {
-						String dataTypeId = parameters[j].getDatatype();
-						IIpsObject ipsObject = getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, dataTypeId);
-						if(ipsObject != null){
-							qaTypes.add(ipsObject.getQualifiedNameType());
-							continue;
-						}
-						ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, dataTypeId);
-						if(ipsObject != null){
-							qaTypes.add(ipsObject.getQualifiedNameType());
-						}
-					}
-				}
-			}
+        	if (pcType!=null) {
+            	IAttribute[] attributes = pcType.getAttributes();
+            	for (int i = 0; i < attributes.length; i++) {
+    				if(ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())){
+    					Parameter[] parameters = attributes[i].getFormulaParameters();
+    					for (int j = 0; j < parameters.length; j++) {
+    						String dataTypeId = parameters[j].getDatatype();
+    						IIpsObject ipsObject = getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, dataTypeId);
+    						if(ipsObject != null){
+    							qaTypes.add(ipsObject.getQualifiedNameType());
+    							continue;
+    						}
+    						ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, dataTypeId);
+    						if(ipsObject != null){
+    							qaTypes.add(ipsObject.getQualifiedNameType());
+    						}
+    					}
+    				}
+    			}
+        	}
         }
         return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
     }
