@@ -118,6 +118,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 	 * Filter used in flat layout, where it filters out empty packageFragments.
 	 */
 	private ViewerFilter emptyPackageFilter = new EmptyPackageFilter();
+	private ViewerFilter typeFilter;
 	
 	private IpsResourceChangeListener resourceListener;
 	protected ModelExplorerConfiguration config;	
@@ -168,8 +169,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 						.getDecoratorManager().getLabelDecorator());
 		decoProvider = new DecoratingLabelProvider(decoProvider, ipsDecorator); 
 		treeViewer.setLabelProvider(decoProvider);
-
-		treeViewer.addFilter(new ModelExplorerFilter(config));
+		
+		typeFilter= new ModelExplorerFilter(config);
+		treeViewer.addFilter(typeFilter);
 
 		getSite().setSelectionProvider(treeViewer);
 		resourceListener= new IpsResourceChangeListener(treeViewer);
@@ -254,10 +256,14 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 	private void setFlatLayout(boolean b) {
 		isFlatLayout = b;
 		if (isFlatLayout()) {
+			// remove Filter in case it was already added by pressing the same layout button twice
+			// (treeviewer organizes filters in a list, not a set)
+			treeViewer.removeFilter(emptyPackageFilter);
 			treeViewer.addFilter(emptyPackageFilter);
-		} else {
+		}else{
 			treeViewer.removeFilter(emptyPackageFilter);
 		}
+		
 		ipsDecorator.setFlatLayout(isFlatLayout());
 		contentProvider.setIsFlatLayout(isFlatLayout());
 		labelProvider.setIsFlatLayout(isFlatLayout());
