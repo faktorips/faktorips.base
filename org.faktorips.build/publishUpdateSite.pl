@@ -91,7 +91,7 @@ sub isReleaseBuild(){
 		if ($line =~ m/feature/ig){
 			$line =~ m/version="(.*?)"/ig;
 			$version = $1;
-			print "$line\n";
+			print "found feature version $version in line \"$line\"\n ";
 			#only recognize the first feature
 			break;
 		}
