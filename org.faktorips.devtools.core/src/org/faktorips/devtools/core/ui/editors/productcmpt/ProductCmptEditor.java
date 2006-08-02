@@ -133,7 +133,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 						this.close(false);
 						return;
 					} else {
-						checkForInconsistenciesBetweenAttributeAndConfigElements();
+						checkForInconsistenciesBetweenAttributeAndConfigElements(false);
 					}
 				}
 				
@@ -196,7 +196,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 		checkGeneration();
 
-		checkForInconsistenciesBetweenAttributeAndConfigElements();
+		checkForInconsistenciesBetweenAttributeAndConfigElements(false);
 	}
 
 	/**
@@ -218,20 +218,22 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	/**
 	 * Does what the methodname says :-)
 	 */
-	private void checkForInconsistenciesBetweenAttributeAndConfigElements() {
-		if (!this.enabled || !getIpsSrcFile().isMutable() || deltasShowing) {
-    		// no modifications for read-only-editors
-			return;
-		}
-		
-		if (dontFixDifferencesBetweenAttributeAndConfigElement) {
-		    // user decided not to fix the differences some time ago...
-			return;
-		}
-		
-		if (getContainer() == null) {
-			// dont do anything, we will be called again later.
-			return;
+	private void checkForInconsistenciesBetweenAttributeAndConfigElements(boolean force) {
+		if (!force) {
+			if (!this.enabled || !getIpsSrcFile().isMutable() || deltasShowing) {
+	    		// no modifications for read-only-editors
+				return;
+			}
+			
+			if (dontFixDifferencesBetweenAttributeAndConfigElement) {
+			    // user decided not to fix the differences some time ago...
+				return;
+			}
+			
+			if (getContainer() == null) {
+				// dont do anything, we will be called again later.
+				return;
+			}
 		}
 		
 		IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
@@ -294,6 +296,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		if (this.propertiesPage != null) {
 			this.propertiesPage.refreshStructure();
 		}
+	}
+	
+	public void refresh() {
+		checkForInconsistenciesBetweenAttributeAndConfigElements(true);
+		super.refresh();
 	}
 
 	/**
@@ -378,7 +385,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		this.enabled = enabled && !IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
 		if (this.enabled) {
 			this.setTitleImage(enabledImage);
-			checkForInconsistenciesBetweenAttributeAndConfigElements();
+			checkForInconsistenciesBetweenAttributeAndConfigElements(false);
 		} else {
 			this.setTitleImage(disabledImage);
 		}

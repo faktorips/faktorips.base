@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
@@ -105,14 +107,45 @@ public class TextButtonField extends DefaultEditField {
      * @see org.faktorips.devtools.core.ui.controller.fields.DefaultEditField#addListenerToControl()
      */
     protected void addListenerToControl() {
-        control.getTextControl().addModifyListener(new ModifyListener() {
+    	ModifyListener ml = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
                 notifyChangeListeners(new FieldValueChangedEvent(TextButtonField.this));
             }
             
-        });
+        };
+        
+        control.getTextControl().addModifyListener(ml);
+        control.getTextControl().addDisposeListener(new MyDisposeListener(ml));
     }
 
-
+    /**
+     * Dispose listener to remove modify listener from control when control is disposed.
+     * 
+     * @author Thorsten Guenther
+     */
+    private class MyDisposeListener implements DisposeListener {
+    	/**
+    	 * Listener which has to be removed on dispose.
+    	 */
+    	private ModifyListener ml;
+    	
+    	/**
+    	 * Create a new Listener.
+    	 * 
+    	 * @param ml The modify listener to remove on dispose
+    	 */
+    	MyDisposeListener(ModifyListener ml) {
+    		this.ml = ml;
+    	}
+    	
+		/**
+		 * {@inheritDoc}
+		 */
+		public void widgetDisposed(DisposeEvent e) {
+    		control.getTextControl().removeModifyListener(ml);
+		}
+    	
+    }
+    
 }

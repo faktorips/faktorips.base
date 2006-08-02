@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.PdObjectField;
+import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
@@ -50,7 +50,7 @@ public class GeneralInfoSection extends IpsSection {
     private IpsObjectUIController uiController;
     
     // edit fields
-    private PdObjectField supertypeField;
+    private IpsObjectField supertypeField;
     private CheckboxField abstractField;
     private TextField productCmptTypeNameField;
     private CheckboxField configuratedField;    
@@ -87,7 +87,7 @@ public class GeneralInfoSection extends IpsSection {
 	
 	        public void linkActivated(HyperlinkEvent event) {
 	            try {
-	                IPolicyCmptType supertype = (IPolicyCmptType)supertypeField.getPdObject(pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE);
+	                IPolicyCmptType supertype = (IPolicyCmptType)supertypeField.getIpsObject(pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE);
 	                if (supertype!=null) {
 	                    IpsPlugin.getDefault().openEditor(supertype.getIpsSrcFile());    
 	                }
@@ -116,7 +116,7 @@ public class GeneralInfoSection extends IpsSection {
 	    addFocusControl(configuratedCheckbox);
 	    
 	    // create fields
-	    supertypeField = new PdObjectField(control);
+	    supertypeField = new IpsObjectField(control);
 	    abstractField = new CheckboxField(abstractCheckbox);
 	    productCmptTypeNameField = new TextField(productCmptTypeNameText);
 	    configuratedField = new CheckboxField(configuratedCheckbox);

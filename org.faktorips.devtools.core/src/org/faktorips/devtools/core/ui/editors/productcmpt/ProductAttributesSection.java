@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -38,8 +40,10 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -48,7 +52,9 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
+import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -78,14 +84,13 @@ public class ProductAttributesSection extends IpsSection {
 	 */
 	private List editControls = new ArrayList();
 	
-	// Text field showing the policy component type
-	private Text pcTypeText;
 	private Text generationText;
 
 	/**
 	 * Controller to handle update of ui and model automatically.
 	 */
 	private CompositeUIController uiMasterController = null;
+	private ProductCmptEditor editor;
 	
 	/**
 	 * Creates a new attributes section.
@@ -95,9 +100,10 @@ public class ProductAttributesSection extends IpsSection {
 	 * @param toolkit The toolkit to use for easier ui-handling
 	 */
 	public ProductAttributesSection(IProductCmptGeneration generation,
-			Composite parent, UIToolkit toolkit) {
+			Composite parent, UIToolkit toolkit, ProductCmptEditor editor) {
 		super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
 		this.generation = generation;
+		this.editor = editor;
 		initControls();
 		setText(Messages.ProductAttributesSection_attribute);
 	}
@@ -151,22 +157,31 @@ public class ProductAttributesSection extends IpsSection {
 		// create label and text control for the policy component type
 		// this product component is based on.
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
-		this.pcTypeText = toolkit.createText(rootPane);
-		this.pcTypeText.setEnabled(false);
+
+		ProductCmptTypeRefControl ctrl = new ProductCmptTypeRefControl(generation.getIpsProject(), rootPane, toolkit);
+		ProductCmptTypeField field = new ProductCmptTypeField(ctrl);
+		
+		ModifyListener ml = new ModifyListener() {
+		
+			public void modifyText(ModifyEvent e) {
+				uiMasterController.updateModel();
+				editor.refresh();
+		
+			}
+		
+		};
+		
+		ctrl.getTextControl().addModifyListener(ml);
+
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 
 		createEditControls();
 		
 		IpsObjectUIController controller = new IpsObjectUIController(generation.getIpsObject());
-		try {
-			IProductCmptType type = generation.getProductCmpt().findProductCmptType();
-			if (type != null) {
-				controller.add(new TextField(pcTypeText), type, IProductCmptType.PROPERTY_NAME);
-			}
-		} catch (CoreException e) {
-			pcTypeText.setText(Messages.ProductAttributesSection_noProductCmptType);
-		}
+		
+		controller.add(field, generation.getProductCmpt(), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
+		
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();
 	}
@@ -262,4 +277,54 @@ public class ProductAttributesSection extends IpsSection {
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 	}	
+	
+	
+	private class ProductCmptTypeField extends IpsObjectField {
+
+		/**
+		 * @param control
+		 */
+		public ProductCmptTypeField(TextButtonControl control) {
+			super(control);
+		}
+
+		public String getText() {
+			try {
+				IProductCmptType type = generation.getIpsProject().findProductCmptType(super.getText());
+				if (type != null) {
+					return type.getPolicyCmptyType();
+				}
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+			return super.getText();
+		}
+
+		public Object getValue() {
+			return getText();
+		}
+
+		public void insertText(String text) {
+			super.insertText(text);
+		}
+
+		public void setText(String newText) {
+			try {
+				IPolicyCmptType type = generation.getIpsProject().findPolicyCmptType(newText);
+				if (type != null) {
+					super.setText(type.getProductCmptType());
+				}
+				return;
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+			super.setText(newText);
+		}
+
+		public void setValue(Object newValue) {
+			setText((String)newValue);
+		}
+		
+	}
+	
 }

@@ -128,7 +128,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 		Composite left = createGridComposite(toolkit, root, 1, true,
 				GridData.FILL_BOTH);
 		productAttributesSection = new ProductAttributesSection(generation,
-				left, toolkit);
+				left, toolkit, (ProductCmptEditor)getEditor());
 		formulasSection = new FormulasSection(generation, left, toolkit);
 
 		Composite right = createGridComposite(toolkit, root, 1, true,

@@ -27,12 +27,12 @@ import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 /**
  * A field for object references.
  */
-public class PdObjectField extends TextButtonField {
+public class IpsObjectField extends TextButtonField {
 
     /**
      * @param control
      */
-    public PdObjectField(TextButtonControl control) {
+    public IpsObjectField(TextButtonControl control) {
         super(control);
     }
 
@@ -40,7 +40,7 @@ public class PdObjectField extends TextButtonField {
      * Returns the datatype if possible, or null if the current value in the
      * control does not specifiy a datatype. 
      */
-    public IIpsObject getPdObject(IIpsProject project, IpsObjectType type) throws CoreException {
+    public IIpsObject getIpsObject(IIpsProject project, IpsObjectType type) throws CoreException {
         return project.findIpsObject(type, getText());
     }
     
