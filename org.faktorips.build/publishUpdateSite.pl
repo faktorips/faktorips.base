@@ -46,8 +46,9 @@ sub createDevelBuild(){
 	close(fbuf);
 	
 	foreach $line (@content){
-		if ($line =~ m/feature/ig){
-			$line =~ s/version=".*?"/version="$version"/ig;
+		if ($line =~ m/category-def/ig){
+			$line =~ s/label="(.*?)"/label="\1-$version"/ig;
+			$line =~ s/name="(.*?)"/name="\1-$version"/ig;
 		}
 	}
 	
