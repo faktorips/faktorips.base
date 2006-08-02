@@ -93,7 +93,7 @@ sub isReleaseBuild(){
 			$version = $1;
 			print "found feature version $version in line \"$line\"\n ";
 			#only recognize the first feature
-			break;
+			last;
 		}
     }
 	#get last release version
