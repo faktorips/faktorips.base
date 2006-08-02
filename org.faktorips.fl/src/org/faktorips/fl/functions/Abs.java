@@ -16,7 +16,7 @@
  *******************************************************************************/
 
 package org.faktorips.fl.functions;
-
+ 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.util.ArgumentCheck;
