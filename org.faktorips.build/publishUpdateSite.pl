@@ -134,7 +134,7 @@ sub getJarFile(){
 sub getDevCount(){
 	my ($Sekunden, $Minuten, $Stunden, $Monatstag, $Monat, $Jahr, $Wochentag, $Jahrestag, $Sommerzeit) = localtime(time);
 	$Jahr = $Jahr + 1900;
-	return "dev-" . $Monatstag . "-" . $Monat . "-". $Jahr ."-".$Stunden.":".$Minuten.":".$Sekunden ;
+	return  $Monatstag .  $Monat . $Jahr . $Stunden . $Minuten. $Sekunden ;
 }
 
 #fetches the site.xml from cvs to the given dir
