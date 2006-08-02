@@ -148,8 +148,6 @@
     <param name="genericTargets" value="${builder}/customTargets.xml"/>
     <param name="target" value="updateSiteExport"/>
   </antcall>
-  <antcall target="copySiteXmlFromCvs"/>
-  <antcall target="createNightlyBuildSiteXml"/>
 </target>
 	
 	
@@ -161,15 +159,6 @@
 </target>
 	
 	
-<target name="copySiteXmlFromCvs" unless="isNightlyBuild">
-    <exec executable="/usr/bin/perl" dir="${buildDirectory}/org.faktorips.build/">
-            <arg line="publishUpdateSite.pl" />
-    </exec>
-</target>
-	
-<target name="createNightlyBuildSiteXml" if="isNightlyBuild">
-  <!-- create ${UpdateSiteStagingLocation}/site.xml which contains only the nighlty build version -->
-</target>
 
 <!-- ===================================================================== -->
 <!-- Steps to test the build results -->
