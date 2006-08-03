@@ -41,6 +41,8 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBui
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableRowBuilder;
+import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
+import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.runtime.TableFunctionExecution;
@@ -173,10 +175,18 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         IIpsArtefactBuilder tableContentCopyBuilder = new XmlContentFileCopyBuilder(
                 IpsObjectType.TABLE_CONTENTS, this, KIND_TABLE_CONTENT);
 
+        // test case type builders
+        TestCaseTypeClassBuilder testCaseTypeClassBuilder = new TestCaseTypeClassBuilder(this, KIND_TEST_CASE_TYPE_CLASS);
+        
+        // test case builder
+        TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
+        
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
         
+        //
         // wire up the builders
+        //
         
         // policy component type builders
         policyCmptImplClassBuilder.setInterfaceBuilder(policyCmptInterfaceBuilder);
@@ -210,6 +220,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);
         tocFileBuilder.setProductCmptGenImplClassBuilder(productCmptGenImplClassBuilder);
         tocFileBuilder.setTableImplBuilder(tableImplBuilder);
+        tocFileBuilder.setTestCaseTypeClassBuilder(testCaseTypeClassBuilder);
+        tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
 
         builders = new IIpsArtefactBuilder[] { 
                 tableImplBuilder, 
@@ -223,6 +235,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 productCmptGenerationImplBuilder,
                 tableContentCopyBuilder, 
                 productCmptContentCopyBuilder,
+                testCaseTypeClassBuilder,
+                testCaseBuilder,
                 tocFileBuilder };
     }
     
