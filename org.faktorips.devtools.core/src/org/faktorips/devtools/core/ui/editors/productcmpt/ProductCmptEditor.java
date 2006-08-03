@@ -228,12 +228,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			if (dontFixDifferencesBetweenAttributeAndConfigElement) {
 			    // user decided not to fix the differences some time ago...
 				return;
-			}
-			
-			if (getContainer() == null) {
-				// dont do anything, we will be called again later.
-				return;
-			}
+			}			
+		}
+		
+		if (getContainer() == null) {
+			// dont do anything, we will be called again later.
+			return;
 		}
 		
 		IIpsObjectGeneration[] gen = this.getProductCmpt().getGenerations();
@@ -583,6 +583,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				IpsPreferences prefs = IpsPlugin.getDefault()
 						.getIpsPreferences();
 				prefs.setWorkingDate(generation.getValidFrom());
+				setPropertiesEnabled(true);
 				break;
 
 			default:
