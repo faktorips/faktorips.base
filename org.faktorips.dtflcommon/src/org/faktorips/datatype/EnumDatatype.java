@@ -20,7 +20,8 @@ package org.faktorips.datatype;
 /**
  * A value datatype representing an enumeration of values.
  * 
- * @author Jan Ortmann, Peter Erzberger
+ * @author Jan Ortmann
+ * @authot Peter Erzberger
  */
 public interface EnumDatatype extends ValueDatatype {
 
@@ -34,15 +35,19 @@ public interface EnumDatatype extends ValueDatatype {
 	public String[] getAllValueIds(boolean includeNull);
 
 	/**
-	 * Returns true of an implementation of this interface supports names that
-	 * describe the datatype. If this method returns false a call to the
-	 * getName(String) method is supposed to throw a runtime exception.
+	 * Returns <code>true</code> if an implementation of this interface supports names that
+	 * describe the datatype's value. E.g. a enum datatype PaymentMode might return the name
+     * "annual" for the annual payment mode with id "1".
+     * If this method returns <code>false</code> a call to the getName(String id) method is 
+     * supposed to throw a runtime exception.
 	 */
 	public boolean isSupportingNames();
 
 	/**
-	 * Returns a short description of the value of this enumeration datatype specified by the id. 
-	 * @throws an IllegalArgumentException if the id is not a valid id of this  enumeration datatype
+	 * Returns a short description of the value of this enumeration datatype specified by the id.
+     *  
+	 * @throws IllegalArgumentException if the id is not a valid id of this enumeration datatype
+     * @throws RuntimeException if the datatype does not support names for the id.
 	 */
 	public String getValueName(String id);
 }

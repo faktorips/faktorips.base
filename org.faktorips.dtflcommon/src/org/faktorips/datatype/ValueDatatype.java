@@ -19,7 +19,7 @@ package org.faktorips.datatype;
 
 
 /**
- *
+ * A datatype representing values (in contrast to reference objects).
  */
 public interface ValueDatatype extends Datatype {
 

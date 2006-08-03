@@ -27,29 +27,29 @@ import org.faktorips.util.message.MessageList;
 public abstract class AbstractDatatype implements Datatype {
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public MessageList validate() {
         return new MessageList();
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
 	public boolean isVoid() {
 		return false;
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public int hashCode() {
 	    return getName().hashCode();
 	}
 	
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public boolean equals(Object o) {
 		if (this==o) {
 			return true;
