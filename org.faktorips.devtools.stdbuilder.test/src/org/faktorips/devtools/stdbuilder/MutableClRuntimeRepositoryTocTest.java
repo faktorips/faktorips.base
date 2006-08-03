@@ -66,6 +66,16 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         assertEquals(entry0, toc.getProductCmptTocEntries()[0]);
         assertEquals(entry1, toc.getProductCmptTocEntries()[1]);
     }
+    
+    public void testAddOrReplaceTocEntry_TestCase() {
+        long modStamp = toc.getModificationStamp(); 
+        TocEntryObject entry0 = TocEntryObject.createTestCaseTocEntry("TestCaseId", "TestCaseName", "TestCase.xml", "TestCase");
+        boolean changed = toc.addOrReplaceTocEntry(entry0);
+        assertTrue(changed);
+        assertTrue(modStamp!=toc.getModificationStamp());
+        assertEquals(1, toc.getTestCaseTocEntries().length);
+        assertEquals(entry0, toc.getTestCaseTocEntries()[0]);
+    }
 
     public void testAddOrReplaceTocEntry() {
         long modStamp = toc.getModificationStamp(); 
@@ -174,8 +184,12 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
     public void testToXml() throws TransformerException {
         TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
         TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry("HomePolicy", "HomePolicy", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry2 = TocEntryObject.createTestCaseTocEntry("TestCaseId", "TestCase", "TestCase.xml", "TestCase");
+        TocEntryObject entry3 = TocEntryObject.createTableTocEntry("TableId", "Table", "Table.xml", "Table");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
+        toc.addOrReplaceTocEntry(entry2);
+        toc.addOrReplaceTocEntry(entry3);
         
         Element tocElement = toc.toXml(newDocument());
         assertNotNull(tocElement);
@@ -183,7 +197,13 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         readOnlyToc.initFromXml(tocElement);
         TocEntryObject[] entries = readOnlyToc.getProductCmptTocEntries();
         assertEquals(2, entries.length);
-        
+        entries = readOnlyToc.getTestCaseTocEntries();
+        assertEquals(1, entries.length);
+        entries = readOnlyToc.getTableTocEntries();
+        assertEquals(1, entries.length);
+    }
+    
+    public void testToXml_EntriesAreOrdered() throws Exception {
         // test if the two xml representations are identical regradless of the order in that the entries
         // where added
         // to do so we have to make sure, we have to entries that are stored in the same bucket in the map
@@ -191,8 +211,8 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         String s2 = "" + (char)0 + (char)31;
         assertEquals(s1.hashCode(), s2.hashCode()); // so they must habe the same hashcode
         toc = new MutableClRuntimeRepositoryToc();
-        entry0 = TocEntryObject.createProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
-        entry1 = TocEntryObject.createProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
+        TocEntryObject entry0 = TocEntryObject.createProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01", "MotorProduct2005.ipsproduct", "MotorPolicyPk");
+        TocEntryObject entry1 = TocEntryObject.createProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01", "HomeProduct2005.ipsproduct", "HomePolicyPk");
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
         String tocString = XmlUtil.nodeToString(toc.toXml(newDocument()), "UTF-8");
@@ -201,6 +221,7 @@ public class MutableClRuntimeRepositoryTocTest extends XmlAbstractTestCase {
         toc2.addOrReplaceTocEntry(entry0);
         String toc2String = XmlUtil.nodeToString(toc2.toXml(newDocument()), "UTF-8");
         assertEquals(tocString, toc2String);
+        
     }
 
 }

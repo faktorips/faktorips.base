@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.runtime.ReadonlyTableOfContents;
 import org.faktorips.runtime.TocEntryGeneration;
@@ -126,6 +128,12 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         table2.setTableStructure(structure.getQualifiedName());
         table2.getIpsSrcFile().save(true, null);
         
+        // create a test case type and a test case
+        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "tests.PremiumCalcTest");
+        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "tests.PremiumCalcTestA");
+        testCase.setTestCaseType(testCaseType.getQualifiedName());
+        testCase.getIpsSrcFile().save(true, null);
+        
         // now build
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
@@ -153,6 +161,10 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         // asserts for second table entry
         TocEntryObject entry2 = toc.getTableTocEntryByQualifiedTableName("motor.RateTable2");
         assertNotNull(entry2);
+        
+        // assert for test case entry
+        TocEntryObject testCaseEntry = toc.getTestCaseTocEntryByQName("tests.PremiumCalcTestA");
+        assertNotNull(testCaseEntry);
         
         // no changes => toc file should remain untouched.
         long stamp = tocFile.getModificationStamp();
