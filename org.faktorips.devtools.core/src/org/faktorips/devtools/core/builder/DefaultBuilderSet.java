@@ -55,14 +55,17 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public final static String KIND_PRODUCT_CMPT_GENERATION_INTERFACE = "productCmptGenerationInterface"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_GENERATION_IMPL = "productCmptGenerationImpl"; //$NON-NLS-1$
     public final static String KIND_PRODUCT_CMPT_CONTENT = "productcmptcontent"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
     public final static String KIND_POLICY_CMPT_INTERFACE = "policycmptinterface"; //$NON-NLS-1$
     public final static String KIND_POLICY_CMPT_IMPL = "policycmptimpl"; //$NON-NLS-1$
     public final static String KIND_TABLE_IMPL = "tableimpl"; //$NON-NLS-1$
     public final static String KIND_TABLE_CONTENT = "tablecontent"; //$NON-NLS-1$
-    public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
     public final static String KIND_TABLE_ROW = "tablerow"; //$NON-NLS-1$
-
+    public final static String KIND_TEST_CASE_TYPE_CLASS = "testcasetypeclass"; //$NON-NLS-1$
+    public final static String KIND_TEST_CASE_XML = "testcasexml"; //$NON-NLS-1$
+    
+    public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
+    public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
+    
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
     
     /**
@@ -181,6 +184,18 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
                 return getInternalPackageName(ipsSrcFile);
             }
             if (KIND_TABLE_TOCENTRY.equals(kind)) {
+                return getInternalPackageName(ipsSrcFile);
+            }
+        }
+
+        if (IpsObjectType.TEST_CASE_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
+            if (KIND_TEST_CASE_TYPE_CLASS.equals(kind)) {
+                return getInternalPackageName(ipsSrcFile);
+            }
+        }
+        
+        if (IpsObjectType.TEST_CASE.equals(ipsSrcFile.getIpsObjectType())) {
+            if (KIND_TEST_CASE_XML.equals(kind)) {
                 return getInternalPackageName(ipsSrcFile);
             }
         }
