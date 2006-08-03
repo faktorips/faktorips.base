@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
@@ -50,12 +49,12 @@ public class IpsCopyAction extends IpsAction {
 
         List copiedObjects = new ArrayList();
         List copiedResources = new ArrayList();
-        IIpsObjectPart part;
+//        IIpsObjectPart part;
         for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
             Object selected = iter.next();
 
             if (selected instanceof IIpsObjectPart) {
-                part = (IIpsObjectPart)selected;
+//                part = (IIpsObjectPart)selected;
                 // TODO to be refactored with IpsDeleteAction, when inserting and deleting of attributes is allowed. See FS#330
 //                copiedObjects.add(new IpsObjectPartState(part).toString());
                 
