@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -28,35 +30,31 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class RowImplTest extends IpsObjectTestCase {
+public class RowImplTest extends AbstractIpsPluginTest {
 
+    private IIpsSrcFile ipsSrcFile;
     private ITableContents table; 
     private ITableContentsGeneration generation;
     private Row row;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.TABLE_STRUCTURE);
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectTestCase#createObjectAndPart()
-     */
-    protected void createObjectAndPart() {
-        table = new TableContents(pdSrcFile);
+        super.setUp();
+        IIpsProject project = newIpsProject("TestProject");
+        table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
         generation = (ITableContentsGeneration)table.newGeneration();
         table.newColumn(null);
         table.newColumn(null);
         table.newColumn(null);
         row = (Row)generation.newRow();
+        ipsSrcFile = table.getIpsSrcFile();
     }
-
+    
     public void testSetValue() {
         row.setValue(0, "newValue0");
         assertEquals("newValue0", row.getValue(0));
         row.setValue(1, "newValue1");
         assertEquals("newValue1", row.getValue(1));
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
         
         try {
             row.setValue(4, "newValue2");
@@ -68,7 +66,7 @@ public class RowImplTest extends IpsObjectTestCase {
     public void testRemove() {
         row.delete();
         assertEquals(0, generation.getNumOfRows());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testToXml() {

@@ -18,9 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -46,14 +44,12 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         rootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
-        IIpsPackageFragment folder = rootFolder.getIpsPackageFragment("folder");
-        srcFile = new IpsSrcFile(folder, IpsObjectType.POLICY_CMPT_TYPE.getFileName("TestProduct"));
-        ipsObject = new PolicyCmptType(srcFile);
-        IpsPlugin.getDefault().getManager().putSrcFileContents(srcFile, new IpsSourceFileContents(srcFile, "", ipsProject.getProject().getDefaultCharset()));
+        ipsObject = newPolicyCmptType(ipsProject, "pack.TestProduct");
+        srcFile = ipsObject.getIpsSrcFile();
     }
     
     public void testGetQualifiedName() throws CoreException {
-        assertEquals("folder.TestProduct", ipsObject.getQualifiedName());
+        assertEquals("pack.TestProduct", ipsObject.getQualifiedName());
         IIpsPackageFragment defaultFolder = rootFolder.getIpsPackageFragment("");
         IIpsSrcFile file = defaultFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestProduct", true, null);
         assertEquals("TestProduct", file.getIpsObject().getQualifiedName());
@@ -68,8 +64,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)
+     * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;

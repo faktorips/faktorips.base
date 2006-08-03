@@ -113,8 +113,8 @@ public class Column extends IpsObjectPart implements IColumn {
         return IpsPlugin.getDefault().getImage("TableColumn.gif"); //$NON-NLS-1$
     }
 
-    protected void validate(MessageList list) throws CoreException {
-        super.validate(list);
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$ //$NON-NLS-2$
         Datatype type = ValidationUtils.checkDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list); //$NON-NLS-1$
         if (type==null) {

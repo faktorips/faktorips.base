@@ -47,8 +47,7 @@ public abstract class Member extends IpsObjectPart implements IMember {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMember#setName(java.lang.String)
+     * {@inheritDoc}
      */
     public void setName(String newName) {
         this.name = newName;
@@ -56,17 +55,14 @@ public abstract class Member extends IpsObjectPart implements IMember {
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getCorrespondingResource()
+     * {@inheritDoc}
      */
     public IResource getCorrespondingResource() {
         return null;
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -74,9 +70,7 @@ public abstract class Member extends IpsObjectPart implements IMember {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);

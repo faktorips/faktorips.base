@@ -17,12 +17,13 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -30,38 +31,37 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class MethodTest extends IpsObjectTestCase {
+public class MethodTest extends AbstractIpsPluginTest {
     
+    private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
     private IMethod method;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.POLICY_CMPT_TYPE);
-    }
-    
-    protected void createObjectAndPart() {
-        pcType = new PolicyCmptType(pdSrcFile);
+        super.setUp();
+        IIpsProject ipsProject= newIpsProject("TestProject");
+        pcType = newPolicyCmptType(ipsProject, "Policy");
+        ipsSrcFile = pcType.getIpsSrcFile();
         method = pcType.newMethod();
     }
     
     public void testRemove() {
         method.delete();
         assertEquals(0, pcType.getAttributes().length);
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testSetDatatype() {
         method.setDatatype("Money");
         assertEquals("Money", method.getDatatype());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
-    public void testSetParameters() {
-        method.setParameters(new Parameter[]{new Parameter(0, "p", "int")});
+    public void testNewParameter() {
+        IParameter param = method.newParameter();
         assertEquals(1, method.getParameters().length);
-        assertEquals("p", method.getParameters()[0].getName());
-        assertEquals("int", method.getParameters()[0].getDatatype());
-        assertTrue(pdSrcFile.isDirty());
+        assertEquals(param, method.getParameters()[0]);
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testInitFromXml() {
@@ -73,18 +73,14 @@ public class MethodTest extends IpsObjectTestCase {
         assertEquals("Money", method.getDatatype());
         assertEquals(Modifier.PRIVATE, method.getModifier());
         assertTrue(method.isAbstract());
-        assertEquals("", method.getBody());
-        Parameter[] params = method.getParameters();
+        IParameter[] params = method.getParameters();
         assertEquals(2, params.length);
-        assertEquals(0, params[0].getIndex());
         assertEquals("p1", params[0].getName());
         assertEquals("Money", params[0].getDatatype());
-        assertEquals(1, params[1].getIndex());
         assertEquals("p2", params[1].getName());
         assertEquals("Decimal", params[1].getDatatype());
         
         method.initFromXml(XmlUtil.getElement(docElement, Method.TAG_NAME, 1));
-        assertEquals("return premium;", method.getBody());
         assertEquals(0, method.getNumOfParameters());
     }
 
@@ -97,47 +93,50 @@ public class MethodTest extends IpsObjectTestCase {
         method.setModifier(Modifier.PRIVATE);
         method.setDatatype("Decimal");
         method.setAbstract(true);
-        method.setBody("return i;");
-        Parameter[] params = new Parameter[2];
-        params[0] = new Parameter(0, "p1", "Money");
-        params[1] = new Parameter(1, "p2", "Decimal");
-        method.setParameters(params);
+        IParameter param0 = method.newParameter();
+        param0.setName("p0");
+        param0.setDatatype("Decimal");
+        IParameter param1 = method.newParameter();
+        param1.setName("p1");
+        param1.setDatatype("Money");
+
         Element element = method.toXml(this.newDocument());
         
         Method copy = new Method();
         copy.initFromXml(element);
-        Parameter[] copyParams = copy.getParameters();
+        IParameter[] copyParams = copy.getParameters();  
         assertEquals(1, copy.getId());
         assertEquals("getAge", copy.getName());
         assertEquals("Decimal", copy.getDatatype());
         assertEquals(Modifier.PRIVATE, copy.getModifier());
         assertTrue(copy.isAbstract());
-        assertEquals("return i;", copy.getBody());
         assertEquals(2, copyParams.length);
-        assertEquals(0, copyParams[0].getIndex());
-        assertEquals("p1", copyParams[0].getName());
-        assertEquals("Money", copyParams[0].getDatatype());
-        assertEquals(1, copyParams[1].getIndex());
-        assertEquals("p2", copyParams[1].getName());
-        assertEquals("Decimal", copyParams[1].getDatatype());
+        assertEquals("p0", copyParams[0].getName());
+        assertEquals("Decimal", copyParams[0].getDatatype());
+        assertEquals("p1", copyParams[1].getName());
+        assertEquals("Money", copyParams[1].getDatatype());
 
     }
     
     public void testIsSame() {
         method.setName("calc");
         method.setDatatype("void");
-        Parameter[] params = new Parameter[2];
-        params[0] = new Parameter(0, "p1", "Decimal");
-        params[1] = new Parameter(1, "p2", "Money");
-        method.setParameters(params);
-        
+        IParameter param0 = method.newParameter();
+        param0.setName("p1");
+        param0.setDatatype("Decimal");
+        IParameter param1 = method.newParameter();
+        param1.setName("p2");
+        param1.setDatatype("Money");
+
         IMethod other = pcType.newMethod();
         other.setDatatype("Money");
         other.setName("calc");
-        params = new Parameter[2];
-        params[0] = new Parameter(0, "x1", "Decimal");
-        params[1] = new Parameter(1, "x2", "Money");
-        other.setParameters(params); // ok, as setParameters() makes a copy of the array
+        IParameter otherParam0 = other.newParameter();
+        otherParam0.setName("x");
+        otherParam0.setDatatype("Decimal");
+        IParameter otherParam1 = other.newParameter();
+        otherParam1.setName("y");
+        otherParam1.setDatatype("Money");
         
         // ok case
         assertTrue(method.isSame(other));
@@ -149,26 +148,18 @@ public class MethodTest extends IpsObjectTestCase {
         // different parameter type 
         other.setName("calc"); // make names equals again
         assertTrue(method.isSame(other)); // and test it
-        params = new Parameter[2];
-        params[0] = new Parameter(0, "x1", "Decimal");
-        params[1] = new Parameter(1, "x2", "int");
-        other.setParameters(params);
+        otherParam1.setDatatype("int");
         assertFalse(method.isSame(other));
         
         // different number of parameters 
-        params = new Parameter[3];
-        params[0] = new Parameter(0, "x1", "Decimal");
-        params[1] = new Parameter(1, "x2", "Money");
-        params[2] = new Parameter(2, "x3", "int");
-        other.setParameters(params);
+        other.newParameter();
         assertFalse(method.isSame(other));
         
     }
 
-    /**
-     * Tests for the correct type of excetion to be thrwon - no part of any type could ever be created.
-     */
     public void testNewPart() {
+        assertNotNull(method.newPart(IParameter.class));
+        
     	try {
 			method.newPart(IAttribute.class);
 			fail();

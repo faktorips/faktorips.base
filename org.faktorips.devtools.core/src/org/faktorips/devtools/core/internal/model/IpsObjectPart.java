@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -26,7 +25,6 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -55,26 +53,21 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#getId()
+     * {@inheritDoc}
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
         return new IIpsElement[0];
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#getIpsObject()
+     * {@inheritDoc}
      */
     public IIpsObject getIpsObject() {
         IIpsElement element = this;
@@ -88,16 +81,14 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.Described#getDescription()
+     * {@inheritDoc}
      */
     public String getDescription() {
         return description;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.Described#setDescription(java.lang.String)
+     * {@inheritDoc}
      */
     public void setDescription(String newDescription) {
         ArgumentCheck.notNull(description, this);
@@ -106,6 +97,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         valueChanged(oldDescription, newDescription);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void updateSrcFile() {
         ((IpsObject)getIpsObject()).updateSrcFile();
     }
@@ -117,15 +111,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         return null;
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    public final MessageList validate() throws CoreException {
-        MessageList result = new MessageList();
-        validate(result);
-        return result;
-    }
-
     /**
 	 * {@inheritDoc}
 	 */
@@ -139,41 +124,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 	public int getValidationResultSeverity() throws CoreException {
 		return validate().getSeverity();
 	}
-
-    /**
-     * Validates the object part and reports invalid states by adding 
-     * validation messages to the list. This is an application of the collecting
-     * parameter pattern.
-     * 
-     * @throws NullPointerException if list is null.
-     */
-    protected void validate(MessageList list) throws CoreException {
-        validateExtensionProperties(list);
-    }
-
-    protected boolean valueChanged(Object oldValue, Object newValue) {
-        boolean changed = !ObjectUtils.equals(oldValue, newValue);
-        if (changed) {
-            updateSrcFile();
-        }
-        return changed;
-    }
-    
-    protected boolean valueChanged(boolean oldValue, boolean newValue) {
-        boolean changed = oldValue != newValue;
-        if (changed) {
-            updateSrcFile();
-        }
-        return changed;
-    }
-    
-    protected boolean valueChanged(int oldValue, int newValue) {
-        boolean changed = oldValue != newValue;
-        if (changed) {
-            updateSrcFile();
-        }
-        return changed;
-    }
 
     /**
      * {@inheritDoc}
@@ -199,9 +149,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         element.setAttribute(PROPERTY_ID, "" + id); //$NON-NLS-1$
@@ -217,9 +165,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#reinitPartCollections()
+     * {@inheritDoc}
      */
     protected void reinitPartCollections() {
     }

@@ -17,31 +17,50 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import java.util.List;
+
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.util.CollectionUtil;
 import org.w3c.dom.Element;
 
+public class TableContentsTest extends AbstractIpsPluginTest {
 
-/**
- *
- */
-public class TableContentsImplTest extends IpsObjectTestCase {
-    
-    private TableContents table;
+    private IIpsProject project;
+    private IIpsSrcFile pdSrcFile;
+    private ITableContents table;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.TABLE_STRUCTURE);
+        super.setUp();
+        project = newIpsProject("TestProject");
+        table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
+        pdSrcFile = table.getIpsSrcFile();
     }
-    
-    protected void createObjectAndPart() {
-        table = new TableContents(pdSrcFile);
+
+    /*
+     * Test method for 'org.faktorips.plugin.internal.model.tablecontents.TableContentsImpl.dependsOn()'
+     */
+    public void testDependsOn() throws Exception {
+        ITableStructure structure = (ITableStructure)newIpsObject(project,  IpsObjectType.TABLE_STRUCTURE, "Ts");
+        QualifiedNameType[] dependsOn = table.dependsOn();
+        assertEquals(0, dependsOn.length);
+        
+        table.setTableStructure(structure.getQualifiedName());
+        List dependsOnAsList = CollectionUtil.toArrayList(table.dependsOn());
+        assertTrue(dependsOnAsList.contains(structure.getQualifiedNameType()));
     }
-    
+
     public void testNewColumn() {
+        
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
@@ -138,11 +157,11 @@ public class TableContentsImplTest extends IpsObjectTestCase {
      * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
      */
     public void testNewPart() {
-    	try {
-			table.newPart(IAttribute.class);
-			fail();
-		} catch (IllegalArgumentException e) {
-			//nothing to do :-)
-		}
+        try {
+            table.newPart(IAttribute.class);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //nothing to do :-)
+        }
     }
 }

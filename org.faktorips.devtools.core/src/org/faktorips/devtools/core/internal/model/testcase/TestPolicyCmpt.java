@@ -490,8 +490,8 @@ public class TestPolicyCmpt extends TestObject implements
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validate(MessageList list) throws CoreException {
-		super.validate(list);
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
 		// validate if the test case type param exists
 		ITestPolicyCmptTypeParameter param = null;
 		try {

@@ -493,10 +493,10 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
-    protected void validate(MessageList list) throws CoreException {
-        super.validate(list);
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
         ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, "target", this,  //$NON-NLS-1$
         		PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
         ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR,  //$NON-NLS-1$

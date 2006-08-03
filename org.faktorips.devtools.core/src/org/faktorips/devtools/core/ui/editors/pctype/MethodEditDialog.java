@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -32,26 +30,23 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.core.ui.controls.ParametersEditControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 
 
 /**
  *
  */
-public class MethodEditDialog extends IpsPartEditDialog implements ParameterListChangeListener {
+public class MethodEditDialog extends IpsPartEditDialog  {
 
     private IMethod method;
     
@@ -60,9 +55,8 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
     private CheckboxField abstractField;
     private TextField nameField;
     private TextButtonField datatypeField;
-    private TextField bodyField;
     
-    private ChangeParametersControl parametersControl;
+    private ParametersEditControl parametersControl;
     
     /**
      * @param parentShell
@@ -74,8 +68,7 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.EditDialog#createWorkArea(org.eclipse.swt.widgets.Composite)
+     * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         TabFolder folder = (TabFolder)parent;
@@ -83,10 +76,6 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.MethodEditDialog_signatureTitle);
         page.setControl(createGeneralPage(folder));
-        
-        page = new TabItem(folder, SWT.NONE);
-        page.setText(Messages.MethodEditDialog_implementationTitle);
-        page.setControl(createBodyPage(folder));
         
         createDescriptionTabItem(folder);
         return folder;
@@ -118,33 +107,7 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         Text nameText = uiToolkit.createText(propertyPane);
         
         // parameters
-        parametersControl = new ChangeParametersControl(workArea, SWT.NONE, Messages.MethodEditDialog_labelParameters, method.getIpsProject()) {
-
-            public MessageList validate(int paramIndex) throws CoreException {
-                MessageList result = new MessageList();
-                MessageList list = method.validate();
-                for (int i=0; i<list.getNoOfMessages(); i++) {
-                    if (isMessageForParameter(list.getMessage(i), paramIndex)) {
-                        result.add(list.getMessage(i));
-                    }
-                }
-                return result;
-            }
-            
-            private boolean isMessageForParameter(Message msg, int paramIndex) {
-                ObjectProperty[] op = msg.getInvalidObjectProperties(); 
-                for (int j=0; j<op.length; j++) {
-                    if (op[j].getObject() instanceof Parameter) {
-                        if (((Parameter)op[j].getObject()).getIndex()==paramIndex) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-            
-            
-        };
+        parametersControl = new ParametersEditControl(workArea, SWT.NONE, Messages.MethodEditDialog_labelParameters, method.getIpsProject());
         parametersControl.initControl();
         parametersControl.setLayoutData(new GridData(GridData.FILL_BOTH));
         // create fields
@@ -156,21 +119,12 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         return c;
     }
     
-    private Control createBodyPage(TabFolder folder) {
-        Composite c = createTabItemComposite(folder, 1, false);
-        Text text = uiToolkit.createMultilineText(c);
-        text.setEditable(false);
-        bodyField = new TextField(text);
-        return c;
-    }
-
 	protected Point getInitialSize() {
 	    return new Point(800, 600);
 	}
 	
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#connectToModel()
+     * {@inheritDoc}
      */
     protected void connectToModel() {
         super.connectToModel();
@@ -178,15 +132,11 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         uiController.add(abstractField, IMethod.PROPERTY_ABSTRACT);
         uiController.add(nameField, IMethod.PROPERTY_NAME);
         uiController.add(datatypeField, IMethod.PROPERTY_DATATYPE);
-        bodyField.setText(method.getBody());
-        List infos = ParameterInfo.createInfosAsList(method.getParameters());
-        parametersControl.setInput(infos);
-        parametersControl.setParameterListChangeListener(this);
+        parametersControl.setInput(method);
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.IpsPartEditDialog#buildTitle()
+     * {@inheritDoc}
      */
     protected String buildTitle() {
         StringBuffer buffer = new StringBuffer();
@@ -196,7 +146,7 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         buffer.append(' ');
         buffer.append(method.getName());
         buffer.append('(');
-        Parameter[] params = method.getParameters(); 
+        IParameter[] params = method.getParameters(); 
         for (int i=0; i<params.length; i++) {
             if (i>0) {
                 buffer.append(", "); //$NON-NLS-1$
@@ -210,30 +160,5 @@ public class MethodEditDialog extends IpsPartEditDialog implements ParameterList
         
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener#parameterChanged(org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo)
-     */
-    public void parameterChanged(ParameterInfo parameter) {
-        parameterListChanged();
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener#parameterAdded(org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo)
-     */
-    public void parameterAdded(ParameterInfo parameter) {
-        parameterListChanged();
-    }
-
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener#parameterListChanged()
-     */
-    public void parameterListChanged() {
-        Parameter[] params = ParameterInfo.createParameters(parametersControl.getInput());
-        method.setParameters(params);
-        setTitle(buildTitle());
-    }
 
 }

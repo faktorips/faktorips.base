@@ -354,8 +354,8 @@ public class Attribute extends Member implements IAttribute {
     /**
      * {@inheritDoc}
      */
-    public void validate(MessageList result) throws CoreException {
-    	super.validate(result);
+    protected void validateThis(MessageList result) throws CoreException {
+    	super.validateThis(result);
         IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -493,7 +493,7 @@ public class Attribute extends Member implements IAttribute {
     }
    
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
@@ -527,7 +527,7 @@ public class Attribute extends Member implements IAttribute {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);

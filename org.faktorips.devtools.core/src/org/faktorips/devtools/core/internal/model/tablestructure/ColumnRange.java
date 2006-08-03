@@ -147,8 +147,11 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
         return IpsPlugin.getDefault().getImage("TableRange.gif"); //$NON-NLS-1$
     }
 
-    protected void validate(MessageList list) throws CoreException {
-        super.validate(list);
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
         if ((rangeType.isTwoColumn() || rangeType.isOneColumnFrom()) && 
              ValidationUtils.checkStringPropertyNotEmpty(from, "from column", this, PROPERTY_FROM_COLUMN, "", list)) { //$NON-NLS-1$ //$NON-NLS-2$
             if (getTableStructure().getColumn(from)==null) {

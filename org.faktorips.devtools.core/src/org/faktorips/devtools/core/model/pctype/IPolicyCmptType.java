@@ -312,7 +312,6 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      */
     public IMethod getMatchingMethod(IMethod method);
 
-    
     /**
      * Returns a list of methods defined in any of the type's supertypes
      * that can be overriden (and isn't overriden yet).

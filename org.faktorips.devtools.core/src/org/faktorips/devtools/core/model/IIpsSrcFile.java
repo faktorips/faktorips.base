@@ -49,7 +49,7 @@ public interface IIpsSrcFile extends IIpsElement {
     
     /**
      * Discard all changes that haven't been saved yet. If the file
-     * is not dirty, nothing happends.
+     * is not dirty, nothing happens.
      */
     public void discardChanges();
     

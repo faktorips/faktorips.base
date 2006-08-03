@@ -63,16 +63,14 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IProductCmpt getProductCmpt() {
 		return (IProductCmpt) getParent();
 	}
 
 	/**
-	 * Overridden IMethod.
-	 *
-	 * @see org.faktorips.devtools.core.model.IIpsElement#getChildren()
+	 * {@inheritDoc}
 	 */
 	public IIpsElement[] getChildren() {
 		int numOfChildren = getNumOfConfigElements() + getNumOfRelations();
@@ -85,9 +83,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmpt#computeDeltaToPolicyCmptType()
+	 * {@inheritDoc}
 	 */
 	public IProductCmptGenerationPolicyCmptTypeDelta computeDeltaToPolicyCmptType()
 			throws CoreException {
@@ -99,9 +95,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#fixDifferences(org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta)
+	 * {@inheritDoc}
 	 */
 	public void fixDifferences(IProductCmptGenerationPolicyCmptTypeDelta delta)
 			throws CoreException {
@@ -145,9 +139,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getConfigElements()
+	 * {@inheritDoc}
 	 */
 	public IConfigElement[] getConfigElements() {
 		return (IConfigElement[]) configElements
@@ -155,9 +147,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getConfigElement(java.lang.String)
+	 * {@inheritDoc}
 	 */
 	public IConfigElement getConfigElement(String attributeName) {
 		for (Iterator it = configElements.iterator(); it.hasNext();) {
@@ -170,9 +160,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getConfigElements(org.faktorips.devtools.core.model.product.ConfigElementType)
+	 * {@inheritDoc}
 	 */
 	public IConfigElement[] getConfigElements(ConfigElementType type) {
 		List result = new ArrayList(configElements.size());
@@ -187,18 +175,14 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getNumOfConfigElements()
+	 * {@inheritDoc}
 	 */
 	public int getNumOfConfigElements() {
 		return configElements.size();
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#newConfigElement()
+	 * {@inheritDoc}
 	 */
 	public IConfigElement newConfigElement() {
 		IConfigElement newElement = newConfigElementInternal(getNextPartId());
@@ -221,9 +205,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getRelations()
+	 * {@inheritDoc}
 	 */
 	public IProductCmptRelation[] getRelations() {
 		return (IProductCmptRelation[]) relations
@@ -231,9 +213,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getRelations(java.lang.String)
+	 * {@inheritDoc}
 	 */
 	public IProductCmptRelation[] getRelations(String typeRelation) {
 		List result = new ArrayList();
@@ -248,9 +228,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.devtools.core.model.product.IProductCmptGeneration#getNumOfRelations()
+	 * {@inheritDoc}
 	 */
 	public int getNumOfRelations() {
 		return relations.size();
@@ -356,9 +334,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden IMethod.
-	 *
-	 * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#newPart(java.lang.String, int)
+	 * {@inheritDoc}
 	 */
 	protected IIpsObjectPart newPart(Element xmlTag, int id) {
 		String xmlTagName = xmlTag.getNodeName();
@@ -372,9 +348,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden IMethod.
-	 *
-	 * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#reAddPart(org.faktorips.devtools.core.model.IIpsObjectPart)
+	 * {@inheritDoc}
 	 */
 	protected void reAddPart(IIpsObjectPart part) {
 		if (part instanceof IConfigElement) {
@@ -388,28 +362,19 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	}
 
 	/**
-	 * Overridden IMethod.
-	 *
-	 * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#reinitPartCollections()
+	 * {@inheritDoc}
 	 */
 	protected void reinitPartCollections() {
 		configElements.clear();
 		relations.clear();
 	}
 
-	protected void validate(MessageList list) throws CoreException {
-		super.validate(list);
-		IConfigElement[] configElements = getConfigElements();
-		for (int i = 0; i < configElements.length; i++) {
-			((ConfigElement) configElements[i]).validate(list);
-		}
-
-		for (int i = 0; i < relations.size(); i++) {
-			((ProductCmptRelation) relations.get(i)).validate(list);
-		}
-
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
 		IProductCmptType type = getProductCmpt().findProductCmptType();
-
 		// no type information available, so no further validation possible
 		if (type == null) {
 			list.add(new Message(MSGCODE_NO_TEMPLATE,

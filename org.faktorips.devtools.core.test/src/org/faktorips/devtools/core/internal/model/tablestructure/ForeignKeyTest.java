@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.w3c.dom.Element;
@@ -26,24 +28,25 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ForeignKeyImplTest extends IpsObjectTestCase {
+public class ForeignKeyTest extends AbstractIpsPluginTest {
 
+    private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
     private ForeignKey key;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.TABLE_STRUCTURE);
-    }
-    
-    protected void createObjectAndPart() {
-        table = new TableStructure(pdSrcFile);
+        super.setUp();
+        IIpsProject project = newIpsProject();
+        table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
+        ipsSrcFile = table.getIpsSrcFile();
         key = (ForeignKey)table.newForeignKey();
+        ipsSrcFile.save(true, null);
     }
     
     public void testRemove() {
         key.delete();
         assertEquals(0, table.getNumOfForeignKeys());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testGetName() {
@@ -68,7 +71,7 @@ public class ForeignKeyImplTest extends IpsObjectTestCase {
     public void testSetKeyItems() {
         String[] items = new String[] {"age", "gender"};
         key.setKeyItems(items);
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testToXml() {

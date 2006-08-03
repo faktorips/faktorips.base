@@ -17,8 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -31,36 +32,38 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ValidationRuleTest extends IpsObjectTestCase {
+public class ValidationRuleTest extends AbstractIpsPluginTest {
     
     private PolicyCmptType pcType;
+    private IIpsSrcFile ipsSrcFile;
     private IValidationRule rule;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.POLICY_CMPT_TYPE);
-    }
-    
-    protected void createObjectAndPart() {
-        pcType = new PolicyCmptType(pdSrcFile);
+        super.setUp();
+        IIpsProject project = newIpsProject("TestProject");
+        pcType = newPolicyCmptType(project, "Policy");
+        ipsSrcFile = pcType.getIpsSrcFile();
         rule = pcType.newRule();
+        ipsSrcFile.save(true, null);
+        assertFalse(ipsSrcFile.isDirty());
     }
     
     public void testRemove() {
         rule.delete();
-        assertEquals(0, pcType.getAttributes().length);
-        assertTrue(pdSrcFile.isDirty());
+        assertEquals(0, pcType.getRules().length);
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testSetName() {
         rule.setName("newName");
         assertEquals("newName", rule.getName());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testSetMessageText() {
         rule.setMessageText("newText");
         assertEquals("newText", rule.getMessageText());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testAddValidatedAttribute(){
@@ -68,7 +71,7 @@ public class ValidationRuleTest extends IpsObjectTestCase {
     	rule.addValidatedAttribute("b");
     	assertEquals("a", rule.getValidatedAttributes()[0]);
     	assertEquals("b", rule.getValidatedAttributes()[1]);
-    	assertTrue(pdSrcFile.isDirty());
+    	assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testSetValidatedAttributeAt(){
@@ -76,7 +79,7 @@ public class ValidationRuleTest extends IpsObjectTestCase {
     	rule.addValidatedAttribute("b");
     	rule.setValidatedAttributeAt(1, "c");
     	assertEquals("c", rule.getValidatedAttributes()[1]);
-    	assertTrue(pdSrcFile.isDirty());
+    	assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testGetValidatedAttributeAt(){
@@ -84,7 +87,6 @@ public class ValidationRuleTest extends IpsObjectTestCase {
     	rule.addValidatedAttribute("b");
     	assertEquals("a", rule.getValidatedAttributeAt(0));
     	assertEquals("b", rule.getValidatedAttributeAt(1));
-
     }
     
     public void testRemoveValidatedAttribute(){
@@ -95,9 +97,9 @@ public class ValidationRuleTest extends IpsObjectTestCase {
     }
     
     public void testValidatedAttrSpecifiedInSrc(){
-    	assertFalse(pdSrcFile.isDirty());
+    	assertFalse(ipsSrcFile.isDirty());
     	rule.setValidatedAttrSpecifiedInSrc(true);
-    	assertTrue(pdSrcFile.isDirty());
+    	assertTrue(ipsSrcFile.isDirty());
     	assertEquals(true, rule.isValidatedAttrSpecifiedInSrc());
     }
     

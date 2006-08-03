@@ -229,12 +229,11 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		valueChanged(oldValue, newValue);
 	}
 
-	protected void validate(MessageList list) throws CoreException {
+	protected void validateThis(MessageList list) throws CoreException {
 		if (isDeleted()) {
 			return;
 		}
-		
-		super.validate(list);
+		super.validateThis(list);
 		IProductCmptTypeRelation relation = findProductCmptTypeRelation();
 		IRelation relType = null;
 		if (relation == null) {

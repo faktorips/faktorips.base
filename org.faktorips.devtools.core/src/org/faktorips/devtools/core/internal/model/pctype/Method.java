@@ -24,56 +24,49 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.Signature;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 
 /**
  *
  */
-public class Method extends Member implements IMethod {
+public class Method extends IpsObjectPart implements IMethod {
     
     final static String TAG_NAME = "Method"; //$NON-NLS-1$
-    final static String PARAMETER_TAG_NAME = "Parameter"; //$NON-NLS-1$
-    final static String BODY_TAG_NAME = "Body"; //$NON-NLS-1$
 
     private String datatype = "void"; //$NON-NLS-1$
     private Modifier modifier = Modifier.PUBLISHED;
     private boolean abstractFlag = false;
-    private Parameter[] parameters = new Parameter[0];
-    private String body = ""; //$NON-NLS-1$
+    private List parameters = new ArrayList();
     private boolean deleted = false;
 
     
     /**
      * Creates a new method.
      * 
-     * @param pcType The type the method belongs to.
-     * @param id The method's unique id within the type.
+     * @param type The type the method belongs to.
+     * @param id The method's id.
      */
-    public Method(IIpsObject pdObject, int id) {
-        super(pdObject, id);
+    public Method(IPolicyCmptType type, int id) {
+        super(type, id);
     }
 
     /**
@@ -82,9 +75,17 @@ public class Method extends Member implements IMethod {
     public Method() {
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void setName(String newName) {
+        String oldName = name;
+    	this.name = newName;
+        valueChanged(oldName, name);
+    }
+    
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
+     * {@inheritDoc}
      */
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeMethod(this);
@@ -115,8 +116,7 @@ public class Method extends Member implements IMethod {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
+     * {@inheritDoc}
      */
     public Image getImage() {
         Image image;
@@ -130,104 +130,104 @@ public class Method extends Member implements IMethod {
         }
         return new AbstractPropertyImageDescriptor(image).createImage();
     }
+    
+    /**
+	 * {@inheritDoc}
+	 */
+	public IIpsElement[] getChildren() {
+		return getParameters();
+	}
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getParameters()
+	/** 
+     * {@inheritDoc}
      */
-    public Parameter[] getParameters() {
-        Parameter[] copy = new Parameter[parameters.length];
-        System.arraycopy(parameters, 0, copy, 0, parameters.length);
-        return copy;
+    public IParameter[] getParameters() {
+    	return (IParameter[])parameters.toArray(new IParameter[parameters.size()]);
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getParameterNames()
+	 * {@inheritDoc}
+	 */
+	public IParameter newParameter() {
+		Parameter p = newParameterInternal(getNextPartId());
+		updateSrcFile();
+		return p;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public IParameter newParameter(String datatype, String name) {
+		IParameter param = newParameter();
+		param.setDatatype(datatype);
+		param.setName(name);
+		return param;
+	}
+
+	/*
+	 * Creates a new parameter without updating the src file.
+	 */
+	private Parameter newParameterInternal(int id) {
+		Parameter p = new Parameter(this, id);
+		parameters.add(p);
+		return p;
+	}
+
+	private IParameter getParameter(int index) {
+    	return (IParameter)parameters.get(index);
+    }
+    
+    /**
+     * {@inheritDoc}
      */
     public String[] getParameterNames() {
-        String[] names = new String[parameters.length];
+        String[] names = new String[parameters.size()];
         for (int i=0; i<names.length; i++) {
-            names[i] = parameters[i].getName();
+            names[i] = getParameter(i).getName();
         }
         return names;
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getParameterTypes()
+     * {@inheritDoc}
      */
     public String[] getParameterTypes() {
-        String[] types = new String[parameters.length];
+        String[] types = new String[parameters.size()];
         for (int i=0; i<types.length; i++) {
-            types[i] = parameters[i].getDatatype();
+            types[i] = getParameter(i).getDatatype();
         }
         return types;
     }
     
-    /**
-     * Overridden method.
-     * @throws CoreException
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getParameterTypeSignatures()
-     */
-    public String[] getParameterTypeSignatures() throws CoreException {
-        Parameter[] params = getParameters();
-        String[] signatures = new String[params.length];
-        for (int i=0; i<signatures.length; i++) {
-            String datatypeName = params[i].getDatatype();
-            Datatype datatype = getIpsProject().findDatatype(datatypeName);
-            if (datatype==null) {
-                throw new CoreException(new IpsStatus("Datatype " + datatypeName + " not found for method " + this + ", parameter " + i)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-            String classname = StringUtil.unqualifiedName(datatype.getJavaClassName());
-            signatures[i] = Signature.createTypeSignature(classname, false);    
-        }
-        return signatures;
-    }
-    
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getNumOfParameters()
+     * {@inheritDoc}
      */
     public int getNumOfParameters() {
-        return parameters.length;
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#setParameters(org.faktorips.devtools.core.model.pctype.Parameter[])
-     */
-    public void setParameters(Parameter[] params) {
-        parameters = new Parameter[params.length];
-        System.arraycopy(params, 0, parameters, 0, params.length);
-        updateSrcFile();
+        return parameters.size();
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getBody()
-     */
-    public String getBody() {
-        return body;
-    }
+	 * {@inheritDoc}
+	 */
+	public void removeParameter(IParameter param) {
+		if (parameters.remove(param)) {
+			updateSrcFile();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int[] moveParameters(int[] indexes, boolean up) {
+		ListElementMover mover = new ListElementMover(parameters);
+		return mover.move(indexes, up);
+	}
 
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#setBody(java.lang.String)
+	/**
+     * {@inheritDoc}
      */
-    public void setBody(String sourcecode) {
-        String oldBody = body;
-        body = sourcecode;
-        valueChanged(oldBody, body);
-    }
-    
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPart#validate(org.faktorips.util.message.MessageList)
-     */
-    protected void validate(MessageList result) throws CoreException {
-    	super.validate(result);
+    protected void validateThis(MessageList result) throws CoreException {
+    	super.validateThis(result);
         if (StringUtils.isEmpty(name)) {
             result.add(new Message("", Messages.Method_msgNameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
@@ -247,33 +247,10 @@ public class Method extends Member implements IMethod {
         if (isAbstract() && !getPolicyCmptType().isAbstract()) {
             result.add(new Message("", NLS.bind(Messages.Method_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
-        for (int i=0; i<parameters.length; i++) {
-            validate(parameters[i], result);
-        }
     }
     
-    private void validate(Parameter param, MessageList result) throws CoreException {
-        if (StringUtils.isEmpty(param.getName())) {
-            result.add(new Message("", Messages.Method_msgNameEmpty, Message.ERROR, param, PROPERTY_PARAM_NAME)); //$NON-NLS-1$
-        } else {
-	        IStatus status = JavaConventions.validateIdentifier(param.getName());
-	        if (!status.isOK()) {
-	            result.add(new Message("", Messages.Method_msgInvalidParameterName, Message.ERROR, param, PROPERTY_PARAM_NAME)); //$NON-NLS-1$
-	        }
-        }
-        if (StringUtils.isEmpty(param.getDatatype())) {
-            result.add(new Message("", Messages.Method_msgDatatypeEmpty, Message.ERROR, param, PROPERTY_PARAM_DATATYPE)); //$NON-NLS-1$
-        } else {
-            Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
-            if (datatypeObject==null) {
-                result.add(new Message("", NLS.bind(Messages.Method_msgDatatypeNotFound, param.getDatatype()), Message.ERROR, param, PROPERTY_PARAM_DATATYPE)); //$NON-NLS-1$
-            }
-        }
-    }
-
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#getModifier()
+     * {@inheritDoc}
      */
     public Modifier getModifier() {
         return modifier;
@@ -287,9 +264,8 @@ public class Method extends Member implements IMethod {
 	}
 
 	/** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#setModifier(org.faktorips.devtools.core.model.pctype.Modifier)
-     */
+	 * {@inheritDoc}
+	 */
     public void setModifier(Modifier newModifier) {
         Modifier oldModifier = modifier;
         modifier = newModifier;
@@ -297,16 +273,14 @@ public class Method extends Member implements IMethod {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#isAbstract()
+     * {@inheritDoc}
      */
     public boolean isAbstract() {
         return abstractFlag;
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#setAbstract(boolean)
+     * {@inheritDoc}
      */
     public void setAbstract(boolean newValue) {
         boolean oldValue = abstractFlag;
@@ -315,8 +289,7 @@ public class Method extends Member implements IMethod {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.pctype.IMethod#isSame(org.faktorips.devtools.core.model.pctype.IMethod)
+     * {@inheritDoc}
      */
     public boolean isSame(IMethod other) {
         if (!getName().equals(other.getName())) {
@@ -325,9 +298,9 @@ public class Method extends Member implements IMethod {
         if (getNumOfParameters()!=other.getNumOfParameters()) {
             return false;
         }
-        Parameter[] otherParams = other.getParameters();
-        for (int i=0; i<parameters.length; i++) {
-            if (!parameters[i].getDatatype().equals(otherParams[i].getDatatype())) {
+        IParameter[] otherParams = other.getParameters();
+        for (int i=0; i<parameters.size(); i++) {
+            if (!getParameter(i).getDatatype().equals(otherParams[i].getDatatype())) {
                 return false;
             }
         }
@@ -335,78 +308,86 @@ public class Method extends Member implements IMethod {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IPolicyCmptType getPolicyCmptType() {
         return (IPolicyCmptType)getParent();
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
+        name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
-        NodeList nl = element.getChildNodes();
-        List params = new ArrayList();
-        int paramIndex = 0;
-        for (int i=0; i<nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                Element paramElement = (Element)nl.item(i);
-                if (paramElement.getTagName().equals(PARAMETER_TAG_NAME)) {
-                    Parameter newParam = new Parameter(paramIndex);
-                    newParam.setName(paramElement.getAttribute("name")); //$NON-NLS-1$
-                    newParam.setDatatype(paramElement.getAttribute("datatype")); //$NON-NLS-1$
-                    params.add(newParam);
-                    paramIndex++;
-                }
-            }
-        }
-        parameters = (Parameter[])params.toArray(new Parameter[0]);
-        Element bodyElement = XmlUtil.getFirstElement(element, BODY_TAG_NAME);
-        if (bodyElement!=null) {
-            Text bodyText = XmlUtil.getTextNode(bodyElement);
-            if (bodyText!=null) {
-                body = bodyText.getData();
-            }
-        } else {
-            body = ""; //$NON-NLS-1$
-        }
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
+        newElement.setAttribute(PROPERTY_NAME, name);
         newElement.setAttribute(PROPERTY_DATATYPE, datatype);
         newElement.setAttribute(PROPERTY_MODIFIER, modifier.getId());
         newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
-        Document doc = newElement.getOwnerDocument();
-        for (int i=0; i<parameters.length; i++) {
-            Element newParamElement = doc.createElement(PARAMETER_TAG_NAME);
-            newParamElement.setAttribute("name", parameters[i].getName()); //$NON-NLS-1$
-            newParamElement.setAttribute("datatype", parameters[i].getDatatype()); //$NON-NLS-1$
-            newElement.appendChild(newParamElement);
-        }
-        Element bodyElement = doc.createElement(BODY_TAG_NAME);
-        bodyElement.appendChild(doc.createTextNode(body));
-        newElement.appendChild(bodyElement);
     }
+ 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected IIpsObjectPart newPart(Element xmlTag, int id) {
+		String xmlTagName = xmlTag.getNodeName();
+		if (xmlTagName.equals(Parameter.TAG_NAME)) {
+			return newParameterInternal(id);
+		}
+		if (xmlTagName.equals("Body")) { //$NON-NLS-1$
+			return null; // migration for old files
+		}
+		throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public IIpsObjectPart newPart(Class partType) {
+		if (IParameter.class.isAssignableFrom(partType)) {
+			return newParameter();
+		}
+		throw new IllegalArgumentException("Could not create part for class " + partType); //$NON-NLS-1$
+	}
 
-    private static class AbstractPropertyImageDescriptor extends CompositeImageDescriptor {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void reAddPart(IIpsObjectPart part) {
+		if (part instanceof IParameter) {
+			parameters.add(part);
+			return;
+		}
+		throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void reinitPartCollections() {
+		super.reinitPartCollections();
+		parameters.clear();
+	}
+	
+	
+	private static class AbstractPropertyImageDescriptor extends CompositeImageDescriptor {
 
     	private final static Point DEFAULT_SIZE = new Point(16, 16);
     	
@@ -419,25 +400,20 @@ public class Method extends Member implements IMethod {
         }
 
         /** 
-         * Overridden method.
-         * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
+         * {@inheritDoc}
          */
         protected void drawCompositeImage(int width, int height) {
     		drawImage(baseImage.getImageData(), 0, 0);
     		drawImage(IpsPlugin.getDefault().getImage("AbstractIndicator.gif").getImageData(), 8, 0); //$NON-NLS-1$
         }
 
-        /** 
-         * Overridden method.
-         * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
+        /**
+         * {@inheritDoc}
          */
         protected Point getSize() {
             return size;
         }
     }
 
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}    
-    
+   
 }

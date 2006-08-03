@@ -79,9 +79,11 @@ public class UniqueKey extends Key implements IUniqueKey {
     	return deleted;
     }
 
-    
-    protected void validate(MessageList list) throws CoreException {
-        super.validate(list);
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
         if (getNumOfKeyItems()==0) {
             String text = Messages.UniqueKey_msgTooLessItems;
             list.add(new Message("", text, Message.ERROR, this)); //$NON-NLS-1$

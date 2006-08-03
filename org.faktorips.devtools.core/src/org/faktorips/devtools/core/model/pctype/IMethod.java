@@ -17,12 +17,11 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 
 /**
- *
+ * Method.
  */
-public interface IMethod extends IMember {
+public interface IMethod extends IMember, IParameterContainer {
 
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
     public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
@@ -58,12 +57,6 @@ public interface IMethod extends IMember {
     public int getJavaModifier();
 
     /**
-     * Returns the method's parameters. Returns an empty array if the mehthod
-     * doeen't have any parameter.
-     */
-    public Parameter[] getParameters();
-    
-    /**
      * Returns the parameter names.
      */
     public String[] getParameterNames();
@@ -72,40 +65,6 @@ public interface IMethod extends IMember {
      * Returns the parameter types.
      */
     public String[] getParameterTypes();
-    
-    /**
-     * Returns the paramter type signatures for the method's parameters.
-     * 
-     * @see org.eclipse.jdt.core.Signature#createTypeSignature(java.lang.String, boolean);
-     * 
-     * @throws CoreException if an error occurs while resolving the parameters'
-     * datatypes.
-     */
-    public String[] getParameterTypeSignatures() throws CoreException;
-    
-    /**
-     * Returns the number of parameters.
-     */
-    public int getNumOfParameters();
-    
-    /**
-     * Sets the method's parameters.
-     * 
-     * @throws NullPointerException if params if <code>null</code>.
-     */
-    public void setParameters(Parameter[] params);
-    
-    /**
-     * Returns the method's body sourcecode.
-     */
-    public String getBody();
-    
-    /**
-     * Sets the method's body sourcecode.
-     * 
-     * @throws IllegalArgumentException if sourcecode is null.
-     */
-    public void setBody(String sourcecode);
     
     /**
      * Returns <code>true</code> if the other method has the same name, the same numer of parameters

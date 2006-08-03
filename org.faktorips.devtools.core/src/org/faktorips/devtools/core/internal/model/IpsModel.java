@@ -696,9 +696,13 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				if (!(element instanceof IIpsSrcFile)) {
 					return true;
 				}
-				IIpsSrcFile srcFile = (IIpsSrcFile) element;
-				IpsPlugin.getDefault().getManager().removeSrcFileContents(
-						srcFile);
+				IpsSrcFile srcFile = (IpsSrcFile) element;
+				if (delta.getKind()==IResourceDelta.REMOVED) {
+					IpsPlugin.getDefault().getManager().removeSrcFileContents(srcFile);
+					return true;
+				} 
+				IpsModelManager manager = IpsPlugin.getDefault().getManager();
+				manager.putSrcFileContents(srcFile, srcFile.getContentFromCorrespondingFile(), srcFile.getIpsProject().getXmlFileCharset());
 				return true;
 			} catch (Exception e) {
 				IpsPlugin.log(new IpsStatus(

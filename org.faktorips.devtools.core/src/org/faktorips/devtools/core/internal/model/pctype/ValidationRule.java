@@ -204,8 +204,8 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validate(MessageList list) throws CoreException {
-		super.validate(list);
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
 		ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
 				PROPERTY_NAME, "", list); //$NON-NLS-1$
 		IIpsProject project = getIpsProject();

@@ -200,11 +200,15 @@ public interface IIpsProjectProperties {
 	public void setRuntimeIdPrefix(String runtimeIdPrefix);
 	
 	/**
-	 * Returns <code>true</code> if the Java project belonging the ips project, contains
+	 * Returns <code>true</code> if the Java project belonging to the ips project, contains
 	 * (value) classes that are used as defined dynamic datatype, otherwise <code>false</code>.
 	 * <p>
 	 * Note that is preferable to develop and access these classes either in a seperate Java project or
-	 * to provide them as Jar.
+	 * to provide them in a Jarfile. The reason for this is that in this scenario the clean build won't
+	 * work properly. When the IpsBuilder builds the project the dynamic datatype needs to load the 
+	 * class it is based upon. However as the Java builder hasn't compiled the Java sourcefile into
+	 * a classfile the dynamic datatype won't find it's class, the datatype becomes invalid and hence 
+	 * we can't build the project.
 	 * 
 	 * @see DynamicValueDatatype
 	 * @see org.faktorips.devtools.core.internal.model.ClassLoaderProvider

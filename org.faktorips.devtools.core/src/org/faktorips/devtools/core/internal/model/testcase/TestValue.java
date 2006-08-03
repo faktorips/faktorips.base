@@ -133,8 +133,8 @@ public class TestValue extends TestObject implements ITestValue {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validate(MessageList list) throws CoreException {
-		super.validate(list);
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
 		ITestValueParameter param = findTestValueParameter();
 		if (param==null) {
 			String text = "The test value parameter for this test case value doesn't exists.";

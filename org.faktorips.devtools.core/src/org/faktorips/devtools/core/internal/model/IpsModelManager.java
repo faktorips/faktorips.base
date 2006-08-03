@@ -41,12 +41,14 @@ public class IpsModelManager {
         return (IpsSourceFileContents)cache.get(file);
     }
     
-    public void putSrcFileContents(IIpsSrcFile file, IpsSourceFileContents newContent) {
-        cache.put(file, newContent);
-    }
-    
-    void removeSrcFileContents(IIpsSrcFile file) {
-        cache.remove(file);
+    public void putSrcFileContents(IIpsSrcFile file, String newContent, String encoding) {
+    	IpsSourceFileContents contents = getSrcFileContents(file);
+    	if (contents==null) {
+    		contents = new IpsSourceFileContents(file, newContent, encoding);
+    		cache.put(file, contents);
+    	} else {
+    		contents.setSourceTextInternal(newContent);
+    	}
     }
     
     /**
@@ -55,4 +57,11 @@ public class IpsModelManager {
     public void flushCache() {
         cache.clear();
     }
+
+	/**
+	 * @param srcFile
+	 */
+	public void removeSrcFileContents(IIpsSrcFile srcFile) {
+		cache.remove(srcFile);
+	}
 }

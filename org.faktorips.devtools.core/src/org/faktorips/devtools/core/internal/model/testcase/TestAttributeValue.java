@@ -160,11 +160,12 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 		throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
 	}
 	
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validate(MessageList list) throws CoreException {
-		super.validate(list);
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
 		ITestAttribute testAttr = findTestAttribute();
 		if (testAttr==null) {
 			// TODO Joerg:

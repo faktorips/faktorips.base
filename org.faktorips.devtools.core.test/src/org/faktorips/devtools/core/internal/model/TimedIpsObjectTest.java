@@ -20,10 +20,11 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
-import org.faktorips.devtools.core.model.IpsObjectType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -31,7 +32,7 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class TimedIpsObjectTest extends IpsObjectTestCase {
+public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     
     private ITimedIpsObject timedObject;
 
@@ -39,13 +40,11 @@ public class TimedIpsObjectTest extends IpsObjectTestCase {
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.PRODUCT_CMPT);
-    }
-    
-    protected void createObjectAndPart() {
+        super.setUp();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        timedObject = new ProductCmpt(pdSrcFile);
+        IIpsProject project = newIpsProject("TestProject");
+        timedObject = newProductCmpt(project, "Product");
         ((ProductCmpt)timedObject).setRuntimeId("abc");
     }
     

@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -27,30 +29,31 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ColumnImplTest extends IpsObjectTestCase {
+public class ColumnTest extends AbstractIpsPluginTest {
 
+    private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
     private IColumn column;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.TABLE_STRUCTURE);
+        super.setUp();
+        IIpsProject project = newIpsProject();
+        table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
+        ipsSrcFile = table.getIpsSrcFile();
+        column = table.newColumn();
+        ipsSrcFile.save(true, null);
     }
     
-    protected void createObjectAndPart() {
-        table = new TableStructure(pdSrcFile);
-        column = table.newColumn();
-    }
-
     public void testSetName() {
         column.setName("newName");
         assertEquals("newName", column.getName());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testSetDatatype() {
         column.setDatatype("newType");
         assertEquals("newType", column.getDatatype());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testRemove() {
@@ -66,7 +69,7 @@ public class ColumnImplTest extends IpsObjectTestCase {
         assertEquals(2, table.getNumOfColumns());
         assertEquals(c0, table.getColumns()[0]);
         assertEquals(c2, table.getColumns()[1]);
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testToXml() {

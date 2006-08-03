@@ -17,7 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
@@ -30,24 +32,25 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class UniqueKeyImplTest extends IpsObjectTestCase {
+public class UniqueKeyTest extends AbstractIpsPluginTest {
 
+    private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
     private UniqueKey key;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.TABLE_STRUCTURE);
-    }
-    
-    protected void createObjectAndPart() {
-        table = new TableStructure(pdSrcFile);
+        super.setUp();
+        IIpsProject project = newIpsProject();
+        table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
+        ipsSrcFile = table.getIpsSrcFile();
         key = (UniqueKey)table.newUniqueKey();
+        ipsSrcFile.save(true, null);
     }
     
     public void testRemove() {
         key.delete();
         assertEquals(0, table.getNumOfUniqueKeys());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
     public void testGetName() {
@@ -87,7 +90,7 @@ public class UniqueKeyImplTest extends IpsObjectTestCase {
     public void testSetKeyItems() {
         String[] items = new String[] {"age", "gender"};
         key.setKeyItems(items);
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testGetItemCandidates() {

@@ -1,31 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ *
+ * Alle Rechte vorbehalten.
+ *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ *   http://www.faktorips.org/legal/cl-v01.html
+ * eingesehen werden kann.
+ *
+ * Mitwirkende:
+ *   Faktor Zehn GmbH - initial API and implementation 
+ *
+ *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
-import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -65,117 +60,22 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IParameter;
+import org.faktorips.devtools.core.model.pctype.IParameterContainer;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DatatypeCompletionProcessor;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
-import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
-import org.faktorips.devtools.core.ui.editors.pctype.ParameterListChangeListener;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
-
 /**
- * A special control to edit and reorder method parameters.
  * 
- * @author Jan Jan Ortmann
+ * @author Jan Ortmann
  */
-public abstract class ChangeParametersControl extends Composite {
+public class ParametersEditControl extends Composite {
 
-	private static class ParameterInfoContentProvider implements IStructuredContentProvider {
-		public Object[] getElements(Object inputElement) {
-			return removeMarkedAsDeleted((List) inputElement);
-		}
-		private ParameterInfo[] removeMarkedAsDeleted(List paramInfos){
-			List result= new ArrayList(paramInfos.size());
-			for (Iterator iter= paramInfos.iterator(); iter.hasNext();) {
-				ParameterInfo info= (ParameterInfo) iter.next();
-				if (! info.isDeleted())
-					result.add(info);
-			}
-			return (ParameterInfo[]) result.toArray(new ParameterInfo[result.size()]);
-		}
-		public void dispose() {
-			// do nothing
-		}
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// do nothing
-		}
-	}
-
-	private class ParameterInfoLabelProvider extends LabelProvider implements ITableLabelProvider {
-		public Image getColumnImage(Object element, int columnIndex) {
-			if (columnIndex!=MESSAGE_PROP) {
-			    return null;
-			}
-			try {
-				MessageList list = validate((ParameterInfo)element);
-				return ValidationUtils.getSeverityImage(list.getSeverity());
-			} catch (CoreException e) {
-			    IpsPlugin.log(e);
-			    return null;
-			}
-		}
-		
-		public String getColumnText(Object element, int columnIndex) {
-			ParameterInfo info= (ParameterInfo) element;
-			if (columnIndex == MESSAGE_PROP)
-				return ""; //$NON-NLS-1$
-			if (columnIndex == TYPE_PROP)
-				return info.getNewTypeName();
-			if (columnIndex == NEWNAME_PROP)
-				return info.getNewName();
-			if (columnIndex == DEFAULT_PROP) {
-			    if (info.isAdded())
-			        return info.getDefaultValue();
-			    else
-			        return "-"; //$NON-NLS-1$
-			}
-			throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
-		}
-	}
-
-	private class ParametersCellModifier implements ICellModifier {
-		public boolean canModify(Object element, String property) {
-			Assert.isTrue(element instanceof ParameterInfo);
-			if (property.equals(PROPERTIES[TYPE_PROP]))
-				return ChangeParametersControl.this.fCanChangeTypesOfOldParameters;
-			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
-				return ChangeParametersControl.this.fCanChangeParameterNames;
-			else if (property.equals(PROPERTIES[DEFAULT_PROP]))
-				return (((ParameterInfo)element).isAdded());
-			Assert.isTrue(false);
-			return false;
-		}
-		public Object getValue(Object element, String property) {
-			Assert.isTrue(element instanceof ParameterInfo);
-			if (property.equals(PROPERTIES[TYPE_PROP]))
-				return ((ParameterInfo) element).getNewTypeName();
-			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
-				return ((ParameterInfo) element).getNewName();
-			else if (property.equals(PROPERTIES[DEFAULT_PROP]))
-				return ((ParameterInfo) element).getDefaultValue();
-			Assert.isTrue(false);
-			return null;
-		}
-		public void modify(Object element, String property, Object value) {
-			if (element instanceof TableItem)
-				element= ((TableItem) element).getData();
-			if (!(element instanceof ParameterInfo))
-				return;
-			ParameterInfo parameterInfo= (ParameterInfo) element;
-			if (property.equals(PROPERTIES[NEWNAME_PROP])) 
-				parameterInfo.setNewName((String) value);
-			else if (property.equals(PROPERTIES[DEFAULT_PROP]))
-				parameterInfo.setDefaultValue((String) value);
-			else if (property.equals(PROPERTIES[TYPE_PROP]))
-				parameterInfo.setNewTypeName((String) value);
- 			else 
- 				Assert.isTrue(false);
-			ChangeParametersControl.this.fListener.parameterChanged(parameterInfo);
-			ChangeParametersControl.this.fTableViewer.update(parameterInfo, new String[] { property });
-		}
-	}
-
+	private IParameterContainer paramContainer;
+	
 	private static final String[] PROPERTIES= { "message", "type", "new", "default" }; //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-3$ //$NON-NLS-4$
 	private static final int MESSAGE_PROP= 0;
 	private static final int TYPE_PROP= 1;
@@ -190,8 +90,6 @@ public abstract class ChangeParametersControl extends Composite {
 	private boolean defaultValueForNewParameters = false;
 	private int tableStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 	
-	private ParameterListChangeListener fListener;
-
 	private TableViewer fTableViewer;
 	
 	// the label text above the table
@@ -204,21 +102,19 @@ public abstract class ChangeParametersControl extends Composite {
 	private Button fAddButton;
 	private Button fRemoveButton;
 	
-	private List fParameterInfos;
 	private IIpsProject ipsProject;
 
 	/**
 	 * @param label the label before the table or <code>null</code>
-	 * @param typeContext the package in which to complete types
 	 */
-	public ChangeParametersControl(
+	public ParametersEditControl(
 	        Composite parent, 
 	        int style, 
 	        String label, 
-	        IIpsProject pdProject) {
+	        IIpsProject ipsProject) {
 	    
 		super(parent, style);
-		this.ipsProject= pdProject;
+		this.ipsProject= ipsProject;
 		this.label = label;
 	}
 	
@@ -269,32 +165,28 @@ public abstract class ChangeParametersControl extends Composite {
 		createButtonComposite(this);
 	}
 	
-	private MessageList validate(ParameterInfo info) throws CoreException {
-	    int index = fParameterInfos.indexOf(info);
-	    return validate(index);
+	private MessageList validate(IParameter param) throws CoreException {
+		MessageList result = paramContainer.validate();
+		return result.getMessagesFor(param);
 	}
 	
-	protected abstract MessageList validate(int paramIndex)
-		throws CoreException;
-	
-	public void setParameterListChangeListener(ParameterListChangeListener listener) {
-	    this.fListener = listener;
-	}
- 
-	public void setInput(List parameterInfos) {
-		ArgumentCheck.notNull(parameterInfos);
-		fParameterInfos= parameterInfos;
-		fTableViewer.setInput(fParameterInfos);
-		if (fParameterInfos.size() > 0)
-			fTableViewer.setSelection(new StructuredSelection(fParameterInfos.get(0)));
+	private boolean canMove(boolean up) {
+		int[] indc= getTable().getSelectionIndices();
+		if (indc.length == 0)
+			return false;
+		for (int i= 0; i < indc.length; i++) {
+			if (indc[i] == 0)
+				return false;
+		}
+		return true;
 	}
 	
-	public List getInput() {
-	    return fParameterInfos;
-	}
-	
-	public void setEnabled(boolean enabled) {
-		this.fTableViewer.getControl().setEnabled(enabled);
+	public void setInput(IParameterContainer paramContainer) {
+		ArgumentCheck.notNull(paramContainer);
+		this.paramContainer = paramContainer;
+		fTableViewer.setInput(paramContainer);
+		if (paramContainer.getParameters().length > 0)
+			fTableViewer.setSelection(new StructuredSelection(paramContainer.getParameters()[0]));
 	}
 	
 	// ---- Parameter table -----------------------------------------------------------------------------------
@@ -337,7 +229,7 @@ public abstract class ChangeParametersControl extends Composite {
 		new TableMessageHoverService(fTableViewer) {
 
             protected MessageList getMessagesFor(Object element) throws CoreException {
-                return validate((ParameterInfo)element);
+                return validate((IParameter)element);
             }
 		};
 		
@@ -374,7 +266,7 @@ public abstract class ChangeParametersControl extends Composite {
     }
 	
 	private void editColumnOrNextPossible(int column){
-		ParameterInfo[]	selected= getSelectedElements();
+		IParameter[] selected= getSelectedElements();
 		if (selected.length != 1)
 			return;
 		int nextColumn= column;
@@ -387,7 +279,7 @@ public abstract class ChangeParametersControl extends Composite {
 	}
 	
 	private void editColumnOrPrevPossible(int column){
-		ParameterInfo[]	selected= getSelectedElements();
+		IParameter[] selected= getSelectedElements();
 		if (selected.length != 1)
 			return;
 		int prevColumn= column;
@@ -420,16 +312,16 @@ public abstract class ChangeParametersControl extends Composite {
 		}	
 	}
 
-	private ParameterInfo[] getSelectedElements() {
+	private IParameter[] getSelectedElements() {
 		ISelection selection= fTableViewer.getSelection();
 		if (selection == null)
-			return new ParameterInfo[0];
+			return new IParameter[0];
 
 		if (!(selection instanceof IStructuredSelection))
-			return new ParameterInfo[0];
+			return new IParameter[0];
 
 		List selected= ((IStructuredSelection) selection).toList();
-		return (ParameterInfo[]) selected.toArray(new ParameterInfo[selected.size()]);
+		return (IParameter[]) selected.toArray(new IParameter[selected.size()]);
 	}
 
 	// ---- Button bar --------------------------------------------------------------------------------------
@@ -508,9 +400,7 @@ public abstract class ChangeParametersControl extends Composite {
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				ParameterInfo newInfo= ParameterInfo.createInfoForAddedParameter();
-				fParameterInfos.add(newInfo);
-				fListener.parameterAdded(newInfo);
+				paramContainer.newParameter("", "newParam");
 				fTableViewer.refresh();
 				fTableViewer.getControl().setFocus();
 				int row= getTableItemCount() - 1;
@@ -529,12 +419,9 @@ public abstract class ChangeParametersControl extends Composite {
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				int index= getTable().getSelectionIndices()[0];
-				ParameterInfo[] selected= getSelectedElements();
+				IParameter[] selected= getSelectedElements();
 				for (int i= 0; i < selected.length; i++) {
-					if (selected[i].isAdded())
-						fParameterInfos.remove(selected[i]);
-					else
-						selected[i].markAsDeleted();	
+					selected[i].delete();
 				}
 				restoreSelection(index);
 			}
@@ -546,7 +433,6 @@ public abstract class ChangeParametersControl extends Composite {
 					index= itemCount - 1;
 					getTable().setSelection(index);
 				}
-				fListener.parameterListChanged();
 				updateButtonsEnabledState();
 			}
 		});	
@@ -562,18 +448,12 @@ public abstract class ChangeParametersControl extends Composite {
 				ISelection savedSelection= fTableViewer.getSelection();
 				if (savedSelection == null)
 					return;
-				ParameterInfo[] selection= getSelectedElements();
+				IParameter[] selection= getSelectedElements();
 				if (selection.length == 0)
 					return;
-					
-				if (up) {
-					moveUp(selection);
-				} else {
-					moveDown(selection);
-				}
+				paramContainer.moveParameters(fTableViewer.getTable().getSelectionIndices(), up);
 				fTableViewer.refresh();
 				fTableViewer.setSelection(savedSelection);
-				fListener.parameterListChanged();
 				fTableViewer.getControl().setFocus();
 			}
 		});
@@ -743,69 +623,75 @@ public abstract class ChangeParametersControl extends Composite {
 		ContentAssistHandler.createHandlerForText(text, contentAssistant);
 		return contentAssistant;
 	}
-
-	//---- change order ----------------------------------------------------------------------------------------
-
-	private void moveUp(ParameterInfo[] selection) {
-		moveUp(fParameterInfos, Arrays.asList(selection));
+	
+	private class ParameterInfoContentProvider implements IStructuredContentProvider {
+		public Object[] getElements(Object inputElement) {
+			return paramContainer.getParameters();
+		}
+		public void dispose() {
+			// do nothing
+		}
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			// do nothing
+		}
 	}
 
-	private void moveDown(ParameterInfo[] selection) {
-		Collections.reverse(fParameterInfos);
-		moveUp(fParameterInfos, Arrays.asList(selection));
-		Collections.reverse(fParameterInfos);
-	}
-
-	private static void moveUp(List elements, List move) {
-		List res= new ArrayList(elements.size());
-		List deleted= new ArrayList();
-		Object floating= null;
-		for (Iterator iter= elements.iterator(); iter.hasNext();) {
-			Object curr= iter.next();
-			if (move.contains(curr)) {
-				res.add(curr);
-			} else if (((ParameterInfo) curr).isDeleted()) {
-				deleted.add(curr);
-			} else {
-				if (floating != null)
-					res.add(floating);
-				floating= curr;
+	private class ParameterInfoLabelProvider extends LabelProvider implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int columnIndex) {
+			if (columnIndex!=MESSAGE_PROP) {
+			    return null;
+			}
+			try {
+				MessageList list = validate((IParameter)element);
+				return ValidationUtils.getSeverityImage(list.getSeverity());
+			} catch (CoreException e) {
+			    IpsPlugin.log(e);
+			    return null;
 			}
 		}
-		if (floating != null) {
-			res.add(floating);
-		}
-		res.addAll(deleted);
-		elements.clear();
-		for (Iterator iter= res.iterator(); iter.hasNext();) {
-			elements.add(iter.next());
+		
+		public String getColumnText(Object element, int columnIndex) {
+			IParameter info= (IParameter) element;
+			if (columnIndex == MESSAGE_PROP)
+				return ""; //$NON-NLS-1$
+			if (columnIndex == TYPE_PROP)
+				return info.getDatatype();
+			if (columnIndex == NEWNAME_PROP)
+				return info.getName();
+			throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
 		}
 	}
 
-	private boolean canMove(boolean up) {
-		List notDeleted= getNotDeletedInfos();
-		if (notDeleted == null || notDeleted.size() == 0)
+	private class ParametersCellModifier implements ICellModifier {
+		public boolean canModify(Object element, String property) {
+			if (property.equals(PROPERTIES[TYPE_PROP]))
+				return ParametersEditControl.this.fCanChangeTypesOfOldParameters;
+			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
+				return ParametersEditControl.this.fCanChangeParameterNames;
 			return false;
-		int[] indc= getTable().getSelectionIndices();
-		if (indc.length == 0)
-			return false;
-		int invalid= up ? 0 : notDeleted.size() - 1;
-		for (int i= 0; i < indc.length; i++) {
-			if (indc[i] == invalid)
-				return false;
 		}
-		return true;
-	}
-	
-	private List getNotDeletedInfos(){
-		if (fParameterInfos == null)
+		public Object getValue(Object element, String property) {
+			IParameter param = (IParameter)element;
+			if (property.equals(PROPERTIES[TYPE_PROP]))
+				return param.getDatatype();
+			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
+				return param.getName();
 			return null;
-		List result= new ArrayList(fParameterInfos.size());
-		for (Iterator iter= fParameterInfos.iterator(); iter.hasNext();) {
-			ParameterInfo info= (ParameterInfo) iter.next();
-			if (! info.isDeleted())
-				result.add(info);
 		}
-		return result;
+		public void modify(Object element, String property, Object value) {
+			if (element instanceof TableItem)
+				element= ((TableItem) element).getData();
+			if (!(element instanceof IParameter))
+				return;
+			IParameter param = (IParameter) element;
+			if (property.equals(PROPERTIES[NEWNAME_PROP])) 
+				param.setName((String) value);
+			else if (property.equals(PROPERTIES[TYPE_PROP]))
+				param.setDatatype((String) value);
+			ParametersEditControl.this.fTableViewer.update(param, new String[] { property });
+		}
 	}
+
+
+	
 }

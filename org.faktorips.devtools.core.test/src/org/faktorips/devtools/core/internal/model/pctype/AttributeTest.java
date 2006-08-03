@@ -346,7 +346,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	attribute.setProductRelevant(false);
     	MessageList ml = attribute.validate();
     	assertNull(ml.getMessageByCode(IAttribute.MSGCODE_NO_PARAMETERS_NECCESSARY));
-    	
+    	       
     	Parameter param = new Parameter(0, "test", Datatype.INTEGER.getQualifiedName());
     	attribute.setFormulaParameters(new Parameter[] {param});
     	ml = attribute.validate();

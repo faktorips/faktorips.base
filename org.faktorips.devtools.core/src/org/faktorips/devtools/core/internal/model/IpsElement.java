@@ -139,6 +139,9 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         return name.hashCode();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object o) {
         if (!(o instanceof IIpsElement)) {
             return false;
@@ -148,7 +151,10 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
         	&& ( (parent==null && other.getParent()==null)
         		|| ( parent!=null && parent.equals(other.getParent()) ) );
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         if (getParent()==null) {
             return getName();

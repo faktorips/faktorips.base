@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
 
 
@@ -56,6 +57,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
         ipsProject = this.newIpsProject("TestProject");
         ipsRootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         ipsFolder = ipsRootFolder.createPackageFragment("folder", true, null);
+        
         parsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "ParsableFile", true, null);
         unparsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("UnparsableFile"), "blabla", true, null);
     }
@@ -78,6 +80,30 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
     	}
     }
     
+    public void testDiscardChanges_UnparsableContents() throws CoreException {
+        IPolicyCmptType type = newPolicyCmptType(this.ipsProject, "Policy");
+        IIpsSrcFile file = type.getIpsSrcFile();
+        file.save(true, null);
+        String contents = file.getContents();
+        file.setContents("newContents");
+        assertTrue(file.isDirty());
+        file.discardChanges();
+        assertEquals(contents, file.getContents());
+        assertFalse(file.isDirty());
+    }
+    
+    public void testDiscardChanges_ParsableContents() throws CoreException {
+        IPolicyCmptType type = newPolicyCmptType(this.ipsProject, "Policy");
+        IIpsSrcFile file = type.getIpsSrcFile();
+        type.newAttribute();
+        assertEquals(1, type.getNumOfAttributes());
+        assertTrue(file.isDirty());
+        file.discardChanges();
+        type = (IPolicyCmptType)file.getIpsObject();
+        assertEquals(0, type.getNumOfAttributes());
+        assertFalse(file.isDirty());
+    }
+
     public void testGetCorrespondingResource() {
         IResource resource = parsableFile.getCorrespondingResource();
         assertTrue(resource.exists());
@@ -169,18 +195,8 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
         assertFalse(parsableFile.isDirty());
     }
     
-    public void testDiscardChanges() throws CoreException {
-        String contents = parsableFile.getContents();
-        parsableFile.setContents("newContents");
-        assertTrue(parsableFile.isDirty());
-        parsableFile.discardChanges();
-        assertEquals(contents, parsableFile.getContents());
-        assertFalse(parsableFile.isDirty());
-    }
-    
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)
+     * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;

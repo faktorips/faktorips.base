@@ -334,8 +334,8 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validate(MessageList list) throws CoreException {
-		super.validate(list);
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
 		list.add(validateSingle());
 		list.add(validateGroup());
 	}

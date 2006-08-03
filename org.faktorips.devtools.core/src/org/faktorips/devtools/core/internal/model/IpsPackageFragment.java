@@ -197,7 +197,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
             IIpsSrcFile result = createIpsFile(filename, contents, force, monitor);
             
             if (type == IpsObjectType.PRODUCT_CMPT) {
-            	((IProductCmpt)ipsObject).setRuntimeId(ipsObject.getIpsProject().getRuntimeId((IProductCmpt)ipsObject));
+            	IProductCmpt productCmpt = (IProductCmpt)result.getIpsObject();
+            	productCmpt.setRuntimeId(ipsObject.getIpsProject().getRuntimeId(productCmpt));
             	result.save(force, monitor);
             }
             

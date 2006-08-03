@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -75,6 +76,14 @@ public class IpsSourceFileContents {
             contentParsable = null;
         }
         markAsModified();
+    }
+    
+    void setSourceTextInternal(String newSourceText) {
+    	if (ObjectUtils.equals(sourceText, newSourceText)) {
+    		return;
+    	}
+    	sourceText = newSourceText;
+    	contentParsable = null; // force reparse on next request 
     }
     
     void updateStateFromMemento(IIpsSrcFileMemento memento) throws CoreException {
@@ -152,27 +161,28 @@ public class IpsSourceFileContents {
      */
     private void parse() throws CoreException {
         contentParsable = Boolean.FALSE;
-        ipsObject = null;
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         if (type==null) {
             return;
         }
-        ipsObject = getIpsObject(type);
+        if (ipsObject==null) {
+            ipsObject = type.newObject(ipsSrcFile);
+        }
+        try {
+			ipsObject.initFromXml(getXmlElement());
+		} catch (Exception e) {
+			throw new CoreException(new IpsStatus(e));
+		}
         contentParsable = Boolean.TRUE;
     }
     
-    private IIpsObject getIpsObject(IpsObjectType type) throws CoreException {
-        try {
-            ByteArrayInputStream is = new ByteArrayInputStream(sourceText.getBytes(encoding)); 
-            DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
-            Document doc = builder.parse(is);
-            is.close();
-            IIpsObject pdObject = type.newObject(ipsSrcFile);
-            pdObject.initFromXml((Element)doc.getFirstChild());
-            return pdObject;
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
-        }
+    private Element getXmlElement() throws Exception {
+        ByteArrayInputStream is = new ByteArrayInputStream(sourceText.getBytes(encoding)); 
+        DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+        Document doc = builder.parse(is);
+        is.close();
+        return doc.getDocumentElement();
+    	
     }
     
     public String toString() {

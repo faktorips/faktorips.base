@@ -23,14 +23,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -164,61 +162,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 		return validate().getSeverity();
 	}
 
-	/**
-     * {@inheritDoc}
-     */
-    public MessageList validate() throws CoreException {
-        MessageList result = new MessageList();
-        validateThis(result);
-        validateExtensionProperties(result);
-        IIpsElement[] children = getChildren();
-        for (int i=0; i<children.length; i++) {
-            ((IpsObjectPart)children[i]).validate(result);
-        }
-        return result;
-    }
-    
-    /**
-     * Validates the object and reports invalid states by adding 
-     * validation messages to the list. This is an application of the collecting
-     * parameter pattern.
-     * 
-     * @throws NullPointerException if list is null.
-     */
-    protected void validateThis(MessageList list) throws CoreException {
-        return;
-    }
-    
-    protected boolean valueChanged(Object oldValue, Object newValue) {
-        boolean changed = false;
-        if (oldValue!=null) {
-            changed = !oldValue.equals(newValue);
-        } else {
-            changed = newValue!=null;
-        }
-        if (changed) {
-            updateSrcFile();
-        }
-        return changed;
-    }
-    
-    protected boolean valueChanged(boolean oldValue, boolean newValue) {
-        boolean changed = oldValue != newValue;
-        if (changed) {
-            updateSrcFile();
-        }
-        return changed;
-    }
-    
-    protected boolean valueChanged(int oldValue, int newValue) {
-        boolean changed = oldValue == newValue;
-        if (changed) {
-            updateSrcFile();
-        }
-        return changed;
-    }
-    
-    
     /**
      * Overridden.
      */

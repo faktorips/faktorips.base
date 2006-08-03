@@ -17,38 +17,40 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
-import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IMember;
 
 
 /**
  *
  */
-public class MemberTest extends IpsObjectTestCase {
+public class MemberTest extends AbstractIpsPluginTest {
 
+    private IIpsSrcFile ipsSrcFile;
     private PolicyCmptType pcType;
     private IMember member;
 
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.POLICY_CMPT_TYPE);
-    }
-    
-    protected void createObjectAndPart() {
-        pcType = new PolicyCmptType(pdSrcFile);
+        super.setUp();
+        IIpsProject project = newIpsProject("TestProject");
+        pcType = newPolicyCmptType(project, "Policy");
+        ipsSrcFile = pcType.getIpsSrcFile();
         member = pcType.newAttribute();
+        ipsSrcFile.save(true, null);
     }
     
     public void testSetName() {
         member.setName("premium");
         assertEquals("premium", member.getName());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testSetDescription() {
         member.setDescription("blabla");
         assertEquals("blabla", member.getDescription());
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
     
 }

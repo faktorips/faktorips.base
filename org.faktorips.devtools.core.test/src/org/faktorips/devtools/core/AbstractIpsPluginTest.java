@@ -101,6 +101,13 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 		workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE,
 				null);
 	}
+    
+    /**
+     * Creates a new IpsProject.
+     */
+    protected IIpsProject newIpsProject() throws CoreException {
+        return newIpsProject("TestProject");
+    }
 
 	/**
 	 * Creates a new IpsProject.

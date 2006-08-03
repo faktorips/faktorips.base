@@ -17,8 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -28,21 +29,15 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class TableContentsGenerationImplTest extends IpsObjectTestCase {
+public class TableContentsGenerationTest extends AbstractIpsPluginTest {
 
     private ITableContents table; 
     private TableContentsGeneration generation;
     
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.TABLE_STRUCTURE);
-    }
-    
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectTestCase#createObjectAndPart()
-     */
-    protected void createObjectAndPart() {
-        table = new TableContents(pdSrcFile);
+        super.setUp();
+        IIpsProject project = newIpsProject("TestProject");
+        table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
         generation = (TableContentsGeneration)table.newGeneration();
         table.newColumn(null);
         table.newColumn(null);

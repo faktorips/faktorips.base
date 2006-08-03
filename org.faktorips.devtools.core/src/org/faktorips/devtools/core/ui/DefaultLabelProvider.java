@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.fl.FlFunction;
 
 
@@ -40,8 +40,7 @@ public class DefaultLabelProvider extends LabelProvider {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
+     * {@inheritDoc}
      */
     public Image getImage(Object element) {
         try {
@@ -54,9 +53,6 @@ public class DefaultLabelProvider extends LabelProvider {
             if (element instanceof Datatype) {
                 return IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$
             }
-            if (element instanceof Parameter) {
-                return IpsPlugin.getDefault().getImage("Parameter.gif"); //$NON-NLS-1$
-            }
             if (element instanceof FlFunction) {
                 return IpsPlugin.getDefault().getImage("Function.gif"); //$NON-NLS-1$
             }
@@ -68,8 +64,7 @@ public class DefaultLabelProvider extends LabelProvider {
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+     * {@inheritDoc}
      */
     public String getText(Object element) {
         if (element==null) {
@@ -93,7 +88,7 @@ public class DefaultLabelProvider extends LabelProvider {
     private String getMethodLabel(IMethod method) {
         StringBuffer buffer = new StringBuffer(method.getName());
         buffer.append('(');
-        Parameter[] params = method.getParameters();
+        IParameter[] params = method.getParameters();
         for (int i=0; i<params.length; i++) {
             if (i>0) {
                 buffer.append(", "); //$NON-NLS-1$

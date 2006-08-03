@@ -130,6 +130,30 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         property.afterSetValue(this, value);
     }
     
+    protected final boolean valueChanged(Object oldValue, Object newValue) {
+        boolean changed = !ObjectUtils.equals(oldValue, newValue);
+        if (changed) {
+            updateSrcFile();
+        }
+        return changed;
+    }
+    
+    protected final boolean valueChanged(boolean oldValue, boolean newValue) {
+        boolean changed = oldValue != newValue;
+        if (changed) {
+            updateSrcFile();
+        }
+        return changed;
+    }
+    
+    protected final boolean valueChanged(int oldValue, int newValue) {
+        boolean changed = oldValue != newValue;
+        if (changed) {
+            updateSrcFile();
+        }
+        return changed;
+    }
+    
     /**
      * Updates the source file with the object's state in xml format.
      */
@@ -381,6 +405,39 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected abstract IIpsObjectPart newPart(Element xmlTag, int id);
     
+	/**
+     * {@inheritDoc}
+     */
+    public final MessageList validate() throws CoreException {
+        IpsModel model = (IpsModel)getIpsModel();
+    	ValidationResultCache cache = model.getValidationResultCache();
+    	MessageList result = cache.getResult(this);
+    	if (result!=null) {
+    		return result;
+    	}
+    	result = new MessageList();
+        validateThis(result);
+        validateExtensionProperties(result);
+        IIpsElement[] children = getChildren();
+        for (int i=0; i<children.length; i++) {
+            MessageList childResult = ((IpsObjectPartContainer)children[i]).validate();
+            result.add(childResult);
+        }
+        cache.putResult(this, result);
+        return result;
+    }
+    
+    /**
+     * Validates the object and reports invalid states by adding 
+     * validation messages to the list. This is an application of the collecting
+     * parameter pattern.
+     * 
+     * @throws NullPointerException if list is null.
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        return;
+    }
+    
     /**
      * Validates the extension property values.
      * 
@@ -400,7 +457,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Memento newMemento() {
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
@@ -408,7 +465,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setState(Memento memento) {
         if (!memento.getOriginator().equals(this)) {
@@ -418,4 +475,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         updateSrcFile();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object other) {
+    	return this==other;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+    	return System.identityHashCode(this);
+    }
 }

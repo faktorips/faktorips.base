@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -1000,7 +1001,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 			override.setAbstract(false);
 			override.setDatatype(methods[i].getDatatype());
 			override.setName(methods[i].getName());
-			override.setParameters(methods[i].getParameters());
+			IParameter[] params = methods[i].getParameters();
+			for (int j = 0; j < params.length; j++) {
+				IParameter newParam = override.newParameter();
+				newParam.setName(params[j].getName());
+				newParam.setDatatype(params[j].getDatatype());
+			}
 			newMethods[i] = override;
 		}
 		return newMethods;

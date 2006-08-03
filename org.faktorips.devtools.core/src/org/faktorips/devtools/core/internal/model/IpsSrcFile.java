@@ -59,28 +59,28 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsPackageFragment getIpsPackageFragment() {
         return (IIpsPackageFragment)getParent();
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IResource getCorrespondingResource() {
         return getCorrespondingFile();
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IFile getCorrespondingFile() {
         IFolder folder = (IFolder)getParent().getCorrespondingResource();
@@ -88,7 +88,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsElement[] getChildren() throws CoreException {
         if (isContentParsable()) {
@@ -98,14 +98,14 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsSrcFile.gif"); //$NON-NLS-1$
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isDirty() {
         IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
@@ -116,7 +116,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */ 
     public void markAsClean() {
         IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
@@ -126,14 +126,18 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void discardChanges() {
-        IpsPlugin.getDefault().getManager().removeSrcFileContents(this);
+    	IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
+    	if (contents!=null) {
+    		contents.setSourceText(null, true);
+    		contents.markAsUnmodified();
+    	}
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void save(boolean force, IProgressMonitor monitor) throws CoreException {
         if (!isDirty()) {
@@ -141,6 +145,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
         }
         try {
             ByteArrayInputStream is = new ByteArrayInputStream(getContents().getBytes(getEncoding()));
+        	markAsClean();
             getCorrespondingFile().setContents(is, force, true, monitor);
             // notify listeners because dirty state has changed!
             ContentChangeEvent event = new ContentChangeEvent(this);
@@ -151,14 +156,14 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getContents() throws CoreException {
         return getContentObject().getSourceText();
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */ 
     public void setContents(String newContents) throws CoreException {
         getContentObject().setSourceText(newContents, true);
@@ -173,7 +178,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isContentParsable() throws CoreException {
     	if (!exists()) {
@@ -183,7 +188,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObject getIpsObject() throws CoreException {
         return getContentObject().getIpsObject();
@@ -191,29 +196,41 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     
     private IpsSourceFileContents getContentObject() throws CoreException {
         IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
-        if (contents!=null) {
+        if (contents!=null && contents.getSourceText()!=null) {
             return contents;
         }
+        String source = getContentFromCorrespondingFile();
+        IpsPlugin.getDefault().getManager().putSrcFileContents(this, source, getEncoding());
+        return IpsPlugin.getDefault().getManager().getSrcFileContents(this); 
+    }
+    
+    /**
+     * Reads the content from the corresponding file and returns it as string 
+     * The bytes read from disk are transformed into a string with the encoding
+     * defined in the ips project.
+     * 
+     * @throws CoreException if an error occurs while reading the contents.
+     * 
+     * @see org.faktorips.devtools.core.model.IIpsProject#getXmlFileCharset()
+     */
+    public String getContentFromCorrespondingFile() throws CoreException {
         InputStream is = getCorrespondingFile().getContents();
         try {
-            String source = StringUtil.readFromInputStream(is, getEncoding());
-            contents = new IpsSourceFileContents(this, source, getEncoding()); 
-	        IpsPlugin.getDefault().getManager().putSrcFileContents(this, contents);
-	        return contents; 
+            return StringUtil.readFromInputStream(is, getEncoding());
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(e));
         }
     }
 
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsSrcFileMemento newMemento() throws CoreException {
         return new IIpsSrcFileMemento(this, getContents(), isDirty());
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
         getContentObject().updateStateFromMemento(memento);
@@ -224,7 +241,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public QualifiedNameType getQualifiedNameType() {
         StringBuffer buf = new StringBuffer();

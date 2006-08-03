@@ -67,7 +67,7 @@ public class ValidationResultCache {
 		}
 		// return a defensive copy
 		MessageList result = new MessageList(); 
-		result.add(result);
+		result.add(cached);
 		return result;
 	}
 	
@@ -81,7 +81,7 @@ public class ValidationResultCache {
 	 * the exact dependencies between objects to solve this more efficiently.  
 	 */
 	public void removeStaleData(IIpsObjectPartContainer changedContainer) {
-		data = new HashMap(1000);
+		data.clear();
 	}
 
 }

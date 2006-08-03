@@ -156,9 +156,11 @@ public class Row extends IpsObjectPart implements IRow {
         return null;
     }
 
-
-    protected void validate(MessageList list) throws CoreException {
-        super.validate(list);
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
         String structureName = ((ITableContents)getParent().getParent()).getTableStructure();
         ITableStructure structure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structureName);
         for (int i=0; i<getNumOfColumns(); i++) {

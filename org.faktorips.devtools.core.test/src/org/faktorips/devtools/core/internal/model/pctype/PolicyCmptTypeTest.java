@@ -32,12 +32,12 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
+import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
-import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.message.Message;
@@ -388,17 +388,16 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         m2.setName("calc");
         IMethod m3 = supertype.newMethod();
         m3.setName("calc");
-        m3.setParameters(new Parameter[]{new Parameter(0, "p1", "Decimal")});
+        m3.newParameter("Decimal", "p1");
         
         // supersupertype methods
         IMethod m4 = supersupertype.newMethod();
         m4.setName("calc");
-        m4.setParameters(new Parameter[]{new Parameter(0, "p1", "Decimal")});
+        m4.newParameter("Decimal", "p1");
         
         IMethod m5 = supersupertype.newMethod();
         m5.setName("calc");
-        m5.setAbstract(true);
-        m5.setParameters(new Parameter[]{new Parameter(0, "p1", "Money")});
+        m5.setAbstract(true);        m5.newParameter("Money", "p1");
         
         IMethod m6 = supersupertype.newMethod();
         m6.setModifier(Modifier.PRIVATE);
@@ -428,7 +427,10 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         m1.setAbstract(true);
         m1.setDatatype("int");
         m1.setName("m1");
-        m1.setParameters(new Parameter[]{new Parameter(0, "p", "int")});
+        IParameter p1 = m1.newParameter();
+        p1.setName("p");
+        p1.setDatatype("int");
+              
 
         IMethod m2 = supertype.newMethod();
         m1.setName("m2");

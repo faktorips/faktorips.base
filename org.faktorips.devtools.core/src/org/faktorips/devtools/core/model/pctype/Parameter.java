@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsModel;
+
 
 /**
  *
@@ -46,6 +49,10 @@ public class Parameter {
     }
     
     public void setName(String newName) {
+    	// Parameter-Klasse entfaellt demnaechst und wird durch IParameter und die zug. Implementierung ersetzt
+    	// Dann wird dieser Hack ueberfluessig
+    	IpsModel model = (IpsModel)IpsPlugin.getDefault().getManager().getModel();
+    	model.getValidationResultCache().removeStaleData(null);
         name = newName;
     }
     
@@ -54,6 +61,10 @@ public class Parameter {
     }
     
     public void setDatatype(String newDatatype) {
+    	// Parameter-Klasse entfaellt demnaechst und wird durch IParameter und die zug. Implementierung ersetzt
+    	// Dann wird dieser Hack ueberfluessig
+    	IpsModel model = (IpsModel)IpsPlugin.getDefault().getManager().getModel();
+    	model.getValidationResultCache().removeStaleData(null);
         datatype = newDatatype;
     }
     

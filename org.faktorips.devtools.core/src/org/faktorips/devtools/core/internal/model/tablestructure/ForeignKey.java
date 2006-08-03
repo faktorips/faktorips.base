@@ -130,8 +130,8 @@ public class ForeignKey extends Key implements IForeignKey {
     }
 
 
-    protected void validate(MessageList list) throws CoreException {
-        super.validate(list);
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
         ValidationUtils.checkIpsObjectReference(refTableStructure, 
                 IpsObjectType.TABLE_STRUCTURE, "referenced table",  //$NON-NLS-1$
                 this, PROPERTY_REF_TABLE_STRUCTURE, "", list); //$NON-NLS-1$

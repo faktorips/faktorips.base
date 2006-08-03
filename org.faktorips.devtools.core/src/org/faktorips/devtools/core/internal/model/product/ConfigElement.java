@@ -67,10 +67,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 	private String value = ""; //$NON-NLS-1$
 
+	private boolean deleted = false;
+
 	public ConfigElement(ProductCmptGeneration parent, int id) {
 		super(parent, id);
 		valueSet = new AllValuesValueSet(this, getNextPartId());
-		
 	}
 
 	/**
@@ -118,7 +119,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		String oldName = pcTypeAttribute;
 		pcTypeAttribute = newName;
 		name = pcTypeAttribute;
-		
 		valueChanged(oldName, pcTypeAttribute);
 	}
 
@@ -145,8 +145,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		((ProductCmptGeneration) getParent()).removeConfigElement(this);
 		deleted = true;
 	}
-
-	private boolean deleted = false;
 
 	/**
 	 * {@inheritDoc}
@@ -205,10 +203,10 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
-	protected void validate(MessageList list) throws CoreException {
-		super.validate(list);
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
 		IAttribute attribute = findPcTypeAttribute();
 		if (attribute == null) {
 			String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, getProductCmpt().getPolicyCmptType());

@@ -94,14 +94,7 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
         
 		try {
 			String data = StringUtil.readFromInputStream(in, getEncoding());
-	        
-			IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
-	        if (contents == null) {
-	            contents = new IpsSourceFileContents(this, data, getEncoding()); 
-		        IpsPlugin.getDefault().getManager().putSrcFileContents(this, contents);
-	        }
-
-	        super.setContents(data);
+			IpsPlugin.getDefault().getManager().putSrcFileContents(this, data, getEncoding());
 		} catch (IOException e) {
 			throw new CoreException(new IpsStatus(e));
 		}

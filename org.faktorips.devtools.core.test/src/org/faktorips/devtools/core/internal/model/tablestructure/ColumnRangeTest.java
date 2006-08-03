@@ -19,7 +19,9 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.model.IpsObjectTestCase;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
@@ -32,20 +34,22 @@ import org.w3c.dom.Element;
 /**
  *
  */
-public class ColumnRangeImplTest extends IpsObjectTestCase {
+public class ColumnRangeTest extends AbstractIpsPluginTest {
 
+    private IIpsSrcFile ipsSrcFile;
     private TableStructure table;
     private ColumnRange range;
     
+    
     protected void setUp() throws Exception {
-        super.setUp(IpsObjectType.TABLE_STRUCTURE);
+        super.setUp();
+        IIpsProject project = newIpsProject();
+        table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
+        ipsSrcFile = table.getIpsSrcFile();
+        range = (ColumnRange)table.newRange();
+        ipsSrcFile.save(true, null);
     }
     
-    protected void createObjectAndPart() {
-        table = new TableStructure(pdSrcFile);
-        range = (ColumnRange)table.newRange();
-    }
-
     public void testRemove() {
         IColumnRange r1 = table.newRange();
         IColumnRange r2 = table.newRange();
@@ -54,7 +58,7 @@ public class ColumnRangeImplTest extends IpsObjectTestCase {
         assertEquals(2, table.getNumOfRanges());
         assertEquals(range, table.getRanges()[0]);
         assertEquals(r2, table.getRanges()[1]);
-        assertTrue(pdSrcFile.isDirty());
+        assertTrue(ipsSrcFile.isDirty());
     }
 
     public void testToXml() {
