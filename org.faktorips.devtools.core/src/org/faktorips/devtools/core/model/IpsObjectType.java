@@ -78,15 +78,13 @@ public final class IpsObjectType {
      * Type for test case types.
      */
     public final static IpsObjectType TEST_CASE_TYPE =  
-        new IpsObjectType("TestCaseType", "Test Case Type", "ipstestcasetype", false, "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
-    // TODO Joerg: NLS and correct image
+        new IpsObjectType("TestCaseType", "Test Case Type", "ipstestcasetype", false, "TestCaseType.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * Type for test cases.
      */
     public final static IpsObjectType TEST_CASE =  
-        new IpsObjectType("TestCase", "Test Case", "ipstestcase", false, "ProductCmpt.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
-    // TODO Joerg: NLS and correct image
+        new IpsObjectType("TestCase", "Test Case", "ipstestcase", false, "TestCase.gif"); //$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     public final static IpsObjectType[] ALL_TYPES = new IpsObjectType[]
     	{BUSINESS_FUNCTION, POLICY_CMPT_TYPE, TABLE_STRUCTURE, PRODUCT_CMPT, TABLE_CONTENTS, TEST_CASE_TYPE, TEST_CASE};
