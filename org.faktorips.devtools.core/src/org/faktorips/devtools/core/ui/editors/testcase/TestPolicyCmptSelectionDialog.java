@@ -20,11 +20,14 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -40,19 +43,19 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Tree selection dialog to select a element with filter functionality.
+ * Tree selection dialog to select a test policy component that is defined in the test case.
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
+public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 	private UIToolkit toolkit;
 	
 	private TreeViewer treeViewer;
 	
 	private ITestCase testCase;
 	
-	private String targetFilter;
-	
+	private String filteredPolicyCmptType;
+	 
     private int fWidth = 60;
     private int fHeight = 18;
     
@@ -62,12 +65,14 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
     private TestCaseLabelProvider labelProvider;
     private ViewerFilter filter;
 
-	public TestCaseTreeSelectionDialog(Shell parentShell, UIToolkit toolkit, ITestCase testCase, int contentType, String targetFilter) {
+    private Label messageLabel;
+    
+	public TestPolicyCmptSelectionDialog(Shell parentShell, UIToolkit toolkit, ITestCase testCase, int contentType, String policyCmptType) {
 		super(parentShell);
 		
 		this.toolkit = toolkit;
 		this.testCase = testCase;
-		this.targetFilter = targetFilter;
+		this.filteredPolicyCmptType = policyCmptType;
 		
 		this.contentProvider = new TestCaseContentProvider(contentType, testCase);
 		this.labelProvider = new TestCaseLabelProvider();
@@ -83,9 +88,20 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
 	 * {@inheritDoc}
 	 */
     public int open() {
-        isEmpty = evaluateIfTreeEmpty(testCase);
+        isEmpty = evaluateIfTreeEmpty(testCase);     
         super.open();
         return getReturnCode();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected Control createContents(Composite parent) {
+    	Control ctrl = super.createContents(parent);
+        if (isEmpty) {
+            getOkButton().setEnabled(false);            
+        }
+    	return ctrl;
     }
     
 	/**
@@ -94,7 +110,7 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         
-        Label messageLabel = createMessageArea(composite);
+        messageLabel = createMessageArea(composite);
 
         Composite treeComposite = toolkit.createLabelEditColumnComposite(composite);
         GridLayout layout = new GridLayout();
@@ -112,11 +128,56 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
         Tree treeWidget = treeViewer.getTree();
         treeWidget.setLayoutData(data);
         treeWidget.setFont(parent.getFont());
+        
+        treeWidget.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+                handleDefaultSelected();
+            }
+            public void widgetSelected(SelectionEvent e) {
+            	handleWidgetSelected();
+            }
+        });
+		
         if (isEmpty) {
-            messageLabel.setEnabled(false);
-            treeWidget.setEnabled(false);
+            treeComposite.setEnabled(false);
+            messageLabel.setText("No test policy component of type \"" + filteredPolicyCmptType + "\" in the test case found.");
+        } else {
+        	messageLabel.setText("Select a test policy component of type \"" + filteredPolicyCmptType + "\".");
         }
+        
         return composite;
+    }
+    
+    /**
+     * Handles default selection (double click).
+     * By default, the OK button is pressed.
+     */
+    protected void handleDefaultSelected() {
+        if (validateCurrentSelection())
+            buttonPressed(IDialogConstants.OK_ID);
+    }
+
+	private boolean validateCurrentSelection() {
+		return getOkButton().isEnabled();
+	}
+
+	private void handleWidgetSelected() {
+		IStructuredSelection newSelection = (IStructuredSelection) treeViewer.getSelection();
+        
+        if (newSelection.getFirstElement() instanceof ITestPolicyCmpt){
+        	try {
+				ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) ((ITestPolicyCmpt)newSelection.getFirstElement()).findTestPolicyCmptType();
+				if (param.getPolicyCmptType().equals(filteredPolicyCmptType)){
+					messageLabel.setText("");
+					getOkButton().setEnabled(true);
+					return;
+				}
+			} catch (CoreException e) {
+			}
+        }
+        messageLabel.setText("The selected element is not of type \"" + filteredPolicyCmptType + "\".");
+        messageLabel.pack();
+        getOkButton().setEnabled(false);	
     }
     
     /**
@@ -196,11 +257,11 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			try {
 				if (element instanceof ITestPolicyCmpt){
-					return isFilterChildOf((ITestPolicyCmpt)element, targetFilter);
+					return isFilterChildOf((ITestPolicyCmpt)element, filteredPolicyCmptType);
 				}else if (element instanceof TestCaseTypeRelation){
 					TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
 					ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) dummyRelation.getParentTestPolicyCmpt();
-					ITestPolicyCmptRelation childs[] = testPolicyCmpt.getTestPcTypeRelations();
+					ITestPolicyCmptRelation childs[] = testPolicyCmpt.getTestPolicyCmptRelations();
 					boolean found = false;
 					for (int i = 0; i < childs.length; i++) {
 						// because of grouping the relations, get the relations by using the parent test policy component
@@ -209,7 +270,7 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
 						if (elem.findTarget() != null){
 							relationName = elem.findTarget().getTestPolicyCmptType();
 							if (relationName.equals(dummyRelation.getName())){
-								found = isFilterChildOfRelation(elem, targetFilter);
+								found = isFilterChildOfRelation(elem, filteredPolicyCmptType);
 								if (found)
 									return found;
 							}
@@ -231,7 +292,7 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
 	 */
 	private boolean isFilterChildOf(ITestPolicyCmpt testPolicyCmpt, String filter)  throws CoreException{
 		boolean found = false;
-		ITestPolicyCmptRelation[] realtions = testPolicyCmpt.getTestPcTypeRelations();
+		ITestPolicyCmptRelation[] realtions = testPolicyCmpt.getTestPolicyCmptRelations();
 		for (int i = 0; i < realtions.length; i++) {
 			ITestPolicyCmptRelation relation = realtions[i];
 			found = isFilterChildOfRelation(relation, filter);
@@ -242,7 +303,7 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
 		ITestPolicyCmptTypeParameter param = null;
 		try {
 			param = (ITestPolicyCmptTypeParameter) testPolicyCmpt.findTestPolicyCmptType();
-			if (param.getPolicyCmptType().equals(targetFilter))
+			if (param.getPolicyCmptType().equals(filteredPolicyCmptType))
 				found = true;
 		} catch (CoreException e) {
 			// ignored exception and don't display the element
@@ -260,7 +321,7 @@ public class TestCaseTreeSelectionDialog extends SelectionStatusDialog {
 	private boolean isFilterChildOfRelation(ITestPolicyCmptRelation relation, String filter) throws CoreException{
 		boolean found = false;
 		ITestPolicyCmpt testPolicyCmpt = relation.findTarget();
-		if (!relation.isAccociation() && testPolicyCmpt!=null){
+		if (!relation.isAccoziation() && testPolicyCmpt!=null){
 			found = isFilterChildOf(testPolicyCmpt, filter);
 		}
 		return found;

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -37,6 +38,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -45,11 +47,13 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.util.StringUtil;
 
 /**
  * Detail section class of the test case editor.
@@ -60,30 +64,30 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 public class TestCaseDetailArea {
 	static final String VALUESECTION = "VALUESECTION";
 
-	/** UI toolkit for creating the controls */
+	// UI toolkit for creating the controls
 	private UIToolkit toolkit;
 	
-	/** Contains the content provider of the test policy component object */
+	// Contains the content provider of the test policy component object
 	private TestCaseContentProvider contentProvider;
 	
-	/** Contains all test policy component edit sections */
+	// Contains all test policy component edit sections
 	private HashMap sectionControls = new HashMap();
 	
-	/** Container holds all value edit fields */
+	// Container holds all value edit fields
 	HashMap valueEditFields = new HashMap();
 	
-	/** Contains the first edit field of each test policy component edit area */
+	// Contains the first edit field of each test policy component edit area
 	HashMap attributeEditFields = new HashMap();
 	
-	/** Contains all ui controller */
+	// Contains all ui controller
 	private ArrayList uiControllers = new ArrayList();
 	
 	private TestCaseSection testCaseSection;
 	
-	/** Composites to change the UI */
-	// area which contains the dynamic detail controls
+	// Composites to change the UI
+	//   area which contains the dynamic detail controls
 	private Composite detailsArea;
-	// area which contains alls detail controls
+	//   area which contains alls detail controls
 	private Composite dynamicArea;
 	
 	public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider, TestCaseSection testCaseSection) {
@@ -93,28 +97,41 @@ public class TestCaseDetailArea {
 	}
 	
 	/**
-	 * Clear the dynamic detail area.
+	 * Resets the color of all detail sections.
 	 */
-	public void clearDetailArea() {
-		if (dynamicArea != null)
-			dynamicArea.dispose();
+	public void resetSectionColors(ScrolledForm form){
+		Iterator iter = sectionControls.values().iterator();
+		while (iter.hasNext()) {
+			Section section = (Section) iter.next();
+			section.setBackground(form.getBackground());
+		}
+	}
 
-		dynamicArea = toolkit.getFormToolkit().createComposite(detailsArea);
-		dynamicArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout detailLayout = new GridLayout(1, true);
-		detailLayout.horizontalSpacing = 0;
-		detailLayout.marginWidth = 0;
-		detailLayout.marginHeight = 0;
-		dynamicArea.setLayout(detailLayout);
-		
-		resetContainers();
+	/**
+	 * Returns the attribute edit fields given by the unique key.
+	 */
+	public EditField getAttributeEditField(String uniqueKey) {
+		return (EditField) attributeEditFields.get(uniqueKey);
+	}	
+	
+	/**
+	 * Returns the test value edit fields given by the unique key.
+	 */
+	public EditField getTestValueEditField(String uniqueKey) {
+		return (EditField) valueEditFields.get(uniqueKey);
+	}
+
+	/**
+	 * Returns the section given by the unique key.
+	 */
+	public Section getSection(String uniqueKey) {
+		return (Section) sectionControls.get(uniqueKey);
 	}
 	
-
 	/**
 	 * Creates the main detail area.
 	 */
-	public void createDetailArea(Composite parent, String title) {
+	public void createInitialDetailArea(Composite parent, String title) {
 		Section detailsSection = toolkit.getFormToolkit().createSection(parent, Section.TITLE_BAR);		
 		detailsSection.setLayoutData(new GridData(GridData.FILL_BOTH));		
 		detailsSection.setText(title);
@@ -134,19 +151,16 @@ public class TestCaseDetailArea {
 	 * The test policy component will be rendered starting by the root element of the 
 	 * given element, the root will be only displayed once if more than one childs are given.
 	 */
-	public void createDynamicDetailSection(List testPolicyCmpts) {
-		if (dynamicArea==null){
-			return;
-		}
-		
+	public void createDetailSection(List testPolicyCmpts){		
 		// dynamically create the details depending on the given test policy components
+		clearDetailArea();
+		
 		for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
 			ITestPolicyCmpt currTestPolicyCmpt = (ITestPolicyCmpt) iter.next();
 			
 			Composite borderedComosite = createBorder(dynamicArea);
 			if (currTestPolicyCmpt != null) {
-				createDynamicPolicyCmptSection(currTestPolicyCmpt, borderedComosite, "");
-				createSectionsForAllRelations(currTestPolicyCmpt, borderedComosite);
+				createPolicyCmptAndRelationSection(currTestPolicyCmpt, borderedComosite);
 			}
 		}
 	}
@@ -156,13 +170,18 @@ public class TestCaseDetailArea {
 	 * If the element is a child then the relation name could be given as input
 	 * to display it in the section title beside the test policy component.
 	 */
-	private void createDynamicPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details, String relation) {
+	private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) {
 		if (testPolicyCmpt == null)
 			return;
 		String uniquePath = testCaseSection.getUniqueKey(testPolicyCmpt);
 		
 		Section section = toolkit.getFormToolkit().createSection(details, 0);
-		section.setText(testPolicyCmpt.getLabel());
+		String sectionText = testPolicyCmpt.getLabel();
+		if (testPolicyCmpt.getProductCmpt().length() > 0){
+			String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
+			sectionText += pckName.length() > 0 ? " (" + pckName + ")" : "";
+		}
+		section.setText(sectionText);
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		toolkit.getFormToolkit().createCompositeSeparator(section);
 		
@@ -210,7 +229,7 @@ public class TestCaseDetailArea {
 	
 				editField.getControl().addFocusListener(new FocusAdapter() {
 		            public void focusGained(FocusEvent e) {
-		                testCaseSection.selectInTree(testPolicyCmpt);
+		                testCaseSection.selectInTreeByObject(testPolicyCmpt, false);
 		            }
 		        });
 			    uiController.updateUI();
@@ -233,40 +252,51 @@ public class TestCaseDetailArea {
 		section.setText(currRelation.getTestPolicyCmptType());
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
+		Composite hyperlinkArea = toolkit.createGridComposite(details, 2, false, true);
 		sectionControls.put(uniquePath, section);
-				
+
 		if ((((ITestPolicyCmpt)currRelation.getParent()).isInputObject() ? 
 				contentProvider.getTestCase().findInputPolicyCmpt(currRelation.getTarget()):
 				contentProvider.getTestCase().findExpectedResultPolicyCmpt(currRelation.getTarget()))!= null){
 			Hyperlink relationHyperlink = toolkit.getFormToolkit()
-				.createHyperlink(details, currRelation.getTarget(),SWT.WRAP);
+				.createHyperlink(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currRelation.getTarget()),SWT.WRAP);
 			relationHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
 				public void linkActivated(HyperlinkEvent e) {
 					try {
-						testCaseSection.selectAndDisplayDetailsOfTreeEntry(currRelation.getTarget());
+						testCaseSection.selectInTreeByObject(currRelation.findTarget(), true);
 					} catch (CoreException e1) {
-						// ignore exception, hyperlink click failed
+						throw new RuntimeException(e1);
 					}
 				}
 			});
+			relationHyperlink.addFocusListener(new FocusListener() {
+	            public void focusGained(FocusEvent e) {
+	            	testCaseSection.selectInTreeByObject(currRelation, false);
+	            }
+	            public void focusLost(FocusEvent e) {
+	            }
+	        });
+			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")");
 		} else {
-			toolkit.createLabel(details, currRelation.getTarget());
+			// target not found in current test case
+			toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currRelation.getTarget()));
+			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")");
 		}
 	}
 	
 	/**
 	 * Recursive create the sections for the relations and all their childs.
 	 */
-	private void createSectionsForAllRelations(ITestPolicyCmpt currTestPolicyCmpt, Composite details) {
-		ITestPolicyCmptRelation[] relations = currTestPolicyCmpt.getTestPcTypeRelations();
+	private void createPolicyCmptAndRelationSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details) {
+		createPolicyCmptSection(currTestPolicyCmpt, details);
+		ITestPolicyCmptRelation[] relations = currTestPolicyCmpt.getTestPolicyCmptRelations();
 		for (int i = 0; i < relations.length; i++) {
 			ITestPolicyCmptRelation currRelation = relations[i];
 			if (currRelation.isComposition()) {
 				try {
 					ITestPolicyCmpt policyCmpt = currRelation.findTarget();
 					if (policyCmpt != null){
-						createDynamicPolicyCmptSection(policyCmpt, details, currRelation.getTestPolicyCmptType());
-						createSectionsForAllRelations(policyCmpt, details);
+						createPolicyCmptAndRelationSection(policyCmpt, details);
 					}
 				} catch (CoreException e) {
 					IpsPlugin.logAndShowErrorDialog(e);
@@ -280,8 +310,14 @@ public class TestCaseDetailArea {
 	
 	/**
 	 * Creates the section for the value objects.
+	 * 
+	 * @param cleanBefore <code>true</code> to clean the detail area before rendering the value section
+	 *                    <code>false</code> the value section will be rendered below the existing sections
 	 */
-	public void createDynamicDetailSectionValues() {
+	public void createValuesSection(boolean cleanBefore) {
+		if (cleanBefore)
+			clearDetailArea();
+		
 		Composite borderedComposite = createBorder(dynamicArea);
 		
 		Section section = toolkit.getFormToolkit().createSection(borderedComposite, 0);
@@ -303,8 +339,13 @@ public class TestCaseDetailArea {
 			ValueDatatype datatype = null;
 			ValueDatatypeControlFactory ctrlFactory = null;
 			try {
-				datatype = value.findTestValueParameter().findValueDatatype();
-				ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+				ITestValueParameter param = value.findTestValueParameter();
+				if (param != null){
+					datatype = param.findValueDatatype();
+					ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+				} else {
+					ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(new StringDatatype());
+				}
 			} catch (CoreException e1) {
 				throw new RuntimeException(e1);
 			}
@@ -375,35 +416,21 @@ public class TestCaseDetailArea {
 		uiControllers.clear(); 
 	}
 	
-	/**
-	 * Resets the color of all detail sections.
+	/*
+	 * Clear the dynamic detail area.
 	 */
-	public void resetSectionColors(ScrolledForm form){
-		Iterator iter = sectionControls.values().iterator();
-		while (iter.hasNext()) {
-			Section section = (Section) iter.next();
-			section.setBackground(form.getBackground());
-		}
-	}
+	private void clearDetailArea() {
+		if (dynamicArea != null)
+			dynamicArea.dispose();
 
-	/**
-	 * Returns the attribute edit fields given by the unique key.
-	 */
-	public EditField getAttributeEditField(String uniqueKey) {
-		return (EditField) attributeEditFields.get(uniqueKey);
-	}	
-	
-	/**
-	 * Returns the test value edit fields given by the unique key.
-	 */
-	public EditField getTestValueEditField(String uniqueKey) {
-		return (EditField) valueEditFields.get(uniqueKey);
-	}
-
-	/**
-	 * Returns the section given by the unique key.
-	 */
-	public Section getSection(String uniqueKey) {
-		return (Section) sectionControls.get(uniqueKey);
+		dynamicArea = toolkit.getFormToolkit().createComposite(detailsArea);
+		dynamicArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+		GridLayout detailLayout = new GridLayout(1, true);
+		detailLayout.horizontalSpacing = 0;
+		detailLayout.marginWidth = 0;
+		detailLayout.marginHeight = 0;
+		dynamicArea.setLayout(detailLayout);
+		
+		resetContainers();
 	}
 }

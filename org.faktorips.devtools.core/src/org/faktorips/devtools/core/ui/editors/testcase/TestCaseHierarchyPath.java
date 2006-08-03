@@ -26,16 +26,23 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
  * @author Joerg Ortmann
  */
 public class TestCaseHierarchyPath{
-	/** Seperator between each hierarchy element */
-	private static final String separator = "|";
+	// Seperator between each hierarchy element
+	private static final String separator = "/";
 	
-	/** Contains the complete hierarchy path */
+	// Contains the complete hierarchy path
 	private String hierarchyPath = "";
 	
 	public TestCaseHierarchyPath(String hierarchyPath){
 		this.hierarchyPath = hierarchyPath;
 	}
 	
+	/**
+	 * Creates a test case hierarchy path for a given test policy component.
+	 * 
+	 * @param currTestPolicyCmpt The test policy compcomponentonengt for which the path will be created.
+	 * @param evalForTestCase <code>true</code> if the hierarchy path will be evaluated for a test case
+	 *                        <code>false</code> if the hierarchy path will be evaluated for a test case type.
+	 */
 	public TestCaseHierarchyPath(ITestPolicyCmpt currTestPolicyCmpt, boolean evalForTestCase){
 		if (evalForTestCase){
 			this.hierarchyPath = evalHierarchyPathForTestCase(currTestPolicyCmpt, "");
@@ -44,8 +51,15 @@ public class TestCaseHierarchyPath{
 		}
 	}
 	
+	/**
+	 * Creates a test case hierarchy path for a given test policy component relation.
+	 * 
+	 * @param currTestPolicyCmpt The test policy component relation for which the path will be created.
+	 * @param evalForTestCase <code>true</code> if the hierarchy path will be evaluated for a test case
+	 *                        <code>false</code> if the hierarchy path will be evaluated for a test case type.
+	 */	
 	public TestCaseHierarchyPath(ITestPolicyCmptRelation relation, boolean evalforTestCase){
-		String relationPath = getHierarchyFromRelation(relation);
+		String relationPath = relation.getTestPolicyCmptType();
 		if (evalforTestCase){	
 			this.hierarchyPath = evalHierarchyPathForTestCase((ITestPolicyCmpt) relation.getParent(), relationPath);
 		}else{
@@ -60,35 +74,6 @@ public class TestCaseHierarchyPath{
 		return hierarchyPath;
 	}
 
-	private String evalHierarchyPathForTestCaseType(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath){
-		while (!currTestPolicyCmpt.isRoot()){
-			if (hierarchyPath.length()>0)
-				hierarchyPath = separator + hierarchyPath ;
-			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
-			hierarchyPath = getHierarchyFromRelation(testPcTypeRelation) + hierarchyPath;
-			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
-		}
-		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptType() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : "");
-		return hierarchyPath;
-	}
-	
-	private String evalHierarchyPathForTestCase(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath){
-		while (!currTestPolicyCmpt.isRoot()){
-			if (hierarchyPath.length()>0)
-				hierarchyPath = separator + hierarchyPath ;
-			hierarchyPath = separator + currTestPolicyCmpt.getLabel() + hierarchyPath;
-			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
-			hierarchyPath = getHierarchyFromRelation(testPcTypeRelation) + hierarchyPath;
-			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
-		}
-		hierarchyPath = currTestPolicyCmpt.getLabel() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : "");
-		return hierarchyPath;
-	}
-	
-	private String getHierarchyFromRelation(ITestPolicyCmptRelation relation){
-		return relation.getTestPolicyCmptType();	
-	}
-	
 	/**
 	 * Returns <code>true</code> if there is a next path element.
 	 */
@@ -115,5 +100,67 @@ public class TestCaseHierarchyPath{
 	public String toString(){
 		return hierarchyPath;
 	}
-}
 
+	/**
+	 * Returns the count of path elements.
+	 */
+	public int count() {
+		int count = 0;
+		TestCaseHierarchyPath tempHierarchyPath = new TestCaseHierarchyPath(hierarchyPath);
+		if (!(hierarchyPath.length() > 0)){
+			return 0;
+		}
+		while(tempHierarchyPath.hasNext()){
+			tempHierarchyPath.next();
+			count ++;
+		}
+		return count;
+	}
+	
+    /**
+     * Returns the folder name for a given hierarchy path.
+     */	
+	public static String getFolderName(String hierarchyPath){
+        int index = hierarchyPath.lastIndexOf("/");
+        if (index == -1){
+            return "";
+        }
+        return hierarchyPath.substring(0, index);
+	}
+	
+    /**
+     * Removes the folder information from the beginning.
+     */
+	public static String unqualifiedName(String hierarchyPath){
+        int index = hierarchyPath.lastIndexOf("/");
+        if (index == -1) {
+            return hierarchyPath;
+        }
+        return hierarchyPath.substring(index + 1);
+	}
+
+	private String evalHierarchyPathForTestCaseType(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath){
+		while (!currTestPolicyCmpt.isRoot()){
+			if (hierarchyPath.length()>0)
+				hierarchyPath = separator + hierarchyPath ;
+			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
+			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
+			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
+		}
+		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptType() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : "");
+		return hierarchyPath;
+	}
+	
+	private String evalHierarchyPathForTestCase(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath){
+		while (!currTestPolicyCmpt.isRoot()){
+			if (hierarchyPath.length()>0)
+				hierarchyPath = separator + hierarchyPath ;
+			hierarchyPath = separator + currTestPolicyCmpt.getLabel() + hierarchyPath;
+			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
+			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
+			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
+		}
+		hierarchyPath = currTestPolicyCmpt.getLabel() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : "");
+		return hierarchyPath;
+	}
+}

@@ -37,8 +37,11 @@ public class TestCaseMessageCueLabelProvider extends LabelProvider {
     
     private ILabelProvider baseProvider;
 
-    public TestCaseMessageCueLabelProvider(ILabelProvider baseProvider) {
+    private TestCaseSection testCaseSection;
+    
+    public TestCaseMessageCueLabelProvider(ILabelProvider baseProvider, TestCaseSection testCaseSection) {
         this.baseProvider = baseProvider;
+        this.testCaseSection = testCaseSection;
     }
     
 	/**
@@ -64,13 +67,13 @@ public class TestCaseMessageCueLabelProvider extends LabelProvider {
     }
 
     /**
-     * Returns the message list applying to the given element.
+     * Returns the message list applying to the given element. And calls the 
      *
      * @throws CoreException if an error occurs during the creation of the message list.
      */
     protected MessageList getMessages(Object element) throws CoreException {
         if (element instanceof Validatable) {
-            return ((Validatable)element).validate();    
+            return testCaseSection.validateElement(element);
         } else {
             return new MessageList();
         }

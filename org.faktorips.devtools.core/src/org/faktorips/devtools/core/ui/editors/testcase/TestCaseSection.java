@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,12 +38,14 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -68,44 +72,45 @@ import org.faktorips.util.message.MessageList;
  */
 public class TestCaseSection extends IpsSection {
 	private static final String VALUESECTION = "VALUESECTION";
-
-	/** The treeview which displays all test policy components which are available in this test */
+	public static final String REQUIRES_PRODUCT_CMPT_SUFFIX = " (P)";
+	
+	// The treeview which displays all test policy components which are available in this test
 	private TreeViewer treeViewer;
 
-	/** Contains the test case which is displayed in this section */
+	// Contains the test case which is displayed in this section
 	private ITestCase testCase;
 	
-	/** UI toolkit for creating the controls */
+	// UI toolkit for creating the controls
 	private UIToolkit toolkit;
 
-	/** Buttons */
-	Button addButton;
-	Button removeButton;
+	// Buttons
+	private Button addButton;
+	private Button removeButton;
 	
-	/** Title of the test case tree structure section */
+	// Title of the test case tree structure section
     private String sectionTreeStructureTitle;
     
-    /** Title of the detail section */
+    // Title of the detail section
     private String sectionDetailTitle;	
     
-	/** Contains the content provider of the test policy component object */
+	// Contains the content provider of the test policy component object
 	private TestCaseContentProvider contentProvider;
 
-	/** The deatil area of the test case */
+	// The deatil area of the test case
 	private TestCaseDetailArea testCaseDetailArea;
 	
-	/** Previous selected entries in the tree to */
+	// Previous selected entries in the tree to
 	private List prevTestPolicyCmpt;
 	boolean prevIsValue;
 	
-	/** The form which contains this section */
+	// The form which contains this section
 	private ScrolledForm form;
 	
-	/** Indicates if all objects of the test case are displayed or 
-	 * the child objects of selected root are visible */
+	// Indicates if all objects of the test case are displayed or 
+	// the child objects of selected root are visible
 	boolean showAll = false;
 	
-	/** Indicates if the tree selection was doubleclicked */
+	// Indicates if the tree selection was doubleclicked
 	private boolean isDoubleClicked = false;
 
 	public TestCaseSection(Composite parent,
@@ -162,12 +167,12 @@ public class TestCaseSection extends IpsSection {
 		hookTreeListeners();
 		treeViewer.setContentProvider(contentProvider);
 		TestCaseLabelProvider labelProvider = new TestCaseLabelProvider();
-		treeViewer.setLabelProvider(new TestCaseMessageCueLabelProvider(labelProvider));
+		treeViewer.setLabelProvider(new TestCaseMessageCueLabelProvider(labelProvider, this));
 		new TableMessageHoverService(treeViewer) {
             protected MessageList getMessagesFor(Object element) throws CoreException {
-                if (element!=null)
-                	return ((Validatable)element).validate();
-                else
+                if (element!=null){
+                	return validateElement(element);
+                } else
                 	return null;
             }
 		};
@@ -188,11 +193,10 @@ public class TestCaseSection extends IpsSection {
 		prevTestPolicyCmpt = new ArrayList();
 		
 		testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this);
-		testCaseDetailArea.createDetailArea(client, sectionDetailTitle);
+		testCaseDetailArea.createInitialDetailArea(client, sectionDetailTitle);
 		
-		testCaseDetailArea.createDynamicDetailSection(prevTestPolicyCmpt);
 		prevIsValue = false;
-		
+		refreshTree();
 	}
 
 
@@ -226,17 +230,16 @@ public class TestCaseSection extends IpsSection {
 	/**
 	 * Select the given tree entry and display the details of the selected element.
 	 */
-	void selectAndDisplayDetailsOfTreeEntry(String target) throws CoreException {
+	void searchChildsByLabelPath(String target) throws CoreException {
 		Tree tree = treeViewer.getTree();
-		TreeItem found = searchChilds(null, target, tree.getItems());
+		TreeItem found = searchChildsByLabel(target, tree.getItems());
 		if (found != null) {
 			// show details of selected tree entry
 			if (!showAll && found.getData() instanceof ITestPolicyCmpt) {
 				ArrayList selEntry = new ArrayList(1);
 				selEntry.add((ITestPolicyCmpt) found.getData());
-				
-				testCaseDetailArea.clearDetailArea();				
-				testCaseDetailArea.createDynamicDetailSection(selEntry);
+						
+				testCaseDetailArea.createDetailSection(selEntry);
 				prevTestPolicyCmpt = selEntry;
 				prevIsValue = false;			
 				
@@ -260,26 +263,63 @@ public class TestCaseSection extends IpsSection {
 	/**
 	 * Recursive search the given childs for the given target object.
 	 */
-	private TreeItem searchChilds(ITestPolicyCmpt testPolicyCmpt, String label, TreeItem[] childs) {
+	private TreeItem searchChildsByLabel(String labelPath, TreeItem[] childs) {
 		for (int i = 0; i < childs.length; i++) {
 			TreeItem currItem = childs[i];
-			if (testPolicyCmpt != null){
-				if (currItem.getData() instanceof ITestPolicyCmpt){
-					ITestPolicyCmpt elem = (ITestPolicyCmpt) currItem.getData();
-					if (elem == testPolicyCmpt)
-						return currItem;
-				}
-			}else{
-				if (currItem.getText().equals(label) || currItem.getText().equals(label + " (P)"))
+				if (currItem.getText().equals(labelPath) || currItem.getText().equals(labelPath + REQUIRES_PRODUCT_CMPT_SUFFIX))
 					return currItem;
-			}
-			currItem = searchChilds(testPolicyCmpt, label, currItem.getItems());
+			currItem = searchChildsByLabel(labelPath, currItem.getItems());
 			if (currItem != null)
 				return currItem;
 		}
 		return null;
 	}
 
+	/**
+	 * Recursive search the given childs for the given target object.
+	 */
+	private TreeItem searchChildsByHierarchyPath(TestCaseHierarchyPath hierarchyPath, TreeItem[] childs) {
+		if (! hierarchyPath.hasNext())
+			return null;
+		String currPathItem = hierarchyPath.next();
+		TreeItem currItem = null;
+		for (int i = 0; i < childs.length; i++) {
+			currItem = childs[i];
+			if (currItem.getText().equals(currPathItem) || currItem.getText().equals(currPathItem + REQUIRES_PRODUCT_CMPT_SUFFIX)){
+				if (hierarchyPath.hasNext())
+					currItem = searchChildsByHierarchyPath(hierarchyPath, currItem.getItems());
+				break;
+			}
+		}
+		return currItem;
+	}
+	
+	/**
+	 * Recursive search the given childs for the given target object.
+	 */
+	private TreeItem searchChildsByObject(ITestPolicyCmpt testPolicyCmpt, ITestPolicyCmptRelation relation, TreeItem[] childs) {
+		if (testPolicyCmpt == null && relation == null)
+			return null;
+		
+		for (int i = 0; i < childs.length; i++) {
+			TreeItem currItem = childs[i];
+			if (testPolicyCmpt != null && currItem.getData() instanceof ITestPolicyCmpt){
+					ITestPolicyCmpt elem = (ITestPolicyCmpt) currItem.getData();
+					if (elem == testPolicyCmpt)
+						return currItem;
+			}
+			if (relation != null && currItem.getData() instanceof ITestPolicyCmptRelation){
+				ITestPolicyCmptRelation elem = (ITestPolicyCmptRelation) currItem.getData();
+				if (elem == relation)
+					return currItem;
+		}
+			currItem = searchChildsByObject(testPolicyCmpt, relation, currItem.getItems());
+			if (currItem != null)
+				return currItem;
+		}
+		return null;
+	}
+	
 	/**
 	 * Select the given object in the tree.
 	 */
@@ -293,8 +333,7 @@ public class TestCaseSection extends IpsSection {
 					prevTestPolicyCmpt = testPolicyCmpts;
 					if (!prevIsValue){
 						prevIsValue = true;
-						testCaseDetailArea.clearDetailArea();
-						testCaseDetailArea.createDynamicDetailSectionValues();
+						testCaseDetailArea.createValuesSection(true);
 						redrawForm();
 					}
 				} else {
@@ -315,8 +354,7 @@ public class TestCaseSection extends IpsSection {
 			
 			//	if the selection has changed redraw the detail section
 			if (testPolicyCmpts.size() > 0 && ! testPolicyCmpts.equals(prevTestPolicyCmpt)){
-				testCaseDetailArea.clearDetailArea();
-				testCaseDetailArea.createDynamicDetailSection(testPolicyCmpts);
+				testCaseDetailArea.createDetailSection(testPolicyCmpts);
 				prevTestPolicyCmpt = testPolicyCmpts;
 				prevIsValue = false;		
 				
@@ -324,7 +362,7 @@ public class TestCaseSection extends IpsSection {
 			}
 		}
 		Object selected = selection.getFirstElement();
-		setLinkCtrlFocus(selected, false);
+		selectInDetailArea(selected, false);
 	}
 	
 	/**
@@ -363,7 +401,7 @@ public class TestCaseSection extends IpsSection {
 				if (testPolicyCmpt.findTestPolicyCmptType() != null){
 					// root elements could not be deleted
 					removeButton.setEnabled(!((ITestPolicyCmpt)selection).isRoot());
-					addButton.setEnabled(false);
+					addButton.setEnabled(true);
 				}
 			} catch (CoreException e) {
 				// disable add and remove button and ignore exception
@@ -373,6 +411,9 @@ public class TestCaseSection extends IpsSection {
 				removeButton.setEnabled(false);
 				return;
 			}
+		}else if (selection instanceof ITestPolicyCmptRelation){
+			removeButton.setEnabled(true);
+			addButton.setEnabled(false);
 		}else{
 			// no relation or policy componet selected
 			// disable the buttons
@@ -399,9 +440,23 @@ public class TestCaseSection extends IpsSection {
 					return;
 				}
 				Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-				isDoubleClicked = true;
 				
-				setLinkCtrlFocus(selected, true);
+				// set focus to the first edit field in details area of the clicked element or
+				// if an asszosiation was clicked set the focus to the entry in the tree
+				if (selected instanceof ITestPolicyCmptRelation){
+					// an assoziation relation was clicked
+					ITestPolicyCmpt target = null;
+					try {
+						target = ((ITestPolicyCmptRelation) selected).findTarget();
+					} catch (CoreException e) {
+						// ignore exception, don't move the focus
+					}
+					if (target != null)
+						selectInTreeByObject(target, true);
+				} else {
+					isDoubleClicked = true;
+					selectInDetailArea(selected, true);
+				}
 			}
 		});
 	}
@@ -413,7 +468,7 @@ public class TestCaseSection extends IpsSection {
 	 * @param withFocusChange If <code>true</code> also the focus will be set to the first edit field in the
 	 *                        found section. If <code>false</code> no focus will be moved. 
 	 */
-	private void setLinkCtrlFocus(Object selected, boolean withFocusChange){
+	private void selectInDetailArea(Object selected, boolean withFocusChange){
 		String uniquePath="";
 		testCaseDetailArea.resetSectionColors(form);
 		if(selected instanceof ITestValue){
@@ -506,7 +561,7 @@ public class TestCaseSection extends IpsSection {
 	 */
 	private void showRelationsClicked() {
 		contentProvider.setWithoutRelations(!contentProvider.isWithoutRelations());
-		treeViewer.refresh();
+		refreshTreeAndDetailArea();
 	}
 
 	/**
@@ -518,67 +573,75 @@ public class TestCaseSection extends IpsSection {
 			if (selectedObject instanceof TestCaseTypeRelation){
 				// add a new child depending on the relation which was clicked
 				TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) selectedObject;
-				
-				String productCmpt = "";
-				if (dummyRelation.isRequiresProductCmpt()){
-					productCmpt = selectProductCmptDialog(dummyRelation.getPolicyCmptTypeTarget());
-					if (productCmpt == null)
-						// chancel
-						return;
-				}
-				
-				IRelation relation = dummyRelation.findRelation();
-				if (relation == null){
-					// relation not found, no add allowed
-					return;
-				}
-				
-				if (relation.isAssoziation()){
-					String targetName = "";
-					ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(relation.getTarget());
-					if (selectedTarget == null)
-						// chancel
-						return;
-					
-					TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget, true);
-					
-					targetName = path.getHierarchyPath();
-					
-					
-					// add a new child based on the selected relation and selected target
-					ITestPolicyCmptRelation newRelation = dummyRelation.getParentTestPolicyCmpt().addTestPcTypeRelation(dummyRelation, productCmpt, targetName);
-					ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
-					if (newTestPolicyCmpt != null){
-						refreshTreeAndDetailArea();
-						selectInTree(newTestPolicyCmpt, "");
-					}
-				}else{
-					// add a new child based on the selected relation
-					ITestPolicyCmptRelation newRelation = dummyRelation.getParentTestPolicyCmpt().addTestPcTypeRelation(dummyRelation, productCmpt, "");
-					if (newRelation != null){
-						ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
-						contentProvider.generateUniqueLabelOfTestPolicyCmpt(newTestPolicyCmpt);						
-						refreshTreeAndDetailArea();
-						selectInTree(newTestPolicyCmpt, "");
-					}else{
-						throw new CoreException(new IpsStatus("Error creating relation"));
-					}
-				}
+				addRelation(dummyRelation);
 			} else if (selectedObject instanceof ITestPolicyCmpt){
 				// the relation level is not visible
-				// open a dialog to ask for the type of relation 
-				// if there are differet types configured in the test case type
-				// e.g. a) association, b) composition, or c) composition with required product component
-				// TODO Joerg: dialog relation type select
-			} else {
+				// open a dialog to ask for the type of relation which 
+				// are defined in the test case type parameter
+				ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selectedObject;
+				TestCaseTypeRelation dummyRelation = selectTestCaseTypeRelationByDialog(testPolicyCmpt);
+				if (dummyRelation != null)
+					addRelation(dummyRelation);
+			} else{
 				return;
 			}
-
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}
 	}
-
+	
+	/**
+	 * Add a new relation based an the given test case type relation.
+	 */
+	private void addRelation(TestCaseTypeRelation dummyRelation) throws CoreException{
+		String productCmpt = "";
+		if (dummyRelation.isRequiresProductCmpt()){
+			productCmpt = selectProductCmptDialog(dummyRelation.getPolicyCmptTypeTarget());
+			if (productCmpt == null)
+				// chancel
+				return;
+		}
+		
+		IRelation relation = dummyRelation.findRelation();
+		if (relation == null){
+			// relation not found, no add allowed
+			return;
+		}
+		
+		if (relation.isAssoziation()){
+			String targetName = "";
+			ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(relation.getTarget());
+			if (selectedTarget == null)
+				// chancel
+				return;
+			
+			TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget, true);
+			
+			targetName = path.getHierarchyPath();
+			
+			
+			// add a new child based on the selected relation and selected target
+			ITestPolicyCmptRelation newRelation = dummyRelation.getParentTestPolicyCmpt().
+				addTestPcTypeRelation(dummyRelation.getTestPolicyCmptTypeParam(), productCmpt, targetName);
+			ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();
+			if (newTestPolicyCmpt != null){
+				refreshTreeAndDetailArea();
+				selectInTreeByObject(newRelation, true);
+			}
+		}else{
+			// add a new child based on the selected relation
+			ITestPolicyCmptRelation newRelation = dummyRelation.getParentTestPolicyCmpt().
+				addTestPcTypeRelation(dummyRelation.getTestPolicyCmptTypeParam(), productCmpt, "");
+			if (newRelation != null){
+				ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();					
+				refreshTreeAndDetailArea();
+				selectInTreeByObject(newTestPolicyCmpt, true);
+			}else{
+				throw new CoreException(new IpsStatus("Error creating relation"));
+			}
+		}		
+	}
+	
 	/**
 	 * Remove button was clicked.
 	 */
@@ -586,21 +649,32 @@ public class TestCaseSection extends IpsSection {
 		ISelection selection = treeViewer.getSelection();
 		if (selection instanceof IStructuredSelection){
 			ITestPolicyCmpt prevTestPolicyCmpt = null;
+			ITestPolicyCmptRelation prevRelationObj = null;
 			String prevRelation = "";
 			for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {			
 				Object domainObject = iterator.next();
 				if (domainObject instanceof ITestPolicyCmptRelation){
-					ITestPolicyCmpt parent = (ITestPolicyCmpt) ((ITestPolicyCmptRelation) domainObject).getParent();
+					ITestPolicyCmptRelation relation = (ITestPolicyCmptRelation) domainObject;
+					ITestPolicyCmpt parent = (ITestPolicyCmpt) relation.getParent();
+
+					prevRelation = new TestCaseHierarchyPath(relation, true).getHierarchyPath();
+					ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(relation.getTestPolicyCmptType());
+					for (int i = 0; i < relations.length; i++) {
+						if (relations[i] == relation)
+							break;
+						prevRelationObj = relations[i];
+					}
+
 					parent.removeRelation((ITestPolicyCmptRelation) domainObject);
 				} else if (domainObject instanceof ITestPolicyCmpt) {
 					ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) domainObject;
 					try {
 						if (! testPolicyCmpt.isRoot()){ 
-							// find the previous to select after delete
+							// find the the previous to select it after delete finished
 							ITestPolicyCmptRelation parentRelation = (ITestPolicyCmptRelation) testPolicyCmpt.getParent();
-							prevRelation = parentRelation.getTestPolicyCmptType();
+							prevRelation = new TestCaseHierarchyPath(parentRelation, true).getHierarchyPath();
 							ITestPolicyCmpt parent = (ITestPolicyCmpt) parentRelation.getParent();
-							ITestPolicyCmptRelation[] relations = parent.getTestPcTypeRelations(parentRelation.getTestPolicyCmptType());
+							ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(parentRelation.getTestPolicyCmptType());
 							for (int i = 0; i < relations.length; i++) {
 								if (relations[i] == parentRelation)
 									break;
@@ -613,7 +687,12 @@ public class TestCaseSection extends IpsSection {
 					}	
 				}
 				refreshTreeAndDetailArea();
-				selectInTree(prevTestPolicyCmpt, prevRelation);
+				if (prevTestPolicyCmpt != null)
+					selectInTreeByObject(prevTestPolicyCmpt, true);
+				else if (prevRelationObj !=  null)
+					selectInTreeByObject(prevRelationObj, true);
+				else
+					selectInTreeByLabelPath(prevRelation);
 			}
 		}
 	}
@@ -621,61 +700,38 @@ public class TestCaseSection extends IpsSection {
 	private void showAllClicked(){
 		showAll = ! showAll;
 		if (showAll){
-			
 			ArrayList allInputTestPolicyCmpts;
-			testCaseDetailArea.clearDetailArea();
-			ITestPolicyCmpt[] policyCmpts = contentProvider.getSortedPolicyCmpts();
+			ITestPolicyCmpt[] policyCmpts = contentProvider.getPolicyCmpts();
 			allInputTestPolicyCmpts = new ArrayList(policyCmpts.length);
 			for (int i = 0; i < policyCmpts.length; i++) {
 				allInputTestPolicyCmpts.add(policyCmpts[i]);
 			}
 
-			testCaseDetailArea.createDynamicDetailSection(allInputTestPolicyCmpts);
-			prevTestPolicyCmpt = allInputTestPolicyCmpts;
-			prevIsValue = false;
-			testCaseDetailArea.createDynamicDetailSectionValues();
-			
-			redrawForm();
-			
+			testCaseDetailArea.createDetailSection(allInputTestPolicyCmpts);
+			testCaseDetailArea.createValuesSection(false);
 			prevIsValue = true;
-			prevTestPolicyCmpt = allInputTestPolicyCmpts;
+			prevTestPolicyCmpt = allInputTestPolicyCmpts;			
+			redrawForm();
 		}else{
-			testCaseDetailArea.clearDetailArea();
 			prevIsValue = false;
 			prevTestPolicyCmpt = new ArrayList();
 			ISelection selection = treeViewer.getSelection();
 			if (selection instanceof IStructuredSelection){
 				Object domainObject = ((IStructuredSelection)selection).getFirstElement();
 				if (domainObject instanceof ITestValue){
-					testCaseDetailArea.createDynamicDetailSectionValues();
+					testCaseDetailArea.createValuesSection(true);
 				} else {
 					ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
 					ArrayList list = new ArrayList();
 					list.add(testPolicyCmpt);
 					
-					testCaseDetailArea.createDynamicDetailSection(list);
+					testCaseDetailArea.createDetailSection(list);
 					prevTestPolicyCmpt = list;
 					prevIsValue = false;		
 				}
 			}
 			redrawForm();
 		}
-	}
-	
-	/**
-	 * Select the given element in the tree. The element could either by identified by the given policy component
-	 * or by the label
-	 */
-	private void selectInTree(ITestPolicyCmpt testPolicyCmpt, String label) {    	
-		TreeItem found = searchChilds(testPolicyCmpt, label, treeViewer.getTree().getItems());
-    	if (found != null) {
-			// select the tree entry
-			TreeItem[] select = new TreeItem[1];
-			select[0] = found;
-			treeViewer.getTree().setSelection(select);
-			treeViewer.getTree().setFocus();
-			updateButtonEnableState(found.getData());
-    	}
 	}
 
 	/**
@@ -735,21 +791,27 @@ public class TestCaseSection extends IpsSection {
 	 * Refresh the tree and form.
 	 */
 	private void refreshTreeAndDetailArea(){
+		prevIsValue = false;
 		form.setRedraw(false);
-		treeViewer.refresh();
-		treeViewer.expandAll();
-		treeViewer.collapseAll();
-		testCaseDetailArea.clearDetailArea();
-		testCaseDetailArea.createDynamicDetailSection(prevTestPolicyCmpt);
-		prevIsValue = false;		
+		testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
+		refreshTree();
 		redrawForm();
 		form.setRedraw(true);
 	}
 	
 	/**
-	 * (@inheritDoc)
+	 * Refresh the tree.
 	 */
-	protected void performRefresh() {
+	private void refreshTree(){
+		treeViewer.getTree().setRedraw(false);
+		TreeViewerExpandStateStorage treeexpandStorage = new TreeViewerExpandStateStorage(treeViewer);
+		treeexpandStorage.storeExpandedStatus();
+		treeViewer.refresh();
+		treeViewer.expandAll();
+		treeViewer.collapseAll();
+		treeexpandStorage.restoreExpandedStatus();
+		treeViewer.getTree().setRedraw(true);
+		
 	}
 	
 	/**
@@ -771,63 +833,62 @@ public class TestCaseSection extends IpsSection {
 		}
 		return testPolicyCmpt;
 	}
-	
-	/**
-	 * Displays the tree select dialog and return the selected object.
-	 * Returns <code>null</code> if no or a wrong object was chosen.
-	 */
-	private ITestPolicyCmpt selectAssoziationByTreeDialog(String filteredPolicyCmptType) throws CoreException {
-		ITestPolicyCmpt testPolicyCmpt = null;
-		TestCaseTreeSelectionDialog dialog = new TestCaseTreeSelectionDialog(getShell(), toolkit, testCase, TestCaseContentProvider.TYPE_INPUT, filteredPolicyCmptType);
-        if (dialog.open()==Window.OK) {
-            if (dialog.getResult().length>0) {
-            	ITestPolicyCmptTypeParameter param = null;
-            	if (dialog.getResult()[0] instanceof ITestPolicyCmpt){
-	            	testPolicyCmpt = (ITestPolicyCmpt) dialog.getResult()[0];	
-	        		try {
-	        			param = (ITestPolicyCmptTypeParameter) testPolicyCmpt.findTestPolicyCmptType();
-	        		} catch (CoreException e) {
-	        			// ignored exception and don't return the element
-	        		}
-            	}
-            	if (param == null || ! param.getPolicyCmptType().equals(filteredPolicyCmptType)){
-            		testPolicyCmpt = null;
-                	// TODO Joerg: Errormsg not not allowed ...
-                }
-            }
-        }
-        return testPolicyCmpt;
-	}
 
+	void selectInTreeByObject(ITestPolicyCmpt testPolicyCmpt, boolean focusChange) {
+		selectInTreeByObject(testPolicyCmpt, null, focusChange);
+	}
+	
+	void selectInTreeByObject(ITestPolicyCmptRelation relation, boolean focusChange) {
+		selectInTreeByObject(null, relation, focusChange);
+	}
+	
 	/**
 	 * Select the given test policy component in the tree.
 	 */
-	void selectInTree(ITestPolicyCmpt testPolicyCmpt) {
+	private void  selectInTreeByObject(ITestPolicyCmpt testPolicyCmpt, ITestPolicyCmptRelation relation, boolean focusChange) {
 		if (!isDoubleClicked){
-        	setLinkCtrlFocus(testPolicyCmpt, false);
+        	selectInDetailArea(testPolicyCmpt, false);
         	// goto the corresponding test policy component in the tree
     		Tree tree = treeViewer.getTree();
-        	TreeItem found = searchChilds(testPolicyCmpt, "", tree.getItems());
+        	TreeItem found = searchChildsByObject(testPolicyCmpt, relation, tree.getItems());
         	if (found != null) {
-    			// select the tree entry
+        		// select the tree entry
     			TreeItem[] select = new TreeItem[1];
     			select[0] = found;
     			tree.setSelection(select);
+    			if (focusChange){
+    				treeViewer.getTree().setFocus();
+    				updateButtonEnableState(found.getData()); 
+    			}
     		}
         }else{
         	isDoubleClicked = false;
-        	setLinkCtrlFocus(testPolicyCmpt, true);
+        	selectInDetailArea(testPolicyCmpt, true);
         }
 	}
 	
 	/**
-	 * Redraws the form.
+	 * Select the given test policy component in the tree.
 	 */
-	private void redrawForm() {
-		// redraw the form
-		pack();
-		getParent().layout(true);
-        form.reflow(true);
+	void selectInTreeByLabelPath(String label) {
+		// goto the corresponding test policy component in the tree
+		TestCaseHierarchyPath hierarchyPath = new TestCaseHierarchyPath(label);
+		
+		Tree tree = treeViewer.getTree();
+		TreeItem found = null;
+		if (hierarchyPath.count() > 1){
+			found = searchChildsByHierarchyPath(hierarchyPath, tree.getItems());
+		} else {
+			found = searchChildsByLabel(label, tree.getItems());
+		}
+			if (found != null) {
+			// select the tree entry
+			TreeItem[] select = new TreeItem[1];
+			select[0] = found;
+			tree.setSelection(select);
+			treeViewer.getTree().setFocus();
+			updateButtonEnableState(found.getData());    			
+		}
 	}
 	
 	/**
@@ -835,10 +896,10 @@ public class TestCaseSection extends IpsSection {
 	 */
 	void selectTestValueInTree(ITestValue testValue){
 		if (!isDoubleClicked){
-    		setLinkCtrlFocus(testValue, false);
+    		selectInDetailArea(testValue, false);
     		// goto the corresponding value object in the tree
     		Tree tree = treeViewer.getTree();
-        	TreeItem found = searchChilds(null, testValue.getTestValueParameter(), tree.getItems());
+        	TreeItem found = searchChildsByLabel(testValue.getTestValueParameter(), tree.getItems());
         	if (found != null) {
     			// select the tree entry
     			TreeItem[] select = new TreeItem[1];
@@ -847,7 +908,194 @@ public class TestCaseSection extends IpsSection {
     		}
         }else{
         	isDoubleClicked = false;
-        	setLinkCtrlFocus(testValue, true);
+        	selectInDetailArea(testValue, true);
         }
+	}
+
+	/**
+	 * Redraws the form.
+	 */
+	private void redrawForm() {
+		// redraw the form
+		form.setRedraw(false);
+		pack();
+		getParent().layout(true);
+        form.reflow(true);
+        form.setRedraw(true);
+	}
+	
+	/**
+	 * Performs and returns validation messages on the parent of the given element,
+	 * This function will be used to show the validation messages on the child element
+	 * if the relation layer is hidden.
+	 */
+	MessageList validateParentElement(Object element) throws CoreException{
+    	if (contentProvider.isWithoutRelations()){
+			if (element instanceof ITestPolicyCmptRelation){
+	    		ITestPolicyCmptRelation cmptRelation = (ITestPolicyCmptRelation) element;
+	    		TestCaseTypeRelation dummyRelation = 
+	    			new TestCaseTypeRelation(cmptRelation.findTestPolicyCmptType(), (ITestPolicyCmpt)cmptRelation.getParent());
+	    		return dummyRelation.validate();
+	    	}else if (element instanceof ITestPolicyCmpt){
+	    		ITestPolicyCmpt pc = (ITestPolicyCmpt) element;
+	    		if (! pc.isRoot()){
+		    		TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(pc.findTestPolicyCmptType(), pc.getParentPolicyCmpt());
+		    		return dummyRelation.validate();
+	    		}
+	    	}
+    	}
+    	return null;
+	}
+
+	/**
+	 * Performs and returns validation messages on the given element.
+	 */
+	MessageList validateElement(Object element) throws CoreException{
+    	MessageList messageList = new MessageList();
+    	// validate element
+		if (element instanceof ITestPolicyCmptRelation){
+			messageList.add(((ITestPolicyCmptRelation)element).validateSingle());
+	    }else if (element instanceof ITestPolicyCmpt){
+	    	messageList.add(((Validatable)element).validate());
+    	}else if (element instanceof TestCaseTypeRelation){
+    		messageList.add(((Validatable)element).validate());
+    	}else if (element instanceof ITestValue){
+    		messageList.add(((Validatable)element).validate());
+    	}
+		// if the relation level is hidden the validate the parent to display parent validation failures
+		if (contentProvider.isWithoutRelations()){
+			if (element instanceof ITestPolicyCmptRelation){
+				messageList.add(((ITestPolicyCmptRelation)element).validateGroup());
+	    	}else if (element instanceof ITestPolicyCmpt){
+	    		ITestPolicyCmpt pc = (ITestPolicyCmpt) element;
+	    		if (! pc.isRoot()){
+		    		TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(pc.findTestPolicyCmptType(), pc.getParentPolicyCmpt());
+		    		messageList.add(dummyRelation.validate());
+	    		}
+	    	}
+		}
+    	return messageList;
+	}
+	
+	/**
+	 * Displays the tree select dialog and return the selected object.
+	 * Returns <code>null</code> if no or a wrong object was chosen or the user select nothing.
+	 */
+	private ITestPolicyCmpt selectAssoziationByTreeDialog(String filteredPolicyCmptType) throws CoreException {
+		ITestPolicyCmpt testPolicyCmpt = null;
+		TestPolicyCmptSelectionDialog dialog = new TestPolicyCmptSelectionDialog(getShell(), toolkit, testCase, TestCaseContentProvider.TYPE_INPUT, filteredPolicyCmptType);
+        if (dialog.open()==Window.OK) {
+            if (dialog.getResult().length>0) {
+            	if (dialog.getResult()[0] instanceof ITestPolicyCmpt){
+	            	testPolicyCmpt = (ITestPolicyCmpt) dialog.getResult()[0];	
+            	}
+            }
+        }
+        return testPolicyCmpt;
+	}
+	
+	/**
+	 * Displays a dialog to select the type definition of a test relation.
+	 * Returns the selected test case type relation object or <code>null</code> if the user select nothing.
+	 */
+	private TestCaseTypeRelation selectTestCaseTypeRelationByDialog(ITestPolicyCmpt parentTestPolicyCmpt) throws CoreException {
+		ElementListSelectionDialog selectDialog = 
+			new ElementListSelectionDialog(getShell(), new TestCaseTypeRelationLabelProvider());
+		selectDialog.setTitle("Select test relation type");
+		selectDialog.setMessage("Select the test policy component type relation of the new test policy component.");
+		
+		ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptType();
+		TestCaseTypeRelation[] dummyRelations = new TestCaseTypeRelation[param.getTestPolicyCmptTypeParamChilds().length];
+		ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
+		for (int i = 0; i < childParams.length; i++) {
+			TestCaseTypeRelation relation = new TestCaseTypeRelation(childParams[i], parentTestPolicyCmpt);
+			dummyRelations[i] = relation;
+		}
+		selectDialog.setElements(dummyRelations);
+		if (selectDialog.open()==Window.OK) {
+            if (selectDialog.getResult().length>0) {
+            	return (TestCaseTypeRelation)selectDialog.getResult()[0];
+            }
+        }
+		return null;
+	}
+	
+	/**
+	 * Label provider for the test case type relation select dialog.
+	 */
+	private class TestCaseTypeRelationLabelProvider implements ILabelProvider{
+		/**
+		 * {@inheritDoc}
+		 */
+		public Image getImage(Object element) {
+			return getImageFromRelationType((TestCaseTypeRelation)element);
+		}
+
+		/**
+		 * Returns the image of the given relation test case type parameter.
+		 */
+		private Image getImageFromRelationType(TestCaseTypeRelation dummyRelation) {
+			try {
+				ITestPolicyCmptTypeParameter typeParam = null;
+				typeParam = dummyRelation.getTestPolicyCmptTypeParam();
+				IRelation relation = typeParam.findRelation();
+				if (relation == null){
+					return null;
+				}				      	
+				if (relation.isAssoziation()){
+					return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+				}else {
+					return IpsPlugin.getDefault().getImage("Aggregation.gif"); //$NON-NLS-1$
+				}
+			} catch (CoreException e) {
+				return null;
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String getText(Object element) {
+	    	TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
+	    	String text = dummyRelation.getName();
+	    	if (dummyRelation.isRequiresProductCmpt()){
+	    		text += REQUIRES_PRODUCT_CMPT_SUFFIX;
+	    	}
+	    	return text;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+
+		public void addListener(ILabelProviderListener listener) {
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+
+		public void dispose() {
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+
+		public boolean isLabelProperty(Object element, String property) {
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void removeListener(ILabelProviderListener listener) {
+		}		
+	}
+	
+	/**
+	 * (@inheritDoc)
+	 */
+	protected void performRefresh() {
 	}
 }

@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 public class TestCaseEditorPage extends IpsObjectEditorPage {
     private static final String PAGE_ID = "TestCaseInput"; //$NON-NLS-1$
     
-    /** Type of the to be edit objects: input or expected result */
+    // Type of the to be edit objects: input or expected result
     private int objectType;
     
     private String sectionTitle;
@@ -53,14 +53,14 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
 		new TestCaseSection(formBody, toolkit, contentProviderInput, sectionTitle, sectionDetailTitle, getManagedForm().getForm());
 	}
 	
-	/**
+	/*
 	 * Returns the corresponding editor.
 	 */
     private TestCaseEditor getTestCaseEditor() {
         return (TestCaseEditor)getEditor();
     }
     
-    /**
+    /*
      * Returns the test case which wil be edit by this editor page.
      */
     private ITestCase getTestCase() {

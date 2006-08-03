@@ -93,7 +93,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	private Image getImageFromRelation(ITestPolicyCmptRelation testPcTypeRelation) {
 		if (testPcTypeRelation == null)
 			return null;
-		if (testPcTypeRelation.isAccociation()){
+		if (testPcTypeRelation.isAccoziation()){
 			return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
 		}else{
 			return IpsPlugin.getDefault().getImage("Aggregation.gif"); //$NON-NLS-1$
@@ -111,17 +111,11 @@ public class TestCaseLabelProvider implements ILabelProvider {
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) element;
 			String text = "";
 			try {
-				ITestPolicyCmpt target = testPcTypeRelation.findTarget();
-				if (target != null){
-					text = target.getTestPolicyCmptType();
-				} else {
-					text = testPcTypeRelation.getTarget();
-				}
+				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeRelation.getTarget());
+				
 				ITestPolicyCmptTypeParameter typeParam = testPcTypeRelation.findTestPolicyCmptType();
-				if (typeParam != null){
-					if(typeParam.isRequiresProductCmpt())
-						text += " (P)";
-				}
+				if (typeParam != null && typeParam.isRequiresProductCmpt())
+					text += TestCaseSection.REQUIRES_PRODUCT_CMPT_SUFFIX;
 			} catch (CoreException e) {
 				// ignore model error, the model consitence between the test case type and the test case
 				// will be check when openening the editor, therefor we can ignore is here
@@ -134,7 +128,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	    	TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
 	    	String text = dummyRelation.getName();
 	    	if (dummyRelation.isRequiresProductCmpt()){
-	    		text += " (P)";
+	    		text += TestCaseSection.REQUIRES_PRODUCT_CMPT_SUFFIX;
 	    	}
 	    	return text;
 	    }

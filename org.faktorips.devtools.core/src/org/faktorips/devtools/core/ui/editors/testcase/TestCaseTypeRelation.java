@@ -24,12 +24,16 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Class to represent a dummy relation depending on the test case type relation (test policy component type parameter)
- * and a concrete test policy component which is the parent of this test relation type.
+ * Helper class to represent a dummy relation depending on the test case type relation (test policy component type parameter)
+ * and a concrete test policy component which will be the parent of all concrete relations inside the test case.
+ * The concret relations are based on the test case type relation.<br>
+ * The parent test policy component could be used to add new relations to this test policy component
+ * inside the test case (based on the test case type relation).<br>
+ * Example: this class R contains the relation type RT and the test policy component A1. By using this
+ * class a new test relation RT1 of type RT could be added to the policy component A.
  * 
  * @author Joerg Ortmann
  */
@@ -39,7 +43,7 @@ public class TestCaseTypeRelation implements Validatable{
 	private ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
 	
 	/** Contains the parent inside the test case model of the test relation type parameter */
-	private ITestPolicyCmpt testPolicyCmpt;
+	private ITestPolicyCmpt parentTestPolicyCmpt;
 	
     /**
      * Constructor for testing purposes.
@@ -47,8 +51,9 @@ public class TestCaseTypeRelation implements Validatable{
     protected TestCaseTypeRelation() {
     }
     
-	public TestCaseTypeRelation(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
+	public TestCaseTypeRelation(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter, ITestPolicyCmpt parentTestPolicyCmpt) {
 		this.testPolicyCmptTypeParameter = testPolicyCmptTypeParameter;
+		this.parentTestPolicyCmpt = parentTestPolicyCmpt;
 	}
 	
 	/**
@@ -63,15 +68,15 @@ public class TestCaseTypeRelation implements Validatable{
 	 * which is the parent of the test relation type.
 	 */
 	public ITestPolicyCmpt getParentTestPolicyCmpt() {
-		return testPolicyCmpt;
+		return parentTestPolicyCmpt;
 	}
 	
 	/**
 	 * Sets the test policy component (concrete instance inside the test case model) 
 	 * which is the parent of the test relation type.
 	 */
-	public void setTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
-		this.testPolicyCmpt = testPolicyCmpt;
+	public void setParentTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
+		this.parentTestPolicyCmpt = testPolicyCmpt;
 	}
 	
 	/**
@@ -152,37 +157,21 @@ public class TestCaseTypeRelation implements Validatable{
 		MessageList msgList = testPolicyCmptTypeParameter.validate();
 		list.add(msgList);
 		
-		if (testPolicyCmpt == null){
+		if (parentTestPolicyCmpt == null){
 			return;
 		}
 		
-		// first count relataions of this kind in the test case
-		int count = 0;
-		ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPcTypeRelations();
+		// delegate the validation to the corresponding test policy component relation
+		ITestPolicyCmptRelation[] relations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
+		ITestPolicyCmptRelation testPolicyCmptRelation = null;
 		for (int i = 0; i < relations.length; i++) {
-			if (relations[i].getTestPolicyCmptType().equalsIgnoreCase(getName())){
-				count++;
+			if (relations[i].getTestPolicyCmptType().equals(getName())){
+				testPolicyCmptRelation = relations[i];
+				break;
 			}
 		}
 		
-		IRelation modelRelation = null;
-		modelRelation = findRelation();
-		if (modelRelation == null){
-			String text = "The model relation \"" + testPolicyCmptTypeParameter.getRelation() + "\" for this test case relation doesn't exists.";
-			Message msg = new Message("4711", text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
-			list.add(msg);		
-		}
-
-		if (count < testPolicyCmptTypeParameter.getMinInstances()){
-			String text = "The mininum of " + testPolicyCmptTypeParameter.getMinInstances() + " is not reached.";
-			Message msg = new Message("4711", text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
-			list.add(msg);
-		}
-		
-		if (count > testPolicyCmptTypeParameter.getMaxInstances()){
-			String text = "The maximum of " + testPolicyCmptTypeParameter.getMaxInstances() + " is reached.";
-			Message msg = new Message("4711", text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
-			list.add(msg);			
-		}
+		if (testPolicyCmptRelation != null)
+			list.add(testPolicyCmptRelation.validateGroup());
 	}
 }
