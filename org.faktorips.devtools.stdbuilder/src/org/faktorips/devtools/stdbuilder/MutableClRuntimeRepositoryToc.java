@@ -99,15 +99,23 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
 
         if(entry.isTableTocEntry()){
             TocEntryObject currentEntry = (TocEntryObject)tableContentNameTocEntryMap.get(entry.getIpsObjectId());
-
             if(entry.equals(currentEntry)){
                 return false;
             }
-
             // can't decide here if new toc entry is multi-content table or not, so put the entry in both maps
             // client must know whether to ask for qualified table name (single and multi content tables) or class name (single content tables only)
             tableContentNameTocEntryMap.put(entry.getIpsObjectId(), entry);
             tableImplClassTocEntryMap.put(entry.getImplementationClassName(), entry);
+            ++modificationStamp;
+            return true;
+        }
+        
+        if (entry.isTestCaseTocEntry()) {
+            TocEntryObject currentEntry = (TocEntryObject)testCaseNameTocEntryMap.get(entry.getIpsObjectId());
+            if(entry.equals(currentEntry)){
+                return false;
+            }
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
             ++modificationStamp;
             return true;
         }
@@ -172,6 +180,7 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
 	    SortedSet sortedEntries = new TreeSet(c);
         sortedEntries.addAll(pcIdTocEntryMap.values());
         sortedEntries.addAll(tableContentNameTocEntryMap.values());
+        sortedEntries.addAll(testCaseNameTocEntryMap.values());
         for (Iterator it=sortedEntries.iterator(); it.hasNext(); ) {
             TocEntryObject entry = (TocEntryObject)it.next();
             element.appendChild(entry.toXml(doc));

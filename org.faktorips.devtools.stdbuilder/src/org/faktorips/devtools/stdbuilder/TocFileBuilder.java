@@ -47,11 +47,15 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
+import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
+import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.runtime.TocEntryGeneration;
 import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.runtime.internal.DateTime;
@@ -77,6 +81,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     private ProductCmptGenImplClassBuilder productCmptGenImplClassBuilder;
     private ProductCmptBuilder productCmptBuilder;
     private TableImplBuilder tableImplClassBuilder;
+    private TestCaseTypeClassBuilder testCaseTypeClassBuilder;
+    private TestCaseBuilder testCaseBuilder;
     
     public TocFileBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet);
@@ -98,6 +104,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         this.tableImplClassBuilder = builder;
     }
 
+    public void setTestCaseTypeClassBuilder(TestCaseTypeClassBuilder testCaseTypeClassBuilder) {
+        this.testCaseTypeClassBuilder = testCaseTypeClassBuilder;
+    }
+    
+    public void setTestCaseBuilder(TestCaseBuilder testCaseBuilder) {
+        this.testCaseBuilder = testCaseBuilder;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -109,8 +123,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())
-                || IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType());
+        IpsObjectType type = ipsSrcFile.getIpsObjectType();
+        return IpsObjectType.PRODUCT_CMPT.equals(type)
+                || IpsObjectType.TABLE_CONTENTS.equals(type)
+                || IpsObjectType.TEST_CASE.equals(type);
     }
     
     /**
@@ -272,7 +288,10 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 entry = createTocEntry((IProductCmpt)object);
             } else if (object.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
                 entry = createTocEntry((ITableContents)object);
-            } else {
+            } else if (object.getIpsObjectType().equals(IpsObjectType.TEST_CASE)) {
+                entry = createTocEntry((ITestCase)object);
+            }
+            else {
                 throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType());
             }
             getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
@@ -331,6 +350,21 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 + ".xml";
         TocEntryObject entry = TocEntryObject.createTableTocEntry(tableContents.getQualifiedName(), tableContents.getQualifiedName(),
             xmlResourceName, tableStructureName);
+        return entry;
+    }
+
+    /**
+     * Creates a toc entry for the given test case.
+     */
+    public TocEntryObject createTocEntry(ITestCase testCase) throws CoreException {
+        ITestCaseType type = testCase.findTestCaseType();
+        if (type == null) {
+            return null;
+        }
+        String testCaseTypeName = testCaseTypeClassBuilder.getQualifiedClassName(type);
+        String xmlResourceName = testCaseBuilder.getXmlResourcePath(testCase);
+        TocEntryObject entry = TocEntryObject.createTestCaseTocEntry(testCase.getQualifiedName(), testCase.getQualifiedName(),
+            xmlResourceName, testCaseTypeName);
         return entry;
     }
 
