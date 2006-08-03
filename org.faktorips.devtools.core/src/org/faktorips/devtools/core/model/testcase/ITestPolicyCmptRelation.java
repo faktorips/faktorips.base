@@ -20,18 +20,55 @@ package org.faktorips.devtools.core.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Specification of a test policy component relation.
  * 
  * @author Joerg Ortmann
  */
-public interface ITestPolicyCmptRelation extends IIpsObjectPart {
+public interface ITestPolicyCmptRelation extends IIpsObjectPart  {
 	
 	/** Property names */
 	public final static String PROPERTY_POLICYCMPTTYPE = "testPolicyCmptType"; //$NON-NLS-1$
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTPOLICYCMPTRELATION-"; //$NON-NLS-1$
+
+    /**
+	 * Validation message code to indicate that the target of an assoziation is not in the test case.
+	 */
+	public final static String MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE = MSGCODE_PREFIX
+		+ "AssoziationTargetNotInTestCase"; //$NON-NLS-1$
+    
+    /**
+	 * Validation message code to indicate that the corresponding test case type parameter not exists.
+	 */
+	public final static String MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND = MSGCODE_PREFIX
+		+ "TestCaseTypeParamNotFound"; //$NON-NLS-1$
+	
+    /**
+	 * Validation message code to indicate that the model relation which is related by the corresponding 
+	 * test case type parameter not exists.
+	 */
+	public final static String MSGCODE_MODEL_RELATION_NOT_FOUND = MSGCODE_PREFIX
+		+ "ModelRelationNotFound"; //$NON-NLS-1$
+	
+    /**
+	 * Validation message code to indicate that the min instances aren't reached.
+	 */
+	public final static String MSGCODE_MIN_INSTANCES_NOT_REACHED = MSGCODE_PREFIX
+		+ "MinInstancesNotReached"; //$NON-NLS-1$
+	
+    /**
+	 * Validation message code to indicate that the max instances are reached.
+	 */
+	public final static String MSGCODE_MAX_INSTANCES_REACHED = MSGCODE_PREFIX
+		+ "MaxInstancesReached"; //$NON-NLS-1$
+	
     /**
      * Returns the qualified name of policy component class.
      */
@@ -74,7 +111,7 @@ public interface ITestPolicyCmptRelation extends IIpsObjectPart {
 	/**
 	 * Returns <code>true</code> if the relation is an accociation.
 	 */
-	public boolean isAccociation();
+	public boolean isAccoziation();
 	
 	/**
 	 * Returns <code>true</code> if the relation is a composition.
@@ -87,7 +124,17 @@ public interface ITestPolicyCmptRelation extends IIpsObjectPart {
 	public ITestCase getTestCase();
 	
 	/**
-	 * Set <code>true</code> if this object is transient, changed on this object will not update the source file.
+	 * Returns the result of the group validation of this relation.<br>
+	 * Validate the min and max instances of this relation type on the parent of this relation.
+	 * 
+	 * @throws CoreException if an error occurs while validating.
 	 */
-	public void setTransient(boolean isTransient);
+	public MessageList validateGroup() throws CoreException;
+	
+	/**
+	 * Returns the result of the single validation of this relation.<br>
+	 * 
+	 * @throws CoreException if an error occurs while validating.
+	 */
+	public MessageList validateSingle() throws CoreException;	
 }

@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeRelation;
 
 /**
  *  Specification of a test policy component.
@@ -98,34 +97,33 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Creates a new relation and returns it.
      */
-    public ITestPolicyCmptRelation newTestPcTypeRelation();
-
-    /**
-     * Creates a new transient relation and returns it. The relation will just be created not added to the internal model!.
-     */
-    public ITestPolicyCmptRelation newTransientTestPcTypeRelation();
+    public ITestPolicyCmptRelation newTestPolicyCmptRelation();
     
     /**
-     * Creates a new relation and returns it.
-     * FIXME
-     * @param testPcTypeRelationBase the relation which will be used as base of the new relation
-     * @param posNext if <code>true</code> the new object will be added at the next position below the given test policy component
-     *  			  <code>false</code> the new object will be added at the end
-     * @param productCmpt contains the name of the product component if the child of the relation requires a product component
+     * Creates a new relation on the test policy component and returns it. The given test policy component type param specifies the type of the
+     * relation, because depending on the test case type there could be more than one possible relations for this test policy component.
+     * 
+     * @param typeParam The test policy component type parameter for which the new relation will be created. 
+     * 				    This is the type definition of the relation.
+     * @param productCmpt The name of the product component if the child of the relation requires a product component
+     *                    otherwise empty.
+     * @param targetName The name of the target if the new relation should be an assoziation otherwise empty.
      * 
      * @throws CoreException if an error occurs while adding the new relation.
      */
-    public ITestPolicyCmptRelation addTestPcTypeRelation(TestCaseTypeRelation typeParam, String productCmpt, String targetName) throws CoreException ;
+    public ITestPolicyCmptRelation addTestPcTypeRelation(ITestPolicyCmptTypeParameter typeParam, String productCmpt, String targetName) throws CoreException ;
     
     /**
-     * Returns the type's relations.
+     * Returns all test policy component relations.
      */
-    public ITestPolicyCmptRelation[] getTestPcTypeRelations();
+    public ITestPolicyCmptRelation[] getTestPolicyCmptRelations();
 
     /**
-     * Returns the type's relations which are related to the given test policy component parameter.
+     * Returns the test policy component relations with the given name 
+     * which are related to the given test policy component parameter.
+     * 
      */
-    public ITestPolicyCmptRelation[] getTestPcTypeRelations(String typeParameterName);
+    public ITestPolicyCmptRelation[] getTestPolicyCmptRelations(String typeParameterName);
     
     /**
      * Returns the first relation with the indicated test policy cmpt type name 

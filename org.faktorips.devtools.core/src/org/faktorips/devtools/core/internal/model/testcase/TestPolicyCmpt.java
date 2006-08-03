@@ -37,8 +37,8 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeRelation;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
 public class TestPolicyCmpt extends TestObject implements
 		ITestPolicyCmpt {
 
-	/** Tags */
+	/* Tags */
 	final static String TAG_NAME = "PolicyCmptTypeObject";
 	
 	private String testPolicyCmptType = "";
@@ -63,7 +63,7 @@ public class TestPolicyCmpt extends TestObject implements
 	
 	private List testAttributeValues = new ArrayList(0);
 	
-	private List testPcTypeRelations = new ArrayList(0);
+	private List testPolicyCmptRelations = new ArrayList(0);
 	
 	public TestPolicyCmpt(IIpsObject parent, int id) {
 		super(parent, id);
@@ -77,11 +77,11 @@ public class TestPolicyCmpt extends TestObject implements
 	 * {@inheritDoc}
 	 */
 	public IIpsElement[] getChildren() {
-		int numOfChildren = testAttributeValues.size() + testPcTypeRelations.size();
+		int numOfChildren = testAttributeValues.size() + testPolicyCmptRelations.size();
 		IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
 		List childrenList = new ArrayList(numOfChildren);
 		childrenList.addAll(testAttributeValues);
-		childrenList.addAll(testPcTypeRelations);
+		childrenList.addAll(testPolicyCmptRelations);
 		childrenList.toArray(childrenArray);
 		return childrenArray;
 	}
@@ -91,7 +91,7 @@ public class TestPolicyCmpt extends TestObject implements
 	 */
 	protected void reinitPartCollections() {
 		this.testAttributeValues = new ArrayList();
-		this.testPcTypeRelations = new ArrayList();
+		this.testPolicyCmptRelations = new ArrayList();
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class TestPolicyCmpt extends TestObject implements
 			testAttributeValues.add(part);
 			return;
 		}else if(part instanceof TestPolicyCmptRelation){
-			testPcTypeRelations.add(part);
+			testPolicyCmptRelations.add(part);
 			return;
 		}
 		throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
@@ -275,7 +275,7 @@ public class TestPolicyCmpt extends TestObject implements
 	 */
 	public ITestPolicyCmptRelation getTestPcTypeRelation(String testPolicyCmptType) {
 		ArgumentCheck.notNull(testPolicyCmptType);
-		for (Iterator it = testPcTypeRelations.iterator(); it.hasNext();) {
+		for (Iterator it = testPolicyCmptRelations.iterator(); it.hasNext();) {
 			ITestPolicyCmptRelation r = (ITestPolicyCmptRelation) it.next();
 			if (r.getTestPolicyCmptType().equals(testPolicyCmptType)) {
 				return r;
@@ -287,18 +287,18 @@ public class TestPolicyCmpt extends TestObject implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptRelation[] getTestPcTypeRelations() {
-		ITestPolicyCmptRelation[] r = new ITestPolicyCmptRelation[testPcTypeRelations.size()];
-		testPcTypeRelations.toArray(r);
+	public ITestPolicyCmptRelation[] getTestPolicyCmptRelations() {
+		ITestPolicyCmptRelation[] r = new ITestPolicyCmptRelation[testPolicyCmptRelations.size()];
+		testPolicyCmptRelations.toArray(r);
 		return r;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptRelation[] getTestPcTypeRelations(String typeParameterName) {
+	public ITestPolicyCmptRelation[] getTestPolicyCmptRelations(String typeParameterName) {
 		ArrayList relations = new ArrayList();
-		for (Iterator iter = testPcTypeRelations.iterator(); iter.hasNext();) {
+		for (Iterator iter = testPolicyCmptRelations.iterator(); iter.hasNext();) {
 			ITestPolicyCmptRelation element = (ITestPolicyCmptRelation) iter.next();
 			if (element.getTestPolicyCmptType().equals(typeParameterName))
 				relations.add(element);
@@ -309,18 +309,9 @@ public class TestPolicyCmpt extends TestObject implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptRelation newTestPcTypeRelation() {
+	public ITestPolicyCmptRelation newTestPolicyCmptRelation() {
 		ITestPolicyCmptRelation r = newTestPcTypeRelationInternal(getNextPartId());
 		updateSrcFile();
-		return r;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptRelation newTransientTestPcTypeRelation() {
-		TestPolicyCmptRelation r = new TestPolicyCmptRelation(this, 0);
-		r.setTransient(true);
 		return r;
 	}
 	
@@ -329,7 +320,7 @@ public class TestPolicyCmpt extends TestObject implements
 	 */
 	private TestPolicyCmptRelation newTestPcTypeRelationInternal(int id) {
 		TestPolicyCmptRelation r = new TestPolicyCmptRelation(this, id);
-		testPcTypeRelations.add(r);
+		testPolicyCmptRelations.add(r);
 		return r;
 	}
 	
@@ -337,7 +328,7 @@ public class TestPolicyCmpt extends TestObject implements
 	 * Removes the relation from the type. 
 	 */
 	void removeTestPcTypeRelation(TestPolicyCmptRelation relation) {
-		testPcTypeRelations.remove(relation);
+		testPolicyCmptRelations.remove(relation);
 	}
 	
 	/**
@@ -362,6 +353,9 @@ public class TestPolicyCmpt extends TestObject implements
      * {@inheritDoc}
      */
 	public ITestPolicyCmpt getParentPolicyCmpt() {
+		if (isRoot()){
+			return null;
+		}
 		ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) getParent();
 		return  (ITestPolicyCmpt) testPcTypeRelation.getParent();
 	}
@@ -372,7 +366,7 @@ public class TestPolicyCmpt extends TestObject implements
 	public void removeRelation(ITestPolicyCmptRelation relation){
 		boolean found = false;
 		int idx = 0;
-		for (Iterator iter = testPcTypeRelations.iterator(); iter.hasNext();) {
+		for (Iterator iter = testPolicyCmptRelations.iterator(); iter.hasNext();) {
 			ITestPolicyCmptRelation element = (ITestPolicyCmptRelation) iter.next();
 			if (element == relation){
 				found = true;
@@ -381,7 +375,7 @@ public class TestPolicyCmpt extends TestObject implements
 			idx ++;
 		}
 		if (found){
-			testPcTypeRelations.remove(idx);
+			testPolicyCmptRelations.remove(idx);
 			updateSrcFile();
 		}
 	}
@@ -389,38 +383,108 @@ public class TestPolicyCmpt extends TestObject implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptRelation addTestPcTypeRelation(TestCaseTypeRelation dummyRelation, String productCmpt, String targetName) throws CoreException {
-		IRelation relation = dummyRelation.findRelation();
+	public ITestPolicyCmptRelation addTestPcTypeRelation(ITestPolicyCmptTypeParameter typeParam, String productCmpt, String targetName) throws CoreException {
+		ArgumentCheck.notNull(typeParam);
+		
+		IRelation relation = typeParam.findRelation();
 		if (relation == null){
-			throw new CoreException(new IpsStatus(NLS.bind("Realtion not found \"{0}\".", dummyRelation.getRelation())));
+			throw new CoreException(new IpsStatus(NLS.bind("Realtion not found \"{0}\".", typeParam.getRelation())));
 		}
 		
 		ITestPolicyCmptRelation newTestPcTypeRelation = null;
-		if (! relation.isAssoziation()){
-			// add new relation with a test policy component child
+		if (!relation.isAssoziation()){
+			// relation is composition
+			//   add new relation including a test policy component child
 			newTestPcTypeRelation = new TestPolicyCmptRelation(this, getNextPartId());
-			newTestPcTypeRelation.setTestPolicyCmptType(dummyRelation.getName());
+			newTestPcTypeRelation.setTestPolicyCmptType(typeParam.getName());
 			
 			ITestPolicyCmpt newTestPolicyCmpt = newTestPcTypeRelation.newTargetTestPolicyCmptChild();
-			newTestPolicyCmpt.setTestPolicyCmptType(dummyRelation.getName());
+			newTestPolicyCmpt.setTestPolicyCmptType(typeParam.getName());
 			newTestPolicyCmpt.setProductCmpt(productCmpt);
 			
+			// sets the label for the new child test policy component
+			String label = "";
+			if (StringUtils.isEmpty(productCmpt)){
+				label = newTestPolicyCmpt.getTestPolicyCmptType();
+			}else{
+				label = productCmpt;
+			}
+			label = StringUtil.unqualifiedName(label);
+			label = generateUniqueLabelOfTestPolicyCmpt(newTestPolicyCmpt, label);
+			newTestPolicyCmpt.setLabel(label);
+			
 			// add the attributes which are defined in the test case type parameter
-			ITestAttribute attributes[] = dummyRelation.getTestAttributes();
+			ITestAttribute attributes[] = typeParam.getTestAttributes();
 			for (int i = 0; i < attributes.length; i++) {
 				ITestAttribute attribute = attributes[i];
 				ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();
 				attrValue.setTestAttribute(attribute.getAttribute());
 			}
 		} else{
-			// add new assoziation relation (only the target will be set and no child will be created)
+			// relation is assoziation
+			//   add new assoziation relation (only the target will be set and no child will be created)
 			newTestPcTypeRelation = new TestPolicyCmptRelation(this, getNextPartId());
-			newTestPcTypeRelation.setTestPolicyCmptType(dummyRelation.getName());
+			newTestPcTypeRelation.setTestPolicyCmptType(typeParam.getName());
 			newTestPcTypeRelation.setTarget(targetName);
 		}
-		testPcTypeRelations.add(newTestPcTypeRelation);
+		
+		// add the new relation at the end of the existing relations, grouped by the relation name
+		ITestPolicyCmptRelation prevRelationWithSameName = null;
+		for (Iterator iter = testPolicyCmptRelations.iterator(); iter.hasNext();) {
+			ITestPolicyCmptRelation currRelation = (ITestPolicyCmptRelation) iter.next();
+			if (newTestPcTypeRelation.getTestPolicyCmptType().equals(currRelation.getTestPolicyCmptType())){
+				prevRelationWithSameName = currRelation;
+			}
+		}
+		if (prevRelationWithSameName != null){
+			int idx = testPolicyCmptRelations.indexOf(prevRelationWithSameName);
+			testPolicyCmptRelations.add(idx+1, newTestPcTypeRelation);
+		}else{
+			testPolicyCmptRelations.add(newTestPcTypeRelation);
+		}
 		updateSrcFile();
 		return newTestPcTypeRelation;
+	}
+	
+	/**
+	 * Generate and set a unique label for the given test policy component.
+	 */
+	private String generateUniqueLabelOfTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label) {
+		String uniqueLabel = label;
+
+		// eval the unique idx of new component
+		int idx = 1;
+		String newUniqueLabel = uniqueLabel;
+		if (newTestPolicyCmpt.isRoot()){
+			ITestPolicyCmpt[] testPolicyCmpts = getTestCase().getInputPolicyCmpt();
+			for (int i = 0; i < testPolicyCmpts.length; i++) {
+				ITestPolicyCmpt cmpt = testPolicyCmpts[i];
+				if (newUniqueLabel.equals(cmpt.getLabel())){
+					idx ++;
+					newUniqueLabel = uniqueLabel + " (" + idx + ")";
+				}
+			}
+		}else{
+			ITestPolicyCmpt parent = newTestPolicyCmpt.getParentPolicyCmpt();
+			ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations();
+			ArrayList names = new ArrayList();
+			for (int i = 0; i < relations.length; i++) {
+				ITestPolicyCmptRelation relation = relations[i];
+				if (relation.isComposition()){
+					try {
+						ITestPolicyCmpt child = relation.findTarget();
+						names.add(child.getLabel());
+					} catch (CoreException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+			while (names.contains(newUniqueLabel)){
+				idx ++;
+				newUniqueLabel = uniqueLabel + " (" + idx + ")";
+			}
+		}
+		return newUniqueLabel;
 	}
 	
 	/**
@@ -463,5 +527,5 @@ public class TestPolicyCmpt extends TestObject implements
 				}
 			}
 		}
-	}
+	}	
 }

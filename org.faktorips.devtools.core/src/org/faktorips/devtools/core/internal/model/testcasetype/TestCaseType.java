@@ -43,11 +43,11 @@ import org.w3c.dom.Element;
  */
 public class TestCaseType extends IpsObject implements ITestCaseType {
 	
-	/** Tags */
-	private static final String TAG_NAME_INPUT = "Input";
-	private static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult";
+	/* Tags */
+	static final String TAG_NAME_INPUT = "Input";
+	static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult";
 	
-	/** Containter for input and expected result objects */
+	/* Containter for input and expected result objects */
 	private TestCaseTypeContainer input = new TestCaseTypeContainer(true, this, 0);
 	private TestCaseTypeContainer expectedResult = new TestCaseTypeContainer(false, this, 1);
 	

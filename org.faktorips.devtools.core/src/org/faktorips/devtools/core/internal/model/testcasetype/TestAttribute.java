@@ -38,8 +38,8 @@ import org.w3c.dom.Element;
 public class TestAttribute extends IpsObjectPart implements
 		org.faktorips.devtools.core.model.testcasetype.ITestAttribute {
 
-	/** Tags */
-	public static final String TAG_NAME = "Attribute";
+	/* Tags */
+	static final String TAG_NAME = "Attribute";
 	
 	private String attribute = "";
     private boolean deleted = false;

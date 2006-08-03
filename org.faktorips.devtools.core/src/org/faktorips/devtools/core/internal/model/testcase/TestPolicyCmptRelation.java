@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -42,7 +43,8 @@ import org.w3c.dom.Element;
 public class TestPolicyCmptRelation extends IpsObjectPart implements
 		ITestPolicyCmptRelation {
 
-	public static final String TAG_NAME = "Relation";
+	/** Tags */
+	static final String TAG_NAME = "Relation";
 
 	private String testPolicyCmptType = "";
 
@@ -51,8 +53,6 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	private ITestPolicyCmpt targetChild;
 
 	private boolean deleted = false;
-
-	private boolean isTransient = false;
 
 	public TestPolicyCmptRelation(IIpsObject parent, int id) {
 		super(parent, id);
@@ -75,8 +75,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	public void setTestPolicyCmptType(String newPolicyCmptType) {
 		String oldPolicyCmptType = this.testPolicyCmptType;
 		this.testPolicyCmptType = newPolicyCmptType;
-		if (!isTransient)
-			valueChanged(oldPolicyCmptType, newPolicyCmptType);
+		valueChanged(oldPolicyCmptType, newPolicyCmptType);
 	}
 
 	/**
@@ -153,8 +152,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	public void delete() {
 		((TestPolicyCmpt) getIpsObject()).removeTestPcTypeRelation(this);
-		if (!isTransient)
-			updateSrcFile();
+		updateSrcFile();
 		deleted = true;
 	}
 
@@ -207,7 +205,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isAccociation() {
+	public boolean isAccoziation() {
 		return targetChild == null;
 	}
 
@@ -265,29 +263,81 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setTransient(boolean isTransient) {
-		this.isTransient = isTransient;
+	public MessageList validateGroup() throws CoreException {
+		MessageList messageList = new MessageList();
+		
+		// validate if the test policy component type parameter exists
+		ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptType();
+		if (testCaseTypeParam == null){
+			String text = "The test case type definition for this relation doesn't exists.";
+			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);	
+		}
+		// abort the rest of the validation if the test case type parameter not found
+		if (testCaseTypeParam == null){
+			return messageList;
+		}
+		
+		// validate if the model relation exists
+		IRelation modelRelation = testCaseTypeParam.findRelation();
+		if (modelRelation == null){
+			String text = "The model relation \"" + testCaseTypeParam.getRelation() + "\" for this test case relation doesn't exists.";
+			Message msg = new Message(MSGCODE_MODEL_RELATION_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);		
+		}
+		
+		// validate the min and max occurence defined in the test policy component type parameter
+		ITestPolicyCmpt parentTestPolicyCmpt = (ITestPolicyCmpt) getParent();
+		ITestPolicyCmptRelation[] parentRelations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
+		
+		int count = 0;
+		for (int i = 0; i < parentRelations.length; i++) {
+			ITestPolicyCmptRelation currRelation = parentRelations[i];
+			if (currRelation.getTestPolicyCmptType().equals(getTestPolicyCmptType())){
+				count ++;
+			}
+		}
+		
+		if (count < testCaseTypeParam.getMinInstances()){
+			String text = "The mininum of " + testCaseTypeParam.getMinInstances() + " is not reached.";
+			Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);
+		}
+		
+		if (count > testCaseTypeParam.getMaxInstances()){
+			String text = "The maximum of " + testCaseTypeParam.getMaxInstances() + " is reached.";
+			Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);			
+		}
+		
+		return messageList;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MessageList validateSingle() throws CoreException {
+		MessageList messageList = new MessageList();
+		
+		// for assoziations check if the target is in the test case
+		if (isAccoziation()){
+			if (getTestCase().findInputPolicyCmpt(getTarget()) == null){
+				String text = "The target of this assoziation doesn't exists in this test case.";
+				Message msg = new Message(MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+				messageList.add(msg);	
+			}
+		}
+		
+		return messageList;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void validate(MessageList list) throws CoreException {
 		super.validate(list);
-
-		// validate the count of relation with the min and max occurens
-		ITestPolicyCmptTypeParameter param = null;
-		try {
-			param = getTestCase().findTestPolicyCmptTypeParameter(this);
-		} catch (CoreException e) {
-			// ignore exception, the param will be used to indicate errors
-		}
-		
-		if (param == null){
-			String text = "The test case type definition for this relation doesn't exists.";
-			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
-			list.add(msg);	
-		}
+		list.add(validateSingle());
+		list.add(validateGroup());
 	}
 
 	/**

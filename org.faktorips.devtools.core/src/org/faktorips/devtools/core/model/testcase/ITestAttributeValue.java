@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
  *  
  * @author Joerg Ortmann
  */
-public interface ITestAttributeValue extends IIpsObjectPart {
+public interface ITestAttributeValue extends IIpsObjectPart{
 	
 	/** Property names */
     public final static String PROPERTY_ATTRIBUTE = "testAttribute"; //$NON-NLS-1$

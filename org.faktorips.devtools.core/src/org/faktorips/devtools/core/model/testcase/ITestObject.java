@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  *  
  * @author Joerg Ortmann
  */
-public interface ITestObject extends IIpsObjectPart {
+public interface ITestObject extends IIpsObjectPart  {
 	
 	/**
 	 * Returns <code>true</code> if the test parameter is an input parameter

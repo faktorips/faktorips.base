@@ -52,14 +52,14 @@ import org.w3c.dom.Element;
  */
 public class TestCase extends IpsObject implements ITestCase {
 
-	/** Tags */
-	private static final String TAG_NAME_INPUT = "Input";
-	private static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult";
+	/* Tags */
+	static final String TAG_NAME_INPUT = "Input";
+	static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult";
 	
-	/** Name of corresponding test case type */
+	/* Name of corresponding test case type */
 	private String testCaseType = "";
 	
-	/** Containter for input and expected result objects */
+	/* Containter for input and expected result objects */
 	private TestCaseContainer input = new TestCaseContainer(true, this, 0);
 	private TestCaseContainer expectedResult = new TestCaseContainer(false, this, 1);
 
@@ -238,7 +238,7 @@ public class TestCase extends IpsObject implements ITestCase {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestValue[] getInputValue() {
+	public ITestValue[] getInputValues() {
 		return input.getTestValueObjects();
 	}
 	
@@ -247,20 +247,6 @@ public class TestCase extends IpsObject implements ITestCase {
 	 */
 	public ITestPolicyCmpt[] getInputPolicyCmpt() {
 		return input.getTestPolicyCmptObjects();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmpt getInputPolicyCmptByLabel(String label) {
-		return input.getTestPolicyCmptObjectByLabel(label);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmpt getInputPolicyCmptByTypeName(String typeName) {
-		return input.getTestPolicyCmptObjectByTypeName(typeName);
 	}
 	
 	/**
@@ -280,26 +266,12 @@ public class TestCase extends IpsObject implements ITestCase {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmpt getExpectedResultPolicyCmptByLabel(String label) {
-		return input.getTestPolicyCmptObjectByLabel(label);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmpt getExpectedResultPolicyCmptByTypeName(String typeName) {
-		return expectedResult.getTestPolicyCmptObjectByTypeName(typeName);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValue[] getExpectedResultValue() {
+	public ITestValue[] getExpectedResultValues() {
 		return expectedResult.getTestValueObjects();
 	}
 	
 	/**
-	 * Removes the test parameter from the type. 
+	 * {@inheritDoc}
 	 */
 	public void removeTestObject(ITestObject testObject) throws CoreException{
 		if (testObject.isInputObject()){
@@ -311,7 +283,92 @@ public class TestCase extends IpsObject implements ITestCase {
 	}
 	
 	/**
-	 * Inner class to represent the input or expected result container.
+	 * {@inheritDoc}
+	 */
+	public ITestPolicyCmpt findExpectedResultPolicyCmpt(String typeName) {
+		return expectedResult.findPolicyCmpt(typeName);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITestPolicyCmpt findInputPolicyCmpt(String typeName) {
+		return input.findPolicyCmpt(typeName);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmptBase) throws CoreException {
+		return findTestPolicyCmptTypeParameter(testPolicyCmptBase, null, testPolicyCmptBase.isInputObject());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptRelation relation) throws CoreException {
+		return findTestPolicyCmptTypeParameter(null, relation, ((ITestPolicyCmpt)relation.getParent()).isInputObject());
+	}
+
+	/**
+	 * Returns the corresponing test policy componnet type parameter of the given test policy component
+	 * or the given relation. Either the test policy component or the relation must be given, but not
+	 * both together.
+	 * Returns <code>null</code> if the parameter not found.
+	 *
+	 * @param testPolicyCmptBase The test policy component which policy component type parameter will be returned.
+	 * @param relation The test policy component relation which test relation will be returned
+	 * @param isInput Indicates if the given object is a input <code>true</code> or expected result object <code>false</code>
+	 *	
+	 * @throws CoreException if an error occurs while searching for the object.
+	 */
+	private ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmptBase,
+			ITestPolicyCmptRelation relation, boolean isInput) throws CoreException {
+		ArgumentCheck.isTrue(testPolicyCmptBase != null || relation != null);
+		ArgumentCheck.isTrue(! (testPolicyCmptBase != null && relation != null));
+		
+		ITestCaseType foundTestCaseType = findTestCaseType();
+		if (foundTestCaseType == null){
+			throw new CoreException(new IpsStatus(NLS.bind("The test case type \"{0}\" the test case belongs to was not.", testCaseType)));
+		}
+		
+		TestCaseHierarchyPath hierarchyPath = null;
+		if (testPolicyCmptBase != null){
+			hierarchyPath  = new TestCaseHierarchyPath(testPolicyCmptBase, false);
+		}else if (relation != null){
+			hierarchyPath  = new TestCaseHierarchyPath(relation, false);
+		}else{
+			throw new CoreException(new IpsStatus("No relation or policy component given!"));
+		}
+		
+		String testPolicyCmptTypeName = hierarchyPath.next();
+
+		ITestPolicyCmptTypeParameter policyCmptTypeParam = isInput ? 
+				foundTestCaseType.getInputTestPolicyCmptTypeParameter(testPolicyCmptTypeName) :
+				foundTestCaseType.getExpectedResultTestPolicyCmptTypeParameter(testPolicyCmptTypeName); 
+		if (policyCmptTypeParam == null){
+			return null;
+		}
+		
+		if (! testPolicyCmptTypeName.equals(policyCmptTypeParam.getName())){
+			// incosistence between test case and test case type
+			return null;
+		}
+
+		while (hierarchyPath.hasNext()){
+			testPolicyCmptTypeName = hierarchyPath.next();
+			policyCmptTypeParam = policyCmptTypeParam.getTestPolicyCmptTypeParamChild(testPolicyCmptTypeName);
+			if (policyCmptTypeParam == null || ! testPolicyCmptTypeName.equals(policyCmptTypeParam.getName())){
+				// incosistence between test case and test case type
+				return null;
+			}
+		}
+		
+		return policyCmptTypeParam;
+	}
+	
+	/**
+	 * Inner auxialyry class to represent the input or expected result container.
 	 */
 	private class TestCaseContainer extends IpsObjectPart{	    	
 		private boolean isInput = true;
@@ -385,21 +442,6 @@ public class TestCase extends IpsObject implements ITestCase {
 		}
 		
 		/**
-		 * Returns the test policy component with the given name.
-		 * Returns <code>null</code> if no entry found.
-		 */
-		private ITestPolicyCmpt getTestPolicyCmptObjectByTypeName(String typeName){
-			ITestPolicyCmpt[] policyCmpts = getTestPolicyCmptObjects();
-			for (int i = 0; i < policyCmpts.length; i++) {
-				ITestPolicyCmpt cmpt = policyCmpts[i];
-				if (cmpt.getTestPolicyCmptType().equals(typeName)){
-					return cmpt;
-				}
-			}
-			return null;
-		}
-		
-		/**
 		 * Returns all the test objects which are kind of the given class.
 		 */
 		private List getTestObjects(Class objectClass) {
@@ -466,7 +508,7 @@ public class TestCase extends IpsObject implements ITestCase {
 						hierarchyElementName = hierarchyPath.next();
 						// search over all relations to get the correct child
 						// note: there could be more relations with the same name
-						ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPcTypeRelations();
+						ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPolicyCmptRelations();
 						relation = null;
 						String testPolicyCmptType = hierarchyElementName;
 						hierarchyElementName = hierarchyPath.next();
@@ -574,8 +616,8 @@ public class TestCase extends IpsObject implements ITestCase {
 		 * @param typeName
 		 * @return
 		 */
-		public ITestPolicyCmpt findPolicyCmpt(String typeName) {
-			TestCaseHierarchyPath path = new TestCaseHierarchyPath(typeName);
+		public ITestPolicyCmpt findPolicyCmpt(String typeNamePath) {
+			TestCaseHierarchyPath path = new TestCaseHierarchyPath(typeNamePath);
 			
 			ITestPolicyCmpt pc = null;
 			try {
@@ -583,12 +625,14 @@ public class TestCase extends IpsObject implements ITestCase {
 				pc = getTestPolicyCmptObjectByLabel(currElem);
 				while (pc != null && path.hasNext()){
 					currElem = path.next();
-					ITestPolicyCmptRelation[] prs = pc.getTestPcTypeRelations(currElem);
+					ITestPolicyCmptRelation[] prs = pc.getTestPolicyCmptRelations(currElem);
 					currElem = path.next();
 					boolean found = false;
 					for (int i = 0; i < prs.length; i++) {
 						ITestPolicyCmptRelation relation = prs[i];
 						pc = relation.findTarget();
+						if (pc == null)
+							return null;
 						if (currElem.equals(pc.getLabel())){
 							found = true;
 							break;
@@ -602,83 +646,4 @@ public class TestCase extends IpsObject implements ITestCase {
 			return pc;
 		}
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmptBase) throws CoreException {
-		return findTestPolicyCmptTypeParameter(testPolicyCmptBase, null, testPolicyCmptBase.isInputObject());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptRelation relation) throws CoreException {
-		return findTestPolicyCmptTypeParameter(null, relation, ((ITestPolicyCmpt)relation.getParent()).isInputObject());
-	}
-
-	/**
-	 * Returns the corresponing test policy componnet type parameter of the given test policy component
-	 * or the given relation. Either the test policy component or the relation must be given, but not
-	 * both together.
-	 * Returns <code>null</code> if the parameter not found.
-	 *
-	 * @param testPolicyCmptBase the test policy component which policy component type parameter will be returned.
-	 * @param relation the test policy component relation which test relation will be returned
-	 * @param isInput indicates if the given object is a input <code>true</code> or expected result object <code>false</code>
-	 *	
-	 * @throws CoreException if an error occurs while searching for the object.
-	 */
-	private ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmptBase,
-			ITestPolicyCmptRelation relation, boolean isInput) throws CoreException {
-		ArgumentCheck.isTrue(testPolicyCmptBase != null || relation != null);
-		ArgumentCheck.isTrue(! (testPolicyCmptBase != null && relation != null));
-		
-		ITestCaseType foundTestCaseType = findTestCaseType();
-		if (foundTestCaseType == null){
-			throw new CoreException(new IpsStatus(NLS.bind("TestCaseType not found: {0}", testCaseType)));
-		}
-		
-		TestCaseHierarchyPath hierarchyPath = null;
-		if (testPolicyCmptBase != null){
-			hierarchyPath  = new TestCaseHierarchyPath(testPolicyCmptBase, false);
-		}else if (relation != null){
-			hierarchyPath  = new TestCaseHierarchyPath(relation, false);
-		}else{
-			throw new CoreException(new IpsStatus("No relation or policy component given!"));
-		}
-		
-		String testPolicyCmptTypeName = hierarchyPath.next();
-
-		
-		ITestPolicyCmptTypeParameter policyCmptTypeParam = isInput ? 
-				foundTestCaseType.getInputTestPolicyCmptTypeParameter(testPolicyCmptTypeName) :
-				foundTestCaseType.getExpectedResultTestPolicyCmptTypeParameter(testPolicyCmptTypeName); 
-		if (policyCmptTypeParam == null){
-			return null;
-		}		
-		if (! testPolicyCmptTypeName.equals(policyCmptTypeParam.getName())){
-			throw new CoreException(new IpsStatus(NLS.bind("Incosistence between test case and test case type: parameter test policy component type not found \"{0}\".", testPolicyCmptTypeName)));
-		}
-
-		while (hierarchyPath.hasNext()){
-			testPolicyCmptTypeName = hierarchyPath.next();
-			policyCmptTypeParam = policyCmptTypeParam.getTestPolicyCmptTypeParamChild(testPolicyCmptTypeName);
-			if (policyCmptTypeParam == null || ! testPolicyCmptTypeName.equals(policyCmptTypeParam.getName())){
-				throw new CoreException(new IpsStatus(NLS.bind("Incosistence between test case and test case type: parameter test policy component type not found \"{0}\".", testPolicyCmptTypeName)));
-			}
-		}
-		
-		return policyCmptTypeParam;
-	}
-
-	public ITestPolicyCmpt findExpectedResultPolicyCmpt(String typeName) {
-		return expectedResult.findPolicyCmpt(typeName);
-	}
-
-	public ITestPolicyCmpt findInputPolicyCmpt(String typeName) {
-		return input.findPolicyCmpt(typeName);
-	}
-	
-	
 }

@@ -60,7 +60,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     /**
      * Sets the name of the relation.
      */	
-	public void setRelation(String pcType);
+	public void setRelation(String relation);
 	
     /**
      * Returns the relation or <code>null</code> if the relation does not exists.

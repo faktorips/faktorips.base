@@ -43,8 +43,8 @@ import org.w3c.dom.Element;
  */
 public class TestAttributeValue  extends IpsObjectPart implements ITestAttributeValue {
 	
-	/** Tags */
-	public static final String TAG_NAME = "AttributeValue";
+	/* Tags */
+	static final String TAG_NAME = "AttributeValue";
 
 	private String testAttribute = "";
 	
@@ -167,16 +167,16 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 		super.validate(list);
 		ITestAttribute testAttr = findTestAttribute();
 		if (testAttr==null) {
-			// TODO
+			// TODO Joerg:
 			return;
 		}
 		IAttribute attribute =testAttr.findAttribute();
 		if (attribute == null){
-			// TODO
+			// TODO Joerg:
 		}
 		ValueDatatype datatype = attribute.findDatatype();
 		if (datatype==null) {
-			// TODO 
+			// TODO Joerg:
 			return;
 		}
 		if (!datatype.isParsable(value)) {
@@ -184,5 +184,5 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
 			list.add(msg);
 		}
-	}  	
+	}	
 }

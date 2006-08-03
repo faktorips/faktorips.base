@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
  *   
  * @author Joerg Ortmann
  */
-public interface ITestCase extends IIpsObject {
+public interface ITestCase extends IIpsObject  {
 	
 	/** Property names */
     public final static String PROPERTY_TEST_CASE_TYPE = "testCaseType"; //$NON-NLS-1$
@@ -72,7 +72,7 @@ public interface ITestCase extends IIpsObject {
 	
 	/**
 	 * Returns all input objects or an empty array  if the test case hasn't got
-	 * any input parameters..
+	 * any input parameters.
 	 */
 	public ITestObject[] getInputObjects();
 	
@@ -80,7 +80,7 @@ public interface ITestCase extends IIpsObject {
 	 * Returns all input value objects or an empty array if the test case hasn't got
 	 * any input value objects.
 	 */
-	public ITestValue[] getInputValue();
+	public ITestValue[] getInputValues();
 	
 	/**
 	 * Returns all input policy component objects or an empty array if the test case hasn't got
@@ -89,19 +89,12 @@ public interface ITestCase extends IIpsObject {
 	public ITestPolicyCmpt[] getInputPolicyCmpt();
 	
 	/**
-	 * Returns the input test policy component or <code>null</code> if not found.
+	 * Returns the input policy component or <code>null</code> if not found.
+	 * 
+	 * @param typeNamePath the complete path to the policy component within the test case including relations and parent type names.
+	 *                     
 	 */
-	public ITestPolicyCmpt getInputPolicyCmptByLabel(String label);
-	
-	/**
-	 * Returns the expected result test policy component or <code>null</code> if not found.
-	 */
-	public ITestPolicyCmpt getInputPolicyCmptByTypeName(String typeName);
-	
-	/**
-	 * Returns the expected result test policy component or <code>null</code> if not found.
-	 */
-	public ITestPolicyCmpt findInputPolicyCmpt(String typeName);
+	public ITestPolicyCmpt findInputPolicyCmpt(String typeNamePath);
 	
 	/**
 	 * Returns all expected result parametes or an empty array if the test case hasn't got
@@ -113,7 +106,7 @@ public interface ITestCase extends IIpsObject {
 	 * Returns all expected result value objects or an empty array if the test case hasn't got
 	 * any expected result value objects.
 	 */
-	public ITestValue[] getExpectedResultValue();
+	public ITestValue[] getExpectedResultValues();
 	
 	/**
 	 * Returns all expected result policy component objects or an empty array if the test case hasn't got
@@ -123,18 +116,10 @@ public interface ITestCase extends IIpsObject {
 	
 	/**
 	 * Returns the expected result test policy component or <code>null</code> if not found.
+	 * 
+	 * @param typeNamePath the complete path to the policy component within the test case including relations and parent type names.
 	 */
-	public ITestPolicyCmpt getExpectedResultPolicyCmptByLabel(String label);
-	
-	/**
-	 * Returns the expected result test policy component or <code>null</code> if not found.
-	 */
-	public ITestPolicyCmpt getExpectedResultPolicyCmptByTypeName(String typeName);
-	
-	/**
-	 * Returns the expected result test policy component or <code>null</code> if not found.
-	 */
-	public ITestPolicyCmpt findExpectedResultPolicyCmpt(String typeName);
+	public ITestPolicyCmpt findExpectedResultPolicyCmpt(String typeNamePath);
 	
 	/**
 	 * Removes the given object from the list of input or expected result objects.
@@ -144,18 +129,20 @@ public interface ITestCase extends IIpsObject {
 	public void removeTestObject(ITestObject testObject) throws CoreException;
 	
 	/**
-	 * Returns the corresponing test policy componnet type parameter of the given test policy component.
+	 * Returns the corresponing test policy component type parameter of the given test policy component or
+	 * <code>null</code> if not found.
 	 *
-	 * @param testPolicyCmptBase the test policy component which policy component type parameter will be returned
+	 * @param testPolicyCmptBase the test policy component for which the type parameter will be returned.
 	 *	
 	 * @throws CoreException if an error occurs while searching for the object.
 	 */
 	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmptBase) throws CoreException;
 
 	/**
-	 * Returns the corresponing test policy componnet type parameter of the given relation.
+	 * Returns the corresponing test policy component type parameter of the given relation or
+	 * <code>null</code> if not found.
 	 * 
-	 * @param relation the test policy component relation which test relation will be returned
+	 * @param relation the test policy component relation for which test relation will be returned.
 	 * 
 	 * @throws CoreException if an error occurs while searching for the object.
 	 */

@@ -137,19 +137,21 @@ public class TestValue extends TestObject implements ITestValue {
 		super.validate(list);
 		ITestValueParameter param = findTestValueParameter();
 		if (param==null) {
-			// TODO
-			return;
-		}
-		ValueDatatype datatype = param.findValueDatatype();
-		if (datatype==null) {
-			// TODO 
-			return;
-		}
-		if (!datatype.isParsable(value)) {
-			String text = value + " ist kein " + datatype;
+			String text = "The test value parameter for this test case value doesn't exists.";
 			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
 			list.add(msg);
+		}else{
+			ValueDatatype datatype = param.findValueDatatype();
+			if (datatype==null) {
+				String text = "The datatype defined in the test value parameter for this test case value doesn't exists.";
+				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
+				list.add(msg);
+			}
+			if (!datatype.isParsable(value)) {
+				String text = value + " is no " + datatype;
+				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
+				list.add(msg);
+			}
 		}
-	}  
-
+	} 
 }
