@@ -5,7 +5,7 @@
 <testcases>
 
 	<ValueObject testValueParameter="newSumInsured">
-		<Value>500</Value>
+		<value>500</value>
 	</ValueObject>
 	
 </testcases>
