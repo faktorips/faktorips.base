@@ -146,8 +146,7 @@ public class TestValue extends TestObject implements ITestValue {
 				String text = "The datatype defined in the test value parameter for this test case value doesn't exists.";
 				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
 				list.add(msg);
-			}
-			if (!datatype.isParsable(value)) {
+			}else if (!datatype.isParsable(value)) {
 				String text = value + " is no " + datatype;
 				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
 				list.add(msg);
