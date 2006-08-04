@@ -150,7 +150,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 * {@inheritDoc}
 	 */
 	public void setRelation(String relation) {
+		String oldRelation = this.relation;
 		this.relation = relation;
+		valueChanged(oldRelation, relation);
 	}
 
 	/**
@@ -368,7 +370,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 * {@inheritDoc}
 	 */
 	public void setMinInstances(int minInstances) {
+		int oldMinInstances = this.minInstances;
 		this.minInstances = minInstances;
+		valueChanged(oldMinInstances, minInstances);
 	}
 
 	/**
@@ -382,6 +386,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 * {@inheritDoc}
 	 */
 	public void setMaxInstances(int maxInstances) {
+		int oldMaxInstances = this.maxInstances;
 		this.maxInstances = maxInstances;
+		valueChanged(oldMaxInstances, maxInstances);
 	}
 }
