@@ -75,4 +75,7 @@ public class Messages extends NLS {
 	public static String NewFolderAction_msgFolderAllreadyExists;
 	public static String NewFolderAction_name;
 	public static String NewFolderAction_msgFolderNameMustNotContainDots;
+	public static String IpsTestCaseAction_name;
+	public static String IpsTestCaseAction_description;
+	public static String IpsTestCaseAction_tooltip;
 }

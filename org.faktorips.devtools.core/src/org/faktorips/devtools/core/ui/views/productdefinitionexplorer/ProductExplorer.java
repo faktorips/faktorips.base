@@ -17,8 +17,11 @@
 
 package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
+import junit.framework.TestCase;
+
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
 
@@ -37,8 +40,10 @@ public class ProductExplorer extends ModelExplorer {
 
 	protected ModelExplorerConfiguration createConfig() {
 		return new ModelExplorerConfiguration(new Class[] { ProductCmpt.class,
-				TableContents.class}, new Class[0],
-				ModelExplorerConfiguration.ALLOW_PRODUCTDEFINITION_PROJECTS);
+				TableContents.class, TestCase.class, TestCaseType.class}, new Class[0],
+				ModelExplorerConfiguration.ALLOW_PRODUCTDEFINITION_PROJECTS |
+				ModelExplorerConfiguration.ALLOW_MODEL_PROJECTS |
+				ModelExplorerConfiguration.ALLOW_NONMODEL_NONPRODUCTDEFINTION_PROJECTS);
 	}
 
 }

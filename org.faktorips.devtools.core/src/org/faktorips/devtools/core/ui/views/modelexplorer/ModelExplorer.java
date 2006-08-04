@@ -1,5 +1,7 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import junit.framework.TestCase;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -41,18 +43,23 @@ import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeleteAndSaveAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
+import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
 import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
@@ -135,7 +142,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		return new ModelExplorerConfiguration(new Class[] { PolicyCmptType.class
 				, TableStructure.class, ProductCmpt.class
 				, TableContents.class, Attribute.class
-				, Relation.class}
+				, Relation.class, TestCase.class, TestCaseType.class}
 		, new Class[0], ModelExplorerConfiguration.ALLOW_MODEL_PROJECTS);
 	}
 
@@ -410,11 +417,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 			manager.add(new Separator());
 			createObjectInfoActions(manager, selected);
 			manager.add(new Separator());
+			createTestCaseAction(manager, selected);
 			createRefactorMenu(manager, selected);
 			manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 			manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS+"-end"));//$NON-NLS-1$
 			
 		}
+		
 		private void createAllContextMenuActions(IMenuManager manager, Object selected){
 			if(selected instanceof IIpsElement){
 				IIpsElement element= (IIpsElement)selected;
@@ -515,6 +524,14 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 			}
 		}
 
+		private void createTestCaseAction(IMenuManager manager, Object selected) {
+			if (selected instanceof IIpsPackageFragment
+					|| selected instanceof IIpsPackageFragmentRoot
+					|| selected instanceof ITestCase) {
+				manager.add(new IpsTestAction(treeViewer));
+			}
+		}
+		
 		private void createRefactorMenu(IMenuManager manager, Object selected) {
 			if(selected instanceof IIpsElement){
 		        MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
