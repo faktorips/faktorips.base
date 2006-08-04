@@ -41,8 +41,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsModelManager;
+import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -88,7 +90,10 @@ public class IpsPlugin extends AbstractUIPlugin {
     
     private IpsModelManager manager;
 
-    /** Factories for creating controls depending on the datatype */
+    // Contains the ips test runner, which runs ips test and informs registered ips test run listener
+    private IIpsTestRunner ipsTestRunner;
+    
+    // Factories for creating controls depending on the datatype
     private ValueDatatypeControlFactory[] controlFactories = new ValueDatatypeControlFactory[] {
     	new BooleanControlFactory(),
     	new EnumDatatypeControlFactory(),
@@ -365,5 +370,15 @@ public class IpsPlugin extends AbstractUIPlugin {
     // TODO control factories sollten ueber einen extension point definiert sein und geladen werden.
     private ValueDatatypeControlFactory[] getValueDatatypeControlFactories() {
     	return controlFactories;
+    }
+    
+    /**
+     * Returns the ips test runner.
+     */
+    public IIpsTestRunner getIpsTestRunner(){
+    	if (ipsTestRunner == null)
+    		ipsTestRunner = new IpsTestRunner();
+    	
+    	return ipsTestRunner;
     }
 }
