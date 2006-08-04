@@ -84,11 +84,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
-        
-        System.out.println("building test case " + ipsSrcFile);
-        
         ITestCase testCase = (ITestCase) ipsSrcFile.getIpsObject();
-        
         InputStream is = null;
         try {
             Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
