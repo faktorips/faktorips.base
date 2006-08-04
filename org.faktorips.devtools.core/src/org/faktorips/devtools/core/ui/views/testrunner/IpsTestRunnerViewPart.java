@@ -159,7 +159,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * Runs a dummy test. The test is in the faktorips runtime jar.
 	 */
 	private void rerunTestRun()  {
-		TestRunnerJob job = new TestRunnerJob("de.qv.produkt.produktdaten.hp.internal", "hp.tests");
+		TestRunnerJob job = new TestRunnerJob("org.faktorips.runtime.testrepository", "test");
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		job.setRule(workspace.getRoot());
 		job.schedule();
