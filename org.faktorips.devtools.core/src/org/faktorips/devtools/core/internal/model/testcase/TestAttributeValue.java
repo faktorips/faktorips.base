@@ -160,30 +160,36 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 		throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
 	}
 	
-	
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void validateThis(MessageList list) throws CoreException {
-		super.validateThis(list);
+	protected void validateThis(MessageList messageList) throws CoreException {
+		super.validateThis(messageList);
 		ITestAttribute testAttr = findTestAttribute();
 		if (testAttr==null) {
-			// TODO Joerg:
+			String text = "Test attribute \"" + getTestAttribute() + "\" not found.";
+			Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);	
 			return;
 		}
 		IAttribute attribute =testAttr.findAttribute();
 		if (attribute == null){
-			// TODO Joerg:
+			String text = "Attribute \"" + testAttr.getAttribute() + "\" not found.";
+			Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);
+			return;
 		}
 		ValueDatatype datatype = attribute.findDatatype();
 		if (datatype==null) {
-			// TODO Joerg:
+			String text = "Datatype \"" + attribute.getDatatype() + "\" not found.";
+			Message msg = new Message(MSGCODE_DATATYPE_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);
 			return;
 		}
 		if (!datatype.isParsable(value)) {
 			String text = value + " ist kein " + datatype;
 			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
-			list.add(msg);
+			messageList.add(msg);
 		}
 	}	
 }
