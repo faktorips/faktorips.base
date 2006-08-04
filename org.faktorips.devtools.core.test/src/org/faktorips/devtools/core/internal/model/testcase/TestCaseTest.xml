@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+-->
+<testcases>
+	<TestCase testCaseType="testCaseType1">
+		<Input>
+			<ValueObject name="newSumInsured1" testValueParameter="Money" />
+			<ValueObject name="newSumInsured2" testValueParameter="Decimal" />
+			<PolicyCmptTypeObject name="policyCmptType1" testPolicyCmptType="base.Test1" />
+			<PolicyCmptTypeObject name="policyCmptType2" testPolicyCmptType="base.Test2" />
+		</Input>
+		<ExpectedResult>
+			<ValueObject name="newSumInsured3" testValueParameter="Test1"/>
+			<ValueObject name="newSumInsured4" testValueParameter="Test2"/>
+			<PolicyCmptTypeObject name="policyCmptType1" testPolicyCmptType="base.Test3"/>
+			<PolicyCmptTypeObject name="policyCmptType2" testPolicyCmptType="base.Test4"/>	
+		</ExpectedResult>
+	</TestCase>
+</testcases>

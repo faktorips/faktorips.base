@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+-->
+<testcases>
+	<TestCaseType>
+		<Input>
+			<ValueParameter name="newSumInsured1" valueDatatype="Money"></ValueParameter>
+			<ValueParameter name="newSumInsured2" valueDatatype="Decimal"></ValueParameter>
+			<PolicyCmptTypeParameter name="policyCmptType1" policyCmptType="base.Test1"
+				minInstances="2" maxInstances="3"></PolicyCmptTypeParameter>
+			<PolicyCmptTypeParameter name="policyCmptType2" policyCmptType="base.Test2"
+				minInstances="4" maxInstances="5"></PolicyCmptTypeParameter>
+		</Input>
+		<ExpectedResult>
+			<ValueParameter name="newSumInsured3" valueDatatype="Test1"></ValueParameter>
+			<ValueParameter name="newSumInsured4" valueDatatype="Test2"></ValueParameter>
+			<PolicyCmptTypeParameter name="policyCmptType1" policyCmptType="base.Test3"
+				minInstances="6" maxInstances="7"></PolicyCmptTypeParameter>
+			<PolicyCmptTypeParameter name="policyCmptType2" policyCmptType="base.Test4"
+				minInstances="8" maxInstances="9"></PolicyCmptTypeParameter>	
+		</ExpectedResult>
+	</TestCaseType>
+</testcases>
