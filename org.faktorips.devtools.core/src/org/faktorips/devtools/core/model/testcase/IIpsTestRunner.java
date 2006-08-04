@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model.testcase;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * Specification of an ips test runner.
@@ -53,4 +54,9 @@ public interface IIpsTestRunner {
 	 * Returns all registered ips test run listener.
 	 */
 	public List getIpsTestRunListener();
+	
+	/**
+	 * Sets the java project the test which will be started by this runner belongs to.
+	 */
+	public void setJavaProject(IJavaProject project);
 }

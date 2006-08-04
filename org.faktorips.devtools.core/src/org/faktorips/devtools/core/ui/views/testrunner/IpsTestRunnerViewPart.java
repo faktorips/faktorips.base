@@ -476,6 +476,16 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		if (!isDisposed())
 			getDisplay().syncExec(r);
 	}
+
+	private void postStartTest(final String testId, final String qualifiedTestName) {
+		postSyncRunnable(new Runnable() {
+			public void run() {
+				if(isDisposed()) 
+					return;
+				fTestRunPane.startTest(testId, qualifiedTestName);
+			}
+		});
+	}
 	
 	private void postEndTest(final String testId, final String qualifiedTestName) {
 		postSyncRunnable(new Runnable() {
@@ -488,16 +498,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		});	
 	}
 
-	private void postStartTest(final String testId, final String qualifiedTestName) {
-		postSyncRunnable(new Runnable() {
-			public void run() {
-				if(isDisposed()) 
-					return;
-				fTestRunPane.startTest(testId, qualifiedTestName);
-			}
-		});	
-	}
-	
 	private void postFailureTest(final String testId, final String[] failureDetails) {
 		postSyncRunnable(new Runnable() {
 			public void run() {
@@ -550,11 +550,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * {@inheritDoc}
 	 */
 	public void testFinished(String qualifiedTestName) {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}
 		fExecutedTests++;
 		postEndTest(getTestId(), qualifiedTestName);
 	}

@@ -377,7 +377,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public IIpsTestRunner getIpsTestRunner(){
     	if (ipsTestRunner == null)
-    		ipsTestRunner = new IpsTestRunner();
+    		ipsTestRunner = IpsTestRunner.getDefault();
     	
     	return ipsTestRunner;
     }

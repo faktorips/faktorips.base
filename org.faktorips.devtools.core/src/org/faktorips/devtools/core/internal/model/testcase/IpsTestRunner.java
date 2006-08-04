@@ -58,7 +58,20 @@ public class IpsTestRunner implements IIpsTestRunner {
     // List storing the registered ips test run listeners
     private List fIpsTestRunListeners = new ArrayList();
 	
-    public IpsTestRunner() {
+    //  Shared instance of the test runner
+    private static IpsTestRunner ipsTestRunner;
+    
+    private IpsTestRunner() {
+    }
+
+    /**
+     * Returns the shared instance.
+     */
+    public static IpsTestRunner getDefault(){
+    	if (ipsTestRunner == null){
+    		ipsTestRunner = new IpsTestRunner();
+    	}
+    	return ipsTestRunner;
     }
 
     /**
@@ -125,7 +138,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
     
     private void readMessage(Socket socket) throws IOException {
-        reader= new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    	reader= new BufferedReader(new InputStreamReader(socket.getInputStream()));
         try {
             String line=null;
             while ((line= reader.readLine()) != null) {
@@ -137,7 +150,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 	
     /*
-     * 
+     * Parse the incomming message and fire the messages events to the registered listener.
      */
     private void parseMessage(String line) {
     	if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_STARTED)) {  
@@ -178,11 +191,6 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Return all classpath enties from the given project
      */
     private String[] computeClasspath(IJavaProject project) throws CoreException {
-    	if (project == null){
-    		// TODO Joerg: eval and add default classpath
-    		// Workaround: to run this test runner copy the jar in the eclipse application directory
-    		return new String[]{"faktorips-runtime.jar"};
-    	}
     	String[] defaultPath= JavaRuntime.computeDefaultRuntimeClassPath(project);
         String[] classPath= new String[defaultPath.length];
         System.arraycopy(defaultPath, 0, classPath, 0, defaultPath.length);
