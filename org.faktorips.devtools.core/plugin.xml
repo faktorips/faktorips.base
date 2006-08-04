@@ -203,6 +203,18 @@
             class="org.faktorips.devtools.core.ui.editors.tablecontents.TableContentsEditor"
             id="tableContentsEditor">
       </editor>
+      <editor
+            class="org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor"
+            extensions="ipstestcase"
+            icon="icons/TestCase.gif"
+            id="testCaseEditor"
+            name="Test Case Editor"/>
+      <editor
+            default="false"
+            extensions="ipstestcasetype"
+            icon="icons/TestCaseType.gif"
+            id="testCaseTypeEditor"
+            name="Test Case Type Editor"/>      
    </extension>
 
 <!-- 
@@ -374,6 +386,13 @@
             icon="icons/ModelExplorer.png"
             id="org.faktorips.devtools.core.ui.views.modelExplorer"
             name="%org.faktorips.devtools.core.ui.views.modelExplorer"/>
+      <view
+            allowMultiple="true"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart"
+            icon="icons/TestCaseRun.gif"
+            id="org.faktorips.devtools.core.ui.views.testRunner"
+            name="%org.faktorips.devtools.core.ui.views.testRunner"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
