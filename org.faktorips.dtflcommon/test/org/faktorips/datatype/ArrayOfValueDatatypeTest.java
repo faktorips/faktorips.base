@@ -17,9 +17,6 @@
 
 package org.faktorips.datatype;
 
-import org.faktorips.datatype.classtypes.MoneyDatatype;
-import org.faktorips.values.Money;
-
 import junit.framework.TestCase;
 
 /**
