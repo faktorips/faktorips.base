@@ -339,7 +339,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                 reAddPart(part);
             }
             if (part!=null) {
-                // part may be null if the element does not represent a part!
+                // part might may be null if the element does not represent a part!
                 part.initFromXml(partEl);
             }
         }
@@ -385,7 +385,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * This method is called during the initFromXml processing, when the part has been part
      * of the parent before the xml initialization and is still be found in the xml (the part's id
      * is found in the xml). Subclasses must override this method so that the part is added to
-     * the right collection, e.g. for IPolicyCmptType: if the part is an IAttribute, the part must be
+     * the correct collection, e.g. for IPolicyCmptType: if the part is an IAttribute, the part must be
      * added to the <code>attributes</code> list.
      * 
      * @throws RuntimeException if the part can't be readded, e.g. because it's type is unknown.
