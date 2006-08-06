@@ -31,6 +31,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
+import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -55,9 +56,10 @@ import org.w3c.dom.NodeList;
 /**
  * Implementation of IAttribute.
  */
-public class Attribute extends Member implements IAttribute {
+public class Attribute extends IpsObjectPart implements IAttribute {
 
     private static final String TAG_PROPERTY_PARAMETER = "FormulaParameter"; //$NON-NLS-1$
+    
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
     private static final String TAG_PARAM_NAME = "name"; //$NON-NLS-1$
     private static final String TAG_PARAM_DATATYPE = "datatype"; //$NON-NLS-1$
@@ -71,6 +73,8 @@ public class Attribute extends Member implements IAttribute {
     private Parameter[] parameters = new Parameter[0];
     private IValueSet valueSet;
     private boolean overwrites = false;
+
+    private boolean deleted = false;
 
     /**
      * Creates a new attribute.
@@ -95,7 +99,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void delete() {
         getPolicyCmptType().removeAttribute(this);
@@ -103,13 +107,19 @@ public class Attribute extends Member implements IAttribute {
         deleted = true;
     }
 
-    private boolean deleted = false;
-
     /**
      * {@inheritDoc}
      */
     public boolean isDeleted() {
     	return deleted;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setName(String newName) {
+        this.name = newName;
+        updateSrcFile();
     }
     
     /**
@@ -486,7 +496,7 @@ public class Attribute extends Member implements IAttribute {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
@@ -497,7 +507,7 @@ public class Attribute extends Member implements IAttribute {
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        
+        name = element.getAttribute("name"); //$NON-NLS-1$
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
 
         if (!overwrites) {
@@ -531,7 +541,7 @@ public class Attribute extends Member implements IAttribute {
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        
+        element.setAttribute("name", name); //$NON-NLS-1$
         element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
         
         if (!overwrites) {

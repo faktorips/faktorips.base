@@ -66,7 +66,14 @@ public class IpsSourceFileContents {
         this.encoding = encoding;
     }
     
-    String getSourceText() {
+    /**
+	 * @return Returns the ipsSrcFile.
+	 */
+	public IIpsSrcFile getIpsSrcFile() {
+		return ipsSrcFile;
+	}
+
+	String getSourceText() {
         return sourceText;
     }
     
