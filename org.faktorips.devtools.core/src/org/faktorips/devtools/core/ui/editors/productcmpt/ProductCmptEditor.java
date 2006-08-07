@@ -232,7 +232,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 		
 		if (getContainer() == null) {
-			// dont do anything, we will be called again later.
+			// do nothing, we will be called again later. This avoids that the user
+			// is shown the differences-dialog twice if openening the editor...
 			return;
 		}
 		
@@ -261,7 +262,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		deltasShowing = true;
 		Shell shell = getSite().getShell();
 		ProductCmptDeltaDialog dialog = new ProductCmptDeltaDialog(generations, deltas, shell);
-		
+		dialog.setBlockOnOpen(true);
 		int result = dialog.open();
 		
 		boolean fix = result == ProductCmptDeltaDialog.OK;
@@ -278,7 +279,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				}
 				setDirty(getIpsSrcFile().isDirty());
 				refreshStructure();
-				refresh();
+				super.refresh();
 				getContainer().update();
 			} finally {
 				model.addChangeListener(ProductCmptEditor.this);
@@ -293,13 +294,22 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 * Triggers a refresh for sturcturals changes. 
 	 */
 	private void refreshStructure() {
-		if (this.propertiesPage != null) {
+		
+		if (this.propertiesPage != null && active) {
 			this.propertiesPage.refreshStructure();
 		}
 	}
 	
 	public void refresh() {
-		checkForInconsistenciesBetweenAttributeAndConfigElements(true);
+		refreshInternal(false);
+	}
+	
+	public void forceRefresh() {
+		refreshInternal(true);
+	}
+	
+	private void refreshInternal(boolean force) {
+		checkForInconsistenciesBetweenAttributeAndConfigElements(force);
 		super.refresh();
 	}
 
@@ -412,16 +422,16 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				browseOldGeneration = false;
 				checkGeneration();
 				generationsPage.refresh();
-				refresh();
+				refreshInternal(false);
 			} else if (property
 					.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
 					|| property.equals(IpsPreferences.EDIT_RECENT_GENERATION)) {
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
-				refresh();
+				refreshInternal(false);
 			} else if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
 				generationManuallySet = false;
 				setPropertiesEnabled((IProductCmptGeneration) getActiveGeneration());
-				refresh();
+				refreshInternal(false);
 			}
 		}
 	}

@@ -165,14 +165,14 @@ public class ProductAttributesSection extends IpsSection {
 		
 			public void modifyText(ModifyEvent e) {
 				uiMasterController.updateModel();
-				editor.refresh();
-		
+				editor.forceRefresh();
 			}
-		
 		};
 		
 		ctrl.getTextControl().addModifyListener(ml);
 
+		
+		
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 
@@ -181,7 +181,6 @@ public class ProductAttributesSection extends IpsSection {
 		IpsObjectUIController controller = new IpsObjectUIController(generation.getIpsObject());
 		
 		controller.add(field, generation.getProductCmpt(), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
-		
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();
 	}
