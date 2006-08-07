@@ -175,36 +175,41 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Policy Class Editor"
-            icon="icons/PolicyCmptType.gif"
-            extensions="ipspct"
             class="org.faktorips.devtools.core.ui.editors.pctype.PctEditor"
-            id="policyCmptTypeEditor">
+            default="true"
+            extensions="ipspct"
+            icon="icons/PolicyCmptType.gif"
+            id="policyCmptTypeEditor"
+            name="Policy Class Editor">
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorActionContributor"
+            default="true"
             extensions="ipsproduct"
             icon="icons/ProductCmpt.gif"
             id="productCmptEditor"
             name="Product Component Editor">
       </editor>
       <editor
-            name="Table Structure Editor"
-            icon="icons/TableStructure.gif"
-            extensions="ipstablestructure"
             class="org.faktorips.devtools.core.ui.editors.tablestructure.TableStructureEditor"
-            id="tableStructureEditor">
+            default="true"
+            extensions="ipstablestructure"
+            icon="icons/TableStructure.gif"
+            id="tableStructureEditor"
+            name="Table Structure Editor">
       </editor>
       <editor
-            name="Table Contents Editor"
-            icon="icons/TableContents.gif"
-            extensions="ipstablecontents"
             class="org.faktorips.devtools.core.ui.editors.tablecontents.TableContentsEditor"
-            id="tableContentsEditor">
+            default="true"
+            extensions="ipstablecontents"
+            icon="icons/TableContents.gif"
+            id="tableContentsEditor"
+            name="Table Contents Editor">
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor"
+            default="true"
             extensions="ipstestcase"
             icon="icons/TestCase.gif"
             id="testCaseEditor"
@@ -446,6 +451,51 @@
             id="org.faktorips.devtools.core.folderProperties"
             name="%org.faktorips.devtools.core.folderProperties"
             objectClass="org.eclipse.core.resources.IFolder"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipspct"
+            id="org.faktorips.devtools.core.policyClass"
+            name="Policy Class"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipsproduct"
+            id="org.faktorips.devtools.core.productComponent"
+            name="Product Component"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstablestructure"
+            id="org.faktorips.devtools.core.tableStructure"
+            name="Table Structure"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstablecontents"
+            id="org.faktorips.devtools.core.TableContents"
+            name="Table Contents"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstestcase"
+            id="org.faktorips.devtools.core.testCase"
+            name="Test Case"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstestcasetype"
+            id="org.faktorips.devtools.core.testCaseType"
+            name="TestCase Type"
+            priority="normal"/>
    </extension>
 
 </plugin>
