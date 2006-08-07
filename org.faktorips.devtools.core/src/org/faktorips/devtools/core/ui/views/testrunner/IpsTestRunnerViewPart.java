@@ -112,6 +112,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private int testRuns=0;
 	private int testId;
 	
+	// Test last test run context
+	private String repositoryPackage;
+	private String testPackage;
+	
 	/*
 	 * Action class to rerun a test.
 	 */
@@ -156,10 +160,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	}	
 	
 	/*
-	 * Runs a dummy test. The test is in the faktorips runtime jar.
+	 * Runs the last runned test.
 	 */
 	private void rerunTestRun()  {
-		TestRunnerJob job = new TestRunnerJob("org.faktorips.runtime.testrepository", "test");
+		TestRunnerJob job = new TestRunnerJob(repositoryPackage, testPackage);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		job.setRule(workspace.getRoot());
 		job.schedule();
@@ -299,8 +303,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
 		actionBars.updateActionBars();
 		
-		// TODO Joerg: Dummy test runner entfernen
-		fRerunLastTestAction.setEnabled(true);
+		fRerunLastTestAction.setEnabled(false);
 	}
 	
 	private class ToggleOrientationAction extends Action {
@@ -512,11 +515,19 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * Converts the given failure details to one failure detail row.
 	 */
 	private String failureDetailsToString(String[] failureDetails){
-		String failureFormat= "Failure in {0}: expected: \"{3}\" but was: \"{4}\"";
-		String failureFormatObject= ". Object: {1}";
-		String failureFormatAttribute= ". Attribute: {2}";
-		failureFormat= failureFormat + (failureDetails[1]!=null?failureFormatObject:"");
-		failureFormat= failureFormat + (failureDetails[2]!=null?failureFormatAttribute:"");
+		String failureFormat= "Failure in \"{0}\":";
+		String failureActual = " but was: \"{4}\"";
+		String failureExpected = " expected: \"{3}\"";
+		String failureFormatAttribute= ". Attribute: \"{2}\"";
+		String failureFormatObject= ". Object: \"{1}\"";
+		if (failureDetails.length>3)
+			failureFormat= failureFormat + (failureDetails[3]!=null?failureExpected:"");
+		if (failureDetails.length>4)
+			failureFormat= failureFormat + (failureDetails[4]!=null?failureActual:"");		
+		if (failureDetails.length>1)
+			failureFormat= failureFormat + (failureDetails[1]!=null?failureFormatObject:"");
+		if (failureDetails.length>2)
+			failureFormat= failureFormat + (failureDetails[2]!=null?failureFormatAttribute:"");		
 		return MessageFormat.format(failureFormat, failureDetails); 
 	}
 	
@@ -580,7 +591,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	/**
 	 * {@inheritDoc}
 	 */
-	public void testRunStarted(int testCount){
+	public void testRunStarted(int testCount, String repositoryPackage, String testPackage){
+		this.repositoryPackage = repositoryPackage;
+		this.testPackage = testPackage;
+		
 		reset(testCount);
 		fExecutedTests++;
 		fRerunLastTestAction.setEnabled(true);
