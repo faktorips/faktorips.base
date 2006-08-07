@@ -78,4 +78,5 @@ public class Messages extends NLS {
 	public static String IpsTestCaseAction_name;
 	public static String IpsTestCaseAction_description;
 	public static String IpsTestCaseAction_tooltip;
+	public static String NewTestCaseAction_name;
 }
