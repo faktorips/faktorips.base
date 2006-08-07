@@ -64,6 +64,7 @@ import org.faktorips.devtools.core.ui.actions.NewFolderAction;
 import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
+import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
@@ -454,6 +455,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 					newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
 					newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
 				}
+				newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
 				manager.add(newMenu);
 			}
 		}
