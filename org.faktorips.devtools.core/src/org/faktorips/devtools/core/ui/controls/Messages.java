@@ -105,4 +105,8 @@ public class Messages extends NLS {
     public static String IpsProjectRefControl_msgNoProjectSelected;
 
     public static String IpsProjectRefControl_labelDialogTitle;
+    
+	public static String TestCaseTypeRefControl_title;
+	
+	public static String TestCaseTypeRefControl_description;
 }
