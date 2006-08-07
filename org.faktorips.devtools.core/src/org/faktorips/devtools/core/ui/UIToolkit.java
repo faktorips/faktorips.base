@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
+import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.values.EnumType;
 import org.faktorips.values.EnumValue;
 
@@ -548,5 +549,13 @@ public class UIToolkit {
 		line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		return line;
 	}
+	
+	/**
+	 * Creates a new TestCaseTypeRefControl.
+	 */
+	public TestCaseTypeRefControl createTestCaseTypeRefControl(IIpsProject project,
+			Composite parent) {
+		return new TestCaseTypeRefControl(project, parent, this);
+	}	
 
 }
