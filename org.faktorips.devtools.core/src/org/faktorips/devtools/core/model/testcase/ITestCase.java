@@ -147,4 +147,9 @@ public interface ITestCase extends IIpsObject  {
 	 * @throws CoreException if an error occurs while searching for the object.
 	 */
 	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptRelation relation) throws CoreException;
+
+	/**
+	 * Evaluates and returns an unique label (inside this test case) for the given test policy component.
+	 */
+	public String generateUniqueLabelOfTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label);
 }

@@ -186,7 +186,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	}
 
 	/**
-	 * Creates a new test policy component type parameter as target for this
+	 * Creates a new test policy component as target for this
 	 * relation without updating the src file.
 	 */
 	private ITestPolicyCmpt newTargetTestPolicyCmptChildInternal(int id) {

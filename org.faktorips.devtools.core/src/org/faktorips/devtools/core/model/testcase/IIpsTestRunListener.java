@@ -29,8 +29,10 @@ public interface IIpsTestRunListener {
  	 * A test run has started.
  	 * 
  	 * @param testCount the number of individual tests that will be run
+ 	 * @param repositoryPackage the repository where the test are selected from
+ 	 * @param testPackage the package including the tests
  	 */
-	public void testRunStarted(int testCount);
+	public void testRunStarted(int testCount, String repositoryPackage, String testPackage);
 	
  	/**
  	 * A test has started for the given full qualified test name.

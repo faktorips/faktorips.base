@@ -25,7 +25,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -154,8 +153,13 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private void parseMessage(String line) {
     	if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_STARTED)) {  
-            int count = Integer.parseInt(line.substring(SocketIpsTestRunner.ALL_TESTS_STARTED.length()));
-            notifyTestRunStarted(count);
+    		// format: SocketIpsTestRunner.ALL_TESTS_STARTED(<count>) [<repositoryPackage>].[<testPackage>]
+    		int start = line.indexOf("(") + 1;
+            int count = Integer.parseInt(line.substring(start, line.indexOf(")")));
+            String repositoryPackage = line.substring(line.indexOf("[") +1, line.indexOf("]"));
+            line = line.substring(line.indexOf("].[") + 3);
+            String testSuitePackage = line.substring(0, line.length() -1);
+            notifyTestRunStarted(count, repositoryPackage, testSuitePackage);
         }else if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_FINISHED)) { //$NON-NLS-1$
         	notifyTestRunEnded();
         }else if (line.startsWith(SocketIpsTestRunner.TEST_STARTED)) { //$NON-NLS-1$
@@ -167,13 +171,21 @@ public class IpsTestRunner implements IIpsTestRunner {
         	notifyTestFinished(testName);
         }else if (line.startsWith(SocketIpsTestRunner.TEST_FAILED)) { //$NON-NLS-1$
         	String failureDetailsLine = line.substring(SocketIpsTestRunner.TEST_FAILED.length());
-        	StringTokenizer stringTokenizer = new StringTokenizer(failureDetailsLine,SocketIpsTestRunner.TEST_FAILED_DELIMITERS);
-            String[] failureDeatils = new String[stringTokenizer.countTokens()];
-        	int idx = 0;
-        	while (stringTokenizer.hasMoreElements()) {
-        		failureDeatils[idx++] = (String) stringTokenizer.nextElement();
-			}
-        	notifyTestFailureOccured(failureDeatils);
+        	ArrayList failureTokens = new ArrayList(5);
+        	while(failureDetailsLine.length()>0){
+        		String token = "";
+        		int end = failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS);
+        		if (end ==-1){
+        			end = failureDetailsLine.length();
+        			token = failureDetailsLine;
+        			failureDetailsLine = "";
+        		}else{
+        			token = failureDetailsLine.substring(0, end);
+        			failureDetailsLine = failureDetailsLine.substring(end +1);
+        		}
+        		failureTokens.add(token);
+        	}
+        	notifyTestFailureOccured((String[])failureTokens.toArray(new String[0]));
         }
     }
 
@@ -248,10 +260,10 @@ public class IpsTestRunner implements IIpsTestRunner {
 		}
     }  
     
-	private void notifyTestRunStarted(int count) {
+	private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
-			listener.testRunStarted(count);
+			listener.testRunStarted(count, repositoryPackage, testPackage);
 		}		
 	} 
 	

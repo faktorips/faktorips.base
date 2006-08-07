@@ -409,7 +409,7 @@ public class TestPolicyCmpt extends TestObject implements
 				label = productCmpt;
 			}
 			label = StringUtil.unqualifiedName(label);
-			label = generateUniqueLabelOfTestPolicyCmpt(newTestPolicyCmpt, label);
+			label = getTestCase().generateUniqueLabelOfTestPolicyCmpt(newTestPolicyCmpt, label);
 			newTestPolicyCmpt.setLabel(label);
 			
 			// add the attributes which are defined in the test case type parameter
@@ -446,47 +446,6 @@ public class TestPolicyCmpt extends TestObject implements
 	}
 	
 	/**
-	 * Generate and set a unique label for the given test policy component.
-	 */
-	private String generateUniqueLabelOfTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label) {
-		String uniqueLabel = label;
-
-		// eval the unique idx of new component
-		int idx = 1;
-		String newUniqueLabel = uniqueLabel;
-		if (newTestPolicyCmpt.isRoot()){
-			ITestPolicyCmpt[] testPolicyCmpts = getTestCase().getInputPolicyCmpt();
-			for (int i = 0; i < testPolicyCmpts.length; i++) {
-				ITestPolicyCmpt cmpt = testPolicyCmpts[i];
-				if (newUniqueLabel.equals(cmpt.getLabel())){
-					idx ++;
-					newUniqueLabel = uniqueLabel + " (" + idx + ")";
-				}
-			}
-		}else{
-			ITestPolicyCmpt parent = newTestPolicyCmpt.getParentPolicyCmpt();
-			ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations();
-			ArrayList names = new ArrayList();
-			for (int i = 0; i < relations.length; i++) {
-				ITestPolicyCmptRelation relation = relations[i];
-				if (relation.isComposition()){
-					try {
-						ITestPolicyCmpt child = relation.findTarget();
-						names.add(child.getLabel());
-					} catch (CoreException e) {
-						throw new RuntimeException(e);
-					}
-				}
-			}
-			while (names.contains(newUniqueLabel)){
-				idx ++;
-				newUniqueLabel = uniqueLabel + " (" + idx + ")";
-			}
-		}
-		return newUniqueLabel;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	protected void validateThis(MessageList list) throws CoreException {
@@ -503,6 +462,13 @@ public class TestPolicyCmpt extends TestObject implements
 			String text = "The test case type definition for this policy component doesn't exists.";
 			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 			list.add(msg);	
+		} else {
+			// check if the param defines the requirement for a product component but not product component is specified
+			if (param.isRequiresProductCmpt() && ! (getProductCmpt().length() > 0) ){
+				String text = "A product component is required for this test policy component.";
+				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+				list.add(msg);
+			}
 		}
 		
 		for (Iterator iter = testAttributeValues.iterator(); iter.hasNext();) {

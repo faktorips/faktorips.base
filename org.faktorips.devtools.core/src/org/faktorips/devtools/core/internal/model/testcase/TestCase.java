@@ -646,4 +646,45 @@ public class TestCase extends IpsObject implements ITestCase {
 			return pc;
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String generateUniqueLabelOfTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label) {
+		String uniqueLabel = label;
+
+		// eval the unique idx of new component
+		int idx = 1;
+		String newUniqueLabel = uniqueLabel;
+		if (newTestPolicyCmpt.isRoot()){
+			ITestPolicyCmpt[] testPolicyCmpts = newTestPolicyCmpt.isInputObject()?getInputPolicyCmpt():getExpectedResultPolicyCmpt();
+			for (int i = 0; i < testPolicyCmpts.length; i++) {
+				ITestPolicyCmpt cmpt = testPolicyCmpts[i];
+				if (newUniqueLabel.equals(cmpt.getLabel())){
+					idx ++;
+					newUniqueLabel = uniqueLabel + " (" + idx + ")";
+				}
+			}
+		}else{
+			ITestPolicyCmpt parent = newTestPolicyCmpt.getParentPolicyCmpt();
+			ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations();
+			ArrayList names = new ArrayList();
+			for (int i = 0; i < relations.length; i++) {
+				ITestPolicyCmptRelation relation = relations[i];
+				if (relation.isComposition()){
+					try {
+						ITestPolicyCmpt child = relation.findTarget();
+						names.add(child.getLabel());
+					} catch (CoreException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+			while (names.contains(newUniqueLabel)){
+				idx ++;
+				newUniqueLabel = uniqueLabel + " (" + idx + ")";
+			}
+		}
+		return newUniqueLabel;
+	}	
 }
