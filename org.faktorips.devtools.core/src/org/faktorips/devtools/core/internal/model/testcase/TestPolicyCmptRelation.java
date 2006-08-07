@@ -190,9 +190,10 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 * relation without updating the src file.
 	 */
 	private ITestPolicyCmpt newTargetTestPolicyCmptChildInternal(int id) {
-		TestPolicyCmpt param = new TestPolicyCmpt(this, id);
-		targetChild = param;
-		return param;
+		TestPolicyCmpt testPc = new TestPolicyCmpt(this, id);
+		testPc.setInputParameter(((TestPolicyCmpt)this.getParent()).isInputObject());
+		targetChild = testPc;
+		return testPc;
 	}
 
 	/**

@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
  */
 public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
+    private ITestPolicyCmpt policyCmptTypeObjectExpected;
     private ITestPolicyCmpt policyCmptTypeObjectInput;
     
     /**
@@ -41,55 +42,70 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
-        ITestCase type = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
-        policyCmptTypeObjectInput = type.newExpectedResultPolicyCmpt();
+        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        policyCmptTypeObjectExpected = testCase.newExpectedResultPolicyCmpt();
+        policyCmptTypeObjectInput = testCase.newInputPolicyCmpt();
     }
  
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl,"PolicyCmptTypeObject",0);
-        policyCmptTypeObjectInput.initFromXml(paramEl);
-        assertEquals("base.Test1", policyCmptTypeObjectInput.getTestPolicyCmptType());   
-        assertEquals("productCmpt1", policyCmptTypeObjectInput.getProductCmpt());
-        assertEquals("Label1", policyCmptTypeObjectInput.getLabel());
-        assertEquals(2, policyCmptTypeObjectInput.getTestPolicyCmptRelations().length);
-        assertEquals(3, policyCmptTypeObjectInput.getTestAttributeValues().length);
-        assertRelation(policyCmptTypeObjectInput.getTestPcTypeRelation("relation2"), "base.Test2");  
+        policyCmptTypeObjectExpected.initFromXml(paramEl);
+        assertEquals("base.Test1", policyCmptTypeObjectExpected.getTestPolicyCmptType());   
+        assertEquals("productCmpt1", policyCmptTypeObjectExpected.getProductCmpt());
+        assertEquals("Label1", policyCmptTypeObjectExpected.getLabel());
+        assertEquals(2, policyCmptTypeObjectExpected.getTestPolicyCmptRelations().length);
+        assertEquals(3, policyCmptTypeObjectExpected.getTestAttributeValues().length);
+        assertRelation(policyCmptTypeObjectExpected.getTestPcTypeRelation("relation2"), "base.Test2");  
         
-        assertTrue(policyCmptTypeObjectInput.getTestPolicyCmptRelations()[0].isAccoziation());
-        assertFalse(policyCmptTypeObjectInput.getTestPolicyCmptRelations()[0].isComposition());
-        assertFalse(policyCmptTypeObjectInput.getTestPolicyCmptRelations()[1].isAccoziation());
-        assertTrue(policyCmptTypeObjectInput.getTestPolicyCmptRelations()[1].isComposition());
+        assertTrue(policyCmptTypeObjectExpected.getTestPolicyCmptRelations()[0].isAccoziation());
+        assertFalse(policyCmptTypeObjectExpected.getTestPolicyCmptRelations()[0].isComposition());
+        assertFalse(policyCmptTypeObjectExpected.getTestPolicyCmptRelations()[1].isAccoziation());
+        assertTrue(policyCmptTypeObjectExpected.getTestPolicyCmptRelations()[1].isComposition());
     }
 
     public void testToXml() {
-        policyCmptTypeObjectInput.setTestPolicyCmptType("base.Test2");
-        policyCmptTypeObjectInput.setProductCmpt("productCmpt1");
-        policyCmptTypeObjectInput.setLabel("Label1");
-        policyCmptTypeObjectInput.newTestPolicyCmptRelation();
-        ITestPolicyCmptRelation relation = policyCmptTypeObjectInput.newTestPolicyCmptRelation();
+        policyCmptTypeObjectExpected.setTestPolicyCmptType("base.Test2");
+        policyCmptTypeObjectExpected.setProductCmpt("productCmpt1");
+        policyCmptTypeObjectExpected.setLabel("Label1");
+        policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
+        ITestPolicyCmptRelation relation = policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
         relation.setTestPolicyCmptType("relation1");
         ITestPolicyCmpt targetChild = relation.newTargetTestPolicyCmptChild();
         targetChild.setTestPolicyCmptType("base.Test4");
-        policyCmptTypeObjectInput.newTestAttributeValue();
+        policyCmptTypeObjectExpected.newTestAttributeValue();
         
-        Element el = policyCmptTypeObjectInput.toXml(newDocument());
+        Element el = policyCmptTypeObjectExpected.toXml(newDocument());
         
-        policyCmptTypeObjectInput.setTestPolicyCmptType("base.Test3");
-        policyCmptTypeObjectInput.setProductCmpt("productCmpt2");
-        policyCmptTypeObjectInput.setLabel("Label2");
-        policyCmptTypeObjectInput.newTestAttributeValue();
-        policyCmptTypeObjectInput.newTestAttributeValue();
-        policyCmptTypeObjectInput.newTestPolicyCmptRelation();
+        policyCmptTypeObjectExpected.setTestPolicyCmptType("base.Test3");
+        policyCmptTypeObjectExpected.setProductCmpt("productCmpt2");
+        policyCmptTypeObjectExpected.setLabel("Label2");
+        policyCmptTypeObjectExpected.newTestAttributeValue();
+        policyCmptTypeObjectExpected.newTestAttributeValue();
+        policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
         
-        policyCmptTypeObjectInput.initFromXml(el);
-        assertEquals("base.Test2", policyCmptTypeObjectInput.getTestPolicyCmptType());
-        assertEquals("Label1", policyCmptTypeObjectInput.getLabel());
-        assertEquals(2, policyCmptTypeObjectInput.getTestPolicyCmptRelations().length);
-        assertEquals(1, policyCmptTypeObjectInput.getTestAttributeValues().length);
-        assertRelation(policyCmptTypeObjectInput.getTestPcTypeRelation("relation1"),
+        policyCmptTypeObjectExpected.initFromXml(el);
+        assertEquals("base.Test2", policyCmptTypeObjectExpected.getTestPolicyCmptType());
+        assertEquals("Label1", policyCmptTypeObjectExpected.getLabel());
+        assertEquals(2, policyCmptTypeObjectExpected.getTestPolicyCmptRelations().length);
+        assertEquals(1, policyCmptTypeObjectExpected.getTestAttributeValues().length);
+        assertRelation(policyCmptTypeObjectExpected.getTestPcTypeRelation("relation1"),
                 "base.Test4");
-        assertEquals("productCmpt1", policyCmptTypeObjectInput.getProductCmpt());
+        assertEquals("productCmpt1", policyCmptTypeObjectExpected.getProductCmpt());
+    }
+    
+    public void testInputOrExpectedResultObject(){
+        // test if newly created child test policy component objects inherit 
+        // the correct input or expected result flag
+        assertFalse(policyCmptTypeObjectExpected.isInputObject());
+        ITestPolicyCmptRelation r = policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
+        ITestPolicyCmpt testPc = r.newTargetTestPolicyCmptChild();
+        assertFalse(testPc.isInputObject());
+        
+        assertTrue(policyCmptTypeObjectInput.isInputObject());
+        r = policyCmptTypeObjectInput.newTestPolicyCmptRelation();
+        testPc = r.newTargetTestPolicyCmptChild();
+        assertTrue(testPc.isInputObject());
     }
     
     private void assertRelation(ITestPolicyCmptRelation relation, String policyCmptTypeName) {

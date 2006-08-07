@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -507,25 +506,10 @@ public class TestPolicyCmpt extends TestObject implements
 		}
 		
 		for (Iterator iter = testAttributeValues.iterator(); iter.hasNext();) {
+			MessageList msgAttributeValueValidation;
 			ITestAttributeValue attrValue = (ITestAttributeValue) iter.next();
-			ITestAttribute testAttr = null;
-			try {
-				testAttr = attrValue.findTestAttribute();
-			} catch (CoreException e) {
-				// ignore exception
-			}
-			if (testAttr == null){
-				String text = "The test attribute type definition \"" + attrValue.getTestAttribute() + "\" for this policy component doesn't exists.";
-				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
-				list.add(msg);	
-			}else{
-				IAttribute attr = testAttr.findAttribute();
-				if (attr == null){
-					String text = "The attribute definition \"" + testAttr.getAttribute() + "\" for this policy component doesn't exists.";
-					Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
-					list.add(msg);	
-				}
-			}
+			msgAttributeValueValidation = attrValue.validate();
+			list.add(msgAttributeValueValidation);
 		}
 	}	
 }

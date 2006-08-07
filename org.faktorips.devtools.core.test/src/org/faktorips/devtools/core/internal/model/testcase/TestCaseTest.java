@@ -102,6 +102,14 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals(4, testCase.getInputObjects().length);
         assertEquals(4, testCase.getExpectedResultObjects().length);
         assertEquals("testCaseType1", testCase.getTestCaseType());
+        ITestPolicyCmpt[] testpc = testCase.getExpectedResultPolicyCmpt();
+        for (int i = 0; i < testpc.length; i++) {
+            assertFalse(testpc[i].isInputObject());
+        }
+        testpc = testCase.getInputPolicyCmpt();
+        for (int i = 0; i < testpc.length; i++) {
+            assertTrue(testpc[i].isInputObject());
+        }
     }
     
     public void testToXml() {

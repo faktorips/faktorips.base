@@ -217,7 +217,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             Element testPolicyCmptElem = null;
             if (relation != null){
                 testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relation.getTestPolicyCmptType());
-                testPolicyCmptElem.setAttribute("type", RelationType.COMPOSITION.getName().toLowerCase());
+                testPolicyCmptElem.setAttribute("type", "composite");
                 testPolicyCmptElem.setAttribute("label", testPolicyCmpt[i].getTestPolicyCmptType() + "/" + testPolicyCmpt[i].getLabel());
             } else {
                 testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, testPolicyCmpt[i].getTestPolicyCmptType());
