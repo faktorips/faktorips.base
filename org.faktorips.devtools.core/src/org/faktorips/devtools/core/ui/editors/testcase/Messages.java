@@ -44,4 +44,5 @@ public class Messages extends NLS {
 	public static String TestPolicyCmptTypeSection_undefined;
 	public static String TestPolicyCmptTypeSection_buttonAdd;
 	public static String TestPolicyCmptTypeSection_buttonRemove;
+	public static String TestPolicyCmptTypeSection_buttonProductCmpt;
 }

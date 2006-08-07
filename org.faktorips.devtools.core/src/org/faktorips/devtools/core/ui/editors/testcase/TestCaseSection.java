@@ -65,6 +65,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -86,6 +87,7 @@ public class TestCaseSection extends IpsSection {
 	// Buttons
 	private Button addButton;
 	private Button removeButton;
+	private Button productCmptButton;
 	
 	// Title of the test case tree structure section
     private String sectionTreeStructureTitle;
@@ -185,9 +187,11 @@ public class TestCaseSection extends IpsSection {
 		buttons.setLayout(buttonLayout);
 		addButton = toolkit.createButton(buttons, Messages.TestPolicyCmptTypeSection_buttonAdd);
 		removeButton = toolkit.createButton(buttons, Messages.TestPolicyCmptTypeSection_buttonRemove);
+		productCmptButton = toolkit.createButton(buttons, Messages.TestPolicyCmptTypeSection_buttonProductCmpt);
 		hookButtonListeners();
 		addButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		removeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		productCmptButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		// Details section
 		prevTestPolicyCmpt = new ArrayList();
@@ -369,6 +373,10 @@ public class TestCaseSection extends IpsSection {
 	 * Update the button state depending on the given object.
 	 */
 	private void updateButtonEnableState(Object selection) {
+		productCmptButton.setEnabled(false);
+		removeButton.setEnabled(false);
+		addButton.setEnabled(false);
+		
 		if (selection instanceof TestCaseTypeRelation){
 			TestCaseTypeRelation relation = (TestCaseTypeRelation) selection;
 			try {
@@ -376,13 +384,10 @@ public class TestCaseSection extends IpsSection {
 				if ( relation != null){
 					modelRelation = relation.findRelation();
 				}
-				
 				if (modelRelation == null){
 					// failure in test case type definition
 					// test case type or model relation not found
 					// no add and removed allowed, because the test case type definition is wrong
-					addButton.setEnabled(false);
-					removeButton.setEnabled(false);
 				}else{
 					addButton.setEnabled(true);
 					removeButton.setEnabled(false);
@@ -391,34 +396,30 @@ public class TestCaseSection extends IpsSection {
 				// disable add and enable remove button and ignore exception
 				// maybe the test case type model and test case are inconsistence
 				// in this case the whole relation could be deleted but no new childs could be added
-				addButton.setEnabled(false);
 				removeButton.setEnabled(true);
 				return;
 			}
 		}else if (selection instanceof ITestPolicyCmpt){
 			ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selection;
 			try {
-				if (testPolicyCmpt.findTestPolicyCmptType() != null){
-					// root elements could not be deleted
-					removeButton.setEnabled(!((ITestPolicyCmpt)selection).isRoot());
+				ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptType();
+				// root elements could not be deleted
+				removeButton.setEnabled(!((ITestPolicyCmpt)selection).isRoot());	
+				if (param != null){
+					// type parameter exists, therefore add is enabled 
 					addButton.setEnabled(true);
+					// product component select button is only enabled if the type parameter specified this
+					productCmptButton.setEnabled(param.isRequiresProductCmpt());
 				}
 			} catch (CoreException e) {
 				// disable add and remove button and ignore exception
 				// maybe the test case type model and test case are inconsistence
 				// in this case the parent relation could be removed but not this child element
-				addButton.setEnabled(false);
-				removeButton.setEnabled(false);
-				return;
 			}
 		}else if (selection instanceof ITestPolicyCmptRelation){
+			// the relation object indicates, that the test policy type parameter for this relation
+			// not exists, therefore only remove is enabled
 			removeButton.setEnabled(true);
-			addButton.setEnabled(false);
-		}else{
-			// no relation or policy componet selected
-			// disable the buttons
-			removeButton.setEnabled(false);
-			addButton.setEnabled(false);
 		}
 	}
 	
@@ -554,6 +555,17 @@ public class TestCaseSection extends IpsSection {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
+		productCmptButton.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					productCmptClicked();
+				} catch (Exception ex) {
+					IpsPlugin.logAndShowErrorDialog(ex);
+				}
+			}
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});		
 	}
 	
 	/**
@@ -693,6 +705,34 @@ public class TestCaseSection extends IpsSection {
 					selectInTreeByObject(prevRelationObj, true);
 				else
 					selectInTreeByLabelPath(prevRelation);
+			}
+		}
+	}
+	
+	private void productCmptClicked() throws CoreException {
+		ISelection selection = treeViewer.getSelection();
+		if (selection instanceof IStructuredSelection){
+			Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
+			if (selectedObj instanceof ITestPolicyCmpt){
+				ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selectedObj;
+				ITestPolicyCmptTypeParameter testTypeParam;
+				try {
+					testTypeParam = testPolicyCmpt.findTestPolicyCmptType();
+				} catch (CoreException e) {
+					// ignored, the validation shows the unknown type failure message
+					return;
+				}
+				String productCmpt = "";
+				if (testTypeParam.isRequiresProductCmpt()){
+					productCmpt = selectProductCmptDialog(testTypeParam.getPolicyCmptType());
+					if (productCmpt == null)
+						// chancel
+						return;
+				}
+				testPolicyCmpt.setProductCmpt(productCmpt);
+				testPolicyCmpt.setLabel(
+						testCase.generateUniqueLabelOfTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmpt)));
+				refreshTree();
 			}
 		}
 	}

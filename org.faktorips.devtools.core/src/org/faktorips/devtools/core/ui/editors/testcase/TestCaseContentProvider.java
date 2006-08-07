@@ -45,7 +45,8 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	 *    the input objects or the expected result objects could be provided */
 	public static final int TYPE_INPUT = 0;
 	public static final int TYPE_EXPECTED_RESULT = 1;
-	private int isTypeFor = -1;
+	public static final int TYPE_UNKNOWN = -11;
+	private int isTypeFor = TYPE_UNKNOWN;
 	
 	/** Sort functions */
 	public static TestPolicyCmptSorter TESTPOLICYCMPT_SORTER = new TestPolicyCmptSorter();
