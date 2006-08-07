@@ -20,8 +20,18 @@ package org.faktorips.devtools.core.ui.wizards.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
@@ -36,41 +46,65 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     private TestCasePage typePage;
     
     public NewTestCaseWizard() {
-        super(IpsObjectType.POLICY_CMPT_TYPE);
+        super(IpsObjectType.TEST_CASE);
     }
     
-    /** 
-     * Overridden method.
-     * @throws JavaModelException
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createFirstPage()
+    /**
+     * {@inheritDoc}
      */
+
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         typePage = new TestCasePage(selection);
         return typePage;
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#createAdditionalPages()
+    /**
+     * {@inheritDoc}
      */
+
     protected void createAdditionalPages() {
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard#finishIpsObject(org.faktorips.devtools.core.model.IIpsObject)
+    /**
+     * {@inheritDoc}
      */
     protected void finishIpsObject(IIpsObject pdObject) throws CoreException {
-//        IPolicyCmptType type = (IPolicyCmptType)pdObject;
-//        String supertypeName = typePage.getSuperType(); 
-//        type.setSupertype(supertypeName);
-//        String postfix = IpsPlugin.getDefault().getIpsPreferences().getDefaultProductCmptTypePostfix();
-//        if (StringUtils.isNotEmpty(postfix)) {
-//        	type.setConfigurableByProductCmptType(true);
-//        	type.setUnqualifiedProductCmptType(type.getName() + postfix);
-//        } else {
-//        	type.setConfigurableByProductCmptType(false);
-//        }
+    	// fill the default content of the test case bases on the test case type
+    	ITestCase testCase = (ITestCase)pdObject;
+    	testCase.setTestCaseType(typePage.getSuperType());
+    	ITestCaseType testCaseType = testCase.findTestCaseType();
+    	generateDefaultContent(testCaseType.getInputParameters(), testCase, true);
+    	generateDefaultContent(testCaseType.getExpectedResultParameter(), testCase, false);
+    	if (testCaseType == null){
+    		throw new CoreException(new IpsStatus("Test case type " + testCase.getTestCaseType() + " not exists."));
+    	}
     }
-
+    
+    /*
+     * Generate the default content for the given test case if isInput is <code>true</code> then the 
+     * content for the input will be created otherwise for the expected result.
+     * All test value parameter and root policy component type parameter (including all attributes)
+     * from the given list of test parameter will be created.
+     */
+    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase, boolean isInput){
+    	for (int i = 0; i < parameter.length; i++) {
+    		if (parameter[i] instanceof ITestValueParameter){
+    			ITestValue testValue = isInput?testCase.newInputValue():testCase.newExpectedResultValue();
+    			testValue.setTestValueParameter(parameter[i].getName());
+    		}else if(parameter[i] instanceof ITestPolicyCmptTypeParameter){
+    			ITestPolicyCmptTypeParameter testCaseTypeParam = (ITestPolicyCmptTypeParameter) parameter[i];
+    			ITestPolicyCmpt testPolicyCmpt = isInput?testCase.newInputPolicyCmpt():testCase.newExpectedResultPolicyCmpt();
+    			testPolicyCmpt.setTestPolicyCmptType(parameter[i].getName());
+    			testPolicyCmpt.setLabel(
+    					testCase.generateUniqueLabelOfTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptType()));
+    			// add the attributes which are defined in the test case type parameter
+    			ITestAttribute attributes[] = testCaseTypeParam.getTestAttributes();
+    			for (int j = 0; j < attributes.length; j++) {
+    				ITestAttribute attribute = attributes[j];
+    				ITestAttributeValue attrValue = testPolicyCmpt.newTestAttributeValue();
+    				attrValue.setTestAttribute(attribute.getAttribute());
+    			}
+    		}
+    	}
+    }
 }

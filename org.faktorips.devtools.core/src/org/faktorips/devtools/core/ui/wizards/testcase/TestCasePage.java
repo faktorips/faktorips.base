@@ -17,14 +17,16 @@
 
 package org.faktorips.devtools.core.ui.wizards.testcase;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
 
@@ -33,7 +35,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
  */
 public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     
-    private PcTypeRefControl superTypeControl;
+    private TestCaseTypeRefControl superTypeControl;
     
     /**
      * @param pageName
@@ -47,7 +49,7 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
         toolkit.createFormLabel(nameComposite, Messages.TestCasePage_labelSuperclass);
-        superTypeControl = toolkit.createPcTypeRefControl(null, nameComposite);
+        superTypeControl = toolkit.createTestCaseTypeRefControl(null, nameComposite);
         TextButtonField supertypeField = new TextButtonField(superTypeControl);
         supertypeField.addChangeListener(this);
     }
@@ -75,4 +77,15 @@ public class TestCasePage extends IpsObjectPage implements ValueChangeListener {
 	protected void validateName() {
 		super.validateName();
 	}
+	
+    protected void validatePage() throws CoreException {
+        super.validatePage();
+        if (getErrorMessage()!=null) {
+            return;
+        }
+	    if (superTypeControl.findTestCaseType()==null) {
+	        setErrorMessage(NLS.bind(Messages.TestCasePage_msgTestCaseTypeDoesNotExist, superTypeControl.getText()));
+	    }
+        updatePageComplete();
+    }
 }

@@ -34,6 +34,6 @@ public class Messages extends NLS {
 	}
 
 	public static String TestCasePage_title;
-
 	public static String TestCasePage_labelSuperclass;
+	public static String TestCasePage_msgTestCaseTypeDoesNotExist;
 }
