@@ -148,6 +148,11 @@ public class DefaultsAndRangesSection extends IpsSection {
 				IpsPlugin.log(e);
 			}
 			
+			if (dataType == null) {
+				// no datatype found - use string as default
+				dataType = Datatype.STRING;
+			}
+			
 			IValueSet valueSet = elements[i].getValueSet();
 			
 			toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
