@@ -26,23 +26,25 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.IpsProject;
-import org.faktorips.devtools.core.internal.model.pctype.Attribute;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.pctype.Relation;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
-/*
- * Testrichtlinie: immer so testen, dass TextContent erweitert werden kann. nie ueber alle Elemente iterieren, sondern nur welche erwarten
+/**
+ * @author Stefan Widmaier
  */
 public class ModelContentProviderTest extends AbstractIpsPluginTest {
-    private ModelExplorerConfiguration config= new ModelExplorerConfiguration(new Class[] { PolicyCmptType.class
-            , TableStructure.class, ProductCmpt.class
-            , TableContents.class, Attribute.class
-            , Relation.class}
-            , new Class[0], ModelExplorerConfiguration.ALLOW_MODEL_PROJECTS);
+    private ModelExplorerConfiguration config= new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class
+            , ITableStructure.class, IProductCmpt.class
+            , ITableContents.class, IAttribute.class
+            , IRelation.class}
+            , new Class[0]);
     
     private ModelContentProvider flatProvider= new ModelContentProvider(config, true);
     private ModelContentProvider hierarchyProvider= new ModelContentProvider(config, false);
@@ -228,11 +230,11 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
      */
     public void testGetElements() throws CoreException {
         // getElement returns all IPS-projects managed by the model
-        Object[] children= hierarchyProvider.getElements(new Object());
+        Object[] children= hierarchyProvider.getElements(IpsPlugin.getDefault().getIpsModel());
         assertEquals(3, children.length);
 
         // getElement returns all IPS-projects managed by the model
-        children= flatProvider.getElements(new Object());
+        children= flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
         assertEquals(3, children.length);
     }
 

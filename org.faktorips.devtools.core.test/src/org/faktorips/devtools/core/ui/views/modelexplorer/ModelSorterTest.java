@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 
 public class ModelSorterTest extends AbstractIpsPluginTest {
 
-    private ModelSorter sorter;
+    private ModelExplorerSorter sorter;
 
     private IpsProject proj; 
     private IpsProject proj2; 
@@ -38,7 +38,7 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
     
     protected void setUp() throws Exception {
         super.setUp();
-        sorter= new ModelSorter();
+        sorter= new ModelExplorerSorter();
         proj= (IpsProject)newIpsProject("TestProject");
         proj2= (IpsProject)newIpsProject("ZProject");
         fragment= proj.getIpsPackageFragmentRoots()[0].createPackageFragment("TestPackageFragment", false, null);
