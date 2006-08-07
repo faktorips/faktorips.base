@@ -30,7 +30,6 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ModelContentProvider_tooManyIpsObjectsFoundInSrcFile;
 	public static String ModelExplorer_submenuNew;
 	public static String ModelExplorer_submenuLayout;
 	public static String ModelExplorer_submenueReferences;

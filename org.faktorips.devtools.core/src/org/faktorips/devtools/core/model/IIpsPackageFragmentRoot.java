@@ -64,6 +64,13 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     public IIpsPackageFragment getIpsPackageFragment(String name);
     
     /**
+     * Returns all <code>IResource</code> objects that do not correspond to
+     * IpsPackageFragments contained in this PackageFragmentRoot. Returns an
+     * empty array if no such resources are found.
+     */
+    public Object[] getNonIpsResources() throws CoreException;
+    
+    /**
      * Returns the default-package.
      */
     public IIpsPackageFragment getIpsDefaultPackageFragment();

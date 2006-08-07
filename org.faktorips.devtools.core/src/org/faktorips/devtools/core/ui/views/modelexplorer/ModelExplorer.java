@@ -1,14 +1,15 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import junit.framework.TestCase;
-
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.actions.RefreshAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -37,22 +38,20 @@ import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.Attribute;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.pctype.Relation;
-import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
@@ -125,7 +124,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 	 * Filter used in flat layout, where it filters out empty packageFragments.
 	 */
 	private ViewerFilter emptyPackageFilter = new EmptyPackageFilter();
-	private ViewerFilter typeFilter;
 	
 	private IpsResourceChangeListener resourceListener;
 	protected ModelExplorerConfiguration config;	
@@ -139,11 +137,11 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		config= createConfig();
 	}
 	protected ModelExplorerConfiguration createConfig() {
-		return new ModelExplorerConfiguration(new Class[] { PolicyCmptType.class
-				, TableStructure.class, ProductCmpt.class
-				, TableContents.class, Attribute.class
-				, Relation.class, TestCase.class, TestCaseType.class}
-		, new Class[0], ModelExplorerConfiguration.ALLOW_MODEL_PROJECTS);
+		return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class
+				, ITableStructure.class, IProductCmpt.class
+				, ITableContents.class, IAttribute.class
+				, IRelation.class, ITestCase.class, ITestCaseType.class}
+		, new Class[]{IFolder.class, IFile.class, IProject.class});
 	}
 
 	/**
@@ -165,7 +163,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		treeViewer = new TreeViewer(parent);
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(labelProvider);
-		treeViewer.setSorter(new ModelSorter());
+		treeViewer.setSorter(new ModelExplorerSorter());
 		treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
 		treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
 		treeViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new IpsElementDragListener(treeViewer));
@@ -177,8 +175,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		decoProvider = new DecoratingLabelProvider(decoProvider, ipsDecorator); 
 		treeViewer.setLabelProvider(decoProvider);
 		
-		typeFilter= new ModelExplorerFilter(config);
-		treeViewer.addFilter(typeFilter);
+		createFilters(treeViewer);
 
 		getSite().setSelectionProvider(treeViewer);
 		resourceListener= new IpsResourceChangeListener(treeViewer);
@@ -194,45 +191,48 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		createContextMenu();
 	}
 
+	protected void createFilters(TreeViewer tree) {
+//		treeViewer.addFilter(new ModelExplorerFilter(config));
+	}
 	/**
 	 * Create menu for layout styles.
 	 */
 	private void createMenu() {
+		IAction flatLayoutAction= new LayoutAction(this, true);
+		flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout); 
+		flatLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif"));
+		IAction hierarchicalLayoutAction= new LayoutAction(this, false);
+		hierarchicalLayoutAction.setText(Messages.ModelExplorer_actionHierarchicalLayout);  
+		hierarchicalLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerHierarchicalLayout.gif"));
+		// Actions are unchecked as per default, check action for current layout
+		if(isFlatLayout()){
+			flatLayoutAction.setChecked(true);
+		}else{
+			hierarchicalLayoutAction.setChecked(true);
+		}
 		IMenuManager mgr = getViewSite().getActionBars().getMenuManager();
-		IMenuManager layoutMenue = new MenuManager(
-				Messages.ModelExplorer_submenuLayout);
-		layoutMenue.add(new Action(Messages.ModelExplorer_actionFlatLayout) {
-			public void run() {
-				setFlatLayout(true);
-			}
-		});
-		layoutMenue.add(new Action(
-				Messages.ModelExplorer_actionHierarchicalLayout) {
-			public void run() {
-				setFlatLayout(false);
-			}
-		});
-		mgr.add(layoutMenue);
+		IMenuManager layoutMenu = new MenuManager(Messages.ModelExplorer_submenuLayout);
+		layoutMenu.add(flatLayoutAction);
+		layoutMenu.add(hierarchicalLayoutAction);
+		mgr.add(layoutMenu);
 	}
 
 	private void createContextMenu() {
-//		getViewSite().getActionBars().setGlobalActionHandler(
-//				ActionFactory.CUT.getId(),
-//				new IpsCutAction(treeViewer, this.getSite().getShell()));
+		//		getViewSite().getActionBars().setGlobalActionHandler(
+		//		ActionFactory.CUT.getId(),
+		//		new IpsCutAction(treeViewer, this.getSite().getShell()));
 		getViewSite().getActionBars().setGlobalActionHandler(
-				ActionFactory.COPY.getId()
-				,	new IpsCopyAction(treeViewer, this.getSite().getShell()));
+				ActionFactory.COPY.getId(),	new IpsCopyAction(treeViewer, getSite().getShell()));
 		getViewSite().getActionBars().setGlobalActionHandler(
-				ActionFactory.PASTE.getId(),
-				new IpsPasteAction(treeViewer, this.getSite().getShell()));
+				ActionFactory.PASTE.getId(), new IpsPasteAction(treeViewer, getSite().getShell()));
 		getViewSite().getActionBars().setGlobalActionHandler(
 				ActionFactory.DELETE.getId(), new IpsDeleteAndSaveAction(treeViewer));
 
-        getViewSite().getActionBars().setGlobalActionHandler(
-        		ActionFactory.RENAME.getId(), 
-        		new RenameAction(this.getSite().getShell(), treeViewer));
-        
-        
+		getViewSite().getActionBars().setGlobalActionHandler(
+				ActionFactory.RENAME.getId(), new RenameAction(getSite().getShell(), treeViewer));
+		getViewSite().getActionBars().setGlobalActionHandler(
+				ActionFactory.MOVE.getId(), new MoveAction(getSite().getShell(), treeViewer));
+
 		MenuManager manager = new MenuManager();
 		manager.setRemoveAllWhenShown(true);	
 		manager.addMenuListener(new MenuBuilder());
@@ -265,7 +265,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		if (isFlatLayout()) {
 			// remove Filter in case it was already added by pressing the same layout button twice
 			// (treeviewer organizes filters in a list, not a set)
-			treeViewer.removeFilter(emptyPackageFilter);
+//				treeViewer.removeFilter(emptyPackageFilter);
 			treeViewer.addFilter(emptyPackageFilter);
 		}else{
 			treeViewer.removeFilter(emptyPackageFilter);
@@ -390,6 +390,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		private IWorkbenchAction copy= ActionFactory.COPY.create(getSite().getWorkbenchWindow());
 		private IWorkbenchAction paste= ActionFactory.PASTE.create(getSite().getWorkbenchWindow());
 		private IWorkbenchAction delete= ActionFactory.DELETE.create(getSite().getWorkbenchWindow());
+
+		private IWorkbenchAction rename= ActionFactory.RENAME.create(getSite().getWorkbenchWindow());
+		private IWorkbenchAction move= ActionFactory.MOVE.create(getSite().getWorkbenchWindow());
+		
+		
+		public MenuBuilder(){
+		}
 		
 		/**
 		 * Creates this parts' contextmenu in the given MenuManager dynamically. 
@@ -424,58 +431,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 			
 		}
 		
-		private void createAllContextMenuActions(IMenuManager manager, Object selected){
-			if(selected instanceof IIpsElement){
-				IIpsElement element= (IIpsElement)selected;
-				
-				if(config.isAllowedIpsElementType(element)){
-					manager.add(new OpenEditorAction(treeViewer));
-				}
-				MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew); 
-				newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
-				if(config.isAllowedIpsElementType(ProductCmpt.class)){
-					newMenu.add(new NewProductComponentAction(getSite().getWorkbenchWindow()));
-					newMenu.add(new NewTableContentAction(getSite().getWorkbenchWindow()));
-				}
-				if(config.isAllowedIpsElementType(PolicyCmptType.class)){
-					newMenu.add(new NewPolicyComponentTypeAction(getSite().getWorkbenchWindow()));
-				}
-				if(element instanceof IProductCmpt){
-					newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
-					newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
-				}
-				manager.add(newMenu);
-				manager.add(new Separator());
-				
-				manager.add(copy);
-				manager.add(paste);
-				manager.add(delete);
-				manager.add(new Separator());
-	
-				if(element instanceof IProductCmpt){
-					manager.add(new ShowStructureAction(treeViewer));
-					manager.add(new FindProductReferencesAction(treeViewer));
-				}
-				if(element instanceof IPolicyCmptType){
-					manager.add(new FindPolicyReferencesAction(treeViewer));
-				}
-				if(element instanceof IPolicyCmptType | element instanceof IProductCmpt){
-					manager.add(new ShowAttributesAction(treeViewer));
-				}
-				manager.add(new Separator());
-				
-		        MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
-		        subMm.add(new RenameAction(getSite().getShell(), treeViewer));
-		        subMm.add(new MoveAction(getSite().getShell(), treeViewer));
-				manager.add(subMm);
-				manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS
-						+ "-end"));//$NON-NLS-1$
-			}
-		}
-		
 		private void createEditActions(IMenuManager manager, Object selected) {
-			if(selected instanceof IIpsElement){
+			if(selected instanceof IIpsObject){
 				manager.add(new OpenEditorAction(treeViewer));
 			}
 		}
@@ -484,13 +441,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 			if(selected instanceof IIpsElement){
 				MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew); 
 				newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
-				if(config.isAllowedIpsElementType(ProductCmpt.class)){
+				if(config.isAllowedIpsElementType(IProductCmpt.class)){
 					newMenu.add(new NewProductComponentAction(getSite().getWorkbenchWindow()));
 				}
-				if(config.isAllowedIpsElementType(TableContents.class)){
+				if(config.isAllowedIpsElementType(ITableContents.class)){
 					newMenu.add(new NewTableContentAction(getSite().getWorkbenchWindow()));
 				}
-				if(config.isAllowedIpsElementType(PolicyCmptType.class)){
+				if(config.isAllowedIpsElementType(IPolicyCmptType.class)){
 					newMenu.add(new NewPolicyComponentTypeAction(getSite().getWorkbenchWindow()));
 				}
 				if(selected instanceof IProductCmpt){
@@ -535,9 +492,30 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		private void createRefactorMenu(IMenuManager manager, Object selected) {
 			if(selected instanceof IIpsElement){
 		        MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
-		        subMm.add(new RenameAction(getSite().getShell(), treeViewer));
-		        subMm.add(new MoveAction(getSite().getShell(), treeViewer));
+		        subMm.add(rename);
+		        subMm.add(move);
 				manager.add(subMm);
+			}
+		}
+	}
+
+	private class LayoutAction extends Action implements IAction {
+		private boolean isFlatLayout;
+		private ModelExplorer modelExplorer;
+
+		public LayoutAction(ModelExplorer modelExplorer, boolean flat) {
+			super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+
+			isFlatLayout= flat;
+			this.modelExplorer= modelExplorer;
+		}
+
+		/*
+		 * @see org.eclipse.jface.action.IAction#run()
+		 */
+		public void run() {
+			if (modelExplorer.isFlatLayout() != isFlatLayout){
+				modelExplorer.setFlatLayout(isFlatLayout);
 			}
 		}
 	}

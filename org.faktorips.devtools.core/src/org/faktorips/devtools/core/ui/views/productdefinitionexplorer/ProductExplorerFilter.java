@@ -15,46 +15,36 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.modelexplorer;
+package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 /**
- * ViewerFilter for the ModelExplorer viewpart. It is used to filter objects 
- * in the tree by their types/classes. Uses a <code>ModelExplorerConfiguration</code>
- * to filter objects.
+ * ViewerFilter for <code>ProductExplorer<code> viewpart. It is used to
+ * filter out all projects that are not productdefinition projects.
  * 
  * @author Stefan Widmaier
  */
-public class ModelExplorerFilter extends ViewerFilter {
-	private ModelExplorerConfiguration configuration;
+public class ProductExplorerFilter extends ViewerFilter {
 	
-	public ModelExplorerFilter(ModelExplorerConfiguration config){
-		configuration= config;
-	}
+	public ProductExplorerFilter(){}
 	
 	/**
-	 * Returns <code>true</code> for IIpsElements allowed by 
-	 * <code>ModelExplorerConfiguration#isAllowedIpsElementType()</code> and for IpsProjects
-	 * allowed by <code>ModelExplorerConfiguration#isAllowedIpsProject()</code>.
-	 * False is returned for IpsElements, IpsProjetcs and other types not allowed by the configuration.
+	 * Returns <code>true</code> for all <code>IIpsElement</code>s except 
+	 * <code>IIpsProject</code>s that do not have the isProductdefinitionProject
+	 *  flag set to true. False is returned for all other types.
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if(element instanceof IIpsElement){
-			IIpsElement ipsElement= (IIpsElement)element;
-			if(configuration.isAllowedIpsElementType(ipsElement)){
-				if(ipsElement instanceof IIpsProject){
-					return configuration.isAllowedIpsProjectType((IIpsProject)ipsElement);
-				}
-				return true;
+			if(element instanceof IIpsProject){
+				return ((IIpsProject)element).isProductDefinitionProject();
 			}else{
-				return false;
+				return true;
 			}
 		}else{
-			return configuration.isAllowedResourceType(element);
+			return false;
 		}
 	}
-
 }

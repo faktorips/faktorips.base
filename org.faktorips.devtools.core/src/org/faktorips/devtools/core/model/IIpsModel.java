@@ -30,7 +30,8 @@ import org.faktorips.datatype.ValueDatatype;
  * <code>getIpsModel()</code> method. 
  */
 public interface IIpsModel extends IIpsElement {
-    
+
+	public IProject[] getNonIpsResources() throws CoreException;
     /**
      * Returns the workspace.
      */

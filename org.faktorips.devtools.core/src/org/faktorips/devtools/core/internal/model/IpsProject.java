@@ -34,9 +34,14 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
@@ -283,6 +288,69 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         return (IIpsPackageFragmentRoot[])roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
     }
+    /**
+     * {@inheritDoc}
+     */
+	public Object[] getNonIpsResources() throws CoreException {
+		IResource res= getCorrespondingResource();
+		IWorkbenchAdapter adapter= null;
+		if(res instanceof IAdaptable){
+			adapter= (IWorkbenchAdapter) ((IAdaptable) res).getAdapter(IWorkbenchAdapter.class);
+		}
+        if (adapter != null) {
+        	List childResources= new ArrayList(); 
+            IResource[] children= (IResource[]) adapter.getChildren(res);
+            for (int i = 0; i < children.length; i++) {
+        		if(!isResourcePackageFragmentRoot(children[i]) & !isOutputFolder(children[i])){
+        			childResources.add(children[i]);
+        		}
+			}
+            return childResources.toArray();
+        }
+        return new Object[0];
+	}
+	
+	/**
+	 * Examins the <code>JavaProject</code> corresponding to this <code>IpsProject</code> 
+	 * and its relation to the given <code>IResource</code>.
+	 * Returns true if the given resource corresponds to a folder that is
+	 * either the javaprojects default output location or the output location 
+	 * of one of the projects classpathentries. False otherwise. 
+	 * @param resource
+	 * @return
+	 */
+	 protected boolean isOutputFolder(IResource resource) {
+		try {
+			IPath outputPath= getJavaProject().getOutputLocation();
+			IClasspathEntry[] entries= getJavaProject().getResolvedClasspath(true);
+			if(resource.getFullPath().equals(outputPath)){
+				return true;
+			}
+			for (int i = 0; i < entries.length; i++) {
+				if(resource.getFullPath().equals(entries[i].getOutputLocation())){
+					return true;
+				}
+			}
+			return false;
+		} catch (JavaModelException e) {
+			IpsPlugin.log(e);
+			return false;
+		}
+	}
+
+	/**
+	 * Returns true if the given IResource is a folder that corresponds to
+	 * an IpsPackageFragmentRoot contained in this IpsProject, false otherwise.
+	 */
+	private boolean isResourcePackageFragmentRoot(IResource res) throws CoreException {
+		IIpsPackageFragmentRoot[] roots= getIpsPackageFragmentRoots();
+		for (int i = 0; i < roots.length; i++) {
+			if(roots[i].getCorrespondingResource().equals(res)){
+				return true;
+			}
+		}
+		return false;
+	}
 
     /**
      * {@inheritDoc}
@@ -921,5 +989,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	public ClassLoaderProvider getClassLoaderProviderForJavaProject() {
 		return ((IpsModel)getIpsModel()).getClassLoaderProvider(this);
 	}
+
 
 }

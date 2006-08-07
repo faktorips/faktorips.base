@@ -17,10 +17,12 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 
 /**
@@ -36,15 +38,21 @@ public class EmptyPackageFilter extends ViewerFilter {
 	 * {@inheritDoc}
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		try {
-			if(element instanceof IIpsPackageFragment){
-				IIpsPackageFragment frag= (IIpsPackageFragment)element;
-				return frag.hasChildren() || frag.getIpsChildPackageFragments().length==0; 
-			}else{
+		if(element instanceof IIpsElement){
+			try {
+				if(element instanceof IIpsPackageFragment){
+					IIpsPackageFragment frag= (IIpsPackageFragment)element;
+					return frag.hasChildren() || frag.getIpsChildPackageFragments().length==0; 
+				}else{
+					return true;
+				}
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
 				return true;
 			}
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
+		}else if(element instanceof IResource){
+			return true;
+		}else{
 			return true;
 		}
 	}

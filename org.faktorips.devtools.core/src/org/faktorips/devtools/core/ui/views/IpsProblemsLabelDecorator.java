@@ -56,13 +56,15 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 	 * {@inheritDoc}
 	 */	
 	public Image decorateImage(Image image, Object element) {
-		try {
-			ImageDescriptor baseImage= new ImageImageDescriptor(image);
-			Rectangle bounds= image.getBounds();
-			return getRegistry().get(
-                    new JavaElementImageDescriptor(baseImage, computeAdornmentFlags(element), new Point(bounds.width, bounds.height)));
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
+		if(image != null){
+			try {
+				ImageDescriptor baseImage= new ImageImageDescriptor(image);
+				Rectangle bounds= image.getBounds();
+				return getRegistry().get(
+	                    new JavaElementImageDescriptor(baseImage, computeAdornmentFlags(element), new Point(bounds.width, bounds.height)));
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
 		}
 		return image;
 	}

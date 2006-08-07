@@ -17,11 +17,11 @@
 
 package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
-import junit.framework.TestCase;
-
-import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
 
@@ -39,11 +39,12 @@ public class ProductExplorer extends ModelExplorer {
 	}
 
 	protected ModelExplorerConfiguration createConfig() {
-		return new ModelExplorerConfiguration(new Class[] { ProductCmpt.class,
-				TableContents.class, TestCase.class, TestCaseType.class}, new Class[0],
-				ModelExplorerConfiguration.ALLOW_PRODUCTDEFINITION_PROJECTS |
-				ModelExplorerConfiguration.ALLOW_MODEL_PROJECTS |
-				ModelExplorerConfiguration.ALLOW_NONMODEL_NONPRODUCTDEFINTION_PROJECTS);
+		return new ModelExplorerConfiguration(new Class[] { IProductCmpt.class,
+				ITableContents.class, ITestCase.class, ITestCaseType.class}, new Class[0]);
+	}
+	protected void createFilters(TreeViewer tree) {
+		super.createFilters(tree);
+		tree.addFilter(new ProductExplorerFilter());
 	}
 
 }

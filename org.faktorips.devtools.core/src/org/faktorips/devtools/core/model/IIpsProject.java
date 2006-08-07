@@ -167,12 +167,22 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the root folder with the indicated name.
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name);
-    
+
     /**
      * Returns the project's package fragment roots or an empty array 
      * if none is found.
      */
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() throws CoreException;
+
+    /**
+     * Returns all <code>IResource</code> objects that do not correspond to
+     * <code>IpsPackageFragmentRoots</code> contained in this Project. Returns an
+     * empty array if no such resources are found. <p>
+     * This method filters out folders that are output locations of the javaproject
+     * corresponding to this <code>IIpsProject</code>. Both default output locations 
+     * of the javaproject and output localtions of classpath entries are examined.
+     */
+    public Object[] getNonIpsResources() throws CoreException;
     
     /**
      * Returns the project's package fragment roots contains source code

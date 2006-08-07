@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -29,10 +30,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -80,6 +83,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     
     /**
      * {@inheritDoc}
+     * IpsPackageFragments are always returned, whether they are output locations 
+     * of the javaproject corresponding to this packagefragments IpsProject or not.
      */
     public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException {
     	IFolder folder = (IFolder)getCorrespondingResource();
@@ -97,6 +102,48 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     	IIpsPackageFragment[] shrink = new IIpsPackageFragment[count];
     	System.arraycopy(result, 0, shrink, 0, count);
     	return shrink;
+	}
+    /**
+     * {@inheritDoc}
+     */
+	public Object[] getNonIpsResources() throws CoreException {
+		IResource res= getCorrespondingResource();
+		IWorkbenchAdapter adapter= null;
+		if(res instanceof IAdaptable){
+			adapter= (IWorkbenchAdapter) ((IAdaptable) res).getAdapter(IWorkbenchAdapter.class);
+		}
+        if (adapter != null) {
+        	List childResources= new ArrayList(); 
+            IResource[] children= (IResource[]) adapter.getChildren(res);
+            for (int i = 0; i < children.length; i++) {
+        		if(!isResourceIpsContent(children[i])){
+        			childResources.add(children[i]);
+        		}
+			}
+            return childResources.toArray();
+        }
+        return new Object[0];
+	}
+	
+	/**
+	 * Returns true if the given IResource is a file or folder that corresponds to
+	 * an IpsObject or IpsPackageFragment contained in this IpsPackageFragment,
+	 * false otherwise.
+	 */
+	private boolean isResourceIpsContent(IResource res) throws CoreException {
+		IIpsElement[] children= getIpsChildPackageFragments();
+		for (int i = 0; i < children.length; i++) {
+			if(children[i].getCorrespondingResource().equals(res)){
+				return true;
+			}
+		}
+		children= getChildren();
+		for (int i = 0; i < children.length; i++) {
+			if(children[i].getCorrespondingResource().equals(res)){
+				return true;
+			}
+		}
+		return false;
 	}
 
     /**
@@ -353,6 +400,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 	public boolean isDefaultPacakge() {
 		return this.name.equals(""); //$NON-NLS-1$
 	}
+
     
     
 }

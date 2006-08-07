@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 
 public class IpsElementDragListener implements DragSourceListener {
@@ -57,6 +58,9 @@ public class IpsElementDragListener implements DragSourceListener {
     		}
     		else if (selected instanceof IProductCmpt) {
     			list.add(((IProductCmpt)selected).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
+    		}else if(selected instanceof Object[]){
+    			Object ipsObject= ((Object[])selected)[0];
+    			list.add(((IIpsObject)ipsObject).getIpsSrcFile().getCorrespondingFile().getLocation().toOSString());
     		}
     	}
     	

@@ -20,6 +20,8 @@ package org.faktorips.devtools.core.ui.views;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -62,7 +64,9 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
 
 			if (selectedObject instanceof IIpsPackageFragment
 					|| selectedObject instanceof IIpsPackageFragmentRoot
-					|| selectedObject instanceof IIpsProject) {
+					|| selectedObject instanceof IIpsProject
+					|| selectedObject instanceof IFolder
+					|| selectedObject instanceof IProject) {
 				List list = Arrays.asList(tree.getVisibleExpandedElements());
 				if (list.contains(selectedObject)) {
 					tree.collapseToLevel(selectedObject, 1);
@@ -109,14 +113,10 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
 			ipsObject= (IIpsObject)e;
 		}
 		if(ipsObject != null){
-			IpsObjectType type= ipsObject.getIpsObjectType();
-			if(type == IpsObjectType.PRODUCT_CMPT || type == IpsObjectType.TABLE_CONTENTS
-				|| type == IpsObjectType.POLICY_CMPT_TYPE || type == IpsObjectType.TABLE_STRUCTURE) {
-				try {
-					IpsPlugin.getDefault().openEditor(ipsObject.getIpsSrcFile());
-				} catch (PartInitException e1) {
-					IpsPlugin.logAndShowErrorDialog(e1);
-				}
+			try {
+				IpsPlugin.getDefault().openEditor(ipsObject.getIpsSrcFile());
+			} catch (PartInitException e1) {
+				IpsPlugin.logAndShowErrorDialog(e1);
 			}
 		}
 	}

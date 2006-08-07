@@ -383,7 +383,7 @@
             allowMultiple="true"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer"
-            icon="icons/ModelExplorer.png"
+            icon="icons/ModelExplorer.gif"
             id="org.faktorips.devtools.core.ui.views.modelExplorer"
             name="%org.faktorips.devtools.core.ui.views.modelExplorer"/>
       <view

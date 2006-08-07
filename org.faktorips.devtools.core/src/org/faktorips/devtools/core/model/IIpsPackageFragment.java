@@ -47,6 +47,13 @@ public interface IIpsPackageFragment extends IIpsElement {
      * @throws CoreException 
      */
     public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException;
+
+    /**
+     * Returns all <code>IResource</code> objects that do not correspond to
+     * IpsPackageFragments contained in this PackageFragment. Returns an
+     * empty array if no such resources are found.
+     */
+    public Object[] getNonIpsResources() throws CoreException;
     
     /**
      * Returns the package fragment root this package fragment belongs to.
