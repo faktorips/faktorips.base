@@ -148,6 +148,11 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		}
 
 		super.setValue(getValueName((String) newValue));
+		
+		if (!getValue().equals(newValue)) {
+			setInvalidValue((String)newValue);
+			super.setValue(newValue);
+		}
 	}
 	
 	protected String getValueName(String id) {

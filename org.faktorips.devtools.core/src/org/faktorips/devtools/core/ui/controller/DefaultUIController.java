@@ -25,16 +25,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.util.message.MessageList;
 
 /**
  * 
@@ -83,20 +79,6 @@ public class DefaultUIController implements ValueChangeListener, UIController {
 				property); 
 		addMapping(mapping);
 		
-		
-		// check if the currently set value is invalid because not contained in the value set and,
-		// if so, add the value to the values supported by the field, so the user can see
-		// the invalid value
-		if (field instanceof AbstractEnumDatatypeBasedField && object instanceof IConfigElement) {
-			try {
-				MessageList ml = ((IConfigElement)object).validate();
-				if (ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET) != null) {
-					((AbstractEnumDatatypeBasedField)field).setInvalidValue(((IConfigElement)object).getValue());
-				}
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-		}
 	}
 
 	/**
