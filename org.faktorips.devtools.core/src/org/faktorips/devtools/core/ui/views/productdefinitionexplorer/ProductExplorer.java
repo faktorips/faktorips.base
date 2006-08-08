@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -27,7 +30,8 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfigura
 
 /**
  * A <code>ModelExplorer</code> that displays productdefinition projects along with all
- * contained <code>ProductCmpt</code>s and <code>TableContents</code>.
+ * contained <code>ProductCmpt</code>s, <code>TableContents</code>, <code>TestCases</code>
+ * and <code>TestCaseTypes</code>. 
  * 
  * @author Stefan Widmaier
  */
@@ -40,7 +44,8 @@ public class ProductExplorer extends ModelExplorer {
 
 	protected ModelExplorerConfiguration createConfig() {
 		return new ModelExplorerConfiguration(new Class[] { IProductCmpt.class,
-				ITableContents.class, ITestCase.class, ITestCaseType.class}, new Class[0]);
+				ITableContents.class, ITestCase.class, ITestCaseType.class}
+				, new Class[]{IFile.class, IFolder.class, IProject.class});
 	}
 	protected void createFilters(TreeViewer tree) {
 		super.createFilters(tree);

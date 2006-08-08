@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
 /**
  * ViewerFilter for <code>ProductExplorer<code> viewpart. It is used to
@@ -34,17 +33,12 @@ public class ProductExplorerFilter extends ViewerFilter {
 	/**
 	 * Returns <code>true</code> for all <code>IIpsElement</code>s except 
 	 * <code>IIpsProject</code>s that do not have the isProductdefinitionProject
-	 *  flag set to true. False is returned for all other types.
+	 *  flag set to true. True is returned for all other types.
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if(element instanceof IIpsElement){
-			if(element instanceof IIpsProject){
-				return ((IIpsProject)element).isProductDefinitionProject();
-			}else{
-				return true;
-			}
-		}else{
-			return false;
+		if(element instanceof IIpsProject){
+			return ((IIpsProject)element).isProductDefinitionProject();
 		}
+		return true;
 	}
 }
