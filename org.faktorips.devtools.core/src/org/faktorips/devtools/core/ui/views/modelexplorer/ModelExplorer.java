@@ -86,6 +86,12 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  */
 
 public class ModelExplorer extends ViewPart implements IShowInTarget{
+	
+	/**
+	 * Extension id of this views extension.
+	 */
+	public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelExplorer";
+	
 	private static final int HIERARCHICAL_LAYOUT = 0;
 	
 	private static final int FLAT_LAYOUT = 1;
@@ -99,6 +105,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 	 * Used for saving the current layout style in a eclipse memento.
 	 */
 	private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
+
 	
 	/**
 	 * The TreeViewer displaying the object model.
@@ -455,7 +462,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 					newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
 					newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
 				}
-				newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
+				if(config.isAllowedIpsElementType(ITestCase.class)){
+						newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
+				}
 				manager.add(newMenu);
 			}
 		}
