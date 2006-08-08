@@ -168,5 +168,5 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * Returns <code>true</code> if this IIpsPackageFragement is the default-package. 
 	 * The default-package is the one with an empty String as name ("").
 	 */
-	public boolean isDefaultPacakge();
+	public boolean isDefaultPackage();
 }

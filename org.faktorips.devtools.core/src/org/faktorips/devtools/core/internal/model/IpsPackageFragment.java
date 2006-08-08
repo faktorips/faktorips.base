@@ -152,7 +152,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
 	public IIpsPackageFragment getParentIpsPackageFragment() {
 		int lastIndex= getName().lastIndexOf("."); //$NON-NLS-1$
 		if(lastIndex<0){
-			if(isDefaultPacakge()){
+			if(isDefaultPackage()){
 				return null;
 			}else{
 				return getRoot().getIpsDefaultPackageFragment();
@@ -397,7 +397,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     /**
      * {@inheritDoc}
      */
-	public boolean isDefaultPacakge() {
+	public boolean isDefaultPackage() {
 		return this.name.equals(""); //$NON-NLS-1$
 	}
 
