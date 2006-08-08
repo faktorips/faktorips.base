@@ -420,7 +420,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 				IWorkbenchActionConstants.M_WINDOW);
 
 		menu.add(resetPerspectiveAction);
-		menu.add(editActionSetAction);
+//		menu.add(editActionSetAction);
 		menu.add(new Separator());
 		addKeyboardShortcuts(menu);
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

@@ -22,12 +22,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Product for FaktorIPS to be used with eclipse. Provides reduced functionality in comparison
+ * Application for FaktorIPS to be used with eclipse. Provides reduced functionality in comparison
  * with the use as plugin within an eclipse runing the IDE-Product. Used for departement-workers.
  * 
  * @author Thorsten Guenther
  */
-public class IpsProduct implements IPlatformRunnable {
+public class IpsApplication implements IPlatformRunnable {
 
 	/**
 	 * {@inheritDoc}

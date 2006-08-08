@@ -462,8 +462,8 @@
    <extension
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.faktorips.devtools.core.internal.application.IpsProduct"
-            description="Product definition Tool of FaktorZehn GmbH"
+            application="org.faktorips.devtools.core.internal.application.IpsApplication"
+            description="Magnificent Product-Definition-Tool from FaktorZehn GmbH"
             name="Faktor IPS">
          <property
                name="windowImages"
@@ -471,11 +471,11 @@
       </product>
    </extension>
    <extension
-         id="FIPS"
+         id="productDefinitionTool"
          name="Faktor IPS"
          point="org.eclipse.core.runtime.applications">
       <application>
-         <run class="org.faktorips.devtools.core.internal.application.IpsProduct"/>
+         <run class="org.faktorips.devtools.core.internal.application.IpsApplication"/>
       </application>
    </extension>
    <extension
