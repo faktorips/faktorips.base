@@ -180,7 +180,7 @@ public class MovePage extends WizardPage implements ModifyListener {
 		public String getText(Object element) {
 			String text = null;
 			if (element instanceof IIpsPackageFragment) {
-				if (((IIpsPackageFragment) element).isDefaultPacakge()) {
+				if (((IIpsPackageFragment) element).isDefaultPackage()) {
 					return Messages.MovePage_labelDefaultPackage;
 				}
 				text = ((IIpsPackageFragment) element).getFolderName();
@@ -207,7 +207,7 @@ public class MovePage extends WizardPage implements ModifyListener {
 		public Object[] getChildren(Object parentElement) {
 
 			if (parentElement instanceof IIpsPackageFragment) {
-				if (((IIpsPackageFragment) parentElement).isDefaultPacakge()) {
+				if (((IIpsPackageFragment) parentElement).isDefaultPackage()) {
 					return new Object[0];
 				}
 				try {
