@@ -59,7 +59,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
   protected final String TEXT_21 = " get";
   protected final String TEXT_22 = "(){" + NL + "\t\treturn ";
   protected final String TEXT_23 = ";" + NL + "\t}";
-  protected final String TEXT_24 = NL + NL + "\tpublic String toString() {" + NL + "\t\treturn ";
+  protected final String TEXT_24 = NL + NL + "\tpublic String toString() {" + NL + "\t\treturn \"\" + ";
   protected final String TEXT_25 = " + \"|\" + ";
   protected final String TEXT_26 = ";" + NL + "\t}" + NL + "}";
 
@@ -137,7 +137,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(TEXT_23);
             }
     stringBuffer.append(TEXT_24);
-    
+     
 			for (int i = 0; i < columns.length; i++) {
 				if (i != 0) {
 					
