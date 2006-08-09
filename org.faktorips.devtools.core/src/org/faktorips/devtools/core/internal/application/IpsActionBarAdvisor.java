@@ -370,7 +370,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		menu.add(new Separator(IWorkbenchActionConstants.SHOW_EXT));
 		{
 
-			MenuManager showInSubMenu = new MenuManager(Messages.IpsActionBarAdvisor_showIn, "showIn"); //$NON-NLS-2$
+			MenuManager showInSubMenu = new MenuManager(Messages.IpsActionBarAdvisor_showIn, "showIn"); //$NON-NLS-2$ //$NON-NLS-1$
 			showInSubMenu.add(ContributionItemFactory.VIEWS_SHOW_IN
 					.create(getWindow()));
 			menu.add(showInSubMenu);

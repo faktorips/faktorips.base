@@ -218,6 +218,11 @@ public class ProductCmptStructure implements IProductCmptStructure {
 			for (int i = 0; i < relations.length; i ++) {
 				try {
 					IProductCmptTypeRelation relationType = relations[i].findProductCmptTypeRelation();
+					if (relationType == null) {
+						// no relation type found - inconsinstent model or product definition - ignore it.
+						continue;
+					}
+					
 					ArrayList relationsForType = (ArrayList)mapping.get(relationType.getName());
 					
 					if (relationsForType == null) {
