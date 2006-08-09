@@ -18,7 +18,10 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -58,6 +61,8 @@ public class RuleEditDialog extends IpsPartEditDialog {
     private CheckboxField appliedToAllField;
     private RuleFunctionsControl rfControl;
     private CheckboxField specifiedInSrcField;
+    private Text msgText;
+    private Label charCount;
 
     /**
      * @param parentShell
@@ -111,7 +116,16 @@ public class RuleEditDialog extends IpsPartEditDialog {
         Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
         Label label = uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelText);
         label.getParent().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
-        Text msgText = uiToolkit.createMultilineText(msgComposite);
+        msgText = uiToolkit.createMultilineText(msgComposite);
+        msgText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				updateCharCount();
+			}
+		});
+        uiToolkit.createVerticalSpacer(msgComposite, 1);
+        charCount = uiToolkit.createFormLabel(msgComposite, ""); //$NON-NLS-1$
+        charCount.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, true));
+        updateCharCount();
         
         // create fields
         nameField = new TextField(nameText);
@@ -121,6 +135,12 @@ public class RuleEditDialog extends IpsPartEditDialog {
         
         
         return workArea;
+    }
+    
+    private void updateCharCount() {
+    	String msg = NLS.bind(Messages.RuleEditDialog_contains, new Integer(msgText.getText().length()));
+    	charCount.setText(msg);
+    	charCount.getParent().layout();
     }
     
     private Control createFunctionsPage(TabFolder folder) {

@@ -114,4 +114,5 @@ public class Messages extends NLS {
 	public static String OverrideMethodDialog_labelSelectMethods;
 	public static String AttributeEditDialog_lableOverwrites;
 	public static String RelationEditDialog_labelNewRelationWizard;
+	public static String RuleEditDialog_contains;
 }
