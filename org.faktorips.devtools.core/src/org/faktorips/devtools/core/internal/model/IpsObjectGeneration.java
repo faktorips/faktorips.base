@@ -34,8 +34,6 @@ import org.w3c.dom.Element;
  */
 public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsObjectGeneration {
     
-    public final static String TAG_NAME = "Generation"; //$NON-NLS-1$
-    
     private GregorianCalendar validFrom;
 
     public IpsObjectGeneration(ITimedIpsObject ipsObject, int id) {

@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
+import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
@@ -163,7 +164,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // product component builders
         ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(
                 this, KIND_PRODUCT_CMPT_GENERATION_IMPL);
-        IIpsArtefactBuilder productCmptContentCopyBuilder = new XmlContentFileCopyBuilder(
+        IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(
                 IpsObjectType.PRODUCT_CMPT, this, KIND_PRODUCT_CMPT_CONTENT);
         
         // table structure builders

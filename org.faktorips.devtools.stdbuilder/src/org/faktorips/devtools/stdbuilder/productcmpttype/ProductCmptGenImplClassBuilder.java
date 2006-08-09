@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
@@ -68,6 +67,8 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuilder{
 
+    public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId";
+    
     private ProductCmptGenInterfaceBuilder interfaceBuilder;
     private ProductCmptImplClassBuilder productCmptTypeImplCuBuilder;
     private ProductCmptInterfaceBuilder productCmptTypeInterfaceBuilder;
@@ -352,7 +353,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     builder.appendln(")relationElements.get(i);");
                     builder.append(fieldName);
                     builder.append("[i] = ");
-                    builder.appendln("element.getAttribute(\"" + IProductCmptRelation.PROPERTY_TARGET_RUNTIME_ID + "\");");
+                    builder.appendln("element.getAttribute(\"" + XML_ATTRIBUTE_TARGET_RUNTIME_ID + "\");");
                     builder.append("addToCardinalityMap(");
                     builder.append(cardinalityFieldName);
                     builder.append(", ");
@@ -369,7 +370,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     builder.appendln(")relationElements.get(0);");
                     builder.append(fieldName);
                     builder.append(" = ");
-                    builder.appendln("element.getAttribute(\"" + IProductCmptRelation.PROPERTY_TARGET_RUNTIME_ID + "\");");
+                    builder.appendln("element.getAttribute(\"" + XML_ATTRIBUTE_TARGET_RUNTIME_ID + "\");");
                     builder.append(cardFieldName);
                     builder.append(" = new ");
                     builder.appendClassName(HashMap.class);

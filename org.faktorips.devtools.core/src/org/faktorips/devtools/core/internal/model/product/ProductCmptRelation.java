@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -45,7 +44,6 @@ import org.w3c.dom.Element;
 public class ProductCmptRelation extends IpsObjectPart implements
 		IProductCmptRelation {
 
-	final static String TAG_NAME = "Relation"; //$NON-NLS-1$
 
 	private String productCmptTypeRelation = ""; //$NON-NLS-1$
 
@@ -55,8 +53,6 @@ public class ProductCmptRelation extends IpsObjectPart implements
 
 	private int maxCardinality = 1;
 	
-	private String targetRuntimeId = ""; //$NON-NLS-1$
-
 	private boolean deleted = false;
 
 
@@ -142,32 +138,6 @@ public class ProductCmptRelation extends IpsObjectPart implements
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public String getTargetRuntimeId() {
-		return targetRuntimeId;
-	}
-
-	private void setRuntimeIdForTarget(String newTarget, String oldTarget){
-	
-		if(!ObjectUtils.equals(newTarget, oldTarget)){
-			IProductCmpt productCmpt;
-			try {
-				productCmpt = getIpsProject().findProductCmptByQualifiedName(newTarget);
-				
-				if(productCmpt != null){
-					targetRuntimeId = productCmpt.getRuntimeId();
-					return;
-				}
-				targetRuntimeId = ""; //$NON-NLS-1$
-
-			} catch (CoreException e) {
-				IpsPlugin.logAndShowErrorDialog(e);
-			}
-		}
-	}
-	
-	/**
 	 * Overridden.
 	 */
 	public String getTarget() {
@@ -192,7 +162,6 @@ public class ProductCmptRelation extends IpsObjectPart implements
 	public void setTarget(String newTarget) {
 		String oldTarget = target;
 		target = newTarget;
-		setRuntimeIdForTarget(newTarget, oldTarget);
 		valueChanged(oldTarget, target);
 	}
 
@@ -358,7 +327,6 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		productCmptTypeRelation = element
 				.getAttribute(PROPERTY_PCTYPE_RELATION);
 		target = element.getAttribute(PROPERTY_TARGET);
-		targetRuntimeId = element.getAttribute(PROPERTY_TARGET_RUNTIME_ID);
 		try {
 			minCardinality = Integer.parseInt(element
 					.getAttribute(PROPERTY_MIN_CARDINALITY));
@@ -384,7 +352,6 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_PCTYPE_RELATION, productCmptTypeRelation);
 		element.setAttribute(PROPERTY_TARGET, target);
-		element.setAttribute(PROPERTY_TARGET_RUNTIME_ID, targetRuntimeId);
 		element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
 
 		if (maxCardinality == CARDINALITY_MANY) {

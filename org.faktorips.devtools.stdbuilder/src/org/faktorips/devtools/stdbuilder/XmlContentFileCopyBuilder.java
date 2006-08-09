@@ -17,24 +17,13 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 
 /**
  * An implementation of the IpsArtefactBuilder interface that copies the XML content files for
@@ -43,34 +32,10 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Peter Erzberger
  */
-public class XmlContentFileCopyBuilder extends AbstractArtefactBuilder {
-
-    private IpsObjectType ipsObjectType;
-    private String kind;
+public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
 
     public XmlContentFileCopyBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
-        super(builderSet);
-        ArgumentCheck.notNull(kind, this);
-        ArgumentCheck.notNull(type, this);
-        ipsObjectType = type;
-        this.kind = kind;
-    }
-    
-    private String getContentAsString(InputStream is, String charSet) throws CoreException{
-        try {
-            return StringUtil.readFromInputStream(is, charSet);
-        } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
-        }
-    }
-    
-    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException{
-    
-        try {
-            return new ByteArrayInputStream(content.getBytes(charSet));
-        } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
-        }
+        super(type, builderSet, kind);
     }
     
     /**
@@ -81,87 +46,15 @@ public class XmlContentFileCopyBuilder extends AbstractArtefactBuilder {
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = (IFile)ipsSrcFile.getEnclosingResource();
-        InputStream is = null;
-        try {
-            is = file.getContents(true);
-            IFile copy = getXmlContentFile(ipsSrcFile);
-            IFolder folder = (IFolder)copy.getParent();
-            if (!folder.exists()) {
-                createFolder(folder);
-            }
-            if (copy.exists()) {
-                String charSet = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-                String newContent = getContentAsString(is, charSet);
-                String currentContent = getContentAsString(copy.getContents(), charSet);
-                if(newContent.equals(currentContent)){
-                    return;
-                }
-                is = convertContentAsStream(newContent, charSet);
-                copy.setContents(is, true, true, null);
-            } else {
-                copy.create(is, true, null);
-            }
-        } catch (CoreException e) {
-            throw new CoreException(new IpsStatus("Unable to create a content file for the file: "
-                    + file.getName(), e));
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new CoreException(new IpsStatus("Unable to close the input stream for the file: "
-                            + file.getName(), e));
-                }
-            }
-        }
+        InputStream is = file.getContents(true);
+        build(ipsSrcFile, getContentAsString(is, ipsSrcFile.getIpsProject().getProject().getDefaultCharset()));
     }
-
-    private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = getBuilderSet().getPackage(kind, ipsSrcFile);
-        IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination().getFolder(
-            pathToPack);
-    }
-
-    private IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IFile file = (IFile)ipsSrcFile.getEnclosingResource();
-        IFolder folder = getXmlContentFileFolder(ipsSrcFile);
-        return folder.getFile(StringUtil.getFilenameWithoutExtension(file.getName()) + ".xml");
-    }
-
-    /**
-     * Overridden IMethod.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#delete(org.faktorips.devtools.core.model.IIpsSrcFile)
-     */
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IFile file = getXmlContentFile(ipsSrcFile);
-        if (file.exists()) {
-            file.delete(true, null);
-        }
-    }
-
-    private void createFolder(IFolder folder) throws CoreException {
-        while (!folder.getParent().exists()) {
-            createFolder((IFolder)folder.getParent());
-        }
-        folder.create(true, true, null);
-    }
-
-    /**
-     * Returs true if the provided IpsObject is of the same type as the IpsObjectType this builder
-     * is initialized with.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsArtefactBuilder#isBuilderFor(IIpsObject)
-     */
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
-        return ipsObjectType.equals(ipsSrcFile.getIpsObjectType());
-    }
-
+    
     /**
      * {@inheritDoc}
      */
     public String getName() {
         return "XmlContentFileCopyBuilder";
     }
+
 }

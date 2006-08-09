@@ -29,12 +29,16 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelatio
 public interface IProductCmptRelation extends IIpsObjectPart {
     
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
-    public final static String PROPERTY_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
     public final static String PROPERTY_PCTYPE_RELATION = "pcTypeRelation"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
     
     public final static int CARDINALITY_MANY = IRelation.CARDINALITY_MANY;
+    
+    /**
+     * The name of the xml-tag used if this object is saved to xml.
+     */
+	public final static String TAG_NAME = "Relation"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.
@@ -110,11 +114,6 @@ public interface IProductCmptRelation extends IIpsObjectPart {
      * if no (valid) target name is set.
      */
     public IProductCmpt findTarget();
-
-    /**
-     * Is derived from the target and returns the runtimeId of the target.
-     */
-    public String getTargetRuntimeId();
 
     /**
      * Returns the minmum number of target instances required in this relation.   
