@@ -104,10 +104,17 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
         validateInput = false;
         setTitle(getIpsObjectType().getName());
         setMessage(NLS.bind(Messages.IpsObjectPage_msgNew, getIpsObjectType().getName())); 
+
+        // dont set the layout of the parent composite - this will lead to 
+        // layout-problems when this wizard-page is opened within allready open dialogs
+        // (for example when the user wants a new policy class and starts the wizard using
+        // the file-menu File->New->Other).
         
-        parent.setLayout(new GridLayout(1, false));
+        // parent.setLayout(new GridLayout(1, false));
+        
         pageControl = new Composite(parent, SWT.NONE);
-        pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridData data = new GridData(SWT.FILL, SWT.TOP, true, true);
+        pageControl.setLayoutData(data);
         GridLayout pageLayout = new GridLayout(1, false);
         pageLayout.verticalSpacing = 20;
         pageControl.setLayout(pageLayout);

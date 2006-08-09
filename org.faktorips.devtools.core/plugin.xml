@@ -240,6 +240,33 @@
     	   <description>Creates a new Policy Class</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
+            icon="icons/NewProductCmptWizard.gif"
+            id="newProductCmptWizard"
+            name="New Product Component">
+    	   <description>Creates a new Product Component</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.tablestructure.NewTableStructureWizard"
+            icon="icons/NewTableStructureWizard.gif"
+            id="newTableStructureWizard"
+            name="New Tablestructure">
+    	   <description>Creates a new Product Component</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.tablecontents.NewTableContentsWizard"
+            icon="icons/NewTableContentsWizard.gif"
+            id="newTableContentsWizard"
+            name="New Table Contents">
+    	   <description>Creates a new Product Component</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
     </extension>
 
     <extension
