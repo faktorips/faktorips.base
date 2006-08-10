@@ -288,9 +288,9 @@ public class UIToolkit {
 	public Text createMultilineText(Composite parent) {
 		Text newText;
 		if (formToolkit != null) {
-			newText = formToolkit.createText(parent, null, SWT.MULTI);
+			newText = formToolkit.createText(parent, null, SWT.MULTI | SWT.WRAP);
 		} else {
-			newText = new Text(parent, SWT.MULTI | SWT.BORDER);
+			newText = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP);
 		}
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.heightHint = 60;
