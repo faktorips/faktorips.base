@@ -18,8 +18,10 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -221,6 +223,25 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     public void testGetIpsDefaultPackageFragment() {
     	IIpsPackageFragment def = this.ipsRoot.getIpsDefaultPackageFragment();
     	assertEquals(def.getName(), "");
+    }
+
+    public void testGetNonIpsResources() throws CoreException{
+        IIpsPackageFragment fragment= ipsRoot.createPackageFragment("fragment", true, null);
+        IIpsPackageFragment subFragment= ipsRoot.createPackageFragment("fragment.sub", true, null);
+        
+        IFolder rootHandle= (IFolder) ipsRoot.getCorrespondingResource();
+        IFile nonIpsFile= rootHandle.getFile("nonIpsFile");
+        nonIpsFile.create(null, true, null);
+        IFile nonIpsFile2= rootHandle.getFile("nonIpsFile2");
+        nonIpsFile2.create(null, true, null);
+
+        Object[] nonIpsResources= ipsRoot.getNonIpsResources();
+        assertEquals(2, nonIpsResources.length);
+        List list= Arrays.asList(nonIpsResources);
+        assertTrue(list.contains(nonIpsFile));
+        assertTrue(list.contains(nonIpsFile2));
+        assertFalse(list.contains(fragment));
+        assertFalse(list.contains(subFragment));
     }
     
 

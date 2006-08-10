@@ -21,15 +21,17 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -234,6 +236,24 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     	assertEquals(children[1].getName(), "products.test1");
     	assertEquals(children[2].getName(), "products.test2");
     	
+    }
+
+    public void testGetNonIpsResources() throws CoreException{
+        IFolder packageHandle= (IFolder) pack.getCorrespondingResource();
+        IFolder folder= packageHandle.getFolder("folder");
+        folder.create(true, false, null);
+        IFile nonIpsFile= packageHandle.getFile("nonIpsFile");
+        nonIpsFile.create(null, true, null);
+        IFile nonIpsFile2= packageHandle.getFile("nonIpsFile2");
+        nonIpsFile2.create(null, true, null);
+
+        Object[] nonIpsResources= pack.getNonIpsResources();
+        assertEquals(2, nonIpsResources.length);
+        List list= Arrays.asList(nonIpsResources);
+        assertTrue(list.contains(nonIpsFile));
+        assertTrue(list.contains(nonIpsFile2));
+        // manually created folder is interpreted as IpsPackageFragment
+        assertFalse(list.contains(folder));
     }
     
     public void testCreateIpsFileFromTemplate() throws CoreException {

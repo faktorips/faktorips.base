@@ -19,11 +19,19 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
@@ -552,5 +560,47 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     	newDefinedEnumDatatype(ipsProject, new Class[]{TestEnumType.class});
     	EnumDatatype dataType = ipsProject.findEnumDatatype("TestEnumType");
     	assertEquals("TestEnumType", dataType.getQualifiedName());
+    }
+    
+
+    public void testGetNonIpsResources() throws CoreException{        
+        IProject projectHandle= ipsProject.getProject();
+        IFolder nonIpsRoot= projectHandle.getFolder("nonIpsRoot");
+        nonIpsRoot.create(true, false, null);
+        IFile nonIpsFile= projectHandle.getFile("nonIpsFile");
+        nonIpsFile.create(null, true, null);
+        
+        IFolder classpathFolder= projectHandle.getFolder("classpathFolder");
+        classpathFolder.create(true, false, null);
+        IFolder outputFolder= projectHandle.getFolder("outputFolder");
+        outputFolder.create(true, false, null);
+        IFile classpathFile= projectHandle.getFile("classpathFile");
+        classpathFile.create(null, true, null);
+        
+        // add classpathFolder and classpathFile to the javaprojects classpath
+        // add outputFolder as apecific outputlocation of classpathFolder
+        IJavaProject javaProject= ipsProject.getJavaProject();
+        IClasspathEntry[] cpEntries= javaProject.getRawClasspath();
+        IClasspathEntry[] newEntries= new IClasspathEntry[2];
+        newEntries[0]= JavaCore.newSourceEntry(classpathFolder.getFullPath());
+        newEntries[1]= JavaCore.newSourceEntry(classpathFile.getFullPath(), new IPath[]{}, outputFolder.getFullPath());
+        IClasspathEntry[] result= new IClasspathEntry[cpEntries.length+newEntries.length];
+        System.arraycopy(cpEntries, 0, result, 0, cpEntries.length);
+        System.arraycopy(newEntries, 0, result, cpEntries.length, newEntries.length);
+        ipsProject.getJavaProject().setRawClasspath(result, null);
+        
+        Object[] nonIpsResources= ipsProject.getNonIpsResources();
+        assertEquals(5, nonIpsResources.length);
+        List list= Arrays.asList(nonIpsResources);
+        assertTrue(list.contains(nonIpsRoot));
+        assertTrue(list.contains(nonIpsFile));
+        // /bin, /src and /extension are outputfolders or classpath entries and thus filtered out
+        assertTrue(list.contains(projectHandle.getFile(".project")));
+        assertTrue(list.contains(projectHandle.getFile(".ipsproject")));
+        assertTrue(list.contains(projectHandle.getFile(".classpath")));
+        
+        assertFalse(list.contains(classpathFolder));
+        assertFalse(list.contains(classpathFile));
+        assertFalse(list.contains(outputFolder));
     }
 }

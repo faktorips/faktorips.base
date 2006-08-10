@@ -24,13 +24,16 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -56,6 +59,10 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
     
     private IpsModel model;
     private ContentChangeEvent lastEvent;
+    
+    // JavaProjects for testGetNonIpsResources()
+    private IJavaProject javaProject= null;
+    private IJavaProject javaProject2= null;
 
     /*
      * @see TestCase#setUp()
@@ -263,7 +270,32 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
     	assertNotNull(convention);
     	assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
     }
+    
+    public void testGetNonIpsResources() throws CoreException{
+        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException {
+                IProject project = newPlatformProject("TestJavaProject");
+                javaProject= addJavaCapabilities(project);
+                IProject project2 = newPlatformProject("TestJavaProject2");
+                javaProject2= addJavaCapabilities(project2);
+            }
+        };
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
+        newIpsProject("TestProject");
+
+        // FIXME null sollte nicht zum testfail fuehren
+        assertNotNull(javaProject);
+        assertNotNull(javaProject2);
+        
+        Object[] nonIpsResources= model.getNonIpsResources();
+        assertEquals(2, nonIpsResources.length);
+        // compare handles (IProject)
+        assertEquals(javaProject.getProject(), nonIpsResources[0]);
+        assertEquals(javaProject2.getProject(), nonIpsResources[1]);
+    }
+    
     /** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)
