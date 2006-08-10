@@ -80,6 +80,11 @@ public class IpsPreferences {
     public final static String EDIT_GENERATION_WITH_SUCCESSOR = IpsPlugin.PLUGIN_ID + ".editGenerationWithSuccessor"; //$NON-NLS-1$
     
     /**
+     * Constant identifying the preference for editing the runtime id.
+     */
+    public final static String MODIFY_RUNTIME_ID = IpsPlugin.PLUGIN_ID + ".modifyRuntimeId"; //$NON-NLS-1$
+
+    /**
      * Constant identifying the enable generating preference.
      */
     public final static String ENABLE_GENERATING = IpsPlugin.PLUGIN_ID + ".enableGenerating"; //$NON-NLS-1$
@@ -95,6 +100,7 @@ public class IpsPreferences {
     	prefStore.setDefault(WORKING_DATE, XmlUtil.gregorianCalendarToXmlDateString(new GregorianCalendar()));
     	prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.VAA);
     	prefStore.setDefault(EDIT_RECENT_GENERATION, false);
+    	prefStore.setDefault(MODIFY_RUNTIME_ID, false);
     	if (Locale.getDefault().getLanguage().equals(Locale.GERMAN.getLanguage())) {
         	prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Typ"); //$NON-NLS-1$
     	} else {
@@ -205,5 +211,9 @@ public class IpsPreferences {
 	 */
 	public boolean isWorkingModeBrowse() {
 		return prefStore.getString(WORKING_MODE).equals(WORKING_MODE_BROWSE);
+	}
+	
+	public boolean canModifyRuntimeId() {
+		return prefStore.getBoolean(MODIFY_RUNTIME_ID);
 	}
 }

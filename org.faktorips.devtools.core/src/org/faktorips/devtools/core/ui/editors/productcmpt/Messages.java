@@ -170,4 +170,6 @@ public class Messages extends NLS {
 
 	public static String GenerationSelectionDialog_description;
 
+	public static String ProductAttributesSection_labelRuntimeId;
+
 }

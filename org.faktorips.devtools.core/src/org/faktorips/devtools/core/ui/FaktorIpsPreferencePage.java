@@ -88,6 +88,10 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR, label, getFieldEditorParent());
 		addField(editGernationsWithSuccessor);
 
+		BooleanFieldEditor editRuntimeId = new BooleanFieldEditor(
+				IpsPreferences.MODIFY_RUNTIME_ID, Messages.FaktorIpsPreferencePage_modifyRuntimeId, getFieldEditorParent());
+		addField(editRuntimeId);
+
 		BooleanFieldEditor enableGeneratingField = new BooleanFieldEditor(
 				IpsPreferences.ENABLE_GENERATING,
 				Messages.FaktorIpsPreferencePage_FaktorIpsPreferencePage_enableGenerating, getFieldEditorParent());

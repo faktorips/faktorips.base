@@ -88,4 +88,6 @@ public class Messages extends NLS {
 	public static String FaktorIpsPreferencePage_labelWorkingModeBrowse;
 
 	public static String FaktorIpsPreferencePage_labelWorkingModeEdit;
+
+	public static String FaktorIpsPreferencePage_modifyRuntimeId;
 }

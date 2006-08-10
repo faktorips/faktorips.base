@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -38,6 +40,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -90,6 +93,12 @@ public class ProductAttributesSection extends IpsSection {
 	 * Controller to handle update of ui and model automatically.
 	 */
 	private CompositeUIController uiMasterController = null;
+	
+	private ProductCmptTypeRefControl policyCmptType;
+	
+	private Text runtimeId;
+	
+	
 	private ProductCmptEditor editor;
 	
 	/**
@@ -158,16 +167,16 @@ public class ProductAttributesSection extends IpsSection {
 		// this product component is based on.
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
 
-		ProductCmptTypeRefControl ctrl = new ProductCmptTypeRefControl(generation.getIpsProject(), rootPane, toolkit);
-		ctrl.getTextControl().setEnabled(false);
-		ProductCmptTypeField field = new ProductCmptTypeField(ctrl);
+		policyCmptType = new ProductCmptTypeRefControl(generation.getIpsProject(), rootPane, toolkit);
+		policyCmptType.getTextControl().setEnabled(false);
+		ProductCmptTypeField field = new ProductCmptTypeField(policyCmptType);
 		
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		
 		// create label and text control for the runtime id representing the displayed product component
-		toolkit.createLabel(rootPane, "Runtime ID");
-		Text runtimeId = toolkit.createText(rootPane);
+		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
+		runtimeId = toolkit.createText(rootPane);
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		editControls.add(runtimeId);
@@ -180,10 +189,21 @@ public class ProductAttributesSection extends IpsSection {
 		controller.add(runtimeId, generation.getProductCmpt(), IProductCmpt.PROPERTY_RUNTIME_ID);
 
 		ModifyListener ml = new MyModifyListener();
-		ctrl.getTextControl().addModifyListener(ml);
+		policyCmptType.getTextControl().addModifyListener(ml);
 		
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();
+		
+		// update enablement state of runtime-id-input if preference changed
+		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (!event.getProperty().equals(IpsPreferences.MODIFY_RUNTIME_ID)) {
+					return;
+				}
+				runtimeId.setEnabled(isEnabled() && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+				layout();
+			}
+		});
 
 	}
 
@@ -230,6 +250,10 @@ public class ProductAttributesSection extends IpsSection {
 			element.setEnabled(enabled);
 			
 		}
+		
+		policyCmptType.setButtonEnabled(enabled);
+		runtimeId.setEnabled(enabled && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+		
 		rootPane.layout(true);
 		rootPane.redraw();
 	}
