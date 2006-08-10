@@ -21,11 +21,14 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDialog;
 
 /**
@@ -49,24 +52,29 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 	}
 	
 	public void testOpenProductCmptEditor() throws Exception {
-		openEditor(content.getBasicMotorProduct().getIpsSrcFile());
-		openEditor(content.getComfortCollisionCoverageA().getIpsSrcFile());
-		openEditor(content.getStandardBike().getIpsSrcFile());
-		openEditor(content.getBasicCollisionCoverage().getIpsSrcFile());
+		openEditor(content.getBasicMotorProduct());
+		openEditor(content.getComfortCollisionCoverageA());
+		openEditor(content.getStandardBike());
+		openEditor(content.getBasicCollisionCoverage());
 	}
 
-	private void openEditor(IIpsSrcFile file) throws Exception {
+	private void openEditor(IIpsObject file) throws Exception {
 		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
-		plugin.openEditor(file);
+
+        OpenEditorAction action= new OpenEditorAction(null);
+        IStructuredSelection selection= new StructuredSelection(file);
+        action.run(selection);
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		
 		answer = GenerationSelectionDialog.CHOICE_BROWSE;
-		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 10, 1));
-		plugin.openEditor(content.getComfortCollisionCoverageA().getIpsSrcFile());
-		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
+        selection= new StructuredSelection(content.getComfortCollisionCoverageA());
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 10, 1));
+        action.run(selection);
+        plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 
 		answer = GenerationSelectionDialog.CHOICE_CREATE;
-		plugin.openEditor(content.getComfortCollisionCoverageA().getIpsSrcFile());
+        selection= new StructuredSelection(content.getComfortCollisionCoverageA());
+        action.run(selection);
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 	}
 	
