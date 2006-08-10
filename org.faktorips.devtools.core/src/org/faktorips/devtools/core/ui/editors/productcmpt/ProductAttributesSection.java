@@ -159,30 +159,32 @@ public class ProductAttributesSection extends IpsSection {
 		toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
 
 		ProductCmptTypeRefControl ctrl = new ProductCmptTypeRefControl(generation.getIpsProject(), rootPane, toolkit);
+		ctrl.getTextControl().setEnabled(false);
 		ProductCmptTypeField field = new ProductCmptTypeField(ctrl);
 		
-		ModifyListener ml = new ModifyListener() {
-		
-			public void modifyText(ModifyEvent e) {
-				uiMasterController.updateModel();
-				editor.forceRefresh();
-			}
-		};
-		
-		ctrl.getTextControl().addModifyListener(ml);
-
-		
-		
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
 		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		
+		// create label and text control for the runtime id representing the displayed product component
+		toolkit.createLabel(rootPane, "Runtime ID");
+		Text runtimeId = toolkit.createText(rootPane);
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+		editControls.add(runtimeId);
 
+		// create controls for config elements
 		createEditControls();
 		
-		IpsObjectUIController controller = new IpsObjectUIController(generation.getIpsObject());
-		
+		IpsObjectUIController controller = new IpsObjectUIController(generation.getProductCmpt());
 		controller.add(field, generation.getProductCmpt(), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
+		controller.add(runtimeId, generation.getProductCmpt(), IProductCmpt.PROPERTY_RUNTIME_ID);
+
+		ModifyListener ml = new MyModifyListener();
+		ctrl.getTextControl().addModifyListener(ml);
+		
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();
+
 	}
 
 	/**
@@ -325,5 +327,13 @@ public class ProductAttributesSection extends IpsSection {
 		}
 		
 	}
-	
+
+	private class MyModifyListener implements ModifyListener {
+		
+		public void modifyText(ModifyEvent e) {
+			uiMasterController.updateUI();
+			uiMasterController.updateModel();
+			editor.forceRefresh();
+		}
+	};
 }

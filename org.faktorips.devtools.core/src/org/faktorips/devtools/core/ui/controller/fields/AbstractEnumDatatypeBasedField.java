@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -148,8 +149,8 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 		}
 
 		super.setValue(getValueName((String) newValue));
-		
-		if (!getValue().equals(newValue)) {
+
+		if (ObjectUtils.equals(getValue(), newValue)) {
 			setInvalidValue((String)newValue);
 			super.setValue(newValue);
 		}
