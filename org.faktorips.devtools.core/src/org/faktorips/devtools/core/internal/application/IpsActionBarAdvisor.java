@@ -28,13 +28,17 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveListener;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.NewWizardMenu;
+import org.eclipse.ui.actions.OpenPerspectiveAction;
+import org.eclipse.ui.actions.PerspectiveMenu;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -74,6 +78,10 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
 	private IWorkbenchAction savePerspectiveAction;
 
+	private OpenPerspectiveAction openSynchronizePerspectiveAction;
+
+	private OpenPerspectiveAction openDepartmentPerspectiveAction;
+	
 	private IWorkbenchAction resetPerspectiveAction;
 
 	private IWorkbenchAction editActionSetAction;
@@ -213,7 +221,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
 			public void perspectiveChanged(IWorkbenchPage page,
 					IPerspectiveDescriptor perspective, String changeId) {
-				disableUnwantedActionSets(page);
+				fixPerspective(page);
 			}
 
 			public void perspectiveActivated(IWorkbenchPage page,
@@ -421,6 +429,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
 		menu.add(resetPerspectiveAction);
 //		menu.add(editActionSetAction);
+		menu.add(openDepartmentPerspectiveAction);
+		menu.add(openSynchronizePerspectiveAction);
 		menu.add(new Separator());
 		addKeyboardShortcuts(menu);
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -770,6 +780,10 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		closeProjectAction = IDEActionFactory.CLOSE_PROJECT.create(window);
 		register(closeProjectAction);
 
+		PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown");
+		openDepartmentPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.faktorips.devtools.core.productDefinitionPerspective"), m); 
+		openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m);
+		
 		pinEditorContributionItem = ContributionItemFactory.PIN_EDITOR
 				.create(window);
 
@@ -789,5 +803,49 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		disablingUnwantedActionSets = false;
 
 	}
+	
+	private void fixPerspective(IWorkbenchPage page) {
+		disableUnwantedActionSets(page);
+		
+		if (page.getPerspective().getId().equals("org.eclipse.team.ui.TeamSynchronizingPerspective")) {
+			IViewReference[] refs = page.getViewReferences();
+			for (int i = 0; i < refs.length; i++) {
+				if (!refs[i].getId().equals("org.eclipse.team.sync.views.SynchronizeView")) {
+					page.hideView(refs[i]);
+				}
+			}
 
+		}
+		
+	}
+
+	/**
+	 * Class handling the selection of a open-perspective-action.
+	 * 
+	 * @author Thorsten Guenther
+	 */
+	private class PerspecitveHandler extends PerspectiveMenu {
+
+		/**
+		 * @param window
+		 * @param id
+		 */
+		public PerspecitveHandler(IWorkbenchWindow window, String id) {
+			super(window, id);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		protected void run(IPerspectiveDescriptor desc) {
+			try {
+				IWorkbenchPage page = PlatformUI.getWorkbench().showPerspective(desc.getId(), getWindow());
+				fixPerspective(page);
+			} catch (WorkbenchException e) {
+				throw new RuntimeException(e);
+			}
+			
+		}
+		
+	}
 }
