@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -31,6 +33,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
@@ -89,7 +92,9 @@ public class GeneralInfoSection extends IpsSection {
 	            try {
 	                IPolicyCmptType supertype = (IPolicyCmptType)supertypeField.getIpsObject(pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE);
 	                if (supertype!=null) {
-	                    IpsPlugin.getDefault().openEditor(supertype.getIpsSrcFile());    
+	                    OpenEditorAction action= new OpenEditorAction(null);
+	                    IStructuredSelection selection= new StructuredSelection(supertype);
+	                    action.run(selection);
 	                }
 	            } catch (Exception e) {
 	                IpsPlugin.logAndShowErrorDialog(e);

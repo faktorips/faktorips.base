@@ -17,9 +17,15 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.FileEditorInput;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
@@ -39,15 +45,37 @@ public class OpenEditorAction extends IpsAction {
     }
     
     public void run(IStructuredSelection selection) {
-        try {
-            IIpsSrcFile file = getIpsSrcFileForSelection(selection);
-
-            if (file != null) {
-                IpsPlugin.getDefault().openEditor(file);
-            }
-            
-        } catch (PartInitException e2) {
-            IpsPlugin.logAndShowErrorDialog(e2);
+        IFile fileToEdit= null;
+		
+		IIpsSrcFile srcFile = getIpsSrcFileForSelection(selection);
+		if (srcFile != null) {
+			fileToEdit = srcFile.getCorrespondingFile();
+		}else{
+			Object selectedObject= selection.getFirstElement();
+			if(selectedObject instanceof IFile){
+				fileToEdit= (IFile) selectedObject;
+			}
+		}
+		openEditorForFile(fileToEdit);
+    }
+    
+    protected void openEditorForFile(IFile fileToEdit){
+        if(fileToEdit==null){
+        	return;
         }
+    	try {
+	        IWorkbench workbench= IpsPlugin.getDefault().getWorkbench();
+	        IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
+	        IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(fileToEdit.getName());
+	        if(editor!=null & editorInput!=null){
+	        	// Open Editor for registered filetype
+				workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
+	        }else{
+	        	// Let IDE guess filtype and open the corresponding editor
+	        	IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
+	        }
+        } catch (PartInitException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+		}
     }
 }

@@ -24,7 +24,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
@@ -32,18 +31,12 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsModelManager;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
@@ -219,15 +212,6 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public final static void log(IStatus status) {
         plugin.getLog().log(status);
-    }
-
-    public IEditorPart openEditor(IIpsSrcFile srcFile) throws PartInitException {
-        IFile file = srcFile.getCorrespondingFile();
-        IFileEditorInput editorInput = new FileEditorInput(file);
-        IEditorDescriptor editor = getWorkbench().getEditorRegistry().getDefaultEditor(
-            file.getName());
-        return getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(editorInput,
-            editor.getId());
     }
 
     /**

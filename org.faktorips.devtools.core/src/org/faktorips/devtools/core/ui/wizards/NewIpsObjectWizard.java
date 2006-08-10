@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.wizards;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 
 
 /**
@@ -78,7 +80,9 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
             IIpsSrcFile file = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
             finishIpsObject(file.getIpsObject());
             file.save(true, null);
-            IpsPlugin.getDefault().openEditor(file);
+            OpenEditorAction action= new OpenEditorAction(null);
+            IStructuredSelection selection= new StructuredSelection(file);
+            action.run(selection);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
