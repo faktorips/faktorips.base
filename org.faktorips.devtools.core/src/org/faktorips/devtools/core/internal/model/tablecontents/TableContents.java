@@ -151,7 +151,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         super.validateThis(list);
         if (findTableStructure() == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
-            list.add(new Message("", text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); //$NON-NLS-1$
         }
     }
 

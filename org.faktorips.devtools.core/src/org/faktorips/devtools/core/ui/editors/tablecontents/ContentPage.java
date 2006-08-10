@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -78,6 +79,21 @@ public class ContentPage extends IpsObjectEditorPage {
 		formBody.setLayout(layout);
 		try {
 		    ITableStructure structure = getTableStructure();
+		    
+		    if (structure == null) {
+		    	String msg = NLS.bind(Messages.ContentPage_msgMissingStructure, getTableContents().getTableStructure());
+				SetStructureDialog dialog = new SetStructureDialog(getTableContents(), getSite().getShell(), msg);
+				int button = dialog.open();
+				if (button != SetStructureDialog.OK) {
+					msg = NLS.bind(Messages.ContentPage_msgNoStructureFound, getTableContents().getTableStructure());
+					toolkit.createLabel(formBody, msg);
+					return;
+				} else {
+					structure = getTableStructure();
+				}
+
+		    }
+		    
 	        SpreadsheetControl tableControl = new SpreadsheetControl(formBody, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION,
 	                new ContentProvider(structure));
 	        tableControl.setLayoutData(new GridData(GridData.FILL_BOTH));

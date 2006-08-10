@@ -30,6 +30,16 @@ public interface ITableContents extends ITimedIpsObject {
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TABLECONTENTS-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the structure this content is based on can't be found.
+     */
+    public final static String MSGCODE_UNKNWON_STRUCTURE = MSGCODE_PREFIX + "UnknownStructure"; //$NON-NLS-1$
+
+    /**
      * Returns the qualified name of the table structure this table contents
      * is based on.
      */
