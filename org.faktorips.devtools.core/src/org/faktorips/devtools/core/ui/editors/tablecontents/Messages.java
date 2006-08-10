@@ -43,4 +43,36 @@ public class Messages extends NLS {
 	public static String ContentPage_msgMissingStructure;
 
 	public static String ContentPage_msgNoStructureFound;
+
+	public static String ContentPage_titleMissingColumns;
+
+	public static String ContentPage_msgAddMany;
+
+	public static String ContentPage_titleMissingColumn;
+
+	public static String ContentPage_msgAddOne;
+
+	public static String ContentPage_msgRemoveOne;
+
+	public static String ContentPage_titleTooMany;
+
+	public static String ContentPage_msgRemoveMany;
+
+	public static String ContentPage_msgCantShowContent;
+
+	public static String ContentPage_errorNoDuplicateIndices;
+
+	public static String ContentPage_errorIndexOutOfRange;
+
+	public static String ContentPage_errorInvalidValueOne;
+
+	public static String ContentPage_errorInvalidValueMany;
+
+	public static String ContentPage_errorTooManyOne;
+
+	public static String ContentPage_errorTooManyMany;
+
+	public static String ContentPage_errorOneMore;
+
+	public static String ContentPage_errorManyMore;
 }

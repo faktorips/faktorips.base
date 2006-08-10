@@ -88,10 +88,10 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         updateSrcFile();
     }
 
-    public void newColumn(String defaultValue) {
+    public void newColumn(int insertAt, String defaultValue) {
         for (Iterator it=rows.iterator(); it.hasNext(); ) {
             Row row = (Row)it.next();
-            row.newColumn(defaultValue);
+            row.newColumn(insertAt, defaultValue);
         }
     }
     

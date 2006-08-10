@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -41,7 +43,7 @@ public class Row extends IpsObjectPart implements IRow {
     final static String TAG_NAME = "Row"; //$NON-NLS-1$
     final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
     
-    private String[] values;
+    private ArrayList values;
 
     Row(TableContentsGeneration parent, int rowNum) {
         super(parent, rowNum);
@@ -57,16 +59,15 @@ public class Row extends IpsObjectPart implements IRow {
      */
     private void initValues() {
         int columns = getNumOfColumns();
-        values = new String[columns];
+        values = new ArrayList(columns+5);
         for (int i=0; i<columns; i++) {
-            values[i] = ""; //$NON-NLS-1$
+            values.add(""); //$NON-NLS-1$
         }
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObjectPart#delete()
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public void delete() {
         ((TableContentsGeneration)getParent()).removeRow(this);
         deleted = true;
@@ -81,64 +82,54 @@ public class Row extends IpsObjectPart implements IRow {
     	return deleted;
     }
 
-
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getName()
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public String getName() {
         return "" + getId(); //$NON-NLS-1$
     }
 
-    /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.IRow#getRowNumber()
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public int getRowNumber() {
         return getId();
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.IRow#getValue(int)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public String getValue(int column) {
-        return values[column];
+        return (String)values.get(column);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.IRow#setValue(int, java.lang.String)
-     * 
-     * @throws RuntimeException if the column index is invalid.
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public void setValue(int column, String newValue) {
-        values[column] = newValue;
+    	values.set(column, newValue);
         updateSrcFile();
     }
     
-    void newColumn(String defaultValue) {
-        String[] newValues = new String[values.length+1];
-        System.arraycopy(values, 0, newValues, 0, values.length);
-        newValues[values.length] = defaultValue;
-        values = newValues;
+    void newColumn(int insertAfter, String defaultValue) {
+    	if (insertAfter < values.size()) {
+    		values.add(Math.max(0, insertAfter), defaultValue);
+    	}
+    	else {
+    		values.add(defaultValue);
+    	}
+        updateSrcFile();
     }
     
     void removeColumn(int column) {
-        String[] newValues = new String[values.length-1];
-        if (column>0) {
-            System.arraycopy(values, 0, newValues, 0, column);    
-        }
-        if (column+1<values.length) {
-            System.arraycopy(values, column+1, newValues, column, values.length - 1 - column);
-        }
-        values = newValues;
+    	column = Math.max(0, column);
+    	column = Math.min(values.size(), column);
+    	values.remove(column);
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsElement#getImage()
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("TableRow.gif"); //$NON-NLS-1$
     }
@@ -156,15 +147,15 @@ public class Row extends IpsObjectPart implements IRow {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         String structureName = ((ITableContents)getParent().getParent()).getTableStructure();
         ITableStructure structure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structureName);
         for (int i=0; i<getNumOfColumns(); i++) {
-            validateValue(i, values[i], structure, list);
+            validateValue(i, (String)values.get(i), structure, list);
         }
     }
     
@@ -195,55 +186,49 @@ public class Row extends IpsObjectPart implements IRow {
 //        
     }
 
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#createElement(org.w3c.dom.Document)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
     
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#initPropertiesFromXml(org.w3c.dom.Element)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     protected void initPropertiesFromXml(Element element, Integer id) {
-        super.initPropertiesFromXml(element, id);
-        NodeList nl = element.getElementsByTagName(VALUE_TAG_NAME);
-        initValues();
-        for(int i=0; i<values.length; i++) {
-            if (i<nl.getLength()) {
-                Element valueElement = (Element)nl.item(i);
-                String isNull = valueElement.getAttribute("isNull"); //$NON-NLS-1$
-                if (Boolean.valueOf(isNull).booleanValue()) {
-                    values[i] = null;
-                } else {
-                    Text textNode = getTextNode(valueElement);
-                    if (textNode==null) {
-                        values[i] = ""; //$NON-NLS-1$
-                    } else {
-                        values[i] = textNode.getNodeValue();
-                    }
-                }
-            }
-        }
-    }
+		super.initPropertiesFromXml(element, id);
+		NodeList nl = element.getElementsByTagName(VALUE_TAG_NAME);
+		initValues();
+		for (int i = 0; i < values.size(); i++) {
+			if (i < nl.getLength()) {
+				Element valueElement = (Element) nl.item(i);
+				String isNull = valueElement.getAttribute("isNull"); //$NON-NLS-1$
+				if (Boolean.valueOf(isNull).booleanValue()) {
+					values.set(i, null);
+				} else {
+					Text textNode = getTextNode(valueElement);
+					if (textNode == null) {
+						values.set(i, ""); //$NON-NLS-1$
+					} else {
+						values.set(i, textNode.getNodeValue());
+					}
+				}
+			}
+		}
+	}
     
-    /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObjectPartContainer#propertiesToXml(org.w3c.dom.Element)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
-        for (int i=0; i<values.length; i++) {
+        for (int i=0; i<values.size(); i++) {
             Element valueElement = doc.createElement(VALUE_TAG_NAME);
-            valueElement.setAttribute("isNull", values[i]==null?"true":"false");     //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            if (values[i]!=null) {
-                valueElement.appendChild(doc.createTextNode(values[i]));
+            valueElement.setAttribute("isNull", values.get(i)==null?"true":"false");     //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            if (values.get(i)!=null) {
+                valueElement.appendChild(doc.createTextNode((String)values.get(i)));
             }
             element.appendChild(valueElement);
         }

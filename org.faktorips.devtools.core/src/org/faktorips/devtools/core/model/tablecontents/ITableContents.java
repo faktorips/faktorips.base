@@ -79,6 +79,17 @@ public interface ITableContents extends ITimedIpsObject {
     public int newColumn(String defaultValue);
     
     /**
+     * Creates a new column at the given index (zero based), remaining columns are
+     * shifted to the right.
+     * 
+     * @param index The index to insert the new column. Values less than zero 
+     * lead to a new column at index zero. A value greater or equal to the index of the last existing column 
+     * lead to a new column inserted after the last existing one.
+     * @param defaultValue The new value to use for the new cells.
+     */
+    public void newColumnAt(int index, String defaultValue);
+    
+    /**
      * Deletes the column by removing the cell in each row.
      * 
      * @param columnIndex The column's index.

@@ -52,7 +52,7 @@ public interface IRow extends IIpsObjectPart {
      * @param column	The column index.
      * @param newValue	The new value as string. 
      * 
-     * @throws IllegalArgumentException if the row does no contain a cell
+     * @throws IndexOutOfBoundsException if the row does no contain a cell
      * for the indicated column index.
      */
     public void setValue(int column, String newValue);

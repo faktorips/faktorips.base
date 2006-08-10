@@ -50,7 +50,10 @@ public class TableFunctionsResolver implements FunctionResolver {
             	
             	ITableContents tableContents = (ITableContents)tableContentses[t];
 	            ITableStructure table = tableContents.findTableStructure();
-            	addTableAccessFunction(functions, table, tableContents);
+	            if (table != null) {
+	            	// only add the access-function if the content has a structure...
+	            	addTableAccessFunction(functions, table, tableContents);
+	            }
             }
         } catch (CoreException e) {
             // if an error occurs while search for the function, the functions are not

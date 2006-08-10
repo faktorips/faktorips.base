@@ -54,34 +54,29 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         super(file);
     }
 
-    /** 
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.TimedIpsObject#createNewGeneration(int)
+    /**
+     * {@inheritDoc}
      */
     protected IpsObjectGeneration createNewGeneration(int id) {
         return new TableContentsGeneration(this, id);
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.IIpsObject#getIpsObjectType()
+    /**
+     * {@inheritDoc}
      */
     public IpsObjectType getIpsObjectType() {
         return IpsObjectType.TABLE_CONTENTS;
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration#getStructure()
+    /**
+     * {@inheritDoc}
      */
     public String getTableStructure() {
         return structure;
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration#setTableStructure(java.lang.String)
+     * {@inheritDoc}
      */
     public void setTableStructure(String qName) {
         String oldStructure = structure;
@@ -90,38 +85,41 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContents#findTableStructure()
+     * {@inheritDoc}
      */
     public ITableStructure findTableStructure() throws CoreException {
         return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structure);
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContents#getNumOfColumns()
+    /**
+     * {@inheritDoc}
      */
     public int getNumOfColumns() {
         return numOfColumns;
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContents#newColumn(java.lang.String)
+    /**
+     * {@inheritDoc}
      */
     public int newColumn(String defaultValue) {
-        IIpsObjectGeneration[] generations = getGenerations();
-        for (int i=0; i<generations.length; i++) {
-            ((TableContentsGeneration)generations[i]).newColumn(defaultValue);
-        }
-        numOfColumns++;
-        updateSrcFile();
+    	newColumnAt(numOfColumns, defaultValue);
         return numOfColumns;
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.tablecontents.ITableContents#deleteColumn(int)
+    /**
+     * {@inheritDoc}
+     */
+    public void newColumnAt(int index, String defaultValue) {
+        IIpsObjectGeneration[] generations = getGenerations();
+        for (int i=0; i<generations.length; i++) {
+            ((TableContentsGeneration)generations[i]).newColumn(index, defaultValue);
+        }
+        numOfColumns++;
+        updateSrcFile();
+	}
+
+    /**
+     * {@inheritDoc}
      */
     public void deleteColumn(int columnIndex) {
         if (columnIndex<0 || columnIndex>=numOfColumns) {
@@ -136,9 +134,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
     
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.model.IIpsObject#dependsOn()
+     * {@inheritDoc}
      */
     public QualifiedNameType[] dependsOn() throws CoreException {
         if(StringUtils.isEmpty(getTableStructure())){
@@ -147,6 +143,9 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return new QualifiedNameType[]{new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE)};
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
         if (findTableStructure() == null) {
@@ -156,9 +155,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#propertiesToXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
@@ -167,9 +164,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     /**
-     * Overridden IMethod.
-     *
-     * @see org.faktorips.devtools.core.internal.model.IpsObject#initPropertiesFromXml(org.w3c.dom.Element)
+     * {@inheritDoc}
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);

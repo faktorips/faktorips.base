@@ -70,7 +70,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
     public void testNewColumn() {
         IRow row1 = generation.newRow();
         IRow row2 = generation.newRow();
-        generation.newColumn("a");
+        generation.newColumn(3, "a");
         assertEquals("a", row1.getValue(3));
         assertEquals("a", row2.getValue(3));
     }
