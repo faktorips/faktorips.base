@@ -85,6 +85,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      * {@inheritDoc}
      * IpsPackageFragments are always returned, whether they are output locations 
      * of the javaproject corresponding to this packagefragments IpsProject or not.
+     * TODO rename method to getChildIpsPackageFragments()
      */
     public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException {
     	IFolder folder = (IFolder)getCorrespondingResource();

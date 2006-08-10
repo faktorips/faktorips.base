@@ -301,7 +301,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         	List childResources= new ArrayList(); 
             IResource[] children= (IResource[]) adapter.getChildren(res);
             for (int i = 0; i < children.length; i++) {
-        		if(!isResourcePackageFragmentRoot(children[i]) & !isOutputFolder(children[i])){
+        		if(!isPackageFragmentRoot(children[i]) & !isJavaFolder(children[i])){
         			childResources.add(children[i]);
         		}
 			}
@@ -313,13 +313,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	/**
 	 * Examins the <code>JavaProject</code> corresponding to this <code>IpsProject</code> 
 	 * and its relation to the given <code>IResource</code>.
-	 * Returns true if the given resource corresponds to a folder that is
+	 * Returns true if the given resource corresponds to a classpath entry of the 
+	 * javaproject. Returns true if the given resource corresponds to a folder that is
 	 * either the javaprojects default output location or the output location 
 	 * of one of the projects classpathentries. False otherwise. 
 	 * @param resource
 	 * @return
 	 */
-	 protected boolean isOutputFolder(IResource resource) {
+	 private boolean isJavaFolder(IResource resource) {
 		try {
 			IPath outputPath= getJavaProject().getOutputLocation();
 			IClasspathEntry[] entries= getJavaProject().getResolvedClasspath(true);
@@ -328,6 +329,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 			}
 			for (int i = 0; i < entries.length; i++) {
 				if(resource.getFullPath().equals(entries[i].getOutputLocation())){
+					return true;
+				}
+				if(resource.getFullPath().equals(entries[i].getPath())){
 					return true;
 				}
 			}
@@ -340,9 +344,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
 	/**
 	 * Returns true if the given IResource is a folder that corresponds to
-	 * an IpsPackageFragmentRoot contained in this IpsProject, false otherwise.
+	 * an IpsPackageFragmentRoot of this IpsProject, false otherwise.
 	 */
-	private boolean isResourcePackageFragmentRoot(IResource res) throws CoreException {
+	private boolean isPackageFragmentRoot(IResource res) throws CoreException {
 		IIpsPackageFragmentRoot[] roots= getIpsPackageFragmentRoots();
 		for (int i = 0; i < roots.length; i++) {
 			if(roots[i].getCorrespondingResource().equals(res)){
