@@ -319,12 +319,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 						PROPERTY_VALUE);
 
 				if (!valueSet.containsValue(value)) {
-					list
-							.add(new Message(
-									IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET,
-									NLS
-											.bind(
-													Messages.ConfigElement_msgValueNotInValueset,
+					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET,
+									NLS.bind(Messages.ConfigElement_msgValueNotInValueset,
 													value), Message.ERROR,
 									this, PROPERTY_VALUE));
 				}
@@ -334,9 +330,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 								Messages.ConfigElement_msgValueNotInValueset,
 								value), Message.ERROR, this, PROPERTY_VALUE));
 			}
-
-			
-
 		}
 	}
 

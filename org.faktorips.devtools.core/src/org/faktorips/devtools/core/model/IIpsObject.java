@@ -63,7 +63,7 @@ public interface IIpsObject extends IIpsObjectPartContainer {
      * <p>
      * We use the qualified name type instead of ips object references because an 
      * object can depend on another object that does not exist, e.g. because the other
-     * object it has been deleted. However, if the deleted object is created again, 
+     * object has been deleted. However, if the deleted object is created again, 
      * we must rebuild this dependant object so that the problem marker is removed.
      * @throws CoreException 
      */

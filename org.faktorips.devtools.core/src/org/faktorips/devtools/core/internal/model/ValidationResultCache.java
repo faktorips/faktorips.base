@@ -84,4 +84,10 @@ public class ValidationResultCache {
 		data.clear();
 	}
 
+	/**
+	 * Clears the whole cache.
+	 */
+	public void clear(){
+		data.clear();
+	}
 }

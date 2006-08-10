@@ -103,7 +103,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		}
 		buildStatus = applyBuildCommand(buildStatus,
 				new AfterBuildProcessCommand(kind));
-
+		
 		if (buildStatus.getSeverity() == IStatus.OK) {
 			return getProject().getReferencedProjects();
 		}
@@ -354,7 +354,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		buildDependants(buildStatus, file.getQualifiedNameType(), toUpdate,
 				monitor, graph);
 		updateDependencyGraph(toUpdate, graph);
-		buildDependantIpsProjects(getProject(), buildStatus, file
+		HashSet alreadyBuildProjects = new HashSet();
+		buildDependantIpsProjects(getProject(), alreadyBuildProjects, buildStatus, file
 				.getQualifiedNameType(), monitor);
 	}
 
@@ -365,12 +366,13 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 	 * dependancy graph of the project. This method calls itself recursively
 	 * along the chain of dependant projects.
 	 */
-	private void buildDependantIpsProjects(IProject project,
+	private void buildDependantIpsProjects(IProject project, Set alreadyBuildProjects,
 			MultiStatus buildStatus, QualifiedNameType nameType,
 			IProgressMonitor monitor) throws CoreException {
 
 		IProject[] dependantProjects = project.getReferencingProjects();
-		for (int i = 0; i < dependantProjects.length; i++) {
+		
+		for (int i = 0; i < dependantProjects.length && !alreadyBuildProjects.contains(dependantProjects[i]); i++) {
 			IpsModel model = (IpsModel) IpsPlugin.getDefault().getIpsModel();
 			DependencyGraph graph = model.getDependencyGraph(model
 					.getIpsProject(dependantProjects[i]));
@@ -380,7 +382,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 			Set alreayBuild = new HashSet();
 			buildDependants(buildStatus, nameType, alreayBuild, monitor, graph);
 			updateDependencyGraph(alreayBuild, graph);
-			buildDependantIpsProjects(dependantProjects[i], buildStatus,
+			alreadyBuildProjects.add(dependantProjects[i]);
+			buildDependantIpsProjects(dependantProjects[i], alreadyBuildProjects, buildStatus,
 					nameType, monitor);
 		}
 	}
@@ -421,8 +424,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 									.getIpsSrcFile()));
 				}
 				alreadyBuild.add(dependants[i]);
-				buildDependants(buildStatus, dependants[i], alreadyBuild,
-						monitor, dependencyGraph);
+//not longer traverse the graph recursively since the graphs edges are build based on the transitive closure		
+//				buildDependants(buildStatus, dependants[i], alreadyBuild,
+//						monitor, dependencyGraph);
 			}
 		}
 	}

@@ -715,6 +715,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				}
 				IpsSrcFile srcFile = (IpsSrcFile) element;
 				if (delta.getKind()==IResourceDelta.REMOVED) {
+					getValidationResultCache().clear();
 					IpsPlugin.getDefault().getManager().removeSrcFileContents(srcFile);
 					return true;
 				} 

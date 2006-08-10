@@ -19,22 +19,28 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -47,6 +53,8 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
@@ -918,17 +926,55 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 * {@inheritDoc}
 	 */
 	public QualifiedNameType[] dependsOn() throws CoreException {
-		ArrayList qualifiedNameTypes = new ArrayList();
-		qualifiedNameTypes.add(new QualifiedNameType(getSupertype(),
-				IpsObjectType.POLICY_CMPT_TYPE));
-		addQualifiedNameTypesForRelationTargets(this, qualifiedNameTypes);
+		Set qualifiedNameTypes = new HashSet();
+		addQualifiedNameTypesForSuperTypeHierarchy(qualifiedNameTypes, this);
+		addQualifiedNameTypesForRelationTargets(qualifiedNameTypes);
+		addQualifiedNameTypesForFormulaParameters(qualifiedNameTypes);
+
 		return (QualifiedNameType[]) qualifiedNameTypes
 				.toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
 	}
-
-	private void addQualifiedNameTypesForRelationTargets(
-			IPolicyCmptType policyCmptType, List qualifiedNameTypes) {
-		IRelation[] relations = policyCmptType.getRelations();
+	
+	private void addQualifiedNameTypesForFormulaParameters(Set qualifiedNameTypes) throws CoreException{
+    	IAttribute[] attributes = getAttributes();
+    	IIpsProject ipsProject = getIpsProject();
+    	for (int i = 0; i < attributes.length; i++) {
+			if(ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())){
+				Parameter[] parameters = attributes[i].getFormulaParameters();
+				for (int j = 0; j < parameters.length; j++) {
+					String datatypeId = parameters[j].getDatatype();
+					Datatype datatype = ipsProject.findDatatype(datatypeId);
+					if (datatype instanceof ValueDatatype) {
+						// no dependency
+					} else if (datatype instanceof IIpsObject) {
+						IIpsObject ipsObject = (IIpsObject)datatype;
+						qualifiedNameTypes.add(ipsObject.getQualifiedNameType());
+					} else {
+						for (int k=0; k<IpsObjectType.ALL_TYPES.length; k++) {
+							if (IpsObjectType.ALL_TYPES[k].isDatatype()) {
+								qualifiedNameTypes.add(new QualifiedNameType(datatypeId, IpsObjectType.ALL_TYPES[k]));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void addQualifiedNameTypesForSuperTypeHierarchy(Set qualifiedNameTypes, IPolicyCmptType pcType) throws CoreException{
+		if(StringUtils.isEmpty(pcType.getSupertype())){
+			return;
+		}
+		qualifiedNameTypes.add(new QualifiedNameType(pcType.getSupertype(),
+				IpsObjectType.POLICY_CMPT_TYPE));
+		IPolicyCmptType superPcType = pcType.findSupertype();
+		if(superPcType != null){
+			addQualifiedNameTypesForSuperTypeHierarchy(qualifiedNameTypes, superPcType);
+		}
+	}
+	
+	private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes) {
+		IRelation[] relations = getRelations();
 		for (int i = 0; i < relations.length; i++) {
 			String qualifiedName = relations[i].getTarget();
 			qualifiedNameTypes.add(new QualifiedNameType(qualifiedName,

@@ -18,8 +18,10 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -28,17 +30,13 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
 import org.faktorips.devtools.core.model.CycleException;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.Parameter;
-import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
@@ -148,7 +146,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         	IProductCmptType pType = findProductCmptType();
         	try {
 				MessageList list3 = type.validate();
-				if (list3.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || list3.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
+				if (list3.getMessageByCode(IPolicyCmptType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null || 
+				    list3.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
 					String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, this.getPolicyCmptType());
 					list.add(new Message(MSGCODE_INCONSISTENCY_IN_POLICY_CMPT_TYPE_HIERARCHY, msg, Message.ERROR, pType, IProductCmptType.PROPERTY_NAME));
 				}
@@ -193,32 +192,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if(StringUtils.isEmpty(policyCmptType)){
             return new QualifiedNameType[0];
         }
-        ArrayList qaTypes = new ArrayList();
+        Set qaTypes = new HashSet();
         qaTypes.add(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE));
         
-        if(containsFormula()){
-        	IPolicyCmptType pcType = findPolicyCmptType();
-        	if (pcType!=null) {
-            	IAttribute[] attributes = pcType.getAttributes();
-            	for (int i = 0; i < attributes.length; i++) {
-    				if(ConfigElementType.FORMULA.equals(attributes[i].getConfigElementType())){
-    					Parameter[] parameters = attributes[i].getFormulaParameters();
-    					for (int j = 0; j < parameters.length; j++) {
-    						String dataTypeId = parameters[j].getDatatype();
-    						IIpsObject ipsObject = getIpsProject().findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, dataTypeId);
-    						if(ipsObject != null){
-    							qaTypes.add(ipsObject.getQualifiedNameType());
-    							continue;
-    						}
-    						ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, dataTypeId);
-    						if(ipsObject != null){
-    							qaTypes.add(ipsObject.getQualifiedNameType());
-    						}
-    					}
-    				}
-    			}
-        	}
-        }
+    	IPolicyCmptType pcType = findPolicyCmptType();
+    	if (pcType!=null) {
+            qaTypes.addAll(Arrays.asList(pcType.dependsOn()));
+    	}        
         return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
     }
 

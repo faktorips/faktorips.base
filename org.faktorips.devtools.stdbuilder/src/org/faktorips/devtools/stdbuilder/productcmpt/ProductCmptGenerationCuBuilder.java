@@ -110,7 +110,9 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
         for (int i = 0; i < elements.length; i++) {
             try {
-                generateMethodComputeValue(elements[i], codeBuilder);
+                if(!elements[i].validate().containsErrorMsg()){
+                    generateMethodComputeValue(elements[i], codeBuilder);
+                }
             } catch (Exception e) {
                 addToBuildStatus(new IpsStatus("Error generating code for " + elements[i], e));
             }
@@ -147,6 +149,10 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      */
     private void generateMethodComputeValue(IConfigElement formulaElement, JavaCodeFragmentBuilder builder) throws CoreException {
         IAttribute attribute = formulaElement.findPcTypeAttribute();
+        if(attribute.validate().containsErrorMsg()){
+            return;   
+        }
+
         Datatype datatype = attribute.findDatatype();
         DatatypeHelper datatypeHelper = attribute.getIpsProject().getDatatypeHelper(datatype);
 
