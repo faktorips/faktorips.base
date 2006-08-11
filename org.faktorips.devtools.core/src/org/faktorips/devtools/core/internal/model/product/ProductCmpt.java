@@ -29,6 +29,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -195,9 +196,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         Set qaTypes = new HashSet();
         qaTypes.add(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE));
         
-    	IProductCmptType productCmptType = findProductCmptType();
-    	if (productCmptType!=null) {
-            qaTypes.addAll(Arrays.asList(productCmptType.dependsOn()));
+    	IPolicyCmptType pcType = findPolicyCmptType();
+    	if (pcType!=null) {
+            qaTypes.addAll(Arrays.asList(((PolicyCmptType)pcType).dependsOn(true)));
     	}        
         return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
     }
