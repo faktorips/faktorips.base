@@ -59,9 +59,10 @@ public class TableRowGenerator extends JetJavaContentGenerator
   protected final String TEXT_21 = " get";
   protected final String TEXT_22 = "(){" + NL + "\t\treturn ";
   protected final String TEXT_23 = ";" + NL + "\t}";
-  protected final String TEXT_24 = NL + NL + "\tpublic String toString() {" + NL + "\t\treturn \"\" + ";
-  protected final String TEXT_25 = " + \"|\" + ";
-  protected final String TEXT_26 = ";" + NL + "\t}" + NL + "}";
+  protected final String TEXT_24 = NL + NL + "\tpublic String toString() {" + NL + "\t\treturn \"\"";
+  protected final String TEXT_25 = " + ";
+  protected final String TEXT_26 = " + \"|\" + ";
+  protected final String TEXT_27 = ";" + NL + "\t}" + NL + "}";
 
     public String generate(IIpsSrcFile ipsSrcFile) throws CoreException
   {
@@ -139,16 +140,21 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(TEXT_24);
      
 			for (int i = 0; i < columns.length; i++) {
+			    if (i == 0) {
+			        
+    stringBuffer.append(TEXT_25);
+    
+			    }
 				if (i != 0) {
 					
-    stringBuffer.append(TEXT_25);
+    stringBuffer.append(TEXT_26);
     
 				}
 				
     stringBuffer.append(columns[i].getName());
     
 			}
-    stringBuffer.append(TEXT_26);
+    stringBuffer.append(TEXT_27);
     addImports(stringBuffer);
     return stringBuffer.toString();
   }
