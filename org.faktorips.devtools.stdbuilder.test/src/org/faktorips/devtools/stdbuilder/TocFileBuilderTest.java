@@ -188,6 +188,12 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         toc2 = tocFileBuilder.getToc(root);
         assertNull(toc2.getTableTocEntryByClassname("motor.RateTable2"));
+        
+        // delete test case => should be removed from toc
+        testCase.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        toc2 = tocFileBuilder.getToc(root);
+        assertNull(toc2.getTestCaseTocEntryByQName("tests.PremiumCalcTestA"));
     }
     
     
