@@ -157,6 +157,14 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
                 return true;
             }
         }
+        for (Iterator it=testCaseNameTocEntryMap.values().iterator(); it.hasNext();) {
+            TocEntryObject entry = (TocEntryObject)it.next();
+            if (entry.getIpsObjectId().equals(objectId)) {
+                it.remove();
+                ++modificationStamp;
+                return true;
+            }
+        }
 	    return false;
 	}
 	
