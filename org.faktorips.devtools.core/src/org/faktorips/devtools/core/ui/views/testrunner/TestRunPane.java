@@ -35,7 +35,8 @@ import org.faktorips.devtools.core.IpsPlugin;
  * @author Joerg Ortmann
  */
 public class TestRunPane {
-
+    private final static String[] EMPTY_STRING_ARRAY = new String[0];
+    
 	private Table fTable;
 	
 	// Maps test Ids to the stored table items. 
@@ -47,14 +48,29 @@ public class TestRunPane {
             public void widgetSelected(SelectionEvent e) {
             	if (e.item instanceof TableItem){
 	            	TableItem selectedTestCase = (TableItem) e.item;
-	            	TestTableEnty testEntry = (TestTableEnty) selectedTestCase.getData();
-	            	testRunnerViewPart.selectionOfTestCaseChanged((String[])testEntry.getFailureDetails().toArray(new String[0]));
+	            	TestTableEntry testEntry = (TestTableEntry) selectedTestCase.getData();
+	            	String details[] = EMPTY_STRING_ARRAY;
+	            	if (testEntry.isFailure())
+	            		details = (String[])testEntry.getFailureDetails().toArray(new String[0]);
+	            	else if (testEntry.isError())
+	            		details = testEntry.getErrorDetails();
+	            	
+	            	testRunnerViewPart.selectionOfTestCaseChanged(details);
             	}
             }
             public void widgetDefaultSelected(SelectionEvent e) {
                 // nothing to do
             }
         });
+		fTable.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+			}
+			public void widgetDefaultSelected(SelectionEvent e) {
+				if (fTable.getSelectionCount() > 0)
+					if (getTestFullPath() != null)
+						new OpenTestInEditorAction(testRunnerViewPart, getTestFullPath()).run();
+			}
+		});
 	}
 
 	/**
@@ -79,21 +95,23 @@ public class TestRunPane {
 	/**
 	 * The given test is about to be started.
 	 */
-	public void newTableEntry(String testId, String treeEntry) {
+	public void newTableEntry(String testId, String tableEntry, String fullPath) {
 		TableItem tableItem = new TableItem(fTable, SWT.NONE);
-		tableItem.setText(treeEntry);
+		tableItem.setText(tableEntry);
 		tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/test.gif")); //$NON-NLS-1$
 
-		TestTableEnty testTableEntry = new TestTableEnty(testId, treeEntry, tableItem);
+		TestTableEntry testTableEntry = new TestTableEntry(testId, tableEntry, tableItem);
 		fTableItemMap.put(testId, testTableEntry);
 		tableItem.setData(testTableEntry);
+		// stores the given full path of the test case file
+		testTableEntry.setFullPath(fullPath);
 	}
 
 	/**
 	 * The given test ends.
 	 */
 	public void endTest(String testId, String qualifiedTestName) {
-		TestTableEnty testTableEntry = (TestTableEnty) fTableItemMap.get(testId);
+		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
 		if (testTableEntry == null)
 			return;
 		
@@ -113,7 +131,7 @@ public class TestRunPane {
 	 * The given test has started.
 	 */
 	public void startTest(String testId, String qualifiedTestName) {
-		TestTableEnty testTableEntry = (TestTableEnty) fTableItemMap.get(testId);
+		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
 		if (testTableEntry == null)
 			return;
 		
@@ -125,29 +143,57 @@ public class TestRunPane {
 	 * The given test fails with the given details. 
 	 */
 	public void failureTest(String testId, String failure) {
-		TestTableEnty testTableEntry = (TestTableEnty) fTableItemMap.get(testId);
+		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
 		if (testTableEntry == null)
 			return;
 		
-		testTableEntry.setStatus(TestTableEnty.FAILURE);
+		testTableEntry.setStatus(TestTableEntry.FAILURE);
 		testTableEntry.addFailure(failure);
 	}
 	
+	/**
+	 * There was an error while running the given test.
+	 */
+	public void errorInTest(String testId, String qualifiedTestName, String[] errorDetails) {
+		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
+		if (testTableEntry == null)
+			return;
+		
+		TableItem tableItem = testTableEntry.getTableItem();
+		tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testerr.gif")); //$NON-NLS-1$
+		testTableEntry.setErrorDetails(errorDetails);
+		testTableEntry.setStatus(TestTableEntry.ERROR);
+	}
+	
+	private String getTestFullPath() {
+		TableItem item= getSelectedItem();
+		TestTableEntry entry= (TestTableEntry) item.getData();
+		return entry.getFullPath();
+	}
+	
+	private TableItem getSelectedItem() {
+		int index= fTable.getSelectionIndex();
+		if (index == -1)
+			return null;
+		return fTable.getItem(index);
+	}
 	
 	/*
 	 * Inner class to store a test case.
 	 */
-	private class TestTableEnty{
+	private class TestTableEntry{
 		public static final int ERROR = -1;
 		public static final int FAILURE = 0;
 		public static final int UNKNOWN = 2;
 		private String testId;
 		private String qualifiedTestName;
+		private String fullPath;
 		private TableItem tableItem;
 		private int status = UNKNOWN;
 		private List failures = new ArrayList();
+		private String[] errorDetails = EMPTY_STRING_ARRAY;
 		
-		TestTableEnty(String testId, String qualifiedTestName, TableItem tableItem){
+		TestTableEntry(String testId, String qualifiedTestName, TableItem tableItem){
 			this.testId = testId;
 			this.qualifiedTestName = qualifiedTestName;
 			this.tableItem = tableItem;
@@ -160,6 +206,12 @@ public class TestRunPane {
 		}
 		public TableItem getTableItem() {
 			return tableItem;
+		}
+		public String getFullPath() {
+			return fullPath;
+		}
+		public void setFullPath(String fullPath) {
+			this.fullPath = fullPath;
 		}
 		public void setStatus(int status) {
 			this.status = status;
@@ -178,6 +230,12 @@ public class TestRunPane {
 		}
 		public List getFailureDetails(){
 			return failures;
+		}
+		public String[] getErrorDetails() {
+			return errorDetails;
+		}
+		public void setErrorDetails(String[] errorDetails) {
+			this.errorDetails = errorDetails;
 		}
 	}
 }

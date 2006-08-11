@@ -50,22 +50,20 @@ public interface IIpsTestRunListener {
     public void testFailureOccured(String[] failureDetails);
 
 	/**
-	 * Information about a member of the test suite that is about to be run.
-	 * The format of the string is: 
-	 * <pre>
-	 * ""testName","isSuite","testcount"
+	 * Information about a member that this test case is about to be run.
 	 * 
-	 * testName: the full qualified name of the ips test
-	 * isSuite: true or false depending on whether the test is a suite
-	 * testCount: an integer indicating the number of tests 
-	 * 
-	 * Example: "testPass1,false,1"
-	 * </pre>
+	 * @param qualifiedName qualified name of the test case
+	 * @param fullPath full path of the corresponding ipstestcase file
 	 */ 
-    public void testTableEntry(String treeEntry);
+    public void testTableEntry(String qualifiedName, String fullPath);
     
     /** 
      * A test run has ended.
      */
     public void testRunEnded();
+    
+    /** 
+     * A error (exception) occured while executing the test.
+     */
+    public void testErrorOccured(String qualifiedTestName, String[] errorDetails);    
 }

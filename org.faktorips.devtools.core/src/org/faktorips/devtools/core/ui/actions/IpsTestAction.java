@@ -17,26 +17,27 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 
 /**
@@ -45,6 +46,7 @@ import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
  * @author Joerg Ortmann
  */
 public class IpsTestAction extends IpsAction {
+	private static final String SEPARATOR = "#|#";
 	/**
 	 * @param selectionProvider
 	 */
@@ -59,70 +61,157 @@ public class IpsTestAction extends IpsAction {
 	 * {@inheritDoc}
 	 */
 	public void run(IStructuredSelection selection) {
-		IIpsElement element= (IIpsElement) selection.getFirstElement();
-		
-		IIpsPackageFragmentRoot root = null;
-		// TODO Joerg: get repository package name and suite name from selection
-		String repositoryPackage = "de.qv.produkt.produktdaten.hp.internal";
-		String testSuite = "hp";		
-		
-		if (element instanceof IIpsPackageFragmentRoot) {
-			root = (IIpsPackageFragmentRoot) element;
+		try {
+			List selectedElements = selection.toList();
+			List selectedPathElements = new ArrayList(1);
+			IIpsPackageFragmentRoot root = null;
+
+			for (Iterator iter = selectedElements.iterator(); iter.hasNext();) {
+				Object element = iter.next();
+				if (element instanceof IIpsPackageFragmentRoot) {
+					root = (IIpsPackageFragmentRoot) element;
+					IIpsProject project = root.getIpsProject();
+					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + "");
+				} else if (element instanceof IIpsPackageFragment) {
+					IIpsPackageFragment child = (IIpsPackageFragment) element;
+					root = (IIpsPackageFragmentRoot) child.getRoot();
+					IIpsProject project = root.getIpsProject();
+					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root)+ SEPARATOR + child.getName());
+				} else if (element instanceof ITestCase) {
+					ITestCase testCase = (ITestCase) element;
+					root = testCase.getIpsPackageFragment().getRoot();
+					IIpsProject project = root.getIpsProject();
+					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + testCase.getQualifiedName());
+				} else if (element instanceof IIpsProject) {
+					root = ipsProjectSelected((IIpsProject) element, selectedPathElements);
+				} else if (element instanceof IJavaProject) {
+					// e.g. if selected from the standard package explorer
+					IJavaProject javaProject = (IJavaProject) element;
+					IProject project = javaProject.getProject();
+					if (project.hasNature(IIpsProject.NATURE_ID)){
+						IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+						root = ipsProjectSelected(ipsProject, selectedPathElements);
+					}
+				}
+			}
 			
-			//root.getIpsDefaultPackageFragment();
-		} else if (element instanceof IIpsPackageFragment) {
-			
+			if (root!=null){
+				selectedPathElements = removeDuplicatEntries(selectedPathElements);
+				if (assertSelectedElemsInSameProject(selectedPathElements))
+					runTest(selectedPathElements, root.getIpsProject().getJavaProject());
+			}
+		} catch (CoreException e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+			return;
 		}
+	}
+	
+	/*
+	 * Add all package fragment roots of the selected IpsProject - including the project name - to the given list.
+	 */
+	private IIpsPackageFragmentRoot ipsProjectSelected(IIpsProject ipsProject, List selectedPathElements) throws CoreException {
+		IIpsPackageFragmentRoot root = null;	
+		IIpsPackageFragmentRoot[] rootsFromProject;
+		rootsFromProject = ipsProject.getIpsPackageFragmentRoots();
+		for (int i = 0; i < rootsFromProject.length; i++) {
+			root = rootsFromProject[i];
+			IIpsProject project = root.getIpsProject();
+			selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + "");
+		}
+		return root;
+	}
+
+	/*
+	 * Remove duplicate entries and already containing sub path elements from the given list.<br>
+	 * Example:
+	 * 1) hp.Test
+	 * 2) hp.Test.Test1
+	 * => entry 2) will be removed because it is implicit in entry 1)
+	 */
+	private List removeDuplicatEntries(List selectedPathElements) throws CoreException{
+		List uniqueList = new ArrayList(selectedPathElements.size());
+		Collections.sort(selectedPathElements);
 		
-		if (root != null){
+		String previousElement = "#none#";
+		for (Iterator iter = selectedPathElements.iterator(); iter.hasNext();) {
+			String currElement = (String) iter.next();
+			// add element only if it is not included in the previous element
+			if (! currElement.startsWith(previousElement)){
+				previousElement = currElement;
+				uniqueList.add(currElement);
+			}
+		}
+		return uniqueList;
+	}
+	
+	/*
+	 * Assert that only one project ist selected. Return <code>true</code> is only one project was selected.
+	 * Return <code>false</code> if more than one project was selected. If more than one project was selected
+	 * show an error dialog to inform the user.
+	 */
+	private boolean assertSelectedElemsInSameProject(List selectedPathElements){
+		// assert that the selection is in the same project
+		if (!(selectedPathElements.size()>=0))
+			return true;
+		
+		String previousElement = (String )selectedPathElements.get(0);
+		for (Iterator iter = selectedPathElements.iterator(); iter.hasNext();) {
+			String currElement = (String) iter.next();
+			String prevProject = previousElement.substring(0, previousElement.indexOf(SEPARATOR));
+			if (! currElement.startsWith(prevProject)){
+				MessageDialog.openError(null, "Cannot Run Test", "It is not possible to start test from different projects.");
+				return false;
+			}
+			previousElement = currElement;
+		}
+		return true;
+	}
+	
+	/*
+	 * Gets the package name from the given ips package fragment root.
+	 */
+	private String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
+		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
+		return ((DefaultBuilderSet) builderSet).getInternalBasePackageName(root);
+	}
+	
+	/*
+	 * Run the test.
+	 */
+	private void runTest(List selectedPathElements, IJavaProject javaProject) {
+		if (selectedPathElements.size() > 0){
+			String testRootsString= "";
+			String testPackagesString= "";
+			
+			// create the strings containing the roots and packages
+			for (Iterator iter = selectedPathElements.iterator(); iter.hasNext();) {
+				String selectedPathElement = (String) iter.next();
+				String withoutProject = selectedPathElement.substring(selectedPathElement.indexOf(SEPARATOR) + SEPARATOR.length());
+				testRootsString += "{" + withoutProject.substring(0, withoutProject.indexOf(SEPARATOR)) + "}";
+				testPackagesString += "{" + withoutProject.substring(withoutProject.indexOf(SEPARATOR) + SEPARATOR.length()) + "}"; 
+			}
+			
+			// show view
 			try {
 				showTestCaseResultView(IpsTestRunnerViewPart.EXTENSION_ID);
 			} catch (PartInitException e) {
 				IpsPlugin.logAndShowErrorDialog(e);
 				return;
 			}
+			
 			// run the test
 			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
-			testRunner.setJavaProject(root.getIpsProject().getJavaProject());
-			TestRunnerJob job = new TestRunnerJob(testRunner, repositoryPackage, testSuite);
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			job.setRule(workspace.getRoot());
-			job.schedule();
+			// get the java project from the first root, currently it is not possible
+			// to select more than one root from different projects (means different java projects)
+			testRunner.setJavaProject(javaProject);
+			testRunner.startTestRunnerJob(testRootsString, testPackagesString);
 		}
 	}
-	
-	/*
-	 * Job class to run the selected tests.
-	 */
-	private class TestRunnerJob extends WorkspaceJob {
-		private IIpsTestRunner testRunner;
-		private String classpathRepository;
-		private String testsuite;
-		
-		public TestRunnerJob(IIpsTestRunner testRunner, String classpathRepository, String testsuite) {
-			super("FaktorIps Test Job");
-			this.testRunner = testRunner;
-			this.classpathRepository = classpathRepository;
-			this.testsuite = testsuite;
-		}
-		
-		public IStatus runInWorkspace(IProgressMonitor monitor) {
-			try {
-				testRunner.run(classpathRepository, testsuite);
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-			return Status.OK_STATUS;
-		}
-	}	
     
 	/*
 	 * Displays the ips test run result view.
 	 */
 	private IViewPart showTestCaseResultView(String viewId) throws PartInitException {
-		IWorkbench workbench= PlatformUI.getWorkbench();
-		IWorkbenchWindow window= workbench.getActiveWorkbenchWindow();
-		IWorkbenchPage page= window.getActivePage();
-		return page.showView(viewId);
+		return IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(viewId);
 	}	
 }

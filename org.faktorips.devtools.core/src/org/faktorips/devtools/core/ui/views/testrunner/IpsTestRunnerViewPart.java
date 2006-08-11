@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -68,6 +69,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private FailurePane fFailurePane;
 	private TestRunPane fTestRunPane;
 	private Composite fParent;
+	
+	protected volatile String fStatus = "";
 	
 	/*
 	 * The current orientation; either <code>VIEW_ORIENTATION_HORIZONTAL</code>
@@ -116,6 +119,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private String repositoryPackage;
 	private String testPackage;
 	
+	// The project which contains the runned tests 
+	private IJavaProject fTestProject;
+	
 	/*
 	 * Action class to rerun a test.
 	 */
@@ -140,22 +146,29 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private class TestRunnerJob extends WorkspaceJob {
 		private String classpathRepository;
 		private String testsuite;
+		private IIpsTestRunner testRunner;
 		
 		public TestRunnerJob(String classpathRepository, String testsuite) {
 			super("FaktorIps Test Job");
 			this.classpathRepository = 
 			this.classpathRepository = classpathRepository;
 			this.testsuite = testsuite;
+			this.testRunner = IpsPlugin.getDefault().getIpsTestRunner();
 		}
 		
 		public IStatus runInWorkspace(IProgressMonitor monitor) {
-			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
+			
 			try {
+
 				testRunner.run(classpathRepository, testsuite);
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
 			return Status.OK_STATUS;
+		}
+		
+		public IIpsTestRunner getTestRunner(){
+			return testRunner;
 		}
 	}	
 	
@@ -164,6 +177,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	private void rerunTestRun()  {
 		TestRunnerJob job = new TestRunnerJob(repositoryPackage, testPackage);
+
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		job.setRule(workspace.getRoot());
 		job.schedule();
@@ -181,6 +195,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		}
 		public IStatus runInUIThread(IProgressMonitor monitor) {
 			if (!isDisposed()) { 
+				doShowStatus();
 				refreshCounters();
 			}
 			schedule(REFRESH_INTERVAL);
@@ -195,6 +210,12 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	 public void setFocus() {
+	 }
+	 
 	/**
 	 * {@inheritDoc}
 	 */
@@ -229,12 +250,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	public TestRunPane getTestRunPane() {
 		return fTestRunPane;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setFocus() {
 	}
 	
 	/**
@@ -382,6 +397,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		return fIsDisposed || fCounterPanel.isDisposed();
 	}
 	
+	private void doShowStatus() {
+		setContentDescription(fStatus);
+	}
+
+	public void setInfoMessage(final String message) {
+		fStatus= message;
+	}
+	
 	private class TableEntryQueueDrainer implements Runnable {
 		private String testId;
 		TableEntryQueueDrainer(String testId){
@@ -389,17 +412,34 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		}
 		public void run() {
 			while (true) {
-				String treeEntry;
+				TestCaseEntry testCaseEntry;
 				synchronized (fTableEntryQueue) {
 					if (fTableEntryQueue.isEmpty() || isDisposed()) {
 						fQueueDrainRequestOutstanding = false;
 						return;
 					}
-					treeEntry = (String)fTableEntryQueue.remove(0);
+					testCaseEntry = (TestCaseEntry) fTableEntryQueue.remove(0);
 				}
-				fTestRunPane.newTableEntry(testId, treeEntry);
+				fTestRunPane.newTableEntry(testId, testCaseEntry.getQualifiedName(), testCaseEntry.fullPath);
 			}
 		}
+	}
+	
+	// inner class to represent an ips test case
+	private class TestCaseEntry {
+		private String qualifiedName;
+		private String fullPath;
+		public TestCaseEntry(String qualifiedName, String fullPath){
+			this.qualifiedName = qualifiedName;
+			this.fullPath = fullPath;
+		}
+		public String getFullPath() {
+			return fullPath;
+		}
+		public String getQualifiedName() {
+			return qualifiedName;
+		}
+		
 	}
 	
 	public Display getDisplay() {
@@ -452,7 +492,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fCounterPanel.setRunValue(0);	
 	}
 	
-	
 	/*
 	 * Register self as ips test run listener. 
 	 */
@@ -486,6 +525,16 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				if(isDisposed()) 
 					return;
 				fTestRunPane.startTest(testId, qualifiedTestName);
+			}
+		});
+	}
+	
+	private void postErrorInTest(final String testId, final String qualifiedTestName, final String[] errorDetails) {
+		postSyncRunnable(new Runnable() {
+			public void run() {
+				if(isDisposed()) 
+					return;
+				fTestRunPane.errorInTest(testId, qualifiedTestName, errorDetails);
 			}
 		});
 	}
@@ -576,10 +625,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	/**
 	 * {@inheritDoc}
 	 */
-	public void testTableEntry(final String treeEntry) {
+	public void testTableEntry(final String qualifiedName, final String fullPath) {
 		String testId = nextTestId();
 		synchronized(fTableEntryQueue) {
-			fTableEntryQueue.add(treeEntry);
+			fTableEntryQueue.add(new TestCaseEntry(qualifiedName, fullPath));
 			if (!fQueueDrainRequestOutstanding) {
 				fQueueDrainRequestOutstanding = true;
 				if (!isDisposed())
@@ -601,7 +650,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		
 		stopUpdateJobs();
 		fUpdateJob = new UpdateUIJob("FaktorIps Test Starter Job"); 
-		fUpdateJob.schedule(REFRESH_INTERVAL);
+		fUpdateJob.schedule(0);
+		
+		// store the project which contains the tests will be used to open the test in the editor
+		fTestProject = IpsPlugin.getDefault().getIpsTestRunner().getJavaProject();
 	}
 
 	/**
@@ -613,9 +665,23 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	}
 
 	/**
-	 * @param testCaseDetails
+	 * {@inheritDoc}
+	 */
+    public void testErrorOccured(String qualifiedTestName, String[] errorDetails){
+    	fErrorCount ++;
+    	postErrorInTest(getTestId(), qualifiedTestName, errorDetails);
+    }
+    
+	/**
+	 * Informs that the selection of a test result changed.
+	 * 
+	 * @param testCaseDetails contains the details of the selcted test result.
 	 */
 	public void selectionOfTestCaseChanged(String[] testCaseFailures) {
 		fFailurePane.showFailureDetails(testCaseFailures);
-	}	
+	}
+
+	public IJavaProject getLaunchedProject() {
+		return fTestProject;
+	}
 }

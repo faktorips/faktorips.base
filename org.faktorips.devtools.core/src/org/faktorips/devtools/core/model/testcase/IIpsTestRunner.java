@@ -59,4 +59,14 @@ public interface IIpsTestRunner {
 	 * Sets the java project the test which will be started by this runner belongs to.
 	 */
 	public void setJavaProject(IJavaProject project);
+	
+	/**
+	 * Returns the java project.
+	 */
+	public IJavaProject getJavaProject();	
+	
+	/**
+	 * Starts a new job for running tests.
+	 */
+	public void startTestRunnerJob(String classpathRepository, String testsuite);
 }
