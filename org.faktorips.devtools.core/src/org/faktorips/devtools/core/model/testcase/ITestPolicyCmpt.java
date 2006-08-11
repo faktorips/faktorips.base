@@ -34,6 +34,17 @@ public interface ITestPolicyCmpt extends ITestObject {
 	public final static String PROPERTY_LABEL = "label"; //$NON-NLS-1$
 	
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTPOLICYCMPT-"; //$NON-NLS-1$
+	
+    /**
+	 * Validation message code to indicate that the corresponding test case type parameter not exists.
+	 */
+	public final static String MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND = MSGCODE_PREFIX
+		+ "TestCaseTypeParamNotFound"; //$NON-NLS-1$
+    
+    /**
      * Returns the qualified name of policy component class.
      */
 	public String getTestPolicyCmptType();

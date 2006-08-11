@@ -38,19 +38,19 @@ public interface ITestAttributeValue extends IIpsObjectPart{
     public final static String MSGCODE_PREFIX = "TESTATTRIBUTEVALUE-"; //$NON-NLS-1$
     
     /**
-	 * Validation message code to indicate that the corresponding test attribute exists.
+	 * Validation message code to indicate that the corresponding test attribute not exists.
 	 */
 	public final static String MSGCODE_TESTATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX
 		+ "TestAttributeNotFound"; //$NON-NLS-1$
 	
     /**
-	 * Validation message code to indicate that the attribute which is related by the test attribute exists.
+	 * Validation message code to indicate that the attribute which is related by the test attribute not exists.
 	 */
 	public final static String MSGCODE_ATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX
 		+ "AttributeNotFound"; //$NON-NLS-1$
 	
     /**
-	 * Validation message code to indicate that the datatype of the attribute exists.
+	 * Validation message code to indicate that the datatype of the attribute not exists.
 	 */
 	public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX
 		+ "DatatypeNotFound"; //$NON-NLS-1$

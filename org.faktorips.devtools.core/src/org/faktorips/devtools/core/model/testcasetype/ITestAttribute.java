@@ -32,6 +32,11 @@ public interface ITestAttribute extends IIpsObjectPart {
     public final static String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTATTRIBUTE-"; //$NON-NLS-1$
+
+    /**
      * Returns the attribute.
      */
 	public String getAttribute();

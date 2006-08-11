@@ -32,6 +32,17 @@ public interface ITestValue extends ITestObject {
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTVALUE-"; //$NON-NLS-1$
+
+    /**
+	 * Validation message code to indicate that the corresponding test value parameter not exists.
+	 */
+	public final static String MSGCODE_TEST_VALUE_PARAM_NOT_FOUND = MSGCODE_PREFIX
+		+ "TestValueParamNotFound"; //$NON-NLS-1$
+    
+    /**
      * Returns the test value.
      */
 	public String getTestValueParameter();

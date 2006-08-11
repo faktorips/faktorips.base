@@ -36,6 +36,11 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public final static String PROPERTY_MAX_INSTANCES = "maxInstances"; //$NON-NLS-1$
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTPOLICYCMPTTYPEPARAMETER-"; //$NON-NLS-1$
+
+    /**
      * Returns the qualified name of policy component class.
      */
 	public String getPolicyCmptType();

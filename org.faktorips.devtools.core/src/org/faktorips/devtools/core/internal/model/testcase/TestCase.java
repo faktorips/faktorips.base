@@ -411,7 +411,7 @@ public class TestCase extends IpsObject implements ITestCase {
 		 */
 		public ITestValue[] getTestValueObjects() {
 			List inputObjects = getTestObjects(TestValue.class);
-	        TestValue[] inputObjectsArray = new TestValue[inputObjects.size()];
+	        ITestValue[] inputObjectsArray = new ITestValue[inputObjects.size()];
 			inputObjects.toArray(inputObjectsArray);
 			return inputObjectsArray;
 		}
@@ -421,7 +421,7 @@ public class TestCase extends IpsObject implements ITestCase {
 		 */		
 		private ITestPolicyCmpt[] getTestPolicyCmptObjects() {
 			List inputObjects = getTestObjects(TestPolicyCmpt.class);
-	        TestPolicyCmpt[] inputObjectsArray = new TestPolicyCmpt[inputObjects.size()];
+	        ITestPolicyCmpt[] inputObjectsArray = new ITestPolicyCmpt[inputObjects.size()];
 	        inputObjects.toArray(inputObjectsArray);
 			return inputObjectsArray;
 		}
@@ -445,13 +445,13 @@ public class TestCase extends IpsObject implements ITestCase {
 		 * Returns all the test objects which are kind of the given class.
 		 */
 		private List getTestObjects(Class objectClass) {
-			List inputObjects = new ArrayList();
+			List objects = new ArrayList();
 	        for (Iterator it = testObject.iterator(); it.hasNext();) {
 	            ITestObject testObject = (ITestObject)it.next();
 	            if (testObject.getClass().equals(objectClass))
-	            	inputObjects.add(testObject);
+	            	objects.add(testObject);
 	        }
-			return inputObjects;
+			return objects;
 		}
 		
 		/**
@@ -465,7 +465,7 @@ public class TestCase extends IpsObject implements ITestCase {
 		 * {@inheritDoc}
 		 */
 		protected void reAddPart(IIpsObjectPart part) {
-			if (part instanceof TestObject) {
+			if (part instanceof ITestObject) {
 				testObject.add(part);
 				return;
 			}
@@ -489,8 +489,8 @@ public class TestCase extends IpsObject implements ITestCase {
 		 * Removes the given test parameter object from the parameter list
 		 */
 		private void remove(ITestObject param) throws CoreException{
-			if (param instanceof TestPolicyCmpt){
-				ITestPolicyCmpt testPolicyCmpt = (TestPolicyCmpt) param;
+			if (param instanceof ITestPolicyCmpt){
+				ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) param;
 				if (testPolicyCmpt.isRoot()){
 					testObject.remove((TestPolicyCmpt) param);
 				}else{
@@ -605,7 +605,7 @@ public class TestCase extends IpsObject implements ITestCase {
 		/**
 		 * Returns a new value object and adds it to the list of children.
 		 */
-		public TestPolicyCmpt newPolicyCmptObject() {
+		public ITestPolicyCmpt newPolicyCmptObject() {
 			TestPolicyCmpt newObject = new TestPolicyCmpt(this, getNextPartId());
 			newObject.setInputParameter(isInput);
 			testObject.add(newObject);

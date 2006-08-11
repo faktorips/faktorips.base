@@ -31,6 +31,11 @@ public interface ITestValueParameter extends ITestParameter {
     public final static String PROPERTY_VALUEDATATYPE = "valueDatatype"; //$NON-NLS-1$
     
     /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTVALUEPARAMETER-"; //$NON-NLS-1$
+    
+    /**
      * Returns the datatype.
      */
 	public String getValueDatatype();

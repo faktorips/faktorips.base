@@ -23,6 +23,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -107,5 +109,18 @@ public class TestValueParameter extends TestParameter implements
 	 */
 	public boolean isRootParameter() {
 		return true;
-	}  
+	} 
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void validateThis(MessageList list) throws CoreException {
+		super.validateThis(list);
+		ValueDatatype datatype = findValueDatatype();
+		if (datatype==null) {
+			String text = "The datatype defined in the test value parameter for this test case value doesn't exists.";
+			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUEDATATYPE);
+			list.add(msg);
+		}
+	}
 }

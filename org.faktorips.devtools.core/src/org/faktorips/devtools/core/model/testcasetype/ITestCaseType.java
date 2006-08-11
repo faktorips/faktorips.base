@@ -26,6 +26,11 @@ import org.faktorips.devtools.core.model.IIpsObject;
  */
 public interface ITestCaseType extends IIpsObject {
 
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTCASETYPE-"; //$NON-NLS-1$
+
 	/**
 	 * Creates a new test input value parameter.
 	 */
@@ -54,6 +59,18 @@ public interface ITestCaseType extends IIpsObject {
 	public ITestParameter[] getInputParameters();
 	
 	/**
+	 * Returns all input test value parameters or an empty array if the test case type hasn't got
+	 * any input test value parameters.
+	 */
+	public ITestValueParameter[] getInputTestValueParameters();
+	
+	/**
+	 * Returns all input test policy component type parameters or an empty array if the test case type hasn't got
+	 * any input test policy component type parameters.
+	 */
+	public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters();
+	
+	/**
 	 * Returns the input test value parameter or <code>null</code> if not found.
 	 */
 	public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter);
@@ -69,6 +86,18 @@ public interface ITestCaseType extends IIpsObject {
 	 */
 	public ITestParameter[] getExpectedResultParameter();
 
+	/**
+	 * Returns all expected result test value parameters or an empty array if the test case type hasn't got
+	 * any expected result test value parameters.
+	 */
+	public ITestValueParameter[] getExpectedResultTestValueParameters();
+	
+	/**
+	 * Returns all expected result test policy component type parameters or an empty array if the test case type hasn't got
+	 * any expected result test policy component type parameters.
+	 */
+	public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters();
+	
 	/**
 	 * Returns the expected result test value parameter or <code>null</code> if not found.
 	 */

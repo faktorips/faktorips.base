@@ -184,6 +184,20 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 	/**
 	 * {@inheritDoc}
 	 */
+	public ITestValueParameter[] getInputTestValueParameters() {
+		return input.getTestValueParameters();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters() {
+		return input.getTestPolicyCmptTypeParameters();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter){
 		return input.getTestValueParameter(inputTestValueParameter);
 	}
@@ -203,6 +217,20 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 		return expectedResult.getTestParameter();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITestValueParameter[] getExpectedResultTestValueParameters() {
+		return expectedResult.getTestValueParameters();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters() {
+		return expectedResult.getTestPolicyCmptTypeParameters();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -255,7 +283,20 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 			ITestParameter[] testParameterArray = new ITestParameter[testParameter.size()];
 			testParameter.toArray(testParameterArray);
 			return testParameterArray;
-		}	
+		}
+
+		/**
+		 * Returns all the test parameter which are kind of the given class.
+		 */
+		private List getTestParameters(Class parameterClass) {
+			List parameter = new ArrayList();
+	        for (Iterator it = testParameter.iterator(); it.hasNext();) {
+	        	ITestParameter testParameter = (ITestParameter)it.next();
+	            if (testParameter.getClass().equals(parameterClass))
+	            	parameter.add(testParameter);
+	        }
+			return parameter;
+		}
 		
 		public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter) {
 			ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = null;
@@ -281,6 +322,16 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 			return testValueParameterFound;
 		}
 		
+		public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters() {
+			List inputObjects = getTestParameters(TestPolicyCmptTypeParameter.class);
+			return (ITestPolicyCmptTypeParameter[]) inputObjects.toArray(new ITestPolicyCmptTypeParameter[0]);
+		}
+		
+		public ITestValueParameter[] getTestValueParameters() {
+			List inputObjects = getTestParameters(TestValueParameter.class);
+			return (ITestValueParameter[]) inputObjects.toArray(new ITestValueParameter[0]);
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 */
@@ -292,7 +343,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 		 * {@inheritDoc}
 		 */
 		protected void reAddPart(IIpsObjectPart part) {
-			if (part instanceof TestParameter) {
+			if (part instanceof ITestParameter) {
 				testParameter.add(part);
 				return;
 			}
@@ -361,7 +412,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 		/**
 		 * Creates a new value parameter without updating the src file.
 		 */
-		public TestValueParameter newValueParameter() {
+		public ITestValueParameter newValueParameter() {
 			TestValueParameter param = new TestValueParameter(this, getNextPartId());
 			param.setInputParameter(isInput);
 			testParameter.add(param);

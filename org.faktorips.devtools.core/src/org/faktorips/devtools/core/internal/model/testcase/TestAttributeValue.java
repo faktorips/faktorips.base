@@ -172,6 +172,7 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 			messageList.add(msg);	
 			return;
 		}
+		
 		IAttribute attribute =testAttr.findAttribute();
 		if (attribute == null){
 			String text = "Attribute \"" + testAttr.getAttribute() + "\" not found.";
