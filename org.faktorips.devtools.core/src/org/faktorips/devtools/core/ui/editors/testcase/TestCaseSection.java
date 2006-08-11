@@ -45,15 +45,20 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -65,6 +70,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -227,8 +233,19 @@ public class TestCaseSection extends IpsSection {
 		actionAll.setChecked(false);
 		actionAll.setToolTipText("Show flat structure"); //$NON-NLS-1$
 		actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif"));
+		
+		// Toolbar item run test
+		Action actionTest = new Action("runTest", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+			public void run() {
+				runTestClicked();
+			}
+		};
+		actionTest.setToolTipText("Run test"); //$NON-NLS-1$
+		actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif"));
+		
 		form.getToolBarManager().add(actionRelation);
 		form.getToolBarManager().add(actionAll);
+		form.getToolBarManager().add(actionTest);
 	}
 	
 	/**
@@ -406,8 +423,9 @@ public class TestCaseSection extends IpsSection {
 				// root elements could not be deleted
 				removeButton.setEnabled(!((ITestPolicyCmpt)selection).isRoot());	
 				if (param != null){
-					// type parameter exists, therefore add is enabled 
-					addButton.setEnabled(true);
+					// type parameter exists,
+					//   enable add button only if relations are defined
+					addButton.setEnabled(param.getTestPolicyCmptTypeParamChilds().length>0);
 					// product component select button is only enabled if the type parameter specified this
 					productCmptButton.setEnabled(param.isRequiresProductCmpt());
 				}
@@ -732,7 +750,7 @@ public class TestCaseSection extends IpsSection {
 				testPolicyCmpt.setProductCmpt(productCmpt);
 				testPolicyCmpt.setLabel(
 						testCase.generateUniqueLabelOfTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmpt)));
-				refreshTree();
+				refreshTreeAndDetailArea();
 			}
 		}
 	}
@@ -774,6 +792,26 @@ public class TestCaseSection extends IpsSection {
 		}
 	}
 
+	private void runTestClicked(){
+		// show test runner view
+		try {
+			IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IpsTestRunnerViewPart.EXTENSION_ID);
+		} catch (PartInitException e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+		}
+		// run test test
+		try {
+			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
+			testRunner.setJavaProject(testCase.getIpsProject().getJavaProject());
+			IIpsPackageFragmentRoot root = testCase.getIpsPackageFragment().getRoot();
+			IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
+			String repositoryPackage = ((DefaultBuilderSet)builderSet).getInternalBasePackageName(root);
+			testRunner.startTestRunnerJob(repositoryPackage, testCase.getQualifiedName());
+		} catch (CoreException e) {
+			IpsPlugin.logAndShowErrorDialog(e);
+		}
+	}
+	
 	/**
 	 * Shows the select product component dialog and returns the selected product component.
 	 * Returns <code>null</code> if no selection or an unsupported type was chosen.
@@ -781,19 +819,16 @@ public class TestCaseSection extends IpsSection {
 	 * @throws CoreException If an error occurs
 	 */
 	private String selectProductCmptDialog(String qualifiedTypeName) throws CoreException {
-	    String productCmpt = null;
-		
 	    PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), "Product Component Selection", 
         		"Select a component (?=any character, *=any string)");
         dialog.setElements(getProductCmptObjects(qualifiedTypeName));
         if (dialog.open()==Window.OK) {
             if (dialog.getResult().length>0) {
-                IIpsObject pdObject = (IIpsObject)dialog.getResult()[0];
-                return pdObject.getQualifiedName();
+            	IProductCmpt productCmpt = (IProductCmpt) dialog.getResult()[0];
+        		return productCmpt.getRuntimeId();
             }
         }
-
-	    return productCmpt;
+	    return null;
 	}
 	
 	/**
@@ -833,7 +868,16 @@ public class TestCaseSection extends IpsSection {
 	private void refreshTreeAndDetailArea(){
 		prevIsValue = false;
 		form.setRedraw(false);
-		testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
+		if (showAll){
+			testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
+			testCaseDetailArea.createValuesSection(false);
+		} else {
+			if (prevIsValue){
+				testCaseDetailArea.createValuesSection(true);
+			} else {
+				testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
+			}
+		}
 		refreshTree();
 		redrawForm();
 		form.setRedraw(true);

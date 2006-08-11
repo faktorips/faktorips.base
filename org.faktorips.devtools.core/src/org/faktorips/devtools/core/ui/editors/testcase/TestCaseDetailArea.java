@@ -179,7 +179,7 @@ public class TestCaseDetailArea {
 		String sectionText = testPolicyCmpt.getLabel();
 		if (testPolicyCmpt.getProductCmpt().length() > 0){
 			String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
-			sectionText += " [" + testPolicyCmpt.getTestPolicyCmptType() + "] " + (pckName.length() > 0 ? " (" + pckName + ") " : "");
+			sectionText += (pckName.length() > 0 ? " (" + pckName + ") " : "") + " [" + testPolicyCmpt.getTestPolicyCmptType() + "]";
 		}
 		section.setText(sectionText);
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
