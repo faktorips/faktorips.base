@@ -361,9 +361,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (type == null) {
             return null;
         }
+        // generate the object id, the objectId for this element will be the package root name concatenated with the qualified name 
+        String packageRootName = testCase.getIpsSrcFile().getIpsObject().getIpsPackageFragment().getRoot().getName();
+        String objectId = packageRootName + "." + testCase.getQualifiedName();
+        objectId = objectId.replace('.', '/') + "." + IpsObjectType.TEST_CASE.getFileExtension();
+        
         String testCaseTypeName = testCaseTypeClassBuilder.getQualifiedClassName(type);
         String xmlResourceName = testCaseBuilder.getXmlResourcePath(testCase);
-        TocEntryObject entry = TocEntryObject.createTestCaseTocEntry(testCase.getQualifiedName(), testCase.getQualifiedName(),
+        TocEntryObject entry = TocEntryObject.createTestCaseTocEntry(objectId, testCase.getQualifiedName(),
             xmlResourceName, testCaseTypeName);
         return entry;
     }
