@@ -615,7 +615,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					try {
 						builderInstance = element
 								.createExecutableExtension("class"); //$NON-NLS-1$
-					} catch (CoreException e) {
+					} catch (Exception e) {
 						IpsPlugin
 								.log(new IpsStatus(
 										"Unable to create the artefact builder set: " //$NON-NLS-1$
@@ -644,7 +644,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 							: extension.getLabel());
 					try {
 						arteFactBuilderSet.initialize();
-					} catch (CoreException e) {
+					} catch (Exception e) {
 						IpsPlugin.log(new IpsStatus(
 								"An exception occured while trying to initialize" //$NON-NLS-1$
 										+ " the artefact builder set: " //$NON-NLS-1$
