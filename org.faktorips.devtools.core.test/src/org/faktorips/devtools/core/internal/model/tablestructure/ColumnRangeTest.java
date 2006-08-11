@@ -176,4 +176,44 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
 			fail();
 		}
     }
+    
+    public void testValidateRangeDatatype() throws CoreException {
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setParameterName("egon");
+        IColumn from = table.newColumn();
+        from.setDatatype(Datatype.INTEGER.getName());
+        from.setName("from");
+        IColumn to = table.newColumn();
+        to.setDatatype(Datatype.STRING.getName());
+        to.setName("to");
+        
+        range.setFromColumn("from");
+        range.setToColumn("to");
+        
+        table.getIpsSrcFile().save(true, null);
+        
+        MessageList ml = range.validate();
+        assertTrue(ml.isEmpty());
+        
+        from.setDatatype(Datatype.BOOLEAN.getName());
+        table.getIpsSrcFile().save(true, null);
+        ml = range.validate();
+        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
+        
+        from.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
+        table.getIpsSrcFile().save(true, null);
+        ml = range.validate();
+        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_FROM));
+
+        from.setDatatype(Datatype.INTEGER.getName());
+        to.setDatatype(Datatype.BOOLEAN.getName());
+        table.getIpsSrcFile().save(true, null);
+        ml = range.validate();
+        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
+
+        to.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getName());
+        table.getIpsSrcFile().save(true, null);
+        ml = range.validate();
+        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
+    }
 }

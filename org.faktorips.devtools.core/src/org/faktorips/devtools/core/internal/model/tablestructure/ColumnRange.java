@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
@@ -152,6 +153,23 @@ public class ColumnRange extends IpsObjectPart implements IColumnRange {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
+        
+        if (!StringUtils.isEmpty(from) && getTableStructureImpl().getColumn(from) != null) {
+        	String datatype = getTableStructure().getColumn(from).getDatatype(); 
+            if (datatype.equals(Datatype.BOOLEAN.getName()) || datatype.equals(Datatype.PRIMITIVE_BOOLEAN.getName())) {
+            	String msg = NLS.bind(Messages.ColumnRange_msgDatatypeInvalidForRange, datatype);
+            	list.add(new Message(MSGCODE_INVALID_DATATYPE_FOR_FROM, msg, Message.ERROR, this, PROPERTY_FROM_COLUMN));
+            }
+        }
+        
+        if (!StringUtils.isEmpty(to) && getTableStructureImpl().getColumn(to) != null) {
+        	String datatype = getTableStructure().getColumn(to).getDatatype(); 
+            if (datatype.equals(Datatype.BOOLEAN.getName()) || datatype.equals(Datatype.PRIMITIVE_BOOLEAN.getName())) {
+            	String msg = NLS.bind(Messages.ColumnRange_msgDatatypeInvalidForRange, datatype);
+            	list.add(new Message(MSGCODE_INVALID_DATATYPE_FOR_TO, msg, Message.ERROR, this, PROPERTY_TO_COLUMN));
+            }
+        }
+        
         if ((rangeType.isTwoColumn() || rangeType.isOneColumnFrom()) && 
              ValidationUtils.checkStringPropertyNotEmpty(from, "from column", this, PROPERTY_FROM_COLUMN, "", list)) { //$NON-NLS-1$ //$NON-NLS-2$
             if (getTableStructure().getColumn(from)==null) {

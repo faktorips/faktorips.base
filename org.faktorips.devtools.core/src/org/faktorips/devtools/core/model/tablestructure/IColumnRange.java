@@ -30,6 +30,23 @@ public interface IColumnRange extends IIpsObjectPart, IKeyItem {
     public final static String PROPERTY_PARAMETER_NAME = "parameterName"; //$NON-NLS-1$
     
     /**
+     * Prefix for all messages of this class.
+     */
+    public final static String MSGCODE_PREFIX = "COLUMN_RANGE-"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code that indicates that the from-column has an datatype not valid
+     * for ranges.   
+     */
+    public final static String MSGCODE_INVALID_DATATYPE_FOR_FROM = MSGCODE_PREFIX + "InvalidDatatypeForFromColumn"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates that the to-column has an datatype not valid
+     * for ranges.   
+     */
+    public final static String MSGCODE_INVALID_DATATYPE_FOR_TO = MSGCODE_PREFIX + "InvalidDatatypeForToColumn"; //$NON-NLS-1$
+
+    /**
      * Returns the table structure this range belongs to.
      */
     public ITableStructure getTableStructure();

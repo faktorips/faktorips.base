@@ -77,4 +77,6 @@ public class Messages extends NLS {
 	public static String TableStructureType_labelEnumTypeModel;
 
 	public static String TableStructureType_labelEnumTypeProductDefinition;
+
+	public static String ColumnRange_msgDatatypeInvalidForRange;
 }

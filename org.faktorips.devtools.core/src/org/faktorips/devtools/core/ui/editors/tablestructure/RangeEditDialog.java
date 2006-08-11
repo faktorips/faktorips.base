@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -36,6 +38,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -251,7 +254,14 @@ public class RangeEditDialog extends IpsPartEditDialog {
         columnViewer.setContentProvider(new IStructuredContentProvider() {
 
             public Object[] getElements(Object inputElement) {
-                return range.getTableStructure().getColumns();
+            	IColumn[] columns = range.getTableStructure().getColumns();
+            	ArrayList result = new ArrayList();
+            	for (int i = 0; i < columns.length; i++) {
+					if (!columns[i].getDatatype().equals(Datatype.BOOLEAN.getName())) {
+						result.add(columns[i]);
+					}
+				}
+                return result.toArray();
             }
 
             public void dispose() {
