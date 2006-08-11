@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -463,7 +464,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 					newMenu.add(new IpsDeepCopyAction(getSite().getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
 				}
 				if(config.isAllowedIpsElementType(ITestCase.class)){
-						newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
+					newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
 				}
 				manager.add(newMenu);
 			}
@@ -493,7 +494,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		}
 
 		private void createTestCaseAction(IMenuManager manager, Object selected) {
-			if (selected instanceof IIpsPackageFragment
+			if (selected instanceof IIpsProject
+					|| selected instanceof IIpsPackageFragment
 					|| selected instanceof IIpsPackageFragmentRoot
 					|| selected instanceof ITestCase) {
 				manager.add(new IpsTestAction(treeViewer));
