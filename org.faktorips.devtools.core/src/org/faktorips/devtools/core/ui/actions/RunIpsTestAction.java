@@ -24,6 +24,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.actions.ActionDelegate;
 
+/**
+ * Action delegate to run tests.
+ */
 public class RunIpsTestAction extends ActionDelegate {
 	private IStructuredSelection selection = StructuredSelection.EMPTY;
 	
