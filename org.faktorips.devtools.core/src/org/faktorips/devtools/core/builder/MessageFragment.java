@@ -123,7 +123,7 @@ public class MessageFragment{
 	public final static MessageFragment createMessageFragment(String messageText){
 		
 		messageText = StringUtils.escape(messageText);
-        Pattern p = Pattern.compile("\\[[^\\]]*\\]"); //$NON-NLS-1$
+		Pattern p = Pattern.compile("\\{[^\\}]*\\}"); //$NON-NLS-1$
         Matcher m = p.matcher(messageText);
 		JavaCodeFragment frag = new JavaCodeFragment();
 		frag.appendClassName(StringBuffer.class);

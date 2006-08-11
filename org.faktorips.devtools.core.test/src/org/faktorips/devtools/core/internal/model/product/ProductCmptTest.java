@@ -142,16 +142,17 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.setPolicyCmptType(c.getQualifiedName());
         QualifiedNameType[] dependsOn = productCmpt.dependsOn();
         List dependsOnAsList = CollectionUtil.toArrayList(dependsOn);
-        dependsOnAsList.contains(a.getQualifiedNameType());
-        dependsOnAsList.contains(b.getQualifiedNameType());
-        dependsOnAsList.contains(d.getQualifiedNameType());
+        assertTrue(dependsOnAsList.contains(c.getQualifiedNameType()));
+        assertTrue(dependsOnAsList.contains(a.getQualifiedNameType()));
+        assertTrue(dependsOnAsList.contains(d.getQualifiedNameType()));
         
         a.getRelations()[0].setProductRelevant(false);
         c.getRelations()[0].setProductRelevant(false);
         dependsOn = productCmpt.dependsOn();
         dependsOnAsList = CollectionUtil.toArrayList(dependsOn);
         dependsOnAsList.contains(a.getQualifiedNameType());
-        assertEquals(1, dependsOn.length);
+        dependsOnAsList.contains(c.getQualifiedNameType());
+        assertEquals(2, dependsOn.length);
         
         productCmpt = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, "deckung");
         dependsOn = productCmpt.dependsOn();

@@ -926,9 +926,22 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 * {@inheritDoc}
 	 */
 	public QualifiedNameType[] dependsOn() throws CoreException {
+		return dependsOn(false);
+	}
+	
+	/**
+	 * Returns the <code>QualifiedNameType</code>s of the <code>IpsObject</code>s this <code>IpsObject</code> 
+	 * depends on. This method is used by the interface method dependsOn() and is public because it is used 
+	 * by the <code>ProductCmptType</code>
+	 * 
+	 * @param excludeNonProductRelations if true only the Relations that are marked as productrelevant are
+	 * 			considered 
+	 * @throws CoreException delegates rising CoreExceptions
+	 */
+	public QualifiedNameType[] dependsOn(boolean excludeNonProductRelations) throws CoreException{
 		Set qualifiedNameTypes = new HashSet();
 		addQualifiedNameTypesForSuperTypeHierarchy(qualifiedNameTypes, this);
-		addQualifiedNameTypesForRelationTargets(qualifiedNameTypes);
+		addQualifiedNameTypesForRelationTargets(qualifiedNameTypes, excludeNonProductRelations);
 		addQualifiedNameTypesForFormulaParameters(qualifiedNameTypes);
 
 		return (QualifiedNameType[]) qualifiedNameTypes
@@ -973,9 +986,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		}
 	}
 	
-	private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes) {
+	private void addQualifiedNameTypesForRelationTargets(Set qualifiedNameTypes, boolean excludeNonProductRelations) {
 		IRelation[] relations = getRelations();
 		for (int i = 0; i < relations.length; i++) {
+			if(excludeNonProductRelations && !relations[i].isProductRelevant()){
+				continue;
+			}
 			String qualifiedName = relations[i].getTarget();
 			qualifiedNameTypes.add(new QualifiedNameType(qualifiedName,
 					IpsObjectType.POLICY_CMPT_TYPE));

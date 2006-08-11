@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.memento.Memento;
@@ -167,7 +168,10 @@ public class ProductCmptType implements IProductCmptType {
 	 * {@inheritDoc}
 	 */
 	public QualifiedNameType[] dependsOn() throws CoreException {
-		return new QualifiedNameType[]{policyCmptType.getQualifiedNameType()};
+		
+		List qualifiedNameTypes = CollectionUtil.toArrayList(policyCmptType.dependsOn(true));
+		qualifiedNameTypes.add(policyCmptType.getQualifiedNameType());
+		return (QualifiedNameType[]) qualifiedNameTypes.toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
 	}
 
 	/**

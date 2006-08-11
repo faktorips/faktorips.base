@@ -195,9 +195,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         Set qaTypes = new HashSet();
         qaTypes.add(new QualifiedNameType(policyCmptType, IpsObjectType.POLICY_CMPT_TYPE));
         
-    	IPolicyCmptType pcType = findPolicyCmptType();
-    	if (pcType!=null) {
-            qaTypes.addAll(Arrays.asList(pcType.dependsOn()));
+    	IProductCmptType productCmptType = findProductCmptType();
+    	if (productCmptType!=null) {
+            qaTypes.addAll(Arrays.asList(productCmptType.dependsOn()));
     	}        
         return (QualifiedNameType[])qaTypes.toArray(new QualifiedNameType[qaTypes.size()]);
     }
