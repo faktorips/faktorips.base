@@ -26,6 +26,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IValidationMsgCodes;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -179,7 +180,57 @@ public class ValidationUtils {
         }
         return datatype;
     }
-        
+
+    /**
+     * Checks if a given value is an "instance" of the indicated value datatype. Adds a warning
+     * to the given list, of the datatype either can't be found or is invalid. Adds an error
+     * message if the value datatype is ok, but the value is not an instance of it.
+     * 
+     * @param valueDatatype the qualified value datatype name which will be used to validate the given value
+     * @param value the value which will be validated with the given datatype
+     * @param part The part the checked reference belongs to (used if a message has to be created).
+     * @param propertyName The (technical) name of the property used if a message has to be created.
+     * @param list The list of messages to add a new one.
+     * 
+     * @throws CoreException
+     */
+    public final static void checkValue (
+            String valueDatatype,
+            String value,
+            IIpsObjectPart part,
+            String propertyName,
+            MessageList list) throws CoreException {
+
+//    	 FIXME: add test case
+    	ValueDatatype datatype = part.getIpsProject().findValueDatatype(valueDatatype);
+    	if (datatype==null) {
+    		// FIXME: nls 
+    		String text = "The value can't be checked because the datatype can't be found.";
+			Message msg = new Message(IValidationMsgCodes.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND, 
+					text, Message.WARNING, part, propertyName); //$NON-NLS-1$
+			list.add(msg);
+			return;
+    	}
+    	try {
+    		if (datatype.validate().containsErrorMsg()) {
+//    			 FIXME: nls 
+        		String text = "The value can't be checked because the datatype " + datatype.getName() + " is invalid.";
+    			Message msg = new Message(IValidationMsgCodes.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text, Message.WARNING, part, propertyName); //$NON-NLS-1$
+    			list.add(msg);
+    			return;
+    		}
+		} catch (Exception e) {
+			throw new CoreException(new IpsStatus(e));
+		}
+    	
+		if (!datatype.isParsable(value)) {
+//			 FIXME: nls 
+			String text = NLS.bind("{0} is no {1}", value, datatype);
+			Message msg = new Message(IValidationMsgCodes.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text, Message.ERROR, part, propertyName); //$NON-NLS-1$
+			list.add(msg);
+		}
+    }
+    
     /**
      * Tests if the given property value is not empty.
      * If it is empty, it adds an error message to the given message list.
