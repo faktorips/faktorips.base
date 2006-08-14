@@ -188,27 +188,32 @@ public class ForeignKey extends Key implements IForeignKey {
             list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
         }
+        MessageList ml = item.validate();
+        if (!ml.isEmpty()) {
+        	list.add(ml);
+        	return;
+        }
         IColumn from = getTableStructure().getColumn(item.getFromColumn());
         IColumn to = getTableStructure().getColumn(item.getToColumn());
-        if (from==null || to==null) {
-            String text = Messages.ForeignKey_msgInvalidRange;
-            list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
-            return;
-        }
         IColumn refFrom = refStructure.getColumn(refRange.getFromColumn());
         IColumn refTo = refStructure.getColumn(refRange.getToColumn());
-        if (refFrom==null || refTo==null) {
-            String text = Messages.ForeignKey_msgReferencedRangeInvalid;
-            list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
-            return;
-        }
-        if (!from.getDatatype().equals(refFrom.getDatatype())) {
+        if (from != null && refFrom != null && !from.getDatatype().equals(refFrom.getDatatype())) {
             String text = NLS.bind(Messages.ForeignKey_msgForeignKeyDatatypeMismatch, from.getName(), refFrom);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
+        } 
+        else if ((from == null && refFrom != null) || (from != null && refFrom == null)) {
+          String text = Messages.ForeignKey_msgInvalidRange;
+          list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
+          return;
         }
-        if (!to.getDatatype().equals(refTo.getDatatype())) {
+        if (to != null && refFrom != null && !to.getDatatype().equals(refTo.getDatatype())) {
             String text = NLS.bind(Messages.ForeignKey_msgForeignKeyDatatypeMismatch, to.getName(), refTo);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
+        }
+        else if ((to == null && refTo != null) || (to != null && refTo == null)) {
+          String text = Messages.ForeignKey_msgReferencedRangeInvalid;
+          list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
+          return;
         }
     }
     
