@@ -101,6 +101,7 @@ public class IpsPreferences {
     	prefStore.setDefault(CHANGES_OVER_TIME_NAMING_CONCEPT, IChangesOverTimeNamingConvention.VAA);
     	prefStore.setDefault(EDIT_RECENT_GENERATION, false);
     	prefStore.setDefault(MODIFY_RUNTIME_ID, false);
+    	prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
     	if (Locale.getDefault().getLanguage().equals(Locale.GERMAN.getLanguage())) {
         	prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Typ"); //$NON-NLS-1$
     	} else {

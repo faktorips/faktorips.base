@@ -18,15 +18,20 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -52,7 +57,9 @@ public class DeepCopyWizard extends Wizard {
 	private IProductCmpt copiedRoot;
 	private ISchedulingRule schedulingRule;
 	private int type;
-	
+	private DialogSettings settings; 
+	private Composite pageContainer;
+
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product.
 	 * 
@@ -103,6 +110,14 @@ public class DeepCopyWizard extends Wizard {
 			String title = NLS.bind(Messages.DeepCopyWizard_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 			super.setWindowTitle(title);
 		}
+		settings = new DialogSettings("DeepCopyWizard");
+		settings.put("x", 0);
+		settings.put("y", 0);
+		try {
+			settings.load("deepCopyWizard.settings");
+		} catch (IOException e) {
+			// cant read the settings, use defaults.
+		}
 	}
 
 	/**
@@ -113,6 +128,23 @@ public class DeepCopyWizard extends Wizard {
 		super.addPage(sourcePage);
 		previewPage = new ReferenceAndPreviewPage(structure, sourcePage, type);
 		super.addPage(previewPage);
+	}
+
+	public void createPageControls(Composite pageContainer) {
+		super.createPageControls(pageContainer);
+		this.pageContainer = pageContainer;
+		GridData layoutData = (GridData)pageContainer.getLayoutData();
+
+		// restore size
+		int width = Math.max(settings.getInt("x"), layoutData.heightHint);
+		int height = Math.max(settings.getInt("y"), layoutData.widthHint);
+		layoutData.widthHint = Math.max(width, layoutData.minimumWidth);
+		layoutData.heightHint = Math.max(height, layoutData.minimumHeight);
+	}
+
+	public boolean performCancel() {
+		storeSize();
+		return super.performCancel();
 	}
 
 	/**
@@ -138,11 +170,25 @@ public class DeepCopyWizard extends Wizard {
 		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the copying process.",e)); //$NON-NLS-1$
 		}
+		
+		storeSize();
+		
 		//this implementation of this method should always return true since this causes the wizard dialog to close.
 		//in either case if an exception arises or not it doesn't make sense to keep the dialog up
 		return true;
 	}
 
+	private void storeSize() {
+		Point size = pageContainer.getSize();
+		settings.put("x", size.x);
+		settings.put("y", size.y);
+		try {
+			settings.save("deepCopyWizard.settings");
+		} catch (IOException e) {
+			// cant save - use defaults the next time
+		}
+	}
+	
 	/**
 	 * Returns the root product component which was copied.
 	 */
