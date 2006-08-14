@@ -78,11 +78,12 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
         try {
             IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
             IIpsSrcFile file = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
-            finishIpsObject(file.getIpsObject());
+            IIpsObject ipsObject= file.getIpsObject();
+            finishIpsObject(ipsObject);
             file.save(true, null);
+            // open Editor
             OpenEditorAction action= new OpenEditorAction(null);
-            IStructuredSelection selection= new StructuredSelection(file);
-            action.run(selection);
+            action.run(new StructuredSelection(ipsObject));
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

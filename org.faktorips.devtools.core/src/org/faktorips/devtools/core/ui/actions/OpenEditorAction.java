@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**
- * Opens a selected product component in an editor.
+ * Action for opening objects in the corresponding editor. <p>
  * 
  * @author Thorsten Guenther
  * @author Stefan Widmaier
@@ -45,18 +45,15 @@ public class OpenEditorAction extends IpsAction {
     }
     
     public void run(IStructuredSelection selection) {
-        IFile fileToEdit= null;
-		
 		IIpsSrcFile srcFile = getIpsSrcFileForSelection(selection);
 		if (srcFile != null) {
-			fileToEdit = srcFile.getCorrespondingFile();
+			openEditorForFile(srcFile.getCorrespondingFile());
 		}else{
 			Object selectedObject= selection.getFirstElement();
 			if(selectedObject instanceof IFile){
-				fileToEdit= (IFile) selectedObject;
+				openEditorForFile((IFile) selectedObject);
 			}
 		}
-		openEditorForFile(fileToEdit);
     }
     
     protected void openEditorForFile(IFile fileToEdit){
@@ -68,7 +65,7 @@ public class OpenEditorAction extends IpsAction {
 	        IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
 	        IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(fileToEdit.getName());
 	        if(editor!=null & editorInput!=null){
-	        	// Open Editor for registered filetype
+	        	// Open editor for registered filetype
 				workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
 	        }else{
 	        	// Let IDE guess filtype and open the corresponding editor
