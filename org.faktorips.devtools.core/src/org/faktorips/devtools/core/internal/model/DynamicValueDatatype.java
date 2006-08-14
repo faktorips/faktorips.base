@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.GenericValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -142,6 +143,9 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 		adaptedClass = null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Class getAdaptedClass() {
 		if (adaptedClass == null) {
 			try {
@@ -150,8 +154,8 @@ public class DynamicValueDatatype extends GenericValueDatatype {
 				listener = new Listener();
 				classLoaderProvider.addClasspathChangeListener(listener);
 			} catch (Exception e) {
-				// ok to squeeze, the datatype remains invalid as long as the
-				// class can't be loaded.
+				IpsPlugin.log(e);
+				// datatype remains invalid as long as the class can't be loaded.
 			}
 		}
 		return adaptedClass;
