@@ -51,9 +51,9 @@ public class IpsTestCounterPanel extends Composite{
 		gridLayout.marginWidth= 0;
 		setLayout(gridLayout);
 		
-		fNumberOfRuns= createLabel("Runs:", null, " 0/0  "); //$NON-NLS-1$
-		fNumberOfErrors= createLabel("Errors:", fErrorIcon, " 0 "); //$NON-NLS-1$
-		fNumberOfFailures= createLabel("Failures:", fFailureIcon, " 0 "); //$NON-NLS-1$
+		fNumberOfRuns= createLabel(Messages.IpsTestCounterPanel_Runs_Label, null, " 0/0  "); //$NON-NLS-1$ //$NON-NLS-2$
+		fNumberOfErrors= createLabel(Messages.IpsTestCounterPanel_Errors_Label, fErrorIcon, " 0 "); //$NON-NLS-1$ //$NON-NLS-2$
+		fNumberOfFailures= createLabel(Messages.IpsTestCounterPanel_Failures_Label, fFailureIcon, " 0 "); //$NON-NLS-1$ //$NON-NLS-2$
 
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
@@ -103,7 +103,7 @@ public class IpsTestCounterPanel extends Composite{
 	}
 	
 	public void setRunValue(int value) {
-		String runString= MessageFormat.format("{0}/{1}", new String[] { Integer.toString(value), Integer.toString(fTotal)}); 
+		String runString= MessageFormat.format("{0}/{1}", new String[] { Integer.toString(value), Integer.toString(fTotal)});  //$NON-NLS-1$
 		fNumberOfRuns.setText(runString);
 		fNumberOfRuns.redraw();
 		redraw();

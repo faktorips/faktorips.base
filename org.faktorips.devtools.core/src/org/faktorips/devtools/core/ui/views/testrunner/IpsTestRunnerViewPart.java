@@ -70,7 +70,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private TestRunPane fTestRunPane;
 	private Composite fParent;
 	
-	protected volatile String fStatus = "";
+	protected volatile String fStatus = ""; //$NON-NLS-1$
 	
 	/*
 	 * The current orientation; either <code>VIEW_ORIENTATION_HORIZONTAL</code>
@@ -127,8 +127,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	private class RerunLastAction extends Action {
 		public RerunLastAction() {
-			setText("Rerun Last Test"); 
-			setToolTipText("Rerun Last Test"); 
+			setText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_Text); 
+			setToolTipText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_ToolTip); 
 			setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/relaunch.gif")); //$NON-NLS-1$
 			setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/relaunch.gif")); //$NON-NLS-1$
 			setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/relaunch.gif")); //$NON-NLS-1$
@@ -149,7 +149,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		private IIpsTestRunner testRunner;
 		
 		public TestRunnerJob(String classpathRepository, String testsuite) {
-			super("FaktorIps Test Job");
+			super(Messages.IpsTestRunnerViewPart_Job_RunTest_Title);
 			this.classpathRepository = 
 			this.classpathRepository = classpathRepository;
 			this.testsuite = testsuite;
@@ -278,16 +278,16 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		
 		ViewForm top= new ViewForm(fSashForm, SWT.NONE);		
 		CLabel label= new CLabel(top, SWT.NONE);
-		label.setText("Test Runs"); 
-		label.setImage(IpsPlugin.getDefault().getImage("TestCaseRun.gif"));		
+		label.setText(Messages.IpsTestRunnerViewPart_TestRunPane_Text); 
+		label.setImage(IpsPlugin.getDefault().getImage("TestCaseRun.gif"));		 //$NON-NLS-1$
 		top.setTopLeft(label);
 		fTestRunPane = new TestRunPane(top, this);
 		top.setContent(fTestRunPane.getComposite()); 
 		
 		ViewForm bottom= new ViewForm(fSashForm, SWT.NONE);
 		label= new CLabel(bottom, SWT.NONE);
-		label.setText("Failure Details"); 
-		label.setImage(IpsPlugin.getDefault().getImage("failures.gif"));
+		label.setText(Messages.IpsTestRunnerViewPart_TestFailurePane_Text); 
+		label.setImage(IpsPlugin.getDefault().getImage("failures.gif")); //$NON-NLS-1$
 		bottom.setTopLeft(label);
 
 		fFailurePane = new FailurePane(bottom);
@@ -327,13 +327,13 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		public ToggleOrientationAction(IpsTestRunnerViewPart v, int orientation) {
 			super("", AS_RADIO_BUTTON); //$NON-NLS-1$
 			if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
-				setText("Horizontal View Orientation"); 
+				setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation); 
 				setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$				
 			} else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
-				setText("Vertical View Orientation"); 
+				setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation); 
 				setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$				
 			} else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
-				setText("Automatic View Orientation");  
+				setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);  
 				setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$				
 			}
 			fActionOrientation = orientation;
@@ -559,24 +559,34 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			}
 		});
 	}
+
+	private void postEndTestRun() {
+		postSyncRunnable(new Runnable() {
+			public void run() {
+				if(isDisposed()) 
+					return;
+				fTestRunPane.selectFailureOrError();
+			}
+		});
+	}
 	
 	/*
 	 * Converts the given failure details to one failure detail row.
 	 */
 	private String failureDetailsToString(String[] failureDetails){
-		String failureFormat= "Failure in \"{0}\":";
-		String failureActual = " but was: \"{4}\"";
-		String failureExpected = " expected: \"{3}\"";
-		String failureFormatAttribute= ". Attribute: \"{2}\"";
-		String failureFormatObject= ". Object: \"{1}\"";
+		String failureFormat= Messages.IpsTestRunnerViewPart_FailureFormat_FailureIn;
+		String failureActual = Messages.IpsTestRunnerViewPart_FailureFormat_Actual;
+		String failureExpected = Messages.IpsTestRunnerViewPart_FailureFormat_Expected;
+		String failureFormatAttribute= Messages.IpsTestRunnerViewPart_FailureFormat_Attribute;
+		String failureFormatObject= Messages.IpsTestRunnerViewPart_FailureFormat_Object;
 		if (failureDetails.length>3)
-			failureFormat= failureFormat + (failureDetails[3]!=null?failureExpected:"");
+			failureFormat= failureFormat + (failureDetails[3]!=null?failureExpected:""); //$NON-NLS-1$
 		if (failureDetails.length>4)
-			failureFormat= failureFormat + (failureDetails[4]!=null?failureActual:"");		
+			failureFormat= failureFormat + (failureDetails[4]!=null?failureActual:"");		 //$NON-NLS-1$
 		if (failureDetails.length>1)
-			failureFormat= failureFormat + (failureDetails[1]!=null?failureFormatObject:"");
+			failureFormat= failureFormat + (failureDetails[1]!=null?failureFormatObject:""); //$NON-NLS-1$
 		if (failureDetails.length>2)
-			failureFormat= failureFormat + (failureDetails[2]!=null?failureFormatAttribute:"");		
+			failureFormat= failureFormat + (failureDetails[2]!=null?failureFormatAttribute:"");		 //$NON-NLS-1$
 		return MessageFormat.format(failureFormat, failureDetails); 
 	}
 	
@@ -588,10 +598,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		testId = 0;
 	}
 	private String nextTestId(){
-		return "" + testRuns + "." + ++testId;
+		return "" + testRuns + "." + ++testId; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	private String getTestId(){
-		return "" + testRuns + "." + testId;
+		return "" + testRuns + "." + testId; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	//
@@ -649,7 +659,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fRerunLastTestAction.setEnabled(true);
 		
 		stopUpdateJobs();
-		fUpdateJob = new UpdateUIJob("FaktorIps Test Starter Job"); 
+		fUpdateJob = new UpdateUIJob(Messages.IpsTestRunnerViewPart_Job_UpdateUiTitle); 
 		fUpdateJob.schedule(0);
 		
 		// store the project which contains the tests will be used to open the test in the editor
@@ -662,6 +672,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	public void testRunEnded(){
 		fExecutedTests--;
 		stopUpdateJobs();
+		postEndTestRun();
 	}
 
 	/**

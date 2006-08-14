@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
+ * Test runner failure pane shows all errors or failures in a table.
  * 
  * @author Joerg Ortmann
  */

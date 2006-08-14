@@ -39,23 +39,21 @@ public class TestRunPane {
     
 	private Table fTable;
 	
+	private TableItem firstFailureOrError;
+
+	private IpsTestRunnerViewPart testRunnerViewPart;
+	
 	// Maps test Ids to the stored table items. 
 	private Map fTableItemMap = new HashMap();
 	
 	public TestRunPane(Composite parent, final IpsTestRunnerViewPart testRunnerViewPart) {
+		this.testRunnerViewPart = testRunnerViewPart;
 		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
 		fTable.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
             	if (e.item instanceof TableItem){
 	            	TableItem selectedTestCase = (TableItem) e.item;
-	            	TestTableEntry testEntry = (TestTableEntry) selectedTestCase.getData();
-	            	String details[] = EMPTY_STRING_ARRAY;
-	            	if (testEntry.isFailure())
-	            		details = (String[])testEntry.getFailureDetails().toArray(new String[0]);
-	            	else if (testEntry.isError())
-	            		details = testEntry.getErrorDetails();
-	            	
-	            	testRunnerViewPart.selectionOfTestCaseChanged(details);
+	            	showDetailsInFailurePane(selectedTestCase);
             	}
             }
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -73,6 +71,20 @@ public class TestRunPane {
 		});
 	}
 
+	/*
+	 * Display the error or failure details in the failure pane.
+	 */
+	private void showDetailsInFailurePane(TableItem tableItem) {
+		TestTableEntry testEntry = (TestTableEntry) tableItem.getData();
+		String details[] = EMPTY_STRING_ARRAY;
+		if (testEntry.isFailure())
+			details = (String[])testEntry.getFailureDetails().toArray(new String[0]);
+		else if (testEntry.isError())
+			details = testEntry.getErrorDetails();
+		
+		testRunnerViewPart.selectionOfTestCaseChanged(details);
+	}
+	
 	/**
 	 * Returns the composite used to present the test runs.
 	 */
@@ -80,6 +92,17 @@ public class TestRunPane {
 		return fTable;
 	}
 	
+	/**
+	 * Select the last failure or error table enty.
+	 * If there was no failure or error then nothing will selected.
+	 */
+	public void selectFailureOrError(){
+		if (firstFailureOrError != null){
+			fTable.select(fTable.indexOf(firstFailureOrError));
+			showDetailsInFailurePane(firstFailureOrError);
+		}
+	}
+
 	//
 	// Methods to inform this pane about test run, end and failures
 	//
@@ -90,6 +113,7 @@ public class TestRunPane {
 	public void aboutToStart() {
 		fTable.removeAll();
 		fTableItemMap = new HashMap();
+		firstFailureOrError = null;
 	}
 	
 	/**
@@ -149,6 +173,9 @@ public class TestRunPane {
 		
 		testTableEntry.setStatus(TestTableEntry.FAILURE);
 		testTableEntry.addFailure(failure);
+		
+		if (firstFailureOrError == null)
+			firstFailureOrError = testTableEntry.getTableItem();
 	}
 	
 	/**
@@ -156,13 +183,19 @@ public class TestRunPane {
 	 */
 	public void errorInTest(String testId, String qualifiedTestName, String[] errorDetails) {
 		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
-		if (testTableEntry == null)
-			return;
-		
+		if (testTableEntry == null){
+			// in case of an error before starting a single test
+			// create an error entry
+			newTableEntry(testId, Messages.TestRunPane_ErrorStartingTest_Entry, ""); //$NON-NLS-1$
+			testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
+		}
 		TableItem tableItem = testTableEntry.getTableItem();
 		tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testerr.gif")); //$NON-NLS-1$
 		testTableEntry.setErrorDetails(errorDetails);
 		testTableEntry.setStatus(TestTableEntry.ERROR);
+		
+		if (firstFailureOrError == null)
+			firstFailureOrError = tableItem;		
 	}
 	
 	private String getTestFullPath() {
@@ -177,6 +210,7 @@ public class TestRunPane {
 			return null;
 		return fTable.getItem(index);
 	}
+	
 	
 	/*
 	 * Inner class to store a test case.
