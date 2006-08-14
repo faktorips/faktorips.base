@@ -518,7 +518,7 @@ public class SpreadsheetControl extends Composite {
 	protected void clearCell()
 	{
 		TableItem item 	= cursor.getTableItem();
-		int col 		= cursor.getInternalColumn();
+		int col 		= cursor.getExternalColumn();
 		
 		if (item != null)
 		{
