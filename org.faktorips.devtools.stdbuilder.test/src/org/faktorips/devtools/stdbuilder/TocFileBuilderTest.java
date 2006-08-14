@@ -42,8 +42,8 @@ import org.faktorips.runtime.TocEntryObject;
 import org.w3c.dom.Document;
 
 /**
- * 
- * @author Jan Ortmann
+ * CVS-trigger
+ * @author Jan Ortmann 
  */
 public class TocFileBuilderTest extends AbstractIpsPluginTest {
 
