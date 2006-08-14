@@ -91,7 +91,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(TEXT_7);
     stringBuffer.append(appendClassName(qualifiedDatatypeName));
     stringBuffer.append(TEXT_8);
-    stringBuffer.append(columnName);
+    stringBuffer.append(StringUtils.uncapitalise(columnName));
     stringBuffer.append(TEXT_9);
     }
     stringBuffer.append(TEXT_10);
@@ -101,7 +101,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(TEXT_12);
     
     for (int i = 0; i < columns.length; i++) {
-	    String columnName = columns[i].getName();
+	    String columnName = StringUtils.uncapitalise(columns[i].getName());
 	    String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 	    if(i > 0){
     stringBuffer.append(", ");
@@ -114,7 +114,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(TEXT_14);
     
         for (int i = 0; i < columns.length; i++) {
-					String columnName = columns[i].getName();
+					String columnName = StringUtils.uncapitalise(columns[i].getName());
     stringBuffer.append(TEXT_15);
     stringBuffer.append(columnName);
     stringBuffer.append(TEXT_16);
@@ -124,7 +124,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
 	  
     stringBuffer.append(TEXT_18);
           for (int i = 0; i < columns.length; i++) {
-            String columnName = columns[i].getName();
+            String columnName = StringUtils.uncapitalise(columns[i].getName());
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 
     stringBuffer.append(TEXT_19);
@@ -151,7 +151,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     
 				}
 				
-    stringBuffer.append(columns[i].getName());
+    stringBuffer.append(StringUtils.uncapitalise(columns[i].getName()));
     
 			}
     stringBuffer.append(TEXT_27);

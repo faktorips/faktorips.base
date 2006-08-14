@@ -20,7 +20,7 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 %>
 
-	private <%=appendClassName(qualifiedDatatypeName)%> <%=columnName%>;            
+	private <%=appendClassName(qualifiedDatatypeName)%> <%=StringUtils.uncapitalise(columnName)%>;            
 			<%}%>
 
 	/**
@@ -28,20 +28,20 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
 	 */
 	public <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>(<%
     for (int i = 0; i < columns.length; i++) {
-	    String columnName = columns[i].getName();
+	    String columnName = StringUtils.uncapitalise(columns[i].getName());
 	    String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 	    if(i > 0){%><%=", "%><%}%><%=appendClassName(qualifiedDatatypeName)%> <%=columnName%><%
 	   }%>){
 	  <%
         for (int i = 0; i < columns.length; i++) {
-					String columnName = columns[i].getName();%>
+					String columnName = StringUtils.uncapitalise(columns[i].getName());%>
           this.<%=columnName%> = <%=columnName%>;   
       <%}
 	  %>
 	}
  
 <%      for (int i = 0; i < columns.length; i++) {
-            String columnName = columns[i].getName();
+            String columnName = StringUtils.uncapitalise(columns[i].getName());
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 %>
 	/**
@@ -61,7 +61,7 @@ public class <%=getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile)%>
 				if (i != 0) {
 					%> + "|" + <%
 				}
-				%><%=columns[i].getName()%><%
+				%><%=StringUtils.uncapitalise(columns[i].getName())%><%
 			}%>;
 	}
 }
