@@ -109,9 +109,9 @@ public class TestCaseLabelProvider implements ILabelProvider {
 			return tstPolicyCmpt.getLabel();
 		} else if (element instanceof ITestPolicyCmptRelation) {
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) element;
-			String text = "";
+			String text = ""; //$NON-NLS-1$
 			try {
-				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeRelation.getTarget());
+				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeRelation.getTestPolicyCmptType());
 				
 				ITestPolicyCmptTypeParameter typeParam = testPcTypeRelation.findTestPolicyCmptType();
 				if (typeParam != null && typeParam.isRequiresProductCmpt())
@@ -132,7 +132,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	    	}
 	    	return text;
 	    }
-		return Messages.TestPolicyCmptTypeSection_undefined;
+		return Messages.TestCaseLabelProvider_undefined;
 	}
 
 	/**

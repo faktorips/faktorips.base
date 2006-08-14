@@ -62,7 +62,7 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class TestCaseDetailArea {
-	static final String VALUESECTION = "VALUESECTION";
+	static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 
 	// UI toolkit for creating the controls
 	private UIToolkit toolkit;
@@ -179,7 +179,7 @@ public class TestCaseDetailArea {
 		String sectionText = testPolicyCmpt.getLabel();
 		if (testPolicyCmpt.getProductCmpt().length() > 0){
 			String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
-			sectionText += (pckName.length() > 0 ? " (" + pckName + ") " : "") + " [" + testPolicyCmpt.getTestPolicyCmptType() + "]";
+			sectionText += (pckName.length() > 0 ? " (" + pckName + ") " : "") + " [" + testPolicyCmpt.getTestPolicyCmptType() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		}
 		section.setText(sectionText);
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -276,11 +276,11 @@ public class TestCaseDetailArea {
 	            public void focusLost(FocusEvent e) {
 	            }
 	        });
-			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")");
+			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		} else {
 			// target not found in current test case
 			toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currRelation.getTarget()));
-			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")");
+			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	
@@ -321,7 +321,7 @@ public class TestCaseDetailArea {
 		Composite borderedComposite = createBorder(dynamicArea);
 		
 		Section section = toolkit.getFormToolkit().createSection(borderedComposite, 0);
-		section.setText("Values");
+		section.setText(Messages.TestCaseDetailArea_SectionValuesText);
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		toolkit.getFormToolkit().createCompositeSeparator(section);
 		
@@ -350,7 +350,7 @@ public class TestCaseDetailArea {
 				throw new RuntimeException(e1);
 			}
 			
-			toolkit.createFormLabel(composite, StringUtils.capitalise(value.getTestValueParameter()) + ":");
+			toolkit.createFormLabel(composite, StringUtils.capitalise(value.getTestValueParameter()) + ":"); //$NON-NLS-1$
 			final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null);
 			uiController.add(editField, ITestValue.PROPERTY_VALUE);
 			

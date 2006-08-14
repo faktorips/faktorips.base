@@ -23,8 +23,8 @@ public class TestCaseEditor extends IpsObjectEditor {
      */
     protected void addPages() {
         try {
-        	addPage(new TestCaseEditorPage(this, Messages.TestCasePageInput_title, TestCaseContentProvider.TYPE_INPUT, Messages.TestPolicyCmptTypeSection_title_input, Messages.TestPolicyCmptTypeSection_title_inputDetail));
-        	addPage(new TestCaseEditorPage(this, Messages.TestCasePageExpectedResult_title, TestCaseContentProvider.TYPE_EXPECTED_RESULT, Messages.TestPolicyCmptTypeSection_title_expectedResult, Messages.TestPolicyCmptTypeSection_title_expectedResultDetail));
+        	addPage(new TestCaseEditorPage(this, Messages.TestCaseEditor_Input_Title, TestCaseContentProvider.TYPE_INPUT, Messages.TestCaseEditor_Input_SectionTitle, Messages.TestCaseEditor_Input_Description));
+        	addPage(new TestCaseEditorPage(this, Messages.TestCaseEditor_ExpectedResult_Title, TestCaseContentProvider.TYPE_EXPECTED_RESULT, Messages.TestCaseEditor_ExpectedResult_SectionTitle, Messages.TestCaseEditor_ExpectedResult_Description));
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -46,6 +46,6 @@ public class TestCaseEditor extends IpsObjectEditor {
 	 * {@inheritDoc}
 	 */
     protected String getUniformPageTitle() {
-        return NLS.bind(Messages.TestCaseEditor_title, getTestCase().getName(), getTestCase().getTestCaseType());
+        return NLS.bind(Messages.TestCaseEditor_Title, getTestCase().getName(), getTestCase().getTestCaseType());
     }
 }

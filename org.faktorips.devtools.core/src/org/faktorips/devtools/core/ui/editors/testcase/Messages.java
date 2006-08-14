@@ -33,16 +33,25 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TestCaseEditor_title;
-	public static String TestCasePageInput_title;
-	public static String TestCasePageExpectedResult_title;
-	
-	public static String TestPolicyCmptTypeSection_title_input;
-	public static String TestPolicyCmptTypeSection_title_inputDetail;
-	public static String TestPolicyCmptTypeSection_title_expectedResult;
-	public static String TestPolicyCmptTypeSection_title_expectedResultDetail;
-	public static String TestPolicyCmptTypeSection_undefined;
-	public static String TestPolicyCmptTypeSection_buttonAdd;
-	public static String TestPolicyCmptTypeSection_buttonRemove;
-	public static String TestPolicyCmptTypeSection_buttonProductCmpt;
+	public static String TestCaseEditor_Title;
+	public static String TestCaseEditor_Input_Title;
+	public static String TestCaseEditor_ExpectedResult_Title;
+	public static String TestCaseEditor_Input_SectionTitle;
+	public static String TestCaseEditor_Input_Description;
+	public static String TestCaseEditor_ExpectedResult_SectionTitle;
+	public static String TestCaseEditor_ExpectedResult_Description;
+	public static String TestCaseLabelProvider_undefined;
+	public static String TestCaseSection_ButtonAdd;
+	public static String TestCaseSection_ButtonRemove;
+	public static String TestCaseSection_ButtonProductCmpt;
+	public static String TestCaseDetailArea_SectionValuesText;
+	public static String TestCaseSection_Error_CreatingRelation;
+	public static String TestCaseSection_DialogSelectProductCmpt_Title;
+	public static String TestCaseSection_DialogSelectProductCmpt_Description;
+	public static String TestCaseSection_DialogSelectTestRelation_Title;
+	public static String TestCaseSection_DialogSelectTestRelation_Description;
+	public static String TestPolicyCmptSelectionDialog_Title;
+	public static String TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound;
+	public static String TestPolicyCmptSelectionDialog_Description;
+	public static String TestPolicyCmptSelectionDialog_Error_WrongType;
 }

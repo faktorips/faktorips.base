@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -78,7 +79,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 		this.labelProvider = new TestCaseLabelProvider();
 		this.filter = new TestPolicyCmptFilter();
 		
-        setTitle("Select assoziation target");
+        setTitle(Messages.TestPolicyCmptSelectionDialog_Title);
         
         int shellStyle = getShellStyle();
         setShellStyle(shellStyle | SWT.MAX | SWT.RESIZE);
@@ -140,9 +141,9 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 		
         if (isEmpty) {
             treeComposite.setEnabled(false);
-            messageLabel.setText("No test policy component of type \"" + filteredPolicyCmptType + "\" in the test case found.");
+            messageLabel.setText(NLS.bind(Messages.TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound, filteredPolicyCmptType));
         } else {
-        	messageLabel.setText("Select a test policy component of type \"" + filteredPolicyCmptType + "\".");
+        	messageLabel.setText(NLS.bind(Messages.TestPolicyCmptSelectionDialog_Description,filteredPolicyCmptType));
         }
         
         return composite;
@@ -168,14 +169,14 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         	try {
 				ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) ((ITestPolicyCmpt)newSelection.getFirstElement()).findTestPolicyCmptType();
 				if (param.getPolicyCmptType().equals(filteredPolicyCmptType)){
-					messageLabel.setText("");
+					messageLabel.setText(""); //$NON-NLS-1$
 					getOkButton().setEnabled(true);
 					return;
 				}
 			} catch (CoreException e) {
 			}
         }
-        messageLabel.setText("The selected element is not of type \"" + filteredPolicyCmptType + "\".");
+        messageLabel.setText(NLS.bind(Messages.TestPolicyCmptSelectionDialog_Error_WrongType, filteredPolicyCmptType));
         messageLabel.pack();
         getOkButton().setEnabled(false);	
     }
@@ -266,7 +267,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 					for (int i = 0; i < childs.length; i++) {
 						// because of grouping the relations, get the relations by using the parent test policy component
 						ITestPolicyCmptRelation elem = childs[i];
-						String relationName = "";
+						String relationName = ""; //$NON-NLS-1$
 						if (elem.findTarget() != null){
 							relationName = elem.findTarget().getTestPolicyCmptType();
 							if (relationName.equals(dummyRelation.getName())){

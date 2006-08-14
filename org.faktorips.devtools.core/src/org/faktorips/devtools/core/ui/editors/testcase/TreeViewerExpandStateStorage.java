@@ -42,20 +42,20 @@ public class TreeViewerExpandStateStorage {
 	public void storeExpandedStatus(){
 		expandedItems = new ArrayList();
 		TreeItem childs[] = treeViewer.getTree().getItems();
-		checkExpandedStatus(expandedItems, childs, "");
+		checkExpandedStatus(expandedItems, childs, ""); //$NON-NLS-1$
 	}
 	
 	public void restoreExpandedStatus(){
 		for (Iterator iter = expandedItems.iterator(); iter.hasNext();) {
 			String itemPath = (String) iter.next();
 			TreeItem childs[] = treeViewer.getTree().getItems();
-			searchAndExpandInTree(itemPath, childs, "");
+			searchAndExpandInTree(itemPath, childs, ""); //$NON-NLS-1$
 		}
 	}
 	
 	private boolean searchAndExpandInTree(String itemPath, TreeItem childs[], String parent){
 		for (int i = 0; i < childs.length; i++) {
-			String pathOfChild = parent + "/" + childs[i].getText();
+			String pathOfChild = parent + "/" + childs[i].getText(); //$NON-NLS-1$
 			if (itemPath.equals(pathOfChild)){
 				childs[i].setExpanded(true);
 				return true;
@@ -72,7 +72,7 @@ public class TreeViewerExpandStateStorage {
 		for (int i = 0; i < childs.length; i++) {
 			TreeItem item = childs[i];
 			if (item.getExpanded()){
-				String itemPath = parent + "/" + item.getText();
+				String itemPath = parent + "/" + item.getText(); //$NON-NLS-1$
 				expandedItems.add(itemPath);
 				checkExpandedStatus(expandedItems, item.getItems(), itemPath);
 			}

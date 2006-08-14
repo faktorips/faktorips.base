@@ -78,8 +78,8 @@ import org.faktorips.util.message.MessageList;
  * Section to show the test case.
  */
 public class TestCaseSection extends IpsSection {
-	private static final String VALUESECTION = "VALUESECTION";
-	public static final String REQUIRES_PRODUCT_CMPT_SUFFIX = " (P)";
+	private static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
+	public static final String REQUIRES_PRODUCT_CMPT_SUFFIX = " (P)"; //$NON-NLS-1$
 	
 	// The treeview which displays all test policy components which are available in this test
 	private TreeViewer treeViewer;
@@ -191,9 +191,9 @@ public class TestCaseSection extends IpsSection {
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 		GridLayout buttonLayout = new GridLayout(1, true);
 		buttons.setLayout(buttonLayout);
-		addButton = toolkit.createButton(buttons, Messages.TestPolicyCmptTypeSection_buttonAdd);
-		removeButton = toolkit.createButton(buttons, Messages.TestPolicyCmptTypeSection_buttonRemove);
-		productCmptButton = toolkit.createButton(buttons, Messages.TestPolicyCmptTypeSection_buttonProductCmpt);
+		addButton = toolkit.createButton(buttons, Messages.TestCaseSection_ButtonAdd);
+		removeButton = toolkit.createButton(buttons, Messages.TestCaseSection_ButtonRemove);
+		productCmptButton = toolkit.createButton(buttons, Messages.TestCaseSection_ButtonProductCmpt);
 		hookButtonListeners();
 		addButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		removeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -222,7 +222,7 @@ public class TestCaseSection extends IpsSection {
 		};
 		actionRelation.setChecked(false);
 		actionRelation.setToolTipText("Without relation"); //$NON-NLS-1$
-		actionRelation.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif"));
+		actionRelation.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif")); //$NON-NLS-1$
 		
 		// Toolbar item show all
 		Action actionAll = new Action("structureAll", Action.AS_CHECK_BOX) { //$NON-NLS-1$
@@ -232,7 +232,7 @@ public class TestCaseSection extends IpsSection {
 		};
 		actionAll.setChecked(false);
 		actionAll.setToolTipText("Show flat structure"); //$NON-NLS-1$
-		actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif"));
+		actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
 		
 		// Toolbar item run test
 		Action actionTest = new Action("runTest", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
@@ -241,7 +241,7 @@ public class TestCaseSection extends IpsSection {
 			}
 		};
 		actionTest.setToolTipText("Run test"); //$NON-NLS-1$
-		actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif"));
+		actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
 		
 		form.getToolBarManager().add(actionRelation);
 		form.getToolBarManager().add(actionAll);
@@ -488,7 +488,7 @@ public class TestCaseSection extends IpsSection {
 	 *                        found section. If <code>false</code> no focus will be moved. 
 	 */
 	private void selectInDetailArea(Object selected, boolean withFocusChange){
-		String uniquePath="";
+		String uniquePath=""; //$NON-NLS-1$
 		testCaseDetailArea.resetSectionColors(form);
 		if(selected instanceof ITestValue){
 			uniquePath = ((ITestValue) selected).getTestValueParameter();
@@ -525,21 +525,21 @@ public class TestCaseSection extends IpsSection {
 	 * Gets the unique key of the given object
 	 */
 	String getUniqueKey(Object selected){
-		String uniquePath = "";
+		String uniquePath = ""; //$NON-NLS-1$
 		if (selected instanceof ITestPolicyCmptRelation){
 			ITestPolicyCmptRelation relation = (ITestPolicyCmptRelation) selected;
-			uniquePath = "." + relation.getTestPolicyCmptType() + relation.getId();
+			uniquePath = "." + relation.getTestPolicyCmptType() + relation.getId(); //$NON-NLS-1$
 		}
 		ITestPolicyCmpt currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(selected);
 		if (currTestPolicyCmpt == null){
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 		if (!currTestPolicyCmpt.isRoot()){
 			uniquePath = ((ITestPolicyCmpt)currTestPolicyCmpt).getLabel();
 			while (!currTestPolicyCmpt.isRoot()){
 				uniquePath = ((ITestPolicyCmptRelation)currTestPolicyCmpt.getParent()).getTestPolicyCmptType() + uniquePath;
 				currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(currTestPolicyCmpt.getParent());
-				uniquePath = currTestPolicyCmpt.getLabel() + "." + uniquePath;
+				uniquePath = currTestPolicyCmpt.getLabel() + "." + uniquePath; //$NON-NLS-1$
 			}
 		}else{
 			uniquePath = currTestPolicyCmpt.getLabel() + uniquePath;
@@ -624,7 +624,7 @@ public class TestCaseSection extends IpsSection {
 	 * Add a new relation based an the given test case type relation.
 	 */
 	private void addRelation(TestCaseTypeRelation dummyRelation) throws CoreException{
-		String productCmpt = "";
+		String productCmpt = ""; //$NON-NLS-1$
 		if (dummyRelation.isRequiresProductCmpt()){
 			productCmpt = selectProductCmptDialog(dummyRelation.getPolicyCmptTypeTarget());
 			if (productCmpt == null)
@@ -639,7 +639,7 @@ public class TestCaseSection extends IpsSection {
 		}
 		
 		if (relation.isAssoziation()){
-			String targetName = "";
+			String targetName = ""; //$NON-NLS-1$
 			ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(relation.getTarget());
 			if (selectedTarget == null)
 				// chancel
@@ -661,13 +661,13 @@ public class TestCaseSection extends IpsSection {
 		}else{
 			// add a new child based on the selected relation
 			ITestPolicyCmptRelation newRelation = dummyRelation.getParentTestPolicyCmpt().
-				addTestPcTypeRelation(dummyRelation.getTestPolicyCmptTypeParam(), productCmpt, "");
+				addTestPcTypeRelation(dummyRelation.getTestPolicyCmptTypeParam(), productCmpt, ""); //$NON-NLS-1$
 			if (newRelation != null){
 				ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();					
 				refreshTreeAndDetailArea();
 				selectInTreeByObject(newTestPolicyCmpt, true);
 			}else{
-				throw new CoreException(new IpsStatus("Error creating relation"));
+				throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
 			}
 		}		
 	}
@@ -680,7 +680,7 @@ public class TestCaseSection extends IpsSection {
 		if (selection instanceof IStructuredSelection){
 			ITestPolicyCmpt prevTestPolicyCmpt = null;
 			ITestPolicyCmptRelation prevRelationObj = null;
-			String prevRelation = "";
+			String prevRelation = ""; //$NON-NLS-1$
 			for (Iterator iterator = ((IStructuredSelection)selection).iterator(); iterator.hasNext();) {			
 				Object domainObject = iterator.next();
 				if (domainObject instanceof ITestPolicyCmptRelation){
@@ -740,7 +740,7 @@ public class TestCaseSection extends IpsSection {
 					// ignored, the validation shows the unknown type failure message
 					return;
 				}
-				String productCmpt = "";
+				String productCmpt = ""; //$NON-NLS-1$
 				if (testTypeParam.isRequiresProductCmpt()){
 					productCmpt = selectProductCmptDialog(testTypeParam.getPolicyCmptType());
 					if (productCmpt == null)
@@ -749,7 +749,7 @@ public class TestCaseSection extends IpsSection {
 				}
 				testPolicyCmpt.setProductCmpt(productCmpt);
 				testPolicyCmpt.setLabel(
-						testCase.generateUniqueLabelOfTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmpt)));
+						testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmpt)));
 				refreshTreeAndDetailArea();
 			}
 		}
@@ -819,8 +819,8 @@ public class TestCaseSection extends IpsSection {
 	 * @throws CoreException If an error occurs
 	 */
 	private String selectProductCmptDialog(String qualifiedTypeName) throws CoreException {
-	    PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), "Product Component Selection", 
-        		"Select a component (?=any character, *=any string)");
+	    PdObjectSelectionDialog dialog = new PdObjectSelectionDialog(getShell(), Messages.TestCaseSection_DialogSelectProductCmpt_Title, 
+        		Messages.TestCaseSection_DialogSelectProductCmpt_Description);
         dialog.setElements(getProductCmptObjects(qualifiedTypeName));
         if (dialog.open()==Window.OK) {
             if (dialog.getResult().length>0) {
@@ -1085,8 +1085,8 @@ public class TestCaseSection extends IpsSection {
 	private TestCaseTypeRelation selectTestCaseTypeRelationByDialog(ITestPolicyCmpt parentTestPolicyCmpt) throws CoreException {
 		ElementListSelectionDialog selectDialog = 
 			new ElementListSelectionDialog(getShell(), new TestCaseTypeRelationLabelProvider());
-		selectDialog.setTitle("Select test relation type");
-		selectDialog.setMessage("Select the test policy component type relation of the new test policy component.");
+		selectDialog.setTitle(Messages.TestCaseSection_DialogSelectTestRelation_Title);
+		selectDialog.setMessage(Messages.TestCaseSection_DialogSelectTestRelation_Description);
 		
 		ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptType();
 		TestCaseTypeRelation[] dummyRelations = new TestCaseTypeRelation[param.getTestPolicyCmptTypeParamChilds().length];

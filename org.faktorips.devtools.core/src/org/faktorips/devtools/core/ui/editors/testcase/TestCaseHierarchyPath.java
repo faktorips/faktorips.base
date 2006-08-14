@@ -27,10 +27,10 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
  */
 public class TestCaseHierarchyPath{
 	// Seperator between each hierarchy element
-	private static final String separator = "/";
+	private static final String separator = "/"; //$NON-NLS-1$
 	
 	// Contains the complete hierarchy path
-	private String hierarchyPath = "";
+	private String hierarchyPath = ""; //$NON-NLS-1$
 	
 	public TestCaseHierarchyPath(String hierarchyPath){
 		this.hierarchyPath = hierarchyPath;
@@ -45,9 +45,9 @@ public class TestCaseHierarchyPath{
 	 */
 	public TestCaseHierarchyPath(ITestPolicyCmpt currTestPolicyCmpt, boolean evalForTestCase){
 		if (evalForTestCase){
-			this.hierarchyPath = evalHierarchyPathForTestCase(currTestPolicyCmpt, "");
+			this.hierarchyPath = evalHierarchyPathForTestCase(currTestPolicyCmpt, ""); //$NON-NLS-1$
 		}else{
-			this.hierarchyPath = evalHierarchyPathForTestCaseType(currTestPolicyCmpt, "");
+			this.hierarchyPath = evalHierarchyPathForTestCaseType(currTestPolicyCmpt, ""); //$NON-NLS-1$
 		}
 	}
 	
@@ -85,14 +85,14 @@ public class TestCaseHierarchyPath{
 	 * Returns the current path element and sets the navigation pointer one element forward.
 	 */
 	public String next(){
-		String next = "";
+		String next = ""; //$NON-NLS-1$
 		if (hierarchyPath.indexOf(separator)>=0){
 			next = hierarchyPath.substring(0, hierarchyPath.indexOf(separator));
 			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(separator) + 1);
 			return next;
 		}else{
 			next = hierarchyPath;
-			hierarchyPath = "";
+			hierarchyPath = ""; //$NON-NLS-1$
 		}
 		return next;
 	}
@@ -121,9 +121,9 @@ public class TestCaseHierarchyPath{
      * Returns the folder name for a given hierarchy path.
      */	
 	public static String getFolderName(String hierarchyPath){
-        int index = hierarchyPath.lastIndexOf("/");
+        int index = hierarchyPath.lastIndexOf("/"); //$NON-NLS-1$
         if (index == -1){
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return hierarchyPath.substring(0, index);
 	}
@@ -132,7 +132,7 @@ public class TestCaseHierarchyPath{
      * Removes the folder information from the beginning.
      */
 	public static String unqualifiedName(String hierarchyPath){
-        int index = hierarchyPath.lastIndexOf("/");
+        int index = hierarchyPath.lastIndexOf("/"); //$NON-NLS-1$
         if (index == -1) {
             return hierarchyPath;
         }
@@ -147,7 +147,7 @@ public class TestCaseHierarchyPath{
 			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
-		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptType() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : "");
+		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptType() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;
 	}
 	
@@ -160,7 +160,7 @@ public class TestCaseHierarchyPath{
 			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
-		hierarchyPath = currTestPolicyCmpt.getLabel() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : "");
+		hierarchyPath = currTestPolicyCmpt.getLabel() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;
 	}
 }
