@@ -183,6 +183,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private DatatypeHelper getCachedDatatypeHelper(ITestValueParameter testValueParameter) throws CoreException{
     	ValueDatatype valueDatatype = testValueParameter.findValueDatatype();
+        if (valueDatatype == null)
+            return null;
+        
         DatatypeHelper helper = (DatatypeHelper) dataTypeHelpers.get(valueDatatype.getJavaClassName());
     	if (helper != null)
     		return helper;
