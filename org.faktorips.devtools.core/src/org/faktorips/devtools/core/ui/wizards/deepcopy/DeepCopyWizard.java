@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.DialogSettings;
@@ -59,6 +60,11 @@ public class DeepCopyWizard extends Wizard {
 	private int type;
 	private DialogSettings settings; 
 	private Composite pageContainer;
+	
+	private static String settingsFilename;
+	private static final String SETTINGS_SECTION_SIZE = "size"; //$NON-NLS-1$
+	private static final String SETTINGS_SIZE_X = "x"; //$NON-NLS-1$
+	private static final String SETTINGS_SIZE_Y = "y"; //$NON-NLS-1$
 
 	/**
 	 * Creates a new wizard which can make a deep copy of the given product.
@@ -73,7 +79,7 @@ public class DeepCopyWizard extends Wizard {
 	 */
 	public DeepCopyWizard(IProductCmpt product, int type) throws IllegalArgumentException {
 		super();
-		
+
 		if (type != TYPE_COPY_PRODUCT && type != TYPE_NEW_VERSION) {
 			throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
 		}
@@ -110,11 +116,15 @@ public class DeepCopyWizard extends Wizard {
 			String title = NLS.bind(Messages.DeepCopyWizard_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 			super.setWindowTitle(title);
 		}
-		settings = new DialogSettings("DeepCopyWizard");
-		settings.put("x", 0);
-		settings.put("y", 0);
+		
+		IPath path = IpsPlugin.getDefault().getStateLocation();
+		settingsFilename = path.append("deepCopyWizard.settings").toOSString(); //$NON-NLS-1$
+
+		settings = new DialogSettings(SETTINGS_SECTION_SIZE);
+		settings.put(SETTINGS_SIZE_X, 0);
+		settings.put(SETTINGS_SIZE_Y, 0);
 		try {
-			settings.load("deepCopyWizard.settings");
+			settings.load(settingsFilename);
 		} catch (IOException e) {
 			// cant read the settings, use defaults.
 		}
@@ -136,8 +146,8 @@ public class DeepCopyWizard extends Wizard {
 		GridData layoutData = (GridData)pageContainer.getLayoutData();
 
 		// restore size
-		int width = Math.max(settings.getInt("x"), layoutData.heightHint);
-		int height = Math.max(settings.getInt("y"), layoutData.widthHint);
+		int width = Math.max(settings.getInt(SETTINGS_SIZE_X), layoutData.heightHint);
+		int height = Math.max(settings.getInt(SETTINGS_SIZE_Y), layoutData.widthHint);
 		layoutData.widthHint = Math.max(width, layoutData.minimumWidth);
 		layoutData.heightHint = Math.max(height, layoutData.minimumHeight);
 	}
@@ -180,10 +190,10 @@ public class DeepCopyWizard extends Wizard {
 
 	private void storeSize() {
 		Point size = pageContainer.getSize();
-		settings.put("x", size.x);
-		settings.put("y", size.y);
+		settings.put(SETTINGS_SIZE_X, size.x);
+		settings.put(SETTINGS_SIZE_Y, size.y);
 		try {
-			settings.save("deepCopyWizard.settings");
+			settings.save(settingsFilename);
 		} catch (IOException e) {
 			// cant save - use defaults the next time
 		}
