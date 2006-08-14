@@ -108,6 +108,21 @@
                relationship="stack"
                id="org.faktorips.plugin.pdexplorer">
          </view>
+         <view
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               visible="false"
+               relationship="stack"
+               id="org.faktorips.plugin.pdexplorer">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.testRunner"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false"/>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
@@ -299,6 +314,13 @@
     	   <description>Imports table contents</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+		<wizard
+		   class="org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard"
+		   icon="icons/ImportTestCase.gif"
+		   id="transformRuntimeTestCase"
+		   name="%org.faktorips.devtools.core.ui.wizards.testcase.transform.TransformRuntimeTestCaseWizard">
+	 	   <description>Transform and import runtime test cases</description>
+ 	    </wizard>
     </extension>
 
 <!-- 
@@ -556,7 +578,15 @@
                showTitle="true"
                standalone="false"
                visible="false"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.testRunner"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false"/>
       </perspectiveExtension>
    </extension>
-
 </plugin>
