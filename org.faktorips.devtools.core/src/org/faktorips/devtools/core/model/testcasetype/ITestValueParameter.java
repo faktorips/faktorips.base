@@ -36,6 +36,12 @@ public interface ITestValueParameter extends ITestParameter {
     public final static String MSGCODE_PREFIX = "TESTVALUEPARAMETER-"; //$NON-NLS-1$
     
     /**
+	 * Validation message code to indicate that the value datatype not exists.
+	 */
+	public final static String MSGCODE_VALUEDATATYPE_NOT_FOUND = MSGCODE_PREFIX
+		+ "ValueDatatypeNotFound"; //$NON-NLS-1$
+	
+    /**
      * Returns the datatype.
      */
 	public String getValueDatatype();

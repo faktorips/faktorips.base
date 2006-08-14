@@ -39,9 +39,9 @@ public class TestAttribute extends IpsObjectPart implements
 		org.faktorips.devtools.core.model.testcasetype.ITestAttribute {
 
 	/* Tags */
-	static final String TAG_NAME = "Attribute";
+	static final String TAG_NAME = "Attribute"; //$NON-NLS-1$
 	
-	private String attribute = "";
+	private String attribute = ""; //$NON-NLS-1$
     private boolean deleted = false;
     
 	public TestAttribute(IIpsObject parent, int id) {

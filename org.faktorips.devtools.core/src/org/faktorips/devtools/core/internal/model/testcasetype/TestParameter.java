@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  */
 public abstract class TestParameter extends IpsObjectPart implements ITestParameter {
 	
-    private String name = "";
+    private String name = ""; //$NON-NLS-1$
 	
 	private boolean inputParameter = true;
 	
@@ -46,7 +46,6 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
 		super(parent, id);
 	}
 
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,7 +85,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
 	 * {@inheritDoc}
 	 */
 	protected Element createElement(Document doc) {
-		throw new RuntimeException("Not implemented!");
+		throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
 	}
 
 	/**

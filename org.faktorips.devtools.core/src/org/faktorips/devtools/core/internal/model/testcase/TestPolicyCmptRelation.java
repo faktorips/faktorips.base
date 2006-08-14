@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -44,11 +45,11 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		ITestPolicyCmptRelation {
 
 	/** Tags */
-	static final String TAG_NAME = "Relation";
+	static final String TAG_NAME = "Relation"; //$NON-NLS-1$
 
-	private String testPolicyCmptType = "";
+	private String testPolicyCmptType = ""; //$NON-NLS-1$
 
-	private String target = "";
+	private String target = ""; //$NON-NLS-1$
 
 	private ITestPolicyCmpt targetChild;
 
@@ -270,7 +271,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		// validate if the test policy component type parameter exists
 		ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptType();
 		if (testCaseTypeParam == null){
-			String text = "The test case type definition for this relation doesn't exists.";
+			String text = Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound;
 			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 			messageList.add(msg);	
 		}
@@ -282,7 +283,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		// validate if the model relation exists
 		IRelation modelRelation = testCaseTypeParam.findRelation();
 		if (modelRelation == null){
-			String text = "The model relation \"" + testCaseTypeParam.getRelation() + "\" for this test case relation doesn't exists.";
+			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_ModelRelationNotFound, testCaseTypeParam.getRelation());
 			Message msg = new Message(MSGCODE_MODEL_RELATION_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 			messageList.add(msg);		
 		}
@@ -300,13 +301,13 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		}
 		
 		if (count < testCaseTypeParam.getMinInstances()){
-			String text = "The mininum of " + testCaseTypeParam.getMinInstances() + " is not reached.";
+			String text =  NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached, "" + testCaseTypeParam.getMinInstances()); //$NON-NLS-1$
 			Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 			messageList.add(msg);
 		}
 		
 		if (count > testCaseTypeParam.getMaxInstances()){
-			String text = "The maximum of " + testCaseTypeParam.getMaxInstances() + " is reached.";
+			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MaximumReached, "" + testCaseTypeParam.getMaxInstances());  //$NON-NLS-1$
 			Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 			messageList.add(msg);			
 		}
@@ -320,10 +321,24 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	public MessageList validateSingle() throws CoreException {
 		MessageList messageList = new MessageList();
 		
+		// validate if the test case type param exists
+		ITestPolicyCmptTypeParameter param = null;
+		try {
+			param = getTestCase().findTestPolicyCmptTypeParameter(this);
+		} catch (CoreException e) {
+			//	ignore exception, the param will be used to indicate errors
+		}
+		
+		if (param == null){
+			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeNotFound, getTestPolicyCmptType());
+			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);	
+		} 
+		
 		// for assoziations check if the target is in the test case
 		if (isAccoziation()){
 			if (getTestCase().findInputPolicyCmpt(getTarget()) == null){
-				String text = "The target of this assoziation doesn't exists in this test case.";
+				String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_AssoziationNotFound, getTarget());
 				Message msg = new Message(MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 				messageList.add(msg);	
 			}

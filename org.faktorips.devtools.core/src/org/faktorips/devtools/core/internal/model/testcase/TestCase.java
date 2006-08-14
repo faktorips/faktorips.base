@@ -42,6 +42,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseHierarchyPath;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -53,11 +55,11 @@ import org.w3c.dom.Element;
 public class TestCase extends IpsObject implements ITestCase {
 
 	/* Tags */
-	static final String TAG_NAME_INPUT = "Input";
-	static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult";
+	static final String TAG_NAME_INPUT = "Input"; //$NON-NLS-1$
+	static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult"; //$NON-NLS-1$
 	
 	/* Name of corresponding test case type */
-	private String testCaseType = "";
+	private String testCaseType = ""; //$NON-NLS-1$
 	
 	/* Containter for input and expected result objects */
 	private TestCaseContainer input = new TestCaseContainer(true, this, 0);
@@ -329,7 +331,7 @@ public class TestCase extends IpsObject implements ITestCase {
 		
 		ITestCaseType foundTestCaseType = findTestCaseType();
 		if (foundTestCaseType == null){
-			throw new CoreException(new IpsStatus(NLS.bind("The test case type \"{0}\" the test case belongs to was not.", testCaseType)));
+			throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestCaseTypeNotFound, testCaseType)));
 		}
 		
 		TestCaseHierarchyPath hierarchyPath = null;
@@ -338,7 +340,7 @@ public class TestCase extends IpsObject implements ITestCase {
 		}else if (relation != null){
 			hierarchyPath  = new TestCaseHierarchyPath(relation, false);
 		}else{
-			throw new CoreException(new IpsStatus("No relation or policy component given!"));
+			throw new CoreException(new IpsStatus(Messages.TestCase_Error_NoRelationOrPolicyCmptGiven));
 		}
 		
 		String testPolicyCmptTypeName = hierarchyPath.next();
@@ -500,7 +502,7 @@ public class TestCase extends IpsObject implements ITestCase {
 					
 					testPolicyCmpt = getTestPolicyCmptByLable(hierarchyElementName);
 					if (testPolicyCmpt == null){
-						throw new CoreException(new IpsStatus(NLS.bind("Test policy component not found \"{0}\".", hierarchyElementName)));
+						throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestPolicyCmptNotFound, hierarchyElementName)));
 					}
 
 					ITestPolicyCmptRelation relation = null;
@@ -518,10 +520,10 @@ public class TestCase extends IpsObject implements ITestCase {
 								try {
 									testPolicyCmpt = currRelation.findTarget();
 								} catch (CoreException e) {
-									throw new CoreException(new IpsStatus(NLS.bind("An error occured while searching the relation target of relation \"{0}\".", hierarchyElementName), e));
+									throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_SearchingRelationTarget, hierarchyElementName), e));
 								}
 								if (testPolicyCmpt == null){
-									throw new CoreException(new IpsStatus(NLS.bind("An error occured while searching the relation target of relation \"{0}\".", hierarchyElementName)));
+									throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_SearchingRelationTarget, hierarchyElementName)));
 								}								
 								if ( testPolicyCmpt.getLabel().equals(hierarchyElementName)){
 									relation = currRelation;
@@ -531,7 +533,7 @@ public class TestCase extends IpsObject implements ITestCase {
 							}	
 						}
 						if (relation == null){
-							throw new CoreException(new IpsStatus(NLS.bind("Relation \"{0}\" with target \"{1}\" not found.", testPolicyCmptType, hierarchyElementName)));
+							throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_RelationNotFound, testPolicyCmptType, hierarchyElementName)));
 						}
 					}
 					if (testPolicyCmpt != null && relation != null){
@@ -650,7 +652,7 @@ public class TestCase extends IpsObject implements ITestCase {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String generateUniqueLabelOfTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label) {
+	public String generateUniqueLabelForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label) {
 		String uniqueLabel = label;
 
 		// eval the unique idx of new component
@@ -662,7 +664,7 @@ public class TestCase extends IpsObject implements ITestCase {
 				ITestPolicyCmpt cmpt = testPolicyCmpts[i];
 				if (newUniqueLabel.equals(cmpt.getLabel())){
 					idx ++;
-					newUniqueLabel = uniqueLabel + " (" + idx + ")";
+					newUniqueLabel = uniqueLabel + " (" + idx + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}else{
@@ -682,9 +684,23 @@ public class TestCase extends IpsObject implements ITestCase {
 			}
 			while (names.contains(newUniqueLabel)){
 				idx ++;
-				newUniqueLabel = uniqueLabel + " (" + idx + ")";
+				newUniqueLabel = uniqueLabel + " (" + idx + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		return newUniqueLabel;
-	}	
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void validateThis(MessageList messageList) throws CoreException {
+		super.validateThis(messageList);
+		ITestCaseType testCaseType = findTestCaseType();
+		if (testCaseType == null) {
+			String text = NLS.bind(Messages.TestCase_ValidateError_TestCaseTypeNotFound, getTestCaseType());
+			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			messageList.add(msg);	
+			return;
+		}
+	}
 }

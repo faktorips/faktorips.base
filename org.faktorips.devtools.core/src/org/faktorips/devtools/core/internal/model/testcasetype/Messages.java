@@ -15,15 +15,16 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.testcase;
+package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import org.eclipse.osgi.util.NLS;
 
 /**
- * @author Joerg Ortmann
+ * 
+ * @author Thorsten Guenther
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.testcase.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.testcasetype.messages"; //$NON-NLS-1$
 
 	private Messages() {
 	}
@@ -33,8 +34,7 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String TestCasePage_title;
-	public static String TestCasePage_labelSuperclass;
-	public static String TestCasePage_msgTestCaseTypeDoesNotExist;
-	public static String NewTestCaseWizard_ErrorTestCaseTypeNotExists;
+	public static String TestValueParameter_ValidateError_ValueDatatypeNotFound;
+
+
 }

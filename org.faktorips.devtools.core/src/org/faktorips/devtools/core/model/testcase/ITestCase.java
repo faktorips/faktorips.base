@@ -162,5 +162,5 @@ public interface ITestCase extends IIpsObject  {
 	/**
 	 * Evaluates and returns an unique label (inside this test case) for the given test policy component.
 	 */
-	public String generateUniqueLabelOfTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label);
+	public String generateUniqueLabelForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label);
 }

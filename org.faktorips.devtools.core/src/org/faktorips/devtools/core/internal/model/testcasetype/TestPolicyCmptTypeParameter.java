@@ -43,11 +43,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		ITestPolicyCmptTypeParameter {
 
 	/** Tags */
-	final static String TAG_NAME = "PolicyCmptTypeParameter";
+	final static String TAG_NAME = "PolicyCmptTypeParameter"; //$NON-NLS-1$
 	
-	private String policyCmptType = "";
+	private String policyCmptType = ""; //$NON-NLS-1$
 	
-	private String relation = "";
+	private String relation = ""; //$NON-NLS-1$
 	
 	private boolean requiresProductCmpt = false;
 	
@@ -191,9 +191,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		relation = element.getAttribute(PROPERTY_RELATION);
 		String needsProductCmptAttr = element.getAttribute(PROPERTY_REQUIRES_PRODUCTCMT);
 		if (StringUtils.isNotEmpty(needsProductCmptAttr)){
-			requiresProductCmpt = needsProductCmptAttr.equalsIgnoreCase("yes")  ? true :
-							   needsProductCmptAttr.equalsIgnoreCase("true") ? true :
-							   needsProductCmptAttr.equalsIgnoreCase("1")    ? true : false;
+			requiresProductCmpt = needsProductCmptAttr.equalsIgnoreCase("yes")  ? true : //$NON-NLS-1$
+							   needsProductCmptAttr.equalsIgnoreCase("true") ? true : //$NON-NLS-1$
+							   needsProductCmptAttr.equalsIgnoreCase("1")    ? true : false; //$NON-NLS-1$
 		}else{
 			requiresProductCmpt = false;
 		}
@@ -216,9 +216,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_POLICYCMPTTYPE, policyCmptType);
 		element.setAttribute(PROPERTY_RELATION, relation);
-		element.setAttribute(PROPERTY_REQUIRES_PRODUCTCMT, requiresProductCmpt ? "true" : "false");
-		element.setAttribute(PROPERTY_MIN_INSTANCES, "" + minInstances);
-		element.setAttribute(PROPERTY_MAX_INSTANCES, "" + maxInstances);
+		element.setAttribute(PROPERTY_REQUIRES_PRODUCTCMT, requiresProductCmpt ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
+		element.setAttribute(PROPERTY_MIN_INSTANCES, "" + minInstances); //$NON-NLS-1$
+		element.setAttribute(PROPERTY_MAX_INSTANCES, "" + maxInstances); //$NON-NLS-1$
 	}
 	
 	/**

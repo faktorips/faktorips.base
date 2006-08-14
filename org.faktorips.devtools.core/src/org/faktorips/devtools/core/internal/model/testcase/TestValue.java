@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -40,11 +41,11 @@ import org.w3c.dom.Element;
 public class TestValue extends TestObject implements ITestValue {
 
 	/** Tags */
-	final static String TAG_NAME = "ValueObject";
+	final static String TAG_NAME = "ValueObject"; //$NON-NLS-1$
 	
-	private String testValueParameter = "";
+	private String testValueParameter = ""; //$NON-NLS-1$
 	
-	private String value = "";
+	private String value = ""; //$NON-NLS-1$
 	
 	public TestValue(IIpsObject parent, int id) {
 		super(parent, id);
@@ -137,18 +138,18 @@ public class TestValue extends TestObject implements ITestValue {
 		super.validateThis(list);
 		ITestValueParameter param = findTestValueParameter();
 		if (param==null) {
-			String text = "The test value parameter for this test case value doesn't exists.";
-			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
+			String text = NLS.bind(Messages.TestValue_ValidateError_TestValueParamNotFound, getTestValueParameter());
+			Message msg = new Message(MSGCODE_TEST_VALUE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
 			list.add(msg);
 		}else{
 			ValueDatatype datatype = param.findValueDatatype();
 			if (datatype==null) {
-				String text = "The datatype defined in the test value parameter for this test case value doesn't exists.";
-				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
+				String text = NLS.bind(Messages.TestValue_ValidateError_DatatypeNotFound, param.getValueDatatype());
+				Message msg = new Message(MSGCODE_DATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
 				list.add(msg);
 			}else if (!datatype.isParsable(value)) {
-				String text = value + " is no " + datatype;
-				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
+				String text = NLS.bind(Messages.TestValue_ValidateError_ValueIsNoDatatype, value, datatype);
+				Message msg = new Message(MSGCODE_DATATYPEVALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_VALUE);
 				list.add(msg);
 			}
 		}

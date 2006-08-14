@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -35,9 +36,9 @@ import org.w3c.dom.Element;
 public class TestValueParameter extends TestParameter implements
 		ITestValueParameter {
 
-	final static String TAG_NAME = "ValueParameter";
+	final static String TAG_NAME = "ValueParameter"; //$NON-NLS-1$
 	
-	private String datatype = "";
+	private String datatype = ""; //$NON-NLS-1$
 	
 	/**
 	 * @param parent
@@ -118,8 +119,8 @@ public class TestValueParameter extends TestParameter implements
 		super.validateThis(list);
 		ValueDatatype datatype = findValueDatatype();
 		if (datatype==null) {
-			String text = "The datatype defined in the test value parameter for this test case value doesn't exists.";
-			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUEDATATYPE);
+			String text = NLS.bind(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound, datatype);
+			Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUEDATATYPE);
 			list.add(msg);
 		}
 	}

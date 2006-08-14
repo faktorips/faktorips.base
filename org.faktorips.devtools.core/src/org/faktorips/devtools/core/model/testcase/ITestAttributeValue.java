@@ -56,6 +56,12 @@ public interface ITestAttributeValue extends IIpsObjectPart{
 		+ "DatatypeNotFound"; //$NON-NLS-1$
 	
     /**
+	 * Validation message code to indicate that the datatype value is not parsable.
+	 */
+	public final static String MSGCODE_DATATYPEVALUE_NOT_PARSABLE = MSGCODE_PREFIX
+		+ "DatatypeValueNotParsable"; //$NON-NLS-1$
+	
+    /**
      * Returns the attribute. 
      */
 	public String getTestAttribute();

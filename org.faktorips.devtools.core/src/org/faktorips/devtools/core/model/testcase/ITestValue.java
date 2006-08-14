@@ -43,6 +43,18 @@ public interface ITestValue extends ITestObject {
 		+ "TestValueParamNotFound"; //$NON-NLS-1$
     
     /**
+	 * Validation message code to indicate that the datatype of the attribute not exists.
+	 */
+	public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX
+		+ "DatatypeNotFound"; //$NON-NLS-1$
+	
+    /**
+	 * Validation message code to indicate that the datatype value is not parsable.
+	 */
+	public final static String MSGCODE_DATATYPEVALUE_NOT_PARSABLE = MSGCODE_PREFIX
+		+ "DatatypeValueNotParsable"; //$NON-NLS-1$
+	
+    /**
      * Returns the test value.
      */
 	public String getTestValueParameter();

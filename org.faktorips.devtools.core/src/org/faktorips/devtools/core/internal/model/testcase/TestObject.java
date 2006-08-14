@@ -64,7 +64,7 @@ public class TestObject extends IpsObjectPart implements ITestObject {
 	 * {@inheritDoc}
 	 */
 	protected Element createElement(Document doc) {
-		throw new RuntimeException("Not implemented!");
+		throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
 	}
 
 	/**

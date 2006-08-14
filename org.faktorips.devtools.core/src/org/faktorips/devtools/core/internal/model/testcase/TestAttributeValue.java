@@ -19,9 +19,10 @@ package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -44,13 +45,13 @@ import org.w3c.dom.Element;
 public class TestAttributeValue  extends IpsObjectPart implements ITestAttributeValue {
 	
 	/* Tags */
-	static final String TAG_NAME = "AttributeValue";
+	static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
-	private String testAttribute = "";
+	private String testAttribute = ""; //$NON-NLS-1$
 	
     private boolean deleted = false;
 	
-	private String value = "";
+	private String value = ""; //$NON-NLS-1$
 	
 	public TestAttributeValue(IIpsObject parent, int id) {
 		super(parent, id);
@@ -167,30 +168,19 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 		super.validateThis(messageList);
 		ITestAttribute testAttr = findTestAttribute();
 		if (testAttr==null) {
-			String text = "Test attribute \"" + getTestAttribute() + "\" not found.";
-			Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			String text = NLS.bind(Messages.TestAttributeValue_ValidateError_TestAttributeNotFound, getTestAttribute());
+			Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_ATTRIBUTE);
 			messageList.add(msg);	
 			return;
 		}
 		
-		IAttribute attribute =testAttr.findAttribute();
+		IAttribute attribute = testAttr.findAttribute();
 		if (attribute == null){
-			String text = "Attribute \"" + testAttr.getAttribute() + "\" not found.";
-			Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr.getAttribute());
+			Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this, ITestAttribute.PROPERTY_ATTRIBUTE);
 			messageList.add(msg);
 			return;
 		}
-		ValueDatatype datatype = attribute.findDatatype();
-		if (datatype==null) {
-			String text = "Datatype \"" + attribute.getDatatype() + "\" not found.";
-			Message msg = new Message(MSGCODE_DATATYPE_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
-			messageList.add(msg);
-			return;
-		}
-		if (!datatype.isParsable(value)) {
-			String text = value + " ist kein " + datatype;
-			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_VALUE);
-			messageList.add(msg);
-		}
-	}	
+		ValidationUtils.checkValue(attribute.getDatatype(), value, this, PROPERTY_VALUE, messageList);
+	}
 }

@@ -44,8 +44,8 @@ import org.w3c.dom.Element;
 public class TestCaseType extends IpsObject implements ITestCaseType {
 	
 	/* Tags */
-	static final String TAG_NAME_INPUT = "Input";
-	static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult";
+	static final String TAG_NAME_INPUT = "Input"; //$NON-NLS-1$
+	static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult"; //$NON-NLS-1$
 	
 	/* Containter for input and expected result objects */
 	private TestCaseTypeContainer input = new TestCaseTypeContainer(true, this, 0);

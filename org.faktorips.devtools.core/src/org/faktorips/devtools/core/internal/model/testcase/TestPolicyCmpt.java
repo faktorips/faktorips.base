@@ -52,13 +52,13 @@ public class TestPolicyCmpt extends TestObject implements
 		ITestPolicyCmpt {
 
 	/* Tags */
-	final static String TAG_NAME = "PolicyCmptTypeObject";
+	final static String TAG_NAME = "PolicyCmptTypeObject"; //$NON-NLS-1$
 	
-	private String testPolicyCmptType = "";
+	private String testPolicyCmptType = ""; //$NON-NLS-1$
 	
-	private String productCmpt = "";
+	private String productCmpt = ""; //$NON-NLS-1$
 	
-	private String label = "";
+	private String label = ""; //$NON-NLS-1$
 	
 	private List testAttributeValues = new ArrayList(0);
 	
@@ -387,7 +387,7 @@ public class TestPolicyCmpt extends TestObject implements
 		
 		IRelation relation = typeParam.findRelation();
 		if (relation == null){
-			throw new CoreException(new IpsStatus(NLS.bind("Realtion not found \"{0}\".", typeParam.getRelation())));
+			throw new CoreException(new IpsStatus(NLS.bind(Messages.TestPolicyCmpt_Error_RelationNotFound, typeParam.getRelation())));
 		}
 		
 		ITestPolicyCmptRelation newTestPcTypeRelation = null;
@@ -402,14 +402,14 @@ public class TestPolicyCmpt extends TestObject implements
 			newTestPolicyCmpt.setProductCmpt(productCmpt);
 			
 			// sets the label for the new child test policy component
-			String label = "";
+			String label = ""; //$NON-NLS-1$
 			if (StringUtils.isEmpty(productCmpt)){
 				label = newTestPolicyCmpt.getTestPolicyCmptType();
 			}else{
 				label = productCmpt;
 			}
 			label = StringUtil.unqualifiedName(label);
-			label = getTestCase().generateUniqueLabelOfTestPolicyCmpt(newTestPolicyCmpt, label);
+			label = getTestCase().generateUniqueLabelForTestPolicyCmpt(newTestPolicyCmpt, label);
 			newTestPolicyCmpt.setLabel(label);
 			
 			// add the attributes which are defined in the test case type parameter
@@ -459,23 +459,16 @@ public class TestPolicyCmpt extends TestObject implements
 		}
 		
 		if (param == null){
-			String text = "The test case type definition for this policy component doesn't exists.";
-			Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
-			list.add(msg);	
+			String text = Messages.TestPolicyCmpt_ValidationError_TestCaseTypeNotFound;
+			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
+			list.add(msg);
 		} else {
 			// check if the param defines the requirement for a product component but not product component is specified
 			if (param.isRequiresProductCmpt() && ! (getProductCmpt().length() > 0) ){
-				String text = "A product component is required for this test policy component.";
-				Message msg = new Message("4711", text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+				String text = Messages.TestPolicyCmpt_ValidationError_ProductCmptRequired;
+				Message msg = new Message(MSGCODE_PRODUCT_CMPT_IS_REQUIRED, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 				list.add(msg);
 			}
 		}
-		
-		for (Iterator iter = testAttributeValues.iterator(); iter.hasNext();) {
-			MessageList msgAttributeValueValidation;
-			ITestAttributeValue attrValue = (ITestAttributeValue) iter.next();
-			msgAttributeValueValidation = attrValue.validate();
-			list.add(msgAttributeValueValidation);
-		}
-	}	
+	}
 }

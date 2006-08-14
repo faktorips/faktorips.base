@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.wizards.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -76,7 +77,8 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     	generateDefaultContent(testCaseType.getInputParameters(), testCase, true);
     	generateDefaultContent(testCaseType.getExpectedResultParameter(), testCase, false);
     	if (testCaseType == null){
-    		throw new CoreException(new IpsStatus("Test case type " + testCase.getTestCaseType() + " not exists."));
+    		throw new CoreException(new IpsStatus(
+    				NLS.bind(Messages.NewTestCaseWizard_ErrorTestCaseTypeNotExists, testCase.getTestCaseType())));
     	}
     }
     
@@ -96,7 +98,7 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     			ITestPolicyCmpt testPolicyCmpt = isInput?testCase.newInputPolicyCmpt():testCase.newExpectedResultPolicyCmpt();
     			testPolicyCmpt.setTestPolicyCmptType(parameter[i].getName());
     			testPolicyCmpt.setLabel(
-    					testCase.generateUniqueLabelOfTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptType()));
+    					testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptType()));
     			// add the attributes which are defined in the test case type parameter
     			ITestAttribute attributes[] = testCaseTypeParam.getTestAttributes();
     			for (int j = 0; j < attributes.length; j++) {

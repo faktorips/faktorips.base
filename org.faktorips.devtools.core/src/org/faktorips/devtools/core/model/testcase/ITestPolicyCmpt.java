@@ -45,6 +45,12 @@ public interface ITestPolicyCmpt extends ITestObject {
 		+ "TestCaseTypeParamNotFound"; //$NON-NLS-1$
     
     /**
+	 * Validation message code to indicate that a product component is required.
+	 */
+	public final static String MSGCODE_PRODUCT_CMPT_IS_REQUIRED = MSGCODE_PREFIX
+		+ "ProductCmptIsRequired"; //$NON-NLS-1$
+	
+    /**
      * Returns the qualified name of policy component class.
      */
 	public String getTestPolicyCmptType();
@@ -81,6 +87,7 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Returns the unique label of the test policy component.
      */
+	// FIXME name verwenden
 	public String getLabel();
 	
     /**

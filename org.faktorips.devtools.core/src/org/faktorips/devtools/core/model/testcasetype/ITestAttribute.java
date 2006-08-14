@@ -47,7 +47,7 @@ public interface ITestAttribute extends IIpsObjectPart {
 	public void setAttribute(String attribute);
 	
     /**
-     * Returns the attribute or <code>null</code> if the attribute does not exists.
+     * Returns the model attribute or <code>null</code> if the attribute does not exists.
      * 
      * @throws CoreException if an error occurs while searching for the attribute.
      */	
