@@ -54,7 +54,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdInitStrategy;
+import org.faktorips.devtools.core.internal.model.product.DefaultRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -75,7 +75,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
-import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdInitStrategy;
+import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -90,7 +90,7 @@ import org.w3c.dom.Element;
  */
 public class IpsProject extends IpsElement implements IIpsProject {
 
-	private IProductCmptRuntimeIdInitStrategy runtimeIdStrategy = null;
+	private IRuntimeIdStrategy runtimeIdStrategy = null;
 	
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -952,7 +952,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 */
 	public String getRuntimeId(IProductCmpt productCmpt) throws CoreException {
 		if (runtimeIdStrategy == null) {
-			runtimeIdStrategy = new DefaultRuntimeIdInitStrategy(); 
+			runtimeIdStrategy = new DefaultRuntimeIdStrategy(); 
 		}
 		return runtimeIdStrategy.getRuntimeId(productCmpt);
 	}
@@ -962,6 +962,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 */
 	public String getRuntimeIdPrefix() {
 		return getPropertiesInternal().getRuntimeIdPrefix();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IRuntimeIdStrategy getRuntimeIdStrategy() {
+		if (runtimeIdStrategy == null) {
+			runtimeIdStrategy = new DefaultRuntimeIdStrategy(); 
+		}
+		return runtimeIdStrategy;
 	}
 
 	/**

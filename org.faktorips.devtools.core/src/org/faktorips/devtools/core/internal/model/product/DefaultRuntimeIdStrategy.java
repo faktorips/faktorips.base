@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.internal.model.product;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdInitStrategy;
+import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 
 /**
  * Calculates a new runtime id ensured to be unique for all product components contained
@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.model.product.IProductCmptRuntimeIdInitStrate
  * 
  * @author Thorsten Guenther
  */
-public class DefaultRuntimeIdInitStrategy implements
-		IProductCmptRuntimeIdInitStrategy {
+public class DefaultRuntimeIdStrategy implements
+		IRuntimeIdStrategy {
 
 	/**
 	 * {@inheritDoc}
@@ -50,4 +50,17 @@ public class DefaultRuntimeIdInitStrategy implements
 		return uniqueId;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean sameRuntimeId(IProductCmpt cmpt1, IProductCmpt cmpt2) {
+		return cmpt1.getRuntimeId().equals(cmpt2.getRuntimeId());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object obj) {
+		return obj instanceof DefaultRuntimeIdStrategy;
+	}	
 }

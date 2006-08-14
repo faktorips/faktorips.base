@@ -23,6 +23,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The IPS model is the top of the IpsElement hierarchy (like the Java model is  the top of the Java element
@@ -31,6 +33,17 @@ import org.faktorips.datatype.ValueDatatype;
  */
 public interface IIpsModel extends IIpsElement {
 
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "IPSMODEL-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that there exist two runtime ids which collide.
+     */
+    public final static String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
+
+	
 	public IProject[] getNonIpsResources() throws CoreException;
     /**
      * Returns the workspace.
@@ -157,4 +170,26 @@ public interface IIpsModel extends IIpsElement {
      */
 	public void delete(IIpsElement toDelete);
     
+	/**
+	 * Searches all product components of all projects of this model for duplicate runtime ids. 
+	 * 
+	 * @return A list of messages. For each combination of two product components with 
+	 * duplicate runtime id a new message is created. This message has two invalid object properties, 
+	 * each containing one of the both product components.
+	 * 
+	 * @throws CoreException if an error occurs during search.
+	 */
+	public MessageList checkForDuplicateRuntimeIds() throws CoreException;
+	
+	/**
+	 * Checks all given product components against all product components of all projects of this model
+	 * for duplicate runtime ids.  
+	 * 
+	 * @return A list of messages. For each combination of two product components with 
+	 * duplicate runtime id a new message is created. This message has only one invalid object property, 
+	 * containing the product component given to this method.
+	 * 
+	 * @throws CoreException if an error occurs during search.
+	 */
+	public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException;
 }

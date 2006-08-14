@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,9 +47,12 @@ import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * The ips builder generates Java sourcecode and xml files based on the ips
@@ -200,6 +204,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 				removeEmptyFolders(roots[i].getArtefactDestination(), false,
 						monitor);
 			}
+			
+			// check for duplicate runtime id at last (markers are cleared at 
+			// buildIpsSrcFile...
+			MessageList ml = getIpsProject().getIpsModel().checkForDuplicateRuntimeIds();
+			createMarkersFromMessageList(ml);
 
 		} catch (CoreException e) {
 			buildStatus.add(new IpsStatus(e));
@@ -243,8 +252,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 				Messages.IpsBuilder_msgIncrementalBuildResults, null);
 		IResourceDelta delta = getDelta(getProject());
 		try {
+			ProductCmptCollector collector = new ProductCmptCollector();
+			delta.accept(collector);
 			IncBuildVisitor visitor = new IncBuildVisitor(buildStatus, monitor);
 			delta.accept(visitor);
+			MessageList ml = getIpsProject().getIpsModel().checkForDuplicateRuntimeIds(collector.getCollectedItems());
+			createMarkersFromMessageList(ml);
 			buildStatus = visitor.buildStatus;
 		} catch (Exception e) {
 			buildStatus.add(new IpsStatus(e));
@@ -266,6 +279,19 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 		resource.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 		MessageList list = object.validate();
 		createMarkersFromMessageList(resource, list, IMarker.PROBLEM);
+	}
+	
+	private void createMarkersFromMessageList(MessageList list) throws CoreException {
+		for (int i = 0; i < list.getNoOfMessages(); i++) {
+			Message msg = list.getMessage(i);
+			ObjectProperty[] properties = msg.getInvalidObjectProperties();
+			for (int j = 0; j < properties.length; j++) {
+				if (properties[j].getObject() instanceof IIpsObject) {
+					IMarker marker = ((IIpsObject)properties[j].getObject()).getEnclosingResource().createMarker(IMarker.PROBLEM);
+					updateMarker(marker, msg.getText(), getMarkerSeverity(msg));
+				}
+			}
+		}
 	}
 
 	private void createMarkersFromMessageList(IResource resource,
@@ -576,6 +602,40 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 						"Unkown delta kind " + delta.getKind()); //$NON-NLS-1$
 			}
 			return true;
+		}
+	}
+	
+	private class ProductCmptCollector implements IResourceDeltaVisitor {
+		ArrayList collected = new ArrayList();
+		
+		public boolean visit(IResourceDelta delta) throws CoreException {
+			switch (delta.getKind()) {
+			case IResourceDelta.ADDED:
+				//fall through
+			case IResourceDelta.CHANGED:
+				IResource resource = delta.getResource();
+				if (resource == null || !(resource.getType() == IResource.FILE)) {
+					return true;
+				}
+				IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+				if (element == null || !element.exists()) { // not on classpath?
+					return true;
+				}
+				if (!(element instanceof IIpsSrcFile)) {
+					return true;
+				}
+				IIpsSrcFile file = (IIpsSrcFile) element;
+				if (file.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
+					return true;
+				}
+				collected.add((IProductCmpt)file.getIpsObject());
+				break;
+			}
+			return true;
+		}
+		
+		public IProductCmpt[] getCollectedItems() {
+			return (IProductCmpt[])collected.toArray(new IProductCmpt[collected.size()]);
 		}
 	}
 

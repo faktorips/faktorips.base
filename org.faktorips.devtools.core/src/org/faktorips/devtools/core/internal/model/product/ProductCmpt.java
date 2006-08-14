@@ -159,6 +159,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         MessageList list2 = getIpsProject().getProductCmptNamingStratgey().validate(getName());
         list.add(list2);
         
+        list2 = getIpsModel().checkForDuplicateRuntimeIds(new IProductCmpt[] {this});
+        list.add(list2);
+        
     }
     
     /** 

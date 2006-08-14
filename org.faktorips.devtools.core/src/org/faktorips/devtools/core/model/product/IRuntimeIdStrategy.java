@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptRuntimeIdInitStrategy {
+public interface IRuntimeIdStrategy {
 
 	/**
 	 * Finds the runtime id to use for the given product component. The result
@@ -42,5 +42,20 @@ public interface IProductCmptRuntimeIdInitStrategy {
 	 */
 	public String getRuntimeId(IProductCmpt productCmpt)
 			throws CoreException;
+	
+	/**
+	 * Compares the runtime ids of the given product components. This method was introduced
+	 * because a simple call to <code>equals()</code> comparing the both runtimeIds returned by a
+	 * call to <code>getRuntimeId()</code> can not be used to decide whether the runtime ids of
+	 * two product compontes are the same or not. This is because the strategy might use some internal 
+	 * qualification of the simple runtime-id-string, and so two runtime-id-strings might be equal,
+	 * but not represent the same product component.
+	 * 
+	 * @param cmpt1 The first product component the runtime id is to check.
+	 * @param cmpt2 The second product component the runtime id is to check.
+	 * @return <code>true</code> if the runtime ids of both product components 
+	 * are the same, <code>false</code> otherwise.
+	 */
+	public boolean sameRuntimeId(IProductCmpt cmpt1, IProductCmpt cmpt2);
 	
 }

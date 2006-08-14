@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 public class DefaultRuntimeIdInitStrategyTest extends AbstractIpsPluginTest {
 	
 	DefaultTestContent content;
-	DefaultRuntimeIdInitStrategy strategy;
+	DefaultRuntimeIdStrategy strategy;
 	String prefix;
 	
 	/**
@@ -38,7 +38,7 @@ public class DefaultRuntimeIdInitStrategyTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         content = new DefaultTestContent();
-        strategy = new DefaultRuntimeIdInitStrategy();
+        strategy = new DefaultRuntimeIdStrategy();
         prefix = content.getProject().getIpsProject().getRuntimeIdPrefix();
     }
    
