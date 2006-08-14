@@ -129,7 +129,7 @@
 				<fileset dir="${classes}" >
 					<patternset>
 						<exclude name="**/*.java"/>
-						<exclude name="**/*Test*"/>
+						<exclude name="**/*Test.java"/>
 					</patternset>
 				</fileset>
         	</jar>
