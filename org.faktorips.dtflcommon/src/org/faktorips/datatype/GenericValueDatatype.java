@@ -79,7 +79,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     public MessageList validate() {
         MessageList list = new MessageList();
         if (getAdaptedClass()==null) {
-            String text = "The Java class represented by the datatype can't be found. (Classname: " + getAdaptedClassName() + ")";
+            String text = "The Java class represented by the datatype can't be found. (Classname: " + getAdaptedClassName() + "). "
+                    + "Either the class is not on the classpath or the resource it is stored in is out of sync. See error log for more details.";
             list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
             return list;
         }
