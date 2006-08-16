@@ -17,37 +17,47 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
-import org.faktorips.devtools.core.internal.model.IpsProject;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     private ModelLabelProvider flatProvider= new ModelLabelProvider(true);
     private ModelLabelProvider hierarchyProvider= new ModelLabelProvider(false);
 
-    private IpsProject proj; 
-    private IpsPackageFragmentRoot root;
-    private PolicyCmptType polCmptType;
-    private IpsPackageFragment subPackage;
-    private IpsPackageFragment subsubPackage;
-    private IpsPackageFragment empty;
+    private IIpsProject proj; 
+    private IIpsPackageFragmentRoot root;
+    private IPolicyCmptType polCmptType;
+    private IIpsPackageFragment defaultPackage;
+    private IIpsPackageFragment subPackage;
+    private IIpsPackageFragment subsubPackage;
+    private IIpsPackageFragment empty;
     private IAttribute attr;
     private IAttribute attr2;
     private IAttribute attr3;
+
+    private IFolder folder;
+    private IFolder subFolder;
+    private IFile file;
     
     protected void setUp() throws Exception {
         super.setUp();
-        proj= (IpsProject)newIpsProject("TestProject");
-        root= (IpsPackageFragmentRoot) proj.getIpsPackageFragmentRoots()[0];
-        subPackage= (IpsPackageFragment) root.createPackageFragment("subpackage", true, null);
-        subsubPackage= (IpsPackageFragment) root.createPackageFragment("subpackage.subsubpackage", true, null);
-        empty= (IpsPackageFragment) root.createPackageFragment("subpackage.subsubpackage.emptypackage", true, null);
+        proj= newIpsProject("TestProject");
+        root= proj.getIpsPackageFragmentRoots()[0];
+        defaultPackage= root.getIpsDefaultPackageFragment();
+        subPackage= root.createPackageFragment("subpackage", true, null);
+        subsubPackage= root.createPackageFragment("subpackage.subsubpackage", true, null);
+        empty= root.createPackageFragment("subpackage.subsubpackage.emptypackage", true, null);
         polCmptType= newPolicyCmptType(root, "subpackage.subsubpackage.TestPolicy");
         attr= polCmptType.newAttribute();
         attr.setDatatype("String");
@@ -58,6 +68,13 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         attr3= polCmptType.newAttribute();
         attr3.setDatatype("float");
         attr3.setAttributeType(AttributeType.COMPUTED);
+
+        folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
+        folder.create(true, false, null);
+        subFolder = folder.getFolder("subfolder");
+        subFolder.create(true, false, null);
+        file = folder.getFile("test.txt");
+        file.create(null, true, null);
     }
 
 
@@ -76,8 +93,22 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertTrue(img==flatProvider.getImage(polCmptType));
         assertTrue(img==hierarchyProvider.getImage(polCmptType));
         img= IpsPlugin.getDefault().getImage("folder_open.gif");
-        assertTrue(img==flatProvider.getImage(subPackage));
+        assertEquals(flatProvider.getImage(subPackage), img);
         assertTrue(img==hierarchyProvider.getImage(subPackage));
+        
+        // tests for IResources
+        IWorkbenchAdapter adapter= (IWorkbenchAdapter) folder.getAdapter(IWorkbenchAdapter.class);
+        assertNotNull(adapter);
+        img= adapter.getImageDescriptor(folder).createImage();
+        // TODO test equality of images
+//        assertEquals(hierarchyProvider.getImage(folder), img);
+//        assertEquals(flatProvider.getImage(folder), img);
+        
+        adapter= (IWorkbenchAdapter) file.getAdapter(IWorkbenchAdapter.class);
+        assertNotNull(adapter);
+        img= adapter.getImageDescriptor(file).createImage();
+//        assertEquals(hierarchyProvider.getImage(file), img);
+//        assertEquals(flatProvider.getImage(file), img);
     }
 
     /*
@@ -92,14 +123,8 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         testAttribute(hierarchyProvider, attr2);
         testAttribute(hierarchyProvider, attr3);
         
+        String fragmentName;
         // packagefragment Labels
-        // Flat Layout
-        String fragmentName= flatProvider.getText(subPackage);
-        assertEquals("subpackage", fragmentName);
-        fragmentName= flatProvider.getText(subsubPackage);
-        assertEquals("subpackage.subsubpackage", fragmentName);
-        fragmentName= flatProvider.getText(empty);
-        assertEquals("subpackage.subsubpackage.emptypackage", fragmentName);
         // hierarchical Layout
         fragmentName= hierarchyProvider.getText(subPackage);
         assertEquals("subpackage", fragmentName);
@@ -107,21 +132,47 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals("subsubpackage", fragmentName);
         fragmentName= hierarchyProvider.getText(empty);
         assertEquals("emptypackage", fragmentName);
+        fragmentName= hierarchyProvider.getText(defaultPackage);
+        assertEquals(Messages.ModelExplorer_defaultPackageLabel, fragmentName);
+        // Flat Layout
+        fragmentName= flatProvider.getText(subPackage);
+        assertEquals("subpackage", fragmentName);
+        fragmentName= flatProvider.getText(subsubPackage);
+        assertEquals("subpackage.subsubpackage", fragmentName);
+        fragmentName= flatProvider.getText(empty);
+        assertEquals("subpackage.subsubpackage.emptypackage", fragmentName);
+        fragmentName= flatProvider.getText(defaultPackage);
+        assertEquals(Messages.ModelExplorer_defaultPackageLabel, fragmentName);
         
         // other types: returned String equals getName()
-        String projName= flatProvider.getText(proj);
-        assertEquals(proj.getName(), projName);
-        String rootName= flatProvider.getText(root);
-        assertEquals(root.getName(), rootName);
-        String polName= flatProvider.getText(polCmptType);
-        assertEquals(polCmptType.getName(), polName);
+        String name= hierarchyProvider.getText(proj);
+        assertEquals(proj.getName(), name);
+        name= hierarchyProvider.getText(root);
+        assertEquals(root.getName(), name);
+        name= hierarchyProvider.getText(polCmptType);
+        assertEquals(polCmptType.getName(), name);
         
-        projName= hierarchyProvider.getText(proj);
-        assertEquals(proj.getName(), projName);
-        rootName= hierarchyProvider.getText(root);
-        assertEquals(root.getName(), rootName);
-        polName= hierarchyProvider.getText(polCmptType);
-        assertEquals(polCmptType.getName(), polName);
+        name= flatProvider.getText(proj);
+        assertEquals(proj.getName(), name);
+        name= flatProvider.getText(root);
+        assertEquals(root.getName(), name);
+        name= flatProvider.getText(polCmptType);
+        assertEquals(polCmptType.getName(), name);
+        
+        // IResources
+        String resName= hierarchyProvider.getText(folder);
+        assertEquals(folder.getName(), resName);
+        resName= hierarchyProvider.getText(file);
+        assertEquals(file.getName(), resName);
+        resName= hierarchyProvider.getText(subFolder);
+        assertEquals(subFolder.getName(), resName);
+        
+        resName= flatProvider.getText(folder);
+        assertEquals(folder.getName(), resName);
+        resName= flatProvider.getText(file);
+        assertEquals(file.getName(), resName);
+        resName= flatProvider.getText(subFolder);
+        assertEquals(subFolder.getName(), resName);
     }
     
     // format: "<attributeName><5 blanks>[<dataType>,<blank><attributeType>]" 

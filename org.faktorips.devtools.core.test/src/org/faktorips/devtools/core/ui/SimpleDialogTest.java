@@ -19,10 +19,9 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.ITestAnswerProvider;
@@ -61,20 +60,15 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 	private void openEditor(IIpsObject file) throws Exception {
 		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
 
-        OpenEditorAction action= new OpenEditorAction(null);
-        IStructuredSelection selection= new StructuredSelection(file);
-        action.run(selection);
+    	OpenEditorAction.openEditorForFile((IFile) file.getCorrespondingResource());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		
 		answer = GenerationSelectionDialog.CHOICE_BROWSE;
-        selection= new StructuredSelection(content.getComfortCollisionCoverageA());
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 10, 1));
-        action.run(selection);
+    	OpenEditorAction.openEditorForFile((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
         plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 
 		answer = GenerationSelectionDialog.CHOICE_CREATE;
-        selection= new StructuredSelection(content.getComfortCollisionCoverageA());
-        action.run(selection);
+    	OpenEditorAction.openEditorForFile((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 	}
 	

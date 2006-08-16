@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -34,14 +35,12 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
@@ -292,22 +291,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
 	public Object[] getNonIpsResources() throws CoreException {
-		IResource res= getCorrespondingResource();
-		IWorkbenchAdapter adapter= null;
-		if(res instanceof IAdaptable){
-			adapter= (IWorkbenchAdapter) ((IAdaptable) res).getAdapter(IWorkbenchAdapter.class);
+		IContainer cont= (IContainer) getCorrespondingResource();
+    	List childResources= new ArrayList(); 
+        IResource[] children= cont.members();
+        for (int i = 0; i < children.length; i++) {
+    		if(!isPackageFragmentRoot(children[i]) & !isJavaFolder(children[i])){
+    			childResources.add(children[i]);
+    		}
 		}
-        if (adapter != null) {
-        	List childResources= new ArrayList(); 
-            IResource[] children= (IResource[]) adapter.getChildren(res);
-            for (int i = 0; i < children.length; i++) {
-        		if(!isPackageFragmentRoot(children[i]) & !isJavaFolder(children[i])){
-        			childResources.add(children[i]);
-        		}
-			}
-            return childResources.toArray();
-        }
-        return new Object[0];
+        return childResources.toArray();
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,15 +31,13 @@ public class ModelLabelProvider implements ILabelProvider {
 	}
 
 	public Image getImage(Object element) {
-		Image img = null;
 		if(element instanceof IIpsElement){
 			if (element instanceof IIpsPackageFragment) {
-				img = IpsPlugin.getDefault().getImage("folder_open.gif"); //$NON-NLS-1$
+				return IpsPlugin.getDefault().getImage("folder_open.gif"); //$NON-NLS-1$
 			} else{
-				img = ((IIpsElement) element).getImage();
+				return ((IIpsElement) element).getImage();
 			}
 		}else if(element instanceof IResource){
-	        //obtain the base image by querying the element
 	        IWorkbenchAdapter adapter= null;
 	        if (element instanceof IAdaptable) {
 	            adapter= (IWorkbenchAdapter) ((IAdaptable) element).getAdapter(IWorkbenchAdapter.class);
@@ -51,19 +50,23 @@ public class ModelLabelProvider implements ILabelProvider {
 	            return null;
 	        }
 	        return descriptor.createImage();
-		}else{
 		}
-		return img;
+		return null;
 	}
 	
 	public String getText(Object element) {
 		if(element instanceof IIpsElement){
 			if (element instanceof IIpsPackageFragment) {
-				if (!isFlatLayout) {
-					return ((IIpsPackageFragment) element).getFolderName();
-				} else {
-					return ((IIpsElement) element).getName();
+				IIpsPackageFragment fragment= (IIpsPackageFragment) element;
+				if(fragment.isDefaultPackage()){
+					return Messages.ModelExplorer_defaultPackageLabel;
 				}
+				if (!isFlatLayout) {
+					return fragment.getFolderName();
+				} else {
+					return fragment.getName();
+				}
+				
 			} else if (element instanceof IAttribute) {
 				IAttribute attrib = (IAttribute) element;
 				StringBuffer sb= new StringBuffer();
@@ -77,6 +80,11 @@ public class ModelLabelProvider implements ILabelProvider {
 			}
 			return ((IIpsElement) element).getName();
 		}else{
+			if(element instanceof IProject){
+				if(((IProject)element).isOpen()){
+					return ((IProject)element).getName()+"    ["+Messages.ModelExplorer_nonIpsProjectLabel+"]"; //$NON-NLS-1$ //$NON-NLS-3$
+				}
+			}
 			return ((IResource)element).getName();
 		}
 	}

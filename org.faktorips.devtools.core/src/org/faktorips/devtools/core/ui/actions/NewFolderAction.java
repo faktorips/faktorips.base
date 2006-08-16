@@ -17,9 +17,11 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -50,51 +52,49 @@ public class NewFolderAction extends IpsAction {
 	 * {@inheritDoc}
 	 */
 	public void run(IStructuredSelection selection) {
-		try {
-			Object selected  = selection.getFirstElement();
-			IResource res = null;
-			
-			if (selected instanceof IIpsProject) {
-				res = ((IIpsProject)selected).getIpsPackageFragmentRoots()[0].getEnclosingResource();
-			} 
-			else if (selected instanceof IIpsElement) {
-				res = ((IIpsElement)selected).getEnclosingResource();
-			}
-			
-			while (res != null && !(res instanceof IFolder)) {
-				res = res.getParent();
-			}
-			
-			if (res == null) {
-				MessageDialog.openError(shell, Messages.NewFolderAction_titleNewFolder, Messages.NewFolderAction_msgNoParentFound);
+		Object selected  = selection.getFirstElement();
+		IResource res = null;
+		
+		if (selected instanceof IIpsProject) {
+//				res = ((IIpsProject)selected).getIpsPackageFragmentRoots()[0].getEnclosingResource();
+			res = ((IIpsProject)selected).getProject();
+		} 
+		else if (selected instanceof IIpsElement) {
+			res = ((IIpsElement)selected).getEnclosingResource();
+		}else if(selected instanceof IResource){
+			res= (IResource) selected;
+		}
+		
+		while (res != null && !(res instanceof IContainer)) {
+			res = res.getParent();
+		}
+		
+		if (res == null) {
+			MessageDialog.openError(shell, Messages.NewFolderAction_titleNewFolder, Messages.NewFolderAction_msgNoParentFound);
+			return;
+		}
+		
+		String parent = res.getName(); 
+		String message = Messages.bind(Messages.NewFolderAction_descriptionNewFolder, parent);
+		Validator validator = new Validator((IContainer) res);
+		InputDialog d = new InputDialog(shell, Messages.NewFolderAction_titleNewFolder, message, Messages.NewFolderAction_valueNewFolder, validator);
+		d.open();
+		if (d.getReturnCode() == InputDialog.OK) {
+			IFolder newFolder = getFolder((IContainer)res, d.getValue());
+			try {
+				newFolder.create(true, true, null);
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
 				return;
 			}
-			
-			String parent = res.getName(); 
-			String message = Messages.bind(Messages.NewFolderAction_descriptionNewFolder, parent);
-			Validator validator = new Validator((IFolder)res);
-			InputDialog d = new InputDialog(shell, Messages.NewFolderAction_titleNewFolder, message, Messages.NewFolderAction_valueNewFolder, validator);
-			d.open();
-			if (d.getReturnCode() == InputDialog.OK) {
-				IFolder newFolder = getFolder((IFolder)res, d.getValue());
-				try {
-					newFolder.create(true, true, null);
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
-					return;
-				}
-			}
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-			return;
 		}
 	}
 
 	/**
 	 * Creates an <code>IFolder</code> which might or might not exist.
 	 */
-	private IFolder getFolder(IFolder parent, String name) {
-		return ((IFolder)parent).getFolder(name);
+	private IFolder getFolder(IContainer parent, String name) {
+		return ((IContainer)parent).getFolder(new Path(name));
 	}
 
 	/**
@@ -104,22 +104,24 @@ public class NewFolderAction extends IpsAction {
 	 */
 	private class Validator implements IInputValidator {
 
-		private IFolder parent;
+		private IContainer parent;
 		
-		public Validator(IFolder parent) {
+		public Validator(IContainer parent) {
 			this.parent = parent;
 		}
 		/**
 		 * {@inheritDoc}
 		 */
 		public String isValid(String newText) {
-			int pointIndex= newText.indexOf(".");
+			int pointIndex= newText.indexOf("."); //$NON-NLS-1$
 			if(pointIndex!=-1){
-				return NLS.bind(org.faktorips.devtools.core.ui.actions.Messages.NewFolderAction_msgFolderNameMustNotContainDots, newText);
+				return Messages.NewFolderAction_msgFolderNameMustNotContainDots;
 			}
 			IFolder folder = getFolder(parent, newText);
-			if (folder.exists()) {
-				return NLS.bind(Messages.NewFolderAction_msgFolderAllreadyExists, folder.getFullPath().toOSString());
+			if(folder!=null){
+				if (folder.exists()) {
+					return NLS.bind(Messages.NewFolderAction_msgFolderAllreadyExists, folder.getFullPath().toOSString());
+				}
 			}
 			return null;
 		}

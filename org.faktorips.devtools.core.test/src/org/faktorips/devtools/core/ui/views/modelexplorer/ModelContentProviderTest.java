@@ -20,15 +20,22 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.IpsProject;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -44,22 +51,32 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
             , ITableStructure.class, IProductCmpt.class
             , ITableContents.class, IAttribute.class
             , IRelation.class}
-            , new Class[0]);
+            , new Class[]{IFolder.class, IFile.class});
     
     private ModelContentProvider flatProvider= new ModelContentProvider(config, true);
     private ModelContentProvider hierarchyProvider= new ModelContentProvider(config, false);
 
-    private IpsProject proj; 
-    private IpsProject modelProj;
-    private IpsProject prodDefProj; 
-    private IpsPackageFragmentRoot root;
-    private IpsPackageFragmentRoot emptyRoot;
-    private IpsPackageFragment subPackage;
-    private IpsPackageFragment subsubPackage;
-    private IpsPackageFragment emptyPackage;
-    private PolicyCmptType polCmptType;
-    private PolicyCmptType polCmptType2;
-    private ProductCmpt prodCmpt;
+    private IIpsProject proj; 
+    private IIpsProject modelProj;
+    private IIpsProject prodDefProj; 
+    private IIpsPackageFragmentRoot root;
+    private IIpsPackageFragmentRoot emptyRoot;
+    private IIpsPackageFragment defaultPackage;
+    private IIpsPackageFragment subPackage;
+    private IIpsPackageFragment modelPackage;
+    private IIpsPackageFragment productPackage;
+    private IIpsPackageFragment emptyPackage;
+    private IPolicyCmptType polCmptType;
+    private IPolicyCmptType polCmptType2;
+    private IProductCmpt prodCmpt;
+    private ITableContents tableContents;
+    private ITableStructure tableStructure;
+
+    private IFolder folder;
+    private IFolder subFolder;
+    private IFile file;
+
+    private IAttribute attribute;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -70,20 +87,33 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         prodDefProj= (IpsProject)newIpsProject("TestProductDefinitionProject");
         setModelProjectProperty(prodDefProj, false);
 
-        root= (IpsPackageFragmentRoot) proj.getIpsPackageFragmentRoots()[0];
-        emptyRoot= (IpsPackageFragmentRoot) prodDefProj.getIpsPackageFragmentRoots()[0];
-        subPackage= (IpsPackageFragment) root.createPackageFragment("subpackage", true, null);
-        subsubPackage= (IpsPackageFragment) root.createPackageFragment("subpackage.subsubpackage", true, null);
-        emptyPackage= (IpsPackageFragment) root.createPackageFragment("subpackage.subsubpackage.emptypackage", true, null);
-        polCmptType= newPolicyCmptType(root, "subpackage.subsubpackage.TestPolicy");
-        polCmptType2= newPolicyCmptType(root, "subpackage.subsubpackage.TestPolicy2");
+        root= proj.getIpsPackageFragmentRoots()[0];
+        emptyRoot= prodDefProj.getIpsPackageFragmentRoots()[0];
+
+        defaultPackage = root.getIpsDefaultPackageFragment();
+        subPackage= root.createPackageFragment("subpackage", true, null);
+        modelPackage= root.createPackageFragment("subpackage.model", true, null);
+        productPackage= root.createPackageFragment("subpackage.product", true, null);
+        emptyPackage= root.createPackageFragment("subpackage.model.emptypackage", true, null);
+        
+        polCmptType= newPolicyCmptType(root, "subpackage.model.TestPolicy");
+        attribute = polCmptType.newAttribute();
         polCmptType.newAttribute();
-        polCmptType.newAttribute();
-        polCmptType.newAttribute();
-        prodCmpt= newProductCmpt(root, "subpackage.subsubpackage.TestProductComponent");
+        polCmptType.newRelation();
+        tableStructure = (ITableStructure) newIpsObject(modelPackage, IpsObjectType.TABLE_STRUCTURE, "subpackage.model.TestTableStructure");
+        prodCmpt= newProductCmpt(root, "subpackage.product.TestProductComponent");
+        tableContents = (ITableContents) newIpsObject(productPackage, IpsObjectType.TABLE_CONTENTS, "subpackage.product.TestTableContents");
+        polCmptType2= newPolicyCmptType(root, "TestPolicy2"); //defaultpackage
+
+        folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
+        folder.create(true, false, null);
+        subFolder = folder.getFolder("subfolder");
+        subFolder.create(true, false, null);
+        file = folder.getFile("test.txt");
+        file.create(null, true, null);
     }
 
-    private void setModelProjectProperty(IpsProject project, boolean b) throws CoreException {
+    private void setModelProjectProperty(IIpsProject project, boolean b) throws CoreException {
         IIpsProjectProperties props= project.getProperties();
         props.setModelProject(b);
         project.setProperties(props);
@@ -93,75 +123,119 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     /*
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.getChildren(Object)'
      */
-    public void testGetChildren(){        
+    public void testGetChildren(){      
+        List list;
         // Tests for hierarchical layout style
-        // root has exactly one child: subpackage
+        // root has two children: the defaultpackage and subPackage
         Object[] children= hierarchyProvider.getChildren(root);
-        assertEquals(1, children.length);
-        assertEquals(children[0], subPackage);
-        // subPackage has exactly one child: subpackage.subsubPackage
+        assertEquals(2, children.length);
+        list= Arrays.asList(children);
+        assertTrue(list.contains(defaultPackage));
+        assertTrue(list.contains(subPackage));
+        // subPackage has two children modelPackage and productPackage
         children= hierarchyProvider.getChildren(subPackage);
-        assertEquals(1, children.length);
-        assertEquals(children[0], subsubPackage);
-        // subsubPackage has four children, emptyPackage, two policyCmptTypes and one ProductComponent
-        children= hierarchyProvider.getChildren(subsubPackage);
-        assertEquals(4, children.length);
-        IpsPackageFragment emptyP= (IpsPackageFragment) children[0];
-        assertEquals(children[0], emptyP);
+        assertEquals(2, children.length);
+        list= Arrays.asList(children);
+        assertTrue(list.contains(modelPackage));
+        assertTrue(list.contains(productPackage));
+        // modelPackage has three children, emptyPackage, one policyCmptType and one TableStructure
+        children= hierarchyProvider.getChildren(modelPackage);
+        assertEquals(3, children.length);
+        list= Arrays.asList(children);
+        assertTrue(list.contains(emptyPackage));
+        assertTrue(list.contains(polCmptType));
+        assertTrue(list.contains(tableStructure));
+        // productPackage has two children: one productCmpt and one tableContent
+        children= hierarchyProvider.getChildren(productPackage);
+        assertEquals(2, children.length);
+        list= Arrays.asList(children);
+        assertTrue(list.contains(prodCmpt));
+        assertTrue(list.contains(tableContents));
         
         // tests for flat layout
-        // root returns all its child PackageFragments. It contains the following four children 
-        // pFragment with emptyString as name, pFragment subpackage, pFragment subpackage.subsubpackage, pFragment subpackage.subsubpackage.emptypackage
+        // root returns all its child PackageFragments. It contains the following five children: 
+        // defaultpackage (""), subPackage("subpackage"), modelPackage ("subpackage.model"), productPackage and emptyPackage ("subpackage.model.emptypackage")
         children= flatProvider.getChildren(root);
-        assertEquals(4, children.length);  
-        List fragments= Arrays.asList(children);
-        assertTrue(fragments.contains(subPackage));
-        assertTrue(fragments.contains(subsubPackage));
-        assertTrue(fragments.contains(emptyPackage));
+        assertEquals(5, children.length);  
+        list= Arrays.asList(children);
+        assertTrue(list.contains(defaultPackage));
+        assertTrue(list.contains(subPackage));
+        assertTrue(list.contains(modelPackage));
+        assertTrue(list.contains(productPackage));
+        assertTrue(list.contains(emptyPackage));
         // subPackage contains no children
         assertEquals(0, flatProvider.getChildren(subPackage).length);
-        // subsubpackage contains three children, two PolicyCmptTypes, one ProductComponent
-        children= flatProvider.getChildren(subsubPackage);
-        assertEquals(3, children.length);
-        List ipsObjects= Arrays.asList(children);
-        assertTrue(ipsObjects.contains(polCmptType));
-        assertTrue(ipsObjects.contains(polCmptType2));
-        assertTrue(ipsObjects.contains(prodCmpt));
+        // modelPackage contains two children, one PolicyCmptTypes, one TableStructure
+        children= flatProvider.getChildren(modelPackage);
+        assertEquals(2, children.length);
+        list= Arrays.asList(children);
+        assertTrue(list.contains(polCmptType));
+        assertTrue(list.contains(tableStructure));
+        // productPackage contains two children, one ProductComponent, one TableContents
+        children= flatProvider.getChildren(productPackage);
+        assertEquals(2, children.length);
+        list= Arrays.asList(children);
+        assertTrue(list.contains(prodCmpt));
+        assertTrue(list.contains(tableContents));
         
         // general tests
         // emptyPackage has no children
         assertEquals(0, hierarchyProvider.getChildren(emptyPackage).length);
-        // PolCmptType attributes are returned as children, polCmptType contains three children
+        // polCmptType contains two attributes and one relation
         children= hierarchyProvider.getChildren(polCmptType);
         assertEquals(3, children.length);  
-        
+
+        // emptyPackage has no children
         assertEquals(0, flatProvider.getChildren(emptyPackage).length);
-        // PolCmptType attributes are returned as children, polCmptType contains three children
+        // polCmptType contains two attributes and one relation
         children= flatProvider.getChildren(polCmptType);
         assertEquals(3, children.length);  
-        
-        // TODO Tests using TableContents and TableStructures 
+
+        // Attributes have no children
+        assertEquals(0, hierarchyProvider.getChildren(attribute).length);
+        assertEquals(0, flatProvider.getChildren(attribute).length);
+        // ProductCmpts have no children
+        assertEquals(0, hierarchyProvider.getChildren(prodCmpt).length);
+        assertEquals(0, flatProvider.getChildren(prodCmpt).length);
+
+        // test for IResources
+        children= hierarchyProvider.getChildren(folder);
+        assertEquals(2, children.length);  
+        list= Arrays.asList(children);
+        assertTrue(list.contains(subFolder));
+        assertTrue(list.contains(file));
+        children= flatProvider.getChildren(folder);
+        assertEquals(2, children.length);  
+        list= Arrays.asList(children);
+        assertTrue(list.contains(subFolder));
+        assertTrue(list.contains(file));
     }
+
 
     /*
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.getParent(Object)'
      */
     public void testGetParent() {
-        // tests for flat layout
-        Object parent= flatProvider.getParent(emptyPackage);
-        assertEquals(root, parent);
-        parent= flatProvider.getParent(subsubPackage);
-        assertEquals(root, parent);
-        parent= flatProvider.getParent(subPackage);
-        assertEquals(root, parent);
+        Object parent;
         // tests for hierarchical layout
         // Test packageFragments for corresponding ressource. Tests for Object identity can not be used as PFragments (handles for said ressources) are created during tests. 
         parent= hierarchyProvider.getParent(emptyPackage);
-        assertEquals(subsubPackage.getCorrespondingResource(), ((IpsPackageFragment)parent).getCorrespondingResource());
-        parent= hierarchyProvider.getParent(parent);
-        assertEquals(subPackage.getCorrespondingResource(), ((IpsPackageFragment)parent).getCorrespondingResource());
-        parent= hierarchyProvider.getParent(parent);
-        assertEquals(root.getIpsDefaultPackageFragment().getCorrespondingResource(), ((IpsPackageFragment)parent).getCorrespondingResource());
+        assertEquals(modelPackage, parent);
+        parent= hierarchyProvider.getParent(modelPackage);
+        assertEquals(subPackage, parent);
+        parent= hierarchyProvider.getParent(subPackage);
+        assertEquals(defaultPackage, parent);
+        parent= hierarchyProvider.getParent(defaultPackage);
+        assertEquals(root, parent);
+        // tests for flat layout
+        parent= flatProvider.getParent(emptyPackage);
+        assertEquals(root, parent);
+        parent= flatProvider.getParent(modelPackage);
+        assertEquals(root, parent);
+        parent= flatProvider.getParent(subPackage);
+        assertEquals(root, parent);
+        parent= flatProvider.getParent(defaultPackage);
+        assertEquals(root, parent);
         
         // for all other types getParent() acts like IpsElement#getParent()
         parent= hierarchyProvider.getParent(proj);
@@ -169,73 +243,106 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         parent= hierarchyProvider.getParent(root);
         assertEquals(proj, parent);
         parent= hierarchyProvider.getParent(polCmptType);
-        assertEquals(subsubPackage, parent);
-        parent= hierarchyProvider.getParent(polCmptType2);
-        assertEquals(subsubPackage, parent);
+        assertEquals(modelPackage, parent);
+        parent= hierarchyProvider.getParent(tableStructure);
+        assertEquals(modelPackage, parent);
         parent= hierarchyProvider.getParent(prodCmpt);
-        assertEquals(subsubPackage, parent);
+        assertEquals(productPackage, parent);
+        parent= hierarchyProvider.getParent(tableContents);
+        assertEquals(productPackage, parent);
+        parent= hierarchyProvider.getParent(polCmptType2);
+        assertEquals(defaultPackage, parent);
 
         parent= flatProvider.getParent(proj);
         assertEquals(IpsPlugin.getDefault().getIpsModel(), parent);
         parent= flatProvider.getParent(root);
         assertEquals(proj, parent);
         parent= flatProvider.getParent(polCmptType);
-        assertEquals(subsubPackage, parent);
-        parent= flatProvider.getParent(polCmptType2);
-        assertEquals(subsubPackage, parent);
+        assertEquals(modelPackage, parent);
+        parent= flatProvider.getParent(tableStructure);
+        assertEquals(modelPackage, parent);
         parent= flatProvider.getParent(prodCmpt);
-        assertEquals(subsubPackage, parent);
+        assertEquals(productPackage, parent);
+        parent= flatProvider.getParent(tableContents);
+        assertEquals(productPackage, parent);
+        parent= flatProvider.getParent(polCmptType2);
+        assertEquals(defaultPackage, parent);
         
+        // test for IResources
+        parent= hierarchyProvider.getParent(file);
+        assertEquals(folder, parent);
+        parent= hierarchyProvider.getParent(subFolder);
+        assertEquals(folder, parent);
+
+        parent= flatProvider.getParent(file);
+        assertEquals(folder, parent);
+        parent= flatProvider.getParent(subFolder);
+        assertEquals(folder, parent);
     }
 
     /*
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.hasChildren(Object)'
      */
     public void testHasChildren() throws CoreException {
-        // Test for Projects
-        assertTrue(flatProvider.hasChildren(proj));
+        // hierarchical tests
         assertTrue(hierarchyProvider.hasChildren(proj));
-        // an empty project returns its default PackageFragmentRoot
-        assertTrue(flatProvider.hasChildren(modelProj));
         assertTrue(hierarchyProvider.hasChildren(modelProj));
-        // Test for PackageFragmentRoots
-        assertTrue(flatProvider.hasChildren(root));
         assertTrue(hierarchyProvider.hasChildren(root));
-        // in flat layout getChildren 
-        // an empty PFragmentRoot in flat layout returns at least one child, the default packageFragment
-        assertTrue(flatProvider.hasChildren(emptyRoot));
         // a PackageFragmentRoot in hierarchical layout returns the children (files) of the defaultPackageFragment, 
         // an empty PackageFragmentRoot thus returns no children
         assertFalse(hierarchyProvider.hasChildren(emptyRoot));
-        // hierarchichal tests
+        
         assertTrue(hierarchyProvider.hasChildren(subPackage));
-        assertTrue(hierarchyProvider.hasChildren(subsubPackage));
+        assertTrue(hierarchyProvider.hasChildren(modelPackage));
         assertFalse(hierarchyProvider.hasChildren(emptyPackage));
-        // Flat tests
-        assertFalse(flatProvider.hasChildren(subPackage));
-        assertTrue(flatProvider.hasChildren(subsubPackage));
-        assertFalse(flatProvider.hasChildren(emptyPackage));
-        // PolicyCmptType tests
-        assertTrue(flatProvider.hasChildren(polCmptType));
         assertTrue(hierarchyProvider.hasChildren(polCmptType));
-        assertFalse(flatProvider.hasChildren(polCmptType2));
         assertFalse(hierarchyProvider.hasChildren(polCmptType2));
-        // ProductCmpt tests
         assertFalse(hierarchyProvider.hasChildren(prodCmpt));
+        
+        // flat tests
+        assertTrue(flatProvider.hasChildren(proj));
+        assertTrue(flatProvider.hasChildren(modelProj));
+        assertTrue(flatProvider.hasChildren(root));
+        // an empty PFragmentRoot in flat layout returns no child if the default packageFragment is empty
+        assertFalse(flatProvider.hasChildren(emptyRoot));
+        
+        assertFalse(flatProvider.hasChildren(subPackage));
+        assertTrue(flatProvider.hasChildren(modelPackage));
+        assertFalse(flatProvider.hasChildren(emptyPackage));
+        assertTrue(flatProvider.hasChildren(polCmptType));
+        assertFalse(flatProvider.hasChildren(polCmptType2));
         assertFalse(flatProvider.hasChildren(prodCmpt));
+
+        // test for IResources
+        assertTrue(hierarchyProvider.hasChildren(folder));
+        assertFalse(hierarchyProvider.hasChildren(subFolder));
+        assertFalse(hierarchyProvider.hasChildren(file));
+        
+        assertTrue(flatProvider.hasChildren(folder));
+        assertFalse(flatProvider.hasChildren(subFolder));
+        assertFalse(flatProvider.hasChildren(file));
     }
 
     /*
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider.getElements(Object)'
      */
     public void testGetElements() throws CoreException {
-        // getElement returns all IPS-projects managed by the model
+        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            public void run(IProgressMonitor monitor) throws CoreException {
+                IProject project = newPlatformProject("TestJavaProject");
+                addJavaCapabilities(project);
+                IProject project2 = newPlatformProject("TestJavaProject2");
+                addJavaCapabilities(project2);
+            }
+        };
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        
         Object[] children= hierarchyProvider.getElements(IpsPlugin.getDefault().getIpsModel());
-        assertEquals(3, children.length);
+        assertEquals(5, children.length);
 
-        // getElement returns all IPS-projects managed by the model
         children= flatProvider.getElements(IpsPlugin.getDefault().getIpsModel());
-        assertEquals(3, children.length);
+        assertEquals(5, children.length);
     }
 
     /*

@@ -22,14 +22,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -144,28 +143,21 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
      * {@inheritDoc}
      */
 	public Object[] getNonIpsResources() throws CoreException {
-		IResource res= getCorrespondingResource();
-		IWorkbenchAdapter adapter= null;
-		if(res instanceof IAdaptable){
-			adapter= (IWorkbenchAdapter) ((IAdaptable) res).getAdapter(IWorkbenchAdapter.class);
+		IContainer cont= (IContainer) getCorrespondingResource();
+    	List childResources= new ArrayList(); 
+        IResource[] children= cont.members();
+        for (int i = 0; i < children.length; i++) {
+    		if(!isPackageFragment(children[i])){
+    			childResources.add(children[i]);
+    		}
 		}
-        if (adapter != null) {
-        	List childResources= new ArrayList(); 
-            IResource[] children= (IResource[]) adapter.getChildren(res);
-            for (int i = 0; i < children.length; i++) {
-        		if(!isResourcePackageFragment(children[i])){
-        			childResources.add(children[i]);
-        		}
-			}
-            return childResources.toArray();
-        }
-        return new Object[0];
+        return childResources.toArray();
 	}
 	/**
 	 * Returns true if the given IResource is a folder that corresponds to
 	 * an IpsPackageFragment contained in this IpsPackageFragmentRoot, false otherwise.
 	 */
-	private boolean isResourcePackageFragment(IResource res) throws CoreException {
+	private boolean isPackageFragment(IResource res) throws CoreException {
 		IIpsPackageFragment[] frags= getIpsPackageFragments(); 
 		for (int i = 0; i < frags.length; i++) {
 			if(frags[i].getCorrespondingResource().equals(res)){

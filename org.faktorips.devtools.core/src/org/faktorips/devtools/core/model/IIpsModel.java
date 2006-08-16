@@ -33,6 +33,7 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsModel extends IIpsElement {
 
+	public Object[] getNonIpsResources() throws CoreException;
     /**
      * Prefix for all message codes of this class.
      */
@@ -43,8 +44,6 @@ public interface IIpsModel extends IIpsElement {
      */
     public final static String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
 
-	
-	public IProject[] getNonIpsResources() throws CoreException;
     /**
      * Returns the workspace.
      */

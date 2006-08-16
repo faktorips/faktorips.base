@@ -288,7 +288,6 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
 
         newIpsProject("TestProject");
 
-        // FIXME null sollte nicht zum testfail fuehren
         assertNotNull(javaProject);
         assertNotNull(javaProject2);
         

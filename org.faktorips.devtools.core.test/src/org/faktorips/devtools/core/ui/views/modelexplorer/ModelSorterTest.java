@@ -17,23 +17,36 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsProject;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 public class ModelSorterTest extends AbstractIpsPluginTest {
 
     private ModelExplorerSorter sorter;
 
-    private IpsProject proj; 
-    private IpsProject proj2; 
-    private PolicyCmptType policyCT;
-    private PolicyCmptType policyCT2;
-    private TableStructure table;
-    private IIpsPackageFragment fragment;
-    
+    private IIpsProject proj; 
+    private IIpsProject proj2; 
+    private IIpsPackageFragmentRoot root;
+    private IIpsPackageFragment packageFragment;
+    private IIpsPackageFragment packageFragment2;
+    private IIpsPackageFragment defaultPackage;
+
+    private IPolicyCmptType policyCT;
+    private IPolicyCmptType policyCT2;
+    private ITableStructure table;
+
+    private IFolder folder;
+    private IFolder subFolder;
+    private IFile file;
 
     
     protected void setUp() throws Exception {
@@ -41,10 +54,20 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         sorter= new ModelExplorerSorter();
         proj= (IpsProject)newIpsProject("TestProject");
         proj2= (IpsProject)newIpsProject("ZProject");
-        fragment= proj.getIpsPackageFragmentRoots()[0].createPackageFragment("TestPackageFragment", false, null);
+        root= proj.getIpsPackageFragmentRoots()[0];
+        packageFragment= root.createPackageFragment("TestPackageFragment", false, null);
+        packageFragment2= root.createPackageFragment("ZTestPackageFragment", false, null);
+        defaultPackage= root.getIpsDefaultPackageFragment();
         policyCT = newPolicyCmptType(proj.getIpsPackageFragmentRoots()[0], "TestPolicy");
         policyCT2 = newPolicyCmptType(proj.getIpsPackageFragmentRoots()[0], "TestPolicy2");
         table= new TableStructure();
+
+        folder = ((IProject)proj.getCorrespondingResource()).getFolder("folder");
+        folder.create(true, false, null);
+        subFolder = ((IProject)proj.getCorrespondingResource()).getFolder("subfolder");
+        subFolder.create(true, false, null);
+        file = folder.getFile("test.txt");
+        file.create(null, true, null);
     }
     
 	/*
@@ -56,17 +79,31 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
 		// Projects should be sorted lexicographically
 		assertTrue(sorter.compare(null, proj, proj2) < 0);
 		assertTrue(sorter.compare(null, proj2, proj) > 0);
+        // sort PackageFragments lexicographically
+        assertTrue(sorter.compare(null, packageFragment, packageFragment2) < 0);
+        assertTrue(sorter.compare(null, packageFragment2, packageFragment) > 0);
+        // sort DefaultPackage above other PackageFragments
+        assertTrue(sorter.compare(null, defaultPackage, packageFragment) < 0);
+        assertTrue(sorter.compare(null, defaultPackage, packageFragment2) < 0);
+        assertTrue(sorter.compare(null, packageFragment, defaultPackage) > 0);
+        assertTrue(sorter.compare(null, packageFragment2, defaultPackage) > 0);
 		// TableStructures should be sorted after/below PolicyCmptTypes (et vice versa) 
 		assertTrue(sorter.compare(null, policyCT, table) < 0);
 		assertTrue(sorter.compare(null, table, policyCT) > 0);
         // Tables or PolCmpTypes should sorted below PackageFragments
-        assertTrue(sorter.compare(null, fragment, table) < 0);
-        assertTrue(sorter.compare(null, table, fragment) > 0);
-        assertTrue(sorter.compare(null, fragment, policyCT) < 0);
-        assertTrue(sorter.compare(null, policyCT, fragment) > 0);
+        assertTrue(sorter.compare(null, packageFragment, table) < 0);
+        assertTrue(sorter.compare(null, table, packageFragment) > 0);
+        assertTrue(sorter.compare(null, packageFragment, policyCT) < 0);
+        assertTrue(sorter.compare(null, policyCT, packageFragment) > 0);
         // equal Elements should be sorted lexicographicaly
         assertTrue(sorter.compare(null, policyCT, policyCT2) < 0);
         assertTrue(sorter.compare(null, policyCT2, policyCT) > 0);
+        
+        // IResource tests
+        assertTrue(sorter.compare(null, folder, file) < 0);
+        assertTrue(sorter.compare(null, file, folder) > 0);
+        assertTrue(sorter.compare(null, folder, subFolder) < 0);
+        assertTrue(sorter.compare(null, subFolder, folder) > 0);
 	}
 	
 }

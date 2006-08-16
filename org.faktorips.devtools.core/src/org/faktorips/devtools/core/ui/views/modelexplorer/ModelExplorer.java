@@ -6,6 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.ui.actions.OpenProjectAction;
 import org.eclipse.jdt.ui.actions.RefreshAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
@@ -16,6 +17,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -33,6 +35,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
@@ -61,6 +64,7 @@ import org.faktorips.devtools.core.ui.actions.IpsDeleteAndSaveAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
+import org.faktorips.devtools.core.ui.actions.NewFileResourceAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
 import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
@@ -91,7 +95,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 	/**
 	 * Extension id of this views extension.
 	 */
-	public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelExplorer";
+	public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelExplorer"; //$NON-NLS-1$
 	
 	private static final int HIERARCHICAL_LAYOUT = 0;
 	
@@ -132,7 +136,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 	/**
 	 * Filter used in flat layout, where it filters out empty packageFragments.
 	 */
-	private ViewerFilter emptyPackageFilter = new EmptyPackageFilter();
+	private ViewerFilter emptyPackageFilter = new ModelExplorerFlatLayoutFilter();
 	
 	private IpsResourceChangeListener resourceListener;
 	protected ModelExplorerConfiguration config;	
@@ -178,11 +182,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		treeViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new IpsElementDragListener(treeViewer));
 		treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] {FileTransfer.getInstance()}, new ModelExplorerDropListener());
 		
-		DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(
-				labelProvider, IpsPlugin.getDefault().getWorkbench()
-						.getDecoratorManager().getLabelDecorator());
-		decoProvider = new DecoratingLabelProvider(decoProvider, ipsDecorator); 
-		treeViewer.setLabelProvider(decoProvider);
+		ILabelDecorator defaultDecorator= IpsPlugin.getDefault().getWorkbench().getDecoratorManager().getLabelDecorator();
+		DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, defaultDecorator);
+		DecoratingLabelProvider decoProvider2 = new DecoratingLabelProvider(decoProvider, ipsDecorator); 
+		treeViewer.setLabelProvider(decoProvider2);
 		
 		createFilters(treeViewer);
 
@@ -209,10 +212,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 	private void createMenu() {
 		IAction flatLayoutAction= new LayoutAction(this, true);
 		flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout); 
-		flatLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif"));
+		flatLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
 		IAction hierarchicalLayoutAction= new LayoutAction(this, false);
 		hierarchicalLayoutAction.setText(Messages.ModelExplorer_actionHierarchicalLayout);  
-		hierarchicalLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerHierarchicalLayout.gif"));
+		hierarchicalLayoutAction.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ModelExplorerHierarchicalLayout.gif")); //$NON-NLS-1$
 		// Actions are unchecked as per default, check action for current layout
 		if(isFlatLayout()){
 			flatLayoutAction.setChecked(true);
@@ -403,7 +406,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		private IWorkbenchAction rename= ActionFactory.RENAME.create(getSite().getWorkbenchWindow());
 		private IWorkbenchAction move= ActionFactory.MOVE.create(getSite().getWorkbenchWindow());
 		
-		
 		public MenuBuilder(){
 		}
 		
@@ -416,11 +418,14 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 		public void menuAboutToShow(IMenuManager manager) {
 			
 			if(!(treeViewer.getSelection() instanceof IStructuredSelection)){
+				manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS+"-end"));//$NON-NLS-1$
 				return;
 			}
 			Object selected= ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
 			if(selected == null){
-				// don't show menu if selection is empty
+				manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS+"-end"));//$NON-NLS-1$
 				return;
 			}
 			
@@ -433,23 +438,31 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 			manager.add(new Separator());
 			createObjectInfoActions(manager, selected);
 			manager.add(new Separator());
+			createProjectActions(manager, selected);
+			manager.add(new Separator());
 			createTestCaseAction(manager, selected);
 			createRefactorMenu(manager, selected);
 			manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 			manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS+"-end"));//$NON-NLS-1$
 			
 		}
-		
+
 		private void createEditActions(IMenuManager manager, Object selected) {
-			if(selected instanceof IIpsObject){
+			if(selected instanceof IIpsObject || selected instanceof IFile 
+					|| selected instanceof IRelation || selected instanceof IAttribute){
 				manager.add(new OpenEditorAction(treeViewer));
 			}
 		}
 		
 		private void createNewMenu(IMenuManager manager, Object selected) {
-			if(selected instanceof IIpsElement){
-				MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew); 
+			MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew);
+			if(selected instanceof IFolder){
 				newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
+				newMenu.add(new NewFileResourceAction(getSite().getShell(), treeViewer));
+			}
+			if(selected instanceof IIpsElement){
+				newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
+				newMenu.add(new NewFileResourceAction(getSite().getShell(), treeViewer));
 				if(config.isAllowedIpsElementType(IProductCmpt.class)){
 					newMenu.add(new NewProductComponentAction(getSite().getWorkbenchWindow()));
 				}
@@ -466,8 +479,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 				if(config.isAllowedIpsElementType(ITestCase.class)){
 					newMenu.add(new NewTestCaseAction(getSite().getWorkbenchWindow()));
 				}
-				manager.add(newMenu);
 			}
+			manager.add(newMenu);
 		}
 		
 		private void createReorgActions(IMenuManager manager, Object selected) {
@@ -492,18 +505,44 @@ public class ModelExplorer extends ViewPart implements IShowInTarget{
 				}
 			}
 		}
+		
+		private void createProjectActions(IMenuManager manager, Object selected) {
+			if(selected instanceof IIpsElement){
+				if(selected instanceof IIpsProject){
+					manager.add(openCloseAction((IProject)((IIpsProject)selected).getCorrespondingResource()));
+				}
+			}else{
+				if(selected instanceof IProject){
+					manager.add(openCloseAction((IProject)selected));
+				}
+			}
+		}
+
+		private IAction openCloseAction(IProject project) {
+			if(project.isOpen()){
+				CloseResourceAction close= new CloseResourceAction(getSite().getShell());
+				close.selectionChanged((IStructuredSelection) treeViewer.getSelection());
+				return close;
+			}else{
+				OpenProjectAction open= new OpenProjectAction(getSite());
+				open.selectionChanged((IStructuredSelection) treeViewer.getSelection());
+				return open;
+			}
+		}
 
 		private void createTestCaseAction(IMenuManager manager, Object selected) {
-			if (selected instanceof IIpsProject
-					|| selected instanceof IIpsPackageFragment
-					|| selected instanceof IIpsPackageFragmentRoot
-					|| selected instanceof ITestCase) {
-				manager.add(new IpsTestAction(treeViewer));
+			if(config.isAllowedIpsElementType(ITestCase.class)){
+				if (selected instanceof IIpsPackageFragment
+						|| selected instanceof IIpsPackageFragmentRoot
+						|| selected instanceof IIpsProject
+						|| selected instanceof ITestCase) {
+					manager.add(new IpsTestAction(treeViewer));
+				}
 			}
 		}
 		
 		private void createRefactorMenu(IMenuManager manager, Object selected) {
-			if(selected instanceof IIpsElement){
+			if(selected instanceof IIpsElement & !(selected instanceof IIpsProject)){
 		        MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
 		        subMm.add(rename);
 		        subMm.add(move);

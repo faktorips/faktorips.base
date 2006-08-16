@@ -23,13 +23,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.ui.FolderPropertiesPage;
 
 /**
  * Sorter for the ModelExplorer-TreeViwer. Sorts folders displayed in the ModelExplorer by the sorting number 
@@ -39,11 +39,21 @@ import org.faktorips.devtools.core.ui.FolderPropertiesPage;
 public class ModelExplorerSorter extends ViewerSorter{
 
 	public int compare(Viewer viewer, Object o1, Object o2) {
+		if(o1==null || o2==null){
+			return 0;
+		}
 		// place TableStructures below PolicyComponentTypes
 		if(o1 instanceof IPolicyCmptType && o2 instanceof ITableStructure){
 			return -1;
 		}
 		if(o1 instanceof ITableStructure && o2 instanceof IPolicyCmptType){
+			return 1;
+		}
+		// place TableContents below ProductCmpts
+		if(o1 instanceof IProductCmpt && o2 instanceof ITableContents){
+			return -1;
+		}
+		if(o1 instanceof ITableContents && o2 instanceof IProductCmpt){
 			return 1;
 		}
 
@@ -60,36 +70,20 @@ public class ModelExplorerSorter extends ViewerSorter{
 			return ((IpsProject)o1).getName().compareTo(((IpsProject)o2).getName());
 		}
 
-		// sort folders by sorting-property
 		if (o1 instanceof IIpsPackageFragment && o2 instanceof IIpsPackageFragment) {
-			try {
-				IFolder f1 = (IFolder)((IIpsPackageFragment)o1).getCorrespondingResource();
-				IFolder f2 = (IFolder)((IIpsPackageFragment)o2).getCorrespondingResource();
-				
-				if (f1 == null || !f1.exists() || f2 == null || !f2.exists()) {
-					return 0;
-				}
-				
-				String o1Value = f1.getPersistentProperty(FolderPropertiesPage.SORTING_ORDER_PROPERTY);
-				String o2Value = f2.getPersistentProperty(FolderPropertiesPage.SORTING_ORDER_PROPERTY);
-				
-				if (o1Value == null) {
-					o1Value = "0"; //$NON-NLS-1$
-				}
-				if (o2Value == null) {
-					o2Value = "0"; //$NON-NLS-1$
-				}
-				
-				Integer o1Order = Integer.valueOf(o1Value);
-				Integer o2Order = Integer.valueOf(o2Value);
-				int comp = o1Order.compareTo(o2Order);
-				return comp;
-				
-			} catch (Exception e) {
-				IpsPlugin.log(e);
-				return 0;
+			IIpsPackageFragment fragment= ((IIpsPackageFragment)o1);
+			IIpsPackageFragment fragment2= ((IIpsPackageFragment)o2);
+			// place defaultpackage at top
+			if(fragment.isDefaultPackage()){
+				return -1;
 			}
+			if(fragment2.isDefaultPackage()){
+				return 1;
+			}
+			// sort IpsProjects lexicographically
+			return fragment.getName().compareTo(fragment2.getName());
 		}
+		
 		// ------- IResource sorting -------
 		// place IpsProjects above IProjects
 		if(o1 instanceof IpsProject && o2 instanceof IProject){
@@ -113,8 +107,7 @@ public class ModelExplorerSorter extends ViewerSorter{
 			return 1;
 		}
 		
-		
-		// if no folder is involved, let the superclass decide
+		// otherwise let the superclass decide
 		return super.compare(viewer, o1, o2);
 		
 	}

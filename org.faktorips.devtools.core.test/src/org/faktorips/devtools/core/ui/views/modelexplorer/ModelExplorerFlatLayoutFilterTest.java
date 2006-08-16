@@ -23,9 +23,9 @@ import org.faktorips.devtools.core.internal.model.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 
-public class EmptyPackageFilterTest extends AbstractIpsPluginTest {
+public class ModelExplorerFlatLayoutFilterTest extends AbstractIpsPluginTest {
 
-    private EmptyPackageFilter filter= new EmptyPackageFilter();
+    private ModelExplorerFlatLayoutFilter filter= new ModelExplorerFlatLayoutFilter();
     
     private IpsProject proj; 
     private IpsPackageFragmentRoot root;

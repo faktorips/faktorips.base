@@ -109,8 +109,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	// project name.
 	private HashMap projectDatatypesMap = new HashMap();
 
-	// a map containing a map per ips project. The map's key is the project
-	// name.
+	// a map containing a map per ips project. The map's key is the project name.
 	// The maps contained in the map, contain the datatypes as keys and the
 	// datatype helper as values.
 	private HashMap projectDatatypeHelpersMap = new HashMap();
@@ -197,15 +196,15 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
 		return shrinked;
 	}
-
-	public IProject[] getNonIpsResources() throws CoreException {
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object[] getNonIpsResources() throws CoreException {
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		IProject[] nonIpsProjects = new IProject[projects.length];
 		int counter = 0;
 		for (int i = 0; i < projects.length; i++) {
-			if (projects[i].isOpen()
-					&& !projects[i].hasNature(IIpsProject.NATURE_ID)) {
+			if (!projects[i].isOpen() || !projects[i].hasNature(IIpsProject.NATURE_ID)) {
 				nonIpsProjects[counter] = projects[i];
 				counter++;
 			}

@@ -56,7 +56,7 @@ public class OpenEditorAction extends IpsAction {
 		}
     }
     
-    protected void openEditorForFile(IFile fileToEdit){
+    public static void openEditorForFile(IFile fileToEdit){
         if(fileToEdit==null){
         	return;
         }
@@ -75,4 +75,6 @@ public class OpenEditorAction extends IpsAction {
             IpsPlugin.logAndShowErrorDialog(e);
 		}
     }
+    
+    
 }

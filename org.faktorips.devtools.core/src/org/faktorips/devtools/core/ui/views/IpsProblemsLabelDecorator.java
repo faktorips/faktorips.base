@@ -49,7 +49,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 	/**
 	 * Indicates if the LabelDecorator works with a flat or hierarchical viewstructure.
 	 * True means flat layout, false means hierarchical layout.
-	 * Default is false for use with the hierarchical StructureExplorer.
+	 * Default is false for use with the hierarchical ProductStructureExplorer.
 	 */
 	private boolean isFlatLayout= false;
 	/**
@@ -70,42 +70,42 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 	}
 
 	private int computeAdornmentFlags(Object element) throws CoreException {
-        IIpsElement ipsElement = null;
 		if (element instanceof IIpsElement) {
-            ipsElement = ((IIpsElement)element);
-        }
-        if (ipsElement != null) {
-			IResource res = ipsElement.getEnclosingResource();
-			
-			if (res == null || !res.isAccessible()) {
-				return 0;
-			}
-	
-			int flag = 0;
-			 
-			IMarker[] markers;
-			if(isFlatLayout){
-				/* In flat layout every packagefragment is represented in its own treeitem, 
-				 * thus packagefragments of parentfolders should not be decorated. 
-				 * Only search the packagefragments children (files) for problems.
-				 */
-				markers= res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
-			}else{
-				markers= res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-			}
-			for (int i= 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
-				if (markers[i].exists()) {
-					int prio = markers[i].getAttribute(IMarker.SEVERITY, -1);
-					if (prio == IMarker.SEVERITY_WARNING) {
-						flag = JavaElementImageDescriptor.WARNING;
-					} 
-					else if (prio == IMarker.SEVERITY_ERROR) {
-						flag = JavaElementImageDescriptor.ERROR;
-					}
+			IIpsElement ipsElement = ((IIpsElement)element);
+	        if (ipsElement != null) {
+				IResource res = ipsElement.getEnclosingResource();
+				
+				if (res == null || !res.isAccessible()) {
+					return 0;
 				}
-			}			
-			return flag;
-		}
+		
+				int flag = 0;
+				 
+				IMarker[] markers;
+				if(isFlatLayout){
+					/* In flat layout every packagefragment is represented in its own treeitem, 
+					 * thus packagefragments of parentfolders should not be decorated. 
+					 * Only search the packagefragments children (files) for problems,
+					 * no search is needed in the folder tree.
+					 */
+					markers= res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+				}else{
+					markers= res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+				}
+				for (int i= 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
+					if (markers[i].exists()) {
+						int prio = markers[i].getAttribute(IMarker.SEVERITY, -1);
+						if (prio == IMarker.SEVERITY_WARNING) {
+							flag = JavaElementImageDescriptor.WARNING;
+						} 
+						else if (prio == IMarker.SEVERITY_ERROR) {
+							flag = JavaElementImageDescriptor.ERROR;
+						}
+					}
+				}			
+				return flag;
+			}
+        }
 		return 0;
 	}
 

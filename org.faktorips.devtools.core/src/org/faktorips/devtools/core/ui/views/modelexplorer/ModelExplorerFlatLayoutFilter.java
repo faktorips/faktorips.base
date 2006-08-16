@@ -26,33 +26,38 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 
 /**
- * Filter used by ModelExplorer to filter out empty parent packages in flat layout style.
+ * Filter used by ModelExplorer to filter out empty parent packages in flat
+ * layout style.
  * 
  * @author Stefan Widmaier
  */
-public class EmptyPackageFilter extends ViewerFilter {
-	
+public class ModelExplorerFlatLayoutFilter extends ViewerFilter {
+
 	/**
-	 * Returns false for packagefragments that do not contain children (files) and at the same time contain subfragments (subfolders).
-	 * In all other cases true is returned. <code>viewer</code> and <code>parent</code> are never read in this method, and thus can be null.
+	 * Returns false for packagefragments that do not contain children (files)
+	 * and at the same time contain subfragments (subfolders) (prevents empty 
+	 * or newly created packagefragments from being hidden in the view). False
+	 * is also returned if the given <code>element</code> is the the default
+	 * packagefragment of its packagefragment root. In all other cases true is
+	 * returned.
 	 * {@inheritDoc}
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if(element instanceof IIpsElement){
+		if (element instanceof IIpsElement) {
 			try {
-				if(element instanceof IIpsPackageFragment){
-					IIpsPackageFragment frag= (IIpsPackageFragment)element;
-					return frag.hasChildren() || frag.getIpsChildPackageFragments().length==0; 
-				}else{
+				if (element instanceof IIpsPackageFragment) {
+					IIpsPackageFragment frag = (IIpsPackageFragment) element;
+					return frag.hasChildren() || frag.getIpsChildPackageFragments().length == 0;
+				} else {
 					return true;
 				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 				return true;
 			}
-		}else if(element instanceof IResource){
+		} else if (element instanceof IResource) {
 			return true;
-		}else{
+		} else {
 			return true;
 		}
 	}
