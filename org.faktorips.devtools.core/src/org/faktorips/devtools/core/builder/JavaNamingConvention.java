@@ -71,6 +71,14 @@ public class JavaNamingConvention {
     }
     
     /**
+     * Converts the provided name of a constant class variable according to these 
+     * namings convension and returns it.
+     */
+    public String getConstantClassVarName(String propertyName){
+    	return StringUtils.upperCase(propertyName);
+    }
+    
+    /**
      * Returns the name of the member variable for a property.
      */
     public String getMemberVarName(String propertyName) {

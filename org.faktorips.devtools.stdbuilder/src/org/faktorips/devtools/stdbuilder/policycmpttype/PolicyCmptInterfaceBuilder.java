@@ -394,7 +394,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         
         String comment = getLocalizedText(a, "FIELD_VALUE_JAVADOC", a.getName());
         memberVarsBuilder.javaDoc(comment, ANNOTATION_GENERATED);
-        String varName = getJavaNamingConvention().getMemberVarName(a.getName());
+        String varName = getJavaNamingConvention().getConstantClassVarName(a.getName());
         int modifier = java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL | java.lang.reflect.Modifier.STATIC; 
         JavaCodeFragment initialValueExpression = helper.newInstance(a.getDefaultValue());
         memberVarsBuilder.varDeclaration(modifier, helper.getJavaClassName(), varName, initialValueExpression);
