@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.devtools.core.test.XmlAbstractTestCase;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,8 +41,8 @@ public class DescriptionHelperTest extends XmlAbstractTestCase {
 		DescriptionHelper.setDescription(el, "abc");
 		assertEquals("abc", DescriptionHelper.getDescription(el));
 		
-		DescriptionHelper.setDescription(el, "Ã¶Ã¤Ã¼ÃÃÃÃ");
-		assertEquals("Ã¶Ã¤Ã¼ÃÃÃÃ", DescriptionHelper.getDescription(el));
+		DescriptionHelper.setDescription(el, "öäüÖÄÜß");
+		assertEquals("öäüÖÄÜß", DescriptionHelper.getDescription(el));
 		
 		DescriptionHelper.setDescription(el, "<>;");
 		assertEquals("<>;", DescriptionHelper.getDescription(el));
@@ -54,7 +55,35 @@ public class DescriptionHelperTest extends XmlAbstractTestCase {
 	 * Test method for 'org.faktorips.devtools.core.internal.model.DescriptionHelper.getDescription(Element)'
 	 */
 	public void testGetDescription() {
+	    Element rootEl = getTestDocument().getDocumentElement();
 
+        Element obj = XmlUtil.getFirstElement(rootEl, "Object0");
+        assertEquals("bla", DescriptionHelper.getDescription(obj));
+        
+        obj = XmlUtil.getFirstElement(rootEl, "Object1");
+        assertEquals("blabla", DescriptionHelper.getDescription(obj));
+        
+        obj = XmlUtil.getFirstElement(rootEl, "Object2");
+        assertEquals("", DescriptionHelper.getDescription(obj));
+        
+        obj = XmlUtil.getFirstElement(rootEl, "Object3");
+        assertEquals("", DescriptionHelper.getDescription(obj));
 	}
+    
+    public void testGetFirstNoneDescriptionElement() {
+        Element rootEl = getTestDocument().getDocumentElement();
+
+        Element obj = XmlUtil.getFirstElement(rootEl, "Object1");
+        assertEquals("Child1", DescriptionHelper.getFirstNoneDescriptionElement(obj).getNodeName());
+        
+        obj = XmlUtil.getFirstElement(rootEl, "Object2");
+        assertNull(DescriptionHelper.getFirstNoneDescriptionElement(obj));
+        
+        obj = XmlUtil.getFirstElement(rootEl, "Object3");
+        assertEquals("Child3", DescriptionHelper.getFirstNoneDescriptionElement(obj).getNodeName());
+
+        obj = XmlUtil.getFirstElement(rootEl, "Object4");
+        assertNull(DescriptionHelper.getFirstNoneDescriptionElement(obj));
+    }
 
 }
