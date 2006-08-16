@@ -201,11 +201,9 @@ public class ValidationUtils {
             String propertyName,
             MessageList list) throws CoreException {
 
-//    	 FIXME: add test case
     	ValueDatatype datatype = part.getIpsProject().findValueDatatype(valueDatatype);
     	if (datatype==null) {
-    		// FIXME: nls 
-    		String text = "The value can't be checked because the datatype can't be found.";
+    		String text = Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
 			Message msg = new Message(IValidationMsgCodes.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND, 
 					text, Message.WARNING, part, propertyName); //$NON-NLS-1$
 			list.add(msg);
@@ -213,8 +211,7 @@ public class ValidationUtils {
     	}
     	try {
     		if (datatype.validate().containsErrorMsg()) {
-//    			 FIXME: nls 
-        		String text = "The value can't be checked because the datatype " + datatype.getName() + " is invalid.";
+        		String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, datatype.getName()); //$NON-NLS-2$
     			Message msg = new Message(IValidationMsgCodes.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text, Message.WARNING, part, propertyName); //$NON-NLS-1$
     			list.add(msg);
     			return;
@@ -224,8 +221,7 @@ public class ValidationUtils {
 		}
     	
 		if (!datatype.isParsable(value)) {
-//			 FIXME: nls 
-			String text = NLS.bind("{0} is no {1}", value, datatype);
+			String text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, value, datatype);
 			Message msg = new Message(IValidationMsgCodes.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text, Message.ERROR, part, propertyName); //$NON-NLS-1$
 			list.add(msg);
 		}

@@ -49,4 +49,10 @@ public class Messages extends NLS {
 	public static String IpsProject_msgMissingDotIpsprojectFile;
 
 	public static String IpsProject_msgUnparsableDotIpsprojectFile;
+
+	public static String ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND;
+
+	public static String ValidationUtils_VALUEDATATYPE_INVALID;
+
+	public static String ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE;
 }
