@@ -49,7 +49,6 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -57,10 +56,10 @@ import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowAttributesAction;
-import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
+import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 /**
  * Navigate all Products defined in the active Project.
@@ -189,30 +188,22 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      * @throws CoreException 
      */
     public void showStructure(IIpsSrcFile file) throws CoreException {
-    	showStructure((IProductCmpt)file.getIpsObject());
-    }
-
-    /**
-     * Displays the structure of the given product component.
-     */
-    public void showStructure(IProductCmpt product) {
-    	if (product == null) {
-    		return;
+    	if(file!=null && file.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT){
+    		IProductCmpt product= (IProductCmpt) file.getIpsObject();
+        	this.file = file;
+            try {
+            	errormsg.setVisible(false);
+        		((GridData)errormsg.getLayoutData()).exclude = true;
+            	
+        		tree.getTree().setVisible(true);
+        		((GridData)tree.getTree().getLayoutData()).exclude = false;
+        		tree.getTree().getParent().layout();
+    			tree.setInput(product.getStructure());
+                tree.expandAll();
+    		} catch (CycleException e) {
+    			handleCircle(e);
+    		}
     	}
-    	
-    	this.file = product.getIpsSrcFile();
-        try {
-        	errormsg.setVisible(false);
-    		((GridData)errormsg.getLayoutData()).exclude = true;
-        	
-    		tree.getTree().setVisible(true);
-    		((GridData)tree.getTree().getLayoutData()).exclude = false;
-    		tree.getTree().getParent().layout();
-			tree.setInput(product.getStructure());
-            tree.expandAll();
-		} catch (CycleException e) {
-			handleCircle(e);
-		}
     }
     
     /**
@@ -312,10 +303,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 	    	IIpsElement[] transferred = super.getTransferedElements(event.currentDataType);
 	    	if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
 	    		try {
-	    			IIpsObject ipsObject= ((IIpsSrcFile)transferred[0]).getIpsObject();
-	    			if(ipsObject.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT){
-	    				showStructure((IIpsSrcFile)transferred[0]);
-	    			}
+	    			showStructure((IIpsSrcFile)transferred[0]);
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
 				}
