@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -580,8 +579,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
 	 */
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
     	if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
-    		Element valueSetNode = XmlUtil.getFirstElement(xmlTag);
-    		valueSet = ValueSetType.newValueSet(valueSetNode, this, id);
+    		valueSet = ValueSetType.newValueSet(xmlTag, this, id);
     		return valueSet;
     	}
         return null;

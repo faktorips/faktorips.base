@@ -262,8 +262,9 @@ public class XmlUtil {
 
 	/**
 	 * Returns the child element with the given tag name and index. The index is
-	 * the position of the element considering all child elements with the givne
-	 * tag name.
+	 * the position of the element considering all child elements with the given
+	 * tag name. In contrast to Element#getElementsByTagName(String tagName) this method
+	 * returns only the direct children, not all descendants.
 	 * 
 	 * @param parent
 	 *            The parent node. qparam tagName the element tag name.
@@ -272,6 +273,8 @@ public class XmlUtil {
 	 * @return The element at the specified index
 	 * @throws IndexOutOfBoundsException
 	 *             if no element exists at the specified index.
+	 *             
+	 * @see Element#getElementsByTagName(java.lang.String)
 	 */
 	public final static Element getElement(Node parent, String tagName,
 			int index) {
@@ -286,6 +289,31 @@ public class XmlUtil {
 					}
 					count++;
 				}
+			}
+		}
+		throw new IndexOutOfBoundsException();
+	}
+
+	/**
+	 * Returns the child element at the given index. The index is
+	 * the position of the element considering all child nodes of type element.
+	 * 
+	 * @param parent
+	 *            The parent node. qparam tagName the element tag name.
+	 * @param index
+	 *            The 0 based position of the child.
+	 * @throws IndexOutOfBoundsException
+	 *             if no element exists at the specified index.
+	 */
+	public final static Element getElement(Node parent, int index) {
+		NodeList nl = parent.getChildNodes();
+		int count = 0;
+		for (int i = 0; i < nl.getLength(); i++) {
+			if (nl.item(i) instanceof Element) {
+				if (count == index) {
+					return (Element) nl.item(i);
+				}
+				count++;
 			}
 		}
 		throw new IndexOutOfBoundsException();

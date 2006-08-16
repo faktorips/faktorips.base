@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -441,7 +440,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
-		Element el = XmlUtil.getFirstElement(element);
+		Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
 		lowerBound = el.getAttribute(PROPERTY_LOWERBOUND);
 		upperBound = el.getAttribute(PROPERTY_UPPERBOUND);
 		step = el.getAttribute(PROPERTY_STEP);

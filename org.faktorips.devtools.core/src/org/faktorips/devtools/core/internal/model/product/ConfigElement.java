@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
@@ -441,10 +440,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	/**
 	 * {@inheritDoc}
 	 */
-    protected IIpsObjectPart newPart(Element xmlTag, int id) {
-    	if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
-    		Element valueSetNode = XmlUtil.getFirstElement(xmlTag);
-    		valueSet = ValueSetType.newValueSet(valueSetNode, this, id);
+    protected IIpsObjectPart newPart(Element partEl, int id) {
+    	if (partEl.getNodeName().equals(ValueSet.XML_TAG)) {
+    		valueSet = ValueSetType.newValueSet(partEl, this, id);
     		return valueSet;
     	}
         return null;

@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
+import org.faktorips.devtools.core.internal.model.DescriptionHelper;
 import org.faktorips.devtools.core.internal.model.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
 import org.faktorips.values.DefaultEnumType;
@@ -115,14 +116,18 @@ public class ValueSetType extends DefaultEnumValue {
 	}
 
 	/**
-	 * Creates a new ValueSet - the type of the ValueSet is examined from the given XML-Element.
+	 * Creates a new ValueSet - the type of the ValueSet is derived from the given XML-Element.
 	 *  
 	 * @param valueSetNode The node describing the ValueSet.
 	 * @param parent The parent for the new value set.
 	 * @param id The IpsObjectPart-ID for the new value set.
 	 */
 	public static IValueSet newValueSet(Element valueSetNode, IIpsObjectPart parent, int id) {
-		String tagName = valueSetNode.getNodeName();
+		Element element = DescriptionHelper.getFirstNoneDescriptionElement(valueSetNode);
+		if (element==null) {
+			return null;
+		}
+		String tagName = element.getNodeName();
 		if (tagName.equals(EnumValueSet.XML_TAG)) {
 			return new EnumValueSet(parent, id);
 		}

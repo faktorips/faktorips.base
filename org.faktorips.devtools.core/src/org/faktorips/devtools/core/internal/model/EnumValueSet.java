@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -296,11 +295,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		elements.clear();
-		
-		Element el = XmlUtil.getFirstElement(element);
-
+		Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
 		NodeList children = el.getElementsByTagName(XML_VALUE);
-		
 		for(int i = 0; i < children.getLength();i++) {
 			Element valueEl = (Element)children.item(i);
 			String value = ValueToXmlHelper.getValueFromElement(valueEl, "Data"); //$NON-NLS-1$

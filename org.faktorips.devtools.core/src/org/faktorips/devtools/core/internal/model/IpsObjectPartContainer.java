@@ -324,10 +324,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         NodeList nl = element.getChildNodes();
         int nextId = getMaxIdUsedInXml(element) + 1;
         for (int i=0; i<nl.getLength(); i++) {
-            if (nl.item(i).getNodeType()!=Node.ELEMENT_NODE) {
+        	Node item = nl.item(i);
+            if (item.getNodeType()!=Node.ELEMENT_NODE || DescriptionHelper.XML_ELEMENT_NAME.equals(item.getNodeName())) {
                 continue;
             }
-            Element partEl = (Element)nl.item(i);
+            Element partEl = (Element)item;
             if (partEl.getNodeName().equals(XML_EXT_PROPERTIES_ELEMENT)) {
             	continue;
             }
