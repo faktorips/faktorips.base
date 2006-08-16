@@ -58,6 +58,9 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	// Indicates if the structure should be displayed without relation layer
 	private boolean withoutRelations = false;
 	
+	// Indicates that the input and expected result will be provided together
+	private boolean combinedContent = false;
+	
 	public TestCaseContentProvider(int type, ITestCase testCase){
 		ArgumentCheck.notNull(testCase);
 		this.isTypeFor = type;
@@ -85,6 +88,29 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	 */
 	public void setWithoutRelations(boolean withoutRelations) {
 		this.withoutRelations = withoutRelations;
+	}
+
+	/**
+	 * Returns <code>true</code> if the input and expected result should be provided together 
+	 * with a same structure.
+	 */
+	public boolean isCombinedContent() {
+		return combinedContent;
+	}
+
+	/**
+	 * Sets if the input and expected result should be provided together 
+	 * with a same structure.
+	 */
+	public void setCombinedContent(boolean combinedContent) {
+		this.combinedContent = combinedContent;
+	}
+	
+	/**
+	 * Returns the int value for the corresponding type, input or expected result.
+	 */
+	public int getIsTypeFor() {
+		return isTypeFor;
 	}
 
 	/**
@@ -252,6 +278,19 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 			return new ITestPolicyCmpt[0];
 		}
 		return testPolicyCmpt;
+	}
+
+	/**
+	 * Finds the test policy component by the given path.
+	 */
+	public ITestPolicyCmpt findPolicyCmpt(String path){
+		if (isInputType()){
+			return testCase.findInputPolicyCmpt(path);
+		} else if (isExpectedResultTypes()){
+			return testCase.findExpectedResultPolicyCmpt(path);
+		} else{
+			return null;
+		}
 	}
 	
 	/*

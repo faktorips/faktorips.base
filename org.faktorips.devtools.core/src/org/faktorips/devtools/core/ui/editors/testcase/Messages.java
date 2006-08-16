@@ -34,10 +34,16 @@ public class Messages extends NLS {
 	}
 
 	public static String TestCaseEditor_Title;
+	public static String TestCaseEditor_Title_Failure;
+	public static String TestCaseEditor_Title_Error;
+	public static String TestCaseEditor_Title_Success;
 	public static String TestCaseEditor_Input_Title;
 	public static String TestCaseEditor_ExpectedResult_Title;
 	public static String TestCaseEditor_Input_SectionTitle;
 	public static String TestCaseEditor_Input_Description;
+	public static String TestCaseEditor_Combined_Title;
+	public static String TestCaseEditor_Combined_SectionTitle;
+	public static String TestCaseEditor_Combined_Description;
 	public static String TestCaseEditor_ExpectedResult_SectionTitle;
 	public static String TestCaseEditor_ExpectedResult_Description;
 	public static String TestCaseLabelProvider_undefined;
@@ -54,4 +60,10 @@ public class Messages extends NLS {
 	public static String TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound;
 	public static String TestPolicyCmptSelectionDialog_Description;
 	public static String TestPolicyCmptSelectionDialog_Error_WrongType;
+	
+	public static String TestCaseSection_FailureFormat_FailureIn;
+	public static String TestCaseSection_FailureFormat_Actual;
+	public static String TestCaseSection_FailureFormat_Expected;
+	public static String TestCaseSection_FailureFormat_Attribute;
+	public static String TestCaseSection_FailureFormat_Object;	
 }

@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
@@ -28,19 +27,19 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  * @author Joerg Ortmann
  */
 public class TestCaseEditorPage extends IpsObjectEditorPage {
-    private static final String PAGE_ID = "TestCaseInput"; //$NON-NLS-1$
-    
-    // Type of the to be edit objects: input or expected result
-    private int objectType;
+    public static final String PAGE_ID = "TestCaseEditorPage"; //$NON-NLS-1$
     
     private String sectionTitle;
     private String sectionDetailTitle;
 	
-    public TestCaseEditorPage(TestCaseEditor editor, String title, int objectType, String sectionTitle, String sectionDetailTitle) {
-		super(editor, PAGE_ID, title);
-		this.objectType = objectType;
+    // Content provider
+    private TestCaseContentProvider contentProvider;
+    
+    public TestCaseEditorPage(TestCaseEditor editor, String title, TestCaseContentProvider contentProvider, String sectionTitle, String sectionDetailTitle) {
+		super(editor, PAGE_ID + contentProvider.getIsTypeFor(), title);
 		this.sectionTitle = sectionTitle;
 		this.sectionDetailTitle = sectionDetailTitle;
+		this.contentProvider = contentProvider;
 	}
 	
 	/**
@@ -48,22 +47,13 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
 	 */
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		formBody.setLayout(createPageLayout(1, false));
-		TestCaseContentProvider contentProviderInput =  new TestCaseContentProvider(objectType, getTestCase());
-
-		new TestCaseSection(formBody, toolkit, contentProviderInput, sectionTitle, sectionDetailTitle, getManagedForm().getForm());
+		new TestCaseSection(formBody, (TestCaseEditor) getEditor(), toolkit, contentProvider, sectionTitle, sectionDetailTitle, getManagedForm().getForm());
 	}
 	
-	/*
-	 * Returns the corresponding editor.
+	/**
+	 * Returns the corresponding test case content provider.
 	 */
-    private TestCaseEditor getTestCaseEditor() {
-        return (TestCaseEditor)getEditor();
+    public TestCaseContentProvider getTestCaseContentProvider(){
+    	return contentProvider;
     }
-    
-    /*
-     * Returns the test case which wil be edit by this editor page.
-     */
-    private ITestCase getTestCase() {
-        return getTestCaseEditor().getTestCase(); 
-    } 
 }

@@ -186,58 +186,101 @@ public class TestCaseDetailArea {
 		toolkit.getFormToolkit().createCompositeSeparator(section);
 		
 		sectionControls.put(uniquePath, section);
+
+		Composite attributeComposite = toolkit.createLabelEditColumnComposite(section);
 		
 		// create text edit fields for each attribute
-		boolean failure = false;
-		ITestAttributeValue[] testAttributeValue = testPolicyCmpt.getTestAttributeValues();
-		Composite attributeComposite = toolkit.createLabelEditColumnComposite(section);
-		for (int i = 0; i < testAttributeValue.length; i++) {
-			final ITestAttributeValue attributeValue = testAttributeValue[i];
-						
-			IpsPartUIController uiController = createUIController(attributeValue);
-
-			ValueDatatype datatype = null;
-			ValueDatatypeControlFactory ctrlFactory = null;
-			try {
-				ITestAttribute testAttr = attributeValue.findTestAttribute();
-				if (testAttr==null){
-					// ignore not existing test attributes, will be checked in the vaidate method
-					failure = true;
-				}else{
-					IAttribute attribute = testAttr.findAttribute();
-					if (attribute==null){
-						// ignore not existing attributes, will be checked in the vaidate method
-						failure = true;
-					}else{
-						datatype = attribute.findDatatype();
-						ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-					}
-				}
-			} catch (CoreException e1) {
-				// ignore error, will be check in the validate methods
-				failure = true;
-			}
-			
-			if (!failure){
-				toolkit.createFormLabel(attributeComposite, StringUtils.capitalise(attributeValue.getTestAttribute()));
-				final EditField editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null);
-				uiController.add(editField, ITestAttributeValue.PROPERTY_VALUE);
-				if (i==0){
-					// store the first text edit control to get the focus if chosen in the tree
-					attributeEditFields.put(uniquePath, editField);
-				}
-	
-				editField.getControl().addFocusListener(new FocusAdapter() {
-		            public void focusGained(FocusEvent e) {
-		                testCaseSection.selectInTreeByObject(testPolicyCmpt, false);
-		            }
-		        });
-			    uiController.updateUI();
-			}
+		
+		ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
+		for (int i = 0; i < testAttributeValues.length; i++) {
+			final ITestAttributeValue attributeValue = testAttributeValues[i];
+			createAttributes(testPolicyCmpt, testPolicyCmpt, uniquePath, attributeComposite, i==0, attributeValue, true);
 		}
 		section.setClient(attributeComposite);
 		
+		if (contentProvider.isCombinedContent()){
+			toolkit.createVerticalSpacer(attributeComposite, 5).setBackground(attributeComposite.getBackground());
+			toolkit.createVerticalSpacer(attributeComposite, 5).setBackground(attributeComposite.getBackground());
+			
+			TestCaseContentProvider secondaryContentProvider;
+			if (testCaseSection.getContentProvider().isInputType()){
+				secondaryContentProvider = 
+					testCaseSection.getTestCaseEditor().getContentProviderExpectedResult();
+			}else if (testCaseSection.getContentProvider().isExpectedResultTypes()){
+				secondaryContentProvider = 
+					testCaseSection.getTestCaseEditor().getContentProviderInput();
+			}else{
+				throw new RuntimeException("Unknown content provider!"); //$NON-NLS-1$
+			}
+			// ueber hierarchy path policy cmp ermitteln und wenn gefunden alle attribute unterhalb 
+			TestCaseHierarchyPath path = new TestCaseHierarchyPath(testPolicyCmpt, true);
+			ITestPolicyCmpt secondaryPolicyCmpt = secondaryContentProvider.findPolicyCmpt(path.toString());
+	
+			if (secondaryPolicyCmpt != null){
+				ITestAttributeValue[] oltherTestAttributeValues = secondaryPolicyCmpt.getTestAttributeValues();
+				for (int i = 0; i < oltherTestAttributeValues.length; i++) {
+					final ITestAttributeValue attributeValue = oltherTestAttributeValues[i];
+					createAttributes(secondaryPolicyCmpt, testPolicyCmpt, "none", attributeComposite, i==0, attributeValue, false); //$NON-NLS-1$
+				}
+			}
+		}
+		
 		toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
+	}
+
+	private void createAttributes(final ITestPolicyCmpt testPolicyCmpt, final ITestPolicyCmpt testPolicyCmptForSelection,
+			String uniquePath, Composite attributeComposite, boolean firstAttribute, 
+			final ITestAttributeValue attributeValue, boolean isPrimarySide) {
+		IpsPartUIController uiController = createUIController(attributeValue);
+
+		// get the ctrlFactory to create the edit field
+		ValueDatatype datatype = null;
+		ValueDatatypeControlFactory ctrlFactory = null;
+		boolean failure = false;
+		try {
+			ITestAttribute testAttr = attributeValue.findTestAttribute();
+			if (testAttr==null){
+				// ignore not existing test attributes, will be checked in the vaidate method
+				failure = true;
+			}else{
+				IAttribute attribute = testAttr.findAttribute();
+				if (attribute==null){
+					// ignore not existing attributes, will be checked in the vaidate method
+					failure = true;
+				}else{
+					datatype = attribute.findDatatype();
+					ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+				}
+			}
+		} catch (CoreException e1) {
+			// ignore error, will be check in the validate methods
+			failure = true;
+		}
+		
+		// if no error occurs create the edit field for the current attribute
+		if (!failure){
+			toolkit.createFormLabel(attributeComposite, StringUtils.capitalise(attributeValue.getTestAttribute()));
+			final EditField editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null);
+			uiController.add(editField, ITestAttributeValue.PROPERTY_VALUE);
+			if (firstAttribute){
+				// store the first text edit control to get the focus if chosen in the tree
+				attributeEditFields.put(uniquePath, editField);
+			}
+			// store the edit field
+			attributeEditFields.put(testCaseSection.getUniqueKey(testPolicyCmpt, attributeValue), editField);
+
+			editField.getControl().addFocusListener(new FocusAdapter() {
+		        public void focusGained(FocusEvent e) {
+		            testCaseSection.selectInTreeByObject(testPolicyCmptForSelection, false);
+	        }});
+			
+			if (!isPrimarySide) {
+			editField.getControl().setBackground(
+					testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+			}
+		    
+			uiController.updateUI();
+		}
 	}
 	
 	/**
@@ -432,5 +475,15 @@ public class TestCaseDetailArea {
 		dynamicArea.setLayout(detailLayout);
 		
 		resetContainers();
+	}
+
+	/**
+	 * Mark the given attribute field as failure.
+	 */
+	void markAsFailure(String attributeFieldUniqueKey, String failureDetails) {
+		EditField editField = (EditField) attributeEditFields.get(attributeFieldUniqueKey);
+		if (editField != null){
+			testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureDetails);
+		}
 	}
 }

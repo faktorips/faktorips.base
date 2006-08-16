@@ -110,6 +110,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	private volatile int fFailureCount;
 	
+	/* Indicates that there was an failure */
+	private boolean isFailure;
+	
 	private UpdateUIJob fUpdateJob;
 	
 	private int testRuns=0;
@@ -612,7 +615,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * {@inheritDoc}
 	 */
 	public void testFailureOccured(String[] failureDetails) {
-	    fFailureCount++;
+	    isFailure = true;
 	    postFailureTest(getTestId(), failureDetails);
 	}
 
@@ -621,6 +624,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	public void testFinished(String qualifiedTestName) {
 		fExecutedTests++;
+		if (isFailure)
+			fFailureCount++;
 		postEndTest(getTestId(), qualifiedTestName);
 	}
 
@@ -628,6 +633,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * {@inheritDoc}
 	 */
 	public void testStarted(String qualifiedTestName) {
+		isFailure = false;
 		fRerunLastTestAction.setEnabled(true);
 		postStartTest(getTestId(), qualifiedTestName);
 	}

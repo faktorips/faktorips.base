@@ -87,7 +87,6 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Returns the unique label of the test policy component.
      */
-	// FIXME name verwenden
 	public String getLabel();
 	
     /**

@@ -29,10 +29,30 @@ public class TestCaseHierarchyPath{
 	// Seperator between each hierarchy element
 	private static final String separator = "/"; //$NON-NLS-1$
 	
+	// Full path indicator
+	private static final String NO_FULLPATH = "***"; //$NON-NLS-1$
+	
 	// Contains the complete hierarchy path
 	private String hierarchyPath = ""; //$NON-NLS-1$
 	
+	private boolean isFullPath = true;
+	
+    /**
+     * Removes the folder information from the beginning.
+     */
+	public static String unqualifiedName(String hierarchyPath){
+        int index = hierarchyPath.lastIndexOf("/"); //$NON-NLS-1$
+        if (index == -1) {
+            return hierarchyPath;
+        }
+        return hierarchyPath.substring(index + 1);
+	}
+	
 	public TestCaseHierarchyPath(String hierarchyPath){
+		if (hierarchyPath.startsWith(NO_FULLPATH)){
+			setFullPath(false);
+			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(NO_FULLPATH) + NO_FULLPATH.length());
+		}
 		this.hierarchyPath = hierarchyPath;
 	}
 	
@@ -86,6 +106,10 @@ public class TestCaseHierarchyPath{
 	 */
 	public String next(){
 		String next = ""; //$NON-NLS-1$
+		if (!isFullPath){
+			return hierarchyPath;
+		}
+		
 		if (hierarchyPath.indexOf(separator)>=0){
 			next = hierarchyPath.substring(0, hierarchyPath.indexOf(separator));
 			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(separator) + 1);
@@ -97,8 +121,11 @@ public class TestCaseHierarchyPath{
 		return next;
 	}
 	
+	/**
+	 * Returns the string representation of this object.
+	 */
 	public String toString(){
-		return hierarchyPath;
+		return (!isFullPath?NO_FULLPATH:"") + hierarchyPath; //$NON-NLS-1$
 	}
 
 	/**
@@ -117,6 +144,20 @@ public class TestCaseHierarchyPath{
 		return count;
 	}
 	
+	/**
+	 * Sets if the full path is given.
+	 */
+	public void setFullPath(boolean fullPath) {
+		isFullPath = fullPath;
+	}
+	
+	/**
+	 * Returns <code>true</code> if the full path is given otherwise return <code>false</code>.
+	 */	
+	public boolean isFullPath(){
+		return isFullPath;
+	}
+	
     /**
      * Returns the folder name for a given hierarchy path.
      */	
@@ -128,17 +169,6 @@ public class TestCaseHierarchyPath{
         return hierarchyPath.substring(0, index);
 	}
 	
-    /**
-     * Removes the folder information from the beginning.
-     */
-	public static String unqualifiedName(String hierarchyPath){
-        int index = hierarchyPath.lastIndexOf("/"); //$NON-NLS-1$
-        if (index == -1) {
-            return hierarchyPath;
-        }
-        return hierarchyPath.substring(index + 1);
-	}
-
 	private String evalHierarchyPathForTestCaseType(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath){
 		while (!currTestPolicyCmpt.isRoot()){
 			if (hierarchyPath.length()>0)

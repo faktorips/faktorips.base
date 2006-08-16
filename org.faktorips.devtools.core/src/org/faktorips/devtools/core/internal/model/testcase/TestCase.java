@@ -624,29 +624,61 @@ public class TestCase extends IpsObject implements ITestCase {
 			ITestPolicyCmpt pc = null;
 			try {
 				String currElem = path.next();
-				pc = getTestPolicyCmptObjectByLabel(currElem);
-				while (pc != null && path.hasNext()){
-					currElem = path.next();
-					ITestPolicyCmptRelation[] prs = pc.getTestPolicyCmptRelations(currElem);
-					currElem = path.next();
-					boolean found = false;
-					for (int i = 0; i < prs.length; i++) {
-						ITestPolicyCmptRelation relation = prs[i];
-						pc = relation.findTarget();
-						if (pc == null)
-							return null;
-						if (currElem.equals(pc.getLabel())){
-							found = true;
+				if (path.isFullPath()){
+					pc = searchChildTestPolicyCmpt(getTestPolicyCmptObjectByLabel(currElem), path);
+				} else {
+					ITestPolicyCmpt[] pcs = getTestPolicyCmptObjects();
+					for (int i = 0; i < pcs.length; i++) {
+						pc = searchChildTestPolicyCmpt(pcs[i], path);
+						if (pc != null)
 							break;
-						}
 					}
-					if (!found)
-						return null;
 				}
 			} catch (CoreException e) {
 			}
 			return pc;
 		}
+	}
+	
+	private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path) throws CoreException{
+		while (pc != null && path.hasNext()){
+			String currElem = path.next();
+
+			if (!path.isFullPath() && pc.getLabel().equals(currElem)){
+				return pc;
+			}
+			
+			ITestPolicyCmptRelation[] prs;
+			if (path.isFullPath()) 
+				prs = pc.getTestPolicyCmptRelations(currElem);
+			else
+				prs = pc.getTestPolicyCmptRelations();
+			
+			currElem = path.next();
+			pc = null;
+			for (int i = 0; i < prs.length; i++) {
+				ITestPolicyCmptRelation relation = prs[i];
+				ITestPolicyCmpt pcTarget = relation.findTarget();
+				if (pcTarget == null)
+					return null;
+				
+				if (currElem.equals(pcTarget.getLabel())){
+					if (path.isFullPath()){
+						pc = pcTarget;
+						break;
+					}else{
+						return pcTarget;
+					}
+				}
+				
+				if (!path.isFullPath()){
+					 pc = searchChildTestPolicyCmpt(pcTarget, path);
+					 if (pc != null)
+						 return pc;
+				}
+			}
+		}
+		return pc;
 	}
 	
 	/**
