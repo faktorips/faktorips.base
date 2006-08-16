@@ -49,7 +49,9 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptStructure;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
@@ -310,7 +312,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 	    	IIpsElement[] transferred = super.getTransferedElements(event.currentDataType);
 	    	if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
 	    		try {
-					showStructure((IIpsSrcFile)transferred[0]);
+	    			IIpsObject ipsObject= ((IIpsSrcFile)transferred[0]).getIpsObject();
+	    			if(ipsObject.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT){
+	    				showStructure((IIpsSrcFile)transferred[0]);
+	    			}
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
 				}
