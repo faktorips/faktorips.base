@@ -189,21 +189,30 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public void showStructure(IIpsSrcFile file) throws CoreException {
     	if(file!=null && file.getIpsObjectType()==IpsObjectType.PRODUCT_CMPT){
-    		IProductCmpt product= (IProductCmpt) file.getIpsObject();
-        	this.file = file;
-            try {
-            	errormsg.setVisible(false);
-        		((GridData)errormsg.getLayoutData()).exclude = true;
-            	
-        		tree.getTree().setVisible(true);
-        		((GridData)tree.getTree().getLayoutData()).exclude = false;
-        		tree.getTree().getParent().layout();
-    			tree.setInput(product.getStructure());
-                tree.expandAll();
-    		} catch (CycleException e) {
-    			handleCircle(e);
-    		}
+    		showStructure((IProductCmpt) file.getIpsObject());
     	}
+    }
+
+    /**
+     * Displays the structure of the given product component.
+     */
+    public void showStructure(IProductCmpt product) {
+    	if (product == null) {
+    		return;
+    	}
+    	this.file = product.getIpsSrcFile();
+        try {
+        	errormsg.setVisible(false);
+    		((GridData)errormsg.getLayoutData()).exclude = true;
+        	
+    		tree.getTree().setVisible(true);
+    		((GridData)tree.getTree().getLayoutData()).exclude = false;
+    		tree.getTree().getParent().layout();
+			tree.setInput(product.getStructure());
+            tree.expandAll();
+		} catch (CycleException e) {
+			handleCircle(e);
+		}
     }
     
     /**
