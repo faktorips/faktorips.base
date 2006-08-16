@@ -36,12 +36,12 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -223,8 +223,13 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /*
      * Returns the qualified name of the policy component where the given test policy component type parameter points to.
      */
-    private String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter policyTypeParam) throws CoreException{
-        IPolicyCmptType policyCmptType = policyTypeParam.findPolicyCmptType();
+    private String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter testPolicyTypeParam) throws CoreException{
+        IPolicyCmptType policyCmptType = testPolicyTypeParam.findPolicyCmptType();
+        if ( policyCmptType== null){
+        	throw new CoreException(
+        			new IpsStatus("Policy component type " + testPolicyTypeParam.getPolicyCmptType() + " not found for test policy component type parameter " 
+        					+ testPolicyTypeParam.getName())); 
+        }
         String pcTypePackage = getBuilderSet().getPackage(DefaultBuilderSet.KIND_POLICY_CMPT_IMPL, policyCmptType.getIpsSrcFile());
         return StringUtil.qualifiedName(pcTypePackage, policyCmptType.getName());
     }
@@ -237,7 +242,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * <pre> 
      * public NeuzugangFamilieType(String qualifiedName) throws Exception{
      *   super(qualifiedName);
-     *   repository = RuntimeRepositoryProvider.getRepository();
+     *   repository = new ClassloaderRuntimeRepository(this.getClass().getClassLoader(), "org.faktorips.integrationtest.internal");
      * }
      * </pre>
      */
@@ -249,15 +254,16 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("super(qualifiedName);");
          
-        // get the full qualified name of the RuntimeRepositoryProvider
+        getBuilderSet();
+        
         IIpsPackageFragmentRoot root = getIpsObject().getIpsPackageFragment().getRoot();
-        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry(); 
-        String basePack = entry.getBasePackageNameForGeneratedJavaClasses();
-        String runtimeRepositoryProviderQClassName = basePack;
-        runtimeRepositoryProviderQClassName += ".RuntimeRepositoryProvider";
-        body.append("repository = ");
-        body.appendClassName(runtimeRepositoryProviderQClassName);
-        body.append(".getRepository();");
+        
+		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
+		String repositoryPackage = ((DefaultBuilderSet)builderSet).getInternalBasePackageName(root);
+        body.append("repository = new ");
+        body.appendClassName(ClassloaderRuntimeRepository.class);
+        body.append("(this.getClass().getClassLoader(), \"");
+        body.append(repositoryPackage + "\");");
         codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         codeBuilder.methodBegin(Modifier.PUBLIC, null, className, 
                 argNames, argClassNames, new String[]{ParserConfigurationException.class.getName()});
