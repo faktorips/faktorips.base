@@ -75,6 +75,9 @@ public class DateHelper extends AbstractDatatypeHelper {
      * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
      */
     public JavaCodeFragment newInstance(String value) {
+    	if(value == null){
+    		return valueOfExpression(value);
+    	}
         StringBuffer buf = new StringBuffer();
         buf.append('"').append(value).append('"');
         return valueOfExpression(buf.toString());
