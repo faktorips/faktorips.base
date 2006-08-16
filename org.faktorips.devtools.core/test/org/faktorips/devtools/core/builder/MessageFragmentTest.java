@@ -27,7 +27,7 @@ public class MessageFragmentTest extends TestCase {
 	 * Test method for 'org.faktorips.devtools.core.builder.MessageFragment.createMessageFragment(String)'
 	 */
 	public void testCreateMessageFragment() {
-		MessageFragment msgFrag = MessageFragment.createMessageFragment("The value a=[attribute1] is not b=[attribute2]"); //$NON-NLS-1$
+		MessageFragment msgFrag = MessageFragment.createMessageFragment("The value a={attribute1} is not b={attribute2}"); //$NON-NLS-1$
 		String sep = StringUtil.getSystemLineSeparator();
 		StringBuffer buf = new StringBuffer();
 		buf.append(sep);
