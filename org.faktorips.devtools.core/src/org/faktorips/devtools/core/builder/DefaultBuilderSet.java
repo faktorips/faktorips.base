@@ -124,7 +124,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     public String getInternalBasePackageName(IIpsPackageFragmentRoot root) throws CoreException {
         StringBuffer buf = new StringBuffer();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        String basePackeName = entry.getBasePackageNameForExtensionJavaClasses();
+        String basePackeName = entry.getBasePackageNameForGeneratedJavaClasses();
         if (!StringUtils.isEmpty(basePackeName)) {
             buf.append(basePackeName).append('.');
         }
