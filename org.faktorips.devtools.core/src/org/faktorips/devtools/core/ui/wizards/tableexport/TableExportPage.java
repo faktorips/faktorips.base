@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -39,14 +40,13 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
-import org.faktorips.devtools.extsystems.ExternalDataFormat;
+import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -62,12 +62,14 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
     private IpsProjectRefControl projectControl;
 	private TableContentsRefControl contentsControl;
     private Combo fileFormatControl;
+    private Text nullRepresentation;
     
     // edit fields
     private TextButtonField filenameField;
     private TextButtonField projectField;
     private TextButtonField contentsField;
-    private ComboField fileFormatField;
+    
+    private AbstractExternalTableFormat[] formats;
     
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
@@ -125,15 +127,22 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         contentsField.addChangeListener(this);
         
         toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelFileFormat);
-        fileFormatControl = toolkit.createCombo(lowerComposite, ExternalDataFormat.getEnumType());
-        fileFormatControl.setText(ExternalDataFormat.getEnumType().getValues()[0].getId());
-        fileFormatField = new ComboField(fileFormatControl);
-        fileFormatField.addChangeListener(this);
+        fileFormatControl = toolkit.createCombo(lowerComposite);
+        
+        formats = IpsPlugin.getDefault().getExternalTableFormats();
+        for (int i = 0; i < formats.length; i++) {
+        	fileFormatControl.add(formats[i].getName());
+		}
+        fileFormatControl.select(0);
 
         toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelName); 
         filenameField = new TextButtonField(new FileSelectionControl(lowerComposite, toolkit));
         filenameField.addChangeListener(this);
 
+        toolkit.createFormLabel(lowerComposite, "Null-representation");
+        nullRepresentation = toolkit.createText(lowerComposite);
+        nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        
         setDefaults(selectedResource);
 
         validateInput = true;
@@ -174,8 +183,11 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         return filenameField.getText();
     }
     
-    public String getFormat() {
-        return fileFormatField.getText();
+    public AbstractExternalTableFormat getFormat() {
+    	if (fileFormatControl.getSelectionIndex() == -1) {
+    		return null;
+    	}
+        return formats[fileFormatControl.getSelectionIndex()];
     }
     
     public void setFilename(String newName) {
@@ -184,6 +196,10 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
     
     public ITableContents getTableContents() throws CoreException {
         return contentsControl.findTableContents();
+    }
+    
+    public String getNullRepresentation() {
+    	return nullRepresentation.getText();
     }
     
     protected void filenameChanged() {
@@ -197,10 +213,15 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
     protected void contentsChanged() {
         if (getFilename().equals("")) { //$NON-NLS-1$
             String contentsName = contentsField.getText();
+            AbstractExternalTableFormat format = getFormat();
+            String extension = "";
+            if (format != null) {
+            	extension = format.getDefaultExtension();
+            }
+            
             setFilename(new File(
                     System.getProperty("user.home") +  //$NON-NLS-1$
-                    File.separator + StringUtil.unqualifiedName(contentsName) + 
-                    ExternalDataFormat.getAttributeType(fileFormatField.getText()).getDefaultFileExtension()).getAbsolutePath());
+                    File.separator + StringUtil.unqualifiedName(contentsName) + extension).getAbsolutePath());
         }
     }
     
@@ -246,9 +267,6 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         }
         if (e.field==filenameField) {
             filenameChanged();
-        }
-        if (e.field==fileFormatField) {
-            formatChanged();
         }
         if (validateInput) { // don't validate during control creating!
             validatePage();    
@@ -329,9 +347,8 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
 	}
     
     protected void validateFormat() {
-        String name=fileFormatField.getText(); 
         // must not be empty
-        if (name.length() == 0) {
+        if (fileFormatControl.getSelectionIndex() == -1) {
             setErrorMessage(Messages.TableExportPage_msgMissingFileFormat);
             return;
         }
@@ -345,7 +362,7 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
         && !"".equals(filenameField.getText()) //$NON-NLS-1$
         && !"".equals(contentsField.getText()) //$NON-NLS-1$
-        && !"".equals(fileFormatField.getText()); //$NON-NLS-1$
+        && fileFormatControl.getSelectionIndex() != -1; 
         setPageComplete(complete);
     }
     

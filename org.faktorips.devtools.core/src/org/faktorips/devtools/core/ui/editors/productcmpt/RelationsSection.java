@@ -443,8 +443,8 @@ public class RelationsSection extends IpsSection{
 					IFile file = getFile(filenames[i]);
 					try {
 						IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-						
-						if (!element.exists()) {
+
+						if (element == null || !element.exists()) {
 							event.detail = DND.DROP_NONE;
 							return;
 						}

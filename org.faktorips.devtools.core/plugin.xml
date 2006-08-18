@@ -8,6 +8,8 @@
    <extension-point id="artefactbuilderset" name="%artefactbuildersetname" schema="schema/artefactbuilderset.exsd"/>
    <extension-point id="objectExtensionProperty" name="ObjectExtensionProperty" schema="schema/objectExtensionProperty.exsd"/>
    <extension-point id="datatypeDefinition" name="DatatypeDefinition" schema="schema/datatypeDefintion.exsd"/>
+   <extension-point id="externalTableFormat" name="ExternalTableFormat" schema="schema/externalTableFormat.exsd"/>
+   <extension-point id="externalValueConverter" name="ExternalValueConverter" schema="schema/externalValueConverter.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -588,5 +590,23 @@
                standalone="false"
                visible="false"/>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.externalTableFormat">
+      <externalTableFormat
+            class="org.faktorips.devtools.extsystems.excel.ExcelTableFormat"
+            defaultExtension=".xls"
+            id="org.faktorips.devtools.extsystems.excel.ExcelTableFormat"
+            name="Excel">
+      </externalTableFormat>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.externalValueConverter">
+      <externalTableFormat id="org.faktorips.devtools.extsystems.excel.ExcelTableFormat"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.BooleanValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DoubleValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.IntegerValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.LongValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.StringValueConverter"/>
    </extension>
 </plugin>

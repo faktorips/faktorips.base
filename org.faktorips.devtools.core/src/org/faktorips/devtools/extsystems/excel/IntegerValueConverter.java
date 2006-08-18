@@ -17,18 +17,71 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.IValueConverter;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
+
 
 /**
+ * Converts from Integer to String and vice versa.
  * 
- * @author Thorsten Waertel
+ * @author Thorsten Guenther
  */
-public class IntegerValueConverter extends NumericValueConverter {
+public class IntegerValueConverter implements IValueConverter {
+
+	/**
+	 * Supported types for externalDataValue are Integer and Double.
+	 * 
+	 * {@inheritDoc}
+	 */
+	public String getIpsValue(Object externalDataValue, MessageList messageList) {
+		if (externalDataValue instanceof Integer) {
+			return ((Integer) externalDataValue).toString();
+		}
+		else if (externalDataValue instanceof Double) {
+			int value = ((Double)externalDataValue).intValue();
+			Double restored = new Double(value); 
+			if (!restored.equals((Double)externalDataValue)) {
+				String msg = NLS.bind("Can not convert the value because information will be lost. Original value is \"{0}\", but converted value will be \"{1}\".", externalDataValue, restored);
+				messageList.add(new Message("", msg, Message.ERROR));
+				return externalDataValue.toString();
+			}
+			return new Integer(value).toString();
+		}
+		String msg = NLS.bind("Can not convert the external value of type {0} to {1}", externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
+		messageList.add(new Message("", msg, Message.ERROR));
+		return externalDataValue.toString();
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getIpsValue(Object externalDataValue) {
-		// TODO generate warning message if cast of given double value requires rounding
-		return Long.toString((long) ((Double) externalDataValue).doubleValue());
+	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
+		if (ipsValue == null) {
+			return null;
+		}
+		if (ipsValue.length() == 0) {
+			return new Integer(0);
+		}
+		try {
+			return Integer.valueOf(ipsValue);
+		} catch (NumberFormatException e) {
+			Object[] objects = new Object[3];
+			objects[0] = ipsValue;
+			objects[1] = getSupportedDatatype().getQualifiedName();
+			objects[2] = Integer.class.getName(); 
+			String msg = NLS.bind("Can not convert the internal value \"{0}\" of type {1} to {2}", objects);
+			messageList.add(new Message("", msg, Message.ERROR));
+		}
+		return ipsValue;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Datatype getSupportedDatatype() {
+		return Datatype.INTEGER;
 	}
 }

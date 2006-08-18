@@ -17,28 +17,46 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
+import java.math.BigDecimal;
+
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Decimal;
 
 /**
- * Converts from Double to String and vice versa.
+ * Converter for Decimal
  * 
  * @author Thorsten Guenther
  */
-public class DoubleValueConverter implements IValueConverter {
+public class DecimalValueConverter implements IValueConverter {
 
 	/**
-	 * Only supported type for externalDataValue is Double
+	 * Supported types for the externalDataValue are String and Number.
 	 * 
 	 * {@inheritDoc}
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-		if (externalDataValue instanceof Double) {
-			return ((Double) externalDataValue).toString();
-		}
+		if (externalDataValue instanceof String) {
+			try {
+                return Decimal.valueOf((String) externalDataValue).toString();
+            } catch (RuntimeException e) {
+                Object[] objects = new Object[3];
+                objects[0] = externalDataValue;
+                objects[1] = externalDataValue.getClass().getName();
+                objects[2] = getSupportedDatatype().getQualifiedName();
+                String msg = NLS.bind("Can not convert the external value \"{0}\" of type {1} to {2}", objects);
+                messageList.add(new Message("", msg, Message.ERROR));
+                return externalDataValue.toString();
+            }
+		} 
+        else if (externalDataValue instanceof Number) {
+            double value = ((Number)externalDataValue).doubleValue();
+            return Decimal.valueOf(new BigDecimal(value)).toString();
+        }
+        
 		String msg = NLS.bind("Can not convert the external value of type {0} to {1}", externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
 		messageList.add(new Message("", msg, Message.ERROR));
 		return externalDataValue.toString();
@@ -48,29 +66,21 @@ public class DoubleValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-		if (ipsValue == null) {
-			return null;
-		}
-		if (ipsValue.length() == 0) {
-			return new Double(0);
-		}
-		try {
-			return Double.valueOf(ipsValue);
-		} catch (NumberFormatException e) {
-			Object[] objects = new Object[3];
-			objects[0] = ipsValue;
-			objects[1] = getSupportedDatatype().getQualifiedName();
-			objects[2] = Double.class.getName(); 
-			String msg = NLS.bind("Can not convert the internal value \"{0}\" of type {1} to {2}", objects);
-			messageList.add(new Message("", msg, Message.ERROR));
-		}
-		return ipsValue;
+        try {
+            return Decimal.valueOf(ipsValue);
+        }
+        catch (RuntimeException e) {
+            String msg = NLS.bind("The internal value \"{0}\" is not a valid {1}.", ipsValue, getSupportedDatatype().getQualifiedName());
+            messageList.add(new Message("", msg, Message.ERROR));
+        }
+        return ipsValue;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Datatype getSupportedDatatype() {
-		return Datatype.DOUBLE;
+		return Datatype.DECIMAL;
 	}
+
 }

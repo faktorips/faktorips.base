@@ -73,8 +73,6 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.core.model.tablestructure,
  org.faktorips.devtools.core.model.testcase,
  org.faktorips.devtools.core.model.testcasetype,
- org.faktorips.devtools.core.model.testcase,
- org.faktorips.devtools.core.model.testcasetype,
  org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
  org.faktorips.devtools.core.ui.contentassist,
@@ -97,6 +95,8 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.core.ui.wizards.productcmpt,
  org.faktorips.devtools.core.ui.wizards.tablecontents,
  org.faktorips.devtools.core.ui.wizards.tablestructure,
- org.faktorips.devtools.core.util
+ org.faktorips.devtools.core.util,
+ org.faktorips.devtools.extsystems,
+ org.faktorips.devtools.extsystems.excel
 Bundle-ClassPath: faktorips-core.jar,
  lib/poi-2.5.1-final-20040804.jar

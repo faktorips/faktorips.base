@@ -17,23 +17,41 @@
 
 package org.faktorips.devtools.extsystems.excel;
 
-import org.faktorips.devtools.extsystems.ValueConverter;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.extsystems.IValueConverter;
+import org.faktorips.util.message.MessageList;
 
 
 /**
+ * Converts from String to String :-)
  * 
- * @author Peter Erzberger
+ * @author Thorsten Guenther
  */
-public class StringValueConverter extends ValueConverter {
+public class StringValueConverter implements IValueConverter {
+
+	/**
+	 * Every type is allowed for externalDataValue.
+	 * 
+	 * {@inheritDoc}
+	 */
+	public String getIpsValue(Object externalDataValue, MessageList messageList) {
+		if (externalDataValue == null) {
+			return null;
+		}
+		return externalDataValue.toString();
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getIpsValue(Object externalDataValue) {
-		return externalDataValue.toString();
+	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
+		return ipsValue;
 	}
 
-	public Object getExternalDataValue(String ipsValue) {
-		return ipsValue;
+	/**
+	 * {@inheritDoc}
+	 */
+	public Datatype getSupportedDatatype() {
+		return Datatype.STRING;
 	}
 }

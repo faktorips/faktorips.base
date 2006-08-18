@@ -22,23 +22,35 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Money;
 
 /**
- * Converts from Double to String and vice versa.
+ * Converter for Money
  * 
  * @author Thorsten Guenther
  */
-public class DoubleValueConverter implements IValueConverter {
+public class MoneyValueConverter implements IValueConverter {
 
 	/**
-	 * Only supported type for externalDataValue is Double
+	 * Supported type for the externalDataValue is String.
 	 * 
 	 * {@inheritDoc}
 	 */
 	public String getIpsValue(Object externalDataValue, MessageList messageList) {
-		if (externalDataValue instanceof Double) {
-			return ((Double) externalDataValue).toString();
-		}
+		if (externalDataValue instanceof String) {
+			try {
+                return Money.valueOf((String) externalDataValue).toString();
+            } catch (RuntimeException e) {
+                Object[] objects = new Object[3];
+                objects[0] = externalDataValue;
+                objects[1] = externalDataValue.getClass().getName();
+                objects[2] = getSupportedDatatype().getQualifiedName();
+                String msg = NLS.bind("Can not convert the external value \"{0}\" of type {1} to {2}", objects);
+                messageList.add(new Message("", msg, Message.ERROR));
+                return externalDataValue.toString();
+            }
+		} 
+        
 		String msg = NLS.bind("Can not convert the external value of type {0} to {1}", externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
 		messageList.add(new Message("", msg, Message.ERROR));
 		return externalDataValue.toString();
@@ -48,22 +60,10 @@ public class DoubleValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
-		if (ipsValue == null) {
-			return null;
-		}
-		if (ipsValue.length() == 0) {
-			return new Double(0);
-		}
-		try {
-			return Double.valueOf(ipsValue);
-		} catch (NumberFormatException e) {
-			Object[] objects = new Object[3];
-			objects[0] = ipsValue;
-			objects[1] = getSupportedDatatype().getQualifiedName();
-			objects[2] = Double.class.getName(); 
-			String msg = NLS.bind("Can not convert the internal value \"{0}\" of type {1} to {2}", objects);
-			messageList.add(new Message("", msg, Message.ERROR));
-		}
+        if (!Datatype.MONEY.isParsable(ipsValue)) {
+            String msg = NLS.bind("Can not convert the internal value \"{0}\" of type {1} to external value.", ipsValue, getSupportedDatatype().getQualifiedName());
+            messageList.add(new Message("", msg, Message.ERROR));
+        }
 		return ipsValue;
 	}
 
@@ -71,6 +71,7 @@ public class DoubleValueConverter implements IValueConverter {
 	 * {@inheritDoc}
 	 */
 	public Datatype getSupportedDatatype() {
-		return Datatype.DOUBLE;
+		return Datatype.MONEY;
 	}
+
 }

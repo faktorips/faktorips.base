@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.faktorips.devtools.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.faktorips.devtools.core" id="externalValueConverter" name="ExternalValueConverter"/>
+      </appInfo>
+      <documentation>
+         Registers classes capable of converting an external representation of a value to a string understood by FaktorIps and vice versa.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="externalValueConverter" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="externalTableFormat" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="externalValueConverter">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.extsystems.IValueConverter"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="externalTableFormat">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;extension
+      point=&quot;org.faktorips.devtools.core.externalValueConverter&quot;&gt;
+   &lt;externalTableFormat id=&quot;org.abc.MyTableFormat&quot;/&gt;
+   &lt;externalTableFormat id=&quot;org.otherstuff.AnotherTableFormat&quot;/&gt;
+   &lt;externalValueConverter class=&quot;org.abc.BooleanValueConverter&quot;/&gt;
+   &lt;externalValueConverter class=&quot;org.abc.DateValueConverter&quot;/&gt;
+   &lt;externalValueConverter class=&quot;org.abc.DoubleValueConverter&quot;/&gt;
+&lt;/extension&gt;
+
+This example regsiters three value converter classes (for boolean, date and double) to be used by two external table formats.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+
+Alle Rechte vorbehalten.
+
+Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
+Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+  http://www.faktorips.org/legal/cl-v01.html
+eingesehen werden kann.
+
+Mitwirkende:
+  Faktor Zehn GmbH - initial API and implementation 
+      </documentation>
+   </annotation>
+
+</schema>

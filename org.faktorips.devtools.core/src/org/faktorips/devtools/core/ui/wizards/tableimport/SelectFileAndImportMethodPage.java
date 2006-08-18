@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
@@ -30,16 +29,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
-import org.faktorips.devtools.extsystems.ExternalDataFormat;
+import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 
 /**
  * 
@@ -48,10 +47,8 @@ import org.faktorips.devtools.extsystems.ExternalDataFormat;
 public class SelectFileAndImportMethodPage extends WizardPage implements
 		ValueChangeListener {
 	
-    // the resource that was selected in the workbench or null if none.
-    private IResource selectedResource;
-
     private Combo fileFormatControl;
+    private Text nullRepresentation;
     
     // edit fields
     private TextButtonField filenameField;
@@ -59,13 +56,16 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
     private CheckboxField importIntoNewField;
     private CheckboxField importExistingReplaceField;
     private CheckboxField importExistingAppendField;
-    private ComboField fileFormatField;
     
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
     
     // page control as defined by the wizard page class
     private Composite pageControl;
+
+    private AbstractExternalTableFormat[] formats;
+    
+    private IResource initialSelection;
     
 	/**
      * 
@@ -74,9 +74,11 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
 	 */
     public SelectFileAndImportMethodPage(IStructuredSelection selection) throws JavaModelException {
         super(Messages.SelectFileAndImportMethodPage_title);
-        // TODO set selectedResource if selection contains a .xls file
-        selectedResource = null;
+        if (selection != null && selection.getFirstElement() instanceof IResource) {
+            initialSelection = (IResource)selection.getFirstElement();
+        }
         setPageComplete(false);
+        formats = IpsPlugin.getDefault().getExternalTableFormats();
 	}
     
     /**
@@ -98,9 +100,6 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         if (e.field == importExistingReplaceField) {
             importExistingReplaceChanged();
         }
-        if (e.field==fileFormatField) {
-            formatChanged();
-        }
         if (validateInput) { // don't validate during control creating!
             try {
                 validatePage();    
@@ -113,10 +112,6 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
 	}
     
     protected void filenameChanged() {
-        
-    }
-    
-    protected void formatChanged() {
         
     }
     
@@ -178,9 +173,8 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
     }
     
     protected void validateFormat() {
-        String name=fileFormatField.getText(); 
         // must not be empty
-        if (name.length() == 0) {
+        if (fileFormatControl.getSelectionIndex() == -1) {
             setErrorMessage(Messages.SelectFileAndImportMethodPage_msgMissingFileFormat);
             return;
         }
@@ -202,8 +196,14 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
     private void validateFilename() {
         if (filenameField.getText().length() == 0) {
             setErrorMessage(Messages.SelectFileAndImportMethodPage_msgEmptyFilename);
+            return;
         }
-        // TODO check if selected filename is a valid importable file
+        
+        if (!getFormat().isValidImportSource(getFilename())) {
+            setErrorMessage("The selected file is not valid for the selected type.");
+            return;
+        }
+        
     }
     
 	/**
@@ -227,10 +227,11 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         filenameField.addChangeListener(this);
         
         toolkit.createFormLabel(filenameComposite, Messages.SelectFileAndImportMethodPage_labelFileFormat);
-        fileFormatControl = toolkit.createCombo(filenameComposite, ExternalDataFormat.getEnumType());
-        fileFormatControl.setText(ExternalDataFormat.getEnumType().getValues()[0].getId());
-        fileFormatField = new ComboField(fileFormatControl);
-        fileFormatField.addChangeListener(this);
+        fileFormatControl = toolkit.createCombo(filenameComposite);
+        for (int i = 0; i < formats.length; i++) {	
+			fileFormatControl.add(formats[i].getName());
+		}
+        fileFormatControl.select(0);
         
         Composite importExistingComposite = new Composite(pageControl, SWT.NONE);
         importExistingComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -261,7 +262,12 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         importIntoNewField.addChangeListener(this);
         importNewRb.setChecked(true);
 
-        setDefaults(selectedResource);
+        setDefaults(initialSelection);
+        
+        Composite additionals = toolkit.createLabelEditColumnComposite(pageControl);
+        toolkit.createLabel(additionals, "Null-representation");
+        nullRepresentation = toolkit.createText(additionals);
+        nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 
         validateInput = true;
 	}
@@ -278,9 +284,8 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         if (selectedResource==null) {
             return;
         }
-        if (selectedResource instanceof IFile) {
-            // TODO determine somehow if selected resource actually is an importable (excel) file
-            setFilename(((IFile) selectedResource).getName());
+        if (getFormat().isValidImportSource(selectedResource.getRawLocation().toOSString())) {
+            setFilename(selectedResource.getRawLocation().toOSString());
         }
         try {
             validatePage();    
@@ -298,8 +303,8 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         filenameField.setText(newName);
     }
     
-    public String getFormat() {
-        return fileFormatField.getText();
+    public AbstractExternalTableFormat getFormat() {
+        return formats[fileFormatControl.getSelectionIndex()];
     }
     
     protected void updatePageComplete() {
@@ -308,7 +313,7 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
             return;
         }
         boolean complete = !"".equals(filenameField.getText()) //$NON-NLS-1$
-        && !"".equals(fileFormatField.getText()); //$NON-NLS-1$
+        && fileFormatControl.getSelectionIndex() != -1;
         setPageComplete(complete);
     }
     
@@ -328,5 +333,9 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
             return importExistingAppendField.getCheckbox().isChecked();
         }
         return false;
+    }
+    
+    public String getNullRepresentation() {
+    	return nullRepresentation.getText();
     }
 }

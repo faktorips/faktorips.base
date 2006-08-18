@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,7 +27,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -42,6 +48,8 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
+import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
+import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
 
@@ -85,6 +93,11 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     // Contains the ips test runner, which runs ips test and informs registered ips test run listener
     private IIpsTestRunner ipsTestRunner;
+    
+    /**
+     * All available external table formats
+     */
+    private AbstractExternalTableFormat[] externalTableFormats;
     
     // Factories for creating controls depending on the datatype
     private ValueDatatypeControlFactory[] controlFactories = new ValueDatatypeControlFactory[] {
@@ -365,4 +378,67 @@ public class IpsPlugin extends AbstractUIPlugin {
     	
     	return ipsTestRunner;
     }
+    
+    /**
+     * @return An array of all available external table formats.
+     */
+    public AbstractExternalTableFormat[] getExternalTableFormats() {
+    	if (externalTableFormats == null) {
+    		initExternalTableFormats();
+    	}
+    	return externalTableFormats;
+    }
+    
+    /**
+     * Initialize the array of all available table formats
+     */
+    private void initExternalTableFormats() {
+    	IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.faktorips.devtools.core.externalTableFormat");
+    	List result = new ArrayList();
+    	for (int i = 0; i < elements.length; i++) {
+			try {
+				AbstractExternalTableFormat format = (AbstractExternalTableFormat)elements[i].createExecutableExtension("class");
+				initExternalTableFormat(format, elements[i]);
+				result.add(format);
+			} catch (CoreException e) {
+				log(e);
+			}
+		}
+    	externalTableFormats = (AbstractExternalTableFormat[])result.toArray(new AbstractExternalTableFormat[result.size()]);
+    }
+
+	/**
+	 * Initialize the given format (fill with values provided by the given formatElement and 
+	 * with <code>IValueConverter</code>s configured in other extension points.
+	 * 
+	 * @param format The external table format to initialize.
+	 * @param formatElement The configuration element which defines the given external table format.
+	 */
+	private void initExternalTableFormat(AbstractExternalTableFormat format, IConfigurationElement formatElement) {
+		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID, "externalValueConverter");
+		IExtension[] extensions = point.getExtensions();
+		
+		format.setName(formatElement.getAttribute("name"));
+		format.setDefaultExtension(formatElement.getAttribute("defaultExtension"));
+		
+		for (int i = 0; i < extensions.length; i++) {
+			IConfigurationElement[] elements = extensions[i].getConfigurationElements();
+			boolean found = false;
+			for (int j = 0; j < elements.length && !found; j++) {
+				found = elements[j].getAttribute("id").equals(formatElement.getAttribute("id")); //$NON-NLS-1$ $NON-NLS-2$
+			}
+
+			for (int j = 0; j < elements.length && found; j++) {
+				if (elements[j].getName().equals("externalValueConverter")) { //$NON-NLS-1$
+					try {
+						format.addValueConverter((IValueConverter)elements[j]
+								.createExecutableExtension("class")); //$NON-NLS-1$
+					} catch (CoreException e) {
+						IpsPlugin.log(e);
+					}
+				}
+			}
+
+		}
+	}
 }

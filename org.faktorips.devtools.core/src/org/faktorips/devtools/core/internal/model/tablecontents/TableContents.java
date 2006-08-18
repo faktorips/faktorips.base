@@ -148,9 +148,18 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        if (findTableStructure() == null) {
+        ITableStructure structure = findTableStructure();
+        if (structure == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, this.structure);
-            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE)); 
+            return;
+        }
+        
+        if (structure.getNumOfColumns() != getNumOfColumns()) {
+        	Integer structCols = new Integer(structure.getNumOfColumns());
+        	Integer contentCols = new Integer(getNumOfColumns());
+        	String text = NLS.bind("Structure requires {0} columns, but this content has {1} columns.", structCols, contentCols);
+        	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
     }
 

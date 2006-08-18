@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
@@ -38,6 +40,8 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -324,4 +328,31 @@ public class NewContentsPage extends WizardPage implements ValueChangeListener {
         && !"".equals(contentsField.getText()); //$NON-NLS-1$
         setPageComplete(complete);
     }
+
+    public ITableStructure getTableStructure() throws CoreException {
+    	IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
+    	return (ITableStructure) root.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structureControl.getText());
+    }
+	/**
+	 * @return
+	 * @throws CoreException 
+	 */
+	public ITableContents getTableContents() throws CoreException {
+		IIpsPackageFragmentRoot root = sourceFolderControl.getPdPckFragmentRoot();
+		ITableStructure structure = getTableStructure();
+		
+		IIpsPackageFragment pack = root.createPackageFragment(packageControl.getText(), true, null);
+		ITableContents contents = (ITableContents)pack.createIpsFile(IpsObjectType.TABLE_CONTENTS, this.contentsField.getText(), true, null).getIpsObject();
+		contents.setTableStructure(structureControl.getText());
+		
+		while (contents.getNumOfColumns() < structure.getNumOfColumns()) {
+			contents.newColumn(null);
+		}
+
+		// at the moment, generations are not really supported by tablecontents, so 
+		// we set a dummy value for the valid-from for the new generation.
+		contents.newGeneration(new GregorianCalendar());
+		
+		return contents;
+	}
 }
