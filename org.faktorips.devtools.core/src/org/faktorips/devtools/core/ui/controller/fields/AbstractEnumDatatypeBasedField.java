@@ -180,4 +180,11 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 	public void setInvalidValue(String value) {
 		invalidValue = value;
 	}
+    
+    /**
+     * For tests only!
+     */
+    protected String getInvalidValue() {
+        return invalidValue;
+    }
 }
