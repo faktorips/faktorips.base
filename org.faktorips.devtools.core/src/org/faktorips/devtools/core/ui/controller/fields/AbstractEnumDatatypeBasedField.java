@@ -150,7 +150,13 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
 
 		super.setValue(getValueName((String) newValue));
 
-		if (ObjectUtils.equals(getValue(), newValue)) {
+        /* 
+         * check if the given value was set - if not so, we try to set an invalid value.
+         * But because this is a field for a combo, an invalid value can only be set
+         * using this mehtod if it valid before (for example the value-set changed).
+         * So we can add the value as invalid value. 
+         */
+		if (!ObjectUtils.equals(getValue(), newValue)) {
 			setInvalidValue((String)newValue);
 			super.setValue(newValue);
 		}
