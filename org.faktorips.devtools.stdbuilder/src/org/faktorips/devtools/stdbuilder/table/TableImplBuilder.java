@@ -253,16 +253,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private boolean checkColumnValidity() throws CoreException {
-        IColumn[] columns = getTableStructure().getColumns();
-        for (int i = 0; i < columns.length; i++) {
-            if (!columns[i].validate().isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private boolean checkUniqueKeyValidity() throws CoreException {
         IUniqueKey[] keys = getTableStructure().getUniqueKeys();
         for (int i = 0; i < keys.length; i++) {
@@ -283,6 +273,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 Table.class, new Class[0]);
         createFields(codeBuilder);
         createAddRowMethod(codeBuilder);
+        
         createInitKeyMapsMethod(codeBuilder);
         if (getTableStructure().isMultipleContentsAllowed()) {
             createGetInstanceMethodForMultipleContents(codeBuilder);
@@ -294,15 +285,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         createHashKeyClasses(codeBuilder);
         codeBuilder.classEnd();
         return codeBuilder.getFragment();
-    }
-
-    /**
-     * @throws CoreException
-     */
-    protected void generateInternal() throws CoreException {
-        if (!checkColumnValidity()) {
-            return;
-        }
     }
 
     private void createAllRowsMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {

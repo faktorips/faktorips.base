@@ -19,7 +19,9 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -84,8 +86,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
      */
     public void testUpdate() throws Exception {
         a.getRelations()[0].delete();
-        a.getIpsSrcFile().save(true, null);
-        
+        IWorkspaceRunnable runnable = new IWorkspaceRunnable(){
+
+            public void run(IProgressMonitor monitor) throws CoreException {
+                a.getIpsSrcFile().save(true, null);
+            }
+            
+        };
+        ipsProject.getProject().getWorkspace().run(runnable, null);
         QualifiedNameType[] dependants = graph.getDependants(a.getQualifiedNameType());
         //not only the changed IpsObject has to be updated in the dependency graph but also all dependants of it
         graph.update(a.getQualifiedNameType());

@@ -52,9 +52,21 @@ public class Messages extends NLS {
 
 	public static String IpsBuilder_msgErrorExceptionDuringBuild;
 
-	public static String IpsBuilder_msgFullBuildResults;
-
-	public static String IpsBuilder_msgIncrementalBuildResults;
+	public static String IpsBuilder_msgBuildResults;
 
 	public static String IpsBuilder_msgInvalidProperties;
+
+    public static String IpsBuilder_validatingProject;
+
+    public static String IpsBuilder_preparingBuild;
+
+    public static String IpsBuilder_startFullBuild;
+
+    public static String IpsBuilder_startIncrementalBuild;
+
+    public static String IpsBuilder_finishBuild;
+
+    public static String IpsBuilder_deleting;
+
+    public static String IpsBuilder_building;
 }

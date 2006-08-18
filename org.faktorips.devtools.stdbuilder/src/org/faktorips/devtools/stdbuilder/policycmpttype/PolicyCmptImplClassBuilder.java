@@ -1139,6 +1139,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
+            if(r.validate().containsErrorMsg()){
+                continue;
+            }
             JavaCodeFragment body = new JavaCodeFragment();
             MessageFragment msgFrag = MessageFragment.createMessageFragment(r.getMessageText());
             createDefaultParameterAssignments(r, body, parameterName);
@@ -1374,6 +1377,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
+            if(r.validate().containsErrorMsg()){
+                continue;
+            }
             String javaDoc = getLocalizedText(getIpsObject(), EXECMESSAGE_POLICY_JAVADOC, r.getName());
             JavaCodeFragment body = new JavaCodeFragment();
             body.appendln();
