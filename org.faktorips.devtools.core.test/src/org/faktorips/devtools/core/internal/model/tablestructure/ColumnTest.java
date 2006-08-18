@@ -17,12 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -100,5 +102,16 @@ public class ColumnTest extends AbstractIpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    public void testValidateName() throws Exception {
+        column.setName("Boolean");
+        column.setDatatype(Datatype.STRING.getQualifiedName());
+        MessageList ml = column.validate();
+        assertNotNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
+        
+        column.setName("integer");
+        ml = column.validate();
+        assertNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
     }
 }

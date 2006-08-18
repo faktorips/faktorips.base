@@ -17,7 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -123,6 +126,12 @@ public class Column extends IpsObjectPart implements IColumn {
         if (type.isPrimitive()) {
             String text = Messages.Column_msgPrimitvesArentSupported; 
             list.add(new Message(MSGCODE_DATATYPE_IS_A_PRIMITTVE, text, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$
+        }
+        
+        IStatus status = JavaConventions.validateIdentifier(StringUtils.uncapitalise(name));
+        if (!status.isOK()) {
+            String text = "The choosen name is not valid";
+            list.add(new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME));
         }
     }
 
