@@ -200,8 +200,13 @@ public class ProductAttributesSection extends IpsSection {
 				if (!event.getProperty().equals(IpsPreferences.MODIFY_RUNTIME_ID)) {
 					return;
 				}
-				runtimeId.setEnabled(isEnabled() && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
-				layout();
+				if (!runtimeId.isDisposed()) {
+				    runtimeId.setEnabled(isEnabled() && IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
+				    layout();
+				}
+                else {
+                    IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+                }
 			}
 		});
 
