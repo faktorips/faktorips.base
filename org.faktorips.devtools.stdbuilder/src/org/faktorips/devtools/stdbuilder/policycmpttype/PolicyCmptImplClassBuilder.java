@@ -54,6 +54,7 @@ import org.faktorips.runtime.IUnresolvedReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.PolicyCmptChangedEvent;
 import org.faktorips.runtime.internal.AbstractPolicyComponent;
 import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.runtime.internal.MethodNames;
@@ -442,6 +443,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("this.");
         methodsBuilder.append(getFieldNameForAttribute(a));
         methodsBuilder.appendln(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
+        if (GENERATE_CHANGE_LISTENER_SUPPORT) {
+            methodsBuilder.appendln("if (changeListeners!=null) {");
+            methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
+            methodsBuilder.appendClassName(PolicyCmptChangedEvent.class);
+            methodsBuilder.append("(this, PolicyCmptChangedEvent.PROPERTY_CHANGED, ");
+            methodsBuilder.appendQuoted(getFieldNameForAttribute(a));
+            methodsBuilder.appendln("));");
+            methodsBuilder.appendln("}");
+        }
         methodsBuilder.closeBracket();
     }
 
@@ -1683,4 +1693,46 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.appendCloseBracket();
         methodBuilder.append(body);
     }
+    
+    
+    /**
+     * Code sample:
+     * <pre>
+     * [Javadoc]
+     * public void addChangeListener(ICoverage objectToAdd) {
+     *     if(objectToAdd == null) { 
+     *         throw new IllegalArgumentException("Can't add null to ...");
+     *     }
+     *     if (coverages.contains(objectToAdd)) { 
+     *         return; 
+     *     }
+     *     coverages.add(objectToAdd);
+     * }
+     * </pre>
+     */
+    protected void generateMethodAddChangeListener (
+            IRelation relation, 
+            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        interfaceBuilder.generateSignatureAddObject(relation, methodsBuilder);
+        String fieldname = getFieldNameForRelation(relation);
+        String paramName = interfaceBuilder.getParamNameForAddObject(relation);
+        IRelation reverseRelation = relation.findReverseRelation();
+        methodsBuilder.openBracket();
+        methodsBuilder.append("if (" + paramName + " == null) {");
+        methodsBuilder.append("throw new ");
+        methodsBuilder.appendClassName(NullPointerException.class);
+        methodsBuilder.append("(\"Can't add null to relation " + relation.getName() + " of \" + this); }");
+        methodsBuilder.append("if(");
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(".contains(" + paramName + ")) { return; }");
+        methodsBuilder.append(fieldname);
+        methodsBuilder.append(".add(" + paramName + ");");
+        if (reverseRelation != null) {
+            String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
+            methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, targetClass, relation, reverseRelation));
+        }
+        methodsBuilder.closeBracket();
+    }
+    
 }

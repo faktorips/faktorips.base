@@ -26,6 +26,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
+    protected final static boolean GENERATE_CHANGE_LISTENER_SUPPORT = false;
+    
     public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
         super(builderSet, kindId, stringsSet);
     }
