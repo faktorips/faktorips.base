@@ -19,7 +19,7 @@ package org.faktorips.datatype;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.util.StringUtil;
-import org.faktorips.values.NullObject;
+import org.faktorips.values.NullObjectSupport;
 
 /**
  * A datatype that represents a Java class representing a value, for example java.lang.String.
@@ -41,7 +41,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 		this.name = name;
         Class[] interfaces = clazz.getInterfaces();
         for (int i = 0; i < interfaces.length; i++) {
-            if (interfaces[i].equals(NullObject.class)) {
+            if (interfaces[i].equals(NullObjectSupport.class)) {
                 isNullObject = true;
                 break;
             }
@@ -114,10 +114,10 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
             return true;
         }
         
-        if (!(value instanceof NullObject)) {
+        if (!(value instanceof NullObjectSupport)) {
             return false;
         }
-        return ((NullObject)value).isNull();
+        return ((NullObjectSupport)value).isNull();
     }
     
     /**

@@ -18,12 +18,13 @@
 package org.faktorips.datatype;
 
 import org.faktorips.values.NullObject;
+import org.faktorips.values.NullObjectSupport;
 
-public class PaymentMode implements NullObject {
+public class PaymentMode implements NullObjectSupport {
 
     final static PaymentMode ANNUAL = new PaymentMode("annual", "Annual Payment");
     final static PaymentMode MONTHLY = new PaymentMode("monthly", "Monthly Payment");
-    final static PaymentMode NULL = new PaymentMode("null", "No Payment");
+    final static PaymentMode NULL = new PaymentModeNull();
 
     private String id;
     private String name;
@@ -78,5 +79,13 @@ public class PaymentMode implements NullObject {
 
     public boolean isNull() {
         return this==PaymentMode.NULL;
+    }
+    
+    static class PaymentModeNull extends PaymentMode implements NullObject {
+
+        PaymentModeNull() {
+            super("null", "No Payment");
+        }
+        
     }
 }

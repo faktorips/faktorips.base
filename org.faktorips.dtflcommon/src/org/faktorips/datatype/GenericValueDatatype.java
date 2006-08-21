@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.NullObject;
+import org.faktorips.values.NullObjectSupport;
 
 /**
  * The generic value datatype is used to make a Java class (representing a value)
@@ -110,8 +110,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (nullObjectDefined) {
             try {
                 Object value = getValue(nullObjectId);
-                if (value instanceof NullObject) {
-                    if (!((NullObject)value).isNull()) {
+                if (value instanceof NullObjectSupport) {
+                    if (!((NullObjectSupport)value).isNull()) {
                         String text = "The string " + nullObjectId + " does not represent the special null value.";
                         list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL, text));
                     }
