@@ -174,7 +174,7 @@ public interface IIpsModel extends IIpsElement {
 	 * 
 	 * @return A list of messages. For each combination of two product components with 
 	 * duplicate runtime id a new message is created. This message has two invalid object properties, 
-	 * each containing one of the both product components.
+	 * each containing one of the two product components.
 	 * 
 	 * @throws CoreException if an error occurs during search.
 	 */
