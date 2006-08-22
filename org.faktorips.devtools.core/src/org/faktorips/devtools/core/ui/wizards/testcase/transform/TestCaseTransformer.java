@@ -19,8 +19,6 @@ package org.faktorips.devtools.core.ui.wizards.testcase.transform;
 
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
