@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.w3c.dom.Document;
@@ -169,9 +170,16 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         // this is a child parameter therfore a relation should exists
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) getParent();
         IPolicyCmptType policyCmptType = parent.findPolicyCmptType();
-        if (policyCmptType != null){
-        	return policyCmptType.getRelation(relation);
-        }
+        
+		if (policyCmptType != null){
+			ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
+			IRelation[] relations = hierarchy.getAllRelations(policyCmptType);
+			for (int i = 0; i < relations.length; i++) {
+				if (relations[i].getName().equals(relation)) {
+					return relations[i];
+				}
+			}
+		}
         return null;
 	}
 
