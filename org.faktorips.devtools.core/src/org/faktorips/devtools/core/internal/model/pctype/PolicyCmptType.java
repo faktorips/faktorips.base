@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.CycleException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -101,13 +102,18 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 * {@inheritDoc}
 	 */
 	public String getProductCmptType() {
-		return getIpsPackageFragment().getName() + '.'
-				+ unqalifiedProductCmptType;
-	}
+        IIpsPackageFragment pack = getIpsPackageFragment();
+        if (pack.isDefaultPackage()) {
+            return unqalifiedProductCmptType;
+        }
+        else {
+            return pack.getName() + '.' + unqalifiedProductCmptType;
+        }
+    }
 
 	/**
-	 * {@inheritDoc}
-	 */
+     * {@inheritDoc}
+     */
 	public boolean isConfigurableByProductCmptType() {
 		return configurableByProductCmptType;
 	}

@@ -95,6 +95,7 @@ public class ProductAttributesSection extends IpsSection {
 	private CompositeUIController uiMasterController = null;
 	
 	private ProductCmptTypeRefControl policyCmptType;
+    private MyModifyListener policyCmptTypeListener;
 	
 	private Text runtimeId;
 	
@@ -188,12 +189,12 @@ public class ProductAttributesSection extends IpsSection {
 		controller.add(field, generation.getProductCmpt(), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
 		controller.add(runtimeId, generation.getProductCmpt(), IProductCmpt.PROPERTY_RUNTIME_ID);
 
-		ModifyListener ml = new MyModifyListener();
-		policyCmptType.getTextControl().addModifyListener(ml);
-		
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();
 		
+        policyCmptTypeListener = new MyModifyListener();
+        policyCmptType.getTextControl().addModifyListener(policyCmptTypeListener);
+        
 		// update enablement state of runtime-id-input if preference changed
 		IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
@@ -360,9 +361,11 @@ public class ProductAttributesSection extends IpsSection {
 	private class MyModifyListener implements ModifyListener {
 		
 		public void modifyText(ModifyEvent e) {
+            policyCmptType.getTextControl().removeModifyListener(this);
 			uiMasterController.updateUI();
 			uiMasterController.updateModel();
 			editor.forceRefresh();
+            policyCmptType.getTextControl().addModifyListener(this);
 		}
 	};
 }

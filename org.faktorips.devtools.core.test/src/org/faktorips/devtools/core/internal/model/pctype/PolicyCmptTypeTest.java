@@ -492,9 +492,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
     }
     
-    public void testGetProductCmptType() {
+    public void testGetProductCmptType() throws CoreException {
     	pcType.setUnqualifiedProductCmptType("MotorProduct");
     	assertEquals(pack.getName() + '.' + "MotorProduct", pcType.getProductCmptType());
+        
+        pcType = newPolicyCmptType(ipsProject, "Type");
+        pcType.setUnqualifiedProductCmptType("MotorProduct");
+        assertEquals("MotorProduct", pcType.getProductCmptType());
     }
     
     public void testFindProductCmptType() throws CoreException {
