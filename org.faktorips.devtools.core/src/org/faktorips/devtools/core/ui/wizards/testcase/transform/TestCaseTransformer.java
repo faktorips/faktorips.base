@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.ui.wizards.testcase.transform;
 
 import java.util.Iterator;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -106,8 +108,13 @@ public class TestCaseTransformer {
         String policyCmpt = parent.getNodeName();
         String productCmpt = parent.getAttribute("productCmpt"); //$NON-NLS-1$
         if (StringUtils.isNotEmpty(productCmpt)){
-            testPolicyCmpt.setProductCmpt(productCmpt);
-            testPolicyCmpt.setLabel(StringUtil.unqualifiedName(productCmpt));
+            String uniqueLabel = StringUtil.unqualifiedName(productCmpt);
+        	testPolicyCmpt.setProductCmpt(productCmpt);
+            
+            ITestCase testCase = testPolicyCmpt.getTestCase();
+            if (testCase!=null)
+            	uniqueLabel = testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);
+            testPolicyCmpt.setLabel(uniqueLabel);
         }else{
             testPolicyCmpt.setLabel(policyCmpt);
         }
@@ -124,7 +131,8 @@ public class TestCaseTransformer {
                 } else if (element.getAttribute("type").equals("property")){ //$NON-NLS-1$ //$NON-NLS-2$
                     ITestAttributeValue testAttrValue = testPolicyCmpt.newTestAttributeValue();
                     testAttrValue.setTestAttribute(element.getNodeName());
-                    testAttrValue.setValue(XmlUtil.getTextNode(element).getData());
+                    if (XmlUtil.getTextNode(element)!=null)
+                    	testAttrValue.setValue(XmlUtil.getTextNode(element).getData());
                 }else if (element.getAttribute("type").equals("composite")){ //$NON-NLS-1$ //$NON-NLS-2$
                     // this is a child policy component
                     ITestPolicyCmptRelation relation = testPolicyCmpt.newTestPolicyCmptRelation();
