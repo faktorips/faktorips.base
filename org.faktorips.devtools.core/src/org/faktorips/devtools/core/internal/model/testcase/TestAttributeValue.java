@@ -135,7 +135,7 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
      * {@inheritDoc}
      */
     public void delete() {
-        ((TestPolicyCmpt)getIpsObject()).removeTestAttributeValue(this);
+        ((TestPolicyCmpt)getParent()).removeTestAttributeValue(this);
         updateSrcFile();
         deleted = true;
     }
