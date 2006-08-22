@@ -17,10 +17,13 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.actions.MoveResourceAction;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 
 /**
@@ -42,8 +45,15 @@ public class MoveAction extends IpsAction {
 	 * {@inheritDoc}
 	 */
 	public void run(IStructuredSelection selection) {
-		MoveWizard move = new MoveWizard(selection, MoveWizard.OPERATION_MOVE);
-		WizardDialog wd = new WizardDialog(shell, move);
-		wd.open();
+        Object selected= selection.getFirstElement();
+        if(selected instanceof IIpsElement){
+            MoveWizard move = new MoveWizard(selection, MoveWizard.OPERATION_MOVE);
+            WizardDialog wd = new WizardDialog(shell, move);
+            wd.open();
+        }else if(selected instanceof IResource){
+            MoveResourceAction action= new MoveResourceAction(shell);
+            action.selectionChanged(selection);
+            action.run();
+        }
 	}
 }

@@ -17,10 +17,13 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.actions.RenameResourceAction;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 
 /**
@@ -43,8 +46,16 @@ public class RenameAction extends IpsAction {
 	 * {@inheritDoc}
 	 */
 	public void run(IStructuredSelection selection) {
-		MoveWizard move = new MoveWizard(selection, MoveWizard.OPERATION_RENAME);
-		WizardDialog wd = new WizardDialog(shell, move);
-		wd.open();
+        Object selected= selection.getFirstElement();
+        if(selected instanceof IIpsElement){
+            MoveWizard move = new MoveWizard(selection, MoveWizard.OPERATION_RENAME);
+            WizardDialog wd = new WizardDialog(shell, move);
+            wd.open();    
+        }else if(selected instanceof IResource){
+            RenameResourceAction action= new RenameResourceAction(shell);
+            action.selectionChanged(selection);
+            action.run();
+        }
+        
 	}
 }
