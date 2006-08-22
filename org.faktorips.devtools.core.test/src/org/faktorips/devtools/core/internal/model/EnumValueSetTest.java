@@ -101,6 +101,19 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertFalse(list.containsErrorMsg());
     }
     
+    public void testContainsValueInvalidSet() {
+        EnumValueSet set = new EnumValueSet(ce, 1);
+        set.addValue("1");
+        MessageList list = new MessageList();
+        set.containsValue("10 EUR", list, null, null);
+        assertNotNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_CONTAINED));
+        
+        list.clear();
+        set.addValue("10EUR");
+        set.containsValue("10 EUR", list, null, null);
+        assertNull(list.getMessageByCode(IEnumValueSet.MSGCODE_VALUE_NOT_CONTAINED));
+    }
+    
     public void testContainsValueSet() throws Exception {
     	EnumValueSet superset = new EnumValueSet(ce, 50);
     	superset.addValue("1EUR");

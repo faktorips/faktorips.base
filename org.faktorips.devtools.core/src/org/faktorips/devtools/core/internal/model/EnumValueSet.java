@@ -91,7 +91,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         
         for (Iterator it=elements.iterator(); it.hasNext(); ) {
             String each = (String)it.next();
-            if (datatype.areValuesEqual(each, value)) {
+            if (datatype.isParsable(each) && datatype.areValuesEqual(each, value)) {
             	return true;
             }
         }
