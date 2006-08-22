@@ -1242,7 +1242,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		 */
 
 		public void dispose() {
-			IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener((IIpsTestRunListener) this);
 		}
 
 		/**
@@ -1446,5 +1445,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	TestCaseContentProvider getContentProvider() {
 		return contentProvider;
+	}
+
+	public void dispose() {
+		IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener((IIpsTestRunListener) this);
+		super.dispose();
 	}
 }
