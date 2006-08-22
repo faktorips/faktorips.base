@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -33,12 +34,21 @@ public class ProductExplorerFilter extends ViewerFilter {
 	/**
 	 * Returns <code>true</code> for all <code>IIpsElement</code>s except 
 	 * <code>IIpsProject</code>s that do not have the isProductdefinitionProject
-	 *  flag set to true. True is returned for all other types.
+	 *  flag set to true. 
+     *  <p>
+     *  Returns false if the element is an <code>IFile</code> with name ".ipsproject".
+     *  <p>
+     *  True is returned for all other types.
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if(element instanceof IIpsProject){
 			return ((IIpsProject)element).isProductDefinitionProject();
 		}
+        if(element instanceof IFile){
+            if(((IFile)element).getName().equals(".ipsproject")){ //$NON-NLS-1$
+                return false;
+            }
+        }
 		return true;
 	}
 }

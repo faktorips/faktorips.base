@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -114,7 +115,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     /*
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider.getText(Object)'
      */
-    public void testGetText() {
+    public void testGetText() throws CoreException {
         // test attribute labels 
         testAttribute(flatProvider, attr);
         testAttribute(flatProvider, attr2);
@@ -173,15 +174,22 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(file.getName(), resName);
         resName= flatProvider.getText(subFolder);
         assertEquals(subFolder.getName(), resName);
+        
+        // non ips projects
+        IProject platformProject= newPlatformProject("PlatformProject");
+        resName= hierarchyProvider.getText(platformProject);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")", resName);
+        resName= flatProvider.getText(platformProject);
+        assertEquals(platformProject.getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")", resName);
     }
     
-    // format: "<attributeName><5 blanks>[<dataType>,<blank><attributeType>]" 
+    // format: "<attributeName><blank>:<blank><dataType>,<blank><attributeType>" 
     private void testAttribute(ModelLabelProvider provider, IAttribute a) {
         String attrLabel= provider.getText(a);
         assertTrue(attrLabel.startsWith(a.getName()));
-        String dType= attrLabel.substring(attrLabel.indexOf("[")+1, attrLabel.lastIndexOf(","));
+        String dType= attrLabel.substring(attrLabel.indexOf(":")+2, attrLabel.lastIndexOf(",")); // +2 -> ignore following blank
         assertEquals(a.getDatatype(), dType);
-        String aType= attrLabel.substring(attrLabel.indexOf(",")+2, attrLabel.lastIndexOf("]"));
+        String aType= attrLabel.substring(attrLabel.indexOf(",")+2, attrLabel.length());
         assertEquals(a.getAttributeType().getId().toString(), aType);
     }
 

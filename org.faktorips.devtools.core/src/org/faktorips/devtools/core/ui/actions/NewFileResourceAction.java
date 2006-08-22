@@ -34,6 +34,7 @@ public class NewFileResourceAction extends IpsAction {
         this.setDescription(Messages.NewFileResourceAction_description);
         this.setText(Messages.NewFileResourceAction_name);
         this.setToolTipText(this.getDescription());
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewFileWizard.gif")); //$NON-NLS-1$
 	}
 	
 	/**

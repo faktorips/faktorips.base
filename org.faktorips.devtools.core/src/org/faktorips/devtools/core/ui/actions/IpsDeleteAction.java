@@ -17,12 +17,12 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -30,13 +30,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.pctype.Attribute;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -53,16 +46,24 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @author Stefan Widmaier
  */
 
-public class IpsDeleteAction extends Action {
-	private ISelectionProvider selectionProvider;
+public abstract class IpsDeleteAction extends Action implements ISelectionChangedListener{
+    
+    /**
+     * The selectionProvider given at instanciation. This is used to retrieve the currently
+     * selected objects when the run() method is called.
+     */
+	protected ISelectionProvider selectionProvider;
 	
 	/**
 	 * Creates a DeleteAction with the given SelectionProvider. This SelectionProvider
 	 * is used to retrieve the selected objects that are deleted from the object model
 	 * while executing the run() method.
+     * <p>
+     * The given <code>ISelectionProvider</code> must not be <code>null</code>.
 	 */
 	public IpsDeleteAction(ISelectionProvider provider){
 		selectionProvider= provider;
+        provider.addSelectionChangedListener(this);
 	}
 	
     /**
@@ -79,7 +80,6 @@ public class IpsDeleteAction extends Action {
 		if(!(selection instanceof IStructuredSelection)){
 			return;
 		}
-		Object[] items= ((IStructuredSelection) selection).toArray();
 		
 		Tree tree= ((TreeViewer)selectionProvider).getTree();
 		if (tree.isDisposed()) {
@@ -89,54 +89,21 @@ public class IpsDeleteAction extends Action {
 		// store the path to the item to select after all selected items are deleted.
 		Indexer indexer= createIndexer(tree);
 		
-		// delete selected Objects
-	    deleteResourceForSelection(items);
+		// delete selected Objects if possible
+        deleteSelection((IStructuredSelection)selection);
 	    
 	    // select the item in the tree whose path was stored before.
 	    applyIndexer(tree, indexer);
 	    
     }
 	
-    /**
-     * Deletes the given objects from the object model. 
-     * As a quick'n'dirty fix this implementation ignores <code>Attribute</code> objects 
-     * to disable the deletion of attributes in the ModelExplorer.
-     * TODO IpsDeleteAction should be used consistently in all editors and viewparts. 
-     * On the one hand this means the editors (their Pages and Sections) need to be connected 
-     * to the SelectionService, on the other hand problems with multiple instances of IpsObjects
-     * (data synchronization) must be solved. <p>
-     * See Flyspray entry FS#330.
-     */
-	private void deleteResourceForSelection(Object[] items){
-    	for (int i = 0; i < items.length; i++) {
-            if (!(items[i] instanceof IProductCmptTypeRelation)) {
-            	if (items[i] instanceof IIpsObjectPart) {
-            		// ignore Attributes
-            		if(!(items[i] instanceof Attribute)){
-            			((IIpsObjectPart)items[i]).delete();
-            		}
-            	} else if (items[i] instanceof IIpsElement) {
-            		IResource res;
-            		if (items[i] instanceof IProductCmpt || items[i] instanceof ITableContents) {
-            			res = ((IIpsObject)items[i]).getEnclosingResource();
-            		}else if(items[i] instanceof IIpsObject){
-            			res = ((IIpsObject)items[i]).getIpsSrcFile().getCorrespondingFile();
-            		}else {
-            			res = ((IIpsElement)items[i]).getCorrespondingResource();
-            		}
-            		if (res != null) {
-            			try {
-            				res.delete(true, null);
-            			} catch (CoreException e) {
-            				IpsPlugin.logAndShowErrorDialog(e);
-            			}
-            		}
-            	}
-            }
-        }
-	}
-	
-	private Indexer createIndexer(Tree tree){
+    protected abstract void deleteSelection(IStructuredSelection selection);
+    
+    protected abstract void setEnabledState(ISelection selection);
+    
+    
+
+    private Indexer createIndexer(Tree tree){
 		TreeItem[] items = tree.getSelection();
 		Indexer start= null;
 		if (items.length >= 1) {
@@ -216,6 +183,10 @@ public class IpsDeleteAction extends Action {
     	}
     	return getIpsSection(child.getParent());
     		
+    }
+    
+    public void selectionChanged(SelectionChangedEvent event) {
+        setEnabledState(event.getSelection());
     }
     
 }

@@ -74,11 +74,13 @@ public class Messages extends NLS {
 	public static String NewFolderAction_msgNoParentFound;
 	public static String NewFolderAction_msgFolderAllreadyExists;
 	public static String NewFolderAction_name;
-	public static String NewFolderAction_msgFolderNameMustNotContainDots;
 	public static String IpsTestCaseAction_name;
 	public static String IpsTestCaseAction_description;
 	public static String IpsTestCaseAction_tooltip;
 	public static String NewTestCaseAction_name;
 	public static String NewFileResourceAction_name;
 	public static String NewFileResourceAction_description;
+    public static String NewFolderAction_FoldernameMustNotContainBlanks;
+    public static String NewFolderAction_InvalidFoldername;
+    public static String IpsPropertiesAction_name;
 }

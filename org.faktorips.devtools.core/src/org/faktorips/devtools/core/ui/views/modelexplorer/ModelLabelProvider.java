@@ -71,18 +71,17 @@ public class ModelLabelProvider implements ILabelProvider {
 				IAttribute attrib = (IAttribute) element;
 				StringBuffer sb= new StringBuffer();
 				sb.append(attrib.getName());
-				sb.append("     ["); //$NON-NLS-1$
+				sb.append(" : "); //$NON-NLS-1$
 				sb.append(attrib.getDatatype());
 				sb.append(", "); //$NON-NLS-1$
 				sb.append(attrib.getAttributeType().getId());
-				sb.append("]"); //$NON-NLS-1$
 				return sb.toString();
 			}
 			return ((IIpsElement) element).getName();
 		}else{
 			if(element instanceof IProject){
 				if(((IProject)element).isOpen()){
-					return ((IProject)element).getName()+"    ["+Messages.ModelExplorer_nonIpsProjectLabel+"]"; //$NON-NLS-1$ //$NON-NLS-3$
+					return ((IProject)element).getName()+" ("+Messages.ModelExplorer_nonIpsProjectLabel+")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 			}
 			return ((IResource)element).getName();

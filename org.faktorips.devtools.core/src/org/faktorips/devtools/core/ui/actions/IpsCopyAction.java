@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.actions;
 
@@ -21,59 +13,84 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 /**
- * Copy of objects controlled by FaktorIps. 
+ * Copy of objects controlled by FaktorIps. This action activates/deactivates itself
+ * according to the current selection.
  * 
  * @author Thorsten Guenther
+ * @author Stefan Widmaier
  */
-public class IpsCopyAction extends IpsAction {
+public class IpsCopyAction extends IpsAction implements ISelectionChangedListener{
 
     private Clipboard clipboard;
-    
+
     public IpsCopyAction(ISelectionProvider selectionProvider, Shell shell) {
         super(selectionProvider);
         clipboard = new Clipboard(shell.getDisplay());
+        selectionProvider.addSelectionChangedListener(this);
     }
-    
 
     public void run(IStructuredSelection selection) {
         List selectedObjects = selection.toList();
 
         List copiedObjects = new ArrayList();
         List copiedResources = new ArrayList();
-//        IIpsObjectPart part;
+        // IIpsObjectPart part;
         for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
             Object selected = iter.next();
 
             if (selected instanceof IIpsObjectPart) {
-//                part = (IIpsObjectPart)selected;
-                // TODO to be refactored with IpsDeleteAction, when inserting and deleting of attributes is allowed. See FS#330
-//                copiedObjects.add(new IpsObjectPartState(part).toString());
-                
-            }
-            else if (selected instanceof IIpsElement) {
-            	
-            	IResource resource = ((IIpsElement)selected).getEnclosingResource();
-            	if (resource != null) {
-            		copiedResources.add(resource);
-            	}
+                // part = (IIpsObjectPart)selected;
+                // TODO to be refactored with IpsDeleteAction, when inserting and deleting of
+                // attributes is allowed. See FS#330
+                // copiedObjects.add(new IpsObjectPartState(part).toString());
+
+            } else if (selected instanceof IIpsElement) {
+
+                IResource resource = ((IIpsElement)selected).getEnclosingResource();
+                if (resource != null) {
+                    copiedResources.add(resource);
+                }
+            } else if (selected instanceof IFolder | selected instanceof IFile) {
+                copiedResources.add(selected);
             }
         }
 
         if (copiedObjects.size() > 0 || copiedResources.size() > 0) {
-            clipboard.setContents(getDataArray(copiedObjects, copiedResources), getTypeArray(copiedObjects, copiedResources));
+            clipboard.setContents(getDataArray(copiedObjects, copiedResources), getTypeArray(copiedObjects,
+                    copiedResources));
         }
     }
 
-    public void setEnabled(boolean enabled) {
-    	super.setEnabled(enabled);
+    /**
+     * Disabled this action if no copyable IpsElement is selected.
+     * {@inheritDoc}
+     */
+    public void selectionChanged(SelectionChangedEvent event) {
+        if(event.getSelection() instanceof IStructuredSelection){
+            IStructuredSelection selection= (IStructuredSelection) event.getSelection();
+            Object[] objects= selection.toArray();
+            boolean enabled= true;
+            for (int i = 0; i < objects.length; i++) {
+                if(objects[i] instanceof IIpsObjectPart){
+                    enabled= false;
+                }
+            }
+            setEnabled(enabled);
+        }else{
+            setEnabled(false);
+        }
     }
 }

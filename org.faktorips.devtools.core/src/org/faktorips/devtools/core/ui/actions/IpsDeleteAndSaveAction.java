@@ -23,8 +23,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.Attribute;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 /**
@@ -39,9 +39,9 @@ public class IpsDeleteAndSaveAction extends Action{
 	
 	private IpsDeleteAction deleteActionDelegate;
 	
-	public IpsDeleteAndSaveAction(ISelectionProvider selProv){
+	public IpsDeleteAndSaveAction(ISelectionProvider selProv, Shell shell){
 		selectionProvider= selProv;
-		deleteActionDelegate= new IpsDeleteAction(selProv);
+		deleteActionDelegate= new ModelExplorerDeleteAction(selProv, shell);
 	}
 	
 	public void runWithEvent(Event event){
@@ -66,9 +66,9 @@ public class IpsDeleteAndSaveAction extends Action{
 				Object del= deletedItems[i];
 				if(del instanceof IIpsObjectPart){
             		// IpsDeleteAction ignores Attributes, thus their IpsObjects must not be saved.
-            		if(!(del instanceof Attribute)){
+            		if(!(del instanceof IIpsObjectPart)){
     					((IIpsObjectPart)del).getIpsObject().getIpsSrcFile().save(true, null);
-            		}	
+            		}
 				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
