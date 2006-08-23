@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
@@ -359,19 +360,18 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /*
      * Generates the body for the initInputFromXml method.<br>
      * For each test policy component type parameter in the given policyTypeParams list.
-     * <p> 
-     * Example:
-     * <p>
-     * <pre>
-
-    *   }
-     * </pre>
      */    
     private void buildInitForTestValueParameter(JavaCodeFragment body, ITestValueParameter[] valueParams, String variablePrefix) throws CoreException {
         for (int i = 0; i < valueParams.length; i++) {
         	ITestValueParameter policyTypeParam = valueParams[i];
-            body.appendln(variablePrefix + org.apache.commons.lang.StringUtils.capitalise(policyTypeParam.getName()) + " = " + 
-                    getCachedDatatypeHelper(policyTypeParam).getJavaClassName() + ".valueOf(getValueFromNode(element, \"" + policyTypeParam.getName() + "\"));");
+            body.appendln(variablePrefix + org.apache.commons.lang.StringUtils.capitalise(policyTypeParam.getName()) + " = ");
+            DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
+            body.appendClassName(dataTypeHelper.getJavaClassName());
+            String valueOfMethod = "valueOf";
+            if (dataTypeHelper.getDatatype() instanceof GenericValueDatatype){
+            	valueOfMethod = ((GenericValueDatatype) dataTypeHelper.getDatatype()).getValueOfMethodName();
+            }
+            body.appendln("." + valueOfMethod + "(getValueFromNode(element, \"" + policyTypeParam.getName() + "\"));");
         }
     }
     
