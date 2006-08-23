@@ -184,4 +184,13 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         		|| ( parent!=null && parent.equals(other.getParent()) ) );
     	
     }
+    
+    /**
+     * Mark ipsObjectParts as not adaptable. This prevents the CVSDecorator from displaying
+     * decorations for ipsobjectparts in ModelExplorer and ProductExplorer.
+     * {@inheritDoc}
+     */
+    public Object getAdapter(Class adapter) {
+        return null;
+    }
 }

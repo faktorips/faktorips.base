@@ -609,4 +609,20 @@
       <externalValueConverter class="org.faktorips.devtools.extsystems.excel.LongValueConverter"/>
       <externalValueConverter class="org.faktorips.devtools.extsystems.excel.StringValueConverter"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="false"
+            class="org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator"
+            icon="icons/ovr16/error_co.gif"
+            id="org.faktorips.devtools.core.ipsproblemsdecorator"
+            label="IpsProblemsDecorator"
+            lightweight="true"
+            location="BOTTOM_LEFT"
+            state="true">
+         <enablement>
+            <objectClass name="org.faktorips.devtools.core.model.IIpsElement"/>
+         </enablement>
+      </decorator>
+   </extension>
 </plugin>

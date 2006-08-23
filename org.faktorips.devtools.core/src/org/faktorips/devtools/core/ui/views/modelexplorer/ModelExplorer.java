@@ -17,7 +17,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
-import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -27,6 +26,7 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -133,7 +133,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     private ModelLabelProvider labelProvider = new ModelLabelProvider();
 
     private IpsResourceChangeListener resourceListener;
-    protected ModelExplorerConfiguration config;
+    private ModelExplorerConfiguration config;
     /**
      * Flag that indicates whether the current layout style is flat (true) or hierarchical (false).
      */
@@ -175,11 +175,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new ModelExplorerDropListener());
 
-        ILabelDecorator defaultDecorator = IpsPlugin.getDefault().getWorkbench().getDecoratorManager()
-                .getLabelDecorator();
-        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, defaultDecorator);
-        DecoratingLabelProvider decoProvider2 = new DecoratingLabelProvider(decoProvider, ipsDecorator);
-        treeViewer.setLabelProvider(decoProvider2);
+        IDecoratorManager decoManager= IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
+        treeViewer.setLabelProvider(decoProvider);
 
         createFilters(treeViewer);
 
@@ -187,7 +185,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         resourceListener = new IpsResourceChangeListener(treeViewer);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
         /*
-         * Use the current value of isFlatLayout, which is set while loading the memento/viewState
+         * Use the current value of isFlatLayout, which is set by loading the memento/viewState
          * before this method is called
          */
         setFlatLayout(isFlatLayout);
@@ -393,14 +391,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
          */
         public void menuAboutToShow(IMenuManager manager) {
             if (!(treeViewer.getSelection() instanceof IStructuredSelection)) {
-                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$
                 return;
             }
             Object selected = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
             if (selected == null) {
-                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$
                 return;
             }
 
@@ -518,7 +512,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
 
         private void createRefactorMenu(IMenuManager manager, Object selected) {
-            if (selected instanceof IIpsElement & !(selected instanceof IIpsProject)) {
+            if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile | selected instanceof IFolder ) {
                 MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
                 subMm.add(rename);
                 subMm.add(move);
