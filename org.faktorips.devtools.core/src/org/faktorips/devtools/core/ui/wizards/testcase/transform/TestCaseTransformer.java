@@ -46,6 +46,8 @@ import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -59,6 +61,9 @@ import org.w3c.dom.NodeList;
  * @author Joerg Ortmann
  */
 public class TestCaseTransformer {
+    
+    private ITestCaseType type;
+    
     /**
      * Creates and returns a test case object from the given runetime test case xml file.
      * 
@@ -75,6 +80,8 @@ public class TestCaseTransformer {
         String testCaseName = file.getName().substring(0, 
                 file.getName().indexOf(file.getFileExtension()) - 1) + nameExtension;
         
+        type = (ITestCaseType)root.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseTypeName);
+        
         ITestCase newTestCase = createNewTestCase(root, targetPackageName, testCaseName);
         newTestCase.setTestCaseType(testCaseTypeName);
         Document doc = XmlUtil.getDocument(file.getContents());
@@ -85,6 +92,7 @@ public class TestCaseTransformer {
         initTestPolicyCmpts(XmlUtil.getFirstElement(elem, "ExpectedResult"), newTestCase, false); //$NON-NLS-1$
         
         newTestCase.getIpsSrcFile().save(true, null);
+        
         return newTestCase;
     }
     
@@ -129,8 +137,22 @@ public class TestCaseTransformer {
                 } else if (element.getAttribute("type").equals("property")){ //$NON-NLS-1$ //$NON-NLS-2$
                     ITestAttributeValue testAttrValue = testPolicyCmpt.newTestAttributeValue();
                     testAttrValue.setTestAttribute(element.getNodeName());
-                    if (XmlUtil.getTextNode(element)!=null)
-                    	testAttrValue.setValue(XmlUtil.getTextNode(element).getData());
+                    if (XmlUtil.getTextNode(element) != null) {
+                        testAttrValue.setValue(XmlUtil.getTextNode(element).getData());
+                    }
+                    
+                    ITestAttribute attr = null;
+                    try {
+                        attr = testAttrValue.findTestAttribute();
+                    }
+                    catch (CoreException e) {
+                        // nothing to do
+                    }
+                    
+                    if (attr == null) {
+                        testAttrValue.delete();
+                    }
+                    
                 }else if (element.getAttribute("type").equals("composite")){ //$NON-NLS-1$ //$NON-NLS-2$
                     // this is a child policy component
                     ITestPolicyCmptRelation relation = testPolicyCmpt.newTestPolicyCmptRelation();
