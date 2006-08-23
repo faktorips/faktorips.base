@@ -43,6 +43,18 @@ import org.w3c.dom.Element;
 public interface IExtensionPropertyDefinition extends Comparable {
 
     /**
+     * Position to indicate that controls to edit the extension property should be placed above
+     * the standard FaktorIPS controls.
+     */
+    public final static String POSITION_TOP = "top";
+    
+    /**
+     * Position to indicate that controls to edit the extension property should be placed below
+     * the standard FaktorIPS controls.
+     */
+    public final static String POSITION_BOTTOM = "bottom";
+    
+    /**
      * Default sort order.
      */
     public final static int DEFAULT_SORT_ORDER = 10000;
