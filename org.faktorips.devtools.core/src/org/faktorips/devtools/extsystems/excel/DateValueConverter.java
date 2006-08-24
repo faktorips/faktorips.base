@@ -19,32 +19,32 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
+import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Converter for GregorianCalendarDate.
+ * Converter for the Date-Datatype.
  * 
  * @author Thorsten Guenther
  */
-public class GregorianCalendarDateValueConverter implements IValueConverter {
+public class DateValueConverter implements IValueConverter {
 
+    private DateDatatype datatype = new DateDatatype();
+    
     /**
      * Supported type for the externalDataValue is Number or Date.
      * 
      * {@inheritDoc}
      */
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
-        GregorianCalendar cal = new GregorianCalendar();
+        Date date;
         if (externalDataValue instanceof Date) {
-            cal.setTime((Date)externalDataValue);
+            date = (Date)externalDataValue;
         }
         else if (externalDataValue instanceof Number) {
-            Date date = new Date(((Number)externalDataValue).longValue());
-            cal.setTime(date);
+            date = new Date(((Number)externalDataValue).longValue());
         }
         else {
             String msg = NLS.bind("Can not convert the external value of type {0} to {1}",
@@ -52,7 +52,7 @@ public class GregorianCalendarDateValueConverter implements IValueConverter {
             messageList.add(new Message("", msg, Message.ERROR));
             return externalDataValue.toString();
         }
-        return datatype.valueToString(cal);
+        return datatype.valueToString(date);
     }
 
     /**
@@ -66,10 +66,9 @@ public class GregorianCalendarDateValueConverter implements IValueConverter {
             return null;
         }
         
-        GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
         try {
-            GregorianCalendar cal = (GregorianCalendar)datatype.getValue(ipsValue);
-            return cal.getTime();
+            Date date = (Date)datatype.getValue(ipsValue);
+            return date;
         }
         catch (RuntimeException e) {
             Object[] objects = new Object[3];
@@ -86,7 +85,7 @@ public class GregorianCalendarDateValueConverter implements IValueConverter {
      * {@inheritDoc}
      */
     public Datatype getSupportedDatatype() {
-        return Datatype.GREGORIAN_CALENDAR_DATE;
+        return datatype;
     }
 
 }

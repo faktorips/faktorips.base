@@ -26,11 +26,11 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public class GregorianCalendarDateValueConverterTest extends TestCase {
+public class GregorianCalendarValueConverterTest extends TestCase {
 
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
-        GregorianCalendarDateValueConverter converter = new GregorianCalendarDateValueConverter();
+        GregorianCalendarValueConverter converter = new GregorianCalendarValueConverter();
         String value = converter.getIpsValue(new Long(1234), ml);
         assertTrue(Datatype.GREGORIAN_CALENDAR_DATE.isParsable(value));
         assertTrue(ml.isEmpty());
@@ -46,7 +46,7 @@ public class GregorianCalendarDateValueConverterTest extends TestCase {
 
     public void testGetExternalDataValue() {
         MessageList ml = new MessageList();
-        GregorianCalendarDateValueConverter converter = new GregorianCalendarDateValueConverter();
+        GregorianCalendarValueConverter converter = new GregorianCalendarValueConverter();
         final String VALID = "2001-03-26";
         final String INVALID = "invalid";
 

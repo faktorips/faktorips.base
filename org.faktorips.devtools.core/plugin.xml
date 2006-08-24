@@ -7,7 +7,7 @@
 -->
    <extension-point id="artefactbuilderset" name="%artefactbuildersetname" schema="schema/artefactbuilderset.exsd"/>
    <extension-point id="objectExtensionProperty" name="ObjectExtensionProperty" schema="schema/objectExtensionProperty.exsd"/>
-   <extension-point id="datatypeDefinition" name="DatatypeDefinition" schema="schema/datatypeDefintion.exsd"/>
+   <extension-point id="datatypeDefinition" name="DatatypeDefinition" schema="schema/datatypeDefinition.exsd"/>
    <extension-point id="externalTableFormat" name="ExternalTableFormat" schema="schema/externalTableFormat.exsd"/>
    <extension-point id="externalValueConverter" name="ExternalValueConverter" schema="schema/externalValueConverter.exsd"/>
    
@@ -608,6 +608,10 @@
       <externalValueConverter class="org.faktorips.devtools.extsystems.excel.IntegerValueConverter"/>
       <externalValueConverter class="org.faktorips.devtools.extsystems.excel.LongValueConverter"/>
       <externalValueConverter class="org.faktorips.devtools.extsystems.excel.StringValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.GregorianCalendarValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DecimalValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.MoneyValueConverter"/>
+      <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DateValueConverter"/>
    </extension>
    <extension
          point="org.eclipse.ui.decorators">

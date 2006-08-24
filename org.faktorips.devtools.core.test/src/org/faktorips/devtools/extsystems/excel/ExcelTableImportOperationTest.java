@@ -97,7 +97,7 @@ public class ExcelTableImportOperationTest extends AbstractIpsPluginTest {
         format.addValueConverter(new BooleanValueConverter());
         format.addValueConverter(new DecimalValueConverter());
         format.addValueConverter(new DoubleValueConverter());
-        format.addValueConverter(new GregorianCalendarDateValueConverter());
+        format.addValueConverter(new DateValueConverter());
         format.addValueConverter(new IntegerValueConverter());
         format.addValueConverter(new LongValueConverter());
         format.addValueConverter(new MoneyValueConverter());
