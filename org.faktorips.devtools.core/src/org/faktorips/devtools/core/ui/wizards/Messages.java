@@ -43,4 +43,5 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgInvalidName;
     public static String IpsObjectPage_msgNameDiscouraged;
     public static String IpsObjectPage_msgObjectAllreadyExists;
+    public static String IpsObjectPage_msgRootRequired;
 }

@@ -331,6 +331,14 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
                 setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgRootNoIPSSrcFolder, root.getName())); 
             }
         }
+        else {
+            if (sourceFolderControl.getText().length() == 0) {
+            setErrorMessage(Messages.IpsObjectPage_msgRootRequired);
+            }
+            else {
+                setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgRootMissing, sourceFolderControl.getText())); 
+            }
+        }
 	}
 	
 	/**
