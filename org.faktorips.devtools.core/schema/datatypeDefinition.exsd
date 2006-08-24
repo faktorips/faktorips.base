@@ -13,6 +13,7 @@
    <element name="extension">
       <complexType>
          <sequence>
+            <element ref="datatypeDefinition"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
