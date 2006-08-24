@@ -83,4 +83,6 @@ public class Messages extends NLS {
     public static String NewFolderAction_FoldernameMustNotContainBlanks;
     public static String NewFolderAction_InvalidFoldername;
     public static String IpsPropertiesAction_name;
+    public static String IpsTestAction_titleCantRunTest;
+    public static String IpsTestAction_msgCantRunTest;
 }

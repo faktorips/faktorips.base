@@ -46,13 +46,13 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * Position to indicate that controls to edit the extension property should be placed above
      * the standard FaktorIPS controls.
      */
-    public final static String POSITION_TOP = "top";
+    public final static String POSITION_TOP = "top"; //$NON-NLS-1$
     
     /**
      * Position to indicate that controls to edit the extension property should be placed below
      * the standard FaktorIPS controls.
      */
-    public final static String POSITION_BOTTOM = "bottom";
+    public final static String POSITION_BOTTOM = "bottom"; //$NON-NLS-1$
     
     /**
      * Default sort order.

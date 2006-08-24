@@ -63,4 +63,6 @@ public class Messages extends NLS {
     public static String SelectContentsPage_msgValidateContentsError;
     public static String SelectFileAndImportMethodPage_msgMissingFileFormat;
     public static String SelectFileAndImportMethodPage_labelFileFormat;
+    public static String SelectFileAndImportMethodPage_msgInvalidFile;
+    public static String SelectFileAndImportMethodPage_labelNullRepresentation;
 }

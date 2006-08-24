@@ -43,7 +43,7 @@ public class Parameter extends IpsObjectPart implements IParameter {
 
     final static String TAG_NAME = "Parameter"; //$NON-NLS-1$
 
-	private String datatype = "";
+	private String datatype = ""; //$NON-NLS-1$
 	
 	public Parameter(IParameterContainer container, int id) {
 		super(container, id);

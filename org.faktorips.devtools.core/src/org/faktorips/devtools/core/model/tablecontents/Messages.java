@@ -39,4 +39,6 @@ public class Messages extends NLS {
     public static String TableExportOperation_errStructureTooMuchColumns;
     public static String TableExportOperation_errContentsTooMuchColumns;
     public static String TableExportOperation_errTooMuchRows;
+    public static String ExcelTableImportOperation_labelImportFile;
+    public static String ExcelTableImportOperation_msgImportEscapevalue;
 }

@@ -55,4 +55,6 @@ public class Messages extends NLS {
 	public static String ValidationUtils_VALUEDATATYPE_INVALID;
 
 	public static String ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE;
+
+    public static String IpsModel_msgRuntimeIDCollision;
 }

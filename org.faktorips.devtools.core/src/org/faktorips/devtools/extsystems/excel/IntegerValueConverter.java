@@ -44,14 +44,14 @@ public class IntegerValueConverter implements IValueConverter {
 			int value = ((Double)externalDataValue).intValue();
 			Double restored = new Double(value); 
 			if (!restored.equals((Double)externalDataValue)) {
-				String msg = NLS.bind("Can not convert the value because information will be lost. Original value is \"{0}\", but converted value will be \"{1}\".", externalDataValue, restored);
-				messageList.add(new Message("", msg, Message.ERROR));
+				String msg = NLS.bind(Messages.IntegerValueConverter_msgLoosingData, externalDataValue, restored);
+				messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
 				return externalDataValue.toString();
 			}
 			return new Integer(value).toString();
 		}
-		String msg = NLS.bind("Can not convert the external value of type {0} to {1}", externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR));
+		String msg = NLS.bind(Messages.IntegerValueConverter_msgConversionErrorIntern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
+		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
 		return externalDataValue.toString();
 	}
 
@@ -72,8 +72,8 @@ public class IntegerValueConverter implements IValueConverter {
 			objects[0] = ipsValue;
 			objects[1] = getSupportedDatatype().getQualifiedName();
 			objects[2] = Integer.class.getName(); 
-			String msg = NLS.bind("Can not convert the internal value \"{0}\" of type {1} to {2}", objects);
-			messageList.add(new Message("", msg, Message.ERROR));
+			String msg = NLS.bind(Messages.IntegerValueConverter_msgConversionErrorExtern, objects);
+			messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
 		}
 		return ipsValue;
 	}

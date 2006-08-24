@@ -158,7 +158,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         if (structure.getNumOfColumns() != getNumOfColumns()) {
         	Integer structCols = new Integer(structure.getNumOfColumns());
         	Integer contentCols = new Integer(getNumOfColumns());
-        	String text = NLS.bind("Structure requires {0} columns, but this content has {1} columns.", structCols, contentCols);
+        	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
         	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
     }

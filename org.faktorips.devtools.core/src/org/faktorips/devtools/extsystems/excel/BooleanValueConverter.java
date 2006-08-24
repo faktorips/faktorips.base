@@ -41,8 +41,8 @@ public class BooleanValueConverter implements IValueConverter {
 		} else if (externalDataValue instanceof Boolean) {
 			return ((Boolean) externalDataValue).toString();
 		}
-		String msg = NLS.bind("Can not convert the external value of type {0} to {1}", externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR));
+		String msg = NLS.bind(Messages.BooleanValueConverter_msgConverisonErrorExternal, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
+		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
 		return externalDataValue.toString();
 	}
 

@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
  * @author Joerg Ortmann
  */
 public class IpsTestAction extends IpsAction {
-	private static final String SEPARATOR = "#|#";
+	private static final String SEPARATOR = "#|#"; //$NON-NLS-1$
 	/**
 	 * @param selectionProvider
 	 */
@@ -71,7 +71,7 @@ public class IpsTestAction extends IpsAction {
 				if (element instanceof IIpsPackageFragmentRoot) {
 					root = (IIpsPackageFragmentRoot) element;
 					IIpsProject project = root.getIpsProject();
-					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + "");
+					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + ""); //$NON-NLS-1$
 				} else if (element instanceof IIpsPackageFragment) {
 					IIpsPackageFragment child = (IIpsPackageFragment) element;
 					root = (IIpsPackageFragmentRoot) child.getRoot();
@@ -116,7 +116,7 @@ public class IpsTestAction extends IpsAction {
 		for (int i = 0; i < rootsFromProject.length; i++) {
 			root = rootsFromProject[i];
 			IIpsProject project = root.getIpsProject();
-			selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + "");
+			selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + ""); //$NON-NLS-1$
 		}
 		return root;
 	}
@@ -132,7 +132,7 @@ public class IpsTestAction extends IpsAction {
 		List uniqueList = new ArrayList(selectedPathElements.size());
 		Collections.sort(selectedPathElements);
 		
-		String previousElement = "#none#";
+		String previousElement = "#none#"; //$NON-NLS-1$
 		for (Iterator iter = selectedPathElements.iterator(); iter.hasNext();) {
 			String currElement = (String) iter.next();
 			// add element only if it is not included in the previous element
@@ -159,7 +159,7 @@ public class IpsTestAction extends IpsAction {
 			String currElement = (String) iter.next();
 			String prevProject = previousElement.substring(0, previousElement.indexOf(SEPARATOR));
 			if (! currElement.startsWith(prevProject)){
-				MessageDialog.openError(null, "Cannot Run Test", "It is not possible to start test from different projects.");
+				MessageDialog.openError(null, Messages.IpsTestAction_titleCantRunTest, Messages.IpsTestAction_msgCantRunTest);
 				return false;
 			}
 			previousElement = currElement;
@@ -180,15 +180,15 @@ public class IpsTestAction extends IpsAction {
 	 */
 	private void runTest(List selectedPathElements, IJavaProject javaProject) {
 		if (selectedPathElements.size() > 0){
-			String testRootsString= "";
-			String testPackagesString= "";
+			String testRootsString= ""; //$NON-NLS-1$
+			String testPackagesString= ""; //$NON-NLS-1$
 			
 			// create the strings containing the roots and packages
 			for (Iterator iter = selectedPathElements.iterator(); iter.hasNext();) {
 				String selectedPathElement = (String) iter.next();
 				String withoutProject = selectedPathElement.substring(selectedPathElement.indexOf(SEPARATOR) + SEPARATOR.length());
-				testRootsString += "{" + withoutProject.substring(0, withoutProject.indexOf(SEPARATOR)) + "}";
-				testPackagesString += "{" + withoutProject.substring(withoutProject.indexOf(SEPARATOR) + SEPARATOR.length()) + "}"; 
+				testRootsString += "{" + withoutProject.substring(0, withoutProject.indexOf(SEPARATOR)) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+				testPackagesString += "{" + withoutProject.substring(withoutProject.indexOf(SEPARATOR) + SEPARATOR.length()) + "}";  //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			
 			// show view

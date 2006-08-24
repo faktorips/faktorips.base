@@ -200,7 +200,7 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         }
         
         if (!getFormat().isValidImportSource(getFilename())) {
-            setErrorMessage("The selected file is not valid for the selected type.");
+            setErrorMessage(Messages.SelectFileAndImportMethodPage_msgInvalidFile);
             return;
         }
         
@@ -265,7 +265,7 @@ public class SelectFileAndImportMethodPage extends WizardPage implements
         setDefaults(initialSelection);
         
         Composite additionals = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createLabel(additionals, "Null-representation");
+        toolkit.createLabel(additionals, Messages.SelectFileAndImportMethodPage_labelNullRepresentation);
         nullRepresentation = toolkit.createText(additionals);
         nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 

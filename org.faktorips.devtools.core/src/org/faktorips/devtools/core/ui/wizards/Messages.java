@@ -44,4 +44,8 @@ public class Messages extends NLS {
     public static String IpsObjectPage_msgNameDiscouraged;
     public static String IpsObjectPage_msgObjectAllreadyExists;
     public static String IpsObjectPage_msgRootRequired;
+    public static String ResultDisplayer_msgExportAborted;
+    public static String ResultDisplayer_msgWarnings;
+    public static String ResultDisplayer_titleResults;
+    public static String ResultDisplayer_buttonOK;
 }

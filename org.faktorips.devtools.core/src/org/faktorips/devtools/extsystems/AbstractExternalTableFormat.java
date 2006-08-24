@@ -73,7 +73,7 @@ public abstract class AbstractExternalTableFormat {
 		this.name = name;
 
 		if (this.name == null) {
-			this.name = "";
+			this.name = ""; //$NON-NLS-1$
 		}
 	}
 
@@ -89,7 +89,7 @@ public abstract class AbstractExternalTableFormat {
 		this.defaultExtension = extension;
 
 		if (this.defaultExtension == null) {
-			defaultExtension = "";
+			defaultExtension = ""; //$NON-NLS-1$
 		}
 	}
 

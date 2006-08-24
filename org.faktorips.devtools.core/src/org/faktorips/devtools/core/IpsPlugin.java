@@ -393,11 +393,11 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Initialize the array of all available table formats
      */
     private void initExternalTableFormats() {
-    	IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.faktorips.devtools.core.externalTableFormat");
+    	IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
     	List result = new ArrayList();
     	for (int i = 0; i < elements.length; i++) {
 			try {
-				AbstractExternalTableFormat format = (AbstractExternalTableFormat)elements[i].createExecutableExtension("class");
+				AbstractExternalTableFormat format = (AbstractExternalTableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
 				initExternalTableFormat(format, elements[i]);
 				result.add(format);
 			} catch (CoreException e) {
@@ -415,17 +415,17 @@ public class IpsPlugin extends AbstractUIPlugin {
 	 * @param formatElement The configuration element which defines the given external table format.
 	 */
 	private void initExternalTableFormat(AbstractExternalTableFormat format, IConfigurationElement formatElement) {
-		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID, "externalValueConverter");
+		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID, "externalValueConverter"); //$NON-NLS-1$
 		IExtension[] extensions = point.getExtensions();
 		
-		format.setName(formatElement.getAttribute("name"));
-		format.setDefaultExtension(formatElement.getAttribute("defaultExtension"));
+		format.setName(formatElement.getAttribute("name")); //$NON-NLS-1$
+		format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
 		
 		for (int i = 0; i < extensions.length; i++) {
 			IConfigurationElement[] elements = extensions[i].getConfigurationElements();
 			boolean found = false;
 			for (int j = 0; j < elements.length && !found; j++) {
-				found = elements[j].getAttribute("id").equals(formatElement.getAttribute("id")); //$NON-NLS-1$ $NON-NLS-2$
+				found = elements[j].getAttribute("id").equals(formatElement.getAttribute("id")); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
 			}
 
 			for (int j = 0; j < elements.length && found; j++) {

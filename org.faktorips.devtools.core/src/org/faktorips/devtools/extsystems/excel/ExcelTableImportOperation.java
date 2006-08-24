@@ -98,7 +98,7 @@ public class ExcelTableImportOperation implements IWorkspaceRunnable {
      */
     public void run(IProgressMonitor monitor) throws CoreException {
         try {
-            monitor.beginTask("Import file " + sourceFile, targetGeneration.getNumOfRows() + 3);
+            monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + sourceFile, targetGeneration.getNumOfRows() + 3);
             
             MessageList ml = structure.validate(); 
             if (ml.containsErrorMsg()) {
@@ -168,8 +168,8 @@ public class ExcelTableImportOperation implements IWorkspaceRunnable {
                     objects[0] = new Integer(i);
                     objects[1] = new Integer(j);
                     objects[2] = nullRepresentationString;
-                    String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects);
-                    messageList.add(new Message("", msg, Message.WARNING));
+                    String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, objects);
+                    messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
                     genRow.setValue(j, nullRepresentationString);
                 }
                 else {

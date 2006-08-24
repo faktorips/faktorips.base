@@ -95,7 +95,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         final String PATH_ELOCALTOOL = ICONS_PATH + "elcl16/"; //Enabled toolbar icons.//$NON-NLS-1$
         final String PATH_OBJECT = ICONS_PATH + "obj16/"; //Model object icons//$NON-NLS-1$
 
-        Bundle ideBundle = Platform.getBundle("org.eclipse.ui.ide");
+        Bundle ideBundle = Platform.getBundle("org.eclipse.ui.ide"); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT,
                 PATH_OBJECT + "prj_obj.gif"); //$NON-NLS-1$

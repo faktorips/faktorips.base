@@ -45,14 +45,14 @@ public class MoneyValueConverter implements IValueConverter {
                 objects[0] = externalDataValue;
                 objects[1] = externalDataValue.getClass().getName();
                 objects[2] = getSupportedDatatype().getQualifiedName();
-                String msg = NLS.bind("Can not convert the external value \"{0}\" of type {1} to {2}", objects);
-                messageList.add(new Message("", msg, Message.ERROR));
+                String msg = NLS.bind(Messages.MoneyValueConverter_msgConversionErrorExtern, objects);
+                messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
                 return externalDataValue.toString();
             }
 		} 
         
-		String msg = NLS.bind("Can not convert the external value of type {0} to {1}", externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR));
+		String msg = NLS.bind(Messages.MoneyValueConverter_msgAnotherConversionErrorExtern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
+		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
 		return externalDataValue.toString();
 	}
 
@@ -61,8 +61,8 @@ public class MoneyValueConverter implements IValueConverter {
 	 */
 	public Object getExternalDataValue(String ipsValue, MessageList messageList) {
         if (!Datatype.MONEY.isParsable(ipsValue)) {
-            String msg = NLS.bind("Can not convert the internal value \"{0}\" of type {1} to external value.", ipsValue, getSupportedDatatype().getQualifiedName());
-            messageList.add(new Message("", msg, Message.ERROR));
+            String msg = NLS.bind(Messages.MoneyValueConverter_msgConversionErrorIntern, ipsValue, getSupportedDatatype().getQualifiedName());
+            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
         }
 		return ipsValue;
 	}

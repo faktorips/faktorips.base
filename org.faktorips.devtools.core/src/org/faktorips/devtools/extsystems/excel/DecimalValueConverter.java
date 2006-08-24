@@ -47,8 +47,8 @@ public class DecimalValueConverter implements IValueConverter {
                 objects[0] = externalDataValue;
                 objects[1] = externalDataValue.getClass().getName();
                 objects[2] = getSupportedDatatype().getQualifiedName();
-                String msg = NLS.bind("Can not convert the external value \"{0}\" of type {1} to {2}", objects);
-                messageList.add(new Message("", msg, Message.ERROR));
+                String msg = NLS.bind(Messages.DecimalValueConverter_msgConversionErrorExtern, objects);
+                messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
                 return externalDataValue.toString();
             }
 		} 
@@ -57,8 +57,8 @@ public class DecimalValueConverter implements IValueConverter {
             return Decimal.valueOf(new BigDecimal(value)).toString();
         }
         
-		String msg = NLS.bind("Can not convert the external value of type {0} to {1}", externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
-		messageList.add(new Message("", msg, Message.ERROR));
+		String msg = NLS.bind(Messages.DecimalValueConverter_msgAnotherConversionErrorExtern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
+		messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
 		return externalDataValue.toString();
 	}
 
@@ -70,8 +70,8 @@ public class DecimalValueConverter implements IValueConverter {
             return Decimal.valueOf(ipsValue);
         }
         catch (RuntimeException e) {
-            String msg = NLS.bind("The internal value \"{0}\" is not a valid {1}.", ipsValue, getSupportedDatatype().getQualifiedName());
-            messageList.add(new Message("", msg, Message.ERROR));
+            String msg = NLS.bind(Messages.DecimalValueConverter_msgConversionErrorIntern, ipsValue, getSupportedDatatype().getQualifiedName());
+            messageList.add(new Message("", msg, Message.ERROR)); //$NON-NLS-1$
         }
         return ipsValue;
 	}

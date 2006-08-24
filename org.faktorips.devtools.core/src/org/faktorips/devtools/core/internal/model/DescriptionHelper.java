@@ -64,7 +64,7 @@ public class DescriptionHelper {
     	}
     	Text text = XmlUtil.getTextNode(descEl);
     	if (text==null) {
-    		return "";
+    		return ""; //$NON-NLS-1$
     	}
     	return text.getData();
     }

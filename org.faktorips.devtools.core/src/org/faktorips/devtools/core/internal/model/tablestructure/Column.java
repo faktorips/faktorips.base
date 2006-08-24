@@ -130,7 +130,7 @@ public class Column extends IpsObjectPart implements IColumn {
         
         IStatus status = JavaConventions.validateIdentifier(StringUtils.uncapitalise(name));
         if (!status.isOK()) {
-            String text = "The choosen name is not valid";
+            String text = Messages.Column_msgInvalidName;
             list.add(new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME));
         }
     }

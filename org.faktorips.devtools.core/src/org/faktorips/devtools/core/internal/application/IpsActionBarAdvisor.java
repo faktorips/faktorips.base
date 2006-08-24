@@ -378,7 +378,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		menu.add(new Separator(IWorkbenchActionConstants.SHOW_EXT));
 		{
 
-			MenuManager showInSubMenu = new MenuManager(Messages.IpsActionBarAdvisor_showIn, "showIn"); //$NON-NLS-2$ //$NON-NLS-1$
+			MenuManager showInSubMenu = new MenuManager(Messages.IpsActionBarAdvisor_showIn, "showIn"); //$NON-NLS-1$
 			showInSubMenu.add(ContributionItemFactory.VIEWS_SHOW_IN
 					.create(getWindow()));
 			menu.add(showInSubMenu);
@@ -780,9 +780,9 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 		closeProjectAction = IDEActionFactory.CLOSE_PROJECT.create(window);
 		register(closeProjectAction);
 
-		PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown");
-		openDepartmentPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.faktorips.devtools.core.productDefinitionPerspective"), m); 
-		openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m);
+		PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
+		openDepartmentPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.faktorips.devtools.core.productDefinitionPerspective"), m);  //$NON-NLS-1$
+		openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench().getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
 		
 		pinEditorContributionItem = ContributionItemFactory.PIN_EDITOR
 				.create(window);
@@ -807,10 +807,10 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 	private void fixPerspective(IWorkbenchPage page) {
 		disableUnwantedActionSets(page);
 		
-		if (page.getPerspective().getId().equals("org.eclipse.team.ui.TeamSynchronizingPerspective")) {
+		if (page.getPerspective().getId().equals("org.eclipse.team.ui.TeamSynchronizingPerspective")) { //$NON-NLS-1$
 			IViewReference[] refs = page.getViewReferences();
 			for (int i = 0; i < refs.length; i++) {
-				if (!refs[i].getId().equals("org.eclipse.team.sync.views.SynchronizeView")) {
+				if (!refs[i].getId().equals("org.eclipse.team.sync.views.SynchronizeView")) { //$NON-NLS-1$
 					page.hideView(refs[i]);
 				}
 			}

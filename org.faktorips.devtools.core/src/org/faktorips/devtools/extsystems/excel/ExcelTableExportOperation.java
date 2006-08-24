@@ -117,7 +117,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
         IIpsObjectGeneration[] gens = contents.getGenerations();
         if (gens.length == 0) {
             String text = NLS.bind(Messages.TableExportOperation_errNoGenerations, contents.getName());
-            messageList.add(new Message("", text, Message.ERROR));
+            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
 
@@ -130,7 +130,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
         ITableStructure structure = contents.findTableStructure();
         if (structure == null) {
             String text = NLS.bind(Messages.TableExportOperation_errStructureNotFound, contents.getTableStructure());
-            messageList.add(new Message("", text, Message.ERROR));
+            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
         monitor.worked(1);
@@ -153,7 +153,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
             objects[1] = structure;
             objects[2] = new Short(MAX_ROWS);
             String text = NLS.bind(Messages.TableExportOperation_errStructureTooMuchColumns, objects);
-            messageList.add(new Message("", text, Message.ERROR));
+            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
 
@@ -182,7 +182,7 @@ public class ExcelTableExportOperation implements IWorkspaceRunnable {
         }
         catch (IOException e) {
             IpsPlugin.log(e);
-            messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR));
+            messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
     }
 

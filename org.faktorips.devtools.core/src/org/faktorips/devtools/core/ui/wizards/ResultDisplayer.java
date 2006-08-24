@@ -73,15 +73,15 @@ public class ResultDisplayer implements Runnable {
 		String header;
 		if (messageList.containsErrorMsg()) {
 			image = MessageDialog.ERROR;
-			header = "Export aborted. ";
+			header = Messages.ResultDisplayer_msgExportAborted;
 		}
 		else {
 			image = MessageDialog.WARNING;
-			header = "Export successfull with warnings: ";
+			header = Messages.ResultDisplayer_msgWarnings;
 		}
 
 		// TODO use ErrorDialog here and display messageList as MultiStatus
-		MessageDialog dialog = new MessageDialog(shell, "Results of export", null, header + messageList.toString(), image, new String[] {"OK"}, 0);
+		MessageDialog dialog = new MessageDialog(shell, Messages.ResultDisplayer_titleResults, null, header + messageList.toString(), image, new String[] {Messages.ResultDisplayer_buttonOK}, 0);
 		dialog.open();
 	}
 }

@@ -49,7 +49,7 @@ public class SetStructureDialog extends EditDialog {
      * @param message The message to be displayed to the user if no error message is set.
      */
     public SetStructureDialog(ITableContents contents, Shell parentShell, String message) {
-        super(parentShell, "Choose Table Structure", false);
+        super(parentShell, Messages.SetStructureDialog_titleChooseTableStructure, false);
         this.message = message;
         this.contents = contents;
     }
@@ -61,14 +61,14 @@ public class SetStructureDialog extends EditDialog {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        uiToolkit.createFormLabel(workArea, "New Structure:");
+        uiToolkit.createFormLabel(workArea, Messages.SetStructureDialog_labelNewStructure);
         template = new TableStructureRefControl(contents.getIpsProject(), workArea, uiToolkit);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				if (StringUtils.isEmpty(template.getText())) {
 					getButton(OK).setEnabled(false);
-					String msg = NLS.bind("Structure {0} does not exist.", template.getText());
+					String msg = NLS.bind(Messages.SetStructureDialog_msgStructureDontExist, template.getText());
 					setMessage(msg, IMessageProvider.ERROR);
 				} else {
 					getButton(OK).setEnabled(true);

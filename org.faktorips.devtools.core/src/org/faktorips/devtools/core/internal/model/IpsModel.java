@@ -1246,7 +1246,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 						IProductCmpt.PROPERTY_RUNTIME_ID);
 			}
 
-			String msg = NLS.bind("RuntimeId collision between {0} and {1}",
+			String msg = NLS.bind(Messages.IpsModel_msgRuntimeIDCollision,
 					cmpt1.getQualifiedName(), cmpt2.getQualifiedName());
 			list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg,
 					Message.ERROR, objects));

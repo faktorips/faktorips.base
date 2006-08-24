@@ -75,9 +75,9 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     
     public void testGetElementByIndex() throws Exception {
     	Element rootEl = getTestDocument().getDocumentElement();
-    	assertEquals("TestElement", XmlUtil.getElement(rootEl, 0).getNodeName());
-    	assertEquals("DifferentElement", XmlUtil.getElement(rootEl, 1).getNodeName());
-    	assertEquals("TestElement", XmlUtil.getElement(rootEl, 2).getNodeName());
+    	assertEquals("TestElement", XmlUtil.getElement(rootEl, 0).getNodeName()); //$NON-NLS-1$
+    	assertEquals("DifferentElement", XmlUtil.getElement(rootEl, 1).getNodeName()); //$NON-NLS-1$
+    	assertEquals("TestElement", XmlUtil.getElement(rootEl, 2).getNodeName()); //$NON-NLS-1$
     }
     
     public void testGetElement() throws TransformerException, UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException {

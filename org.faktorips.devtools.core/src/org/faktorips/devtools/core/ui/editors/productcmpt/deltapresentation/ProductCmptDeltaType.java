@@ -60,11 +60,11 @@ class ProductCmptDeltaType extends DefaultEnumValue {
 
     static {
         enumType = new DefaultEnumType("ProductCmptDeltaType", ProductCmptDeltaType.class); //$NON-NLS-1$
-        MISSING_ATTRIBUTE = new ProductCmptDeltaType(enumType, "missingAttr", Messages.ProductCmptDeltaType_missingAttribute, "MissingAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-3$
-        MISSING_CFGELEMENT = new ProductCmptDeltaType(enumType, "missingCfg", Messages.ProductCmptDeltaType_missingCfgElement, "MissingConfigElement.gif"); //$NON-NLS-1$ //$NON-NLS-3$
-        VALUESET_MISMATCH = new ProductCmptDeltaType(enumType, "valuesetMismatch", Messages.ProductCmptDeltaType_valuesetMismatch, "ValueSetMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-3$
-        CFGELEMENT_TYPE_MISMATCH = new ProductCmptDeltaType(enumType, "typeMismatch", Messages.ProductCmptDeltaType_cfgElementTypeMismatch, "CfgElementTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-3$
-        RELATION_MISMATCH = new ProductCmptDeltaType(enumType, "relationMismatch", Messages.ProductCmptDeltaType_missingRelationDefinition, "RelationMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-3$
+        MISSING_ATTRIBUTE = new ProductCmptDeltaType(enumType, "missingAttr", Messages.ProductCmptDeltaType_missingAttribute, "MissingAttribute.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        MISSING_CFGELEMENT = new ProductCmptDeltaType(enumType, "missingCfg", Messages.ProductCmptDeltaType_missingCfgElement, "MissingConfigElement.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        VALUESET_MISMATCH = new ProductCmptDeltaType(enumType, "valuesetMismatch", Messages.ProductCmptDeltaType_valuesetMismatch, "ValueSetMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        CFGELEMENT_TYPE_MISMATCH = new ProductCmptDeltaType(enumType, "typeMismatch", Messages.ProductCmptDeltaType_cfgElementTypeMismatch, "CfgElementTypeMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        RELATION_MISMATCH = new ProductCmptDeltaType(enumType, "relationMismatch", Messages.ProductCmptDeltaType_missingRelationDefinition, "RelationMismatch.gif"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private Image icon;

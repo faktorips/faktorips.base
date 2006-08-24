@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  */
 public interface IParameter extends IIpsObjectPart {
 	
-	public final static String PROPERTY_DATATYPE = "datatype";
+	public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
 	/**
 	 * Sets the name of the parameter.

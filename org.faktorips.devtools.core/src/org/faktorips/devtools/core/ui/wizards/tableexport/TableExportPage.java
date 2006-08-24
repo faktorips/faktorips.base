@@ -139,7 +139,7 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         filenameField = new TextButtonField(new FileSelectionControl(lowerComposite, toolkit));
         filenameField.addChangeListener(this);
 
-        toolkit.createFormLabel(lowerComposite, "Null-representation");
+        toolkit.createFormLabel(lowerComposite, Messages.TableExportPage_labelNullRepresentation);
         nullRepresentation = toolkit.createText(lowerComposite);
         nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         
@@ -214,7 +214,7 @@ public class TableExportPage extends WizardPage implements ValueChangeListener {
         if (getFilename().equals("")) { //$NON-NLS-1$
             String contentsName = contentsField.getText();
             AbstractExternalTableFormat format = getFormat();
-            String extension = "";
+            String extension = ""; //$NON-NLS-1$
             if (format != null) {
             	extension = format.getDefaultExtension();
             }
