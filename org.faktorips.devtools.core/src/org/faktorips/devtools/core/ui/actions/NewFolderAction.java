@@ -106,21 +106,6 @@ public class NewFolderAction extends IpsAction {
      * path string, and all of its parentfolders if they have not been existing yet.
      */
     private IFolder conditionalCreateFolder(IContainer parent, String name, boolean createResource) {
-//        IFolder folder = (IFolder) parent;
-//        StringTokenizer tokenizer = new StringTokenizer(name, "."); //$NON-NLS-1$
-//        while (tokenizer.hasMoreTokens()) {
-//             folder = folder.getFolder(new Path(tokenizer.nextToken()));
-//            if (!folder.exists()) {
-//                if(createResource){
-//                    try {
-//                        folder.create(true, true, null);
-//                    } catch (CoreException e) {
-//                        IpsPlugin.log(e);
-//                    }
-//                }
-//            }
-//        }
-//        return folder;
         if (name.indexOf(DOT) != -1) {
             /*
              * Create IFolder from first segment of the "."-separated string (name). Call
