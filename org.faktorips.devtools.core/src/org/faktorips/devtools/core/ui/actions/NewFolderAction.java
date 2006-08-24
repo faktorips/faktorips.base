@@ -9,6 +9,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import java.util.StringTokenizer;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -30,7 +32,6 @@ import org.faktorips.devtools.core.model.IIpsProject;
  * is possible to create subfolders (subpackages) by specifying a path separated with dots (".").
  * This action will then create the folder defined by the path and all parent folders/packages if
  * they have not been existing yet.
-     * FIXME Tests!
  * 
  * @author Thorsten Guenther
  * @author Stefan Widmaier
@@ -90,11 +91,11 @@ public class NewFolderAction extends IpsAction {
         return (IContainer) res;
     }
 
-    private void createFolder(IContainer container, String name) {
+    public void createFolder(IContainer container, String name) {
         conditionalCreateFolder(container, name, true);
     }
 
-    private IFolder getFolder(IContainer container, String name) {
+    public IFolder getFolder(IContainer container, String name) {
         return conditionalCreateFolder(container, name, false);
     }
 
@@ -102,9 +103,24 @@ public class NewFolderAction extends IpsAction {
      * If <code>createResource</code> is false this method creates an <code>IFolder</code> which
      * might or might not exist. If <code>createResource</code> is true folders are
      * created in the filsystem. In this case the method creates the folder represented by the given
-     * path string, and all its parentfolders if they have not been existing yet.
+     * path string, and all of its parentfolders if they have not been existing yet.
      */
     private IFolder conditionalCreateFolder(IContainer parent, String name, boolean createResource) {
+//        IFolder folder = (IFolder) parent;
+//        StringTokenizer tokenizer = new StringTokenizer(name, "."); //$NON-NLS-1$
+//        while (tokenizer.hasMoreTokens()) {
+//             folder = folder.getFolder(new Path(tokenizer.nextToken()));
+//            if (!folder.exists()) {
+//                if(createResource){
+//                    try {
+//                        folder.create(true, true, null);
+//                    } catch (CoreException e) {
+//                        IpsPlugin.log(e);
+//                    }
+//                }
+//            }
+//        }
+//        return folder;
         if (name.indexOf(DOT) != -1) {
             /*
              * Create IFolder from first segment of the "."-separated string (name). Call

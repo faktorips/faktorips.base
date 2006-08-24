@@ -86,7 +86,6 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         for (int i = 0; i < sources.length; i++) {
             if(sources[i] instanceof IIpsProject){
                 denied= true;
-              System.out.println("Element denied: "+sources[i]);
             }
         }
         return denied;
