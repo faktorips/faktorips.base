@@ -87,7 +87,7 @@ public abstract class IpsElementDropListener implements DropTargetListener {
                     }
                 }
             }
-            else if(container!=null){ 
+            if(container!=null){ 
                 if(container.exists()){
                     IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
                     if (element != null && element.exists()) {

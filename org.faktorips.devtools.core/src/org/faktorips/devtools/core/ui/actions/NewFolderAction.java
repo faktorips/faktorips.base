@@ -9,8 +9,6 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import java.util.StringTokenizer;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
