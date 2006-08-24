@@ -75,21 +75,26 @@ public abstract class IpsElementDropListener implements DropTargetListener {
 		for (int i = 0; i < filenames.length; i++) {
 			Path path = new Path(filenames[i]);
 			
-			// first, we assume that the given path leads to a file
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-			IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-			if (element != null && element.exists()) {
-				elements.add(element);
-			}
-			else {
-				// the ipselement created from the file does not exist - so try it with an 
-				// container...
-				IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
-				element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
-				if (element.exists()) {
-					elements.add(element);
-				}
-			}
+            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+            IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
+            if(file!=null){
+                // getFileForLocation returns a file even if the path points to a folder.
+                // In this case file.exists() returns false.s
+                if(file.exists()){
+                    IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+                    if (element != null && element.exists()) {
+                        elements.add(element);
+                    }
+                }
+            }
+            else if(container!=null){ 
+                if(container.exists()){
+                    IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(container);
+                    if (element != null && element.exists()) {
+                        elements.add(element);
+                    }
+                }
+            }
 		}
 		return (IIpsElement[])elements.toArray(new IIpsElement[elements.size()]);
 	}
