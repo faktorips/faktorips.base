@@ -373,7 +373,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
      * {@inheritDoc}
      */
     protected IpsPartUIController getCurrentUiController() {
-        return wizard.getUiControllerRelation();
+        return wizard.getUiControllerReverseRelation();
     }
     
 	/**
