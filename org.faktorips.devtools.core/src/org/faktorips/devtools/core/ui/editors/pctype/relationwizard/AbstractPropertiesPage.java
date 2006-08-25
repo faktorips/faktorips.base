@@ -11,15 +11,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.util.StringUtil;
 
 /**
  * Abstract class for the relation property wizard property pages.
@@ -48,33 +52,28 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	 * {@inheritDoc}
 	 */
 	protected void createControls(Composite parent) {
-		UIToolkit uiToolkit = wizard.getUiToolkit();
+        UIToolkit uiToolkit = wizard.getUiToolkit();
 
-		Composite mainComposite;
-		GridLayout layout = new GridLayout(1, false);
-		layout.horizontalSpacing = 12;
-		mainComposite = new Composite(parent, SWT.NONE);
-		mainComposite.setBackground(parent.getBackground());
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		mainComposite.setLayout(layout);
-		mainComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
-		Composite propertiesGroup = uiToolkit
-				.createGroup(
-						mainComposite,
-						Messages.NewPcTypeRelationWizard_properties_labelGrpBoxPolicySide);
-		createPropertiesFields(uiToolkit, propertiesGroup);
+        Composite mainComposite;
+        GridLayout layout = new GridLayout(1, false);
+        layout.horizontalSpacing = 12;
+        mainComposite = new Composite(parent, SWT.NONE);
+        mainComposite.setBackground(parent.getBackground());
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        mainComposite.setLayout(layout);
+        mainComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		uiToolkit.createVerticalSpacer(mainComposite, 12);
-		
-		Composite propertiesGroupProdRelevant = uiToolkit
-				.createGroup(
-						mainComposite,
-						Messages.NewPcTypeRelationWizard_properties_labelGrpBoxProductSide);
-		createProdRelevantPropertiesFields(uiToolkit,
-				propertiesGroupProdRelevant);
-	}
+        Composite propertiesGroup = uiToolkit.createGroup(mainComposite,
+                Messages.NewPcTypeRelationWizard_properties_labelGrpBoxPolicySide);
+        createPropertiesFields(uiToolkit, propertiesGroup);
+
+        uiToolkit.createVerticalSpacer(mainComposite, 12);
+
+        Composite propertiesGroupProdRelevant = uiToolkit.createGroup(mainComposite,
+                Messages.NewPcTypeRelationWizard_properties_labelGrpBoxProductSide);
+        createProdRelevantPropertiesFields(uiToolkit, propertiesGroupProdRelevant);
+    }
 	
 	/**
 	 * {@inheritDoc}
@@ -121,6 +120,10 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 		// create controls
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
+        // create top extension controls
+        wizard.getExtensionFactory().createControls(workArea, uiToolkit, (IpsObjectPartContainer)getCurrentRelation(), 
+                IExtensionPropertyDefinition.POSITION_TOP);
         
         uiToolkit.createFormLabel(workArea, Messages.NewPcTypeRelationWizard_properties_labelMinCardinality);
         Text minCardinalityText = uiToolkit.createText(workArea);
@@ -170,6 +173,13 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         addFocusListenerUpdateButtons(targetRoleSingularField);
         targetRolePluralField = new TextField(targetRolePluralText);
         addFocusListenerUpdateButtons(targetRolePluralField);
+        
+        // create bottom extension controls
+        wizard.getExtensionFactory().createControls(workArea, uiToolkit, (IpsObjectPartContainer)getCurrentRelation(), 
+                IExtensionPropertyDefinition.POSITION_BOTTOM);
+        
+        // Connect the extension controls to the ui controller
+        wizard.getExtensionFactory().connectToModel(getCurrentUiController());
 	}
 
 	/**
@@ -211,9 +221,27 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         
         uiToolkit.createFormLabel(workArea, Messages.NewPcTypeRelationWizard_properties_labelTargetRoleSingularProdRelevant);
         Text targetRoleSingularTextProdRelevant = uiToolkit.createText(workArea);
+        targetRoleSingularTextProdRelevant.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (StringUtils.isEmpty(targetRoleSingularProdRelevantField.getText())) {
+                    String targetName = getCurrentRelation().getPolicyCmptType().getProductCmptType();
+                    targetName = StringUtil.unqualifiedName(targetName);
+                    targetRoleSingularProdRelevantField.setText(targetName);
+                }
+            }
+        });
         
         uiToolkit.createFormLabel(workArea, Messages.NewPcTypeRelationWizard_properties_labelTargetRolePluralProdRelevant);
         Text targetRolePluralTextProdRelevant = uiToolkit.createText(workArea);
+        targetRolePluralTextProdRelevant.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (StringUtils.isEmpty(targetRolePluralProdRelevantField.getText())) {
+                    String targetName = getCurrentRelation().getPolicyCmptType().getProductCmptType();
+                    targetName = StringUtil.unqualifiedName(targetName);
+                    targetRolePluralProdRelevantField.setText(targetName);
+                }
+            }
+        });        
         
         // create fields
         minCardinalityProdRelevantField = new CardinalityField(minCardinalityTextProdRelevant);
@@ -241,6 +269,11 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	 */
 	abstract protected IRelation getCurrentRelation();
 	
+    /**
+     * Returns the ui controller of the relation which will be changed by this wizard page.
+     */
+    abstract protected IpsPartUIController getCurrentUiController();
+    
 	/**
 	 * Returns the reverse relation of the relation which will changed by this wizard page.
 	 */

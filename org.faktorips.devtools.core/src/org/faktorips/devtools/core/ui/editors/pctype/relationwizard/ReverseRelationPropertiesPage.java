@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.LabelField;
@@ -368,6 +369,13 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		return wizard.getReverseRelation();
 	}
 	
+    /**
+     * {@inheritDoc}
+     */
+    protected IpsPartUIController getCurrentUiController() {
+        return wizard.getUiControllerRelation();
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */

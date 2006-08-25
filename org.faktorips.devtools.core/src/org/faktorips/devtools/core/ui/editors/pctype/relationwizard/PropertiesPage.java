@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 
 /**
  * Relation wizard page to define the relation properties and optional the product relevant properties.
@@ -96,7 +97,14 @@ public class PropertiesPage extends AbstractPropertiesPage {
 		return wizard.getRelation();
 	}
 	
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	protected IpsPartUIController getCurrentUiController() {
+        return wizard.getUiControllerRelation();
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	protected IRelation getReverseOfCurrentRelation(){

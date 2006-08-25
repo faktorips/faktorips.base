@@ -30,10 +30,10 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
-import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.util.memento.Memento;
 
@@ -78,14 +78,19 @@ public class NewPcTypeRelationWizard extends Wizard {
 	private ErrorPage errorPage;
 	private List pages = new ArrayList();
 	
-	public NewPcTypeRelationWizard(IRelation relation) {
+	/** Factory to created the extension edit fields */
+	private ExtensionPropertyControlFactory extensionFactory;
+
+    public NewPcTypeRelationWizard(IRelation relation) {
 		super();
 		super.setWindowTitle(Messages.NewPcTypeRelationWizard_title);
 		this.relation = relation;
 
 		uiControllerRelation = createUIController(this.relation);
+        
+        extensionFactory = new ExtensionPropertyControlFactory(relation.getClass());
 	}
-	
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -302,7 +307,7 @@ public class NewPcTypeRelationWizard extends Wizard {
 	 * Returns the relation object ui controller.
 	 * Or null if the controller not exists.
 	 */
-	UIController getUiControllerRelation() {
+    IpsPartUIController getUiControllerRelation() {
 		return uiControllerRelation;
 	}
 	
@@ -310,7 +315,7 @@ public class NewPcTypeRelationWizard extends Wizard {
 	 * Returns the relation object ui controller.
 	 * Or null if the controller not exists.
 	 */
-	UIController getUiControllerReverseRelation() {
+    IpsPartUIController getUiControllerReverseRelation() {
 		return uiControllerReverseRelation;
 	}
 	
@@ -458,4 +463,11 @@ public class NewPcTypeRelationWizard extends Wizard {
 	public boolean isError() {
 		return isError;
 	}
+
+    /**
+     * Returns the extension property control factory.
+     */
+    public ExtensionPropertyControlFactory getExtensionFactory() {
+        return extensionFactory;
+    }
 }

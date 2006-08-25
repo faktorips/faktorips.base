@@ -42,7 +42,7 @@ public class ExtensionPropertyControlFactory {
 		extensionEditFields = new EditField[extensionProperties.length];
 	}
 
-	/*
+	/**
 	 * creates the <code>EditFields</code> of extension at <code>where</code> position
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
@@ -61,8 +61,8 @@ public class ExtensionPropertyControlFactory {
 
 	}
 
-	/*
-	 * creates all not yet explicitely created EditFields of an extension not including
+	/**
+	 * Creates all not yet explicitely created EditFields of an extension not including
 	 * the extensions tagged with <code>false</code> 
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
@@ -81,8 +81,8 @@ public class ExtensionPropertyControlFactory {
 
 	}
 
-	/*
-	 * connect all created EditFields with the model
+	/**
+	 * Connects all created EditFields with the model
 	 */
 	public void connectToModel(IpsObjectPartContainerUIController uiController) {
 		for (int i = 0; i < extensionEditFields.length; i++) {
