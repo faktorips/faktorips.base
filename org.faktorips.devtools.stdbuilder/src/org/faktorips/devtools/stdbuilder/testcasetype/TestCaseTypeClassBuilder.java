@@ -355,6 +355,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMethodInitInputFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) throws CoreException {
         String javaDoc = getLocalizedText(getIpsSrcFile(), INITINPUTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
+        body.appendln(MARKER_BEGIN_USER_CODE);
+        body.appendln(MARKER_END_USER_CODE);
         buildInitForTestPolicyCmptParameter(body, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix);
         buildInitForTestValueParameter(body, testCaseType.getInputTestValueParameters(), inputPrefix);
         codeBuilder.method(Modifier.PUBLIC, "void", "initInputFromXml", new String[]{"element"}, 
@@ -376,6 +378,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMethodInitExpectedResultFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)  throws CoreException {
         String javaDoc = getLocalizedText(getIpsSrcFile(), INITEXPECTEDRESULTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
+        body.appendln(MARKER_BEGIN_USER_CODE);
+        body.appendln(MARKER_END_USER_CODE);        
         buildInitForTestPolicyCmptParameter(body, testCaseType.getExpectedResultTestPolicyCmptTypeParameters(), expectedResultPrefix);
         buildInitForTestValueParameter(body, testCaseType.getExpectedResultTestValueParameters(), expectedResultPrefix);
         codeBuilder.method(Modifier.PUBLIC, "void", "initExpectedResultFromXml", new String[]{"element"}, 
