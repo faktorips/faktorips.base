@@ -16,7 +16,6 @@ import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -177,9 +176,6 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         // create bottom extension controls
         wizard.getExtensionFactory().createControls(workArea, uiToolkit, (IpsObjectPartContainer)getCurrentRelation(), 
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
-        
-        // Connect the extension controls to the ui controller
-        wizard.getExtensionFactory().connectToModel(getCurrentUiController());
 	}
 
 	/**
@@ -269,11 +265,6 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	 */
 	abstract protected IRelation getCurrentRelation();
 	
-    /**
-     * Returns the ui controller of the relation which will be changed by this wizard page.
-     */
-    abstract protected IpsPartUIController getCurrentUiController();
-    
 	/**
 	 * Returns the reverse relation of the relation which will changed by this wizard page.
 	 */

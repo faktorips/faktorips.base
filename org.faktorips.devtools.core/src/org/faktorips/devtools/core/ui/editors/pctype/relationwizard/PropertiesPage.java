@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 
 /**
  * Relation wizard page to define the relation properties and optional the product relevant properties.
@@ -60,12 +59,16 @@ public class PropertiesPage extends AbstractPropertiesPage {
 				if (!wizard.isReverseRelationPageDisplayed()){
 					// check only until the next page wasn't displayed
 					if (event.getIpsSrcFile().equals(wizard.getRelation().getIpsObject().getIpsSrcFile())){
-						if (getContainer() != null)
+						if (getContainer() != null && getContainer().getCurrentPage() != null)
 							getContainer().updateButtons();
 					}
 				}
 			}	
 		});
+        
+        // Connect the extension controls to the ui controller
+        if (wizard.getUiControllerRelation() != null)
+            wizard.getExtensionFactory().connectToModel(wizard.getUiControllerRelation());        
 	}
 
 	/**
@@ -96,13 +99,6 @@ public class PropertiesPage extends AbstractPropertiesPage {
 	protected IRelation getCurrentRelation(){
 		return wizard.getRelation();
 	}
-	
-    /**
-     * {@inheritDoc}
-     */
-	protected IpsPartUIController getCurrentUiController() {
-        return wizard.getUiControllerRelation();
-    }
 
     /**
 	 * {@inheritDoc}
