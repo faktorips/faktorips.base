@@ -44,7 +44,15 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
 		this.contentProvider = contentProvider;
 	}
 	
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    public void dispose() {
+        section.dispose();
+        super.dispose();
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
