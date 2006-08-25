@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
@@ -35,13 +36,18 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.RelationType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -54,6 +60,8 @@ import org.w3c.dom.Element;
  */
 public class TestCaseBuilder extends AbstractArtefactBuilder {
 
+    private PolicyCmptImplClassBuilder policyCmptBuilder;
+    
     /**
      * @param builderSet
      */
@@ -68,6 +76,13 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return "TestCaseBuilder";
     }
     
+    /**
+     * Sets the policy component type implementation builder.
+     */
+    public void setPolicyCmptBuilder(PolicyCmptImplClassBuilder policyCmptBuilder) {
+        this.policyCmptBuilder = policyCmptBuilder;
+    }
+
     /**
      * Returns the path to the xml resource as used by the Class.getResourceAsStream() Method.
      * 
@@ -175,7 +190,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * 
      * @return the xml representation of the test case
      */
-    private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) {
+    private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) throws CoreException {
         Element testCaseElm = doc.createElement("TestCase");
         doc.appendChild(testCaseElm);
         
@@ -185,11 +200,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         testCaseElm.appendChild(input);
         testCaseElm.appendChild(expectedResult);
         
-        addTestValues(doc, input, testCase.getInputValues());
-        addTestValues(doc, expectedResult, testCase.getExpectedResultValues());
+        addTestValues(doc, input, testCase.getInputTestValues());
+        addTestValues(doc, expectedResult, testCase.getExpectedResultTestValues());
         
-        addTestPolicyCmpts(doc, input, testCase.getInputPolicyCmpt(), null);
-        addTestPolicyCmpts(doc, expectedResult, testCase.getExpectedResultPolicyCmpt(), null);
+        addTestPolicyCmpts(doc, input, testCase.getInputTestPolicyCmpts(), null, true);
+        addTestPolicyCmpts(doc, expectedResult, testCase.getExpectedResultTestPolicyCmpts(), null, false);
         
         return testCaseElm;
     }
@@ -208,31 +223,52 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
     
     /*
-     * Add test given policy components to the given element. 
+     * Add test given policy components to the given element.
      */
-    private void addTestPolicyCmpts(Document doc, Element parent, ITestPolicyCmpt[] testPolicyCmpt, ITestPolicyCmptRelation relation){
+    private void addTestPolicyCmpts(Document doc,
+            Element parent,
+            ITestPolicyCmpt[] testPolicyCmpt,
+            ITestPolicyCmptRelation relation,
+            boolean isInput) throws CoreException {
         if (testPolicyCmpt == null)
             return;
         for (int i = 0; i < testPolicyCmpt.length; i++) {
             Element testPolicyCmptElem = null;
-            if (relation != null){
-                testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relation.getTestPolicyCmptType());
+            if (relation != null) {
+                ITestPolicyCmptTypeParameter parameter = relation.findTestPolicyCmptType();
+                if (parameter == null){
+                    throw new CoreException(new IpsStatus(NLS.bind(
+                            "The test policy component type parameter {0} was not found.", relation.getTestPolicyCmptType())));
+                }
+                testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, parameter.getRelation());
                 testPolicyCmptElem.setAttribute("type", "composite");
-                testPolicyCmptElem.setAttribute("label", testPolicyCmpt[i].getTestPolicyCmptType() + "/" + testPolicyCmpt[i].getLabel());
+                testPolicyCmptElem.setAttribute("name", testPolicyCmpt[i].getTestPolicyCmptTypeParameter() + "/"
+                        + testPolicyCmpt[i].getName());
             } else {
-                testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, testPolicyCmpt[i].getTestPolicyCmptType());
-                testPolicyCmptElem.setAttribute("label", testPolicyCmpt[i].getLabel());
+                testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, testPolicyCmpt[i]
+                        .getTestPolicyCmptTypeParameter());
+                testPolicyCmptElem.setAttribute("name", testPolicyCmpt[i].getName());
             }
             testPolicyCmptElem.setAttribute("productCmpt", testPolicyCmpt[i].getProductCmpt());
-            addTestAttrValues(doc, testPolicyCmptElem,  testPolicyCmpt[i].getTestAttributeValues());
-            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations());
+            addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestAttributeValues(), isInput);
+            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput);
+            
+            IProductCmpt productCmpt = testPolicyCmpt[i].findProductCmpt();
+            if (productCmpt != null){
+                IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
+                if (pcType == null){
+                    throw new CoreException(new IpsStatus(NLS.bind(
+                            "The policy component type {0} was not found.", productCmpt.getPolicyCmptType())));
+                }
+                testPolicyCmptElem.setAttribute("class", policyCmptBuilder.getQualifiedClassName(pcType));
+            }
         }
     }
     
     /*
      * Add the given relations to the given element.
      */
-    private void addRelations(Document doc, Element parent, ITestPolicyCmptRelation[] relations){
+    private void addRelations(Document doc, Element parent, ITestPolicyCmptRelation[] relations, boolean isInput){
         if (relations == null)
             return;
         if (relations.length > 0){
@@ -240,7 +276,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 String relationType = "";
                 if (relations[i].isComposition()) {
                     try {
-                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[]{relations[i].findTarget()}, relations[i]);
+                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[]{relations[i].findTarget()}, relations[i], isInput);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }                   
@@ -257,13 +293,22 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /*
      * Add the given test attributes to the given element.
      */ 
-    private void addTestAttrValues(Document doc, Element testPolicyCmpt, ITestAttributeValue[] testAttrValues){
+    private void addTestAttrValues(Document doc, Element testPolicyCmpt, ITestAttributeValue[] testAttrValues, boolean isInput) throws CoreException{
         if (testAttrValues == null)
             return;
         for (int i = 0; i < testAttrValues.length; i++) {
-            Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, testAttrValues[i].getTestAttribute());
-            XmlUtil.addNewCDATAorTextChild(doc, attrValueElem, testAttrValues[i].getValue());
-            attrValueElem.setAttribute("type", "property");
+            if (testAttrValues[i].isInputAttribute() && isInput || testAttrValues[i].isExpextedResultAttribute() && ! isInput){
+                ITestAttribute testAttribute = testAttrValues[i].findTestAttribute();
+                if (testAttribute == null) {
+                    throw new CoreException(new IpsStatus(NLS.bind(
+                            "The test attribute {0} was not found in the test case type definition.", testAttrValues[i]
+                                    .getTestAttribute())));
+                }
+                
+                Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, testAttribute.getAttribute());
+                XmlUtil.addNewCDATAorTextChild(doc, attrValueElem, testAttrValues[i].getValue());
+                attrValueElem.setAttribute("type", "property");
+            }
         }
     }
 }

@@ -74,43 +74,55 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         }
         
         // create test case type side
-        ITestPolicyCmptTypeParameter tp = testCaseType.newInputPolicyCmptTypeParameter();
+        ITestPolicyCmptTypeParameter tp = testCaseType.newInputTestPolicyCmptTypeParameter();
+        tp.setName("inputTestPolicyCmptTypeParam1");
         tp.setPolicyCmptType(pct.getQualifiedName());
         tp.setName(StringUtil.unqualifiedName(pct.getName()));
         ITestPolicyCmptTypeParameter tpChild = tp.newTestPolicyCmptTypeParamChild();
         tpChild.setRelation(relation.getName());
         tpChild.setName(relation.getName());
+        testCaseType.newInputTestValueParameter().setName("inputValueParameter1");
+        
+        testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("expectedResultTestPolicyCmptTypeParam1");
+        testCaseType.newExpectedResultValueParameter().setName("expectedResultValueParameter1");
+        testCaseType.newExpectedResultValueParameter().setName("expectedResultValueParameter2");
+        testCaseType.newExpectedResultValueParameter().setName("expectedResultValueParameter3");
+        testCaseType.newExpectedResultValueParameter().setName("expectedResultValueParameter4");
         
         // create test case side
-        ITestPolicyCmpt pc = testCase.newInputPolicyCmpt();
-        pc.setTestPolicyCmptType(tp.getName());
-        pc.setLabel(tp.getName());
+        ITestPolicyCmpt pc = testCase.newTestPolicyCmpt();
+        pc.setTestPolicyCmptTypeParameter("inputTestPolicyCmptTypeParam1");
+        pc.setTestPolicyCmptTypeParameter(tp.getName());
+        pc.setName(tp.getName());
         ITestPolicyCmptRelation pcr = pc.addTestPcTypeRelation(tpChild, "", "");
         ITestPolicyCmpt pcChild = pcr.findTarget();
         pathToTestPolicyCmptInput = new TestCaseHierarchyPath(pcChild, true).getHierarchyPath();
+        testCase.newTestValue().setTestValueParameter("inputValueParameter1");
         
-        testCase.newInputValue();
-        testCase.newExpectedResultPolicyCmpt();
-        testCase.newExpectedResultValue();
-        testCase.newExpectedResultValue();
-        testCase.newExpectedResultValue();        
+        testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("expectedResultTestPolicyCmptTypeParam1");
+
+        testCase.newTestValue().setTestValueParameter("expectedResultValueParameter1");
+        testCase.newTestValue().setTestValueParameter("expectedResultValueParameter2");
+        testCase.newTestValue().setTestValueParameter("expectedResultValueParameter3");
+        testCase.newTestValue().setTestValueParameter("expectedResultValueParameter4");
     }
 
     public void testContentProvider() throws CoreException{
         TestCaseContentProvider testCaseCntProviderIn = 
-            new TestCaseContentProvider(TestCaseContentProvider.TYPE_INPUT, testCase);
+            new TestCaseContentProvider(TestCaseContentProvider.INPUT, testCase);
         TestCaseContentProvider testCaseContentProviderExp = 
-        new TestCaseContentProvider(TestCaseContentProvider.TYPE_EXPECTED_RESULT, testCase);
+        new TestCaseContentProvider(TestCaseContentProvider.EXPECTED_RESULT, testCase);
 
        assertEquals(2, testCaseCntProviderIn.getElements(testCase).length);
-       assertEquals(4, testCaseContentProviderExp.getElements(testCase).length);
+       assertEquals(5, testCaseContentProviderExp.getElements(testCase).length);
     }
     
     public void testValidateTestPolicyCmptRelation() throws CoreException {
-        ITestPolicyCmpt pc = testCase.findInputPolicyCmpt(pathToTestPolicyCmptInput);
+        ITestPolicyCmpt pc = testCase.findTestPolicyCmpt(pathToTestPolicyCmptInput);
         ITestPolicyCmptRelation pcr = (ITestPolicyCmptRelation) pc.getParent();
         MessageList ml = pcr.validate();
-        assertTrue(ml.isEmpty());
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
         
         ITestPolicyCmptTypeParameter param = testCase.findTestPolicyCmptTypeParameter(pcr);
         param.setMinInstances(2);

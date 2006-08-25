@@ -18,10 +18,14 @@
 package org.faktorips.devtools.stdbuilder.testcasetype;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -76,6 +80,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private static final String ASSERT_DUMMY_ACTUAL = "ASSERT_DUMMY_ACTUAL";
     private static final String INPUT_PREFIX = "INPUT_PREFIX";
     private static final String EXPECTED_RESULT_PREFIX = "EXPECTED_RESULT_PREFIX";
+    private static final String ADDADDITIONALLYREPOSITORIES_JAVADOC = "ADDADDITIONALLYREPOSITORIES_JAVADOC";
     
     private String inputPrefix;
     private String expectedResultPrefix;
@@ -174,6 +179,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         for (int i = 0; i < testValueParams.length; i++) {
             ITestValueParameter testValueParam = testValueParams[i];
         	DatatypeHelper helper = getCachedDatatypeHelper(testValueParam);
+            codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, helper.getJavaClassName(), 
                     variablePrefix + org.apache.commons.lang.StringUtils.capitalise(testValueParam.getName()));
         }
@@ -216,6 +222,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberForTestPolicyCmptParameter(JavaCodeFragmentBuilder codeBuilder, ITestPolicyCmptTypeParameter[] policyTypeParams, 
             String variablePrefix) throws CoreException {
         for (int i = 0; i < policyTypeParams.length; i++) {
+            codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, getQualifiedNameFromTestPolicyCmptParam(policyTypeParams[i]), 
                     variablePrefix + policyTypeParams[i].getName());
         }
@@ -255,21 +262,73 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("super(qualifiedName);");
          
-        getBuilderSet();
+        IIpsProject ipsProject =  getIpsObject().getIpsProject();
+        List repositoryPackages = new ArrayList();
+        getRepositoryPackages(ipsProject, repositoryPackages);
+        IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
+        for (int i = 0; i < ipsProjects.length; i++) {
+            getRepositoryPackages(ipsProjects[i], repositoryPackages);
+        }
         
-        IIpsPackageFragmentRoot root = getIpsObject().getIpsPackageFragment().getRoot();
+        // add additional repositories if toc file exists in these packages
+        int repositoryIdx = 0;
+        for (Iterator iter = repositoryPackages.iterator(); iter.hasNext();) {
+            String repositoryPackageName = (String) iter.next();
+            String repositoryInstance = repositoryIdx>0?"repository"+repositoryIdx:"repository";
+            body.append(repositoryIdx>0?"IRuntimeRepository ":"");
+            body.append(repositoryInstance);
+            body.append("= new ");
+            body.appendClassName(ClassloaderRuntimeRepository.class);
+            body.append("(this.getClass().getClassLoader(), \"");
+            body.appendln(repositoryPackageName + "\");");
+            body.appendln(repositoryIdx>0?"repository.addDirectlyReferencedRepository(" + repositoryInstance + "); ":"");
+            repositoryIdx++;
+        }
+        body.appendln("addAdditionallyRepositories();");
         
-		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
-		String repositoryPackage = ((DefaultBuilderSet)builderSet).getInternalBasePackageName(root);
-        body.append("repository = new ");
-        body.appendClassName(ClassloaderRuntimeRepository.class);
-        body.append("(this.getClass().getClassLoader(), \"");
-        body.append(repositoryPackage + "\");");
         codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         codeBuilder.methodBegin(Modifier.PUBLIC, null, className, 
                 argNames, argClassNames, new String[]{ParserConfigurationException.class.getName()});
         codeBuilder.append(body);
         codeBuilder.methodEnd();
+        
+        buildMethodAddAdditionallyRepositories(codeBuilder);
+    }
+
+    /*
+     * Generates the method addAdditionallyRepositories. 
+     */
+    private void buildMethodAddAdditionallyRepositories(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+        String javaDoc = getLocalizedText(getIpsSrcFile(), ADDADDITIONALLYREPOSITORIES_JAVADOC);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendln("");
+        codeBuilder.javaDoc(javaDoc, ANNOTATION_MODIFIABLE);
+        codeBuilder.methodBegin(Modifier.PUBLIC, "void", "addAdditionallyRepositories", new String[0], new String[0],
+                new String[] { ParserConfigurationException.class.getName() });
+        codeBuilder.append(body);
+        codeBuilder.methodEnd();
+    }
+    
+    /*
+     * Adds all repository packages of the given ips project to the given list. Add the repository
+     * package only if the toc file exists. If the toc file will be created by the build later then
+     * the user has to add the repository package manually.
+     */
+    private void getRepositoryPackages(IIpsProject ipsProject, List repositoryPackages) throws CoreException {
+        IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
+        for (int i = 0; i < ipsRoots.length; i++) {
+            IIpsArtefactBuilderSet builderSet = ipsProject.getArtefactBuilderSet();
+            IFile tocFile = builderSet.getRuntimeRepositoryTocFile(ipsRoots[i]);
+            if (tocFile != null && tocFile.exists()){
+                String repositoryPck = builderSet.getTocFilePackageName(ipsRoots[i]);
+                if (repositoryPck != null && ! repositoryPackages.contains(repositoryPck))
+                    repositoryPackages.add(repositoryPck);
+            }
+        }
+        IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
+        for (int i = 0; i < ipsProjects.length; i++) {
+            getRepositoryPackages(ipsProjects[i], repositoryPackages);
+        }
     }
     
     /*
@@ -296,8 +355,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMethodInitInputFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) throws CoreException {
         String javaDoc = getLocalizedText(getIpsSrcFile(), INITINPUTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
-        body.appendClassName(Element.class);
-        body.appendln(" childElement = null;");
         buildInitForTestPolicyCmptParameter(body, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix);
         buildInitForTestValueParameter(body, testCaseType.getInputTestValueParameters(), inputPrefix);
         codeBuilder.method(Modifier.PUBLIC, "void", "initInputFromXml", new String[]{"element"}, 
@@ -319,8 +376,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMethodInitExpectedResultFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)  throws CoreException {
         String javaDoc = getLocalizedText(getIpsSrcFile(), INITEXPECTEDRESULTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
-        body.appendClassName(Element.class);
-        body.appendln(" childElement = null;");
         buildInitForTestPolicyCmptParameter(body, testCaseType.getExpectedResultTestPolicyCmptTypeParameters(), expectedResultPrefix);
         buildInitForTestValueParameter(body, testCaseType.getExpectedResultTestValueParameters(), expectedResultPrefix);
         codeBuilder.method(Modifier.PUBLIC, "void", "initExpectedResultFromXml", new String[]{"element"}, 
@@ -342,6 +397,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */    
     private void buildInitForTestPolicyCmptParameter(JavaCodeFragment body, ITestPolicyCmptTypeParameter[] policyTypeParams, String variablePrefix) throws CoreException {
+        if (policyTypeParams.length > 0){
+            body.appendClassName(Element.class);
+            body.appendln(" childElement = null;");
+        }
+        
         for (int i = 0; i < policyTypeParams.length; i++) {
             ITestPolicyCmptTypeParameter policyTypeParam = policyTypeParams[i];
             String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam); 

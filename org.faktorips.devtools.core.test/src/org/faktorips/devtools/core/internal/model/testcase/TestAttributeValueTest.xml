@@ -4,7 +4,7 @@
 -->
 <testcases>
 
-	<AttributeValue name="newSumInsured" testAttribute="attribute1">
+	<AttributeValue testAttribute="attribute1">
 		<value>500</value>
 	</AttributeValue>
 	

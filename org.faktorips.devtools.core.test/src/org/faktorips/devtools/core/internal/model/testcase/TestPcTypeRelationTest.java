@@ -21,7 +21,9 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -39,8 +41,14 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
-        ITestCase type = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
-        testPcTypeRelation = type.newExpectedResultPolicyCmpt().newTestPolicyCmptRelation();
+        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("expectedResultParam");
+        
+        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        
+        ITestPolicyCmpt tpc = testCase.newTestPolicyCmpt();
+        tpc.setTestPolicyCmptTypeParameter("expectedResultParam");
+        testPcTypeRelation = tpc.newTestPolicyCmptRelation();
     }
     
     public void testInitFromXml() {

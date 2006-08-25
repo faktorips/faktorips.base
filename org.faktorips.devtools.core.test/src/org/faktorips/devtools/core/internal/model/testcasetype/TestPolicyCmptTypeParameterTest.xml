@@ -4,23 +4,50 @@
 -->
 <testcases>
 
-	<PolicyCmptTypeParameter name="policyCmptType1" 
+	<PolicyCmptTypeParameter name="policyCmptType1" testParameterRole="input"
 		policyCmptType="base.Test1" relation="relation1" requiresProductCmpt="true"
 		 minInstances="2"
 		 maxInstances="3">
-			<PolicyCmptTypeParameter name="policyCmptType2" 
+			<PolicyCmptTypeParameter name="policyCmptType2"
 				policyCmptType="base.Test2" requiresProductCmpt="true"
 				 minInstances="4"
 				 maxInstances="5"
-				 relation="relation2"/>
-			<PolicyCmptTypeParameter name="policyCmptType3" 
+				 relation="relation2" testParameterRole="expectedResult"/>
+			<PolicyCmptTypeParameter name="policyCmptType3"
 				policyCmptType="base.Test3" requiresProductCmpt="true"
 				 minInstances="6"
 				 maxInstances="7"
-				 relation="relation3"/>				 
-			<Attribute modelAttribute="attribute1" minInstances="2" maxInstances="3"/>
-			<Attribute modelAttribute="attribute2" minInstances="2" maxInstances="3"/>
-			<Attribute modelAttribute="attribute3" />
+				 relation="relation3" testParameterRole="combined"/>				 
+			<TestAttribute modelAttribute="attribute1" minInstances="2" maxInstances="3"/>
+			<TestAttribute modelAttribute="attribute2" minInstances="2" maxInstances="3"/>
+			<TestAttribute modelAttribute="attribute3" />
 	</PolicyCmptTypeParameter>
 	
+	<PolicyCmptTypeParameter name="policyCmptType4" testParameterRole="expectedResult"
+		policyCmptType="base.Test4" requiresProductCmpt="true"
+	 	minInstances="1"
+		maxInstances="1">
+				<PolicyCmptTypeParameter name="policyCmptType4.1"
+				policyCmptType="base.Test4.1" requiresProductCmpt="true"
+				 minInstances="1"
+				 maxInstances="1"
+				 relation="relation4.1" testParameterRole="input"/>
+	</PolicyCmptTypeParameter>
+				 
+	<PolicyCmptTypeParameter name="policyCmptType5" testParameterRole="combined"
+		policyCmptType="base.Test5" requiresProductCmpt="true"
+	 	minInstances="1"
+		maxInstances="1">
+				<PolicyCmptTypeParameter name="policyCmptType5.1"
+				policyCmptType="base.Test5.1" requiresProductCmpt="true"
+				 minInstances="2"
+				 maxInstances="2"
+				 relation="relation5.1" testParameterRole="combined"/>
+	</PolicyCmptTypeParameter>
+			
+	<PolicyCmptTypeParameter name="policyCmptType6" testParameterRole="xyz"
+		policyCmptType="base.Test6" requiresProductCmpt="true"
+	 	minInstances="1"
+		maxInstances="1"/>
+
 </testcases>

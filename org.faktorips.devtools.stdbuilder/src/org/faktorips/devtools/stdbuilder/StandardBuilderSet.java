@@ -216,6 +216,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
         
+        // test case builder
+        testCaseBuilder.setPolicyCmptBuilder(policyCmptImplClassBuilder);
+        
         // toc file builders
         tocFileBuilder.setProductCmptTypeImplClassBuilder(productCmptImplClassBuilder);
         tocFileBuilder.setProductCmptBuilder(productCmptGenerationImplBuilder);

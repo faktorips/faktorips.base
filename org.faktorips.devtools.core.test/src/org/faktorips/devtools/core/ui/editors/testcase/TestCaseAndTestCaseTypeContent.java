@@ -47,26 +47,28 @@ public class TestCaseAndTestCaseTypeContent {
     public TestCaseAndTestCaseTypeContent(ITestCase testCase, ITestCaseType testCaseType) {
         testCase.setTestCaseType("TestCaseType1");
         
-        testPolicyCmpt1 = testCase.newInputPolicyCmpt();
-        testPolicyCmpt1.setLabel("testPolicyCmptType1_label");
-        testPolicyCmpt1.setTestPolicyCmptType("testPolicyCmptType1");
+        testCaseType.newInputTestPolicyCmptTypeParameter().setName("inputTestPolicyCmptTypeParam1");
+        
+        (testPolicyCmpt1 = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("inputTestPolicyCmptTypeParam1");
+        testPolicyCmpt1.setName("testPolicyCmptType1_label");
+        testPolicyCmpt1.setTestPolicyCmptTypeParameter("testPolicyCmptType1");
         
         relation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
         relation1.setTestPolicyCmptType("testPolicyCmptTypeRelation1");
         
         testPolicyCmpt2 = relation1.newTargetTestPolicyCmptChild();
-        testPolicyCmpt2.setLabel("testPolicyCmptType2_label");
-        testPolicyCmpt2.setTestPolicyCmptType("testPolicyCmptTypeRelation1");
+        testPolicyCmpt2.setName("testPolicyCmptType2_label");
+        testPolicyCmpt2.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
         
         relation2 = testPolicyCmpt2.newTestPolicyCmptRelation();
         relation2.setTestPolicyCmptType("testPolicyCmptTypeRelation2");
         
         testPolicyCmpt3 = relation2.newTargetTestPolicyCmptChild();
-        testPolicyCmpt3.setLabel("testPolicyCmptType3_label");        
-        testPolicyCmpt3.setTestPolicyCmptType("testPolicyCmptTypeRelation2");
+        testPolicyCmpt3.setName("testPolicyCmptType3_label");        
+        testPolicyCmpt3.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation2");
         
         
-        testPolicyCmptType1 = testCaseType.newInputPolicyCmptTypeParameter();
+        testPolicyCmptType1 = testCaseType.newInputTestPolicyCmptTypeParameter();
         testPolicyCmptType1.setName("testPolicyCmptType1");
         
         testPolicyCmptType2 = testPolicyCmptType1.newTestPolicyCmptTypeParamChild();

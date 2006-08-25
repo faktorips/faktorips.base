@@ -4,17 +4,17 @@
 -->
 <testcases>
 	<TestCase testCaseType="testCaseType1">
-		<Input>
-			<ValueObject name="newSumInsured1" testValueParameter="Money" />
-			<ValueObject name="newSumInsured2" testValueParameter="Decimal" />
-			<PolicyCmptTypeObject name="policyCmptType1" testPolicyCmptType="base.Test1" />
-			<PolicyCmptTypeObject name="policyCmptType2" testPolicyCmptType="base.Test2" />
-		</Input>
-		<ExpectedResult>
-			<ValueObject name="newSumInsured3" testValueParameter="Test1"/>
-			<ValueObject name="newSumInsured4" testValueParameter="Test2"/>
-			<PolicyCmptTypeObject name="policyCmptType1" testPolicyCmptType="base.Test3"/>
-			<PolicyCmptTypeObject name="policyCmptType2" testPolicyCmptType="base.Test4"/>	
-		</ExpectedResult>
+
+			<ValueObject testValueParameter="inputTestValue0" />
+			<ValueObject testValueParameter="inputTestValue1" />
+			<PolicyCmptTypeObject name="inPolicyCmptType0" testPolicyCmptType="inputTestPolicyCmpt0" />
+			<PolicyCmptTypeObject name="inPolicyCmptType1" testPolicyCmptType="inputTestPolicyCmpt1" />
+
+			<ValueObject testValueParameter="expResultTestValue0" />
+			<ValueObject testValueParameter="expResultTestValue1" />
+			<ValueObject testValueParameter="expResultTestValue2" />
+			<PolicyCmptTypeObject name="expPolicyCmptType0" testPolicyCmptType="expResultTestPolicyCmpt0" />
+			<PolicyCmptTypeObject name="expPolicyCmptType1" testPolicyCmptType="expResultTestPolicyCmpt1" />
+	
 	</TestCase>
 </testcases>

@@ -125,4 +125,10 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
+        return null;
+    }
 }

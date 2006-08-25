@@ -4,7 +4,15 @@
 -->
 <testcases>
 
-	<Attribute name="" attribute="attribute1">
-	</Attribute>
+	<TestAttribute name="attributeName1" attribute="attribute1" testAttributeRole="input">
+	</TestAttribute>
+
+	<TestAttribute name="attributeName2" attribute="attribute2" testAttributeRole="expectedResult">
+	</TestAttribute>
 	
+	<TestAttribute name="attributeName3" attribute="attribute3" testAttributeRole="combined">
+	</TestAttribute>
+	
+	<TestAttribute name="attributeName4" attribute="attribute4" testAttributeRole="xyz">
+	</TestAttribute>		
 </testcases>

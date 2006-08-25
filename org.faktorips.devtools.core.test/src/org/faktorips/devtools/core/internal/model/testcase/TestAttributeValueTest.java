@@ -22,6 +22,9 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -39,8 +42,15 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
-        ITestCase type = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
-        testAttributeValue = type.newExpectedResultPolicyCmpt().newTestAttributeValue();
+        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        ITestPolicyCmptTypeParameter param1 = testCaseType.newInputTestPolicyCmptTypeParameter();
+        param1.setName("inputTestPcCmptParam1");
+
+        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        ITestPolicyCmpt tpc = testCase.newTestPolicyCmpt();
+        tpc.setTestPolicyCmptTypeParameter("inputTestPcCmptParam1");
+        testAttributeValue = tpc.newTestAttributeValue();
+        testAttributeValue.setTestAttribute("inputAttribute1");
     }
     
     public void testInitFromXml() {
@@ -61,5 +71,4 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         assertEquals("attribute2", testAttributeValue.getTestAttribute());
         assertEquals("500", testAttributeValue.getValue());
     }
-
 }

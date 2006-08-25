@@ -40,7 +40,12 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
-        valueParamInput = type.newInputValueParameter();
+        valueParamInput = type.newInputTestValueParameter();
+    }
+    
+    public void testIsRoot(){
+        // a test value parameter is always a root element, no childs are supported by the test value parameter
+        assertTrue(valueParamInput.isRoot());
     }
     
     public void testInitFromXml() {
@@ -48,19 +53,27 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         Element paramEl = XmlUtil.getElement(docEl, "ValueParameter", 0);
         valueParamInput.initFromXml(paramEl);
         assertEquals("Money", valueParamInput.getValueDatatype());
-        assertEquals("newSumInsured", valueParamInput.getName());
+        assertEquals("newSumInsured1", valueParamInput.getName());
+        assertTrue(valueParamInput.isInputParameter());
+        assertFalse(valueParamInput.isExpextedResultParameter());
+        assertFalse(valueParamInput.isCombinedParameter());        
     }
-
+    
     public void testToXml() {
         valueParamInput.setValueDatatype("Money");
         valueParamInput.setName("newSumInsured");
+        ((TestParameter)valueParamInput).setTestParameterRole(TestParameterRole.INPUT);
         Element el = valueParamInput.toXml(newDocument());
         
         valueParamInput.setValueDatatype("Integer");
         valueParamInput.setName("test");
+        ((TestParameter)valueParamInput).setTestParameterRole(TestParameterRole.EXPECTED_RESULT);
         valueParamInput.initFromXml(el);
         
         assertEquals("Money", valueParamInput.getValueDatatype());
         assertEquals("newSumInsured", valueParamInput.getName());
+        assertTrue(valueParamInput.isInputParameter());
+        assertFalse(valueParamInput.isExpextedResultParameter());
+        assertFalse(valueParamInput.isCombinedParameter());
     }
 }

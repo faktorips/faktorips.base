@@ -46,12 +46,12 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
     
     public void testPathForTestCase(){
         TestCaseHierarchyPath pathRelation = new TestCaseHierarchyPath(testContent.getRelation2(), true);
-        assertEquals("testPolicyCmptType1_label/testPolicyCmptTypeRelation1/testPolicyCmptType2_label/testPolicyCmptTypeRelation2", pathRelation.getHierarchyPath());
+        assertEquals("testPolicyCmptType1_label//testPolicyCmptTypeRelation1//testPolicyCmptType2_label//testPolicyCmptTypeRelation2", pathRelation.getHierarchyPath());
         assertTrue(pathRelation.count() == 4);
         
         TestCaseHierarchyPath path = new TestCaseHierarchyPath(testContent.getTestPolicyCmpt3(), true);
-        assertEquals("testPolicyCmptType1_label/testPolicyCmptTypeRelation1/testPolicyCmptType2_label/testPolicyCmptTypeRelation2/testPolicyCmptType3_label", path.getHierarchyPath());
-        assertEquals("testPolicyCmptType1_label/testPolicyCmptTypeRelation1/testPolicyCmptType2_label/testPolicyCmptTypeRelation2", TestCaseHierarchyPath.getFolderName(path.getHierarchyPath()));
+        assertEquals("testPolicyCmptType1_label//testPolicyCmptTypeRelation1//testPolicyCmptType2_label//testPolicyCmptTypeRelation2//testPolicyCmptType3_label", path.getHierarchyPath());
+        assertEquals("testPolicyCmptType1_label//testPolicyCmptTypeRelation1//testPolicyCmptType2_label//testPolicyCmptTypeRelation2", TestCaseHierarchyPath.getFolderName(path.getHierarchyPath()));
         assertEquals("testPolicyCmptType3_label", TestCaseHierarchyPath.unqualifiedName(path.getHierarchyPath()));
         assertTrue(path.count() == 5);
         assertTrue(path.hasNext());
@@ -67,11 +67,11 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
     
     public void testPathForTestCaseType(){
         TestCaseHierarchyPath pathRelation = new TestCaseHierarchyPath(testContent.getRelation2(), false);
-        assertEquals("testPolicyCmptType1/testPolicyCmptTypeRelation1/testPolicyCmptTypeRelation2", pathRelation.getHierarchyPath());
+        assertEquals("testPolicyCmptType1//testPolicyCmptTypeRelation1//testPolicyCmptTypeRelation2", pathRelation.getHierarchyPath());
         assertTrue(pathRelation.count() == 3);
         
         TestCaseHierarchyPath path = new TestCaseHierarchyPath(testContent.getTestPolicyCmpt3(), false);
-        assertEquals("testPolicyCmptType1/testPolicyCmptTypeRelation1/testPolicyCmptTypeRelation2", path.getHierarchyPath());
+        assertEquals("testPolicyCmptType1//testPolicyCmptTypeRelation1//testPolicyCmptTypeRelation2", path.getHierarchyPath());
         assertTrue(path.count() == 3);
         assertEquals("testPolicyCmptType1", path.next());
         assertEquals("testPolicyCmptTypeRelation1", path.next());

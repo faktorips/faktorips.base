@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -32,6 +33,9 @@ import org.w3c.dom.Element;
 public class TestValueTest extends AbstractIpsPluginTest {
 
     private ITestValue valueObjectInput;
+    private ITestValue valueObjectInput2;
+    private ITestValue valueObjectExpectedValue;
+    private ITestValue valueObjectUnknown;
     
     /*
      * @see AbstractIpsPluginTest#setUp()
@@ -39,8 +43,19 @@ public class TestValueTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
-        ITestCase type = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
-        valueObjectInput = type.newInputValue();
+        
+        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        testCaseType.newInputTestValueParameter().setName("testValueParameter1");
+        testCaseType.newInputTestValueParameter().setName("testValueParameter3");
+        testCaseType.newExpectedResultValueParameter().setName("testValueParameter2");
+
+        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        
+        testCase.setTestCaseType(testCaseType.getName());
+        (valueObjectInput = testCase.newTestValue()).setTestValueParameter("testValueParameter1");
+        (valueObjectInput2 = testCase.newTestValue()).setTestValueParameter("testValueParameter3");
+        (valueObjectExpectedValue = testCase.newTestValue()).setTestValueParameter("testValueParameter2");
+        (valueObjectUnknown = testCase.newTestValue()).setTestValueParameter("testValueParameter4");
     }
     
     public void testInitFromXml() {
@@ -62,5 +77,23 @@ public class TestValueTest extends AbstractIpsPluginTest {
         valueObjectInput.initFromXml(el);
         assertEquals("Money", valueObjectInput.getTestValueParameter());
         assertEquals("500", valueObjectInput.getValue());
+    }
+    
+    public void testTestObjectRole(){
+        assertTrue(valueObjectInput.isInput());
+        assertFalse(valueObjectInput.isExpectedResult());
+        assertFalse(valueObjectInput.isCombined());
+        
+        assertFalse(valueObjectExpectedValue.isInput());
+        assertTrue(valueObjectExpectedValue.isExpectedResult());
+        assertFalse(valueObjectExpectedValue.isCombined());
+        
+        assertTrue(valueObjectInput2.isInput());
+        assertFalse(valueObjectInput2.isExpectedResult());
+        assertFalse(valueObjectInput2.isCombined());
+        
+        assertFalse(valueObjectUnknown.isInput());
+        assertFalse(valueObjectUnknown.isExpectedResult());
+        assertFalse(valueObjectUnknown.isCombined());
     }
 }

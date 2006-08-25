@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -42,18 +43,25 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
+        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        testCaseType.newInputTestPolicyCmptTypeParameter().setName("testValueParameter1");
+        testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("testValueParameter2");
+        testCaseType.newCombinedPolicyCmptTypeParameter().setName("testValueParameter3");
+        
         ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
-        policyCmptTypeObjectExpected = testCase.newExpectedResultPolicyCmpt();
-        policyCmptTypeObjectInput = testCase.newInputPolicyCmpt();
+        (policyCmptTypeObjectInput = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testValueParameter1");
+        (policyCmptTypeObjectExpected = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testValueParameter2");
+        
+        testCase.setTestCaseType(testCaseType.getName());
     }
  
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl,"PolicyCmptTypeObject",0);
         policyCmptTypeObjectExpected.initFromXml(paramEl);
-        assertEquals("base.Test1", policyCmptTypeObjectExpected.getTestPolicyCmptType());   
+        assertEquals("base.Test1", policyCmptTypeObjectExpected.getTestPolicyCmptTypeParameter());   
         assertEquals("productCmpt1", policyCmptTypeObjectExpected.getProductCmpt());
-        assertEquals("Label1", policyCmptTypeObjectExpected.getLabel());
+        assertEquals("policyCmptType1", policyCmptTypeObjectExpected.getName());
         assertEquals(2, policyCmptTypeObjectExpected.getTestPolicyCmptRelations().length);
         assertEquals(3, policyCmptTypeObjectExpected.getTestAttributeValues().length);
         assertRelation(policyCmptTypeObjectExpected.getTestPcTypeRelation("relation2"), "base.Test2");  
@@ -65,28 +73,28 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
 
     public void testToXml() {
-        policyCmptTypeObjectExpected.setTestPolicyCmptType("base.Test2");
+        policyCmptTypeObjectExpected.setTestPolicyCmptTypeParameter("base.Test2");
         policyCmptTypeObjectExpected.setProductCmpt("productCmpt1");
-        policyCmptTypeObjectExpected.setLabel("Label1");
+        policyCmptTypeObjectExpected.setName("Label1");
         policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
         ITestPolicyCmptRelation relation = policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
         relation.setTestPolicyCmptType("relation1");
         ITestPolicyCmpt targetChild = relation.newTargetTestPolicyCmptChild();
-        targetChild.setTestPolicyCmptType("base.Test4");
+        targetChild.setTestPolicyCmptTypeParameter("base.Test4");
         policyCmptTypeObjectExpected.newTestAttributeValue();
         
         Element el = policyCmptTypeObjectExpected.toXml(newDocument());
         
-        policyCmptTypeObjectExpected.setTestPolicyCmptType("base.Test3");
+        policyCmptTypeObjectExpected.setTestPolicyCmptTypeParameter("base.Test3");
         policyCmptTypeObjectExpected.setProductCmpt("productCmpt2");
-        policyCmptTypeObjectExpected.setLabel("Label2");
+        policyCmptTypeObjectExpected.setName("Label2");
         policyCmptTypeObjectExpected.newTestAttributeValue();
         policyCmptTypeObjectExpected.newTestAttributeValue();
         policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
         
         policyCmptTypeObjectExpected.initFromXml(el);
-        assertEquals("base.Test2", policyCmptTypeObjectExpected.getTestPolicyCmptType());
-        assertEquals("Label1", policyCmptTypeObjectExpected.getLabel());
+        assertEquals("base.Test2", policyCmptTypeObjectExpected.getTestPolicyCmptTypeParameter());
+        assertEquals("Label1", policyCmptTypeObjectExpected.getName());
         assertEquals(2, policyCmptTypeObjectExpected.getTestPolicyCmptRelations().length);
         assertEquals(1, policyCmptTypeObjectExpected.getTestAttributeValues().length);
         assertRelation(policyCmptTypeObjectExpected.getTestPcTypeRelation("relation1"),
@@ -95,17 +103,24 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
     
     public void testInputOrExpectedResultObject(){
-        // test if newly created child test policy component objects inherit 
-        // the correct input or expected result flag
-        assertFalse(policyCmptTypeObjectExpected.isInputObject());
+        assertFalse(policyCmptTypeObjectExpected.isInput());
+        assertTrue(policyCmptTypeObjectExpected.isExpectedResult());
+        assertFalse(policyCmptTypeObjectExpected.isCombined());
+        
         ITestPolicyCmptRelation r = policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
         ITestPolicyCmpt testPc = r.newTargetTestPolicyCmptChild();
-        assertFalse(testPc.isInputObject());
+        assertFalse(testPc.isInput());
+        assertTrue(testPc.isExpectedResult());
+        assertFalse(testPc.isCombined());
         
-        assertTrue(policyCmptTypeObjectInput.isInputObject());
+        assertTrue(policyCmptTypeObjectInput.isInput());
+        assertFalse(policyCmptTypeObjectInput.isExpectedResult());
+        assertFalse(policyCmptTypeObjectInput.isCombined());
         r = policyCmptTypeObjectInput.newTestPolicyCmptRelation();
         testPc = r.newTargetTestPolicyCmptChild();
-        assertTrue(testPc.isInputObject());
+        assertTrue(testPc.isInput());
+        assertFalse(testPc.isExpectedResult());
+        assertFalse(testPc.isCombined());
     }
     
     private void assertRelation(ITestPolicyCmptRelation relation, String policyCmptTypeName) {
@@ -117,6 +132,6 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
             fail(e.getLocalizedMessage());
         }
         assertNotNull(targetChild);
-        assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptType());
+        assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptTypeParameter());
     }    
 }

@@ -40,21 +40,65 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
-        testAttribute = type.newExpectedResultPolicyCmptParameter().newTestAttribute();
+        testAttribute = type.newExpectedResultPolicyCmptTypeParameter().newExpectedResultTestAttribute();
     }
     
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
-        Element paramEl = XmlUtil.getFirstElement(docEl);
-        testAttribute.initFromXml(paramEl);
+        Element attributeEl = XmlUtil.getFirstElement(docEl);
+        testAttribute.initFromXml(attributeEl);
+        assertEquals("attributeName1", testAttribute.getName());
         assertEquals("attribute1", testAttribute.getAttribute());
+        assertTrue(testAttribute.isInputAttribute());
+        assertFalse(testAttribute.isExpextedResultAttribute());
+        
+        attributeEl = XmlUtil.getElement(docEl, 1);
+        testAttribute.initFromXml(attributeEl);
+        assertEquals("attribute2", testAttribute.getAttribute());
+        assertEquals("attributeName2", testAttribute.getName());
+        assertFalse(testAttribute.isInputAttribute());
+        assertTrue(testAttribute.isExpextedResultAttribute());
+
+        attributeEl = XmlUtil.getElement(docEl, 2);
+        testAttribute.initFromXml(attributeEl);
+        assertEquals("attribute3", testAttribute.getAttribute());
+        assertEquals("attributeName3", testAttribute.getName());
+        assertFalse(testAttribute.isInputAttribute());
+        assertFalse(testAttribute.isExpextedResultAttribute());
+        
+        attributeEl = XmlUtil.getElement(docEl, 3);
+        testAttribute.initFromXml(attributeEl);
+        assertEquals("attribute4", testAttribute.getAttribute());
+        assertEquals("attributeName4", testAttribute.getName());
+        assertFalse(testAttribute.isInputAttribute());
+        assertFalse(testAttribute.isExpextedResultAttribute());
+        
+        boolean exceptionOccored = false;
+        try {
+            // test unsupported test attribute role
+            ((TestAttribute)testAttribute).setTestAttributeRole(TestParameterRole.COMBINED);
+        } catch (Exception e) {
+            exceptionOccored = true;
+        } finally{
+            assertTrue(exceptionOccored);
+        }
     }
 
     public void testToXml() {
         testAttribute.setAttribute("attribute2");
+        ((TestAttribute)testAttribute).setTestAttributeRole(TestParameterRole.INPUT);
+        testAttribute.setName("attributeName2");
         Element el = testAttribute.toXml(newDocument());
+
         testAttribute.setAttribute("test");
+        testAttribute.setName("attributeName3");
+        ((TestAttribute)testAttribute).setTestAttributeRole(TestParameterRole.EXPECTED_RESULT);
+        
         testAttribute.initFromXml(el);
         assertEquals("attribute2", testAttribute.getAttribute());
+        assertEquals("attributeName2", testAttribute.getName());
+        assertTrue(testAttribute.isInputAttribute());
+        assertFalse(testAttribute.isExpextedResultAttribute());
+        
     }
 }
