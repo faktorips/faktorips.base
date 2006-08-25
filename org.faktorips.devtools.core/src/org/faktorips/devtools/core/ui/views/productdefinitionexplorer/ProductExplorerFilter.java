@@ -45,7 +45,8 @@ public class ProductExplorerFilter extends ViewerFilter {
 			return ((IIpsProject)element).isProductDefinitionProject();
 		}
         if(element instanceof IFile){
-            if(((IFile)element).getName().equals(".ipsproject")){ //$NON-NLS-1$
+            // filter out rest of hidden files (e.g. ".ipsproject")
+            if(((IFile)element).getName().indexOf(".")==0){ //$NON-NLS-1$
                 return false;
             }
         }

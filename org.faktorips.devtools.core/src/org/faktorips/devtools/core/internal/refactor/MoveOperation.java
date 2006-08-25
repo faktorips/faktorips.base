@@ -36,8 +36,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -164,6 +166,53 @@ public class MoveOperation implements IRunnableWithProgress {
 		}
 		return result;
 	}
+    
+    public static boolean canMove(IIpsElement[] sources, Object target){
+        return canMoveToTarget(target) && canMoveSources(sources) && canMovePackages(sources, target);
+    }
+    /** 
+     * Returns true if the given IIpsElement array contains at least one IIpsProject, fals otherwise.
+     */
+    private static boolean canMoveSources(IIpsElement[] sources) {
+        for (int i = 0; i < sources.length; i++) {
+            if(sources[i] instanceof IIpsProject){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * If target object is of type <code>IIpsObject</code>, <code>IIpsObjectPart</code>
+     * or <code>IResource</code> false is returned. For all other types returns true.
+     */
+    private static boolean canMoveToTarget(Object target) {
+        return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IResource);
+    }
+    
+    /**
+     * Returns true for allowed move operations containing packages.
+     * <p>
+     * The current implementation returns false if the given target is element of the given array of sources, 
+     * e.g. moving an Object in itself. If the given target is a package, this method returns false if the package
+     * is a subpackage of the given sources. True otherwise.
+     */
+    private static boolean canMovePackages(IIpsElement[] sources, Object target) {
+        for (int i = 0; i < sources.length; i++) {
+            if(sources[i].equals(target)){
+                return false;
+            }else if(sources[i] instanceof IIpsPackageFragment || sources[i] instanceof IIpsPackageFragmentRoot){
+                if(target instanceof IIpsPackageFragment || target instanceof IIpsPackageFragmentRoot){
+                    IFolder sourceFolder= (IFolder) sources[i].getCorrespondingResource();
+                    IFolder targetFolder= (IFolder) ((IIpsElement)target).getCorrespondingResource();
+                    if(sourceFolder.getFullPath().isPrefixOf(targetFolder.getFullPath())){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 	
 	/**
 	 * {@inheritDoc}
