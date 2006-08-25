@@ -71,7 +71,6 @@ import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
-import org.faktorips.devtools.core.ui.actions.OpenCompareEditorAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
