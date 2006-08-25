@@ -71,6 +71,7 @@ import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
+import org.faktorips.devtools.core.ui.actions.OpenCompareEditorAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
@@ -114,7 +115,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     /**
      * The TreeViewer displaying the object model.
      */
-    private TreeViewer treeViewer;
+    protected TreeViewer treeViewer;
 
     /**
      * Decorator for problems in IpsObjects. This decorator is adjusted according to the current
@@ -222,7 +223,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         mgr.add(layoutMenu);
     }
 
-    private void createContextMenu() {
+    protected void createContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new MenuBuilder());
@@ -230,7 +231,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
-
     }
 
     public void setFocus() {
@@ -359,7 +359,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
     }
 
-    private class MenuBuilder implements IMenuListener {
+    protected class MenuBuilder implements IMenuListener {
         // hold references to enabled RetargetActions
         private IpsDeleteAction ipsDelete = new ModelExplorerDeleteAction(treeViewer, getSite().getShell());
         private IWorkbenchAction copy = ActionFactory.COPY.create(getSite().getWorkbenchWindow());
@@ -409,21 +409,19 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(new Separator());
             createTestCaseAction(manager, selected);
             createRefactorMenu(manager, selected);
-            // TODO Kontextmenu: display Team-menu only, supress other additions
-            manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-            manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$
+            createAdditionalActions(manager, selected);
+            manager.add(new Separator());
             createPropertiesActions(manager, selected);
-
         }
-
-        private void createEditActions(IMenuManager manager, Object selected) {
+        
+        protected void createEditActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsObject || selected instanceof IFile || selected instanceof IRelation
                     || selected instanceof IAttribute) {
                 manager.add(new OpenEditorAction(treeViewer));
             }
         }
 
-        private void createNewMenu(IMenuManager manager, Object selected) {
+        protected void createNewMenu(IMenuManager manager, Object selected) {
             MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew);
             if (selected instanceof IFolder) {
                 newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
@@ -455,14 +453,14 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(newMenu);
         }
 
-        private void createReorgActions(IMenuManager manager, Object selected) {
+        protected void createReorgActions(IMenuManager manager, Object selected) {
             manager.add(copy);
             manager.add(paste);
             manager.add(delete);
 
         }
 
-        private void createObjectInfoActions(IMenuManager manager, Object selected) {
+        protected void createObjectInfoActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement) {
                 if (selected instanceof IProductCmpt) {
                     manager.add(new ShowStructureAction(treeViewer));
@@ -478,7 +476,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
-        private void createProjectActions(IMenuManager manager, Object selected) {
+        protected void createProjectActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement) {
                 if (selected instanceof IIpsProject) {
                     manager.add(openCloseAction((IProject)((IIpsProject)selected).getCorrespondingResource()));
@@ -490,7 +488,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
-        private IAction openCloseAction(IProject project) {
+        protected IAction openCloseAction(IProject project) {
             if (project.isOpen()) {
                 CloseResourceAction close = new CloseResourceAction(getSite().getShell());
                 close.selectionChanged((IStructuredSelection)treeViewer.getSelection());
@@ -502,7 +500,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
-        private void createTestCaseAction(IMenuManager manager, Object selected) {
+        protected void createTestCaseAction(IMenuManager manager, Object selected) {
             if (config.isAllowedIpsElementType(ITestCase.class)) {
                 if (selected instanceof IIpsPackageFragment || selected instanceof IIpsPackageFragmentRoot
                         || selected instanceof IIpsProject || selected instanceof ITestCase) {
@@ -511,7 +509,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
-        private void createRefactorMenu(IMenuManager manager, Object selected) {
+        protected void createRefactorMenu(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile | selected instanceof IFolder ) {
                 MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
                 subMm.add(rename);
@@ -520,7 +518,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
-        private void createPropertiesActions(IMenuManager manager, Object selected) {
+        protected void createAdditionalActions(IMenuManager manager, Object selected) {
+            manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+            manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$
+        }
+
+        protected void createPropertiesActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsProject) {
                 manager.add(new IpsPropertiesAction(getSite(), treeViewer));
             } else if (selected instanceof IProject) {
