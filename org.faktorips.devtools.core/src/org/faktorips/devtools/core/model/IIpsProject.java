@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
@@ -97,6 +98,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public void setProperties(IIpsProjectProperties properties) throws CoreException;
 
+    /**
+     * Returns the file that stores the project's properties. Note that the file need not exist.
+     */
+    public IFile getIpsProjectPropertiesFile();
+    
     /**
      * Returns the charset/encoding in that the IIpsSrcFile contents is stored.
      */

@@ -138,11 +138,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private void saveProjectProperties(IIpsProjectProperties properties) throws CoreException {
     	Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
     	Element propertiesEl = ((IpsProjectProperties)properties).toXml(doc);
+        doc.appendChild(propertiesEl);
         IFile file = getIpsProjectPropertiesFile();
         String charset = getXmlFileCharset();
         String contents;
         try {
-            contents = XmlUtil.nodeToString(propertiesEl, charset);
+            contents = XmlUtil.nodeToString(doc, charset);
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(
                     "Error tranforming project data to xml string", e)); //$NON-NLS-1$
@@ -161,8 +162,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
     
 	/**
-     * Returns the file that stores the project's properties. Note that the file need not exist.
-     */
+     * {@inheritDoc}
+	 */
     public IFile getIpsProjectPropertiesFile() {
     	return getProject().getFile(".ipsproject"); //$NON-NLS-1$
     }
