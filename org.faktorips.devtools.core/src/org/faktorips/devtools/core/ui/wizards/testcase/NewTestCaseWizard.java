@@ -74,8 +74,7 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     	ITestCase testCase = (ITestCase)pdObject;
     	testCase.setTestCaseType(typePage.getSuperType());
     	ITestCaseType testCaseType = testCase.findTestCaseType();
-    	generateDefaultContent(testCaseType.getInputParameters(), testCase, true);
-    	generateDefaultContent(testCaseType.getExpectedResultParameter(), testCase, false);
+    	generateDefaultContent(testCaseType.getTestParameters(), testCase);
     	if (testCaseType == null){
     		throw new CoreException(new IpsStatus(
     				NLS.bind(Messages.NewTestCaseWizard_ErrorTestCaseTypeNotExists, testCase.getTestCaseType())));
@@ -88,23 +87,23 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
      * All test value parameter and root policy component type parameter (including all attributes)
      * from the given list of test parameter will be created.
      */
-    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase, boolean isInput){
+    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase){
     	for (int i = 0; i < parameter.length; i++) {
     		if (parameter[i] instanceof ITestValueParameter){
-    			ITestValue testValue = isInput?testCase.newInputValue():testCase.newExpectedResultValue();
+    			ITestValue testValue = testCase.newTestValue();
     			testValue.setTestValueParameter(parameter[i].getName());
     		}else if(parameter[i] instanceof ITestPolicyCmptTypeParameter){
     			ITestPolicyCmptTypeParameter testCaseTypeParam = (ITestPolicyCmptTypeParameter) parameter[i];
-    			ITestPolicyCmpt testPolicyCmpt = isInput?testCase.newInputPolicyCmpt():testCase.newExpectedResultPolicyCmpt();
-    			testPolicyCmpt.setTestPolicyCmptType(parameter[i].getName());
-    			testPolicyCmpt.setLabel(
-    					testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptType()));
+    			ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
+    			testPolicyCmpt.setTestPolicyCmptTypeParameter(parameter[i].getName());
+    			testPolicyCmpt.setName(
+    					testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptTypeParameter()));
     			// add the attributes which are defined in the test case type parameter
     			ITestAttribute attributes[] = testCaseTypeParam.getTestAttributes();
     			for (int j = 0; j < attributes.length; j++) {
     				ITestAttribute attribute = attributes[j];
     				ITestAttributeValue attrValue = testPolicyCmpt.newTestAttributeValue();
-    				attrValue.setTestAttribute(attribute.getAttribute());
+    				attrValue.setTestAttribute(attribute.getName());
     			}
     		}
     	}

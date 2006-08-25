@@ -117,7 +117,13 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	 */
 	public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException;
 
-	/**
+    /**
+     * Returns the package name of the generated toc file.<br>
+     * Returns <code>null</code> if the builder doesn't create a toc file.
+     */
+    public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException;
+
+    /**
 	 * When the builder set is loaded by the faktor ips plugin the extension id
 	 * is set by means of this method. This method is called before
 	 * initialization.

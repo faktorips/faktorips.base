@@ -24,6 +24,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
@@ -47,65 +48,14 @@ public class TestValue extends TestObject implements ITestValue {
 	
 	private String value = ""; //$NON-NLS-1$
 	
-	public TestValue(IIpsObject parent, int id) {
-		super(parent, id);
-	}
+    public TestValue(IIpsObject parent, int id) {
+        super(parent, id);
+    }
 
-	public TestValue(IIpsObjectPart parent, int id) {
-		super(parent, id);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getTestValueParameter() {
-		return testValueParameter;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setTestValueParameter(String testValueParameter) {
-		this.testValueParameter = testValueParameter;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValueParameter findTestValueParameter() throws CoreException {
-        if (StringUtils.isEmpty(testValueParameter)) {
-            return null;
-        }
-        
-        ITestCaseType testCaseType = ((ITestCase) getParent().getParent()).findTestCaseType();
-        if (testCaseType == null)
-        	return null;
-        
-        ITestValueParameter testValueParameterObj;
-        if (isInputObject()){
-        	testValueParameterObj = testCaseType.getInputTestValueParameter(testValueParameter);
-        }else{
-        	testValueParameterObj = testCaseType.getExpectedResultTestValueParameter(testValueParameter);
-        }
-        return testValueParameterObj;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-    public String getValue() {
-		return value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setValue(String newValue) {
-		String oldValue = this.value;
-		this.value = newValue;
-		valueChanged(oldValue, newValue);
-	}
-
+    public TestValue(IIpsObjectPart parent, int id) {
+        super(parent, id);
+    }
+    
 	/**
      * {@inheritDoc}
      */
@@ -131,27 +81,107 @@ public class TestValue extends TestObject implements ITestValue {
 		ValueToXmlHelper.addValueToElement(value, element, PROPERTY_VALUE);
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoot() {
+        // test values are always root elements
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getTestValueParameter() {
+        return testValueParameter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTestValueParameter(String testValueParameter) {
+        String oldTValueParameter = this.testValueParameter;
+        this.testValueParameter = testValueParameter;
+        valueChanged(oldTValueParameter, testValueParameter);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected String getTestParameterName() {
+        return testValueParameter;
+    } 
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter findTestValueParameter() throws CoreException {
+        if (StringUtils.isEmpty(testValueParameter)) {
+            return null;
+        }
+
+        ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType();
+        if (testCaseType == null)
+            return null;
+
+        return isInput() ? testCaseType.getInputTestValueParameter(testValueParameter) : testCaseType
+                .getExpectedResultTestValueParameter(testValueParameter);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValue(String newValue) {
+        String oldValue = this.value;
+        this.value = newValue;
+        valueChanged(oldValue, newValue);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+	public ITestObject getRoot() {
+        // test values have no childs
+        return this;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	protected void validateThis(MessageList list) throws CoreException {
 		super.validateThis(list);
-		ITestValueParameter param = findTestValueParameter();
-		if (param==null) {
-			String text = NLS.bind(Messages.TestValue_ValidateError_TestValueParamNotFound, getTestValueParameter());
-			Message msg = new Message(MSGCODE_TEST_VALUE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
-			list.add(msg);
-		}else{
-			ValueDatatype datatype = param.findValueDatatype();
-			if (datatype==null) {
-				String text = NLS.bind(Messages.TestValue_ValidateError_DatatypeNotFound, param.getValueDatatype());
-				Message msg = new Message(MSGCODE_DATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
-				list.add(msg);
-			}else if (!datatype.isParsable(value)) {
-				String text = NLS.bind(Messages.TestValue_ValidateError_ValueIsNoDatatype, value, datatype);
-				Message msg = new Message(MSGCODE_DATATYPEVALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_VALUE);
-				list.add(msg);
-			}
-		}
-	} 
+        ITestValueParameter param = findTestValueParameter();
+        if (param == null) {
+            String text = NLS.bind(Messages.TestValue_ValidateError_TestValueParamNotFound, getTestValueParameter());
+            Message msg = new Message(MSGCODE_TEST_VALUE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
+            list.add(msg);
+        } else {
+            // validate the test datatype value
+            ValueDatatype datatype = param.findValueDatatype();
+            if (datatype == null) {
+                String text = NLS.bind(Messages.TestValue_ValidateError_DatatypeNotFound, param.getValueDatatype());
+                Message msg = new Message(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.WARNING,
+                        this, PROPERTY_VALUE);
+                list.add(msg);
+            } else if (!datatype.isParsable(value)) {
+                String text = NLS.bind(Messages.TestValue_ValidateError_ValueIsNoDatatype, value, datatype);
+                Message msg = new Message(MSGCODE_DATATYPEVALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_VALUE);
+                list.add(msg);
+            }
+            // validate the correct role of the test value parameter
+            if (param.isCombinedParameter() || (!isInput() && !isExpectedResult())) {
+                String text = NLS.bind("Unsupported role for value {0}", param.getName());
+                Message msg = new Message(ITestValueParameter.MSGCODE_WRONG_ROLE, text, Message.WARNING, this,
+                        ITestValueParameter.PROPERTY_TEST_PARAMETER_ROLE);
+                list.add(msg);
+            }
+        }
+	}
 }

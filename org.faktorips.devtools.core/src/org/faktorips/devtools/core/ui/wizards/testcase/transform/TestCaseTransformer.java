@@ -46,8 +46,10 @@ import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -77,10 +79,17 @@ public class TestCaseTransformer {
      */
     public ITestCase createTestCaseFromRuntimeXml(IFile file, String testCaseTypeName, 
     		IIpsPackageFragmentRoot root, String targetPackageName, String nameExtension) throws Exception{
+        if (nameExtension == null){
+            nameExtension = "";
+        }
+        
         String testCaseName = file.getName().substring(0, 
                 file.getName().indexOf(file.getFileExtension()) - 1) + nameExtension;
         
-        type = (ITestCaseType)root.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseTypeName);
+        type = (ITestCaseType)root.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseTypeName);
+        if (type == null){
+            throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseTransformer_Error_TestCaseType_Not_Found,testCaseTypeName)));
+        }
         
         ITestCase newTestCase = createNewTestCase(root, targetPackageName, testCaseName);
         newTestCase.setTestCaseType(testCaseTypeName);
@@ -96,23 +105,46 @@ public class TestCaseTransformer {
         return newTestCase;
     }
     
-    private void initTestPolicyCmpts(Element parent, ITestCase testCase, boolean isInput){
+    private void initTestPolicyCmpts(Element parent, ITestCase testCase, boolean isInput) throws CoreException {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
-                if (isInput){
-                    parsePolicyCmpt((Element) nl.item(i), testCase.newInputPolicyCmpt());
-                }else{
-                    parsePolicyCmpt((Element) nl.item(i), testCase.newExpectedResultPolicyCmpt());
+                Element elem = (Element) nl.item(i);
+                if ("testvalue".equals(elem.getAttribute("type"))){
+                    parseTestValue(elem, testCase.newTestValue());
+                } else {
+                    String testPolicyCmptName = elem.getNodeName();
+                    ITestPolicyCmpt testPolicyCmpt = null;
+                    ITestPolicyCmpt[] pcs = testCase.getTestPolicyCmpts();
+                    for (int j = 0; j < pcs.length; j++) {
+                        if (pcs[j].getTestPolicyCmptTypeParameter().equals(testPolicyCmptName)){
+                            testPolicyCmpt = pcs[j];
+                        }
+                    }
+                    if (testPolicyCmpt == null){
+                        parseTestPolicyCmpt(elem, testCase.newTestPolicyCmpt(), isInput);
+                    } else {
+                        ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptType();
+                        if (param != null){
+                            // param.setTestParameterRole(TestParameterRole.COMBINED)){
+                            // FIXME role pruefen
+                            parseTestPolicyCmptChilds(elem, testPolicyCmpt, isInput);
+                        }
+                    }
                 }
             }
         }
     }
     
-    private void parsePolicyCmpt(Element parent, ITestPolicyCmpt testPolicyCmpt){
+    private void parseTestValue(Element element, ITestValue testValue){
+        testValue.setValue(XmlUtil.getTextNode(element).getData());
+        testValue.setTestValueParameter(element.getNodeName());
+    }
+    
+    private void parseTestPolicyCmpt(Element element, ITestPolicyCmpt testPolicyCmpt, boolean isInput) throws CoreException{
         // init test policy component
-        String policyCmpt = parent.getNodeName();
-        String productCmpt = parent.getAttribute("productCmpt"); //$NON-NLS-1$
+        String policyCmpt = element.getNodeName();
+        String productCmpt = element.getAttribute("productCmpt"); //$NON-NLS-1$
         if (StringUtils.isNotEmpty(productCmpt)){
             String uniqueLabel = StringUtil.unqualifiedName(productCmpt);
         	testPolicyCmpt.setProductCmpt(productCmpt);
@@ -120,25 +152,29 @@ public class TestCaseTransformer {
             ITestCase testCase = testPolicyCmpt.getTestCase();
             if (testCase!=null)
             	uniqueLabel = testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);
-            testPolicyCmpt.setLabel(uniqueLabel);
+            testPolicyCmpt.setName(uniqueLabel);
         }else{
-            testPolicyCmpt.setLabel(policyCmpt);
+            testPolicyCmpt.setName(policyCmpt);
         }
-        testPolicyCmpt.setTestPolicyCmptType(policyCmpt);
+        testPolicyCmpt.setTestPolicyCmptTypeParameter(policyCmpt);
         
+        parseTestPolicyCmptChilds(element, testPolicyCmpt, isInput);
+    }
+
+    private void parseTestPolicyCmptChilds(Element element, ITestPolicyCmpt testPolicyCmpt, boolean isInput) throws CoreException {
         // read childs
-        NodeList nl = parent.getChildNodes();
+        NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
-                Element element = (Element) nl.item(i);
-                if (element.getAttribute("type") == null){ //$NON-NLS-1$
-                    // do nothing no type given
+                Element child = (Element) nl.item(i);
+                if (child.getAttribute("type") == null){ //$NON-NLS-1$
+                    // no type given do nothing 
                     IpsPlugin.log(new IpsStatus(Messages.TestCaseTransformer_Error_NoTypeAttributeSpecified));
-                } else if (element.getAttribute("type").equals("property")){ //$NON-NLS-1$ //$NON-NLS-2$
+                } else if (child.getAttribute("type").equals("property")){ //$NON-NLS-1$ //$NON-NLS-2$
                     ITestAttributeValue testAttrValue = testPolicyCmpt.newTestAttributeValue();
-                    testAttrValue.setTestAttribute(element.getNodeName());
-                    if (XmlUtil.getTextNode(element) != null) {
-                        testAttrValue.setValue(XmlUtil.getTextNode(element).getData());
+                    testAttrValue.setTestAttribute(child.getNodeName());
+                    if (XmlUtil.getTextNode(child) != null) {
+                        testAttrValue.setValue(XmlUtil.getTextNode(child).getData());
                     }
                     
                     ITestAttribute attr = null;
@@ -153,11 +189,20 @@ public class TestCaseTransformer {
                         testAttrValue.delete();
                     }
                     
-                }else if (element.getAttribute("type").equals("composite")){ //$NON-NLS-1$ //$NON-NLS-2$
+                }else if (child.getAttribute("type").equals("composite")){ //$NON-NLS-1$ //$NON-NLS-2$
                     // this is a child policy component
+                    if (! isInput){
+                        // merge expected results into input elements
+                        ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPolicyCmptRelations(child.getNodeName());
+                        if (relations.length>0){
+                            parseTestPolicyCmptChilds(child, relations[0].findTarget(), isInput);
+                            continue;
+                        }
+                    }
                     ITestPolicyCmptRelation relation = testPolicyCmpt.newTestPolicyCmptRelation();
-                    relation.setTestPolicyCmptType(element.getNodeName());
-                    parsePolicyCmpt(element, relation.newTargetTestPolicyCmptChild());
+                    relation.setTestPolicyCmptType(child.getNodeName());
+                    parseTestPolicyCmpt(child, relation.newTargetTestPolicyCmptChild(), isInput);
+                
                 }
             }
         }
@@ -202,7 +247,7 @@ public class TestCaseTransformer {
 	}
 
 	private void transformFile(IFile file, IIpsPackageFragmentRoot root, String packageName, String testCaseTypeName, String nameExtension) throws CoreException {
-		if (! file.getFileExtension().equals("ipstestcase")) //$NON-NLS-1$
+		if (! file.getFileExtension().equals("xml")) //$NON-NLS-1$
 			return;
 		
 		TestCaseTransformer testCaseTransformer = new TestCaseTransformer();

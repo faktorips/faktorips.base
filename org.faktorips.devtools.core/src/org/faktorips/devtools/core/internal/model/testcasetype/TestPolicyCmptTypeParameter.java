@@ -30,7 +30,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -116,6 +118,16 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
 	}	
 	
+    /**
+     * {@inheritDoc}
+     */
+    public void setTestParameterRole(TestParameterRole testParameterRole) {
+        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterRole.INPUT)
+                || testParameterRole.equals(TestParameterRole.EXPECTED_RESULT)
+                || testParameterRole.equals(TestParameterRole.COMBINED));
+        this.role = testParameterRole;
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -156,32 +168,32 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		valueChanged(oldRelation, relation);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IRelation findRelation() throws CoreException {
+    /**
+     * {@inheritDoc}
+     */
+    public IRelation findRelation() throws CoreException {
         if (StringUtils.isEmpty(relation)) {
             return null;
         }
         // if this is a root parameter then the relation field is not used
-        if (isRootParameter())
-        	return null;
+        if (isRoot())
+            return null;
         
         // this is a child parameter therfore a relation should exists
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) getParent();
         IPolicyCmptType policyCmptType = parent.findPolicyCmptType();
         
-		if (policyCmptType != null){
-			ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
-			IRelation[] relations = hierarchy.getAllRelations(policyCmptType);
-			for (int i = 0; i < relations.length; i++) {
-				if (relations[i].getName().equals(relation)) {
-					return relations[i];
-				}
-			}
-		}
+        if (policyCmptType != null){
+            ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
+            IRelation[] relations = hierarchy.getAllRelations(policyCmptType);
+            for (int i = 0; i < relations.length; i++) {
+                if (relations[i].getName().equals(relation)) {
+                    return relations[i];
+                }
+            }
+        }
         return null;
-	}
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -232,13 +244,28 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestAttribute newTestAttribute() {
+	public ITestAttribute newInputTestAttribute() {
+        // assert that a new input attribute is allowed to be added to the current role of this parameter
+        ArgumentCheck.isTrue(TestParameterRole.isRoleMatching(getTestParameterRole(), TestParameterRole.INPUT));
 		TestAttribute a = newTestAttributeInternal(getNextPartId());
-		updateSrcFile();
+		a.setTestAttributeRole(TestParameterRole.INPUT);
+        updateSrcFile();
 		return a;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public ITestAttribute newExpectedResultTestAttribute() {
+	    // assert that a new input attribute is allowed to be added to the current role of this parameter
+	    ArgumentCheck.isTrue(TestParameterRole.isRoleMatching(getTestParameterRole(), TestParameterRole.EXPECTED_RESULT));
+	    TestAttribute a = newTestAttributeInternal(getNextPartId());
+	    a.setTestAttributeRole(TestParameterRole.EXPECTED_RESULT);
+	    updateSrcFile();
+	    return a;
+	}
+
+    /**
 	 * Creates a new test attribute without updating the src file.
 	 */
 	private TestAttribute newTestAttributeInternal(int id) {
@@ -259,10 +286,10 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestAttribute getTestAttribute(String attribute) {
+	public ITestAttribute getTestAttribute(String attributeName) {
 		for (Iterator it = testAttributes.iterator(); it.hasNext();) {
 			ITestAttribute a = (ITestAttribute) it.next();
-			if (a.getAttribute().equals(attribute)) {
+			if (a.getName().equals(attributeName)) {
 				return a;
 			}
 		}
@@ -335,18 +362,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 
 	/**
 	 * {@inheritDoc}
-	 */
-	public boolean isRootParameter(){
-		return (! (getParent() instanceof TestPolicyCmptTypeParameter)); 
-	}
-
-	/**
-	 * {@inheritDoc}
 	 */	
-	public ITestPolicyCmptTypeParameter getRootParameter() {
-		ITestPolicyCmptTypeParameter current = this;
-		while (!current.isRootParameter()){
-			current = (ITestPolicyCmptTypeParameter) current.getParent();
+	public ITestParameter getRootParameter() {
+        ITestParameter current = this;
+		while (!current.isRoot()){
+			current = (ITestParameter) current.getParent();
 		}
 		return current;
 	}
@@ -398,4 +418,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		this.maxInstances = maxInstances;
 		valueChanged(oldMaxInstances, maxInstances);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoot() {
+        return (! (getParent() instanceof TestPolicyCmptTypeParameter)); 
+    }
 }

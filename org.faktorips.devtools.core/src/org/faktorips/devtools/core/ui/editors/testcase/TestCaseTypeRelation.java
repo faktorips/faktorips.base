@@ -106,6 +106,20 @@ public class TestCaseTypeRelation implements Validatable{
 	public boolean isRequiresProductCmpt() {
 		return testPolicyCmptTypeParameter.isRequiresProductCmpt();
 	}
+	
+    /**
+	 * Returns <code>true</code> if the test relation type is an input parameter.
+	 */
+	public boolean isInput() {
+	    return testPolicyCmptTypeParameter.isInputParameter();
+	}
+
+    /**
+	 * Returns <code>true</code> if the test relation type is an expected result parameter.
+	 */
+	public boolean isExpectedResult() {
+	    return testPolicyCmptTypeParameter.isExpextedResultParameter();
+	}
 
 	/**
 	 * Returns the name of the policy component type which is related by the test relation parameter.
@@ -154,9 +168,6 @@ public class TestCaseTypeRelation implements Validatable{
 	 * and validate min and max instances of this type
 	 */
 	private void validate(MessageList list) throws CoreException {
-		MessageList msgList = testPolicyCmptTypeParameter.validate();
-		list.add(msgList);
-		
 		if (parentTestPolicyCmpt == null){
 			return;
 		}

@@ -65,5 +65,6 @@ public class Messages extends NLS {
 	public static String TestCaseSection_FailureFormat_Actual;
 	public static String TestCaseSection_FailureFormat_Expected;
 	public static String TestCaseSection_FailureFormat_Attribute;
-	public static String TestCaseSection_FailureFormat_Object;	
+	public static String TestCaseSection_FailureFormat_Object;
+    public static String TestCaseSection_FailureFormat_Message;
 }

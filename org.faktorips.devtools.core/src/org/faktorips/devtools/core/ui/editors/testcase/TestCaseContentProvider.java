@@ -18,8 +18,8 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -41,12 +41,13 @@ import org.faktorips.util.ArgumentCheck;
 public class TestCaseContentProvider  implements ITreeContentProvider {
 	private static Object[] EMPTY_ARRAY = new Object[0];
 	
-	/** Defines the type of the content - from the test case - which will be provided: 
-	 *    the input objects or the expected result objects could be provided */
-	public static final int TYPE_INPUT = 0;
-	public static final int TYPE_EXPECTED_RESULT = 1;
-	public static final int TYPE_UNKNOWN = -11;
-	private int isTypeFor = TYPE_UNKNOWN;
+	/** Defines the type of the content which will be currently provided: 
+	 *    the input objects, the expected result objects, or both could be provided */
+	public static final int INPUT = 0;
+	public static final int EXPECTED_RESULT = 1;
+    public static final int COMBINED = 2;
+	public static final int UNKNOWN = -1;
+	private int contentType = UNKNOWN;
 	
 	/** Sort functions */
 	public static TestPolicyCmptSorter TESTPOLICYCMPT_SORTER = new TestPolicyCmptSorter();
@@ -58,12 +59,9 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	// Indicates if the structure should be displayed without relation layer
 	private boolean withoutRelations = false;
 	
-	// Indicates that the input and expected result will be provided together
-	private boolean combinedContent = false;
-	
-	public TestCaseContentProvider(int type, ITestCase testCase){
+	public TestCaseContentProvider(int contentType, ITestCase testCase){
 		ArgumentCheck.notNull(testCase);
-		this.isTypeFor = type;
+		this.contentType = contentType;
 		this.testCase = testCase;
 	}
 	
@@ -89,41 +87,27 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	public void setWithoutRelations(boolean withoutRelations) {
 		this.withoutRelations = withoutRelations;
 	}
-
-	/**
-	 * Returns <code>true</code> if the input and expected result should be provided together 
-	 * with a same structure.
-	 */
-	public boolean isCombinedContent() {
-		return combinedContent;
-	}
-
-	/**
-	 * Sets if the input and expected result should be provided together 
-	 * with a same structure.
-	 */
-	public void setCombinedContent(boolean combinedContent) {
-		this.combinedContent = combinedContent;
-	}
 	
 	/**
 	 * Returns the int value for the corresponding type, input or expected result.
 	 */
-	public int getIsTypeFor() {
-		return isTypeFor;
+	public int getContentType() {
+		return contentType;
 	}
 
 	/**
-	 * Returns the corresponding test policy componet objects.<br>
-	 * Input or expected result objects.<br>
+	 * Returns the corresponding test policy component objects.<br>
+	 * Input, expected result or both objects.<br>
 	 * Rerurns <code>null</code> if this content provider has an unkown type.
 	 */
 	public ITestPolicyCmpt[] getPolicyCmpt(){
-		if (isInputType()){
-			return testCase.getInputPolicyCmpt();
-		}else if (isExpectedResultTypes()){
-			return testCase.getExpectedResultPolicyCmpt();
-		}
+		if (isInput()){
+			return testCase.getInputTestPolicyCmpts();
+		}else if (isExpectedResult()){
+			return testCase.getExpectedResultTestPolicyCmpts();
+		}else if (isCombined()){
+		    return testCase.getTestPolicyCmpts();
+        }
 		return null;
 	}
 	
@@ -133,28 +117,44 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	 * Rerurns <code>null</code> if this content provider has an unkown type.
 	 */
 	public ITestValue[] getValues(){
-		if (isInputType()){
-			return testCase.getInputValues();
-		}else if (isExpectedResultTypes()){
-			return testCase.getExpectedResultValues();
-		}
+		if (isCombined()){
+            return testCase.getTestValues();
+		}else if (isExpectedResult()){
+			return testCase.getExpectedResultTestValues();
+		}else if (isInput()){
+		    return testCase.getInputTestValues();
+        }
 		return null;
 	}
 	
 	/**
 	 * Returns <code>true</code> if this content provider provides the input objetcs of the test case.
 	 */
-	public boolean isInputType(){
-		return isTypeFor == TYPE_INPUT;
+	public boolean isInput(){
+		return contentType == INPUT || contentType == COMBINED;
 	}
 	
 	/**
 	 * Returns <code>true</code> if this content provider provides the expected result objects of the test case.
 	 */	
-	public boolean isExpectedResultTypes(){
-		return isTypeFor == TYPE_EXPECTED_RESULT;
+	public boolean isExpectedResult(){
+		return contentType == EXPECTED_RESULT || contentType == COMBINED;
+	}
+
+    /**
+	 * Returns <code>true</code> if this content provider provides the expected result and input objects of the test case.
+	 */	
+	public boolean isCombined(){
+	    return contentType == COMBINED;
 	}
 	
+    /**
+     * Sets the content type of the content provider.
+     */
+    public void setContentType(int contentType){
+        this.contentType = contentType;
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -202,37 +202,41 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 		if (inputElement instanceof ITestCase){
 			ITestCase testCase = (ITestCase) inputElement;
 			ArrayList params = new ArrayList();
-			if (isInputType()){
-				// return input objects
-				//   return all policy component objetcs
-				ITestPolicyCmpt[] inputPolicyCmpts = testCase.getInputPolicyCmpt();
-				for (int i = 0; i < inputPolicyCmpts.length; i++) {
-					ITestPolicyCmpt cmpt = inputPolicyCmpts[i];
-					params.add(cmpt);
-				}
-				//	return all test value objetcs
-				ITestValue[] inputTestValues = testCase.getInputValues();
-				for (int i = 0; i < inputTestValues.length; i++) {
-					ITestValue value = inputTestValues[i];
-					params.add(value);
-				}
-				return params.toArray();
-			}else if(isExpectedResultTypes()){
+			if (isCombined()){
+			    // return input and expected result objects
+			    ITestValue[] testValues = testCase.getTestValues();
+			    for (int i = 0; i < testValues.length; i++) {
+			        params.add(testValues[i]);
+			    }
+			    ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
+			    for (int i = 0; i < testPolicyCmpts.length; i++) {
+			        params.add(testPolicyCmpts[i]);
+			    }
+			    return params.toArray();
+			}else if(isExpectedResult()){
 				// return expected result objects
-				//   return all policy component objetcs
-				ITestPolicyCmpt[] expectedResultPolicyCmpts = testCase.getExpectedResultPolicyCmpt();
+			    ITestValue[] expectedResulTestValues = testCase.getExpectedResultTestValues();
+			    for (int i = 0; i < expectedResulTestValues.length; i++) {
+			        ITestValue value = expectedResulTestValues[i];
+			        params.add(value);
+			    }
+				ITestPolicyCmpt[] expectedResultPolicyCmpts = testCase.getExpectedResultTestPolicyCmpts();
 				for (int i = 0; i < expectedResultPolicyCmpts.length; i++) {
-					ITestPolicyCmpt cmpt = expectedResultPolicyCmpts[i];
-					params.add(cmpt);
-				}
-				//   return all test value objetcs
-				ITestValue[] expectedResulTestValues = testCase.getExpectedResultValues();
-				for (int i = 0; i < expectedResulTestValues.length; i++) {
-					ITestValue value = expectedResulTestValues[i];
-					params.add(value);
+					params.add(expectedResultPolicyCmpts[i]);
 				}
 				return params.toArray();
-			}
+			}else if(isInput()){
+			    // return input objects
+			    ITestValue[] inputTestValues = testCase.getInputTestValues();
+			    for (int i = 0; i < inputTestValues.length; i++) {
+			        params.add(inputTestValues[i]);
+			    }
+			    ITestPolicyCmpt[] inputPolicyCmpts = testCase.getInputTestPolicyCmpts();
+			    for (int i = 0; i < inputPolicyCmpts.length; i++) {
+			        params.add(inputPolicyCmpts[i]);
+			    }
+			    return params.toArray();
+            }
 		}
 		return EMPTY_ARRAY;
 	}
@@ -247,50 +251,29 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	 * {@inheritDoc}
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	}
-
-	/**
-	 * Returns all value objects which are provided by this provider.
-	 */
-	public ITestValue[] getSortedValues() {
-		ITestValue[] testValues = null;
-		if (isInputType()){
-			testValues = testCase.getInputValues();
-		}else if (isExpectedResultTypes()){
-			testValues = testCase.getExpectedResultValues();
-		}else{
-			return new ITestValue[0];
-		}
-		Arrays.sort(testValues, TESTVALUE_SORTER);
-		return testValues;
+        // nothing to do
 	}
 
 	/**
 	 * Returns all test policy component objects which are provided by this provider.
 	 */
 	public ITestPolicyCmpt[] getPolicyCmpts() {
-		ITestPolicyCmpt[] testPolicyCmpt = null;
-		if (isInputType()){
-			testPolicyCmpt = testCase.getInputPolicyCmpt();
-		}else if (isExpectedResultTypes()){
-			testPolicyCmpt = testCase.getExpectedResultPolicyCmpt();
-		}else{
+	    if(isCombined()){
+	        return testCase.getTestPolicyCmpts();
+        }else if (isInput()){
+			return testCase.getInputTestPolicyCmpts();
+		}else if (isExpectedResult()){
+            return testCase.getExpectedResultTestPolicyCmpts();
+        }else{
 			return new ITestPolicyCmpt[0];
 		}
-		return testPolicyCmpt;
 	}
 
 	/**
 	 * Finds the test policy component by the given path.
 	 */
-	public ITestPolicyCmpt findPolicyCmpt(String path){
-		if (isInputType()){
-			return testCase.findInputPolicyCmpt(path);
-		} else if (isExpectedResultTypes()){
-			return testCase.findExpectedResultPolicyCmpt(path);
-		} else{
-			return null;
-		}
+	public ITestPolicyCmpt findPolicyCmpt(String path) throws CoreException {
+		return testCase.findTestPolicyCmpt(path);
 	}
 	
 	/*
@@ -306,12 +289,14 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 			ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(dummyRelation.getName());
 			for (int i = 0; i < relations.length; i++) {
 				ITestPolicyCmptRelation relation = relations[i];
-				if (relation.isComposition()){
+				if (relation.isComposition()){            
 					try {
-						childs.add(relation.findTarget());
-					} catch (CoreException e) {
-						// ignore exception, the failure will be displayed by the validation
-					}
+                        if ((isExpectedResult() && relation.findTarget().isExpectedResult())
+                         || (isInput() && relation.findTarget().isInput()))
+                            childs.add(relation.findTarget());
+                    } catch (CoreException e) {
+                        // ignore exception, the failure will be displayed by the validation
+                    }
 				}else{
 					childs.add(relation);
 				}
@@ -344,7 +329,7 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 		ITestPolicyCmptRelation[] relations = testPolicyCmpt.getTestPolicyCmptRelations();
 		if (withoutRelations){
 			// show childs without relation layer
-			IIpsElement[] childs = new IIpsElement[relations.length];
+			List childTestPolicyCmpt = new ArrayList(relations.length);
 			for (int i = 0; i < relations.length; i++) {
 				ITestPolicyCmptRelation relation = relations[i];
 				if (relation.isComposition()){
@@ -354,12 +339,14 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 					} catch (CoreException e) {
 						IpsPlugin.logAndShowErrorDialog(e);
 					}
-					childs[i] = target;
+                    if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult()))
+                        childTestPolicyCmpt.add(target);
 				}else{
-					childs[i] = relations[i];
+                    // assoziation will be added
+                    childTestPolicyCmpt.add(relations[i]);
 				}
 			}
-			return childs;
+			return (IIpsElement[]) childTestPolicyCmpt.toArray(new IIpsElement[0]);
 		}else{
 			// group childs using the test policy component type
 			ArrayList childs = new ArrayList();
@@ -370,13 +357,16 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 				if (typeParam != null){
 					ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
 					for (int i = 0; i < children.length; i++) {
-						ITestPolicyCmptTypeParameter parameter = children[i];
-						TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(parameter, testPolicyCmpt);
-						childs.add(dummyRelation);
-						childNames.add(dummyRelation.getName());
+					    ITestPolicyCmptTypeParameter parameter = children[i];
+						if (parameterMatchesRole(parameter)){
+						    TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(parameter, testPolicyCmpt);
+						    childs.add(dummyRelation);
+                        }
+						childNames.add(parameter.getName());
 					}
 				}
 				// add relations which are not added by the test case parameter
+                //   relation with missing test case type parameter
 				ITestPolicyCmptRelation[] relationsInTestCase = testPolicyCmpt.getTestPolicyCmptRelations();
 				for (int i = 0; i < relationsInTestCase.length; i++) {
 					ITestPolicyCmptRelation relation = relationsInTestCase[i];
@@ -393,7 +383,16 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 		}
 	}
 
-	/*
+    /*
+     * Returns <code>true</code> if the given paramter matches the current role which the content
+     * provider provides.
+     */
+    private boolean parameterMatchesRole(ITestPolicyCmptTypeParameter parameter) {
+        return (isExpectedResult() && parameter.isExpextedResultParameter())
+                || (isInput() && parameter.isInputParameter());
+    }
+
+    /*
 	 * Helper class to sort test policy component objecs.
 	 */
 	private static class TestPolicyCmptSorter implements Comparator{

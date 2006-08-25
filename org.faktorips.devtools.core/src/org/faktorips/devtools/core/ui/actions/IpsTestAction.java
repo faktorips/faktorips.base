@@ -31,7 +31,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -71,7 +70,9 @@ public class IpsTestAction extends IpsAction {
 				if (element instanceof IIpsPackageFragmentRoot) {
 					root = (IIpsPackageFragmentRoot) element;
 					IIpsProject project = root.getIpsProject();
-					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + ""); //$NON-NLS-1$
+                    String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);
+                    if (tocFilePackage != null)
+                        selectedPathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + "");
 				} else if (element instanceof IIpsPackageFragment) {
 					IIpsPackageFragment child = (IIpsPackageFragment) element;
 					root = (IIpsPackageFragmentRoot) child.getRoot();
@@ -116,7 +117,9 @@ public class IpsTestAction extends IpsAction {
 		for (int i = 0; i < rootsFromProject.length; i++) {
 			root = rootsFromProject[i];
 			IIpsProject project = root.getIpsProject();
-			selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + ""); //$NON-NLS-1$
+            String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);
+            if (tocFilePackage !=  null)
+                selectedPathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + "");
 		}
 		return root;
 	}
@@ -172,7 +175,7 @@ public class IpsTestAction extends IpsAction {
 	 */
 	private String getRepPckNameFromPckFrgmtRoot(IIpsPackageFragmentRoot root) throws CoreException {
 		IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
-		return ((DefaultBuilderSet) builderSet).getInternalBasePackageName(root);
+		return builderSet.getTocFilePackageName(root);
 	}
 	
 	/*

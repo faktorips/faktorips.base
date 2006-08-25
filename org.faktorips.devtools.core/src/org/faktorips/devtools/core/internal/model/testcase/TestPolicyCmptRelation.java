@@ -82,10 +82,9 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptType()
-			throws CoreException {
-		if (StringUtils.isEmpty(testPolicyCmptType)) {
-			return null;
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptType() throws CoreException {
+        if (StringUtils.isEmpty(testPolicyCmptType)) {
+            return null;
 		}
 		return getTestCase().findTestPolicyCmptTypeParameter(this);
 	}
@@ -116,11 +115,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		}
 		
 		// the target is an association, search for the target in the test case
-		if (isInput()) {
-			return getTestCase().findInputPolicyCmpt(target);
-		} else {
-			return getTestCase().findExpectedResultPolicyCmpt(target);
-		}
+		return getTestCase().findTestPolicyCmpt(target);
 	}
 
 	/**
@@ -183,7 +178,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	public ITestPolicyCmpt newTargetTestPolicyCmptChild() {
 		ITestPolicyCmpt param = newTargetTestPolicyCmptChildInternal(getNextPartId());
-		return param;
+        return param;
 	}
 
 	/**
@@ -192,7 +187,6 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	private ITestPolicyCmpt newTargetTestPolicyCmptChildInternal(int id) {
 		TestPolicyCmpt testPc = new TestPolicyCmpt(this, id);
-		testPc.setInputParameter(((TestPolicyCmpt)this.getParent()).isInputObject());
 		targetChild = testPc;
 		return testPc;
 	}
@@ -337,7 +331,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		
 		// for assoziations check if the target is in the test case
 		if (isAccoziation()){
-			if (getTestCase().findInputPolicyCmpt(getTarget()) == null){
+			if (getTestCase().findTestPolicyCmpt(getTarget()) == null){
 				String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_AssoziationNotFound, getTarget());
 				Message msg = new Message(MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 				messageList.add(msg);	
@@ -354,14 +348,5 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		super.validateThis(list);
 		list.add(validateSingle());
 		list.add(validateGroup());
-	}
-
-	/**
-	 * Returns <code>true</code> if this relation belongs to a test policy
-	 * component which is an input object of the test case, otherwise if it is
-	 * an expected result object return <code>false</code>
-	 */
-	private boolean isInput() {
-		return ((ITestPolicyCmpt) getParent()).isInputObject();
 	}
 }

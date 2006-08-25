@@ -1,19 +1,16 @@
-/*******************************************************************************
+/***************************************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
@@ -31,106 +28,121 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public abstract class TestParameter extends IpsObjectPart implements ITestParameter {
-	
-    private String name = ""; //$NON-NLS-1$
-	
-	private boolean inputParameter = true;
-	
+
     private boolean deleted = false;
+
+    protected TestParameterRole role = TestParameterRole.UNKNOWN;
+
+    public TestParameter(IIpsObject parent, int id) {
+        super(parent, id);
+    }
+
+    public TestParameter(IIpsObjectPart parent, int id) {
+        super(parent, id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract boolean isRoot();
     
-	public TestParameter(IIpsObject parent, int id) {
-		super(parent, id);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public abstract ITestParameter getRootParameter();
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setName(String newName) {
+        this.name = newName;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected Element createElement(Document doc) {
+        throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
+    }
 
-	public TestParameter(IIpsObjectPart parent, int id) {
-		super(parent, id);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setName(String newName) {
-		this.name = newName;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isInputParameter() {
-		return inputParameter;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isExpextedResultParameter() {
-		return !inputParameter;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setInputParameter(boolean isInputType) {
-		this.inputParameter = isInputType;
-	}	
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Element createElement(Document doc) {
-		throw new RuntimeException("Not implemented!"); //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void delete() {
+    /**
+     * {@inheritDoc}
+     */
+    public void delete() {
         ((TestCaseType)getIpsObject()).removeTestParameter(this);
         updateSrcFile();
         deleted = true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isDeleted() {
-		return deleted;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Image getImage() {
-		return null;
-	}
+    }
 
     /**
      * {@inheritDoc}
      */
-	protected void initPropertiesFromXml(Element element, Integer id) {
-		super.initPropertiesFromXml(element, id);
-		name = element.getAttribute(PROPERTY_NAME);
-	}
+    public boolean isDeleted() {
+        return deleted;
+    }
 
     /**
      * {@inheritDoc}
      */
-	protected void propertiesToXml(Element element) {
-		super.propertiesToXml(element);
-		element.setAttribute(PROPERTY_NAME, name);
-	}
+    public IIpsObjectPart newPart(Class partType) {
+        throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Image getImage() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void initPropertiesFromXml(Element element, Integer id) {
+        super.initPropertiesFromXml(element, id);
+        name = element.getAttribute(PROPERTY_NAME);
+        role = TestParameterRole.getTestParameterRole(element.getAttribute(PROPERTY_TEST_PARAMETER_ROLE));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_NAME, name);
+        element.setAttribute(PROPERTY_TEST_PARAMETER_ROLE, role.toString());
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isInputParameter() {
+        return role == TestParameterRole.INPUT || role == TestParameterRole.COMBINED;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isExpextedResultParameter() {
+        return role == TestParameterRole.EXPECTED_RESULT || role == TestParameterRole.COMBINED;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isCombinedParameter() {
+        return role == TestParameterRole.COMBINED;
+    }
+
+    /**
+     * Returns the role of the test parameter.
+     */
+    public TestParameterRole getTestParameterRole(){
+        return role;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public abstract void setTestParameterRole(TestParameterRole testParameterRole);
 }

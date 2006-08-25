@@ -1,19 +1,16 @@
-/*******************************************************************************
+/***************************************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
@@ -21,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
-import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -33,7 +30,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -42,391 +38,360 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestCaseType extends IpsObject implements ITestCaseType {
-	
-	/* Tags */
-	static final String TAG_NAME_INPUT = "Input"; //$NON-NLS-1$
-	static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult"; //$NON-NLS-1$
-	
-	/* Containter for input and expected result objects */
-	private TestCaseTypeContainer input = new TestCaseTypeContainer(true, this, 0);
-	private TestCaseTypeContainer expectedResult = new TestCaseTypeContainer(false, this, 1);
-	
-	public TestCaseType(IIpsSrcFile file) {
-		super(file);
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsElement[] getChildren() {
-		IIpsElement[] childrenArray = new IIpsElement[2];
-		childrenArray[0] = input;
-		childrenArray[1] = expectedResult;
-		return childrenArray;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void reinitPartCollections() {
-		this.input = new TestCaseTypeContainer(true, this, 0);
-		this.expectedResult = new TestCaseTypeContainer(false, this, 1);
-	}
+    /* Tags */
+    static final String TAG_NAME_INPUT = "Input"; //$NON-NLS-1$
+    static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void reAddPart(IIpsObjectPart part) {
-		if (part instanceof TestCaseTypeContainer) {
-			if (((TestCaseTypeContainer) part).isInput){
-				input = (TestCaseTypeContainer) part;
-			}else{
-				expectedResult = (TestCaseTypeContainer) part;
-			}
-			return;
-		}
-		throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
-	}
+    /* Children */
+    private List testParameters = new ArrayList();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected IIpsObjectPart newPart(Element xmlTag, int id) {
-		String xmlTagName = xmlTag.getNodeName();
-		if (TAG_NAME_INPUT.equals(xmlTagName)){
-			return new TestCaseTypeContainer(true, this, 0);
-		}else if (TAG_NAME_EXPECTED_RESULT.equals(xmlTagName)){
-			return new TestCaseTypeContainer(false, this, 1);
-		}
-		
-		throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public IpsObjectType getIpsObjectType() {
-		return IpsObjectType.TEST_CASE_TYPE;
-	}
+    public TestCaseType(IIpsSrcFile file) {
+        super(file);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsElement[] getChildren() {
+        return (IIpsElement[])testParameters.toArray(new IIpsElement[0]);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValueParameter newInputValueParameter() {
-		ITestValueParameter param = newValueParameterInternal(true);
-		updateSrcFile();
-		return param;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValueParameter newExpectedResultValueParameter() {
-		ITestValueParameter param = newValueParameterInternal(false);
-		updateSrcFile();
-		return param;
-	}
-	
-	/**
-	 * Creates a new value parameter as input or expected result.
-	 */	
-	private ITestValueParameter newValueParameterInternal(boolean isInput){
-		if (isInput){
-			return input.newValueParameter();
-		}else{
-			return expectedResult.newValueParameter();
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter newInputPolicyCmptTypeParameter() {
-		ITestPolicyCmptTypeParameter param = newPolicyCmptParameterInternal(true);
-		updateSrcFile();
-		return param;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter newExpectedResultPolicyCmptParameter() {
-		ITestPolicyCmptTypeParameter param = newPolicyCmptParameterInternal(false);
-		updateSrcFile();
-		return param;
-	}
-	
-	/**
-	 * Creates a new policy component parameter as input or expected result.
-	 */	
-	private ITestPolicyCmptTypeParameter newPolicyCmptParameterInternal(boolean isInput){
-		if (isInput){
-			return input.newPolicyCmptParameter();
-		}else{
-			return expectedResult.newPolicyCmptParameter();
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestParameter[] getInputParameters() {
-		return input.getTestParameter();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValueParameter[] getInputTestValueParameters() {
-		return input.getTestValueParameters();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters() {
-		return input.getTestPolicyCmptTypeParameters();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter){
-		return input.getTestValueParameter(inputTestValueParameter);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter){
-		return input.getTestPolicyCmptTypeParameter(inputTestPolicyCmptTypeParameter);
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestParameter[] getExpectedResultParameter() {
-		return expectedResult.getTestParameter();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected void reinitPartCollections() {
+        testParameters = new ArrayList();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValueParameter[] getExpectedResultTestValueParameters() {
-		return expectedResult.getTestValueParameters();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters() {
-		return expectedResult.getTestPolicyCmptTypeParameters();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter) {
-		return expectedResult.getTestValueParameter(expResultTestValueParameter);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(String expResultTestPolicyCmptTypeParameter) {
-		return expectedResult.getTestPolicyCmptTypeParameter(expResultTestPolicyCmptTypeParameter);
-	}	
+    /**
+     * {@inheritDoc}
+     */
+    protected void reAddPart(IIpsObjectPart part) {
+        if (part instanceof ITestParameter) {
+            testParameters.add(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
+    }
 
-	/**
-	 * Removes the test parameter from the type. 
-	 */
-	void removeTestParameter(TestParameter param) {
-		if (param.isInputParameter()){
-			input.remove(param);
-		}else{
-			expectedResult.remove(param);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected IIpsObjectPart newPart(Element xmlTag, int id) {
+        String xmlTagName = xmlTag.getNodeName();
+        if (TestPolicyCmptTypeParameter.TAG_NAME.equals(xmlTagName)) {
+            return newTestPolicyCmptTypeParameterInternal(id);
+        } else if (TestValueParameter.TAG_NAME.equals(xmlTagName)) {
+            return newTestValueParameterInternal(id);
+        }
+        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
+    }
 
-	/**
-	 * Inner class to represent the input or expected result container.
-	 */
-	private class TestCaseTypeContainer extends IpsObjectPart{	    	
-		private boolean isInput = true;
+    /**
+     * {@inheritDoc}
+     */
+    public IpsObjectType getIpsObjectType() {
+        return IpsObjectType.TEST_CASE_TYPE;
+    }
 
-		private List testParameter = new ArrayList();
-		
-		public TestCaseTypeContainer(boolean isInput, IIpsObject parent, int id){
-			super(parent, id);
-			this.isInput = isInput;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObjectPart newPart(Class partType) {
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+    }
 
-		public boolean isInput() {
-			return isInput;
-		}
-		
-		public IIpsElement[] getChildren() {
-			IIpsElement[] childrenArray = new IIpsElement[testParameter.size()];
-			testParameter.toArray(childrenArray);
-			return childrenArray;
-		}	
-		
-		public ITestParameter[] getTestParameter() {
-			ITestParameter[] testParameterArray = new ITestParameter[testParameter.size()];
-			testParameter.toArray(testParameterArray);
-			return testParameterArray;
-		}
+    //
+    // Getters for input parameters
+    //
 
-		/**
-		 * Returns all the test parameter which are kind of the given class.
-		 */
-		private List getTestParameters(Class parameterClass) {
-			List parameter = new ArrayList();
-	        for (Iterator it = testParameter.iterator(); it.hasNext();) {
-	        	ITestParameter testParameter = (ITestParameter)it.next();
-	            if (testParameter.getClass().equals(parameterClass))
-	            	parameter.add(testParameter);
-	        }
-			return parameter;
-		}
-		
-		public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter) {
-			ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = null;
-			for (Iterator it = testParameter.iterator(); it.hasNext();) {
-				ITestParameter testParameter = (ITestParameter) it.next();
-				if (testParameter instanceof ITestPolicyCmptTypeParameter && inputTestPolicyCmptTypeParameter.equals(testParameter.getName())){
-					testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter) testParameter;
-					break;
-				}
-			}
-			return testPolicyCmptTypeParameter;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter[] getInputTestParameters() {
+        return (ITestParameter[])getTestParameters(TestParameterRole.INPUT, null, null).toArray(new ITestParameter[0]);
+    }
 
-		public ITestValueParameter getTestValueParameter(String inputTestValueParameter) {
-			ITestValueParameter testValueParameterFound = null;
-			for (Iterator it = testParameter.iterator(); it.hasNext();) {
-				ITestParameter testParameter = (ITestParameter) it.next();
-				if (testParameter instanceof ITestValueParameter && inputTestValueParameter.equals(testParameter.getName())){
-					testValueParameterFound = (ITestValueParameter) testParameter;
-					break;
-				}
-			}
-			return testValueParameterFound;
-		}
-		
-		public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters() {
-			List inputObjects = getTestParameters(TestPolicyCmptTypeParameter.class);
-			return (ITestPolicyCmptTypeParameter[]) inputObjects.toArray(new ITestPolicyCmptTypeParameter[0]);
-		}
-		
-		public ITestValueParameter[] getTestValueParameters() {
-			List inputObjects = getTestParameters(TestValueParameter.class);
-			return (ITestValueParameter[]) inputObjects.toArray(new ITestValueParameter[0]);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		protected void reinitPartCollections() {
-			testParameter = new ArrayList();
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter[] getInputTestValueParameters() {
+        return (ITestValueParameter[])getTestParameters(TestParameterRole.INPUT, TestValueParameter.class, null)
+                .toArray(new ITestValueParameter[0]);
+    }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		protected void reAddPart(IIpsObjectPart part) {
-			if (part instanceof ITestParameter) {
-				testParameter.add(part);
-				return;
-			}
-			throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
-		}
-		
-		public void addTestParameter(TestParameter param){
-			testParameter.add(param);
-		}
-		
-		/** 
-	     * {@inheritDoc}
-	     */
-	    public void delete() {
-	    }
-	    
-	    /**
-	     * {@inheritDoc}
-	     */
-	    public boolean isDeleted() {
-	    	return false;
-	    }    
-	    
-		/**
-		 * Removes the given test parameter object from the parameter list
-		 */
-		public void remove(TestParameter param) {
-			testParameter.remove(param);
-		}
-		
-	    /** 
-	     * {@inheritDoc}
-	     */
-	    public Image getImage() {
-			return null;
-	    }
-	    
-	    /**
-	     * {@inheritDoc}
-	     */
-	    protected Element createElement(Document doc) {
-	        return isInput ? doc.createElement(TestCaseType.TAG_NAME_INPUT) :
-	        	             doc.createElement(TestCaseType.TAG_NAME_EXPECTED_RESULT);
-	    }
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters() {
+        return (ITestPolicyCmptTypeParameter[])getTestParameters(TestParameterRole.INPUT,
+                TestPolicyCmptTypeParameter.class, null).toArray(new ITestPolicyCmptTypeParameter[0]);
+    }
 
-	    /**
-	     * {@inheritDoc}
-	     */
-		protected IIpsObjectPart newPart(Element xmlTag, int id) {
-			String xmlTagName = xmlTag.getNodeName();
-			if (xmlTagName.equals(TestValueParameter.TAG_NAME)) {
-				return newValueParameterInternal(isInput);
-			}else if (xmlTagName.equals(TestPolicyCmptTypeParameter.TAG_NAME)) {
-				return newPolicyCmptParameterInternal(isInput);
-			}
-			throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public IIpsObjectPart newPart(Class partType) {
-			throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
-		}
-		
-		/**
-		 * Creates a new value parameter without updating the src file.
-		 */
-		public ITestValueParameter newValueParameter() {
-			TestValueParameter param = new TestValueParameter(this, getNextPartId());
-			param.setInputParameter(isInput);
-			testParameter.add(param);
-			return param;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public ITestPolicyCmptTypeParameter newPolicyCmptParameter() {
-			TestPolicyCmptTypeParameter param = new TestPolicyCmptTypeParameter(this, getNextPartId());
-			param.setInputParameter(isInput);
-			testParameter.add(param);
-			return param;
-		}	
-	}	
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreException {
+        ITestValueParameter[] parameters = (ITestValueParameter[])getTestParameters(TestParameterRole.INPUT,
+                TestValueParameter.class, inputTestValueParameter).toArray(new ITestValueParameter[0]);
+        if (parameters.length == 0)
+            return null;
+
+        if (parameters.length == 1) {
+            return parameters[0];
+        }
+
+        throw new CoreException(new IpsStatus(NLS.bind(
+                "More than test value parameter exists with role {0} and name {1}", TestParameterRole.INPUT,
+                inputTestValueParameter)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
+            throws CoreException {
+        ITestPolicyCmptTypeParameter[] parameters = (ITestPolicyCmptTypeParameter[])getTestParameters(
+                TestParameterRole.INPUT, TestPolicyCmptTypeParameter.class, inputTestPolicyCmptTypeParameter).toArray(
+                new ITestPolicyCmptTypeParameter[0]);
+
+        if (parameters.length == 0)
+            return null;
+
+        if (parameters.length == 1) {
+            return parameters[0];
+        }
+
+        throw new CoreException(new IpsStatus(NLS.bind(
+                "More than test policy component type parameter exists with role {0} and name {1}",
+                TestParameterRole.INPUT, inputTestPolicyCmptTypeParameter)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter getTestParameterByName(String testParameterName) throws CoreException {
+        List foundTestParameter = getTestParameters(null, null, testParameterName);
+        if (foundTestParameter.size() == 0)
+            return null;
+
+        if (foundTestParameter.size() == 1) {
+            return (ITestParameter)foundTestParameter.get(0);
+        }
+
+        throw new CoreException(new IpsStatus(NLS.bind("More than test parameter exists with name {0}", testParameterName)));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter[] getTestParameters() throws CoreException {
+        List foundTestParameter = getTestParameters(null, null, null);
+        if (foundTestParameter.size() == 0)
+            return null;
+
+        return (ITestParameter[]) foundTestParameter.toArray(new ITestParameter[0]);
+    }
+
+    //
+    // Getters for expected result parameters
+    //
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter[] getExpectedResultTestParameters() {
+        return (ITestParameter[])getTestParameters(TestParameterRole.EXPECTED_RESULT, null, null).toArray(
+                new ITestParameter[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter[] getExpectedResultTestValueParameters() {
+        return (ITestValueParameter[])getTestParameters(TestParameterRole.EXPECTED_RESULT, TestValueParameter.class,
+                null).toArray(new ITestValueParameter[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters() {
+        return (ITestPolicyCmptTypeParameter[])getTestParameters(TestParameterRole.EXPECTED_RESULT,
+                TestPolicyCmptTypeParameter.class, null).toArray(new ITestPolicyCmptTypeParameter[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
+            throws CoreException {
+        ITestValueParameter[] parameters = (ITestValueParameter[])getTestParameters(TestParameterRole.EXPECTED_RESULT,
+                TestValueParameter.class, expResultTestValueParameter).toArray(new ITestValueParameter[0]);
+        if (parameters.length == 0)
+            return null;
+
+        if (parameters.length == 1) {
+            return parameters[0];
+        }
+
+        throw new CoreException(new IpsStatus(NLS.bind(
+                "More than test value parameter exists with role {0} and name {1}", TestParameterRole.INPUT,
+                expResultTestValueParameter)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(String expResultTestPolicyCmptTypeParameter)
+            throws CoreException {
+        ITestPolicyCmptTypeParameter[] parameters = (ITestPolicyCmptTypeParameter[])getTestParameters(
+                TestParameterRole.EXPECTED_RESULT, TestPolicyCmptTypeParameter.class,
+                expResultTestPolicyCmptTypeParameter).toArray(new ITestPolicyCmptTypeParameter[0]);
+
+        if (parameters.length == 0)
+            return null;
+
+        if (parameters.length == 1) {
+            return parameters[0];
+        }
+
+        throw new CoreException(new IpsStatus(NLS.bind(
+                "More than test policy component type parameter exists with role {0} and name {1}",
+                TestParameterRole.INPUT, expResultTestPolicyCmptTypeParameter)));
+    }
+
+    //
+    // Create methods for input test parameters
+    //
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter newInputTestValueParameter() {
+        TestValueParameter param = newTestValueParameterInternal(getNextPartId());
+        param.setTestParameterRole(TestParameterRole.INPUT);
+        updateSrcFile();
+        return param;
+    }
+
+    /**
+     * Sets the role of the test parameter. The following roles could be set.
+     * <p><ul>
+     * <li>INPUT: the test parameter specifies only test case input objects
+     * <li>EXPECTED_RESULT: the test parameter specifies only test case expected result objects
+     * <li>COMBINED: the test parameter specifies both, input and expected result objects
+     * </ul>
+     */
+    public ITestPolicyCmptTypeParameter newInputTestPolicyCmptTypeParameter() {
+        TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
+        param.setTestParameterRole(TestParameterRole.INPUT);
+        updateSrcFile();
+        return param;
+    }
+
+    //
+    // Creates methods for expected result parameters
+    //
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter newExpectedResultValueParameter() {
+        TestValueParameter param = newTestValueParameterInternal(getNextPartId());
+        param.setTestParameterRole(TestParameterRole.EXPECTED_RESULT);
+        updateSrcFile();
+        return param;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmptTypeParameter newExpectedResultPolicyCmptTypeParameter() {
+        TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
+        param.setTestParameterRole(TestParameterRole.EXPECTED_RESULT);
+        updateSrcFile();
+        return param;
+    }
+
+    //
+    // Create methods for combined test parameters
+    //
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestValueParameter newCombinedValueParameter() {
+        TestValueParameter param = newTestValueParameterInternal(getNextPartId());
+        param.setTestParameterRole(TestParameterRole.COMBINED);
+        updateSrcFile();
+        return param;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmptTypeParameter newCombinedPolicyCmptTypeParameter() {
+        TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
+        param.setTestParameterRole(TestParameterRole.COMBINED);
+        updateSrcFile();
+        return param;
+    }
+
+    /**
+     * Removes the test parameter from the test case type. Package private because the paramter in
+     * this package removes itselfs from the list when delete is calling.
+     */
+    void removeTestParameter(TestParameter param) {
+        testParameters.remove(param);
+    }
+
+    /*
+     * Returns the test parameters which matches the given role, is instance of the given 
+     * class and matches the given name. The particular object aspect will only check if the particular field is not
+     * <code>null</code>. For instance if all parameter are <code>null</code> then all
+     * parameters are returned.
+     */
+    private List getTestParameters(TestParameterRole role, Class parameterClass, String name) {
+        List result = new ArrayList(testParameters.size());
+        for (Iterator iter = testParameters.iterator(); iter.hasNext();) {
+            TestParameter parameter = (TestParameter)iter.next();
+            boolean addParameter = true;
+            if (parameter.getTestParameterRole() != null && role != null
+                    && ! TestParameterRole.isRoleMatching(role, parameter.getTestParameterRole())) {
+                addParameter = false;
+                continue;
+            }
+            if (parameterClass != null && ! parameter.getClass().equals(parameterClass)) {
+                addParameter = false;
+                continue;
+            }
+            if (name != null && ! name.equals(parameter.getName())) {
+                addParameter = false;
+                continue;
+            }
+            if (addParameter)
+                result.add(parameter);
+        }
+        return result;
+    }
+
+    /*
+     * Creates a new test policy component type parameter without updating the src file.
+     */
+    private TestPolicyCmptTypeParameter newTestPolicyCmptTypeParameterInternal(int id) {
+        TestPolicyCmptTypeParameter p = new TestPolicyCmptTypeParameter(this, id);
+        testParameters.add(p);
+        return p;
+    }
+
+    /*
+     * Creates a new test value parameter without updating the src file.
+     */
+    private TestValueParameter newTestValueParameterInternal(int id) {
+        TestValueParameter p = new TestValueParameter(this, id);
+        testParameters.add(p);
+        return p;
+    }
 }

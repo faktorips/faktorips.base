@@ -31,7 +31,6 @@ public interface ITestPolicyCmpt extends ITestObject {
 	/** Property names */
 	public final static String PROPERTY_POLICYCMPTTYPE = "testPolicyCmptType"; //$NON-NLS-1$
 	public final static String PROPERTY_PRODUCTCMPT = "productCmpt"; //$NON-NLS-1$
-	public final static String PROPERTY_LABEL = "label"; //$NON-NLS-1$
 	
     /**
      * Prefix for all message codes of this class.
@@ -51,14 +50,26 @@ public interface ITestPolicyCmpt extends ITestObject {
 		+ "ProductCmptIsRequired"; //$NON-NLS-1$
 	
     /**
-     * Returns the qualified name of policy component class.
+     * Validation message code to indicate that the product component was not found.
      */
-	public String getTestPolicyCmptType();
+    public final static String MSGCODE_PRODUCT_CMPT_NOT_EXISTS = MSGCODE_PREFIX
+        + "ProductCmptNotExists"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the policy component type was not found.
+     */
+    public final static String MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS = MSGCODE_PREFIX
+    + "PolicyCmptTypeNotExists"; //$NON-NLS-1$
+    
+    /**
+     * Returns the qualified name of the test policy component type parameter class.
+     */
+	public String getTestPolicyCmptTypeParameter();
 	
     /**
-     * Sets the qualified name of the policy component class.
+     * Sets the qualified name of the test policy component type parameter class.
      */	
-	public void setTestPolicyCmptType(String pcType);
+	public void setTestPolicyCmptTypeParameter(String pcType);
 	
     /**
      * Returns the test policy component type or <code>null</code> if the policy component type does not exists.
@@ -85,14 +96,9 @@ public interface ITestPolicyCmpt extends ITestObject {
 	public IProductCmpt findProductCmpt() throws CoreException;
 	
     /**
-     * Returns the unique label of the test policy component.
-     */
-	public String getLabel();
-	
-    /**
-     * Sets the unique label of the test policy component.
+     * Sets the unique name of the test policy component.
      */	
-	public void setLabel(String label);	
+	public void setName(String name);	
 	
     /**
      * Creates a new attribute and returns it.
@@ -117,18 +123,21 @@ public interface ITestPolicyCmpt extends ITestObject {
     public ITestPolicyCmptRelation newTestPolicyCmptRelation();
     
     /**
-     * Creates a new relation on the test policy component and returns it. The given test policy component type param specifies the type of the
-     * relation, because depending on the test case type there could be more than one possible relations for this test policy component.
+     * Creates a new relation on the test policy component and returns it. The given test policy
+     * component type param specifies the type of the relation.
      * 
-     * @param typeParam The test policy component type parameter for which the new relation will be created. 
-     * 				    This is the type definition of the relation.
-     * @param productCmpt The name of the product component if the child of the relation requires a product component
-     *                    otherwise empty.
-     * @param targetName The name of the target if the new relation should be an assoziation otherwise empty.
+     * @param typeParam The test policy component type parameter for which the new relation will be
+     *            created. This is the type definition of the test relation.
+     * @param productCmpt The name of the product component if the child of the relation requires a
+     *            product component otherwise empty.
+     * @param targetName The name of the target if the new relation should be an assoziation
+     *            otherwise empty.
      * 
      * @throws CoreException if an error occurs while adding the new relation.
      */
-    public ITestPolicyCmptRelation addTestPcTypeRelation(ITestPolicyCmptTypeParameter typeParam, String productCmpt, String targetName) throws CoreException ;
+    public ITestPolicyCmptRelation addTestPcTypeRelation(ITestPolicyCmptTypeParameter typeParam,
+            String productCmpt,
+            String targetName) throws CoreException;
     
     /**
      * Returns all test policy component relations.
@@ -153,12 +162,6 @@ public interface ITestPolicyCmpt extends ITestObject {
      */
     public ITestPolicyCmptRelation getTestPcTypeRelation(String testPolicyCmptType);
     
-    /** 
-     * Returns <code>true</code> if this object is a root or <code>false</code> 
-     * if this object is a child objejct.
-     */
-    public boolean isRoot();
-    
     /**
      * Returns the test case which this test policy component belongs to.
      * This object could be direcly a child of a test case or a child of another
@@ -166,11 +169,12 @@ public interface ITestPolicyCmpt extends ITestObject {
      */
     public ITestCase getTestCase();
     
-	/**
-	 * Returns the root test policy component element.
-	 */    
-    public ITestPolicyCmpt getRoot();
-    
+    /** 
+     * Returns <code>true</code> if this object is a root or <code>false</code> 
+     * if this object is a child objejct.
+     */
+    public boolean isRoot();
+
     /**
      * Returns the parent test policy component.
      */
@@ -178,6 +182,8 @@ public interface ITestPolicyCmpt extends ITestObject {
     
     /**
      * Removes the given relation.
+     * 
+     * @throws CoreException in case of an error.
      */
-    public void removeRelation(ITestPolicyCmptRelation relation); 
+    public void removeRelation(ITestPolicyCmptRelation relation) throws CoreException; 
 }

@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -48,8 +49,7 @@ import org.w3c.dom.Element;
  * 
  * @author Joerg Ortmann
  */
-public class TestPolicyCmpt extends TestObject implements
-		ITestPolicyCmpt {
+public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
 	/* Tags */
 	final static String TAG_NAME = "PolicyCmptTypeObject"; //$NON-NLS-1$
@@ -57,8 +57,6 @@ public class TestPolicyCmpt extends TestObject implements
 	private String testPolicyCmptType = ""; //$NON-NLS-1$
 	
 	private String productCmpt = ""; //$NON-NLS-1$
-	
-	private String label = ""; //$NON-NLS-1$
 	
 	private List testAttributeValues = new ArrayList(0);
 	
@@ -119,18 +117,18 @@ public class TestPolicyCmpt extends TestObject implements
 		}
 		throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
 	}	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getTestPolicyCmptType() {
+	public String getTestPolicyCmptTypeParameter() {
 		return testPolicyCmptType;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setTestPolicyCmptType(String newPolicyCmptType) {
+	public void setTestPolicyCmptTypeParameter(String newPolicyCmptType) {
 		String oldPolicyCmptType = this.testPolicyCmptType;
 		this.testPolicyCmptType = newPolicyCmptType;
 		valueChanged(oldPolicyCmptType, newPolicyCmptType);
@@ -146,6 +144,13 @@ public class TestPolicyCmpt extends TestObject implements
         return getTestCase().findTestPolicyCmptTypeParameter(this);
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    protected String getTestParameterName() {
+        return testPolicyCmptType;
+    } 
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -175,24 +180,17 @@ public class TestPolicyCmpt extends TestObject implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setLabel(String newLabel) {
-		String oldLabel = this.label;
-		this.label = newLabel;
-		valueChanged(oldLabel, newLabel);
+	public void setName(String newName) {
+		String oldName = this.name;
+		this.name = newName;
+		valueChanged(oldName, newName);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getLabel() {
-		return label;
-	}
-	
 	/**
 	 * Returns the top level test case.
 	 */
 	public ITestCase getTestCase(){
-		return ((ITestCase) getRoot().getParent().getParent());
+		return ((ITestCase) getRoot().getParent());
 	}
 	
 	/**
@@ -207,9 +205,9 @@ public class TestPolicyCmpt extends TestObject implements
      */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
+        name = element.getAttribute(PROPERTY_NAME);
 		testPolicyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
 		productCmpt = element.getAttribute(PROPERTY_PRODUCTCMPT);
-		label = element.getAttribute(PROPERTY_LABEL);
 	}
 
     /**
@@ -217,9 +215,9 @@ public class TestPolicyCmpt extends TestObject implements
      */
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
+		element.setAttribute(PROPERTY_NAME, name);
 		element.setAttribute(PROPERTY_POLICYCMPTTYPE, testPolicyCmptType);
 		element.setAttribute(PROPERTY_PRODUCTCMPT, productCmpt);
-		element.setAttribute(PROPERTY_LABEL, label);
 	}
 	
 	/**
@@ -246,7 +244,7 @@ public class TestPolicyCmpt extends TestObject implements
 	public ITestAttributeValue getTestAttributeValue(String name) {
 		for (Iterator it = testAttributeValues.iterator(); it.hasNext();) {
 			ITestAttributeValue a = (ITestAttributeValue) it.next();
-			if (a.getName().equals(name)) {
+			if (a.getTestAttribute().equals(name)) {
 				return a;
 			}
 		}
@@ -340,7 +338,7 @@ public class TestPolicyCmpt extends TestObject implements
 	/**
 	 * {@inheritDoc}
 	 */
-    public ITestPolicyCmpt getRoot(){
+    public ITestObject getRoot(){
     	ITestPolicyCmpt testPolicyCmpt = this;
     	while (!testPolicyCmpt.isRoot()) {
 			testPolicyCmpt = testPolicyCmpt.getParentPolicyCmpt();
@@ -362,19 +360,19 @@ public class TestPolicyCmpt extends TestObject implements
     /**
      * {@inheritDoc}
      */	
-	public void removeRelation(ITestPolicyCmptRelation relation){
-		boolean found = false;
+	public void removeRelation(ITestPolicyCmptRelation relation) {
 		int idx = 0;
+        int foundIdx = -1;
 		for (Iterator iter = testPolicyCmptRelations.iterator(); iter.hasNext();) {
 			ITestPolicyCmptRelation element = (ITestPolicyCmptRelation) iter.next();
 			if (element == relation){
-				found = true;
-				break;
+                foundIdx = idx;
+                break;
 			}
 			idx ++;
 		}
-		if (found){
-			testPolicyCmptRelations.remove(idx);
+		if (foundIdx >= 0){
+			testPolicyCmptRelations.remove(foundIdx);
 			updateSrcFile();
 		}
 	}
@@ -398,26 +396,26 @@ public class TestPolicyCmpt extends TestObject implements
 			newTestPcTypeRelation.setTestPolicyCmptType(typeParam.getName());
 			
 			ITestPolicyCmpt newTestPolicyCmpt = newTestPcTypeRelation.newTargetTestPolicyCmptChild();
-			newTestPolicyCmpt.setTestPolicyCmptType(typeParam.getName());
+			newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
 			newTestPolicyCmpt.setProductCmpt(productCmpt);
 			
 			// sets the label for the new child test policy component
-			String label = ""; //$NON-NLS-1$
+			String name = ""; //$NON-NLS-1$
 			if (StringUtils.isEmpty(productCmpt)){
-				label = newTestPolicyCmpt.getTestPolicyCmptType();
+				name = newTestPolicyCmpt.getTestPolicyCmptTypeParameter();
 			}else{
-				label = productCmpt;
+				name = productCmpt;
 			}
-			label = StringUtil.unqualifiedName(label);
-			label = getTestCase().generateUniqueLabelForTestPolicyCmpt(newTestPolicyCmpt, label);
-			newTestPolicyCmpt.setLabel(label);
+            name = StringUtil.unqualifiedName(name);
+            name = getTestCase().generateUniqueLabelForTestPolicyCmpt(newTestPolicyCmpt, name);
+			newTestPolicyCmpt.setName(name);
 			
 			// add the attributes which are defined in the test case type parameter
 			ITestAttribute attributes[] = typeParam.getTestAttributes();
 			for (int i = 0; i < attributes.length; i++) {
 				ITestAttribute attribute = attributes[i];
 				ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();
-				attrValue.setTestAttribute(attribute.getAttribute());
+				attrValue.setTestAttribute(attribute.getName());
 			}
 		} else{
 			// relation is assoziation
@@ -469,6 +467,19 @@ public class TestPolicyCmpt extends TestObject implements
 				Message msg = new Message(MSGCODE_PRODUCT_CMPT_IS_REQUIRED, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 				list.add(msg);
 			}
+			// check if the policy component type exists
+			if (param.findPolicyCmptType() == null){
+			    String text = NLS.bind("The policy component type {0} not exists for test policy component {1}.", param.getPolicyCmptType(), testPolicyCmptType);
+			    Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
+			    list.add(msg);
+			}
+		}
+        
+		// check if the product component exists
+		if (StringUtils.isNotEmpty(productCmpt) && getIpsProject().findProductCmpt(productCmpt) == null){
+            String text = NLS.bind("The product component {0} not exists for test policy component {1}.", productCmpt, testPolicyCmptType);
+		    Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
+		    list.add(msg);
 		}
 	}
 }

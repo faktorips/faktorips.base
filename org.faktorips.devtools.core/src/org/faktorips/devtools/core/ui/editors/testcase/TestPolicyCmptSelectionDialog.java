@@ -269,7 +269,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 						ITestPolicyCmptRelation elem = childs[i];
 						String relationName = ""; //$NON-NLS-1$
 						if (elem.findTarget() != null){
-							relationName = elem.findTarget().getTestPolicyCmptType();
+							relationName = elem.findTarget().getTestPolicyCmptTypeParameter();
 							if (relationName.equals(dummyRelation.getName())){
 								found = isFilterChildOfRelation(elem, filteredPolicyCmptType);
 								if (found)

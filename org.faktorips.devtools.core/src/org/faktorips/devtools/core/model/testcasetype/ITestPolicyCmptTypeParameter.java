@@ -75,10 +75,19 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
 	public IRelation findRelation() throws CoreException;
 		
     /**
-     * Creates a new attribute and returns it.
+     * Creates a new input test attribute and returns it.
+     * 
+     * @throws CoreException if the attribute could not be added
      */
-    public ITestAttribute newTestAttribute();
+    public ITestAttribute newInputTestAttribute() throws CoreException;
     
+    /**
+     * Creates a new expected result test attribute and returns it.
+     * 
+     * @throws CoreException if the attribute could not be added
+     */
+    public ITestAttribute newExpectedResultTestAttribute() throws CoreException;
+
     /**
      * Returns the type's attributes.
      */
@@ -89,7 +98,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * with the name exist, the first attribute is returned.
      * Returns <code>null</code> if no attribute with the given name exists. 
      */
-    public ITestAttribute getTestAttribute(String attribute);
+    public ITestAttribute getTestAttribute(String attributeName);
     
     /**
      * Creates a new child test policy component type parameter and returns it.
@@ -108,17 +117,6 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      */
     public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParamChild(String name);
     
-	/**
-	 * Returns <code>true</code> if the test parameter is a root parameter 
-	 * or <code>false</code> if the parameter is a child of another object.
-	 */
-	public boolean isRootParameter();
-	
-	/**
-	 * Returns the root test policy component type parameter.
-	 */
-	public ITestPolicyCmptTypeParameter getRootParameter();
-	
 	/** 
 	 * Returns <code>true</code> if corresponding test policy components have relations to product components 
 	 * instead of policy components.

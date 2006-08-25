@@ -106,7 +106,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	public String getText(Object element) {
 		if (element instanceof ITestPolicyCmpt) {
 			ITestPolicyCmpt tstPolicyCmpt = (ITestPolicyCmpt) element;
-			return tstPolicyCmpt.getLabel();
+			return tstPolicyCmpt.getName();
 		} else if (element instanceof ITestPolicyCmptRelation) {
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) element;
 			String text = ""; //$NON-NLS-1$

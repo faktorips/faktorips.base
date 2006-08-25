@@ -70,6 +70,11 @@ public class IpsTestRunner implements IIpsTestRunner {
     //  Shared instance of the test runner
     private static IpsTestRunner ipsTestRunner;
     
+    // Error details in case multiline errors
+    private ArrayList errorDetailList;
+    
+    private String qualifiedTestName;
+    
     private IpsTestRunner() {
     }
 
@@ -161,7 +166,8 @@ public class IpsTestRunner implements IIpsTestRunner {
         } catch (Exception e) {
             // error durring socket listening
         	// notify the listener itself, because there is no connection to a runner (connection failed)
-        	notifyTestRunStarted(1, classpathRepositories, testsuites);
+        	IpsPlugin.log(e);
+            notifyTestRunStarted(1, classpathRepositories, testsuites);
         	notifyTestErrorOccured("", new String[]{Messages.IpsTestRunner_Error_CouldNotConnect + e.getLocalizedMessage()}); //$NON-NLS-1$
         	connected = false;
         }
@@ -184,7 +190,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Parse the incomming message and fire the messages events to the registered listener.
      */
     private void parseMessage(String line) {
-    	if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_STARTED)) {  
+        if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_STARTED)) {  
     		// format: SocketIpsTestRunner.ALL_TESTS_STARTED(<count>) [<repositoryPackage>].[<testPackage>]
     		int start = line.indexOf("(") + 1; //$NON-NLS-1$
             int count = Integer.parseInt(line.substring(start, line.indexOf(")"))); //$NON-NLS-1$
@@ -223,15 +229,42 @@ public class IpsTestRunner implements IIpsTestRunner {
         	notifyTestFailureOccured((String[])failureTokens.toArray(new String[0]));
         }else if(line.startsWith(SocketIpsTestRunner.TEST_ERROR)){
         	// format qualifiedTestName{message}{StacktraceElem1}{StacktraceElem2}...{StacktraceElemN}
-        	ArrayList errorDetailList = new ArrayList();
+            errorDetailList = new ArrayList();
         	String errorDetails = line.substring(SocketIpsTestRunner.TEST_ERROR.length());  //$NON-NLS-1$
-        	String qualifiedTestName = errorDetails.substring(0, errorDetails.indexOf("{")); //$NON-NLS-1$
-        	while (errorDetails.indexOf("}") >= 0){ //$NON-NLS-1$
-        		errorDetailList.add(errorDetails.substring(errorDetails.indexOf("{") + 1, errorDetails.indexOf("}"))); //$NON-NLS-1$ //$NON-NLS-2$
-        		if (errorDetails.indexOf("{") >=0 ) //$NON-NLS-1$
-        			errorDetails = errorDetails.substring(errorDetails.indexOf("}") + 1); //$NON-NLS-1$
-        	}
-        	notifyTestErrorOccured(qualifiedTestName, (String[]) errorDetailList.toArray(new String[0]));
+        	qualifiedTestName = errorDetails.substring(0, errorDetails.indexOf("{")); //$NON-NLS-1$
+            parseErrorStack(errorDetailList, errorDetails);
+        } else if (line.endsWith(SocketIpsTestRunner.TEST_ERROR_END)){
+            String errorDetails = line.substring(0, line.indexOf(SocketIpsTestRunner.TEST_ERROR_END));
+            parseErrorStack(errorDetailList, errorDetails);
+            notifyTestErrorOccured(qualifiedTestName, (String[]) errorDetailList.toArray(new String[0]));
+            errorDetailList = null;
+        } else if (errorDetailList != null){
+            // parse multiline stack elements
+            parseErrorStack(errorDetailList, line);
+        }
+    }
+
+    private void parseErrorStack(ArrayList errorDetailList, String errorDetails) {
+        if (errorDetails.length() == 0)
+            return;
+        
+        errorDetails = errorDetails.replaceAll("\t","");  //$NON-NLS-1$ //$NON-NLS-2$
+        if (errorDetails.indexOf("{") == -1){ //$NON-NLS-1$
+            errorDetailList.add(errorDetails);
+        }else{
+            // fix brackets, in case of multiline stack elements
+            if (errorDetails.indexOf("}") == -1){ //$NON-NLS-1$
+                errorDetails += "}"; //$NON-NLS-1$
+            } else if (errorDetails.indexOf("{") > errorDetails.indexOf("}")){ //$NON-NLS-1$ //$NON-NLS-2$
+                errorDetails = "{" + errorDetails; //$NON-NLS-1$
+            }
+            // parse stack elements
+            while (errorDetails.indexOf("}") >= 0){ //$NON-NLS-1$
+            	String stackElem = errorDetails.substring(errorDetails.indexOf("{") + 1, errorDetails.indexOf("}")); //$NON-NLS-1$ //$NON-NLS-2$
+                errorDetailList.add(stackElem); //$NON-NLS-1$ //$NON-NLS-2$
+            	if (errorDetails.indexOf("{") >=0 ) //$NON-NLS-1$
+            		errorDetails = errorDetails.substring(errorDetails.indexOf("}") + 1); //$NON-NLS-1$
+            }
         }
     }
 
@@ -304,7 +337,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testFailureOccured(failureDetails);
 		}
-    }  
+    }
     
 	private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {

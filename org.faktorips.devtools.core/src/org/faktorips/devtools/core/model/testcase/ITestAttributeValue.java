@@ -44,12 +44,6 @@ public interface ITestAttributeValue extends IIpsObjectPart{
 		+ "TestAttributeNotFound"; //$NON-NLS-1$
 	
     /**
-	 * Validation message code to indicate that the attribute which is related by the test attribute not exists.
-	 */
-	public final static String MSGCODE_ATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX
-		+ "AttributeNotFound"; //$NON-NLS-1$
-	
-    /**
 	 * Validation message code to indicate that the datatype of the attribute not exists.
 	 */
 	public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX
@@ -86,5 +80,18 @@ public interface ITestAttributeValue extends IIpsObjectPart{
 	/**
 	 * Sets the value of the attribute.
 	 */
-	public void setValue(String newValue);	
+	public void setValue(String newValue);
+    
+    /**
+     * Returns <code>true</code> if the test attribute value is an input attribute, 
+     * otherwise <code>false</code>.
+     */
+    public boolean isInputAttribute();
+    
+    /**
+     * Returns <code>true</code> if the test attribute value is an expected result attribute, 
+     * otherwise <code>false</code>.
+     */
+    public boolean isExpextedResultAttribute();
+    
 }

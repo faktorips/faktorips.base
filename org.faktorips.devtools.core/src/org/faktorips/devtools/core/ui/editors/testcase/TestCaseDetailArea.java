@@ -152,9 +152,6 @@ public class TestCaseDetailArea {
 	 * given element, the root will be only displayed once if more than one childs are given.
 	 */
 	public void createDetailSection(List testPolicyCmpts){		
-		// dynamically create the details depending on the given test policy components
-		clearDetailArea();
-		
 		for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
 			ITestPolicyCmpt currTestPolicyCmpt = (ITestPolicyCmpt) iter.next();
 			
@@ -173,13 +170,18 @@ public class TestCaseDetailArea {
 	private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) {
 		if (testPolicyCmpt == null)
 			return;
+        
+        if (!((testCaseSection.getContentProvider().isExpectedResult() && testPolicyCmpt.isExpectedResult()) 
+        || (testCaseSection.getContentProvider().isInput() && testPolicyCmpt.isInput())))
+            return;
+        
 		String uniquePath = testCaseSection.getUniqueKey(testPolicyCmpt);
 		
 		Section section = toolkit.getFormToolkit().createSection(details, 0);
-		String sectionText = testPolicyCmpt.getLabel();
+		String sectionText = testPolicyCmpt.getName();
 		if (testPolicyCmpt.getProductCmpt().length() > 0){
 			String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
-			sectionText += (pckName.length() > 0 ? " (" + pckName + ") " : "") + " [" + testPolicyCmpt.getTestPolicyCmptType() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			sectionText += (pckName.length() > 0 ? " (" + pckName + ") " : "") + " [" + testPolicyCmpt.getTestPolicyCmptTypeParameter() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		}
 		section.setText(sectionText);
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -194,43 +196,19 @@ public class TestCaseDetailArea {
 		ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
 		for (int i = 0; i < testAttributeValues.length; i++) {
 			final ITestAttributeValue attributeValue = testAttributeValues[i];
-			createAttributes(testPolicyCmpt, testPolicyCmpt, uniquePath, attributeComposite, i==0, attributeValue, true);
+			// Create the edit field only if the content provider provides the role of the test attribute object
+            if ((testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute())
+                    || testCaseSection.getContentProvider().isExpectedResult() && testAttributeValues[i].isExpextedResultAttribute())
+                createAttributes(testPolicyCmpt, testPolicyCmpt, uniquePath, attributeComposite, i==0, attributeValue);
 		}
 		section.setClient(attributeComposite);
-		
-		if (contentProvider.isCombinedContent()){
-			toolkit.createVerticalSpacer(attributeComposite, 5).setBackground(attributeComposite.getBackground());
-			toolkit.createVerticalSpacer(attributeComposite, 5).setBackground(attributeComposite.getBackground());
-			
-			TestCaseContentProvider secondaryContentProvider;
-			if (testCaseSection.getContentProvider().isInputType()){
-				secondaryContentProvider = 
-					testCaseSection.getTestCaseEditor().getContentProviderExpectedResult();
-			}else if (testCaseSection.getContentProvider().isExpectedResultTypes()){
-				secondaryContentProvider = 
-					testCaseSection.getTestCaseEditor().getContentProviderInput();
-			}else{
-				throw new RuntimeException("Unknown content provider!"); //$NON-NLS-1$
-			}
-			// ueber hierarchy path policy cmp ermitteln und wenn gefunden alle attribute unterhalb 
-			TestCaseHierarchyPath path = new TestCaseHierarchyPath(testPolicyCmpt, true);
-			ITestPolicyCmpt secondaryPolicyCmpt = secondaryContentProvider.findPolicyCmpt(path.toString());
-	
-			if (secondaryPolicyCmpt != null){
-				ITestAttributeValue[] oltherTestAttributeValues = secondaryPolicyCmpt.getTestAttributeValues();
-				for (int i = 0; i < oltherTestAttributeValues.length; i++) {
-					final ITestAttributeValue attributeValue = oltherTestAttributeValues[i];
-					createAttributes(secondaryPolicyCmpt, testPolicyCmpt, "none", attributeComposite, i==0, attributeValue, false); //$NON-NLS-1$
-				}
-			}
-		}
 		
 		toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
 	}
 
 	private void createAttributes(final ITestPolicyCmpt testPolicyCmpt, final ITestPolicyCmpt testPolicyCmptForSelection,
 			String uniquePath, Composite attributeComposite, boolean firstAttribute, 
-			final ITestAttributeValue attributeValue, boolean isPrimarySide) {
+			final ITestAttributeValue attributeValue) {
 		IpsPartUIController uiController = createUIController(attributeValue);
 
 		// get the ctrlFactory to create the edit field
@@ -274,16 +252,23 @@ public class TestCaseDetailArea {
 		            testCaseSection.selectInTreeByObject(testPolicyCmptForSelection, false);
 	        }});
 			
-			if (!isPrimarySide) {
-			editField.getControl().setBackground(
-					testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+			if (attributeValue.isExpextedResultAttribute()) {
+    			markAsExpected(editField);
 			}
 		    
 			uiController.updateUI();
 		}
 	}
+
+    /*
+     * Marks the given edit field as expected result.
+     */
+    private void markAsExpected(final EditField editField) {
+        editField.getControl().setBackground(
+        		testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+    }
 	
-	/**
+	/*
 	 * Creates the section for a relation of type association.<br>
 	 * Create a hyperlink if the realtion exists is in the current test case or
 	 * create a label with the test relation target.
@@ -298,9 +283,14 @@ public class TestCaseDetailArea {
 		Composite hyperlinkArea = toolkit.createGridComposite(details, 2, false, true);
 		sectionControls.put(uniquePath, section);
 
-		if ((((ITestPolicyCmpt)currRelation.getParent()).isInputObject() ? 
-				contentProvider.getTestCase().findInputPolicyCmpt(currRelation.getTarget()):
-				contentProvider.getTestCase().findExpectedResultPolicyCmpt(currRelation.getTarget()))!= null){
+        // create a hyperlink to the target
+        ITestPolicyCmpt target = null;
+        try {
+            target = contentProvider.getTestCase().findTestPolicyCmpt(currRelation.getTarget());
+        } catch (CoreException e2) {
+            // ignore the exception, error searching for the target
+        }
+		if (target != null){
 			Hyperlink relationHyperlink = toolkit.getFormToolkit()
 				.createHyperlink(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currRelation.getTarget()),SWT.WRAP);
 			relationHyperlink.addHyperlinkListener(new HyperlinkAdapter() {
@@ -353,32 +343,28 @@ public class TestCaseDetailArea {
 	
 	/**
 	 * Creates the section for the value objects.
-	 * 
-	 * @param cleanBefore <code>true</code> to clean the detail area before rendering the value section
-	 *                    <code>false</code> the value section will be rendered below the existing sections
 	 */
-	public void createValuesSection(boolean cleanBefore) {
-		if (cleanBefore)
-			clearDetailArea();
-		
-		Composite borderedComposite = createBorder(dynamicArea);
-		
-		Section section = toolkit.getFormToolkit().createSection(borderedComposite, 0);
-		section.setText(Messages.TestCaseDetailArea_SectionValuesText);
-		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		toolkit.getFormToolkit().createCompositeSeparator(section);
-		
-		sectionControls.put(VALUESECTION, section);
-		
-		Composite composite = toolkit.createLabelEditColumnComposite(section);
-		section.setClient(composite);
-		
-		ITestValue[] values = contentProvider.getSortedValues();
+	public void createValuesSection() {
+		ITestValue[] values = contentProvider.getValues();
 		for (int i = 0; i < values.length; i++) {
 			final ITestValue value = values[i];
 			
-			IpsPartUIController uiController = createUIController(value);
+            // Create the edit field only if the content provider provides the role of the test value object
+            if ( ! ((testCaseSection.getContentProvider().isInput() && value.isInput()) ||
+                   (testCaseSection.getContentProvider().isExpectedResult() && value.isExpectedResult())))
+                return;
+            
+            IpsPartUIController uiController = createUIController(value);
 			
+            Composite borderedComposite = createBorder(dynamicArea);
+            Section section = toolkit.getFormToolkit().createSection(borderedComposite, 0);
+            section.setText(StringUtils.capitalise(value.getTestValueParameter()));
+            section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            toolkit.getFormToolkit().createCompositeSeparator(section);
+            sectionControls.put(VALUESECTION + value.getTestValueParameter(), section);
+            Composite composite = toolkit.createLabelEditColumnComposite(section);
+            section.setClient(composite);
+            
 			ValueDatatype datatype = null;
 			ValueDatatypeControlFactory ctrlFactory = null;
 			try {
@@ -393,7 +379,7 @@ public class TestCaseDetailArea {
 				throw new RuntimeException(e1);
 			}
 			
-			toolkit.createFormLabel(composite, StringUtils.capitalise(value.getTestValueParameter()) + ":"); //$NON-NLS-1$
+			toolkit.createFormLabel(composite, "Value" + ":"); 
 			final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null);
 			uiController.add(editField, ITestValue.PROPERTY_VALUE);
 			
@@ -404,10 +390,14 @@ public class TestCaseDetailArea {
 	        });
 			
 		    valueEditFields.put(value.getTestValueParameter(), editField);
+            
+            if (value.isExpectedResult()) {
+                markAsExpected(editField);
+            }
+            
 		    uiController.updateUI();
 		}
-		toolkit.createVerticalSpacer(borderedComposite, 10).setBackground(dynamicArea.getBackground());
-	}	
+	}
 
 	/**
 	 * Create a bordered composite
@@ -459,15 +449,15 @@ public class TestCaseDetailArea {
 		uiControllers.clear(); 
 	}
 	
-	/*
-	 * Clear the dynamic detail area.
+	/**
+	 * Clears the detail area.
 	 */
-	private void clearDetailArea() {
+	public void clearDetailArea() {
 		if (dynamicArea != null)
 			dynamicArea.dispose();
 
 		dynamicArea = toolkit.getFormToolkit().createComposite(detailsArea);
-		dynamicArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+		dynamicArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		GridLayout detailLayout = new GridLayout(1, true);
 		detailLayout.horizontalSpacing = 0;
 		detailLayout.marginWidth = 0;
@@ -480,10 +470,20 @@ public class TestCaseDetailArea {
 	/**
 	 * Mark the given attribute field as failure.
 	 */
-	void markAsFailure(String attributeFieldUniqueKey, String failureDetails) {
-		EditField editField = (EditField) attributeEditFields.get(attributeFieldUniqueKey);
-		if (editField != null){
+    void markAttributeAsFailure(String editFieldUniqueKey, String failureDetails) {
+		EditField editField = (EditField) attributeEditFields.get(editFieldUniqueKey);
+        if (editField != null){
 			testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureDetails);
 		}
 	}
+    
+    /**
+     * Mark the given attribute field as failure.
+     */
+    void markTestValueAsFailure(String editFieldUniqueKey, String failureDetails) {
+        EditField editField = (EditField) valueEditFields.get(editFieldUniqueKey);
+        if (editField != null){
+            testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureDetails);
+        }
+    }
 }

@@ -23,7 +23,9 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -56,6 +58,16 @@ public class TestValueParameter extends TestParameter implements
 		super(parent, id);
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void setTestParameterRole(TestParameterRole testParameterRole) {
+        // a test value parameter supports only input role or expected result role
+        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterRole.INPUT)
+                || testParameterRole.equals(TestParameterRole.EXPECTED_RESULT));
+        this.role = testParameterRole;
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -103,25 +115,39 @@ public class TestValueParameter extends TestParameter implements
 		element.setAttribute(PROPERTY_VALUEDATATYPE, datatype);
 	}
 
-	/**
-	 * Returns <code>true</code> as value parameters are always root parameters.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public boolean isRootParameter() {
-		return true;
-	} 
+    /**
+     * {@inheritDoc}
+     */
+    public ITestParameter getRootParameter() {
+        // no childs are supported, the test value parameter is always a root element
+        return this;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void validateThis(MessageList list) throws CoreException {
-		super.validateThis(list);
-		ValueDatatype datatype = findValueDatatype();
-		if (datatype==null) {
-			String text = NLS.bind(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound, datatype);
-			Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUEDATATYPE);
-			list.add(msg);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isRoot() {
+        // no childs are supported, the test value parameter is always a root element        
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        ValueDatatype datatype = findValueDatatype();
+        if (datatype==null) {
+            String text = NLS.bind(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound, datatype);
+            Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUEDATATYPE);
+            list.add(msg);
+        }
+        
+        // check the correct role
+        if (isCombinedParameter() || (! isInputParameter()&& ! isExpextedResultParameter())){
+            String text = NLS.bind("Role {0} not allowed for test attribuet {1}", role, name);
+            Message msg = new Message(MSGCODE_WRONG_ROLE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_ROLE);
+            list.add(msg);
+        }
+    }
 }

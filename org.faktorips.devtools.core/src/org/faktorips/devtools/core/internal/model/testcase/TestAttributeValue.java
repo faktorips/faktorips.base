@@ -23,12 +23,15 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestParameterRole;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
@@ -43,7 +46,10 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestAttributeValue  extends IpsObjectPart implements ITestAttributeValue {
-	
+    /* Specifies the default role, will be used if the corresponding test case type parameter 
+     * is not specified or not found */
+    private static TestParameterRole DEFAULT_ROLE = TestParameterRole.UNKNOWN;
+    
 	/* Tags */
 	static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
@@ -72,7 +78,9 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 	 * {@inheritDoc}
 	 */
 	public void setTestAttribute(String testAttribute) {
-		this.testAttribute = testAttribute;
+		String oldTestAttribute = this.testAttribute;
+        this.testAttribute = testAttribute;
+        valueChanged(oldTestAttribute, testAttribute);
 	}
 
 	/**
@@ -160,27 +168,80 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type: " + partType); //$NON-NLS-1$
 	}
-	
-	/**
+    
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isExpextedResultAttribute() {
+        return (isRoleOrDefault(TestParameterRole.EXPECTED_RESULT, DEFAULT_ROLE));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isInputAttribute() {
+        return (isRoleOrDefault(TestParameterRole.INPUT, DEFAULT_ROLE));
+    }
+    
+    /**
+     * Returns <code>true</code> if the given role is the role of the corresponding test
+     * attribute. If the test attribute couldn't determined return <code>true</code> if the given
+     * role is the default role otherwise <code>false</code>.<br>
+     * Return <code>false</code> if an error occurs.<br>
+     */
+    private boolean isRoleOrDefault(TestParameterRole role, TestParameterRole defaultRole) {
+        try {
+            TestObject parent = (TestObject) getParent(); 
+            ITestCase testCase = (TestCase) parent.getRoot().getParent();
+            
+            ITestCaseType testCaseType = testCase.findTestCaseType();
+            if (testCaseType == null)
+                return role == defaultRole;
+
+            ITestAttribute testAttribute = findTestAttribute();
+            if (testAttribute == null)
+                return role == defaultRole;
+
+            // compare the paramters role and return if the role matches the given role
+            if (testAttribute.isInputAttribute() && role == TestParameterRole.INPUT) {
+                return true;
+            }
+            if (testAttribute.isExpextedResultAttribute() && role == TestParameterRole.EXPECTED_RESULT) {
+                return true;
+            }
+        } catch (Exception e) {
+            // ignore exceptions
+        }
+        return false;
+    }
+    
+    /**
 	 * {@inheritDoc}
 	 */
 	protected void validateThis(MessageList messageList) throws CoreException {
 		super.validateThis(messageList);
-		ITestAttribute testAttr = findTestAttribute();
-		if (testAttr==null) {
-			String text = NLS.bind(Messages.TestAttributeValue_ValidateError_TestAttributeNotFound, getTestAttribute());
-			Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_ATTRIBUTE);
-			messageList.add(msg);	
-			return;
-		}
-		
-		IAttribute attribute = testAttr.findAttribute();
-		if (attribute == null){
-			String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr.getAttribute());
-			Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this, ITestAttribute.PROPERTY_ATTRIBUTE);
-			messageList.add(msg);
-			return;
-		}
-		ValidationUtils.checkValue(attribute.getDatatype(), value, this, PROPERTY_VALUE, messageList);
+        ITestAttribute testAttr = findTestAttribute();
+        if (testAttr == null) {
+            String text = NLS.bind(Messages.TestAttributeValue_ValidateError_TestAttributeNotFound, getTestAttribute());
+            Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
+            messageList.add(msg);
+        } else {
+            IAttribute attribute = testAttr.findAttribute();
+            if (attribute == null) {
+                String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr
+                        .getAttribute());
+                Message msg = new Message(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this,
+                        PROPERTY_VALUE);
+                messageList.add(msg);
+            } else {
+                ValidationUtils.checkValue(attribute.getDatatype(), value, this, PROPERTY_VALUE, messageList);
+            }
+            // check the correct role
+            if (! testAttr.isInputAttribute() && ! testAttr.isExpextedResultAttribute()){
+                String text = NLS.bind("Unsupported role for test attribuet {0}", testAttr.getName());
+                Message msg = new Message(ITestAttribute.MSGCODE_WRONG_ROLE, text, Message.WARNING, this, PROPERTY_VALUE);
+                messageList.add(msg);
+            }        
+        }
 	}
 }

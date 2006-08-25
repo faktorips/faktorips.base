@@ -23,8 +23,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -53,10 +55,10 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -158,6 +160,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		IpsPlugin.getDefault().getIpsTestRunner().addIpsTestRunListener(this);
 	}
     
+    /**
+     * {@inheritDoc}
+     */    
+    public void dispose() {
+        IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener((IIpsTestRunListener) this);
+        super.dispose();
+    }
+    
 	/**
 	 * Initialization of the main section.
 	 * {@inheritDoc}
@@ -226,6 +236,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		
 		prevIsValue = false;
 		refreshTree();
+        
+        updateButtonEnableState(null);
 	}
 
 	/**
@@ -260,12 +272,86 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		};
 		actionTest.setToolTipText("Run test"); //$NON-NLS-1$
 		actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
-		
+        
+        // enable run test case functionality only if a toc file exists for this test case
+        try {
+            actionTest.setEnabled(getTocFilePackage() != null);
+        } catch (CoreException e) {
+            actionTest.setEnabled(false);
+        }
+        
+        addContentTypeAction();
+        
+        form.getToolBarManager().add(new Separator());
+        
 		form.getToolBarManager().add(actionRelation);
 		form.getToolBarManager().add(actionAll);
 		form.getToolBarManager().add(actionTest);
+        
 	}
 	
+    /*
+     * Adds the actions for the content type filter. 
+     *
+     */
+    private void addContentTypeAction() {
+        ToggleContentTypeAction[] fToggleContentTypeActions =
+            new ToggleContentTypeAction[] {
+                new ToggleContentTypeAction(TestCaseContentProvider.COMBINED),
+                new ToggleContentTypeAction(TestCaseContentProvider.INPUT),
+                new ToggleContentTypeAction(TestCaseContentProvider.EXPECTED_RESULT)};
+        
+        for (int i = 0; i < fToggleContentTypeActions.length; ++i)
+            form.getToolBarManager().add(fToggleContentTypeActions[i]);
+    }
+    
+    /*
+     * Action which provides the content type filter.
+     */
+    private class ToggleContentTypeAction extends Action {
+        private final int fActionContentType;
+        
+        public ToggleContentTypeAction(int actionContentType) {
+            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+            fActionContentType = actionContentType;
+            if (actionContentType == TestCaseContentProvider.INPUT) {
+                buttonChecked();
+                setText("Input");
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
+                setToolTipText("Show only input side.");
+            } else if (actionContentType == TestCaseContentProvider.EXPECTED_RESULT) {
+                buttonChecked();
+                setText("Expected Result"); 
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
+                setToolTipText("Show only expected result side.");
+            } else if (actionContentType == TestCaseContentProvider.COMBINED) {     
+                buttonChecked();
+                setText("Combined");  
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseCombined.gif")); //$NON-NLS-1$
+                setToolTipText("Show input and expected result sides together.");
+            }
+        }
+        
+        public void run() {
+            if (isChecked()) {
+                switchContentType(fActionContentType);
+            }
+        }
+        
+        private void buttonChecked(){
+            if (contentProvider.getContentType() == fActionContentType)
+                setChecked(true);
+        }
+    }
+    
+    /*
+     * Switch (filter) to the selected content type. And reresh the editor contents.
+     */
+    private void switchContentType(int contentType){
+        contentProvider.setContentType(contentType);
+        refreshTreeAndDetailArea();
+    }
+    
 	/**
 	 * Select the given tree entry and display the details of the selected element.
 	 */
@@ -372,13 +458,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					prevTestPolicyCmpt = testPolicyCmpts;
 					if (!prevIsValue){
 						prevIsValue = true;
-						testCaseDetailArea.createValuesSection(true);
+                        testCaseDetailArea.clearDetailArea();
+						testCaseDetailArea.createValuesSection();
 						redrawForm();
 					}
 				} else {
 					ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
 					// add the element in selected root element list only once
-					ITestPolicyCmpt rootElem = testPolicyCmpt.getRoot();
+					ITestObject rootElem = testPolicyCmpt.getRoot();
 					boolean exists = false;
 					for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
 						if (((ITestPolicyCmpt) iter.next()).equals(rootElem)){
@@ -393,6 +480,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			
 			//	if the selection has changed redraw the detail section
 			if (testPolicyCmpts.size() > 0 && ! testPolicyCmpts.equals(prevTestPolicyCmpt)){
+                testCaseDetailArea.clearDetailArea();
 				testCaseDetailArea.createDetailSection(testPolicyCmpts);
 				prevTestPolicyCmpt = testPolicyCmpts;
 				prevIsValue = false;		
@@ -412,6 +500,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		removeButton.setEnabled(false);
 		addButton.setEnabled(false);
 		
+        if (selection == null)
+            return;
+        
 		if (selection instanceof TestCaseTypeRelation){
 			TestCaseTypeRelation relation = (TestCaseTypeRelation) selection;
 			try {
@@ -517,10 +608,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					valueTextCtrl.getControl().setFocus();
 				}
 			}
-			Section sectionCtrl = testCaseDetailArea.getSection(VALUESECTION);
+			Section sectionCtrl = testCaseDetailArea.getSection(VALUESECTION + uniquePath);
 			if (sectionCtrl != null){
 				sectionCtrl.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-			}				
+			}
 			return;
 		}else{
 			uniquePath = getUniqueKey(selected);
@@ -553,14 +644,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			return ""; //$NON-NLS-1$
 		}
 		if (!currTestPolicyCmpt.isRoot()){
-			uniquePath = ((ITestPolicyCmpt)currTestPolicyCmpt).getLabel();
+			uniquePath = ((ITestPolicyCmpt)currTestPolicyCmpt).getName();
 			while (!currTestPolicyCmpt.isRoot()){
 				uniquePath = ((ITestPolicyCmptRelation)currTestPolicyCmpt.getParent()).getTestPolicyCmptType() + uniquePath;
 				currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(currTestPolicyCmpt.getParent());
-				uniquePath = currTestPolicyCmpt.getLabel() + "." + uniquePath; //$NON-NLS-1$
+				uniquePath = currTestPolicyCmpt.getName() + "." + uniquePath; //$NON-NLS-1$
 			}
 		}else{
-			uniquePath = currTestPolicyCmpt.getLabel() + uniquePath;
+			uniquePath = currTestPolicyCmpt.getName() + uniquePath;
 		}
 		return uniquePath;
 	}
@@ -630,9 +721,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				TestCaseTypeRelation relationType = (TestCaseTypeRelation) selectedObject;
 				addRelation(relationType);
 			} else if (selectedObject instanceof ITestPolicyCmpt){
-				// the relation level is not visible
 				// open a dialog to ask for the type of relation which 
-				// are defined in the test case type parameter
+				// are defined in the test case type parameter if more than one role defined
 				ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selectedObject;
 				TestCaseTypeRelation relationType = selectTestCaseTypeRelationByDialog(testPolicyCmpt);
 				if (relationType != null)
@@ -685,12 +775,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
 			}
 			
-			// if a combined test data is displayed, add the relation in the expected result structure
-			if (contentProvider.isCombinedContent()){
-				createCorrespondingTestPolicyCmpt(relationType, newTestPolicyCmpt, newRelation.getTestPolicyCmptType(), 
-						productCmpt);
-			}
-			
 			refreshTreeAndDetailArea();
 			selectInTreeByObject(newRelation, true);
 		}else{
@@ -703,57 +787,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			ITestPolicyCmpt newTestPolicyCmpt = newRelation.findTarget();	
 			if (newTestPolicyCmpt == null)
 				throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));				
-
-			// if a combined test data is displayed, add the relation in the expected result structure
-			if (contentProvider.isCombinedContent()){
-				createCorrespondingTestPolicyCmpt(relationType, newTestPolicyCmpt, newRelation.getTestPolicyCmptType(), productCmpt);
-			}		
 			
 			refreshTreeAndDetailArea();
 			selectInTreeByObject(newTestPolicyCmpt, true);
 		}		
 	}
-
-	/**
-	 * Creates the corresponding test policy component in the expected result test case content.
-	 */
-	private void createCorrespondingTestPolicyCmpt(TestCaseTypeRelation relationType, 
-			ITestPolicyCmpt newPolicytCmp, String relationName, String productCmpt) throws CoreException {
-		TestCaseHierarchyPath path;
-		// find the parent test policy component with the same path in the expected result test case content
-		path = new TestCaseHierarchyPath(relationType.getParentTestPolicyCmpt(), true);
-		TestCaseContentProvider otherContentProvider;
-		if (contentProvider.isInputType())
-			otherContentProvider = getTestCaseEditor().getContentProviderExpectedResult();
-		else if (contentProvider.isExpectedResultTypes())
-			otherContentProvider = getTestCaseEditor().getContentProviderInput();
-		else
-			throw new RuntimeException("Unknown content provider!"); //$NON-NLS-1$
-
-		ITestPolicyCmpt secondaryTestPolicyCmpt = otherContentProvider.findPolicyCmpt(path.toString());
-		ITestPolicyCmptTypeParameter secondaryTestPolicyCmptTypeParamParent = testCase.findTestPolicyCmptTypeParameter(secondaryTestPolicyCmpt);
-
-		if (secondaryTestPolicyCmptTypeParamParent == null)
-			throw new CoreException(new IpsStatus("Wrong content structure of expected result.")); //$NON-NLS-1$
-		
-		ITestPolicyCmptTypeParameter secondaryTestPolicyCmptTypeParam = 
-			secondaryTestPolicyCmptTypeParamParent.getTestPolicyCmptTypeParamChild(relationName);
-		
-		ITestPolicyCmptRelation newExpResultRelation = secondaryTestPolicyCmpt.
-			addTestPcTypeRelation(secondaryTestPolicyCmptTypeParam, productCmpt, ""); //$NON-NLS-1$
-		if (newExpResultRelation != null){
-			ITestPolicyCmpt newExpResultPolicyCmpt = newExpResultRelation.findTarget();
-			if (newExpResultPolicyCmpt == null)
-				throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-		}else{
-			throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingRelation));
-		}
-	}
 	
 	/**
 	 * Remove button was clicked.
 	 */
-	private void removeClicked() {
+	private void removeClicked() throws CoreException {
 		ISelection selection = treeViewer.getSelection();
 		if (selection instanceof IStructuredSelection){
 			ITestPolicyCmpt prevTestPolicyCmpt = null;
@@ -776,23 +819,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					parent.removeRelation((ITestPolicyCmptRelation) domainObject);
 				} else if (domainObject instanceof ITestPolicyCmpt) {
 					ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) domainObject;
-					try {
-						if (! testPolicyCmpt.isRoot()){ 
-							// find the the previous to select it after delete finished
-							ITestPolicyCmptRelation parentRelation = (ITestPolicyCmptRelation) testPolicyCmpt.getParent();
-							prevRelation = new TestCaseHierarchyPath(parentRelation, true).getHierarchyPath();
-							ITestPolicyCmpt parent = (ITestPolicyCmpt) parentRelation.getParent();
-							ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(parentRelation.getTestPolicyCmptType());
-							for (int i = 0; i < relations.length; i++) {
-								if (relations[i] == parentRelation)
-									break;
-								prevTestPolicyCmpt = relations[i].findTarget();
-							}
+					if (! testPolicyCmpt.isRoot()){ 
+						// find the the previous to select it after delete
+						ITestPolicyCmptRelation parentRelation = (ITestPolicyCmptRelation) testPolicyCmpt.getParent();
+						prevRelation = new TestCaseHierarchyPath(parentRelation, true).getHierarchyPath();
+						ITestPolicyCmpt parent = (ITestPolicyCmpt) parentRelation.getParent();
+						ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(parentRelation.getTestPolicyCmptType());
+						for (int i = 0; i < relations.length; i++) {
+							if (relations[i] == parentRelation)
+								break;
+							prevTestPolicyCmpt = relations[i].findTarget();
 						}
-						testCase.removeTestObject((ITestObject) domainObject);
-					} catch (CoreException e) {
-						IpsPlugin.logAndShowErrorDialog(e);
-					}	
+					}
+					testCase.removeTestObject((ITestObject) domainObject);
 				}
 				refreshTreeAndDetailArea();
 				if (prevTestPolicyCmpt != null)
@@ -826,7 +865,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 						return;
 				}
 				testPolicyCmpt.setProductCmpt(productCmpt);
-				testPolicyCmpt.setLabel(
+				testPolicyCmpt.setName(
 						testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmpt)));
 				refreshTreeAndDetailArea();
 			}
@@ -847,10 +886,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				allInputTestPolicyCmpts.add(policyCmpts[i]);
 			}
 
+            testCaseDetailArea.clearDetailArea();
+			testCaseDetailArea.createValuesSection();
 			testCaseDetailArea.createDetailSection(allInputTestPolicyCmpts);
-			testCaseDetailArea.createValuesSection(false);
 			prevIsValue = true;
-			prevTestPolicyCmpt = allInputTestPolicyCmpts;			
+			prevTestPolicyCmpt = allInputTestPolicyCmpts;
+            treeViewer.expandAll();
 			redrawForm();
 		}else{
 			prevIsValue = false;
@@ -859,19 +900,21 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			if (selection instanceof IStructuredSelection){
 				Object domainObject = ((IStructuredSelection)selection).getFirstElement();
 				if (domainObject instanceof ITestValue){
-					testCaseDetailArea.createValuesSection(true);
+                    testCaseDetailArea.clearDetailArea();
+					testCaseDetailArea.createValuesSection();
 				} else {
 					ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
 					ArrayList list = new ArrayList();
 					list.add(testPolicyCmpt);
 					
+                    testCaseDetailArea.clearDetailArea();
 					testCaseDetailArea.createDetailSection(list);
 					prevTestPolicyCmpt = list;
 					prevIsValue = false;		
-				}
 			}
 			redrawForm();
-		}
+            }
+        }
 	}
 
 	private void runTestClicked(){
@@ -885,15 +928,23 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		try {
 			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
 			testRunner.setJavaProject(testCase.getIpsProject().getJavaProject());
-			IIpsPackageFragmentRoot root = testCase.getIpsPackageFragment().getRoot();
-			IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
-			String repositoryPackage = ((DefaultBuilderSet)builderSet).getInternalBasePackageName(root);
-			testRunner.startTestRunnerJob(repositoryPackage, testCase.getQualifiedName());
+			String repositoryPackage = getTocFilePackage();
+            if (repositoryPackage != null)
+                testRunner.startTestRunnerJob(repositoryPackage, testCase.getQualifiedName());
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}
 	}
 	
+    /*
+     * Returns the toc file package name which stores the current test case.
+     */
+    private String getTocFilePackage() throws CoreException {
+        IIpsPackageFragmentRoot root = testCase.getIpsPackageFragment().getRoot();
+        IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
+        return builderSet.getTocFilePackageName(root);        
+    }
+    
 	/**
 	 * Shows the select product component dialog and returns the selected product component.
 	 * Returns <code>null</code> if no selection or an unsupported type was chosen.
@@ -919,12 +970,28 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * @throws CoreException If an error occurs
 	 */
     private IIpsObject[] getProductCmptObjects(String qualifiedTypeName) throws CoreException {
-    	IProductCmpt[] cmpts = testCase.getIpsProject().findProductCmpts(qualifiedTypeName, true);
+        List result = new ArrayList();
+        getProductCmptObjects(testCase.getIpsProject(), qualifiedTypeName, result);
+    	IProductCmpt[] cmpts = (IProductCmpt[]) result.toArray(new IProductCmpt[0]);
     	List cmptList = new ArrayList();
     	cmptList.addAll(Arrays.asList(cmpts));
         return (IIpsObject[])cmptList.toArray(new IIpsObject[cmptList.size()]);
     }
-    
+
+    /*
+     * Adds all product components in the given project and referenced projects
+     * with the given qualified name to the given result list.
+     */
+    private void getProductCmptObjects(IIpsProject ipsProject, String qualifiedTypeName, List result) throws CoreException {
+        IProductCmpt[] cmpts = ipsProject.findProductCmpts(qualifiedTypeName, true);
+        for (int i = 0; i < cmpts.length; i++) {
+            result.add(cmpts[i]);
+        }
+        IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
+        for (int i = 0; i < ipsProjects.length; i++) {
+            getProductCmptObjects(ipsProjects[i], qualifiedTypeName, result);
+        }
+    }
 
 	/**
 	 * Returns the first selected object in the tree.
@@ -950,12 +1017,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private void refreshTreeAndDetailArea(){
 		prevIsValue = false;
 		form.setRedraw(false);
-		if (showAll){
+        testCaseDetailArea.clearDetailArea();
+        if (showAll){
+		    testCaseDetailArea.createValuesSection();
 			testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
-			testCaseDetailArea.createValuesSection(false);
 		} else {
 			if (prevIsValue){
-				testCaseDetailArea.createValuesSection(true);
+				testCaseDetailArea.createValuesSection();
 			} else {
 				testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
 			}
@@ -1128,7 +1196,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     	}else if (element instanceof ITestValue){
     		messageList.add(((Validatable)element).validate());
     	}
-		// if the relation level is hidden the validate the parent to display parent validation failures
+		// if the relation level is hidden then validate the parent to display parent validation failures
 		if (contentProvider.isWithoutRelations()){
 			if (element instanceof ITestPolicyCmptRelation){
 				messageList.add(((ITestPolicyCmptRelation)element).validateGroup());
@@ -1149,7 +1217,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	private ITestPolicyCmpt selectAssoziationByTreeDialog(String filteredPolicyCmptType) throws CoreException {
 		ITestPolicyCmpt testPolicyCmpt = null;
-		TestPolicyCmptSelectionDialog dialog = new TestPolicyCmptSelectionDialog(getShell(), toolkit, testCase, TestCaseContentProvider.TYPE_INPUT, filteredPolicyCmptType);
+		TestPolicyCmptSelectionDialog dialog = new TestPolicyCmptSelectionDialog(getShell(), toolkit, testCase, TestCaseContentProvider.COMBINED, filteredPolicyCmptType);
         if (dialog.open()==Window.OK) {
             if (dialog.getResult().length>0) {
             	if (dialog.getResult()[0] instanceof ITestPolicyCmpt){
@@ -1172,15 +1240,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		
 		ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptType();
 		TestCaseTypeRelation[] dummyRelations = new TestCaseTypeRelation[param.getTestPolicyCmptTypeParamChilds().length];
-		ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
-		for (int i = 0; i < childParams.length; i++) {
-			TestCaseTypeRelation relation = new TestCaseTypeRelation(childParams[i], parentTestPolicyCmpt);
-			dummyRelations[i] = relation;
-		}
-		selectDialog.setElements(dummyRelations);
-		if (selectDialog.open()==Window.OK) {
-            if (selectDialog.getResult().length>0) {
-            	return (TestCaseTypeRelation)selectDialog.getResult()[0];
+        ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
+        for (int i = 0; i < childParams.length; i++) {
+            TestCaseTypeRelation relation = new TestCaseTypeRelation(childParams[i], parentTestPolicyCmpt);
+            dummyRelations[i] = relation;
+        }        
+		if (dummyRelations.length == 1){
+            // exactly one role found, return this role
+            return dummyRelations[0];
+        }else{
+            selectDialog.setElements(dummyRelations);
+            if (selectDialog.open()==Window.OK) {
+                if (selectDialog.getResult().length>0) {
+                    return (TestCaseTypeRelation)selectDialog.getResult()[0];
+                }
             }
         }
 		return null;
@@ -1274,14 +1347,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		String failureExpected = Messages.TestCaseSection_FailureFormat_Expected;
 		String failureFormatAttribute= Messages.TestCaseSection_FailureFormat_Attribute;
 		String failureFormatObject= Messages.TestCaseSection_FailureFormat_Object;
-		if (failureDetails.length>3)
-			failureFormat= failureFormat + (failureDetails[3]!=null?failureExpected:""); //$NON-NLS-1$
-		if (failureDetails.length>4)
-			failureFormat= failureFormat + (failureDetails[4]!=null?failureActual:"");		 //$NON-NLS-1$
+        String failureFormatMessage = Messages.TestCaseSection_FailureFormat_Message;
 		if (failureDetails.length>1)
-			failureFormat= failureFormat + (failureDetails[1]!=null?failureFormatObject:""); //$NON-NLS-1$
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$
 		if (failureDetails.length>2)
-			failureFormat= failureFormat + (failureDetails[2]!=null?failureFormatAttribute:"");		 //$NON-NLS-1$
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:"");		 //$NON-NLS-1$
+		if (failureDetails.length>3)
+			failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
+		if (failureDetails.length>4)
+			failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
+		if (failureDetails.length>5)
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$
 		return MessageFormat.format(failureFormat, failureDetails); 
 	}
 	
@@ -1307,30 +1383,60 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		
 		String objectName = failureDetails[1];
 		String attributeName = failureDetails[2];
+        String formatedFailure = failureDetailsToString(failureDetails);
+        
+        postAddFailureTooltip(formatedFailure);
 		
-		if (objectName.lastIndexOf(".")>0) //$NON-NLS-1$
-			objectName = objectName.substring(objectName.lastIndexOf(".") +1); //$NON-NLS-1$
-		
-		TestCaseHierarchyPath path = new TestCaseHierarchyPath(objectName);
-		path.setFullPath(false);
-		ITestPolicyCmpt testPolicyCmpt = testCase.findExpectedResultPolicyCmpt(path.toString());
-		if (testPolicyCmpt == null)
-			return;
-		ITestAttributeValue attributeValue = null;
-		ITestAttributeValue[] attributeValues = testPolicyCmpt.getTestAttributeValues();
-		for (int i = 0; i < attributeValues.length; i++) {
-			if (attributeName.equalsIgnoreCase(attributeValues[i].getTestAttribute())){
-				attributeValue = attributeValues[i];
-			}
-		}
-		if (attributeValue == null)
-			return;
-		
-		testCaseDetailArea.markAsFailure(getUniqueKey(testPolicyCmpt, attributeValue), 
-				failureDetailsToString(failureDetails));
+        if (StringUtils.isEmpty(attributeName) || "<null>".equals(attributeName)){
+            // no attribute given expect that the failure was in an value object
+            testCaseDetailArea.markTestValueAsFailure(objectName, formatedFailure);
+        } else {
+            // test failure in test policy component attribute
+            //   search the attribute where the failure occurs
+            int offset = 0;
+            if (objectName.indexOf(".")>=0){
+                String offsetString = StringUtil.unqualifiedName(objectName);
+                if (StringUtils.isNumeric(offsetString))
+                    offset = Integer.parseInt(offsetString);
+                objectName = StringUtil.getPackageName(objectName);
+            }
+            TestCaseHierarchyPath path = new TestCaseHierarchyPath(objectName);
+            path.setOffset(offset);
+    		path.setFullPath(false);
+    		ITestPolicyCmpt testPolicyCmpt;
+            try {
+                testPolicyCmpt = testCase.findTestPolicyCmpt(path.toString());
+                if (testPolicyCmpt == null)
+                    return;
+            } catch (CoreException e) {
+                // the failure couldn't be marked, ignore the exception
+                return;
+            }
+            // search for the attribute
+    		ITestAttributeValue attributeValue = null;
+    		ITestAttributeValue[] attributeValues = testPolicyCmpt.getTestAttributeValues();
+    		for (int i = 0; i < attributeValues.length; i++) {
+    			if (attributeName.equalsIgnoreCase(attributeValues[i].getTestAttribute())){
+    				attributeValue = attributeValues[i];
+    			}
+    		}
+    		if (attributeValue == null)
+    			return;
+    		
+            testCaseDetailArea.markAttributeAsFailure(getUniqueKey(testPolicyCmpt, attributeValue), formatedFailure);
+        }
 	}
 
-	
+	private void postAddFailureTooltip(final String failureToolTip) {
+        postSyncRunnable(new Runnable() {
+            public void run() {
+                if (isDisposed())
+                    return;
+                form.getContent().setToolTipText(form.getContent().getToolTipText() + "\n" + failureToolTip);
+            }
+        });
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */	
@@ -1347,6 +1453,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	public void testStarted(String qualifiedTestName) {
 		if (! isTestFor(qualifiedTestName))
 			return;
+        postResetTestRunStatus();
 		
 		isTestRunError = false;
 		isTestRunFailure = false;
@@ -1390,21 +1497,22 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	void postSetTestRunStatus(final boolean isError, final boolean isFailure, final int failureCount) {
 		postSyncRunnable(new Runnable() {
 			public void run() {
-				if(isDisposed()) 
-					return;
-				if (isError){
-					form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
-					form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-					form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Error);
-				}else if (isFailure) {
-					form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_RED));
-					form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-					form.getContent().setToolTipText(NLS.bind(Messages.TestCaseEditor_Title_Failure, "" + failureCount));					 //$NON-NLS-1$
-				} else{
-					form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
-					form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-					form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Success);
-				}
+				if (isDisposed())
+                    return;
+                if (isError) {
+                    form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
+                    form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+                    form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Error);
+                } else if (isFailure) {
+                    form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_RED));
+                    form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+                    form.getContent().setToolTipText(
+                                    NLS.bind(Messages.TestCaseEditor_Title_Failure, "" + failureCount) + form.getContent().getToolTipText()); //$NON-NLS-1$
+                } else {
+                    form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
+                    form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+                    form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Success);
+                }
 			}
 		});
 	}
@@ -1432,6 +1540,26 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			}
 		});
 	}
+    
+    void postResetTestRunStatus(){
+        postSyncRunnable(new Runnable() {
+            public void run() {
+                if(isDisposed()) 
+                    return;
+                resetTestRunStatus();
+            }
+        });
+    }
+    
+    /**
+     * Resets the test run status. Change the color and tooltips to default.
+     *
+     */
+    public void resetTestRunStatus(){
+        form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
+        form.getContent().setToolTipText("");
+    }
 	
 	/**
 	 * Returns the corresponding test case editor.
@@ -1445,10 +1573,5 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	TestCaseContentProvider getContentProvider() {
 		return contentProvider;
-	}
-
-	public void dispose() {
-		IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener((IIpsTestRunListener) this);
-		super.dispose();
 	}
 }

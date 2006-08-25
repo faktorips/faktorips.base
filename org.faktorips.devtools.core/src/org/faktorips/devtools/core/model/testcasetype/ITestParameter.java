@@ -25,7 +25,10 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  * @author Joerg Ortmann
  */
 public interface ITestParameter extends IIpsObjectPart {
-
+	
+	/** Property names */
+    public final static String PROPERTY_TEST_PARAMETER_ROLE = "testParameterRole"; //$NON-NLS-1$
+    
 	/**
 	 * Returns the parameters's name, e.g. 'effectiveDate'.
 	 * {@inheritDoc}
@@ -40,18 +43,36 @@ public interface ITestParameter extends IIpsObjectPart {
 	/**
 	 * Returns <code>true</code> if the test parameter is an input parameter, 
 	 * otherwise <code>false</code>.
+     * Note if the parameter is a child parameter then the role (input, expected result, or combined) 
+     * of the root test parameter will be checked. All childs inherit the role of the root parameter.
 	 */
 	public boolean isInputParameter();
 	
 	/**
 	 * Returns <code>true</code> if the parameter is an expected result parameter, 
 	 * otherwise <code>false</code>.
+     * Note if the parameter is a child parameter then the role (input, expected result, or combined) 
+     * of the root test parameter will be checked. All childs inherit the role of the root parameter.
 	 */
 	public boolean isExpextedResultParameter();
 
 	/**
-	 * Set <code>true</code> if this parameter is an input or <code>false</code> 
-	 * if this is an expected result test parameter.
+	 * Returns <code>true</code> if the test parameter is a combined parameter, 
+	 * otherwise <code>false</code>. A combined test parameter is a parameter that specifies
+	 * both input objects and expected results objects.
+     * Note if the parameter is a child parameter then the role (input, expected result, or combined) 
+     * of the root test parameter will be checked. All childs inherit the role of the root parameter.
 	 */
-	public void setInputParameter(boolean isInputType);
+	public boolean isCombinedParameter();
+	
+    /**
+     * Returns the root test parameter.
+     */
+    public ITestParameter getRootParameter();
+    
+    /**
+     * Returns <code>true</code> if the test parameter is a root parameter 
+     * or <code>false</code> if the parameter is a child of another object.
+     */
+    public boolean isRoot();
 }

@@ -74,6 +74,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the corresponding Java project.
      */
     public IJavaProject getJavaProject();
+
+    /**
+     * Returns all ips projects referenced.
+     * 
+     * @throws CoreException if an error occurs.
+     */
+    public IIpsProject[] getReferencedIpsProjects() throws CoreException ;
     
     /**
      * Returns <code>true</code> if the project can be build / Java sourcecode can be generated.

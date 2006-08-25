@@ -27,33 +27,42 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
  */
 public class TestCaseHierarchyPath{
 	// Seperator between each hierarchy element
-	private static final String separator = "/"; //$NON-NLS-1$
+	private static final String separator = "//"; //$NON-NLS-1$
 	
 	// Full path indicator
-	private static final String NO_FULLPATH = "***"; //$NON-NLS-1$
+	private static final String WILDCARD = "***"; //$NON-NLS-1$
 	
+    // Offset separator
+    private static final String OFFSET = "###"; //$NON-NLS-1$
+    
 	// Contains the complete hierarchy path
 	private String hierarchyPath = ""; //$NON-NLS-1$
 	
 	private boolean isFullPath = true;
 	
+    private int offset = 0;
+    
     /**
      * Removes the folder information from the beginning.
      */
 	public static String unqualifiedName(String hierarchyPath){
-        int index = hierarchyPath.lastIndexOf("/"); //$NON-NLS-1$
+        int index = hierarchyPath.lastIndexOf(separator); //$NON-NLS-1$
         if (index == -1) {
             return hierarchyPath;
         }
-        return hierarchyPath.substring(index + 1);
+        return hierarchyPath.substring(index + separator.length());
 	}
 	
 	public TestCaseHierarchyPath(String hierarchyPath){
-		if (hierarchyPath.startsWith(NO_FULLPATH)){
+		if (hierarchyPath.startsWith(WILDCARD)){
 			setFullPath(false);
-			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(NO_FULLPATH) + NO_FULLPATH.length());
+			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(WILDCARD) + WILDCARD.length());
 		}
-		this.hierarchyPath = hierarchyPath;
+        if (hierarchyPath.indexOf(OFFSET) >= 0){
+            offset = Integer.parseInt(hierarchyPath.substring(hierarchyPath.indexOf(OFFSET) + OFFSET.length()));
+            hierarchyPath = hierarchyPath.substring(0, hierarchyPath.indexOf(OFFSET));
+        }
+        this.hierarchyPath = hierarchyPath;
 	}
 	
 	/**
@@ -112,7 +121,7 @@ public class TestCaseHierarchyPath{
 		
 		if (hierarchyPath.indexOf(separator)>=0){
 			next = hierarchyPath.substring(0, hierarchyPath.indexOf(separator));
-			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(separator) + 1);
+			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(separator) + separator.length());
 			return next;
 		}else{
 			next = hierarchyPath;
@@ -125,7 +134,7 @@ public class TestCaseHierarchyPath{
 	 * Returns the string representation of this object.
 	 */
 	public String toString(){
-		return (!isFullPath?NO_FULLPATH:"") + hierarchyPath; //$NON-NLS-1$
+		return (!isFullPath?WILDCARD:"") + hierarchyPath + (offset>0?OFFSET + offset:""); //$NON-NLS-1$
 	}
 
 	/**
@@ -151,7 +160,21 @@ public class TestCaseHierarchyPath{
 		isFullPath = fullPath;
 	}
 	
+    /**
+     * Sets the offset in case of equal elements.
+     */
+	public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    
 	/**
+	 * Returns the offset which could be used to identify the element in case of ambiguous elements.
+	 */
+    public int getOffset() {
+        return offset;
+    }
+
+    /**
 	 * Returns <code>true</code> if the full path is given otherwise return <code>false</code>.
 	 */	
 	public boolean isFullPath(){
@@ -162,7 +185,7 @@ public class TestCaseHierarchyPath{
      * Returns the folder name for a given hierarchy path.
      */	
 	public static String getFolderName(String hierarchyPath){
-        int index = hierarchyPath.lastIndexOf("/"); //$NON-NLS-1$
+        int index = hierarchyPath.lastIndexOf(separator); //$NON-NLS-1$
         if (index == -1){
             return ""; //$NON-NLS-1$
         }
@@ -177,7 +200,7 @@ public class TestCaseHierarchyPath{
 			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
-		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptType() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
+		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptTypeParameter() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;
 	}
 	
@@ -185,12 +208,12 @@ public class TestCaseHierarchyPath{
 		while (!currTestPolicyCmpt.isRoot()){
 			if (hierarchyPath.length()>0)
 				hierarchyPath = separator + hierarchyPath ;
-			hierarchyPath = separator + currTestPolicyCmpt.getLabel() + hierarchyPath;
+			hierarchyPath = separator + currTestPolicyCmpt.getName() + hierarchyPath;
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
 			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
-		hierarchyPath = currTestPolicyCmpt.getLabel() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
+		hierarchyPath = currTestPolicyCmpt.getName() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
 		return hierarchyPath;
 	}
 }

@@ -29,22 +29,26 @@ public interface ITestValueParameter extends ITestParameter {
 
 	/** Property names */
     public final static String PROPERTY_VALUEDATATYPE = "valueDatatype"; //$NON-NLS-1$
-    
+
     /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "TESTVALUEPARAMETER-"; //$NON-NLS-1$
-    
+
     /**
-	 * Validation message code to indicate that the value datatype not exists.
-	 */
-	public final static String MSGCODE_VALUEDATATYPE_NOT_FOUND = MSGCODE_PREFIX
-		+ "ValueDatatypeNotFound"; //$NON-NLS-1$
-	
+     * Validation message code to indicate that the value datatype not exists.
+     */
+    public final static String MSGCODE_VALUEDATATYPE_NOT_FOUND = MSGCODE_PREFIX + "ValueDatatypeNotFound"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that there is an unsupported role.
+     */
+    public final static String MSGCODE_WRONG_ROLE = MSGCODE_PREFIX + "WrongRole"; //$NON-NLS-1$
+
     /**
      * Returns the datatype.
      */
-	public String getValueDatatype();
+    public String getValueDatatype();
 	
 	/**
 	 * Sets the datatype.

@@ -25,16 +25,32 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  * @author Joerg Ortmann
  */
 public interface ITestObject extends IIpsObjectPart  {
-	
-	/**
-	 * Returns <code>true</code> if the test parameter is an input parameter
-	 * or <code>false</code> if this is an expected result test parameter.
+    /**
+     * Returns the root test policy component element.
+     */    
+    public ITestObject getRoot();
+    
+    /**
+	 * Returns <code>true</code> if the test parameter is an input object
+	 * otherwise <code>false</code>.
 	 */
-	public boolean isInputObject();
+    public boolean isInput();
 	
-	/**
-	 * Set <code>true</code> if this parameter is an input or 
-	 * <code>false</code> if this is an expected result test parameter.
-	 */
-	public void setInputParameter(boolean isInputType);
+    /**
+     * Returns <code>true</code> if the test parameter is a expected object
+     * otherwise <code>false</code>.
+     */
+    public boolean isExpectedResult();
+    
+    /**
+     * Returns <code>true</code> if the test parameter is a combined object
+     * (containing input and expected result) otherwise <code>false</code>.
+     */
+    public boolean isCombined();
+
+    /**
+     * Returns <code>true</code> if the test object is a root object otherwise <code>false</code>.
+     * @return
+     */
+    public boolean isRoot();    
 }

@@ -118,10 +118,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     }
     
     /**
-     * Returns ips package fragment + ".internal." from the given package fragment root.
-     * TODO Joerg: auch ins interface?, bzw. hier richtig oder evtl. anders loesen
+     * {@inheritDoc}
      */
-    public String getInternalBasePackageName(IIpsPackageFragmentRoot root) throws CoreException {
+    public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
         StringBuffer buf = new StringBuffer();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         String basePackeName = entry.getBasePackageNameForGeneratedJavaClasses();

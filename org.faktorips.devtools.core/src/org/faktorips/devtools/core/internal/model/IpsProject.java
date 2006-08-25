@@ -176,6 +176,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public IIpsProject[] getReferencedIpsProjects() throws CoreException {
+        return getIpsObjectPathInternal().getReferencedIpsProjects();
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public boolean canBeBuild() {

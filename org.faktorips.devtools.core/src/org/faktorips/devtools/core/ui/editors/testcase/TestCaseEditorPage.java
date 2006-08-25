@@ -32,11 +32,13 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
     private String sectionTitle;
     private String sectionDetailTitle;
 	
+    private TestCaseSection section;
+    
     // Content provider
     private TestCaseContentProvider contentProvider;
     
     public TestCaseEditorPage(TestCaseEditor editor, String title, TestCaseContentProvider contentProvider, String sectionTitle, String sectionDetailTitle) {
-		super(editor, PAGE_ID + contentProvider.getIsTypeFor(), title);
+		super(editor, PAGE_ID + contentProvider.getContentType(), title);
 		this.sectionTitle = sectionTitle;
 		this.sectionDetailTitle = sectionDetailTitle;
 		this.contentProvider = contentProvider;
@@ -47,7 +49,7 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
 	 */
 	protected void createPageContent(Composite formBody, UIToolkit toolkit) {
 		formBody.setLayout(createPageLayout(1, false));
-		new TestCaseSection(formBody, (TestCaseEditor) getEditor(), toolkit, contentProvider, sectionTitle, sectionDetailTitle, getManagedForm().getForm());
+        section = new TestCaseSection(formBody, (TestCaseEditor) getEditor(), toolkit, contentProvider, sectionTitle, sectionDetailTitle, getManagedForm().getForm());
 	}
 	
 	/**
@@ -55,5 +57,9 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
 	 */
     public TestCaseContentProvider getTestCaseContentProvider(){
     	return contentProvider;
+    }
+    
+    public void resetTestRunStatus(){
+        section.resetTestRunStatus();
     }
 }
