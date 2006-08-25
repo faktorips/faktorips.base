@@ -343,7 +343,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return IMarker.SEVERITY_ERROR;
         } else if (msgSeverity == Message.WARNING) {
             return IMarker.SEVERITY_WARNING;
-        } else if (msgSeverity == IMarker.SEVERITY_INFO) {
+        } else if (msgSeverity == Message.INFO) {
             return IMarker.SEVERITY_INFO;
         }
         throw new RuntimeException("Unknown severity " + msgSeverity); //$NON-NLS-1$
