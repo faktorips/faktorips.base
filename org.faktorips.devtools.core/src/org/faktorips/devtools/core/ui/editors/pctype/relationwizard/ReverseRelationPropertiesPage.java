@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -46,12 +47,12 @@ import org.faktorips.devtools.core.ui.controller.fields.LabelField;
 public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	private static final String PAGE_ID = "NewPcTypeRelationWizard.ReverseProperties"; //$NON-NLS-1$
 
-	/** Edit fields */
+	/* Edit fields */
 	private ComboField existingRelationsField;
 	private LabelField existingRelationsLabel;
 	private EnumValueField typeField;
 
-	/** State variables */
+	/* State variables */
 	private String prevSelExistingRelation = ""; //$NON-NLS-1$
 	private String prevTarget = ""; //$NON-NLS-1$
 	private RelationType prevRelType = RelationType.COMPOSITION;
@@ -59,7 +60,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	private boolean prevIsNew;
 	
 	private ArrayList existingRelations = new ArrayList();
-	
+    
 	public ReverseRelationPropertiesPage(
 			NewPcTypeRelationWizard newPcTypeRelationWizard) {
 		super(PAGE_ID,
@@ -86,30 +87,23 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		Composite workArea = uiToolkit.createLabelEditColumnComposite(mainComposite);
 		workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		uiToolkit
-				.createFormLabel(
-						workArea,
-						Messages.NewPcTypeRelationWizard_reverseRelationProp_labelTarget);
-		Text targetControl = uiToolkit.createText(workArea);
-		targetControl.setEnabled(false);
-		targetControl.setText(wizard.getPolicyCmptTypeQualifiedName());
+		uiToolkit.createFormLabel(workArea, Messages.NewPcTypeRelationWizard_reverseRelationProp_labelTarget);
+        Text targetControl = uiToolkit.createText(workArea);
+        targetControl.setEnabled(false);
+        targetControl.setText(wizard.getPolicyCmptTypeQualifiedName());
 
-		uiToolkit.createFormLabel(workArea,
-				Messages.NewPcTypeRelationWizard_reverseRelationProp_labelType);
-		Combo typeCombo = uiToolkit.createCombo(workArea, RelationType
-				.getEnumType());
-		typeCombo.setEnabled(false);
+        uiToolkit.createFormLabel(workArea, Messages.NewPcTypeRelationWizard_reverseRelationProp_labelType);
+        Combo typeCombo = uiToolkit.createCombo(workArea, RelationType.getEnumType());
+        typeCombo.setEnabled(false);
 
-		Label existingRelLabel = uiToolkit
-				.createFormLabel(
-						workArea,
-						Messages.NewPcTypeRelationWizard_reverseRelationProp_labelExistingRelation);
-		final Combo existingRelCombo = uiToolkit.createCombo(workArea);
-		existingRelCombo.addListener(SWT.Modify, new Listener() {
-			public void handleEvent(Event ev) {
-				existingRelationSelectionChanged();
-			}
-		});
+        Label existingRelLabel = uiToolkit.createFormLabel(workArea,
+                Messages.NewPcTypeRelationWizard_reverseRelationProp_labelExistingRelation);
+        final Combo existingRelCombo = uiToolkit.createCombo(workArea);
+        existingRelCombo.addListener(SWT.Modify, new Listener() {
+            public void handleEvent(Event ev) {
+                existingRelationSelectionChanged();
+            }
+        });
 
 		uiToolkit.createVerticalSpacer(mainComposite, 12);
 		
@@ -149,28 +143,42 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 				IRelation.PROPERTY_TARGET_ROLE_PLURAL_PRODUCTSIDE);
         
         // Connect the extension controls to the ui controller
-        if (wizard.getUiControllerReverseRelation() != null)
-            wizard.getExtensionFactory().connectToModel(wizard.getUiControllerReverseRelation());
+        if (wizard.getUiControllerReverseRelation() != null && wizard.getExtensionFactoryReverseRelation() != null)
+            wizard.getExtensionFactoryReverseRelation().connectToModel(wizard.getUiControllerReverseRelation());
 	}
 
-	/**
+    private void createPropertyFields(){
+        mainComposite.setRedraw(false);
+        wizard.createExtensionFactoryReverseRelation();
+        createPropertyGroup(wizard.getUiToolkit());
+        super.createPropertiesFields(wizard.getUiToolkit(), propertiesGroup);
+        propertiesGroup.pack();
+        propertiesGroup.getParent().pack();
+        mainComposite.pack();
+        
+        mainComposite.getParent().layout(true);
+        mainComposite.getParent().getParent().layout(true);
+        mainComposite.setRedraw(true);
+    }
+    
+    /**
 	 * {@inheritDoc}
 	 */
 	protected boolean updateControlStatus() {
-		// show the existing relation drop down only if the existing relation
-		// radio button was chosen on the previous page
+	    // show the existing relation drop down only if the existing relation
+	    // radio button was chosen on the previous page
 		if (wizard.isExistingReverseRelation()) {
 			// if selection of target or type changes reinitialize existing relation control
 			if (!(prevTarget.equals(wizard.getRelation().getTarget()) &&
 				  prevRelType.equals(wizard.getRelation().getRelationType()) &&
 				  prevIsExisting)){
-				
-				prevIsExisting = true;
+
+                prevIsExisting = true;
 				prevIsNew = false;
 				prevTarget = wizard.getRelation().getTarget();
 				prevRelType = wizard.getRelation().getRelationType();
 				
-				setVisibleExistingRelationDropDown(true);
+                setVisibleExistingRelationDropDown(true);
 
 				wizard.restoreMementoTargetBeforeChange();
 				wizard.storeMementoTargetBeforeChange();
@@ -188,26 +196,31 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 						existingRelationsField.getCombo().setItems(
 								new String[0]);
 					}
+                    // by default select the first relation
+                    if (targetRelations.size() > 0){
+                        existingRelationsField.getCombo().select(0);
+                    }
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
 					wizard.showErrorPage(e);
 					return false;
 				}
-				setStatusPropertyFields();
 			}
 		} else if (wizard.isNewReverseRelation()){
 			if (!prevIsNew){
-				setStatusPropertyFields();
 				prevIsExisting = false;
 				prevIsNew = true;
-				
+
 				setVisibleExistingRelationDropDown(false);
 				
 				// create a new reverse relation
 				wizard.restoreMementoTargetBeforeChange();
 				wizard.storeMementoTargetBeforeChange();
-				createNewReverseRelationAndConnectToUi();
-				setStatusPropertyFields();
+				createNewReverseRelation();
+
+                createPropertyFields();
+                setStatusPropertyFields();
+                connectRelationToUi();
 			}
 		} else {
 			prevIsExisting = false;
@@ -221,8 +234,6 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	 */
 	private void setStatusPropertyFields() {
 		if (wizard.getReverseRelation() == null) {
-			// no reverse relation found, disable all controls
-			setEnabledAllPropertyControls(false);
 			removePcTypeControlsFromModel();
 			removeProdRelevantControlsFromModel();
 		} else {
@@ -253,12 +264,15 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 
 				wizard.storeReverseRelation((IRelation) existingRelations.get(selIdx));
 
+                createPropertyFields();
+                setStatusPropertyFields();
+                
+                // connect to ui
 				// add a new ui controler for the existing relation object
 				wizard.createUIControllerReverseRelation(wizard.getReverseRelation());
 				wizard.getUiControllerReverseRelation().updateUI();
 			}
 		}
-
 	}
 
 	/**
@@ -274,7 +288,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	 * 
 	 * @throws CoreException
 	 */
-	private ArrayList getCorrespondingTargetRelations(IRelation sourceRelation,
+	 ArrayList getCorrespondingTargetRelations(IRelation sourceRelation,
 			IPolicyCmptType target) throws CoreException {
 		existingRelations = new ArrayList();
 		ITypeHierarchy hierarchy = target.getSupertypeHierarchy();
@@ -290,12 +304,10 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		return existingRelations;
 	}
 
-	/**
-	 * Create a new reverse relation, i.e. create a new relation on the target policy component type object
-	 * and connect the new relation object with the ui controller.
+	/*
+	 * Create a new reverse relation, i.e. create a new relation on the target policy component type object.
 	 */
-	private void createNewReverseRelationAndConnectToUi() {
-
+	private void createNewReverseRelation() {
 		if (wizard.getTargetPolicyCmptType()==null)
 			return;
 		
@@ -306,14 +318,19 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		
 		wizard.setDefaultsByRelationType(newReverseRelation);
 		wizard.storeReverseRelation(newReverseRelation);
-		
-		// add a new ui controler for the new relation object
-		wizard.createUIControllerReverseRelation(newReverseRelation);
-		wizard.getUiControllerReverseRelation().updateUI();
-		
-		wizard.updateDescriptionReverseRelationPropertiesPage(Messages.NewPcTypeRelationWizard_reverseRelationProp_description_new);
 	}
 	
+    /*
+     * Connects the relation object with the ui controller.
+     */
+    private void connectRelationToUi(){
+        // add a new ui controler for the new relation object
+        wizard.createUIControllerReverseRelation(wizard.getReverseRelation());
+        wizard.getUiControllerReverseRelation().updateUI();
+
+        wizard.updateDescriptionReverseRelationPropertiesPage(Messages.NewPcTypeRelationWizard_reverseRelationProp_description_new);
+    }
+    
 	/**
 	 * Remove the properties controls from the model.
 	 */
@@ -371,8 +388,20 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	protected IRelation getCurrentRelation(){
 		return wizard.getReverseRelation();
 	}
+
+    protected void createPropertiesFields(UIToolkit uiToolkit, Composite c) {
+        // nothing to to, the property fields will be created if a reverse relation exists
+    }
     
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    protected void createExtensionFields(Composite parent, UIToolkit uiToolkit, String position) {
+        wizard.getExtensionFactoryReverseRelation().createControls(parent, uiToolkit,
+                (IpsObjectPartContainer)getCurrentRelation(), position);
+    }
+    
+    /**
 	 * {@inheritDoc}
 	 */
 	protected IRelation getReverseOfCurrentRelation(){

@@ -125,5 +125,27 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 	 */
 	protected boolean isPageVisible(){
 		return true;
-	}		
+    }
+    
+    /**
+     * Returns <code>true</code> if the next button could be enabled.
+     * The next button is only enabled if the relation is valid or
+     * the next page after this page was displayed.
+     * {@inheritDoc}
+     */
+    public boolean canFlipToNextPage() {
+        boolean canFlipToNextPage = super.canFlipToNextPage();
+        
+        if (useExistingRelation.getSelection() && ! wizard.relationsExists()){
+            String message = Messages.ReverseRelationPage_NewPcTypeRelationWizard_message_no_reverse_relation_found;
+            setMessage(message);
+            wizard.getContainer().updateMessage();
+            return false;
+        } else {
+            setMessage(Messages.NewPcTypeRelationWizard_reverseRelation_description);
+            wizard.getContainer().updateMessage();
+        }
+        
+        return canFlipToNextPage;
+    }    
 }

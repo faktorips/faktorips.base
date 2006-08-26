@@ -8,10 +8,11 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -29,7 +30,13 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizardPage {
 
-	// edit fields
+    // Compoistes 
+    protected Composite mainComposite;
+    protected Composite propertiesGroupPlaceHolder;
+    protected Composite propertiesGroup;
+    protected Composite propertiesGroupProdRelevant;
+    
+    // edit fields
 	//   properties
     protected CardinalityField minCardinalityField;
     protected CardinalityField maxCardinalityField;
@@ -53,44 +60,55 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	protected void createControls(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
-        Composite mainComposite;
+        mainComposite = uiToolkit.createComposite(parent);
         GridLayout layout = new GridLayout(1, false);
         layout.horizontalSpacing = 12;
-        mainComposite = new Composite(parent, SWT.NONE);
-        mainComposite.setBackground(parent.getBackground());
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         mainComposite.setLayout(layout);
         mainComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Composite propertiesGroup = uiToolkit.createGroup(mainComposite,
-                Messages.NewPcTypeRelationWizard_properties_labelGrpBoxPolicySide);
+        propertiesGroupPlaceHolder = uiToolkit.createComposite(mainComposite);
+        layout = new GridLayout(1, false);
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        propertiesGroupPlaceHolder.setLayout(layout);
+        propertiesGroupPlaceHolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        createPropertyGroup(uiToolkit);
         createPropertiesFields(uiToolkit, propertiesGroup);
 
         uiToolkit.createVerticalSpacer(mainComposite, 12);
 
-        Composite propertiesGroupProdRelevant = uiToolkit.createGroup(mainComposite,
+        propertiesGroupProdRelevant = uiToolkit.createGroup(mainComposite,
                 Messages.NewPcTypeRelationWizard_properties_labelGrpBoxProductSide);
         createProdRelevantPropertiesFields(uiToolkit, propertiesGroupProdRelevant);
     }
 	
+    protected void createPropertyGroup(UIToolkit uiToolkit){
+        if (propertiesGroup != null && ! propertiesGroup.isDisposed()){
+            propertiesGroup.dispose();
+        }
+        
+        propertiesGroup = uiToolkit.createGroup(propertiesGroupPlaceHolder,
+                Messages.NewPcTypeRelationWizard_properties_labelGrpBoxPolicySide);
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	protected boolean updateControlStatus() {
-		if (getCurrentRelation().getRelationType().isReverseComposition()){
-			minCardinalityField.getControl().setEnabled(false);
-			maxCardinalityField.getControl().setEnabled(false);
-			targetRoleSingularField.getControl().setEnabled(true);
-			targetRolePluralField.getControl().setEnabled(true);
-			
-			productRelevantField.getControl().setEnabled(false);
-			setProdRelevantEnabled(false);
+        if (getCurrentRelation().getRelationType().isReverseComposition()){
+            setEnabledAllPropertyControls(true);
+            minCardinalityField.getControl().setEnabled(false);
+            maxCardinalityField.getControl().setEnabled(false);
+            targetRoleSingularField.getControl().setEnabled(true);
+            targetRolePluralField.getControl().setEnabled(true);
+            
+            productRelevantField.getControl().setEnabled(false);
+            setProdRelevantEnabled(false);
 		}else{
-			minCardinalityField.getControl().setEnabled(true);
-			maxCardinalityField.getControl().setEnabled(true);
-			targetRoleSingularField.getControl().setEnabled(true);
-			targetRolePluralField.getControl().setEnabled(true);
+            setEnableState(propertiesGroup.getChildren(), true);
 			
 			productRelevantField.getControl().setEnabled(true);
 			setProdRelevantEnabled(getCurrentRelation().isProductRelevant());
@@ -98,31 +116,41 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 		return true;
 	}
 	
+    /*
+     * Sets the enable state for all given childs and child of childs
+     */
+    private void setEnableState(Control[] controls, boolean enabled){
+        for (int i = 0; i < controls.length; i++) {
+            if (controls[i] instanceof Composite){
+                setEnableState(((Composite)controls[i]).getChildren(), enabled);
+            } else {
+                if (! (controls[i] instanceof Label))
+                    controls[i].setEnabled(enabled);
+            }
+        }
+    }
+    
 	/**
 	 * Sets the enabled state of all controls.
 	 */
 	protected void setEnabledAllPropertyControls(boolean enabled){
-		minCardinalityField.getControl().setEnabled(enabled);
-		maxCardinalityField.getControl().setEnabled(enabled);		
-		targetRoleSingularField.getControl().setEnabled(enabled);
-		targetRolePluralField.getControl().setEnabled(enabled);
-
-		productRelevantField.getControl().setEnabled(enabled);
 		
-		setProdRelevantEnabled(enabled);
+        setEnableState(propertiesGroup.getChildren(), enabled);
+
+        setProdRelevantEnabled(enabled);
 	}
-	
+    
 	/**
 	 * Create the property controls of the relation.
 	 */
-	private void createPropertiesFields(UIToolkit uiToolkit, Composite c) {
+	protected void createPropertiesFields(UIToolkit uiToolkit, Composite c) {
+        
 		// create controls
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // create top extension controls
-        wizard.getExtensionFactory().createControls(workArea, uiToolkit, (IpsObjectPartContainer)getCurrentRelation(), 
-                IExtensionPropertyDefinition.POSITION_TOP);
+        createExtensionFields(workArea, uiToolkit, IExtensionPropertyDefinition.POSITION_TOP);
         
         uiToolkit.createFormLabel(workArea, Messages.NewPcTypeRelationWizard_properties_labelMinCardinality);
         Text minCardinalityText = uiToolkit.createText(workArea);
@@ -174,10 +202,9 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         addFocusListenerUpdateButtons(targetRolePluralField);
         
         // create bottom extension controls
-        wizard.getExtensionFactory().createControls(workArea, uiToolkit, (IpsObjectPartContainer)getCurrentRelation(), 
-                IExtensionPropertyDefinition.POSITION_BOTTOM);
+        createExtensionFields(workArea, uiToolkit, IExtensionPropertyDefinition.POSITION_BOTTOM);
 	}
-
+    
 	/**
 	 * Create the product relevant property controls.
 	 */
@@ -265,6 +292,11 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	 */
 	abstract protected IRelation getCurrentRelation();
 	
+    /**
+     * Creates the extension fields for the given position.
+     */
+    protected abstract void createExtensionFields(Composite parent, UIToolkit uiToolkit, String position);
+    
 	/**
 	 * Returns the reverse relation of the relation which will changed by this wizard page.
 	 */

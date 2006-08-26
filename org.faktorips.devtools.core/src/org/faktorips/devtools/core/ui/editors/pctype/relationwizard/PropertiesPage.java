@@ -18,10 +18,13 @@
 package org.faktorips.devtools.core.ui.editors.pctype.relationwizard;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 
 /**
@@ -36,6 +39,20 @@ public class PropertiesPage extends AbstractPropertiesPage {
 				newPcTypeRelationWizard);
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    protected void createControls(Composite parent) {
+        super.createControls(parent);
+        // create spacer on bottom, to ensure the correct size of the reverse property page
+        // the reverse property page contains the same controlls like this page plus
+        // three edit fields on the top of the page, therefore the spacer must fit the additionall size
+        // this is necessary because the reverse properties fiels will be created later if a reverse
+        // relation is selected or created but the wizard calculates the max size when the dialog is created
+        UIToolkit uiToolkit = wizard.getUiToolkit();
+        uiToolkit.createVerticalSpacer(parent, 90);
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,7 +96,6 @@ public class PropertiesPage extends AbstractPropertiesPage {
 	 */
 	public boolean canFlipToNextPage() {
 		boolean canFlipToNextPage = super.canFlipToNextPage();
-		
 		if (canFlipToNextPage){
 			try {
 				canFlipToNextPage = (wizard.isReverseRelationPageDisplayed() || wizard.getRelation().isValid());
@@ -99,6 +115,14 @@ public class PropertiesPage extends AbstractPropertiesPage {
 	protected IRelation getCurrentRelation(){
 		return wizard.getRelation();
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void createExtensionFields(Composite parent, UIToolkit uiToolkit, String position) {
+        wizard.getExtensionFactory().createControls(parent, uiToolkit, (IpsObjectPartContainer)getCurrentRelation(),
+                position);
+    }
 
     /**
 	 * {@inheritDoc}

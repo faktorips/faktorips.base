@@ -80,17 +80,20 @@ public class NewPcTypeRelationWizard extends Wizard {
 	
 	/** Factory to created the extension edit fields */
 	private ExtensionPropertyControlFactory extensionFactory;
-
+    private ExtensionPropertyControlFactory extensionFactoryReverseRelation;
+    
     public NewPcTypeRelationWizard(IRelation relation) {
 		super();
 		super.setWindowTitle(Messages.NewPcTypeRelationWizard_title);
 		this.relation = relation;
 
 		uiControllerRelation = createUIController(this.relation);
-        
         extensionFactory = new ExtensionPropertyControlFactory(relation.getClass());
 	}
     
+    public void createExtensionFactoryReverseRelation(){
+        extensionFactoryReverseRelation = new ExtensionPropertyControlFactory(relation.getClass());
+    }
 	/**
 	 * {@inheritDoc}
 	 */
@@ -285,6 +288,9 @@ public class NewPcTypeRelationWizard extends Wizard {
 		if (targetPolicyCmptType==null || mementoTargetBeforeNewRelation == null)
 			return;
 		targetPolicyCmptType.setState(mementoTargetBeforeNewRelation);
+        if (!targetIsDirty)
+            // if the target wasn't dirty before the discard the changes
+            targetPolicyCmptType.getIpsSrcFile().discardChanges();
 		mementoTargetBeforeNewRelation = null;
 	}
 	
@@ -469,5 +475,25 @@ public class NewPcTypeRelationWizard extends Wizard {
      */
     public ExtensionPropertyControlFactory getExtensionFactory() {
         return extensionFactory;
+    }
+    
+    /**
+     * Returns the extension property control factory for the reverse relation.
+     */
+    public ExtensionPropertyControlFactory getExtensionFactoryReverseRelation() {
+        return extensionFactoryReverseRelation;
+    }
+    
+    /**
+     * Return <code>true</code> if the selected target pc type has relations which can be selected as reverse relation.
+     * Return <code>false</code> if no such relations exists.
+     */
+    public boolean relationsExists() {
+        try {
+            return (reverseRelationPropertiesPage.getCorrespondingTargetRelations(getRelation(),
+                    getTargetPolicyCmptType()).size() > 0);
+        } catch (Exception e) {
+        }
+        return false;
     }
 }

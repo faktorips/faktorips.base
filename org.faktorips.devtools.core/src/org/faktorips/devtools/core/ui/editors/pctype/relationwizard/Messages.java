@@ -73,5 +73,7 @@ public class Messages extends NLS {
 	public static String NewPcTypeRelationWizard_reverseRelationProp_labelExistingRelation;
 	
 	public static String NewPcTypeRelationWizard_error_title;
-	public static String NewPcTypeRelationWizard_error_desciption;	
+	public static String NewPcTypeRelationWizard_error_desciption;
+
+    public static String ReverseRelationPage_NewPcTypeRelationWizard_message_no_reverse_relation_found;	
 }
