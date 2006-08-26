@@ -389,9 +389,9 @@ public class TestCase extends IpsObject implements ITestCase {
      */
      private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path)
             throws CoreException {
-        boolean found = false;
         String searchedPath = path.toString();
         while (pc != null && path.hasNext()) {
+            boolean found = false;
             String currElem = path.next();
 
             ITestPolicyCmptRelation[] prs;
@@ -407,8 +407,6 @@ public class TestCase extends IpsObject implements ITestCase {
 
                 if (currElem.equals(pcTarget.getName())) {                     if (found){                         // exception more than one element found with the given path                         throw new CoreException(new IpsStatus(NLS.bind(                                 "More than test object exists with path {0}", searchedPath)));                     }                     found = true;                                             pc = pcTarget;                }
             }
-            if (found && pc != null)
-                return pc;
         }
         return pc;
     }
