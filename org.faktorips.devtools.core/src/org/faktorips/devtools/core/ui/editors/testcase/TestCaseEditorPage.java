@@ -67,7 +67,12 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
     	return contentProvider;
     }
     
-    public void resetTestRunStatus(){
+    /**
+     * Refreshs the status of the controls.<br>
+     * The test run status will be reseted and the tree viewer will be refreshed.
+     */
+    public void refreshControlStatus(){
         section.resetTestRunStatus();
+        section.refreshTree();
     }
 }

@@ -1062,7 +1062,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	/**
 	 * Refresh the tree.
 	 */
-	private void refreshTree(){
+	void refreshTree(){
 		treeViewer.getTree().setRedraw(false);
 		TreeViewerExpandStateStorage treeexpandStorage = new TreeViewerExpandStateStorage(treeViewer);
 		treeexpandStorage.storeExpandedStatus();

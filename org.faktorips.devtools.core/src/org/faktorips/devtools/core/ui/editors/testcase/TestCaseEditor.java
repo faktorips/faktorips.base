@@ -24,7 +24,7 @@ public class TestCaseEditor extends IpsObjectEditor {
      */
     public void doSave(IProgressMonitor monitor) {
         super.doSave(monitor);
-        editorPage.resetTestRunStatus();
+        editorPage.refreshControlStatus();
     }
 
     /**
