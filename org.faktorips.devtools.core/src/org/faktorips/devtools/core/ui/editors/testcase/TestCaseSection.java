@@ -299,7 +299,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         
 		form.getToolBarManager().add(actionRelation);
 		form.getToolBarManager().add(actionAll);
-		form.getToolBarManager().add(actionTest);
+		
+        form.getToolBarManager().add(new Separator());
+        
+        form.getToolBarManager().add(actionTest);
         
 	}
 	
