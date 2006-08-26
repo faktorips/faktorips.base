@@ -55,18 +55,18 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getFirstElement(docEl);
         testPcTypeRelation.initFromXml(paramEl);
-        assertEquals("relation1", testPcTypeRelation.getTestPolicyCmptType());
+        assertEquals("relation1", testPcTypeRelation.getTestPolicyCmptTypeParameter());
         assertEquals("base.target1", testPcTypeRelation.getTarget());
     }
 
     public void testToXml() {
-        testPcTypeRelation.setTestPolicyCmptType("relation2");
+        testPcTypeRelation.setTestPolicyCmptTypeParameter("relation2");
         testPcTypeRelation.setTarget("base.target2");
         Element el = testPcTypeRelation.toXml(newDocument());
-        testPcTypeRelation.setTestPolicyCmptType("test1");
+        testPcTypeRelation.setTestPolicyCmptTypeParameter("test1");
         testPcTypeRelation.setTarget("test2");
         testPcTypeRelation.initFromXml(el);
-        assertEquals("relation2", testPcTypeRelation.getTestPolicyCmptType());
+        assertEquals("relation2", testPcTypeRelation.getTestPolicyCmptTypeParameter());
         assertEquals("base.target2", testPcTypeRelation.getTarget());
     }
     

@@ -78,7 +78,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         policyCmptTypeObjectExpected.setName("Label1");
         policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
         ITestPolicyCmptRelation relation = policyCmptTypeObjectExpected.newTestPolicyCmptRelation();
-        relation.setTestPolicyCmptType("relation1");
+        relation.setTestPolicyCmptTypeParameter("relation1");
         ITestPolicyCmpt targetChild = relation.newTargetTestPolicyCmptChild();
         targetChild.setTestPolicyCmptTypeParameter("base.Test4");
         policyCmptTypeObjectExpected.newTestAttributeValue();

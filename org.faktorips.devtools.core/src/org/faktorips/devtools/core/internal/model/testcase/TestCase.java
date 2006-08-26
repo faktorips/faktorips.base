@@ -279,8 +279,8 @@ public class TestCase extends IpsObject implements ITestCase {
         ArgumentCheck.isTrue(testPolicyCmptBase != null || relation != null);
         ArgumentCheck.isTrue(!(testPolicyCmptBase != null && relation != null));
 
-        ITestCaseType foundTestCaseType = findTestCaseType();
-        if (foundTestCaseType == null) {
+        ITestCaseType testCaseType = findTestCaseType();
+        if (testCaseType == null) {
             throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestCaseTypeNotFound, testCaseType)));
         }
 
@@ -296,12 +296,12 @@ public class TestCase extends IpsObject implements ITestCase {
 
         // find the root test policy component parameter type
         String testPolicyCmptTypeName = hierarchyPath.next();
-        ITestParameter testParam = foundTestCaseType.getTestParameterByName(testPolicyCmptTypeName);
+        ITestParameter testParam = testCaseType.getTestParameterByName(testPolicyCmptTypeName);
         if (testParam == null) {
             return null;
         }
 
-        // nheck the found object 
+        // heck the found object 
         if (! (testParam instanceof ITestPolicyCmptTypeParameter)) {
             throw new CoreException(
                     new IpsStatus(NLS.bind("Wrong instance of test parameter with name {0}, expected test policy component type parameter but " +
@@ -335,7 +335,7 @@ public class TestCase extends IpsObject implements ITestCase {
             if (testPolicyCmpt.isRoot()) {
                 removeTestObject(testObject);
             } else {
-                TestCaseHierarchyPath hierarchyPath = new TestCaseHierarchyPath(testPolicyCmpt, true);
+                TestCaseHierarchyPath hierarchyPath = new TestCaseHierarchyPath(testPolicyCmpt);
                 testPolicyCmpt = findTestPolicyCmpt(hierarchyPath.toString());
                 if (testPolicyCmpt == null) {
                     throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestPolicyCmptNotFound,
@@ -359,27 +359,16 @@ public class TestCase extends IpsObject implements ITestCase {
          TestCaseHierarchyPath path = new TestCaseHierarchyPath(testPolicyCmptPath);
          ITestPolicyCmpt pc = null;
          String currElem = path.next();
-         if (path.isFullPath()){
-             List testPoliyCmpts = getTestObjects(null, TestPolicyCmpt.class, currElem);
-             if (testPoliyCmpts.size() == 1){
-                 assertInstanceOfTestPolicyCmpt(currElem, (ITestObject) testPoliyCmpts.get(0));
-                 pc = searchChildTestPolicyCmpt((ITestPolicyCmpt) testPoliyCmpts.get(0), path, 0);
-             } else if (testPoliyCmpts.size() == 0) {
-                 return null;
-             } else {
-                 throw new CoreException(new IpsStatus(NLS.bind(
-                         "More than test object exists with name {0}", currElem)));
-             }
+
+         List testPoliyCmpts = getTestObjects(null, TestPolicyCmpt.class, currElem);
+         if (testPoliyCmpts.size() == 1){
+             assertInstanceOfTestPolicyCmpt(currElem, (ITestObject) testPoliyCmpts.get(0));
+             pc = searchChildTestPolicyCmpt((ITestPolicyCmpt) testPoliyCmpts.get(0), path);
+         } else if (testPoliyCmpts.size() == 0) {
+             return null;
          } else {
-             List testPoliyCmpts = getTestObjects(null, TestPolicyCmpt.class, null);
-             for (Iterator iter = testPoliyCmpts.iterator(); iter.hasNext();) {
-                 ITestObject testObject = (ITestObject) iter.next();
-                 assertInstanceOfTestPolicyCmpt(currElem, testObject);
-                 ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) testObject;
-                 pc = searchChildTestPolicyCmpt(testPolicyCmpt, path, 0);
-                 if (pc != null)
-                     break;
-            }
+             throw new CoreException(new IpsStatus(NLS.bind(
+                     "More than test object exists with name {0}", currElem)));
          }
          return pc;
     }
@@ -398,22 +387,15 @@ public class TestCase extends IpsObject implements ITestCase {
     /*
      * Search the test policy component by the given path.
      */
-     private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path, int offset)
+     private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path)
             throws CoreException {
         boolean found = false;
         String searchedPath = path.toString();
         while (pc != null && path.hasNext()) {
             String currElem = path.next();
 
-            if (!path.isFullPath() && pc.getTestPolicyCmptTypeParameter().equals(currElem)) {
-                return pc;
-            }
-
             ITestPolicyCmptRelation[] prs;
-            if (path.isFullPath())
-                prs = pc.getTestPolicyCmptRelations(currElem);
-            else
-                prs = pc.getTestPolicyCmptRelations();
+            prs = pc.getTestPolicyCmptRelations(currElem);
 
             currElem = path.next();
             pc = null;
@@ -423,34 +405,7 @@ public class TestCase extends IpsObject implements ITestCase {
                 if (pcTarget == null)
                     return null;
 
-                if (currElem.equals(pcTarget.getName())) {
-                    if (path.isFullPath()) {
-                        if (found){
-                            // exception more than one element found with the given path
-                            throw new CoreException(new IpsStatus(NLS.bind(
-                                    "More than test object exists with path {0}", searchedPath)));
-                        }
-                        found = true;                        
-                        pc = pcTarget;
-                    } else {
-                        if (found){
-                            // exception more than one element found with the given path
-                            throw new CoreException(new IpsStatus(NLS.bind(
-                                    "More than test object exists with path {0}", searchedPath)));
-                        }
-                        found = true;
-                        pc = pcTarget;
-                    }
-                }
-
-                if (!path.isFullPath()) {
-                    pc = searchChildTestPolicyCmpt(pcTarget, path, offset);
-                    if (pc != null){
-                        if (offset == path.getOffset())
-                            return pc;
-                        offset ++;
-                    }
-                }
+                if (currElem.equals(pcTarget.getName())) {                     if (found){                         // exception more than one element found with the given path                         throw new CoreException(new IpsStatus(NLS.bind(                                 "More than test object exists with path {0}", searchedPath)));                     }                     found = true;                                             pc = pcTarget;                }
             }
             if (found && pc != null)
                 return pc;

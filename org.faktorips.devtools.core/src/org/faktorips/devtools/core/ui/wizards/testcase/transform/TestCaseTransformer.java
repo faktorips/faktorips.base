@@ -200,7 +200,7 @@ public class TestCaseTransformer {
                         }
                     }
                     ITestPolicyCmptRelation relation = testPolicyCmpt.newTestPolicyCmptRelation();
-                    relation.setTestPolicyCmptType(child.getNodeName());
+                    relation.setTestPolicyCmptTypeParameter(child.getNodeName());
                     parseTestPolicyCmpt(child, relation.newTargetTestPolicyCmptChild(), isInput);
                 
                 }

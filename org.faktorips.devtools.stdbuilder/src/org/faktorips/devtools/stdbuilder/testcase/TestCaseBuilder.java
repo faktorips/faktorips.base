@@ -235,10 +235,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         for (int i = 0; i < testPolicyCmpt.length; i++) {
             Element testPolicyCmptElem = null;
             if (relation != null) {
-                ITestPolicyCmptTypeParameter parameter = relation.findTestPolicyCmptType();
+                ITestPolicyCmptTypeParameter parameter = relation.findTestPolicyCmptTypeParameter();
                 if (parameter == null){
                     throw new CoreException(new IpsStatus(NLS.bind(
-                            "The test policy component type parameter {0} was not found.", relation.getTestPolicyCmptType())));
+                            "The test policy component type parameter {0} was not found.", relation.getTestPolicyCmptTypeParameter())));
                 }
                 testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, parameter.getRelation());
                 testPolicyCmptElem.setAttribute("type", "composite");
@@ -282,7 +282,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     }                   
                 } else if (relations[i].isAccoziation()){
                     relationType = RelationType.ASSOZIATION.getName().toLowerCase();
-                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relations[i].getTestPolicyCmptType());
+                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, relations[i].getTestPolicyCmptTypeParameter());
                     testPolicyCmptElem.setAttribute("target", relations[i].getTarget());
                     testPolicyCmptElem.setAttribute("type", relationType);
                 }

@@ -47,7 +47,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/** Tags */
 	static final String TAG_NAME = "Relation"; //$NON-NLS-1$
 
-	private String testPolicyCmptType = ""; //$NON-NLS-1$
+	private String testPolicyCmptTypeParameter = ""; //$NON-NLS-1$
 
 	private String target = ""; //$NON-NLS-1$
 
@@ -66,24 +66,24 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getTestPolicyCmptType() {
-		return testPolicyCmptType;
+	public String getTestPolicyCmptTypeParameter() {
+		return testPolicyCmptTypeParameter;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setTestPolicyCmptType(String newPolicyCmptType) {
-		String oldPolicyCmptType = this.testPolicyCmptType;
-		this.testPolicyCmptType = newPolicyCmptType;
+	public void setTestPolicyCmptTypeParameter(String newPolicyCmptType) {
+		String oldPolicyCmptType = this.testPolicyCmptTypeParameter;
+		this.testPolicyCmptTypeParameter = newPolicyCmptType;
 		valueChanged(oldPolicyCmptType, newPolicyCmptType);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptType() throws CoreException {
-        if (StringUtils.isEmpty(testPolicyCmptType)) {
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter() throws CoreException {
+        if (StringUtils.isEmpty(testPolicyCmptTypeParameter)) {
             return null;
 		}
 		return getTestCase().findTestPolicyCmptTypeParameter(this);
@@ -130,7 +130,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
-		testPolicyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
+		testPolicyCmptTypeParameter = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
 		target = element.getAttribute(PROPERTY_TARGET);
 	}
 
@@ -139,7 +139,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
-		element.setAttribute(PROPERTY_POLICYCMPTTYPE, testPolicyCmptType);
+		element.setAttribute(PROPERTY_POLICYCMPTTYPE, testPolicyCmptTypeParameter);
 		element.setAttribute(PROPERTY_TARGET, target);
 	}
 
@@ -263,7 +263,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		MessageList messageList = new MessageList();
 		
 		// validate if the test policy component type parameter exists
-		ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptType();
+		ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter();
 		if (testCaseTypeParam == null){
 			String text = Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound;
 			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
@@ -289,7 +289,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		int count = 0;
 		for (int i = 0; i < parentRelations.length; i++) {
 			ITestPolicyCmptRelation currRelation = parentRelations[i];
-			if (currRelation.getTestPolicyCmptType().equals(getTestPolicyCmptType())){
+			if (currRelation.getTestPolicyCmptTypeParameter().equals(getTestPolicyCmptTypeParameter())){
 				count ++;
 			}
 		}
@@ -324,7 +324,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		}
 		
 		if (param == null){
-			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeNotFound, getTestPolicyCmptType());
+			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeNotFound, getTestPolicyCmptTypeParameter());
 			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 			messageList.add(msg);	
 		} 

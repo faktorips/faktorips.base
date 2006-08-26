@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 
@@ -28,20 +30,10 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 public class TestCaseHierarchyPath{
 	// Seperator between each hierarchy element
 	private static final String separator = "//"; //$NON-NLS-1$
-	
-	// Full path indicator
-	private static final String WILDCARD = "***"; //$NON-NLS-1$
-	
-    // Offset separator
-    private static final String OFFSET = "###"; //$NON-NLS-1$
-    
+	    
 	// Contains the complete hierarchy path
 	private String hierarchyPath = ""; //$NON-NLS-1$
 	
-	private boolean isFullPath = true;
-	
-    private int offset = 0;
-    
     /**
      * Removes the folder information from the beginning.
      */
@@ -53,20 +45,58 @@ public class TestCaseHierarchyPath{
         return hierarchyPath.substring(index + separator.length());
 	}
 	
-	public TestCaseHierarchyPath(String hierarchyPath){
-		if (hierarchyPath.startsWith(WILDCARD)){
-			setFullPath(false);
-			hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(WILDCARD) + WILDCARD.length());
-		}
-        if (hierarchyPath.indexOf(OFFSET) >= 0){
-            offset = Integer.parseInt(hierarchyPath.substring(hierarchyPath.indexOf(OFFSET) + OFFSET.length()));
-            hierarchyPath = hierarchyPath.substring(0, hierarchyPath.indexOf(OFFSET));
+    /**
+     * Evaluate the test policy component type parameter path of the given test policy component.
+     * An offset concatenated to the name of the test policy component type parameter indicates the
+     * unique path if there are more instances with the same name.
+     */
+    public static String evalTestPolicyCmptParamPath(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+        String pathWithOffset = "";
+        
+        while (!testPolicyCmpt.isRoot()){
+            int offset = 0;
+            ITestPolicyCmpt parent = testPolicyCmpt.getParentPolicyCmpt();
+            ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations();
+            for (int i = 0; i < relations.length; i++) {
+                if (relations[i].findTarget().equals(testPolicyCmpt))
+                    break;
+                // check for same parameter and increment offset if necessary
+                if (relations[i].getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
+                    offset ++;
+            }
+            pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: "");
+            testPolicyCmpt = parent;
         }
+
+        // get the offset of the test policy cmpt
+        //   by searching test policy cmpt with the same test policy cmpt type param
+        ITestCase testCase = testPolicyCmpt.getTestCase();
+        ITestPolicyCmpt[] tpcs = testCase.getTestPolicyCmpts();
+        int offset = 0;
+        for (int i = 0; i < tpcs.length; i++) {
+            if (testPolicyCmpt.equals(tpcs[i]))
+                break;
+            // check for same parameter and increment offset if necessary
+            if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpcs[i]))
+                offset ++;
+        }
+        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + "." + pathWithOffset;
+        return pathWithOffset;
+    }
+    
+	public TestCaseHierarchyPath(String hierarchyPath){
         this.hierarchyPath = hierarchyPath;
 	}
-	
+
+    /**
+     * Creates a test case hierarchy path for a given test policy component.
+     */
+    public TestCaseHierarchyPath(ITestPolicyCmpt currTestPolicyCmpt){
+        this.hierarchyPath = evalHierarchyPathForTestCase(currTestPolicyCmpt, ""); //$NON-NLS-1$
+    }
+    
 	/**
-	 * Creates a test case hierarchy path for a given test policy component.
+	 * Creates a test case or test case type hierarchy path for a given test policy component.
 	 * 
 	 * @param currTestPolicyCmpt The test policy compcomponentonengt for which the path will be created.
 	 * @param evalForTestCase <code>true</code> if the hierarchy path will be evaluated for a test case
@@ -88,7 +118,7 @@ public class TestCaseHierarchyPath{
 	 *                        <code>false</code> if the hierarchy path will be evaluated for a test case type.
 	 */	
 	public TestCaseHierarchyPath(ITestPolicyCmptRelation relation, boolean evalforTestCase){
-		String relationPath = relation.getTestPolicyCmptType();
+		String relationPath = relation.getTestPolicyCmptTypeParameter();
 		if (evalforTestCase){	
 			this.hierarchyPath = evalHierarchyPathForTestCase((ITestPolicyCmpt) relation.getParent(), relationPath);
 		}else{
@@ -115,9 +145,6 @@ public class TestCaseHierarchyPath{
 	 */
 	public String next(){
 		String next = ""; //$NON-NLS-1$
-		if (!isFullPath){
-			return hierarchyPath;
-		}
 		
 		if (hierarchyPath.indexOf(separator)>=0){
 			next = hierarchyPath.substring(0, hierarchyPath.indexOf(separator));
@@ -134,7 +161,7 @@ public class TestCaseHierarchyPath{
 	 * Returns the string representation of this object.
 	 */
 	public String toString(){
-		return (!isFullPath?WILDCARD:"") + hierarchyPath + (offset>0?OFFSET + offset:""); //$NON-NLS-1$
+		return hierarchyPath; //$NON-NLS-1$
 	}
 
 	/**
@@ -153,34 +180,6 @@ public class TestCaseHierarchyPath{
 		return count;
 	}
 	
-	/**
-	 * Sets if the full path is given.
-	 */
-	public void setFullPath(boolean fullPath) {
-		isFullPath = fullPath;
-	}
-	
-    /**
-     * Sets the offset in case of equal elements.
-     */
-	public void setOffset(int offset) {
-        this.offset = offset;
-    }
-    
-	/**
-	 * Returns the offset which could be used to identify the element in case of ambiguous elements.
-	 */
-    public int getOffset() {
-        return offset;
-    }
-
-    /**
-	 * Returns <code>true</code> if the full path is given otherwise return <code>false</code>.
-	 */	
-	public boolean isFullPath(){
-		return isFullPath;
-	}
-	
     /**
      * Returns the folder name for a given hierarchy path.
      */	
@@ -197,7 +196,7 @@ public class TestCaseHierarchyPath{
 			if (hierarchyPath.length()>0)
 				hierarchyPath = separator + hierarchyPath ;
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
-			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
+			hierarchyPath = testPcTypeRelation.getTestPolicyCmptTypeParameter() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
 		hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptTypeParameter() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$
@@ -210,7 +209,7 @@ public class TestCaseHierarchyPath{
 				hierarchyPath = separator + hierarchyPath ;
 			hierarchyPath = separator + currTestPolicyCmpt.getName() + hierarchyPath;
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) currTestPolicyCmpt.getParent();
-			hierarchyPath = testPcTypeRelation.getTestPolicyCmptType() + hierarchyPath;
+			hierarchyPath = testPcTypeRelation.getTestPolicyCmptTypeParameter() + hierarchyPath;
 			currTestPolicyCmpt = (ITestPolicyCmpt) testPcTypeRelation.getParent();
 		}
 		hierarchyPath = currTestPolicyCmpt.getName() + (hierarchyPath.length() > 0 ? separator + hierarchyPath : ""); //$NON-NLS-1$

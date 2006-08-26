@@ -64,7 +64,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 		try {
 			ITestPolicyCmptTypeParameter typeParam = null;
 			if (dummyRelation == null){
-				typeParam = testPolicyCmptRelation.findTestPolicyCmptType();
+				typeParam = testPolicyCmptRelation.findTestPolicyCmptTypeParameter();
 			}else{
 				typeParam = dummyRelation.getTestPolicyCmptTypeParam();
 			}
@@ -111,9 +111,9 @@ public class TestCaseLabelProvider implements ILabelProvider {
 			ITestPolicyCmptRelation testPcTypeRelation = (ITestPolicyCmptRelation) element;
 			String text = ""; //$NON-NLS-1$
 			try {
-				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeRelation.getTestPolicyCmptType());
+				text = TestCaseHierarchyPath.unqualifiedName(testPcTypeRelation.getTestPolicyCmptTypeParameter());
 				
-				ITestPolicyCmptTypeParameter typeParam = testPcTypeRelation.findTestPolicyCmptType();
+				ITestPolicyCmptTypeParameter typeParam = testPcTypeRelation.findTestPolicyCmptTypeParameter();
 				if (typeParam != null && typeParam.isRequiresProductCmpt())
 					text += TestCaseSection.REQUIRES_PRODUCT_CMPT_SUFFIX;
 			} catch (CoreException e) {

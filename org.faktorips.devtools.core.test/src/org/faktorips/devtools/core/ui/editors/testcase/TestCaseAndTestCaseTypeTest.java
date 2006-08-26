@@ -96,7 +96,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         pc.setName(tp.getName());
         ITestPolicyCmptRelation pcr = pc.addTestPcTypeRelation(tpChild, "", "");
         ITestPolicyCmpt pcChild = pcr.findTarget();
-        pathToTestPolicyCmptInput = new TestCaseHierarchyPath(pcChild, true).getHierarchyPath();
+        pathToTestPolicyCmptInput = new TestCaseHierarchyPath(pcChild).getHierarchyPath();
         testCase.newTestValue().setTestValueParameter("inputValueParameter1");
         
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("expectedResultTestPolicyCmptTypeParam1");
@@ -144,7 +144,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         
         param.setRelation(prevRelation);
         
-        pcr.setTestPolicyCmptType("none");
+        pcr.setTestPolicyCmptTypeParameter("none");
         ml = pcr.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }

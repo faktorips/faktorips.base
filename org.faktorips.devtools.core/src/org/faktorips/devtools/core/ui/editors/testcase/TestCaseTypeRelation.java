@@ -176,7 +176,7 @@ public class TestCaseTypeRelation implements Validatable{
 		ITestPolicyCmptRelation[] relations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
 		ITestPolicyCmptRelation testPolicyCmptRelation = null;
 		for (int i = 0; i < relations.length; i++) {
-			if (relations[i].getTestPolicyCmptType().equals(getName())){
+			if (relations[i].getTestPolicyCmptTypeParameter().equals(getName())){
 				testPolicyCmptRelation = relations[i];
 				break;
 			}

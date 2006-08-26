@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.views.testrunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,8 @@ public class TestRunPane {
 
 	private IpsTestRunnerViewPart testRunnerViewPart;
 	
+    private List missingTestEntries;
+    
 	// Maps test Ids to the stored table items. 
 	private Map fTableItemMap = new HashMap();
 	
@@ -111,6 +114,7 @@ public class TestRunPane {
 	 * A new test run will be stared.
 	 */
 	public void aboutToStart() {
+        missingTestEntries = new ArrayList();
 		fTable.removeAll();
 		fTableItemMap = new HashMap();
 		firstFailureOrError = null;
@@ -136,10 +140,18 @@ public class TestRunPane {
 	 */
 	public void endTest(String testId, String qualifiedTestName) {
 		TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(testId);
-		if (testTableEntry == null)
-			return;
-		
-		TableItem tableItem = testTableEntry.getTableItem();
+		if (testTableEntry == null){
+            missingTestEntries.add(testId);
+            return;
+        }
+		updateTestEntryStatusImage(testTableEntry);
+	}
+
+    /*
+     * Update the image of the given test entry.
+     */
+    private void updateTestEntryStatusImage(TestTableEntry testTableEntry) {
+        TableItem tableItem = testTableEntry.getTableItem();
 		if (testTableEntry.isError()){
 			tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testerr.gif")); //$NON-NLS-1$
 		}else if (testTableEntry.isFailure()){
@@ -149,7 +161,7 @@ public class TestRunPane {
 		}else{
 			tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/test.gif")); //$NON-NLS-1$
 		}
-	}
+    }
 
 	/**
 	 * The given test has started.
@@ -272,4 +284,21 @@ public class TestRunPane {
 			this.errorDetails = errorDetails;
 		}
 	}
+
+    // TODO Joerg: synchronize test runner
+    public void checkMissingEntries() {
+        if (missingTestEntries.size() == 0)
+            return;
+        synchronized (missingTestEntries) {
+            for (Iterator iter = missingTestEntries.iterator(); iter.hasNext();) {
+                String element = (String )iter.next();
+                TestTableEntry testTableEntry = (TestTableEntry) fTableItemMap.get(element);
+                if (testTableEntry == null){
+                    missingTestEntries.add(element);
+                    return;
+                }
+                updateTestEntryStatusImage(testTableEntry);
+            }
+        }
+    }
 }

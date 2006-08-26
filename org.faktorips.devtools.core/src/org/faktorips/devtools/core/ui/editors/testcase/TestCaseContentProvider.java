@@ -370,7 +370,7 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 				ITestPolicyCmptRelation[] relationsInTestCase = testPolicyCmpt.getTestPolicyCmptRelations();
 				for (int i = 0; i < relationsInTestCase.length; i++) {
 					ITestPolicyCmptRelation relation = relationsInTestCase[i];
-					if (! childNames.contains(relation.getTestPolicyCmptType())){
+					if (! childNames.contains(relation.getTestPolicyCmptTypeParameter())){
 						childs.add(relation);
 					}
 				}

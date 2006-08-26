@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
  *   testPolicyCmptType1 (TestPolicyCmptTypeParameter)              <---    testPolicyCmptType1_label (ITestPolicyCmpt)<br>
  *     testPolicyCmptTypeRelation1 (TestPolicyCmptTypeParameter)    <---      testPolicyCmptTypeRelation1 (ITestPolicyCmptRelation)<br>
  *                                                                    \-        testPolicyCmptType2_label (ITestPolicyCmpt)<br>
+ *                                                                            testPolicyCmptTypeRelation1 (ITestPolicyCmptRelation)<br>
+ *                                                                    \-        testPolicyCmptType22_label (ITestPolicyCmpt)<br>
  *       testPolicyCmptTypeRelation2 (TestPolicyCmptTypeParameter)  <---          testPolicyCmptTypeRelation2 (ITestPolicyCmptRelation)<br>
  *                                                                    \-            testPolicyCmptType3_label (ITestPolicyCmpt)<br>
  * @author Joerg Ortmann
@@ -37,6 +39,7 @@ public class TestCaseAndTestCaseTypeContent {
     ITestPolicyCmpt testPolicyCmpt1;
     ITestPolicyCmptRelation relation1;
     ITestPolicyCmpt testPolicyCmpt2;
+    ITestPolicyCmpt testPolicyCmpt22;
     ITestPolicyCmptRelation relation2;
     ITestPolicyCmpt testPolicyCmpt3;
     
@@ -47,21 +50,28 @@ public class TestCaseAndTestCaseTypeContent {
     public TestCaseAndTestCaseTypeContent(ITestCase testCase, ITestCaseType testCaseType) {
         testCase.setTestCaseType("TestCaseType1");
         
-        testCaseType.newInputTestPolicyCmptTypeParameter().setName("inputTestPolicyCmptTypeParam1");
+        testCaseType.newInputTestPolicyCmptTypeParameter().setName("testPolicyCmptType1");
         
-        (testPolicyCmpt1 = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("inputTestPolicyCmptTypeParam1");
+        (testPolicyCmpt1 = testCase.newTestPolicyCmpt()).setTestPolicyCmptTypeParameter("testPolicyCmptType1");
         testPolicyCmpt1.setName("testPolicyCmptType1_label");
         testPolicyCmpt1.setTestPolicyCmptTypeParameter("testPolicyCmptType1");
         
         relation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
-        relation1.setTestPolicyCmptType("testPolicyCmptTypeRelation1");
+        relation1.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
         
         testPolicyCmpt2 = relation1.newTargetTestPolicyCmptChild();
         testPolicyCmpt2.setName("testPolicyCmptType2_label");
         testPolicyCmpt2.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
         
-        relation2 = testPolicyCmpt2.newTestPolicyCmptRelation();
-        relation2.setTestPolicyCmptType("testPolicyCmptTypeRelation2");
+        relation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
+        relation1.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
+        
+        testPolicyCmpt22 = relation1.newTargetTestPolicyCmptChild();
+        testPolicyCmpt22.setName("testPolicyCmptType22_label");
+        testPolicyCmpt22.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation1");
+        
+        relation2 = testPolicyCmpt22.newTestPolicyCmptRelation();
+        relation2.setTestPolicyCmptTypeParameter("testPolicyCmptTypeRelation2");
         
         testPolicyCmpt3 = relation2.newTargetTestPolicyCmptChild();
         testPolicyCmpt3.setName("testPolicyCmptType3_label");        
@@ -69,13 +79,13 @@ public class TestCaseAndTestCaseTypeContent {
         
         
         testPolicyCmptType1 = testCaseType.newInputTestPolicyCmptTypeParameter();
-        testPolicyCmptType1.setName("testPolicyCmptType1");
+        testPolicyCmptType1.setName("testPolicyCmptType2");
         
         testPolicyCmptType2 = testPolicyCmptType1.newTestPolicyCmptTypeParamChild();
-        testPolicyCmptType2.setName("testPolicyCmptTypeRelation1"); 
+        testPolicyCmptType2.setName("testPolicyCmptTypeRelation1");
         
         testPolicyCmptType3 = testPolicyCmptType2.newTestPolicyCmptTypeParamChild();
-        testPolicyCmptType3.setName("testPolicyCmptTypeRelation2");         
+        testPolicyCmptType3.setName("testPolicyCmptTypeRelation2");
     }
 
     public ITestPolicyCmptRelation getRelation1() {

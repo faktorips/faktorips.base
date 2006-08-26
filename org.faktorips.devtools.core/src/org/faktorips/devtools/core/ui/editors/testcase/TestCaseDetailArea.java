@@ -74,12 +74,15 @@ public class TestCaseDetailArea {
 	private HashMap sectionControls = new HashMap();
 	
 	// Container holds all value edit fields
-	HashMap valueEditFields = new HashMap();
+	private HashMap valueEditFields = new HashMap();
 	
-	// Contains the first edit field of each test policy component edit area
-	HashMap attributeEditFields = new HashMap();
+	// Contains the first edit field of each test policy component in the edit area
+    private HashMap firstAttributeEditFields = new HashMap();
 	
-	// Contains all ui controller
+    // Contains the edit fields of each test policy component in the edit area
+    private HashMap attributeEditFields = new HashMap();
+
+    // Contains all ui controller
 	private ArrayList uiControllers = new ArrayList();
 	
 	private TestCaseSection testCaseSection;
@@ -110,8 +113,8 @@ public class TestCaseDetailArea {
 	/**
 	 * Returns the attribute edit fields given by the unique key.
 	 */
-	public EditField getAttributeEditField(String uniqueKey) {
-		return (EditField) attributeEditFields.get(uniqueKey);
+	public EditField getFirstAttributeEditField(String uniqueKey) {
+		return (EditField) firstAttributeEditFields.get(uniqueKey);
 	}	
 	
 	/**
@@ -150,14 +153,19 @@ public class TestCaseDetailArea {
 	 * The detail will be cleaned and filled with the given element and all childs of the given element.<br>
 	 * The test policy component will be rendered starting by the root element of the 
 	 * given element, the root will be only displayed once if more than one childs are given.
+	 * @throws RuntimeException if an error occurs creating the content
 	 */
-	public void createDetailSection(List testPolicyCmpts){		
+	public void createDetailSection(List testPolicyCmpts) {		
 		for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
 			ITestPolicyCmpt currTestPolicyCmpt = (ITestPolicyCmpt) iter.next();
 			
 			Composite borderedComosite = createBorder(dynamicArea);
 			if (currTestPolicyCmpt != null) {
-				createPolicyCmptAndRelationSection(currTestPolicyCmpt, borderedComosite);
+				try {
+                    createPolicyCmptAndRelationSection(currTestPolicyCmpt, borderedComosite);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
 			}
 		}
 	}
@@ -166,8 +174,9 @@ public class TestCaseDetailArea {
 	 * Creates the section with the test policy component object.<br>
 	 * If the element is a child then the relation name could be given as input
 	 * to display it in the section title beside the test policy component.
+	 * @throws CoreException 
 	 */
-	private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) {
+	private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) throws CoreException {
 		if (testPolicyCmpt == null)
 			return;
         
@@ -198,20 +207,25 @@ public class TestCaseDetailArea {
 			final ITestAttributeValue attributeValue = testAttributeValues[i];
 			// Create the edit field only if the content provider provides the role of the test attribute object
             if ((testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute())
-                    || testCaseSection.getContentProvider().isExpectedResult() && testAttributeValues[i].isExpextedResultAttribute())
-                createAttributes(testPolicyCmpt, testPolicyCmpt, uniquePath, attributeComposite, i==0, attributeValue);
+                    || testCaseSection.getContentProvider().isExpectedResult() && testAttributeValues[i].isExpextedResultAttribute()){
+                EditField editField = createAttributes(testPolicyCmpt, testPolicyCmpt, attributeComposite, attributeValue);
+            
+                // store the first attribute of each policy cmpt for faster focus setting
+                if (i==0)
+                    firstAttributeEditFields.put(testCaseSection.getUniqueKey(testPolicyCmpt), editField);
+            }
 		}
 		section.setClient(attributeComposite);
 		
 		toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
 	}
 
-	private void createAttributes(final ITestPolicyCmpt testPolicyCmpt, final ITestPolicyCmpt testPolicyCmptForSelection,
-			String uniquePath, Composite attributeComposite, boolean firstAttribute, 
-			final ITestAttributeValue attributeValue) {
+	private EditField createAttributes(final ITestPolicyCmpt testPolicyCmpt, final ITestPolicyCmpt testPolicyCmptForSelection,
+			Composite attributeComposite, final ITestAttributeValue attributeValue) throws CoreException {
 		IpsPartUIController uiController = createUIController(attributeValue);
-
-		// get the ctrlFactory to create the edit field
+        EditField editField = null;
+		
+        // get the ctrlFactory to create the edit field
 		ValueDatatype datatype = null;
 		ValueDatatypeControlFactory ctrlFactory = null;
 		boolean failure = false;
@@ -238,15 +252,11 @@ public class TestCaseDetailArea {
 		// if no error occurs create the edit field for the current attribute
 		if (!failure){
 			toolkit.createFormLabel(attributeComposite, StringUtils.capitalise(attributeValue.getTestAttribute()));
-			final EditField editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null);
+			editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null);
 			uiController.add(editField, ITestAttributeValue.PROPERTY_VALUE);
-			if (firstAttribute){
-				// store the first text edit control to get the focus if chosen in the tree
-				attributeEditFields.put(uniquePath, editField);
-			}
 			// store the edit field
-			attributeEditFields.put(testCaseSection.getUniqueKey(testPolicyCmpt, attributeValue), editField);
-
+            String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
+			attributeEditFields.put(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), editField);
 			editField.getControl().addFocusListener(new FocusAdapter() {
 		        public void focusGained(FocusEvent e) {
 		            testCaseSection.selectInTreeByObject(testPolicyCmptForSelection, false);
@@ -258,6 +268,7 @@ public class TestCaseDetailArea {
 		    
 			uiController.updateUI();
 		}
+        return editField;
 	}
 
     /*
@@ -277,7 +288,7 @@ public class TestCaseDetailArea {
 		String uniquePath = testCaseSection.getUniqueKey(currRelation);
 		
 		Section section = toolkit.getFormToolkit().createSection(details,0);
-		section.setText(currRelation.getTestPolicyCmptType());
+		section.setText(currRelation.getTestPolicyCmptTypeParameter());
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		Composite hyperlinkArea = toolkit.createGridComposite(details, 2, false, true);
@@ -319,8 +330,9 @@ public class TestCaseDetailArea {
 	
 	/**
 	 * Recursive create the sections for the relations and all their childs.
+	 * @throws CoreException 
 	 */
-	private void createPolicyCmptAndRelationSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details) {
+	private void createPolicyCmptAndRelationSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details) throws CoreException {
 		createPolicyCmptSection(currTestPolicyCmpt, details);
 		ITestPolicyCmptRelation[] relations = currTestPolicyCmpt.getTestPolicyCmptRelations();
 		for (int i = 0; i < relations.length; i++) {
@@ -444,6 +456,7 @@ public class TestCaseDetailArea {
 	 */
 	private void resetContainers() {
 		valueEditFields.clear();
+        firstAttributeEditFields.clear();
 		attributeEditFields.clear();
 		sectionControls.clear();
 		uiControllers.clear(); 

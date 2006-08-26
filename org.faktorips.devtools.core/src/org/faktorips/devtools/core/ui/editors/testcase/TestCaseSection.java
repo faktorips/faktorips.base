@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -49,12 +50,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -157,7 +159,18 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		gridLayout.marginHeight = 0;
 		parent.setLayout(gridLayout);
 		
+        // add listener to test runner
 		IpsPlugin.getDefault().getIpsTestRunner().addIpsTestRunListener(this);
+        
+        // add listener on model, 
+        //   if the model changed reset the test run status
+        testCase.getIpsModel().addChangeListener(new ContentsChangeListener(){
+            public void contentsChanged(ContentChangeEvent event) {
+                if (event.getIpsSrcFile().equals(testCase.getIpsSrcFile())){
+                    postResetTestRunStatus();
+                }
+            }   
+        });        
 	}
     
     /**
@@ -251,7 +264,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			}
 		};
 		actionRelation.setChecked(false);
-		actionRelation.setToolTipText("Without relation"); //$NON-NLS-1$
+		actionRelation.setToolTipText(Messages.TestCaseSection_ToolBar_WithoutRelation);
 		actionRelation.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif")); //$NON-NLS-1$
 		
 		// Toolbar item show all
@@ -261,7 +274,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			}
 		};
 		actionAll.setChecked(false);
-		actionAll.setToolTipText("Show flat structure"); //$NON-NLS-1$
+		actionAll.setToolTipText(Messages.TestCaseSection_ToolBar_FlatStructure);
 		actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
 		
 		// Toolbar item run test
@@ -270,7 +283,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				runTestClicked();
 			}
 		};
-		actionTest.setToolTipText("Run test"); //$NON-NLS-1$
+		actionTest.setToolTipText(Messages.TestCaseSection_ToolBar_RunTest);
 		actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
         
         // enable run test case functionality only if a toc file exists for this test case
@@ -316,19 +329,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             fActionContentType = actionContentType;
             if (actionContentType == TestCaseContentProvider.INPUT) {
                 buttonChecked();
-                setText("Input");
+                setText(Messages.TestCaseSection_FilterInput);
                 setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
-                setToolTipText("Show only input side.");
+                setToolTipText(Messages.TestCaseSection_FilterInput_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.EXPECTED_RESULT) {
                 buttonChecked();
-                setText("Expected Result"); 
+                setText(Messages.TestCaseSection_FilterExpected); 
                 setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
-                setToolTipText("Show only expected result side.");
+                setToolTipText(Messages.TestCaseSection_FilterExpected_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.COMBINED) {     
                 buttonChecked();
-                setText("Combined");  
+                setText(Messages.TestCaseSection_FilterCombined);  
                 setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseCombined.gif")); //$NON-NLS-1$
-                setToolTipText("Show input and expected result sides together.");
+                setToolTipText(Messages.TestCaseSection_FilterCombined_ToolTip);
             }
         }
         
@@ -378,7 +391,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			selectionInTree(new StructuredSelection(found.getData()));
 			String uniqueKey = getUniqueKey(found.getData());
 			
-			EditField firstField = testCaseDetailArea.getAttributeEditField(uniqueKey);
+			EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniqueKey);
 			if (firstField != null){
 				firstField.getControl().setFocus();
 			}
@@ -618,7 +631,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		}
 		if (uniquePath.length() > 0 ){
 			if (withFocusChange){
-				EditField firstField = testCaseDetailArea.getAttributeEditField(uniquePath);
+				EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniquePath);
 				if (firstField != null){
 					firstField.getControl().setFocus();
 				}
@@ -637,7 +650,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		String uniquePath = ""; //$NON-NLS-1$
 		if (selected instanceof ITestPolicyCmptRelation){
 			ITestPolicyCmptRelation relation = (ITestPolicyCmptRelation) selected;
-			uniquePath = "." + relation.getTestPolicyCmptType() + relation.getId(); //$NON-NLS-1$
+			uniquePath = "." + relation.getTestPolicyCmptTypeParameter() + relation.getId(); //$NON-NLS-1$
 		}
 		ITestPolicyCmpt currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(selected);
 		if (currTestPolicyCmpt == null){
@@ -646,7 +659,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		if (!currTestPolicyCmpt.isRoot()){
 			uniquePath = ((ITestPolicyCmpt)currTestPolicyCmpt).getName();
 			while (!currTestPolicyCmpt.isRoot()){
-				uniquePath = ((ITestPolicyCmptRelation)currTestPolicyCmpt.getParent()).getTestPolicyCmptType() + uniquePath;
+				uniquePath = ((ITestPolicyCmptRelation)currTestPolicyCmpt.getParent()).getTestPolicyCmptTypeParameter() + uniquePath;
 				currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(currTestPolicyCmpt.getParent());
 				uniquePath = currTestPolicyCmpt.getName() + "." + uniquePath; //$NON-NLS-1$
 			}
@@ -762,7 +775,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				// chancel
 				return;
 			
-			TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget, true);
+			TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget);
 			
 			targetName = path.getHierarchyPath();
 			
@@ -809,7 +822,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					ITestPolicyCmpt parent = (ITestPolicyCmpt) relation.getParent();
 
 					prevRelation = new TestCaseHierarchyPath(relation, true).getHierarchyPath();
-					ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(relation.getTestPolicyCmptType());
+					ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(relation.getTestPolicyCmptTypeParameter());
 					for (int i = 0; i < relations.length; i++) {
 						if (relations[i] == relation)
 							break;
@@ -824,7 +837,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 						ITestPolicyCmptRelation parentRelation = (ITestPolicyCmptRelation) testPolicyCmpt.getParent();
 						prevRelation = new TestCaseHierarchyPath(parentRelation, true).getHierarchyPath();
 						ITestPolicyCmpt parent = (ITestPolicyCmpt) parentRelation.getParent();
-						ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(parentRelation.getTestPolicyCmptType());
+						ITestPolicyCmptRelation[] relations = parent.getTestPolicyCmptRelations(parentRelation.getTestPolicyCmptTypeParameter());
 						for (int i = 0; i < relations.length; i++) {
 							if (relations[i] == parentRelation)
 								break;
@@ -918,10 +931,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 
 	private void runTestClicked(){
-		// show test runner view
-		try {
+        try {
+            // check if the file is dirty
+            if (testCase.getIpsSrcFile().isDirty()){
+                String msg = Messages.TestCaseSection_ConfirmDialog_AutomaticallySaveBeforeStartTest;
+                if (MessageDialog.openConfirm(getShell(),
+                       Messages.TestCaseSection_ConfirmDialog_AutomaticallySaveBeforeStartTest_Title, msg)){
+                    testCase.getIpsSrcFile().save(true, null);
+                } else {
+                    return;
+                }
+            }
+            // show test runner view
 			IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IpsTestRunnerViewPart.EXTENSION_ID);
-		} catch (PartInitException e) {
+		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}
 		// run test test
@@ -1168,7 +1191,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			if (element instanceof ITestPolicyCmptRelation){
 	    		ITestPolicyCmptRelation cmptRelation = (ITestPolicyCmptRelation) element;
 	    		TestCaseTypeRelation dummyRelation = 
-	    			new TestCaseTypeRelation(cmptRelation.findTestPolicyCmptType(), (ITestPolicyCmpt)cmptRelation.getParent());
+	    			new TestCaseTypeRelation(cmptRelation.findTestPolicyCmptTypeParameter(), (ITestPolicyCmpt)cmptRelation.getParent());
 	    		return dummyRelation.validate();
 	    	}else if (element instanceof ITestPolicyCmpt){
 	    		ITestPolicyCmpt pc = (ITestPolicyCmpt) element;
@@ -1349,15 +1372,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		String failureFormatObject= Messages.TestCaseSection_FailureFormat_Object;
         String failureFormatMessage = Messages.TestCaseSection_FailureFormat_Message;
 		if (failureDetails.length>1)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
 		if (failureDetails.length>2)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:"");		 //$NON-NLS-1$
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:"");		 //$NON-NLS-1$ //$NON-NLS-2$
 		if (failureDetails.length>3)
 			failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
 		if (failureDetails.length>4)
 			failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
 		if (failureDetails.length>5)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
 		return MessageFormat.format(failureFormat, failureDetails); 
 	}
 	
@@ -1365,7 +1388,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * {@inheritDoc}
 	 */
 	public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
-		if (! isTestFor(qualifiedTestName))
+		if (! canListenToTestRun(qualifiedTestName))
 			return;
 
 		isTestRunError = true;
@@ -1375,7 +1398,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * {@inheritDoc}
 	 */
 	public void testFailureOccured(String[] failureDetails) {
-		if (! isTestFor(failureDetails[0]))
+		if (! canListenToTestRun(failureDetails[0]))
 			return;
 		
 		isTestRunFailure = true;
@@ -1387,43 +1410,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         
         postAddFailureTooltip(formatedFailure);
 		
-        if (StringUtils.isEmpty(attributeName) || "<null>".equals(attributeName)){
+        if (StringUtils.isEmpty(attributeName) || "<null>".equals(attributeName)){ //$NON-NLS-1$
             // no attribute given expect that the failure was in an value object
             testCaseDetailArea.markTestValueAsFailure(objectName, formatedFailure);
         } else {
-            // test failure in test policy component attribute
-            //   search the attribute where the failure occurs
-            int offset = 0;
-            if (objectName.indexOf(".")>=0){
-                String offsetString = StringUtil.unqualifiedName(objectName);
-                if (StringUtils.isNumeric(offsetString))
-                    offset = Integer.parseInt(offsetString);
-                objectName = StringUtil.getPackageName(objectName);
-            }
-            TestCaseHierarchyPath path = new TestCaseHierarchyPath(objectName);
-            path.setOffset(offset);
-    		path.setFullPath(false);
-    		ITestPolicyCmpt testPolicyCmpt;
+            // mark attribut edit field as failure
             try {
-                testPolicyCmpt = testCase.findTestPolicyCmpt(path.toString());
-                if (testPolicyCmpt == null)
-                    return;
-            } catch (CoreException e) {
-                // the failure couldn't be marked, ignore the exception
-                return;
+               //String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
+                testCaseDetailArea.markAttributeAsFailure(objectName + attributeName, formatedFailure);
+            } catch (Exception e) {
+                // ignore the excpetion while marking the edit field with the failure 
             }
-            // search for the attribute
-    		ITestAttributeValue attributeValue = null;
-    		ITestAttributeValue[] attributeValues = testPolicyCmpt.getTestAttributeValues();
-    		for (int i = 0; i < attributeValues.length; i++) {
-    			if (attributeName.equalsIgnoreCase(attributeValues[i].getTestAttribute())){
-    				attributeValue = attributeValues[i];
-    			}
-    		}
-    		if (attributeValue == null)
-    			return;
-    		
-            testCaseDetailArea.markAttributeAsFailure(getUniqueKey(testPolicyCmpt, attributeValue), formatedFailure);
         }
 	}
 
@@ -1432,7 +1429,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             public void run() {
                 if (isDisposed())
                     return;
-                form.getContent().setToolTipText(form.getContent().getToolTipText() + "\n" + failureToolTip);
+                form.getContent().setToolTipText(form.getContent().getToolTipText() + "\n" + failureToolTip); //$NON-NLS-1$
             }
         });
     }
@@ -1441,7 +1438,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * {@inheritDoc}
 	 */	
 	public void testFinished(String qualifiedTestName) {
-		if (! isTestFor(qualifiedTestName))
+		if (! canListenToTestRun(qualifiedTestName))
 			return;
 		
 		postSetTestRunStatus(isTestRunError, isTestRunFailure, failureCount);
@@ -1451,7 +1448,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * {@inheritDoc}
 	 */
 	public void testStarted(String qualifiedTestName) {
-		if (! isTestFor(qualifiedTestName))
+		if (! canListenToTestRun(qualifiedTestName))
 			return;
         postResetTestRunStatus();
 		
@@ -1488,9 +1485,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}	
 
 	/*
-	 * Returns <code>true</code> if the notified test case belongs to this editor section.
+	 * Returns <code>true</code> if the test run listener is relevant for this test case.<br>
+     * Return <code>false<code> if the file is changed and not saved (source file is dirty).<br>
+     * Return <code>false<code> if the given test case name doesn't match the current editing test case.
 	 */
-	private boolean isTestFor(String testCaseQualifiedName) {
+	private boolean canListenToTestRun(String testCaseQualifiedName) {
+        if (testCase.getIpsSrcFile().isDirty()){
+            postResetTestRunStatus();
+            return false;
+        }
 		return testCaseQualifiedName.equals(testCase.getQualifiedName());
 	}
 
@@ -1558,7 +1561,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     public void resetTestRunStatus(){
         form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
-        form.getContent().setToolTipText("");
+        form.getContent().setToolTipText(""); //$NON-NLS-1$
     }
 	
 	/**

@@ -424,6 +424,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 					testCaseEntry = (TestCaseEntry) fTableEntryQueue.remove(0);
 				}
 				fTestRunPane.newTableEntry(testId, testCaseEntry.getQualifiedName(), testCaseEntry.fullPath);
+                fTestRunPane.checkMissingEntries();
 			}
 		}
 	}
@@ -628,7 +629,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			fFailureCount++;
 		postEndTest(getTestId(), qualifiedTestName);
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */

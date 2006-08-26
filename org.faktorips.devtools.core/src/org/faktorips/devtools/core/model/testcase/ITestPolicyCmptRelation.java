@@ -70,21 +70,23 @@ public interface ITestPolicyCmptRelation extends IIpsObjectPart  {
 		+ "MaxInstancesReached"; //$NON-NLS-1$
 	
     /**
-     * Returns the qualified name of policy component class.
+     * Returns the name of test policy component type parameter.
      */
-	public String getTestPolicyCmptType();
+	public String getTestPolicyCmptTypeParameter();
 	
     /**
-     * Sets the qualified name of the policy component class.
+     * Sets the name of test policy component type parameter.
      */	
-	public void setTestPolicyCmptType(String pcType);
+	public void setTestPolicyCmptTypeParameter(String pcType);
 	
     /**
-     * Returns the test policy component type or <code>null</code> if the policy component type does not exists.
+     * Returns the test policy component type parameter or <code>null</code> if the test policy
+     * component type parameter doesn't exists.
      * 
-     * @throws CoreException if an error occurs while searching for the policy component type.
+     * @throws CoreException if an error occurs while searching for the test policy component type
+     *             parameter.
      */	
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptType() throws CoreException;
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter() throws CoreException;
 	
 	/**
 	 * Returns the target.
