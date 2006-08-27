@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.faktorips.feature_0.9.26.jar" id="org.faktorips.feature" version="0.9.26"/>
-   <feature url="features/org.faktorips.feature.nls1_0.9.26.jar" id="org.faktorips.feature.nls1" version="0.9.26"/>
+   <feature url="features/org.faktorips.feature_0.9.30.jar" id="org.faktorips.feature" version="0.9.30">
+      <category name="FaktorIPS"/>
+   </feature>
+   <feature url="features/org.faktorips.feature.nls1_0.9.30.jar" id="org.faktorips.feature.nls1" version="0.9.30">
+      <category name="FaktorIPS"/>
+   </feature>
    <category-def name="FaktorIPS" label="FaktorIPS">
       <description>
          A product modeling and definition system, mainly targeted for the insurance industry.
