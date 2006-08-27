@@ -45,9 +45,9 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
      */
     public final static String getXmlFormatDescription() {
         return "Project Reference:" + SystemUtils.LINE_SEPARATOR
-            +  "  <" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR 
+            +  "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR 
             +  "     type=\"project\"" + SystemUtils.LINE_SEPARATOR
-            +  "     referencedIpsProject=\"base\"      The other project used by this project." + SystemUtils.LINE_SEPARATOR
+            +  "     referencedIpsProject=\"base\">      The other project used by this project." + SystemUtils.LINE_SEPARATOR
             +  "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; 
     }
     
