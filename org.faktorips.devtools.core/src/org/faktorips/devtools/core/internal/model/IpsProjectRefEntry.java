@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.List;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -38,6 +39,17 @@ import org.w3c.dom.Element;
  */
 public class IpsProjectRefEntry extends IpsObjectPathEntry implements
         IIpsProjectRefEntry {
+    
+    /**
+     * Returns a description of the xml format.
+     */
+    public final static String getXmlFormatDescription() {
+        return "Project Reference:" + SystemUtils.LINE_SEPARATOR
+            +  "  <" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR 
+            +  "     type=\"project\"" + SystemUtils.LINE_SEPARATOR
+            +  "     referencedIpsProject=\"base\"      The other project used by this project." + SystemUtils.LINE_SEPARATOR
+            +  "  </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; 
+    }
     
     // the ips project referenced by this entry
     private IIpsProject referencedIpsProject;

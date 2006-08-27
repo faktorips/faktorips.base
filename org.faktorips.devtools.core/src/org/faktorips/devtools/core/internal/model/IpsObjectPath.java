@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -41,6 +42,22 @@ import org.w3c.dom.NodeList;
  * @author Jan Ortmann
  */
 public class IpsObjectPath implements IIpsObjectPath {
+    
+    /**
+     * Returns a description of the xml format.
+     */
+    public final static String getXmlFormatDescription() {
+        return "IpsObjectPath" + SystemUtils.LINE_SEPARATOR 
+            + " " + SystemUtils.LINE_SEPARATOR
+            + "The IpsObjectPath defines where FaktorIPS searches for model and product definition files/objects for this project." + SystemUtils.LINE_SEPARATOR
+            + "Basically it is the same concept as the Java classpath.  The IpsObjectPath is defined through one or more entries." + SystemUtils.LINE_SEPARATOR
+            + "Currently the following entry types are supported:" + SystemUtils.LINE_SEPARATOR
+            + " " + SystemUtils.LINE_SEPARATOR
+            + IpsSrcFolderEntry.getXmlFormatDescription() + SystemUtils.LINE_SEPARATOR
+            + " "+ SystemUtils.LINE_SEPARATOR
+            + IpsProjectRefEntry.getXmlFormatDescription();
+    }
+    
     
     /**
      * Xml element name for ips object path.

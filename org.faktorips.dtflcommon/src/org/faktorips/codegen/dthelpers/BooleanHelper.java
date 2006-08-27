@@ -43,9 +43,9 @@ public class BooleanHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
     
+    
     /** 
-     * Overridden method.
-     * @see org.faktorips.codegen.DatatypeHelper#newInstance(java.lang.String)
+     * {@inheritDoc}
      */
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
@@ -59,8 +59,8 @@ public class BooleanHelper extends AbstractDatatypeHelper {
         }
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.codegen.dthelpers.AbstractDatatypeHelper#valueOfExpression(java.lang.String)
+	/**
+     * {@inheritDoc}
 	 */
 	protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();        
@@ -71,8 +71,8 @@ public class BooleanHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
-	/* (non-Javadoc)
-	 * @see org.faktorips.codegen.DatatypeHelper#nullExpression()
+	/**
+     * {@inheritDoc}
 	 */
 	public JavaCodeFragment nullExpression() {
 		return new JavaCodeFragment("null");

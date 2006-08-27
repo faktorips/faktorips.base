@@ -25,7 +25,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.StringTokenizer;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -150,7 +152,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         ByteArrayInputStream is;
         try {
-            is = new ByteArrayInputStream(contents.getBytes(charset));
+            is = new ByteArrayInputStream(insertNewLineSeparatorsBeforeComment(contents).getBytes(charset));
         } catch (Exception e) {
             throw new CoreException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
         }
@@ -159,6 +161,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
         } else {
             file.create(is, true, null);
         }
+    }
+    
+    private String insertNewLineSeparatorsBeforeComment(String s) {
+        StringBuffer newText = new StringBuffer();
+        StringTokenizer tokenizer = new StringTokenizer(s, SystemUtils.LINE_SEPARATOR);
+        boolean firstComment = true;
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            if (token.indexOf("<!--")!=-1) {
+                if (firstComment) {
+                    firstComment = false;
+                } else {
+                    newText.append(SystemUtils.LINE_SEPARATOR);
+                    newText.append(SystemUtils.LINE_SEPARATOR);
+                }
+            }
+            newText.append(token);
+            newText.append(SystemUtils.LINE_SEPARATOR);
+        }
+        return newText.toString();
     }
     
 	/**

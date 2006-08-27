@@ -128,7 +128,7 @@ public class XmlUtil {
 	 * However, to get the encoding option set in the xml header e.g. <code><?xml
 	 * version="1.0" encoding="Cp1252"?></code>, it is neccessary to pass the
 	 * encoding to this method. Note that this method does not check, if the
-	 * writer's encoding and the given encoding are the same (as the encoding is
+	 * writer's encoding and the given encoding are the same (as the encoding is not
 	 * available from the writer).
 	 */
 	public final static void nodeToWriter(Node node, Writer writer,

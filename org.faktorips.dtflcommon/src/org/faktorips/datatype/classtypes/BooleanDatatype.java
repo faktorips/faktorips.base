@@ -35,14 +35,19 @@ public class BooleanDatatype extends ValueClassDatatype {
 	}
 	
 	/**
-	 * Overridden Method.
-	 * @see org.faktorips.datatype.ValueDatatype#getValue(java.lang.String)
+     * {@inheritDoc}
 	 */
 	public Object getValue(String s) {
         if (s == null) {
             return null;
         }
-		return Boolean.valueOf(s);
+        if (s.equalsIgnoreCase("false")) {
+            return Boolean.FALSE;
+        }
+        if (s.equalsIgnoreCase("true")) {
+            return Boolean.TRUE;
+        }
+		throw new IllegalArgumentException("Can't parse " + s + " to Boolean!");
 	}
 
     public boolean supportsCompare() {

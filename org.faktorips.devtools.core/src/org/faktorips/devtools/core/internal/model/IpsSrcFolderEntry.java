@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.List;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -40,6 +41,24 @@ import org.w3c.dom.Element;
  */
 public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFolderEntry {
 
+    /**
+     * Returns a description of the xml format.
+     */
+    public final static String getXmlFormatDescription() {
+        return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR
+             + "  <" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR 
+             + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR
+             + "    sourceFolder=\"model\"             Folder in the project that contains the FaktorIPS model and product definition files." + SystemUtils.LINE_SEPARATOR
+             + "    outputFolderGenerated=\"src\"      Folder in the project where the Generator puts the Java source files." + SystemUtils.LINE_SEPARATOR
+             + "    basePackageGenerated=\"org.foo\"   The package prefix for all generated classes." + SystemUtils.LINE_SEPARATOR
+             + "    outputFolderExtension=\"\"         The FaktorIPS standard builder merges developer changes to the generated files while generating" + SystemUtils.LINE_SEPARATOR
+             + "                                     Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR
+             + "                                     If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR 
+             + "    basePackageExtension=\"\"          Package prefix for Java classes in the output folder for extenions. See above." + SystemUtils.LINE_SEPARATOR
+             + "                                     If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR
+             + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; 
+    }
+    
     // the folder containg the ips objects
     private IFolder sourceFolder;
 

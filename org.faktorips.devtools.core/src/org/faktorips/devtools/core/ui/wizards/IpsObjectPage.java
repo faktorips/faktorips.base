@@ -166,7 +166,8 @@ public abstract class IpsObjectPage extends WizardPage implements ValueChangeLis
                     setPdPackageFragmentRoot(roots[0]);
                 }
             } catch (CoreException e) {
-                throw new RuntimeException(e);
+                IpsPlugin.log(e); // user can still work with the system, just so the defaults are missing
+                // so just log it. 
             }
         } else if (element instanceof IIpsPackageFragmentRoot) {
             setPdPackageFragmentRoot((IIpsPackageFragmentRoot)element);
