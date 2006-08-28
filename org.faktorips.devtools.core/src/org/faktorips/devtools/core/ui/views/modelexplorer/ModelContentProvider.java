@@ -306,7 +306,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 if (elements[i] instanceof IFile | elements[i] instanceof IFolder) {
                     if (((IResource)elements[i]).getName().indexOf(".") == 0) { //$NON-NLS-1$
                         IIpsProject project= IpsPlugin.getDefault().getIpsModel().getIpsProject(((IResource)elements[i]).getProject());
-                        if(elements[i].equals(project.getIpsProjectPropertiesFile())){ //$NON-NLS-1$
+                        if(!elements[i].equals(project.getIpsProjectPropertiesFile())){ //$NON-NLS-1$
                             continue;
                         }
                     }
