@@ -49,7 +49,11 @@ public class ProductEditorDeleteAction extends IpsDeleteAction {
      */
     public void deregister(){
         setEnabled(false);
-        selectionProvider.removeSelectionChangedListener(this);
+        if(selectionProvider!=null){
+            // SelectionProvider can be null if ProductCmpt does not contain relations.
+            // In this case the editor does not create a treeviewer in the RelationsSection.
+            selectionProvider.removeSelectionChangedListener(this);
+        }
         // avoid further usage
         selectionProvider= null;
     }
