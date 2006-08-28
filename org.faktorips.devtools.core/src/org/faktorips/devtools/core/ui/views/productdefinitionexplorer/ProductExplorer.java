@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
+import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
 
 /**
  * A <code>ModelExplorer</code> that displays productdefinition projects along with all
@@ -51,6 +52,16 @@ public class ProductExplorer extends ModelExplorer {
 				ITableContents.class, ITestCase.class, ITestCaseType.class}
 				, new Class[]{IFile.class, IFolder.class, IProject.class});
 	}
+    /**
+     * User the a separate contentprovider for ProductDefinitionExplorer.
+     * This contentprovider dous not display a default package, only its contents as children
+     * of the packageFragmentRoot.
+     * {@inheritDoc}
+     */
+    protected void createProviders() {
+        contentProvider= new ProductContentProvider(config, isFlatLayout);
+        labelProvider= new ModelLabelProvider();
+    }
 	protected void createFilters(TreeViewer tree) {
 		super.createFilters(tree);
 		tree.addFilter(new ProductExplorerFilter());

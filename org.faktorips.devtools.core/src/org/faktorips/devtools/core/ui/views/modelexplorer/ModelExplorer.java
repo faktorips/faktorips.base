@@ -125,29 +125,36 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     /**
      * Content provider for the tree viewer.
      */
-    private ModelContentProvider contentProvider;
+    protected ModelContentProvider contentProvider;
 
     /**
      * Label provider for the tree viewer.
      */
-    private ModelLabelProvider labelProvider = new ModelLabelProvider();
+    protected ModelLabelProvider labelProvider;
 
     private IpsResourceChangeListener resourceListener;
-    private ModelExplorerConfiguration config;
+    
+    protected ModelExplorerConfiguration config;
     /**
      * Flag that indicates whether the current layout style is flat (true) or hierarchical (false).
      */
-    private boolean isFlatLayout = false;
+    protected boolean isFlatLayout = false;
 
     public ModelExplorer() {
         super();
         config = createConfig();
+        createProviders();
     }
 
     protected ModelExplorerConfiguration createConfig() {
         return new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, ITableStructure.class,
                 IProductCmpt.class, ITableContents.class, IAttribute.class, IRelation.class, ITestCase.class,
                 ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
+    }
+    
+    protected void createProviders(){
+        contentProvider = new ModelContentProvider(config, isFlatLayout);
+        labelProvider = new ModelLabelProvider();
     }
 
     /**
@@ -163,7 +170,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     }
 
     public void createPartControl(Composite parent) {
-        contentProvider = new ModelContentProvider(config, isFlatLayout);
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(labelProvider);
@@ -195,7 +201,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     }
 
     protected void createFilters(TreeViewer tree) {
-        // treeViewer.addFilter(new ModelExplorerFilter(config));
     }
 
     /**

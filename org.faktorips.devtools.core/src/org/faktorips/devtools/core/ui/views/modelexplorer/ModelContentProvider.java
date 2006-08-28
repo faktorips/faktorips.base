@@ -36,9 +36,9 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
  */
 public class ModelContentProvider implements ITreeContentProvider {
 
-    private static final Object[] EMPTY_ARRAY = new Object[0];
+    protected static final Object[] EMPTY_ARRAY = new Object[0];
 
-    private boolean isFlatLayout = false;
+    protected boolean isFlatLayout = false;
 
     private ModelExplorerConfiguration configuration;
 
@@ -197,7 +197,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * 
      * @throws CoreException
      */
-    private Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
+    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
         if (isFlatLayout) {
             IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             if (fragments.length == 1) {
@@ -218,7 +218,9 @@ public class ModelContentProvider implements ITreeContentProvider {
             }
             return filteredFragments.toArray();
         } else {
-            // display the default package only if it contains files
+            // display the default package only if it contains files 
+            // TODO display defaultPackage only if it contains productCmpts
+            // display products in defaultpackage, files in root
             Object[] children = root.getIpsDefaultPackageFragment().getIpsChildPackageFragments();
             if (hasChildren(root.getIpsDefaultPackageFragment())) {
                 return concatenate(new Object[] { root.getIpsDefaultPackageFragment() }, children);
@@ -266,7 +268,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * 
      * @throws CoreException
      */
-    private Object[] getFileContent(IIpsPackageFragment fragment) throws CoreException {
+    protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreException {
         IIpsElement[] files = fragment.getChildren();
 
         List pcts = new ArrayList();
@@ -401,7 +403,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * Concatenates arr1 and arr2 to a new <code>Object[]</code> with length
      * <code>arr1.length+arr2.length</code>.
      */
-    private static Object[] concatenate(Object[] arr1, Object[] arr2) {
+    protected static Object[] concatenate(Object[] arr1, Object[] arr2) {
         int length1 = arr1.length;
         int length2 = arr2.length;
         Object[] result = new Object[length1 + length2];
