@@ -82,6 +82,9 @@ public class TestCaseDetailArea {
     // Contains the edit fields of each test policy component in the edit area
     private HashMap attributeEditFields = new HashMap();
 
+    // Contains the failures of the last test run
+    private HashMap failureCache = new HashMap();
+    
     // Contains all ui controller
 	private ArrayList uiControllers = new ArrayList();
 	
@@ -201,18 +204,20 @@ public class TestCaseDetailArea {
 		Composite attributeComposite = toolkit.createLabelEditColumnComposite(section);
 		
 		// create text edit fields for each attribute
-		
 		ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
-		for (int i = 0; i < testAttributeValues.length; i++) {
+		boolean firstEditField = true;
+        for (int i = 0; i < testAttributeValues.length; i++) {
 			final ITestAttributeValue attributeValue = testAttributeValues[i];
 			// Create the edit field only if the content provider provides the role of the test attribute object
             if ((testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute())
                     || testCaseSection.getContentProvider().isExpectedResult() && testAttributeValues[i].isExpextedResultAttribute()){
-                EditField editField = createAttributes(testPolicyCmpt, testPolicyCmpt, attributeComposite, attributeValue);
+                EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite, attributeValue);
             
-                // store the first attribute of each policy cmpt for faster focus setting
-                if (i==0)
+                // store the first attribute of each policy cmpt for fast focus setting
+                if (firstEditField){
                     firstAttributeEditFields.put(testCaseSection.getUniqueKey(testPolicyCmpt), editField);
+                    firstEditField = false;
+                }
             }
 		}
 		section.setClient(attributeComposite);
@@ -220,7 +225,7 @@ public class TestCaseDetailArea {
 		toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
 	}
 
-	private EditField createAttributes(final ITestPolicyCmpt testPolicyCmpt, final ITestPolicyCmpt testPolicyCmptForSelection,
+	private EditField createAttributeEditField(final ITestPolicyCmpt testPolicyCmpt, final ITestPolicyCmpt testPolicyCmptForSelection,
 			Composite attributeComposite, final ITestAttributeValue attributeValue) throws CoreException {
 		IpsPartUIController uiController = createUIController(attributeValue);
         EditField editField = null;
@@ -261,11 +266,15 @@ public class TestCaseDetailArea {
 		        public void focusGained(FocusEvent e) {
 		            testCaseSection.selectInTreeByObject(testPolicyCmptForSelection, false);
 	        }});
-			
+			// mark as expected result
 			if (attributeValue.isExpextedResultAttribute()) {
     			markAsExpected(editField);
 			}
-		    
+			// mark as failure
+            String failureLastTestRun = (String) failureCache.get(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute());
+            if (failureLastTestRun != null){
+                testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
+            }
 			uiController.updateUI();
 		}
         return editField;
@@ -402,9 +411,14 @@ public class TestCaseDetailArea {
 	        });
 			
 		    valueEditFields.put(value.getTestValueParameter(), editField);
-            
+            // mark as expected result
             if (value.isExpectedResult()) {
                 markAsExpected(editField);
+            }
+            // mark as failure
+            String failureLastTestRun = (String) failureCache.get(value.getTestValueParameter());
+            if (failureLastTestRun != null){
+                testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
             }
             
 		    uiController.updateUI();
@@ -484,7 +498,8 @@ public class TestCaseDetailArea {
 	 * Mark the given attribute field as failure.
 	 */
     void markAttributeAsFailure(String editFieldUniqueKey, String failureDetails) {
-		EditField editField = (EditField) attributeEditFields.get(editFieldUniqueKey);
+        failureCache.put(editFieldUniqueKey, failureDetails);
+        EditField editField = (EditField) attributeEditFields.get(editFieldUniqueKey);
         if (editField != null){
 			testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureDetails);
 		}
@@ -494,9 +509,17 @@ public class TestCaseDetailArea {
      * Mark the given attribute field as failure.
      */
     void markTestValueAsFailure(String editFieldUniqueKey, String failureDetails) {
+        failureCache.put(editFieldUniqueKey, failureDetails);
         EditField editField = (EditField) valueEditFields.get(editFieldUniqueKey);
         if (editField != null){
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureDetails);
         }
+    }
+    
+    /**
+     * Resets the test run, clear failure cache.
+     */
+    public void resetTestRun() {
+        failureCache.clear();
     }
 }

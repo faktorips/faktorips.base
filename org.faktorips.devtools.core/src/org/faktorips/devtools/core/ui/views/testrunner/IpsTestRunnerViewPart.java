@@ -583,6 +583,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		String failureExpected = Messages.IpsTestRunnerViewPart_FailureFormat_Expected;
 		String failureFormatAttribute= Messages.IpsTestRunnerViewPart_FailureFormat_Attribute;
 		String failureFormatObject= Messages.IpsTestRunnerViewPart_FailureFormat_Object;
+        String failureFormatMessage = Messages.IpsTestRunnerViewPart_FailureFormat_Message;
+        
 		if (failureDetails.length>3)
 			failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
 		if (failureDetails.length>4)
@@ -590,7 +592,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		if (failureDetails.length>1)
 			failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$
 		if (failureDetails.length>2)
-			failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:"");		 //$NON-NLS-1$
+			failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:""); //$NON-NLS-1$
+		if (failureDetails.length>5)
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$
 		return MessageFormat.format(failureFormat, failureDetails); 
 	}
 	

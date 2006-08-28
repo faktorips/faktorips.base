@@ -46,6 +46,7 @@ public class Messages extends NLS {
 	public static String IpsTestRunnerViewPart_FailureFormat_Expected;
 	public static String IpsTestRunnerViewPart_FailureFormat_Attribute;
 	public static String IpsTestRunnerViewPart_FailureFormat_Object;
+    public static String IpsTestRunnerViewPart_FailureFormat_Message;
 	public static String IpsTestRunnerViewPart_Job_UpdateUiTitle;
 	public static String OpenTestInEditorAction_Title;
 	public static String OpenTestInEditorAction_ErrorDialogTestCaseNotFound_Title;

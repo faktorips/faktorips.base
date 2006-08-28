@@ -919,7 +919,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     testCaseDetailArea.clearDetailArea();
 					testCaseDetailArea.createValuesSection();
 				} else {
-					ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
+					ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) getTestPolicyCmpFromDomainObject(domainObject).getRoot();
 					ArrayList list = new ArrayList();
 					list.add(testPolicyCmpt);
 					
@@ -936,14 +936,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private void runTestClicked(){
         try {
             // check if the file is dirty
-            if (testCase.getIpsSrcFile().isDirty()){
-                String msg = Messages.TestCaseSection_ConfirmDialog_AutomaticallySaveBeforeStartTest;
-                if (MessageDialog.openConfirm(getShell(),
-                       Messages.TestCaseSection_ConfirmDialog_AutomaticallySaveBeforeStartTest_Title, msg)){
-                    testCase.getIpsSrcFile().save(true, null);
-                } else {
-                    return;
-                }
+            if (testCase.getIpsSrcFile().isDirty()) {
+                String msg = Messages.TestCaseSection_Dialog_SaveBeforeStartTest;
+                MessageDialog.openInformation(getShell(),
+                        Messages.TestCaseSection_Dialog_SaveBeforeStartTest_Title, msg);
+                return;
             }
             // show test runner view
 			IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IpsTestRunnerViewPart.EXTENSION_ID);
@@ -961,7 +958,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}
 	}
-	
+    
     /*
      * Returns the toc file package name which stores the current test case.
      */
@@ -1565,6 +1562,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
         form.getContent().setToolTipText(""); //$NON-NLS-1$
+        testCaseDetailArea.resetTestRun();
     }
 	
 	/**

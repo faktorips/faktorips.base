@@ -73,8 +73,8 @@ public class Messages extends NLS {
     public static String TestCaseSection_FilterExpected_ToolTip;
     public static String TestCaseSection_FilterCombined;
     public static String TestCaseSection_FilterCombined_ToolTip;
-    public static String TestCaseSection_ConfirmDialog_AutomaticallySaveBeforeStartTest;
-    public static String TestCaseSection_ConfirmDialog_AutomaticallySaveBeforeStartTest_Title;
+    public static String TestCaseSection_Dialog_SaveBeforeStartTest;
+    public static String TestCaseSection_Dialog_SaveBeforeStartTest_Title;
     public static String TestCaseSection_ToolBar_WithoutRelation;
     public static String TestCaseSection_ToolBar_FlatStructure;
     public static String TestCaseSection_ToolBar_RunTest;
