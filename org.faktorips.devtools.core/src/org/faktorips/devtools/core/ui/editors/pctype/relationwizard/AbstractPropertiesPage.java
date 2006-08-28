@@ -247,9 +247,11 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRoleSingularTextProdRelevant.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRoleSingularProdRelevantField.getText())) {
-                    String targetName = getCurrentRelation().getPolicyCmptType().getProductCmptType();
-                    targetName = StringUtil.unqualifiedName(targetName);
-                    targetRoleSingularProdRelevantField.setText(targetName);
+                    if (getReverseOfCurrentRelation() != null){
+                        String targetName = getReverseOfCurrentRelation().getPolicyCmptType().getProductCmptType();
+                        targetName = StringUtil.unqualifiedName(targetName);
+                        targetRoleSingularProdRelevantField.setText(targetName);
+                    }
                 }
             }
         });
@@ -259,9 +261,11 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRolePluralTextProdRelevant.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRolePluralProdRelevantField.getText())) {
-                    String targetName = getCurrentRelation().getPolicyCmptType().getProductCmptType();
-                    targetName = StringUtil.unqualifiedName(targetName);
-                    targetRolePluralProdRelevantField.setText(targetName);
+                    if (getReverseOfCurrentRelation() != null){
+                        String targetName = getReverseOfCurrentRelation().getPolicyCmptType().getProductCmptType();
+                        targetName = StringUtil.unqualifiedName(targetName);
+                        targetRolePluralProdRelevantField.setText(targetName);
+                    }
                 }
             }
         });        

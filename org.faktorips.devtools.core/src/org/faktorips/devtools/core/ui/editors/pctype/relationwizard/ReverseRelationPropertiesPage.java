@@ -183,6 +183,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 				wizard.restoreMementoTargetBeforeChange();
 				wizard.storeMementoTargetBeforeChange();
 				try {
+                    // get all existing relations which matches as reverse for the new relation
 					ArrayList targetRelations = (ArrayList) getCorrespondingTargetRelations(
 							wizard.getRelation(), wizard.getTargetPolicyCmptType());
 					if (targetRelations.size() > 0) {
@@ -207,22 +208,27 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 				}
 			}
 		} else if (wizard.isNewReverseRelation()){
-			if (!prevIsNew){
-				prevIsExisting = false;
-				prevIsNew = true;
-
-				setVisibleExistingRelationDropDown(false);
-				
-				// create a new reverse relation
-				wizard.restoreMementoTargetBeforeChange();
-				wizard.storeMementoTargetBeforeChange();
-				createNewReverseRelation();
-
+			if (! prevIsNew ){
+                prevIsExisting = false;
+    			prevIsNew = true;
+                prevRelType = wizard.getRelation().getRelationType();
+                
+    			setVisibleExistingRelationDropDown(false);
+    			
+    			// create a new reverse relation
+    			wizard.restoreMementoTargetBeforeChange();
+    			wizard.storeMementoTargetBeforeChange();
+    			createNewReverseRelation();
+    
                 createPropertyFields();
                 setStatusPropertyFields();
+                
                 connectRelationToUi();
-			}
-		} else {
+            } else if (prevRelType != null && ! prevRelType.equals(wizard.getRelation().getRelationType())){
+                prevRelType = wizard.getRelation().getRelationType();
+                setStatusPropertyFields();
+            }
+        } else {
 			prevIsExisting = false;
 			prevIsNew = false;
 		}
@@ -335,6 +341,10 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	 * Remove the properties controls from the model.
 	 */
 	protected void removePcTypeControlsFromModel() {
+		if (minCardinalityField  == null)
+            // return because fields currently not created
+            return;
+        
 		minCardinalityField.setText(""); //$NON-NLS-1$
 		maxCardinalityField.setText(""); //$NON-NLS-1$
 		targetRoleSingularField.setText(""); //$NON-NLS-1$
