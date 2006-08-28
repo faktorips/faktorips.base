@@ -44,7 +44,7 @@ public class TestRunPane {
 
 	private IpsTestRunnerViewPart testRunnerViewPart;
 	
-    private List missingTestEntries;
+    private List missingTestEntries = new ArrayList();
     
 	// Maps test Ids to the stored table items. 
 	private Map fTableItemMap = new HashMap();
@@ -114,9 +114,10 @@ public class TestRunPane {
 	 * A new test run will be stared.
 	 */
 	public void aboutToStart() {
-        missingTestEntries = new ArrayList();
+        missingTestEntries.clear();
 		fTable.removeAll();
-		fTableItemMap = new HashMap();
+        fTableItemMap.clear();
+        
 		firstFailureOrError = null;
 	}
 	
@@ -124,13 +125,17 @@ public class TestRunPane {
 	 * The given test is about to be started.
 	 */
 	public void newTableEntry(String testId, String tableEntry, String fullPath) {
-		TableItem tableItem = new TableItem(fTable, SWT.NONE);
+        if (fTableItemMap.get(testId) != null)
+            // test table entry is already in the table, ignore entry
+            return;
+        
+        TableItem tableItem = new TableItem(fTable, SWT.NONE);
 		tableItem.setText(tableEntry);
 		tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/test.gif")); //$NON-NLS-1$
 
 		TestTableEntry testTableEntry = new TestTableEntry(testId, tableEntry, tableItem);
 		fTableItemMap.put(testId, testTableEntry);
-		tableItem.setData(testTableEntry);
+        tableItem.setData(testTableEntry);
 		// stores the given full path of the test case file
 		testTableEntry.setFullPath(fullPath);
 	}

@@ -1397,8 +1397,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void testFailureOccured(String[] failureDetails) {
-		if (! canListenToTestRun(failureDetails[0]))
+	public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
+		if (! canListenToTestRun(qualifiedTestName))
 			return;
 		
 		isTestRunFailure = true;
@@ -1416,7 +1416,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         } else {
             // mark attribut edit field as failure
             try {
-               //String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
                 testCaseDetailArea.markAttributeAsFailure(objectName + attributeName, formatedFailure);
             } catch (Exception e) {
                 // ignore the excpetion while marking the edit field with the failure 
@@ -1461,7 +1460,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	/**
 	 * {@inheritDoc}
 	 */	
-	public void testRunEnded() {
+	public void testRunEnded(String elapsedTime) {
 		// nothing to do
 	}
 
@@ -1479,15 +1478,22 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		// nothing to do
 	}
 	
-	void postSyncRunnable(Runnable r) {
+    /**
+     * {@inheritDoc}
+     */
+	public void testTableEntries(String[] qualifiedName, String[] fullPath) {
+	    // nothing to do
+    }
+
+    void postSyncRunnable(Runnable r) {
 		if (!isDisposed())
 			getDisplay().syncExec(r);
 	}	
 
 	/*
 	 * Returns <code>true</code> if the test run listener is relevant for this test case.<br>
-     * Return <code>false<code> if the file is changed and not saved (source file is dirty).<br>
-     * Return <code>false<code> if the given test case name doesn't match the current editing test case.
+     * Returns <code>false<code> if the file is changed and not saved (source file is dirty).<br>
+     * Returns <code>false<code> if the given test case name doesn't match the current editing test case.
 	 */
 	private boolean canListenToTestRun(String testCaseQualifiedName) {
         if (testCase.getIpsSrcFile().isDirty()){

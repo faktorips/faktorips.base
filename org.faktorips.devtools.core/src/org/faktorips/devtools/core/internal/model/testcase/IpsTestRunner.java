@@ -33,6 +33,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
@@ -73,7 +76,24 @@ public class IpsTestRunner implements IIpsTestRunner {
     // Error details in case multiline errors
     private ArrayList errorDetailList;
     
+    // The qualified test name in case of an error, necessary to store the name between two socket receives
+    // the stack trace of the error will be send in several lines
     private String qualifiedTestName;
+    
+    // Laucher for the test runner process
+    private ILaunch launch;
+    
+    // Indicates if the test runner was terminated
+    private boolean terminated;
+    
+    // Dummy time to calculate the elapsed time which will be used if the test was terminated
+    private long testStartTime;
+    
+    // Contains the progress monitor 
+    private IProgressMonitor testRunnerMonitor;
+    
+    // Used to show the progress bar steps
+    private int monitorStep;
     
     private IpsTestRunner() {
     }
@@ -141,12 +161,30 @@ public class IpsTestRunner implements IIpsTestRunner {
         args[2] = testsuites;
         
         vmConfig.setProgramArguments(args);
-        ILaunch launch= new Launch(null, ILaunchManager.RUN_MODE, null);
+        launch= new Launch(null, ILaunchManager.RUN_MODE, null);
+        testStartTime = System.currentTimeMillis();
         vmRunner.run(vmConfig, launch, null);
         DebugPlugin.getDefault().getLaunchManager().addLaunch(launch);
         connect();
     }
 
+    /**
+     * Terminates the currently lauched process.
+     * 
+     * @throws DebugException on failure @see org.eclipse.debug.core.model.terminate()
+     */
+    public void terminate() throws DebugException{
+        if (launch != null){
+            if (launch.canTerminate()){
+                terminated = true;
+                launch.terminate();
+            }
+        }
+    }
+    
+    /*
+     * Establish socket connection to the socket test runner
+     */
     private boolean connect() {
     	boolean connected = true;
     	try {
@@ -166,10 +204,15 @@ public class IpsTestRunner implements IIpsTestRunner {
         } catch (Exception e) {
             // error durring socket listening
         	// notify the listener itself, because there is no connection to a runner (connection failed)
-        	IpsPlugin.log(e);
-            notifyTestRunStarted(1, classpathRepositories, testsuites);
-        	notifyTestErrorOccured("", new String[]{Messages.IpsTestRunner_Error_CouldNotConnect + e.getLocalizedMessage()}); //$NON-NLS-1$
-        	connected = false;
+        	if (!terminated){
+                IpsPlugin.log(e);
+                notifyTestRunStarted(1, classpathRepositories, testsuites);
+            	notifyTestErrorOccured("", new String[]{Messages.IpsTestRunner_Error_CouldNotConnect + e.getLocalizedMessage()}); //$NON-NLS-1$
+            	connected = false;
+            } else {
+                // the test runner was terminated
+                notifyTestRunEnded("" + (System.currentTimeMillis()- testStartTime));
+            }
         }
         return connected;
     }
@@ -191,19 +234,38 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private void parseMessage(String line) {
         if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_STARTED)) {  
-    		// format: SocketIpsTestRunner.ALL_TESTS_STARTED(<count>) [<repositoryPackage>].[<testPackage>]
+    		// format: 
+            //   SocketIpsTestRunner.ALL_TESTS_STARTED(<count>) [<repositoryPackage>].[<testPackage>]:<testQualifiedName>{<testFullPath>},...
     		int start = line.indexOf("(") + 1; //$NON-NLS-1$
             int count = Integer.parseInt(line.substring(start, line.indexOf(")"))); //$NON-NLS-1$
             String repositoryPackage = line.substring(line.indexOf("[") +1, line.indexOf("]")); //$NON-NLS-1$ //$NON-NLS-2$
             line = line.substring(line.indexOf("].[") + 3); //$NON-NLS-1$
-            String testSuitePackage = line.substring(0, line.length() -1);
+            String testSuitePackage = line.substring(0, line.indexOf("]")); //$NON-NLS-1$
             notifyTestRunStarted(count, repositoryPackage, testSuitePackage);
+            line = line.substring(line.indexOf(":") +1); //$NON-NLS-1$
+            // now parse all tests, format:
+            //   :[<testQualifiedName>{<testFullPath>},...]
+            String[] testNames = new String[count];
+            String[] testFullPaths = new String[count];            
+            int idx = 0;
+            while (line.indexOf(",")>=0){ //$NON-NLS-1$
+                if (idx > count){
+                    throw new RuntimeException(Messages.IpsTestRunner_Error_WrongTestProtocol);
+                }
+                testNames[idx] = parseTestQualifiedName(line);
+                testFullPaths[idx] = parseTestFullPath(line);
+                line = line.substring(line.indexOf(",") + 1); //$NON-NLS-1$
+                idx ++;
+            }
+            notifyTestEntries(testNames, testFullPaths);
         }else if (line.startsWith(SocketIpsTestRunner.ALL_TESTS_FINISHED)) { //$NON-NLS-1$
-        	notifyTestRunEnded();
+        	String elapsedTime = line.substring(SocketIpsTestRunner.ALL_TESTS_FINISHED.length());  //$NON-NLS-1$
+            notifyTestRunEnded(elapsedTime);
         }else if (line.startsWith(SocketIpsTestRunner.TEST_STARTED)) { //$NON-NLS-1$
         	// format: TEST_CASE_STARTED<qualifiedName>{<fullPath>}
-            String testName = line.substring(SocketIpsTestRunner.TEST_STARTED.length(), line.indexOf("{"));  //$NON-NLS-1$
-            String fullPath = line.substring(line.indexOf("{") +1, line.indexOf("}")); //$NON-NLS-1$ //$NON-NLS-2$
+            line = line.substring(SocketIpsTestRunner.TEST_STARTED.length());  //$NON-NLS-1$
+            String testName = parseTestQualifiedName(line);
+            String fullPath = parseTestFullPath(line);
             notifyTestEntry(testName, fullPath);
             notifyTestStarted(testName);
         }else if (line.startsWith(SocketIpsTestRunner.TEST_FINISHED)) { //$NON-NLS-1$
@@ -211,8 +273,9 @@ public class IpsTestRunner implements IIpsTestRunner {
         	notifyTestFinished(testName);
         }else if (line.startsWith(SocketIpsTestRunner.TEST_FAILED)) { //$NON-NLS-1$
         	// format: qualifiedName|testObject|testedAttribute|expectedValue|actualValue
-        	String failureDetailsLine = line.substring(SocketIpsTestRunner.TEST_FAILED.length());
-        	ArrayList failureTokens = new ArrayList(5);
+            String failureDetailsLine = line.substring(SocketIpsTestRunner.TEST_FAILED.length());
+            String qualifiedTestName = failureDetailsLine.substring(0, failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
+            ArrayList failureTokens = new ArrayList(5);
         	while(failureDetailsLine.length()>0){
         		String token = ""; //$NON-NLS-1$
         		int end = failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS);
@@ -226,7 +289,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         		}
         		failureTokens.add(token);
         	}
-        	notifyTestFailureOccured((String[])failureTokens.toArray(new String[0]));
+        	notifyTestFailureOccured(qualifiedTestName, (String[])failureTokens.toArray(new String[0]));
         }else if(line.startsWith(SocketIpsTestRunner.TEST_ERROR)){
         	// format qualifiedTestName{message}{StacktraceElem1}{StacktraceElem2}...{StacktraceElemN}
             errorDetailList = new ArrayList();
@@ -242,6 +305,16 @@ public class IpsTestRunner implements IIpsTestRunner {
             // parse multiline stack elements
             parseErrorStack(errorDetailList, line);
         }
+    }
+
+    private String parseTestQualifiedName(String line) {
+        String testName = line.substring(0, line.indexOf("{"));  //$NON-NLS-1$
+        return testName;
+    }
+
+    private String parseTestFullPath(String line) {
+        String fullPath = line.substring(line.indexOf("{") +1, line.indexOf("}")); //$NON-NLS-1$ //$NON-NLS-2$
+        return fullPath;
     }
 
     private void parseErrorStack(ArrayList errorDetailList, String errorDetails) {
@@ -318,7 +391,25 @@ public class IpsTestRunner implements IIpsTestRunner {
 		}
     }
     
+    private void notifyTestEntries(String[] qualifiedNames, String[] fullPaths) {
+        for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
+            IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
+            listener.testTableEntries(qualifiedNames, fullPaths);
+        }
+    }    
+    
     private void notifyTestStarted(String qualifiedTestName) {
+        monitorStep ++;
+        testRunnerMonitor.worked(monitorStep);
+        
+        // check if the test runner is canceled
+        if (testRunnerMonitor.isCanceled())
+            try {
+                terminate();
+            } catch (DebugException e) {
+                // ignore exception
+            }
+            
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testStarted(qualifiedTestName);
@@ -332,24 +423,29 @@ public class IpsTestRunner implements IIpsTestRunner {
 		}
     }
     
-    private void notifyTestFailureOccured(String[] failureDetails) {
+    private void notifyTestFailureOccured(String testFailureOccured, String[] failureDetails) {
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
-			listener.testFailureOccured(failureDetails);
+			listener.testFailureOccured(testFailureOccured, failureDetails);
 		}
     }
     
 	private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
+        monitorStep = 0;
+        testRunnerMonitor.beginTask("Test run" , count * 10);
+        
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testRunStarted(count, repositoryPackage, testPackage);
 		}		
 	} 
 	
-	private void notifyTestRunEnded() {
+	private void notifyTestRunEnded(String elapsedTime) {
+        testRunnerMonitor.done();
+        
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
-			listener.testRunEnded();
+			listener.testRunEnded(elapsedTime);
 		}		
 	} 
 
@@ -365,11 +461,18 @@ public class IpsTestRunner implements IIpsTestRunner {
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testsuite){
 		TestRunnerJob job = new TestRunnerJob(this, classpathRepository, testsuite);
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		job.setRule(workspace.getRoot());
-		job.schedule();	
-	}
 
+        job.addJobChangeListener(new JobChangeAdapter() {
+            public void done(IJobChangeEvent event) {
+                // nothing to do
+            }
+        });
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+        job.setRule(workspace.getRoot());
+        job.schedule();
+	}
+    
 	/*
 	 * Job class to run the selected tests.
 	 */
@@ -387,7 +490,11 @@ public class IpsTestRunner implements IIpsTestRunner {
 		
 		public IStatus runInWorkspace(IProgressMonitor monitor) {
 			try {
-				testRunner.run(classpathRepository, testsuite);
+                testRunnerMonitor = monitor;
+                
+                if (!monitor.isCanceled()) {
+                    testRunner.run(classpathRepository, testsuite);
+                }
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}

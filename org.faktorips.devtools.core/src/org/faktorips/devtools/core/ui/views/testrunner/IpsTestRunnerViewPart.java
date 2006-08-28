@@ -18,13 +18,11 @@
 package org.faktorips.devtools.core.ui.views.testrunner;
 
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -32,6 +30,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
@@ -125,6 +124,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	// The project which contains the runned tests 
 	private IJavaProject fTestProject;
 	
+    private HashMap testId2TestQualifiedNameMap = new HashMap();
+    
 	/*
 	 * Action class to rerun a test.
 	 */
@@ -144,46 +145,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	}
 	
 	/*
-	 * Job class to run the test runner.
-	 */
-	private class TestRunnerJob extends WorkspaceJob {
-		private String classpathRepository;
-		private String testsuite;
-		private IIpsTestRunner testRunner;
-		
-		public TestRunnerJob(String classpathRepository, String testsuite) {
-			super(Messages.IpsTestRunnerViewPart_Job_RunTest_Title);
-			this.classpathRepository = 
-			this.classpathRepository = classpathRepository;
-			this.testsuite = testsuite;
-			this.testRunner = IpsPlugin.getDefault().getIpsTestRunner();
-		}
-		
-		public IStatus runInWorkspace(IProgressMonitor monitor) {
-			
-			try {
-
-				testRunner.run(classpathRepository, testsuite);
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-			return Status.OK_STATUS;
-		}
-		
-		public IIpsTestRunner getTestRunner(){
-			return testRunner;
-		}
-	}	
-	
-	/*
 	 * Runs the last runned test.
 	 */
 	private void rerunTestRun()  {
-		TestRunnerJob job = new TestRunnerJob(repositoryPackage, testPackage);
-
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		job.setRule(workspace.getRoot());
-		job.schedule();
+        IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(repositoryPackage, testPackage);
 	}
 	
 	/*
@@ -409,10 +374,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	}
 	
 	private class TableEntryQueueDrainer implements Runnable {
-		private String testId;
-		TableEntryQueueDrainer(String testId){
-			this.testId = testId;
-		}
 		public void run() {
 			while (true) {
 				TestCaseEntry testCaseEntry;
@@ -423,7 +384,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 					}
 					testCaseEntry = (TestCaseEntry) fTableEntryQueue.remove(0);
 				}
-				fTestRunPane.newTableEntry(testId, testCaseEntry.getQualifiedName(), testCaseEntry.fullPath);
+				fTestRunPane.newTableEntry(testCaseEntry.getTestId(), testCaseEntry.getQualifiedName(), testCaseEntry.fullPath);
                 fTestRunPane.checkMissingEntries();
 			}
 		}
@@ -433,7 +394,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private class TestCaseEntry {
 		private String qualifiedName;
 		private String fullPath;
-		public TestCaseEntry(String qualifiedName, String fullPath){
+        private String testId;
+		public TestCaseEntry(String testId, String qualifiedName, String fullPath){
+            this.testId = testId;
 			this.qualifiedName = qualifiedName;
 			this.fullPath = fullPath;
 		}
@@ -443,7 +406,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		public String getQualifiedName() {
 			return qualifiedName;
 		}
-		
+        public String getTestId() {
+            return testId;
+        }
 	}
 	
 	public Display getDisplay() {
@@ -590,26 +555,29 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		if (failureDetails.length>4)
 			failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
 		if (failureDetails.length>1)
-			failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$
+			failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
 		if (failureDetails.length>2)
-			failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:""); //$NON-NLS-1$
+			failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:""); //$NON-NLS-1$ //$NON-NLS-2$
 		if (failureDetails.length>5)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
 		return MessageFormat.format(failureFormat, failureDetails); 
 	}
 	
 	//
 	// Helper functions to generate unique test id's to identify the test in the test run ui control.
 	//
-	private void resetTestId(){
+	
+    private void resetTestId(){
 		testRuns++;
 		testId = 0;
 	}
+    
 	private String nextTestId(){
 		return "" + testRuns + "." + ++testId; //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	private String getTestId(){
-		return "" + testRuns + "." + testId; //$NON-NLS-1$ //$NON-NLS-2$
+    
+	private String getTestId(String qualifiedTestName){
+        return (String) testId2TestQualifiedNameMap.get(qualifiedTestName);
 	}
 	
 	//
@@ -619,9 +587,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	/**
 	 * {@inheritDoc}
 	 */
-	public void testFailureOccured(String[] failureDetails) {
+	public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
 	    isFailure = true;
-	    postFailureTest(getTestId(), failureDetails);
+	    postFailureTest(getTestId(qualifiedTestName), failureDetails);
 	}
 
 	/**
@@ -631,33 +599,64 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fExecutedTests++;
 		if (isFailure)
 			fFailureCount++;
-		postEndTest(getTestId(), qualifiedTestName);
+		postEndTest(getTestId(qualifiedTestName), qualifiedTestName);
 	}
     
 	/**
 	 * {@inheritDoc}
 	 */
 	public void testStarted(String qualifiedTestName) {
-		isFailure = false;
+        setInfoMessage(qualifiedTestName);
+        isFailure = false;
 		fRerunLastTestAction.setEnabled(true);
-		postStartTest(getTestId(), qualifiedTestName);
+		postStartTest(getTestId(qualifiedTestName), qualifiedTestName);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	public void testTableEntry(final String qualifiedName, final String fullPath) {
-		String testId = nextTestId();
-		synchronized(fTableEntryQueue) {
-			fTableEntryQueue.add(new TestCaseEntry(qualifiedName, fullPath));
+		// get a new or a cached test id 
+        String testId = getTestId(qualifiedName);
+        if (testId == null){
+            testId = nextTestId();
+            testId2TestQualifiedNameMap.put(qualifiedName, testId);
+        }
+        
+        synchronized(fTableEntryQueue) {
+			fTableEntryQueue.add(new TestCaseEntry(testId, qualifiedName, fullPath));
 			if (!fQueueDrainRequestOutstanding) {
 				fQueueDrainRequestOutstanding = true;
 				if (!isDisposed())
-					getDisplay().asyncExec(new TableEntryQueueDrainer(testId));
+					getDisplay().asyncExec(new TableEntryQueueDrainer());
 			}
 		}
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public void testTableEntries(final String[] qualifiedNames, final String[] fullPaths) {
+        // get a new or a cached test id 
+
+        
+        synchronized(fTableEntryQueue) {
+            for (int i = 0; i < fullPaths.length; i++) {
+                String testId = getTestId(qualifiedNames[i]);
+                if (testId == null){
+                    testId = nextTestId();
+                    testId2TestQualifiedNameMap.put(qualifiedNames[i], testId);
+                }
+                fTableEntryQueue.add(new TestCaseEntry(testId, qualifiedNames[i], fullPaths[i]));
+            }
+            if (!fQueueDrainRequestOutstanding) {
+                fQueueDrainRequestOutstanding = true;
+                if (!isDisposed())
+                    getDisplay().asyncExec(new TableEntryQueueDrainer());
+            }
+        }
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -665,6 +664,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		this.repositoryPackage = repositoryPackage;
 		this.testPackage = testPackage;
 		
+        testId2TestQualifiedNameMap.clear();
+        
 		reset(testCount);
 		fExecutedTests++;
 		fRerunLastTestAction.setEnabled(true);
@@ -673,25 +674,36 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fUpdateJob = new UpdateUIJob(Messages.IpsTestRunnerViewPart_Job_UpdateUiTitle); 
 		fUpdateJob.schedule(0);
 		
-		// store the project which contains the tests will be used to open the test in the editor
+		// store the project which contains the tests, will be used to open the test in the editor
 		fTestProject = IpsPlugin.getDefault().getIpsTestRunner().getJavaProject();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void testRunEnded(){
+	public void testRunEnded(String elapsedTime){
 		fExecutedTests--;
 		stopUpdateJobs();
 		postEndTestRun();
+        long elapsedTimeLong = 0;
+        try{
+            elapsedTimeLong = Long.parseLong(elapsedTime);
+        }catch(NumberFormatException e){
+            // ignore exception of wrong number format
+        }
+        fStatus = NLS.bind(Messages.IpsTestRunnerViewPart_Message_TestFinishedAfterNSeconds, elapsedTimeAsString(elapsedTimeLong));
 	}
+    
+    private String elapsedTimeAsString(long elapsedTime) {
+        return NumberFormat.getInstance().format((double)elapsedTime/1000);
+    }    
 
 	/**
 	 * {@inheritDoc}
 	 */
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails){
     	fErrorCount ++;
-    	postErrorInTest(getTestId(), qualifiedTestName, errorDetails);
+    	postErrorInTest(getTestId(qualifiedTestName), qualifiedTestName, errorDetails);
     }
     
 	/**

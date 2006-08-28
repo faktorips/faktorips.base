@@ -58,4 +58,5 @@ public class Messages extends NLS {
 	public static String TestValue_ValidateError_TestValueParamNotFound;
 	public static String TestValue_ValidateError_DatatypeNotFound;
 	public static String TestValue_ValidateError_ValueIsNoDatatype;
+    public static String IpsTestRunner_Error_WrongTestProtocol;
 }

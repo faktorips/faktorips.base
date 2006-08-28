@@ -47,7 +47,7 @@ public interface IIpsTestRunListener {
 	/**
 	 * An test has failed.
 	 */    
-    public void testFailureOccured(String[] failureDetails);
+    public void testFailureOccured(String testFailureOccured, String[] failureDetails);
 
 	/**
 	 * Information about a member that this test case is about to be run.
@@ -57,10 +57,19 @@ public interface IIpsTestRunListener {
 	 */ 
     public void testTableEntry(String qualifiedName, String fullPath);
     
+    /**
+     * Information about a member that this test cases are about to be run.
+     * 
+     * @param qualifiedName qualified names of the test case
+     * @param fullPath full paths of the corresponding ipstestcase file
+     */ 
+    public void testTableEntries(String[] qualifiedName, String[] fullPath);
+    
     /** 
      * A test run has ended.
+     * @param elapsedTime contains the elapsed time in milliseconds
      */
-    public void testRunEnded();
+    public void testRunEnded(String elapsedTime);
     
     /** 
      * A error (exception) occured while executing the test.

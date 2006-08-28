@@ -400,7 +400,7 @@ public class TestCaseDetailArea {
 				throw new RuntimeException(e1);
 			}
 			
-			toolkit.createFormLabel(composite, "Value" + ":"); 
+			toolkit.createFormLabel(composite, "Value" + ":");  //$NON-NLS-1$ //$NON-NLS-2$
 			final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null);
 			uiController.add(editField, ITestValue.PROPERTY_VALUE);
 			
