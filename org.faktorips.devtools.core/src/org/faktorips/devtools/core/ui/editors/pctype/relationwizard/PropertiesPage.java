@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -116,6 +117,20 @@ public class PropertiesPage extends AbstractPropertiesPage {
 		return wizard.getRelation();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	protected IRelation getReverseOfCurrentRelation(){
+	    return wizard.getReverseRelation();
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IPolicyCmptType getCurrentTarget(){
+        return wizard.getTargetPolicyCmptType();
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -124,12 +139,6 @@ public class PropertiesPage extends AbstractPropertiesPage {
                 position);
     }
 
-    /**
-	 * {@inheritDoc}
-	 */
-	protected IRelation getReverseOfCurrentRelation(){
-		return wizard.getReverseRelation();
-	}
 
 	/**
 	 * {@inheritDoc}

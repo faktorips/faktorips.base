@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -216,19 +217,14 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 				Messages.NewPcTypeRelationWizard_properties_labelProdRelevant);
 		final Checkbox productRelevantCheckbox = uiToolkit
 				.createCheckbox(workArea);
-		productRelevantCheckbox.getButton().addSelectionListener(
-				new SelectionAdapter() {
-					public void widgetSelected(
-							org.eclipse.swt.events.SelectionEvent e) {
-						// first store the current modified value, because the
-						// controller updates the model later
-						getCurrentRelation().setProductRelevant(
-								productRelevantCheckbox.getButton()
-										.getSelection());
-						setProdRelevantEnabled(getCurrentRelation()
-								.isProductRelevant());
-					}
-				});
+		productRelevantCheckbox.getButton().addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+                // first store the current modified value, because the
+                // controller updates the model later
+                getCurrentRelation().setProductRelevant(productRelevantCheckbox.getButton().getSelection());
+                setProdRelevantEnabled(getCurrentRelation().isProductRelevant());
+            }
+        });
 		productRelevantField = new CheckboxField(productRelevantCheckbox);
 		productRelevantField.addChangeListener(new ValueChangeListener (){
 			public void valueChanged(FieldValueChangedEvent e) {
@@ -247,8 +243,8 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRoleSingularTextProdRelevant.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRoleSingularProdRelevantField.getText())) {
-                    if (getReverseOfCurrentRelation() != null){
-                        String targetName = getReverseOfCurrentRelation().getPolicyCmptType().getProductCmptType();
+                    if (getCurrentTarget() != null){
+                        String targetName = getCurrentTarget().getProductCmptType();
                         targetName = StringUtil.unqualifiedName(targetName);
                         targetRoleSingularProdRelevantField.setText(targetName);
                     }
@@ -261,8 +257,8 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRolePluralTextProdRelevant.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRolePluralProdRelevantField.getText())) {
-                    if (getReverseOfCurrentRelation() != null){
-                        String targetName = getReverseOfCurrentRelation().getPolicyCmptType().getProductCmptType();
+                    if (getCurrentTarget() != null){
+                        String targetName = getCurrentTarget().getProductCmptType();
                         targetName = StringUtil.unqualifiedName(targetName);
                         targetRolePluralProdRelevantField.setText(targetName);
                     }
@@ -296,15 +292,21 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
 	 */
 	abstract protected IRelation getCurrentRelation();
 	
+	/**
+	 * Returns the reverse relation of the relation which will changed by this wizard page.
+	 */
+	abstract protected IRelation getReverseOfCurrentRelation();
+
+    /**
+     * Returns the target of the current relation.
+     */
+    abstract protected IPolicyCmptType getCurrentTarget();
+
     /**
      * Creates the extension fields for the given position.
      */
     protected abstract void createExtensionFields(Composite parent, UIToolkit uiToolkit, String position);
     
-	/**
-	 * Returns the reverse relation of the relation which will changed by this wizard page.
-	 */
-	abstract protected IRelation getReverseOfCurrentRelation();
 	
 	/**
 	 * Adds a focus listener to the given field.

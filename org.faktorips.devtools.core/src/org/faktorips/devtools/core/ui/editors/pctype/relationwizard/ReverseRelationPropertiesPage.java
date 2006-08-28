@@ -391,14 +391,28 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	protected boolean isPageVisible() {
 		return (wizard.isExistingReverseRelation() || wizard.isNewReverseRelation());
 	}
-	
-	/**
+
+    /**
 	 * {@inheritDoc}
 	 */
 	protected IRelation getCurrentRelation(){
 		return wizard.getReverseRelation();
 	}
 
+    /**
+	 * {@inheritDoc}
+	 */
+	protected IRelation getReverseOfCurrentRelation(){
+	    return wizard.getRelation();
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected IPolicyCmptType getCurrentTarget(){
+        return wizard.getRelation().getPolicyCmptType();
+    }
+    
     protected void createPropertiesFields(UIToolkit uiToolkit, Composite c) {
         // nothing to to, the property fields will be created if a reverse relation exists
     }
@@ -412,13 +426,6 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
     }
     
     /**
-	 * {@inheritDoc}
-	 */
-	protected IRelation getReverseOfCurrentRelation(){
-		return wizard.getRelation();
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	protected void addFocusListenerUpdateButtons(EditField field) {
