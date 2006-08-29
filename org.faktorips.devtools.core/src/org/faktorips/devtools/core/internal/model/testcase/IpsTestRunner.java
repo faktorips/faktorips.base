@@ -47,6 +47,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
@@ -166,16 +167,19 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     /**
-     * Terminates the currently lauched process.
-     * 
-     * @throws DebugException on failure @see org.eclipse.debug.core.model.terminate()
+     * {@inheritDoc}
      */
-    public void terminate() throws DebugException{
-        if (launch != null){
-            if (launch.canTerminate()){
-                terminated = true;
-                launch.terminate();
+    public void terminate() throws CoreException{
+        try {
+            if (launch != null){
+                if (launch.canTerminate()){
+                    terminated = true;
+                    launch.terminate();
+                }
             }
+        } catch (DebugException e) {
+            e.printStackTrace();
+            throw new CoreException(new IpsStatus(e));
         }
     }
     
@@ -402,7 +406,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (testRunnerMonitor.isCanceled())
             try {
                 terminate();
-            } catch (DebugException e) {
+            } catch (CoreException e) {
                 // ignore exception
             }
             

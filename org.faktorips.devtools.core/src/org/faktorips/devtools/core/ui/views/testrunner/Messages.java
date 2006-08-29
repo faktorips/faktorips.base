@@ -55,4 +55,6 @@ public class Messages extends NLS {
 	public static String OpenTestInEditorAction_ErrorCannotOpenEditor_Message;
 	public static String TestRunPane_ErrorStartingTest_Entry;
     public static String IpsTestRunnerViewPart_Message_TestFinishedAfterNSeconds;
+    public static String IpsTestRunnerViewPart_Action_StopTest;
+    public static String IpsTestRunnerViewPart_Action_StopTest_ToolTip;
 }

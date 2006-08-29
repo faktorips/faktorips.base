@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.views.testrunner;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -29,7 +30,8 @@ import org.faktorips.devtools.core.IpsPlugin;
  * @author Joerg Ortmann
  */
 public class FailurePane {
-
+    private static final String TEST_ERROR_MESSAGE_INDICATOR = ">>>";
+    
 	private Table fTable;
 	
 	public FailurePane(Composite parent) {
@@ -50,8 +52,14 @@ public class FailurePane {
 		fTable.removeAll();
 		for (int i = 0; i < testCaseFailures.length; i++) {
 			TableItem tableItem = new TableItem(fTable, SWT.NONE);
-			tableItem.setText(testCaseFailures[i]);
-			tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
+            if (testCaseFailures[i].startsWith(TEST_ERROR_MESSAGE_INDICATOR)){
+                tableItem.setText(testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length()));
+                tableItem.setFont(JFaceResources.getBannerFont());
+                tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
+            } else{
+                tableItem.setText(testCaseFailures[i]);
+                tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
+            }
 		}
 	}
 

@@ -41,6 +41,13 @@ public interface IIpsTestRunner {
 	public void run(String classpathRepository, String testsuite) throws CoreException;
 	
     /**
+     * Terminates the currently lauched test run process.
+     * 
+     * @throws CoreException if an error occurs.
+     */
+    public void terminate() throws CoreException;
+    
+    /**
      * Adds the given ips test run listener to the collection of listeners
      */
     public void addIpsTestRunListener(IIpsTestRunListener newListener);

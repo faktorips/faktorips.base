@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestResult;
@@ -80,7 +81,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private static final String ASSERT_DUMMY_ACTUAL = "ASSERT_DUMMY_ACTUAL";
     private static final String INPUT_PREFIX = "INPUT_PREFIX";
     private static final String EXPECTED_RESULT_PREFIX = "EXPECTED_RESULT_PREFIX";
-    private static final String ADDADDITIONALLYREPOSITORIES_JAVADOC = "ADDADDITIONALLYREPOSITORIES_JAVADOC";
+    private static final String GETREPOSITORY_JAVADOC = "GETREPOSITORY_JAVADOC";
+    private static final String GETREPOSITORY_COMMENT = "GETREPOSITORY_COMMENT";
+    private static final String GETREPOSITORY_EXAMPLE = "GETREPOSITORY_EXAMPLE";
+    private static final String GETREPOSITORY_NOT_IMPLEMENTED_EXCEPTION_MESSAGE = "GETREPOSITORY_NOT_IMPLEMENTED_EXCEPTION_MESSAGE";
     
     private String inputPrefix;
     private String expectedResultPrefix;
@@ -135,6 +139,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(), IpsTestCase2.class.getName() , new String[0]);
         buildMemberVariables(codeBuilder, testCaseType);
         buildConstructor(codeBuilder);
+        buildMethodGetRepository(codeBuilder);
         buildHelperMethods(codeBuilder);
         buildSuperMethodImplementation(codeBuilder, testCaseType);
         codeBuilder.classEnd();
@@ -261,7 +266,27 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         String[] argClassNames = new String[] { "java.lang.String" };
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("super(qualifiedName);");
-         
+        body.appendln("repository = " + MethodNames.GET_REPOSITORY + "();");
+        codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        codeBuilder.methodBegin(Modifier.PUBLIC, null, className, 
+                argNames, argClassNames, new String[]{ParserConfigurationException.class.getName()});
+        codeBuilder.append(body);
+        codeBuilder.methodEnd();
+    }
+
+    /*
+     * Generates the method getRepository.
+     * This is the implementation of the abstract method getRepository from test ipsTestCase2.
+     * The 
+     */
+    private void buildMethodGetRepository(JavaCodeFragmentBuilder codeBuilder) throws CoreException{
+        String javaDoc = getLocalizedText(getIpsSrcFile(), GETREPOSITORY_JAVADOC);
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendln("/*");
+        body.appendln(getLocalizedText(getIpsSrcFile(), GETREPOSITORY_COMMENT));
+        
+        // add an example of creating toc files 
+        //   if toc file repositories exist for the project or referenced projects
         IIpsProject ipsProject =  getIpsObject().getIpsProject();
         List repositoryPackages = new ArrayList();
         getRepositoryPackages(ipsProject, repositoryPackages);
@@ -272,9 +297,13 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         
         // add additional repositories if toc file exists in these packages
         int repositoryIdx = 0;
+        if (repositoryPackages.size()>0){
+            body.appendln(" ");
+            body.appendln(getLocalizedText(getIpsSrcFile(), GETREPOSITORY_EXAMPLE));
+        }
         for (Iterator iter = repositoryPackages.iterator(); iter.hasNext();) {
             String repositoryPackageName = (String) iter.next();
-            String repositoryInstance = repositoryIdx>0?"repository"+repositoryIdx:"repository";
+            String repositoryInstance = repositoryIdx>0?"repository"+repositoryIdx:"IRuntimeRepository repository";
             body.append(repositoryIdx>0?"IRuntimeRepository ":"");
             body.append(repositoryInstance);
             body.append("= new ");
@@ -284,27 +313,12 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln(repositoryIdx>0?"repository.addDirectlyReferencedRepository(" + repositoryInstance + "); ":"");
             repositoryIdx++;
         }
-        body.appendln("addAdditionallyRepositories();");
-        
-        codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        codeBuilder.methodBegin(Modifier.PUBLIC, null, className, 
-                argNames, argClassNames, new String[]{ParserConfigurationException.class.getName()});
-        codeBuilder.append(body);
-        codeBuilder.methodEnd();
-        
-        buildMethodAddAdditionallyRepositories(codeBuilder);
-    }
-
-    /*
-     * Generates the method addAdditionallyRepositories. 
-     */
-    private void buildMethodAddAdditionallyRepositories(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
-        String javaDoc = getLocalizedText(getIpsSrcFile(), ADDADDITIONALLYREPOSITORIES_JAVADOC);
-        JavaCodeFragment body = new JavaCodeFragment();
-        body.appendln("");
+        body.appendln(" ");
+        body.appendln("*/");
+        body.appendln("throw new RuntimeException(" + getLocalizedText(getIpsSrcFile(), GETREPOSITORY_NOT_IMPLEMENTED_EXCEPTION_MESSAGE) + ");");
         codeBuilder.javaDoc(javaDoc, ANNOTATION_MODIFIABLE);
-        codeBuilder.methodBegin(Modifier.PUBLIC, "void", "addAdditionallyRepositories", new String[0], new String[0],
-                new String[] { ParserConfigurationException.class.getName() });
+        codeBuilder.methodBegin(Modifier.PUBLIC, IRuntimeRepository.class.getName(), MethodNames.GET_REPOSITORY,
+                new String[0], new String[0], new String[] { ParserConfigurationException.class.getName() });
         codeBuilder.append(body);
         codeBuilder.methodEnd();
     }

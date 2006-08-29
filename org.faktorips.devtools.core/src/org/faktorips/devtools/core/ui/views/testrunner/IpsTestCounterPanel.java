@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
+ * Counter panel.
  * 
  * @author Joerg Ortmann
  */
@@ -76,11 +77,9 @@ public class IpsTestCounterPanel extends Composite{
 		label= new Label(this, SWT.NONE);
 		label.setText(name);
 		label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
-		//label.setFont(JFaceResources.getBannerFont());
 		
 		Text value= new Text(this, SWT.READ_ONLY);
 		value.setText(init);
-		// bug: 39661 Junit test counters do not repaint correctly [JUnit] 
 		value.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 		value.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_BEGINNING));
 		return value;

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -69,6 +70,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private TestRunPane fTestRunPane;
 	private Composite fParent;
 	
+    // Contains the status message
 	protected volatile String fStatus = ""; //$NON-NLS-1$
 	
 	/*
@@ -79,6 +81,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private int fCurrentOrientation;
 	
 	/* Actions */
+    private Action fStopTestRunAction;
 	private Action fRerunLastTestAction;
 	private ToggleOrientationAction[] fToggleOrientationActions;
 	
@@ -125,6 +128,28 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private IJavaProject fTestProject;
 	
     private HashMap testId2TestQualifiedNameMap = new HashMap();
+    
+    /*
+     * Action class to stop the currently running test.
+     */
+    private class StopTestRunAction extends Action {
+        public StopTestRunAction() {
+            setText(Messages.IpsTestRunnerViewPart_Action_StopTest); 
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_StopTest_ToolTip); 
+            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/stop.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/stop.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/stop.gif")); //$NON-NLS-1$
+            setEnabled(false);
+        }
+        
+        public void run(){
+            try {
+                IpsPlugin.getDefault().getIpsTestRunner().terminate();
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
     
 	/*
 	 * Action class to rerun a test.
@@ -270,8 +295,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		IToolBarManager toolBar= actionBars.getToolBarManager();
 		IMenuManager viewMenu = actionBars.getMenuManager();
 		
+        fStopTestRunAction= new StopTestRunAction();
 		fRerunLastTestAction= new RerunLastAction();
-		
 		fToggleOrientationActions =
 			new ToggleOrientationAction[] {
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_VERTICAL),
@@ -279,6 +304,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_AUTOMATIC)};
 		
 
+        toolBar.add(fStopTestRunAction);
 		toolBar.add(fRerunLastTestAction);
 		
 		for (int i = 0; i < fToggleOrientationActions.length; ++i)
@@ -287,6 +313,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		actionBars.updateActionBars();
 		
 		fRerunLastTestAction.setEnabled(false);
+        fStopTestRunAction.setEnabled(false);
 	}
 	
 	private class ToggleOrientationAction extends Action {
@@ -432,9 +459,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				start(testCount);
 			}
 		});
+        
 		fExecutedTests= 0;
 		fFailureCount= 0;
 		fErrorCount= 0;
+        fStatus= ""; //$NON-NLS-1$
 		resetTestId();
 		aboutToStart();
 	}
@@ -609,6 +638,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         setInfoMessage(qualifiedTestName);
         isFailure = false;
 		fRerunLastTestAction.setEnabled(true);
+        fStopTestRunAction.setEnabled(true);
 		postStartTest(getTestId(qualifiedTestName), qualifiedTestName);
 	}
 	
@@ -669,7 +699,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		reset(testCount);
 		fExecutedTests++;
 		fRerunLastTestAction.setEnabled(true);
-		
+        fStopTestRunAction.setEnabled(true);
+        
 		stopUpdateJobs();
 		fUpdateJob = new UpdateUIJob(Messages.IpsTestRunnerViewPart_Job_UpdateUiTitle); 
 		fUpdateJob.schedule(0);
@@ -692,6 +723,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             // ignore exception of wrong number format
         }
         fStatus = NLS.bind(Messages.IpsTestRunnerViewPart_Message_TestFinishedAfterNSeconds, elapsedTimeAsString(elapsedTimeLong));
+        
+        fStopTestRunAction.setEnabled(false);
 	}
     
     private String elapsedTimeAsString(long elapsedTime) {
