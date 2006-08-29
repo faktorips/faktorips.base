@@ -111,12 +111,6 @@
                id="org.faktorips.plugin.pdexplorer">
          </view>
          <view
-               relative="org.eclipse.jdt.ui.PackageExplorer"
-               visible="false"
-               relationship="stack"
-               id="org.faktorips.plugin.pdexplorer">
-         </view>
-         <view
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.testRunner"
                moveable="true"
@@ -125,6 +119,15 @@
                showTitle="true"
                standalone="false"
                visible="false"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelExplorer"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
