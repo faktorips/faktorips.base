@@ -92,9 +92,6 @@ public class IpsTestRunner implements IIpsTestRunner {
     // Contains the progress monitor 
     private IProgressMonitor testRunnerMonitor;
     
-    // Used to show the progress bar steps
-    private int monitorStep;
-    
     private IpsTestRunner() {
     }
 
@@ -399,8 +396,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }    
     
     private void notifyTestStarted(String qualifiedTestName) {
-        monitorStep ++;
-        testRunnerMonitor.worked(monitorStep);
+        testRunnerMonitor.worked(1);
         
         // check if the test runner is canceled
         if (testRunnerMonitor.isCanceled())
@@ -431,8 +427,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
     
 	private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
-        monitorStep = 0;
-        testRunnerMonitor.beginTask("Test run" , count * 10);
+        testRunnerMonitor.beginTask(Messages.IpsTestRunner_Job_Name, count);
         
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
@@ -480,8 +475,8 @@ public class IpsTestRunner implements IIpsTestRunner {
 		private IIpsTestRunner testRunner;
 		private String classpathRepository;
 		private String testsuite;
-		
-		public TestRunnerJob(IIpsTestRunner testRunner, String classpathRepository, String testsuite) {
+
+        public TestRunnerJob(IIpsTestRunner testRunner, String classpathRepository, String testsuite) {
 			super(Messages.IpsTestRunner_Job_Name);
 			this.testRunner = testRunner;
 			this.classpathRepository = classpathRepository;
