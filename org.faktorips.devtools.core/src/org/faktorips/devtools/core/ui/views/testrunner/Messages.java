@@ -57,4 +57,10 @@ public class Messages extends NLS {
     public static String IpsTestRunnerViewPart_Message_TestFinishedAfterNSeconds;
     public static String IpsTestRunnerViewPart_Action_StopTest;
     public static String IpsTestRunnerViewPart_Action_StopTest_ToolTip;
+    public static String IpsTestRunnerViewPart_Action_NextFailure;
+    public static String IpsTestRunnerViewPart_Action_NextFailureToolTip;
+    public static String IpsTestRunnerViewPart_Action_PrevFailure;
+    public static String IpsTestRunnerViewPart_Action_PrevFailureToolTip;
+    public static String IpsTestRunnerViewPart_Action_ShowStackTrace;
+    public static String IpsTestRunnerViewPart_Action_ShowStackTraceToolTip;
 }

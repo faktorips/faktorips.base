@@ -97,8 +97,20 @@ public class TestRunPane {
 		return fTable;
 	}
 	
+    /**
+     * Select the failure or error table enty with the given idx.
+     * If there was no failure or error then nothing will selected.
+     */
+    public void selectCurrentFailureOrError(){
+        if (tableFailureItems.size()==0)
+            return;
+        
+        fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
+        showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
+    }
+    
 	/**
-	 * Select the failure or error table enty with the given idx.
+	 * Select the first failure or error table entry.
 	 * If there was no failure or error then nothing will selected.
 	 */
 	public void selectFirstFailureOrError(){

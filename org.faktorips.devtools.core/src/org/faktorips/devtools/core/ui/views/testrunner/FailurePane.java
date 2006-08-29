@@ -45,22 +45,29 @@ public class FailurePane {
 	public Composite getComposite(){
 		return fTable;
 	}
-
+    
 	/**
 	 * Inserts the given test case failure details in the table. One row for each given failure.
+     * If showStackTrace is <code>false</code> and the given failure details contains stack trace elements, then
+     * these elements will be hidden.
 	 */
-	public void showFailureDetails(String[] testCaseFailures) {
+	public void showFailureDetails(String[] testCaseFailures, boolean showStackTrace) {
 		fTable.removeAll();
 		for (int i = 0; i < testCaseFailures.length; i++) {
-			TableItem tableItem = new TableItem(fTable, SWT.NONE);
+			
             if (testCaseFailures[i].startsWith(TEST_ERROR_MESSAGE_INDICATOR)){
+                TableItem tableItem = new TableItem(fTable, SWT.NONE);
                 tableItem.setText(testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length()));
                 tableItem.setFont(JFaceResources.getBannerFont());
                 tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
             } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
-                tableItem.setText(testCaseFailures[i]);
-                tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
+                if (showStackTrace){
+                    TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                    tableItem.setText(testCaseFailures[i]);
+                    tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
+                }
             } else {
+                TableItem tableItem = new TableItem(fTable, SWT.NONE);
                 tableItem.setText(testCaseFailures[i]);
                 tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testfail.gif")); //$NON-NLS-1$
             }

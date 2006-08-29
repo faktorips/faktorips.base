@@ -87,6 +87,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private Action fNextAction;
 	private Action fPreviousAction;
 	private ToggleOrientationAction[] fToggleOrientationActions;
+    private Action fShowStackTraceAction;
     
 	/* Sash form orientations */
 	static final int VIEW_ORIENTATION_VERTICAL = 0;
@@ -130,7 +131,12 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	// The project which contains the runned tests 
 	private IJavaProject fTestProject;
 	
+    // Contains the map to do the mapping between the test case ids (unique id in the table run pane
+    // table) and the test case qualified name
     private HashMap testId2TestQualifiedNameMap = new HashMap();
+    
+    // Indicates if the stacktrace elemets will be shown or not
+    private boolean fShowStackTrace = true;
     
     /*
      * Action class to stop the currently running test.
@@ -177,8 +183,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
      */
     private class ShowNextErrorAction extends Action {
         public ShowNextErrorAction() {
-            setText("Next Failure"); 
-            setToolTipText("Next Failure"); 
+            setText(Messages.IpsTestRunnerViewPart_Action_NextFailure); 
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_NextFailureToolTip); 
             setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
             setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
             setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
@@ -194,8 +200,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
      */
     private class ShowPreviousErrorAction extends Action {
         public ShowPreviousErrorAction() {
-            setText("Previous Failure"); 
-            setToolTipText("Previous Failure"); 
+            setText(Messages.IpsTestRunnerViewPart_Action_PrevFailure); 
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_PrevFailureToolTip); 
             setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
             setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
             setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
@@ -205,6 +211,59 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             fTestRunPane.selectPreviousFailureOrError();
         }
     }    
+    
+    /*
+     * Action class to filter the stack trace elements
+     */
+    private class ShowStackTraceAction extends Action {
+        public ShowStackTraceAction() {
+            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+            setText(Messages.IpsTestRunnerViewPart_Action_ShowStackTrace); 
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowStackTraceToolTip); 
+            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
+            setEnabled(false);
+        }
+        public void run(){
+            fShowStackTrace = ! fShowStackTrace;
+            fShowStackTraceAction.setChecked(fShowStackTrace);
+            fTestRunPane.selectCurrentFailureOrError();
+        }
+    }    
+    
+    /*
+     * Action to toggle the orientation of the view
+     */
+    private class ToggleOrientationAction extends Action {
+        private final int fActionOrientation;
+        
+        public ToggleOrientationAction(IpsTestRunnerViewPart v, int orientation) {
+            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+            if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
+                setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation); 
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$                
+            } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
+                setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation); 
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$              
+            } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
+                setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);  
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$             
+            }
+            fActionOrientation = orientation;
+        }
+        
+        public int getOrientation() {
+            return fActionOrientation;
+        }
+        
+        public void run() {
+            if (isChecked()) {
+                fOrientation = fActionOrientation;
+                computeOrientation();
+            }
+        }       
+    } 
     
 	/*
 	 * Runs the last runned test.
@@ -334,14 +393,16 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		
         fStopTestRunAction= new StopTestRunAction();
 		fRerunLastTestAction= new RerunLastAction();
-		fToggleOrientationActions =
+		fNextAction= new ShowNextErrorAction();
+		fPreviousAction= new ShowPreviousErrorAction();
+
+        fToggleOrientationActions =
 			new ToggleOrientationAction[] {
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_VERTICAL),
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_HORIZONTAL),
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_AUTOMATIC)};
-        fNextAction= new ShowNextErrorAction();
-        fPreviousAction= new ShowPreviousErrorAction();
-
+        fShowStackTraceAction = new ShowStackTraceAction(); 
+        
         toolBar.add(fNextAction);
         toolBar.add(fPreviousAction);
         toolBar.add(new Separator());
@@ -350,43 +411,18 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		
 		for (int i = 0; i < fToggleOrientationActions.length; ++i)
 			viewMenu.add(fToggleOrientationActions[i]);		
-
+        viewMenu.add(new Separator());
+        viewMenu.add(fShowStackTraceAction);
+        
+        fShowStackTraceAction.setEnabled(true);
+        fShowStackTraceAction.setChecked(fShowStackTrace);
+        
 		actionBars.updateActionBars();
 		
         setRunToolBarButtonsStatus(false);
         setNextPrevToolBarButtonsStatus(false);
 	}
 	
-	private class ToggleOrientationAction extends Action {
-		private final int fActionOrientation;
-		
-		public ToggleOrientationAction(IpsTestRunnerViewPart v, int orientation) {
-			super("", AS_RADIO_BUTTON); //$NON-NLS-1$
-			if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
-				setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation); 
-				setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$				
-			} else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
-				setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation); 
-				setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$				
-			} else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
-				setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);  
-				setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$				
-			}
-			fActionOrientation = orientation;
-		}
-		
-		public int getOrientation() {
-			return fActionOrientation;
-		}
-		
-		public void run() {
-			if (isChecked()) {
-				fOrientation = fActionOrientation;
-				computeOrientation();
-			}
-		}		
-	}
-
 	private void computeOrientation() {
 		if (fOrientation != VIEW_ORIENTATION_AUTOMATIC) {
 			fCurrentOrientation = fOrientation;
@@ -793,7 +829,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * @param testCaseDetails contains the details of the selcted test result.
 	 */
 	public void selectionOfTestCaseChanged(String[] testCaseFailures) {
-		fFailurePane.showFailureDetails(testCaseFailures);
+		fFailurePane.showFailureDetails(testCaseFailures, fShowStackTrace);
 	}
 
 	public IJavaProject getLaunchedProject() {
