@@ -629,4 +629,11 @@
          </enablement>
       </decorator>
    </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/IpsProjectNatureOverlay.gif"
+            id="org.faktorips.devtools.core.ui.IpsProjectNatureImage"
+            natureId="org.faktorips.devtools.core.ipsnature"/>
+   </extension>
 </plugin>
