@@ -29,9 +29,9 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
+import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
-import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
 
 /**
  * A <code>ModelExplorer</code> that displays productdefinition projects along with all
@@ -58,9 +58,8 @@ public class ProductExplorer extends ModelExplorer {
      * of the packageFragmentRoot.
      * {@inheritDoc}
      */
-    protected void createProviders() {
-        contentProvider= new ProductContentProvider(config, isFlatLayout);
-        labelProvider= new ModelLabelProvider();
+    protected ModelContentProvider createContentProvider() {
+        return new ProductContentProvider(config, isFlatLayout);
     }
 	protected void createFilters(TreeViewer tree) {
 		super.createFilters(tree);

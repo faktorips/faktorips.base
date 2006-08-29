@@ -125,12 +125,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     /**
      * Content provider for the tree viewer.
      */
-    protected ModelContentProvider contentProvider;
+    private ModelContentProvider contentProvider;
 
     /**
      * Label provider for the tree viewer.
      */
-    protected ModelLabelProvider labelProvider;
+    private ModelLabelProvider labelProvider = new ModelLabelProvider();;
 
     private IpsResourceChangeListener resourceListener;
     
@@ -143,7 +143,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     public ModelExplorer() {
         super();
         config = createConfig();
-        createProviders();
+        contentProvider= createContentProvider();
     }
 
     protected ModelExplorerConfiguration createConfig() {
@@ -152,9 +152,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
     }
     
-    protected void createProviders(){
-        contentProvider = new ModelContentProvider(config, isFlatLayout);
-        labelProvider = new ModelLabelProvider();
+    protected ModelContentProvider createContentProvider(){
+        return new ModelContentProvider(config, isFlatLayout);
     }
 
     /**
