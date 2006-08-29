@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class FailurePane {
     private static final String TEST_ERROR_MESSAGE_INDICATOR = ">>>";
+    private static final String TEST_ERROR_STACK_INDICATOR = "---";
     
 	private Table fTable;
 	
@@ -56,9 +57,12 @@ public class FailurePane {
                 tableItem.setText(testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length()));
                 tableItem.setFont(JFaceResources.getBannerFont());
                 tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
-            } else{
+            } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
                 tableItem.setText(testCaseFailures[i]);
                 tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
+            } else {
+                tableItem.setText(testCaseFailures[i]);
+                tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testfail.gif")); //$NON-NLS-1$
             }
 		}
 	}

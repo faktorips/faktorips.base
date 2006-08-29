@@ -40,8 +40,10 @@ public class TestRunPane {
     
 	private Table fTable;
 	
-	private TableItem firstFailureOrError;
+	private List tableFailureItems = new ArrayList();
 
+    private int currErrorOrFailure = 0;
+    
 	private IpsTestRunnerViewPart testRunnerViewPart;
 	
     private List missingTestEntries = new ArrayList();
@@ -96,15 +98,47 @@ public class TestRunPane {
 	}
 	
 	/**
-	 * Select the last failure or error table enty.
+	 * Select the failure or error table enty with the given idx.
 	 * If there was no failure or error then nothing will selected.
 	 */
-	public void selectFailureOrError(){
-		if (firstFailureOrError != null){
-			fTable.select(fTable.indexOf(firstFailureOrError));
-			showDetailsInFailurePane(firstFailureOrError);
-		}
+	public void selectFirstFailureOrError(){
+		if (tableFailureItems.size()==0)
+            return;
+        
+		fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(0)));
+		showDetailsInFailurePane((TableItem)tableFailureItems.get(0));
 	}
+    
+    /**
+     * Select the next failure or error, does nothing if no error or failure exists.
+     */
+    public void selectNextFailureOrError(){
+        if (tableFailureItems.size()==0)
+            return;
+        
+        currErrorOrFailure ++;
+        if (currErrorOrFailure>(tableFailureItems.size()-1))
+            currErrorOrFailure = 0;
+        
+        fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
+        showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
+    }
+    
+    /**
+     * Select the previous failure or error, does nothing if no error or failure exists.
+     */
+    public void selectPreviousFailureOrError(){
+        if (tableFailureItems.size()==0)
+            return;
+        
+        currErrorOrFailure --;
+        
+        if (currErrorOrFailure<0)
+            currErrorOrFailure = tableFailureItems.size() -1;
+        
+        fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
+        showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
+    }    
 
 	//
 	// Methods to inform this pane about test run, end and failures
@@ -117,8 +151,8 @@ public class TestRunPane {
         missingTestEntries.clear();
 		fTable.removeAll();
         fTableItemMap.clear();
-        
-		firstFailureOrError = null;
+        tableFailureItems.clear();
+        currErrorOrFailure = 0;
 	}
 	
 	/**
@@ -191,8 +225,8 @@ public class TestRunPane {
 		testTableEntry.setStatus(TestTableEntry.FAILURE);
 		testTableEntry.addFailure(failure);
 		
-		if (firstFailureOrError == null)
-			firstFailureOrError = testTableEntry.getTableItem();
+        if (!tableFailureItems.contains(testTableEntry.getTableItem()))
+            tableFailureItems.add(testTableEntry.getTableItem());
 	}
 	
 	/**
@@ -211,16 +245,24 @@ public class TestRunPane {
 		testTableEntry.setErrorDetails(errorDetails);
 		testTableEntry.setStatus(TestTableEntry.ERROR);
 		
-		if (firstFailureOrError == null)
-			firstFailureOrError = tableItem;		
+        tableFailureItems.add(tableItem);		
 	}
 	
+    /*
+     * Returns the full path of the selected test case or an empty string if no test case is selected
+     */
 	private String getTestFullPath() {
 		TableItem item= getSelectedItem();
+        if (item == null)
+            return ""; //$NON-NLS-1$
+        
 		TestTableEntry entry= (TestTableEntry) item.getData();
 		return entry.getFullPath();
 	}
 	
+    /*
+     * Returns the selected item in the table or <code>null</code> if no item is selected
+     */
 	private TableItem getSelectedItem() {
 		int index= fTable.getSelectionIndex();
 		if (index == -1)
@@ -290,8 +332,7 @@ public class TestRunPane {
 		}
 	}
 
-    // TODO Joerg: synchronize test runner
-    public void checkMissingEntries() {
+    void checkMissingEntries() {
         if (missingTestEntries.size() == 0)
             return;
         synchronized (missingTestEntries) {

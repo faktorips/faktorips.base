@@ -31,6 +31,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -83,8 +84,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	/* Actions */
     private Action fStopTestRunAction;
 	private Action fRerunLastTestAction;
+	private Action fNextAction;
+	private Action fPreviousAction;
 	private ToggleOrientationAction[] fToggleOrientationActions;
-	
+    
 	/* Sash form orientations */
 	static final int VIEW_ORIENTATION_VERTICAL = 0;
 	static final int VIEW_ORIENTATION_HORIZONTAL = 1;
@@ -168,7 +171,41 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			rerunTestRun();
 		}
 	}
+    
+    /*
+     * Action class to select the next error or failure
+     */
+    private class ShowNextErrorAction extends Action {
+        public ShowNextErrorAction() {
+            setText("Next Failure"); 
+            setToolTipText("Next Failure"); 
+            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_next.gif")); //$NON-NLS-1$
+            setEnabled(false);
+        }
+        public void run(){
+            fTestRunPane.selectNextFailureOrError();
+        }
+    }    
 	
+    /*
+     * Action class to select the previous error or failure
+     */
+    private class ShowPreviousErrorAction extends Action {
+        public ShowPreviousErrorAction() {
+            setText("Previous Failure"); 
+            setToolTipText("Previous Failure"); 
+            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/select_prev.gif")); //$NON-NLS-1$
+            setEnabled(false);
+        }
+        public void run(){
+            fTestRunPane.selectPreviousFailureOrError();
+        }
+    }    
+    
 	/*
 	 * Runs the last runned test.
 	 */
@@ -302,8 +339,12 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_VERTICAL),
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_HORIZONTAL),
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_AUTOMATIC)};
-		
+        fNextAction= new ShowNextErrorAction();
+        fPreviousAction= new ShowPreviousErrorAction();
 
+        toolBar.add(fNextAction);
+        toolBar.add(fPreviousAction);
+        toolBar.add(new Separator());
         toolBar.add(fStopTestRunAction);
 		toolBar.add(fRerunLastTestAction);
 		
@@ -312,8 +353,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
 		actionBars.updateActionBars();
 		
-		fRerunLastTestAction.setEnabled(false);
-        fStopTestRunAction.setEnabled(false);
+        setRunToolBarButtonsStatus(false);
+        setNextPrevToolBarButtonsStatus(false);
 	}
 	
 	private class ToggleOrientationAction extends Action {
@@ -554,6 +595,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				if(isDisposed()) 
 					return;
 				fTestRunPane.failureTest(testId, failureDetailsToString(failureDetails));
+                fTestRunPane.selectFirstFailureOrError();
 			}
 		});
 	}
@@ -563,7 +605,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 			public void run() {
 				if(isDisposed()) 
 					return;
-				fTestRunPane.selectFailureOrError();
+				fTestRunPane.selectFirstFailureOrError();
 			}
 		});
 	}
@@ -619,6 +661,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
 	    isFailure = true;
 	    postFailureTest(getTestId(qualifiedTestName), failureDetails);
+        setNextPrevToolBarButtonsStatus(true);
 	}
 
 	/**
@@ -637,11 +680,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	public void testStarted(String qualifiedTestName) {
         setInfoMessage(qualifiedTestName);
         isFailure = false;
-		fRerunLastTestAction.setEnabled(true);
-        fStopTestRunAction.setEnabled(true);
+        setRunToolBarButtonsStatus(true);
 		postStartTest(getTestId(qualifiedTestName), qualifiedTestName);
 	}
-	
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -698,8 +740,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         
 		reset(testCount);
 		fExecutedTests++;
-		fRerunLastTestAction.setEnabled(true);
-        fStopTestRunAction.setEnabled(true);
+        setRunToolBarButtonsStatus(true);
+        setNextPrevToolBarButtonsStatus(false);
         
 		stopUpdateJobs();
 		fUpdateJob = new UpdateUIJob(Messages.IpsTestRunnerViewPart_Job_UpdateUiTitle); 
@@ -725,8 +767,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         fStatus = NLS.bind(Messages.IpsTestRunnerViewPart_Message_TestFinishedAfterNSeconds, elapsedTimeAsString(elapsedTimeLong));
         
         fStopTestRunAction.setEnabled(false);
+        if (fErrorCount+fFailureCount > 0){
+            setNextPrevToolBarButtonsStatus(true);
+        }
 	}
     
+    /*
+     * Returns the string representation in second of the given time in milliseconds
+     */
     private String elapsedTimeAsString(long elapsedTime) {
         return NumberFormat.getInstance().format((double)elapsedTime/1000);
     }    
@@ -751,4 +799,20 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	public IJavaProject getLaunchedProject() {
 		return fTestProject;
 	}
+    
+    /*
+     * Enables or disables the run and stop toolbar actions
+     */
+    private void setRunToolBarButtonsStatus(boolean enabled){
+        fRerunLastTestAction.setEnabled(enabled);
+        fStopTestRunAction.setEnabled(enabled);
+    }
+    
+    /*
+     * Enables or disables the next and previous toolbar actions
+     */
+    private void setNextPrevToolBarButtonsStatus(boolean enabled){
+        fNextAction.setEnabled(enabled);
+        fPreviousAction.setEnabled(enabled);
+    }
 }
