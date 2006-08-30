@@ -303,7 +303,7 @@
 	       id = "tableExportWizard"
            name = "FaktorIPS table contents"
     	   class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
-    	   icon="icons/TableContents.gif">
+    	   icon="icons/ExportTableContents.gif">
     	   <description>Exports table contents</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
@@ -315,7 +315,7 @@
 	       id = "tableImportWizard"
            name = "FaktorIPS table contents"
     	   class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
-    	   icon="icons/TableContents.gif">
+    	   icon="icons/ImportTableContents.gif">
     	   <description>Imports table contents</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
