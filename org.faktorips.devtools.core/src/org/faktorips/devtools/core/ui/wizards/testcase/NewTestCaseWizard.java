@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -48,6 +49,7 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     
     public NewTestCaseWizard() {
         super(IpsObjectType.TEST_CASE);
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseWizard.gif"));
     }
     
     /**

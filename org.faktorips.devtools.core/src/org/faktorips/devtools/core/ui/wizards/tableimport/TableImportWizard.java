@@ -55,6 +55,7 @@ public class TableImportWizard extends Wizard implements IImportWizard {
     public TableImportWizard() {
         super();
         setWindowTitle(Messages.TableImport_title);
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/TableImportWizard.gif"));
     }
 
     /**

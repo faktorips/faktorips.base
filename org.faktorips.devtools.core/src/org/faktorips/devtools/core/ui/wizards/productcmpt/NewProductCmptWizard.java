@@ -40,6 +40,7 @@ public class NewProductCmptWizard extends NewIpsObjectWizard {
     
     public NewProductCmptWizard() {
         super(IpsObjectType.PRODUCT_CMPT);
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewProductCmptWizard.gif"));
     }
     
     /** 

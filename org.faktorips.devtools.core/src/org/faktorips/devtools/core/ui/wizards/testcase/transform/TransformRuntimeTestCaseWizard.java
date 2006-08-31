@@ -57,6 +57,7 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 	public TransformRuntimeTestCaseWizard(){
 		super();
 		setWindowTitle(Messages.TransformWizard_title);
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseWizard.gif"));
 	}
 	
 	/**

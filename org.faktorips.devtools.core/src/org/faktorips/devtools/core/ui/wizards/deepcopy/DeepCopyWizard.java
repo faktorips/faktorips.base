@@ -112,9 +112,11 @@ public class DeepCopyWizard extends Wizard {
 		
 		if (type == TYPE_COPY_PRODUCT) {
 			super.setWindowTitle(Messages.DeepCopyWizard_title);
+            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/DeepCopyWizard.gif"));
 		} else {
 			String title = NLS.bind(Messages.DeepCopyWizard_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 			super.setWindowTitle(title);
+            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewVersionWizard.gif"));
 		}
 		
 		IPath path = IpsPlugin.getDefault().getStateLocation();
