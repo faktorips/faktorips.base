@@ -99,7 +99,7 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     			ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();
     			testPolicyCmpt.setTestPolicyCmptTypeParameter(parameter[i].getName());
     			testPolicyCmpt.setName(
-    					testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptTypeParameter()));
+    					testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, testPolicyCmpt.getTestPolicyCmptTypeParameter()));
     			// add the attributes which are defined in the test case type parameter
     			ITestAttribute attributes[] = testCaseTypeParam.getTestAttributes();
     			for (int j = 0; j < attributes.length; j++) {
