@@ -58,6 +58,7 @@ public class DefaultEnumTypeTest extends TestCase {
 
     public void testContainsValue() {
         assertTrue(gender.containsValue("male"));
+        assertTrue(gender.containsValue("female"));
         assertFalse(gender.containsValue("unkown"));
     }
 
