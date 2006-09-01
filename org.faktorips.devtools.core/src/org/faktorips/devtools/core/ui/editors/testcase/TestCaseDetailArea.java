@@ -157,7 +157,10 @@ public class TestCaseDetailArea {
 	 * given element, the root will be only displayed once if more than one childs are given.
 	 * @throws RuntimeException if an error occurs creating the content
 	 */
-	public void createDetailSection(List testPolicyCmpts) {		
+	public void createDetailSection(List testPolicyCmpts) {
+        if (testPolicyCmpts == null)
+            return;
+        
 		for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
 			ITestPolicyCmpt currTestPolicyCmpt = (ITestPolicyCmpt) iter.next();
 			

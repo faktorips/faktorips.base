@@ -891,6 +891,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	
 	private void showAll(boolean showAll){
 		this.showAll = showAll;
+        prevIsValue = false;
+        prevTestPolicyCmpt = new ArrayList();
 		if (showAll){
 			ArrayList allInputTestPolicyCmpts;
 			ITestPolicyCmpt[] policyCmpts = contentProvider.getPolicyCmpts();
@@ -907,8 +909,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             treeViewer.expandAll();
 			redrawForm();
 		}else{
-			prevIsValue = false;
-			prevTestPolicyCmpt = new ArrayList();
 			ISelection selection = treeViewer.getSelection();
 			if (selection instanceof IStructuredSelection){
 				Object domainObject = ((IStructuredSelection)selection).getFirstElement();
@@ -916,14 +916,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     testCaseDetailArea.clearDetailArea();
 					testCaseDetailArea.createValuesSection();
 				} else {
-					ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) getTestPolicyCmpFromDomainObject(domainObject).getRoot();
-					ArrayList list = new ArrayList();
-					list.add(testPolicyCmpt);
+				    testCaseDetailArea.clearDetailArea();
+                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) getTestPolicyCmpFromDomainObject(domainObject);
+                    if (testPolicyCmpt != null){
+                        testPolicyCmpt = (ITestPolicyCmpt) testPolicyCmpt.getRoot();
+    					ArrayList list = new ArrayList();
+    					list.add(testPolicyCmpt);
 					
-                    testCaseDetailArea.clearDetailArea();
-					testCaseDetailArea.createDetailSection(list);
-					prevTestPolicyCmpt = list;
-					prevIsValue = false;		
+    					testCaseDetailArea.createDetailSection(list);
+    					prevTestPolicyCmpt = list;
+    					prevIsValue = false;
+                    } else{
+                        prevTestPolicyCmpt = new ArrayList();
+                        prevIsValue = false;
+                    }
 			}
 			redrawForm();
             }
