@@ -61,35 +61,35 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
         } else if (element instanceof ITestPolicyCmptTypeParameter) {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)element;
 
-            String targetExtension = "";
+            String targetExtension = ""; //$NON-NLS-1$
             
-            targetExtension = testPolicyCmptTypeParam.getPolicyCmptType()==null?"":StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType());
+            targetExtension = testPolicyCmptTypeParam.getPolicyCmptType()==null?"":StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType()); //$NON-NLS-1$
             if (StringUtils.isNotEmpty(targetExtension)
                     && !targetExtension.equals(testPolicyCmptTypeParam.getName()))
-                targetExtension = " (" + targetExtension + ")";
+                targetExtension = " (" + targetExtension + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             else
                 // no relation or relation is equal test param name
-                targetExtension = "";                
+                targetExtension = "";                 //$NON-NLS-1$
 
             return testPolicyCmptTypeParam.getName() + targetExtension + getRoleExtension(testPolicyCmptTypeParam.getTestParameterRole());
         } else if (element instanceof ITestAttribute) {
             ITestAttribute testAttribute = (ITestAttribute)element;
-            String extension = "";
+            String extension = ""; //$NON-NLS-1$
             if (StringUtils.isNotEmpty(testAttribute.getAttribute())
                     && !testAttribute.getAttribute().equals(testAttribute.getName())) {
-                extension = " (" + testAttribute.getAttribute() + ")";
+                extension = " (" + testAttribute.getAttribute() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             return StringUtils.capitalise(testAttribute.getName()) + extension + getRoleExtension(testAttribute.getTestAttributeRole());
         }
             
-		return "<undefined>";
+		return Messages.TestCaseTypeLabelProvider_Undefined;
 	}
 
     /**
      * Returns the role extension of the given role, format: " - roleName"
      */
     private String getRoleExtension(TestParameterRole role){
-        return " - " + role.getName();
+        return " - " + role.getName(); //$NON-NLS-1$
     }
     
 	/**

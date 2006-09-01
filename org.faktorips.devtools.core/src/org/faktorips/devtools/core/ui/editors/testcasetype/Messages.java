@@ -32,4 +32,45 @@ public class Messages extends NLS {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
+
+    public static String TestCaseTypeEditor_PageName;
+    public static String TestCaseTypeEditor_SectionTitle_Structure;
+    public static String TestCaseTypeEditor_SectionTitle_Details;
+    public static String TestCaseTypeEditor_EditorTitle;
+    public static String TestCaseTypeLabelProvider_Undefined;
+    public static String TestCaseTypeSection_Button_AddAttribute;
+    public static String TestCaseTypeSection_Button_RemoveAttribute;
+    public static String TestCaseTypeSection_Button_ChangeAttribute;
+    public static String TestCaseTypeSection_Button_MoveAttributeUp;
+    public static String TestCaseTypeSection_Button_MoveAttributeDown;
+    public static String TestCaseTypeSection_Button_AddRootTestValue;
+    public static String TestCaseTypeSection_Button_AddRootTestPolicyCmpt;
+    public static String TestCaseTypeSection_Button_ChangeTarget;
+    public static String TestCaseTypeSection_Button_Remove;
+    public static String TestCaseTypeSection_Button_AddRelation;
+    public static String TestCaseTypeSection_Button_ChangeRelation;
+    public static String TestCaseTypeSection_Action_ShowAll_ToolTip;
+    public static String TestCaseTypeSection_Error_UnexpectedObjectClass;
+    public static String TestCaseTypeSection_Dialog_SelectAttributeAdd_Message;
+    public static String TestCaseTypeSection_Dialog_SelectAttributeChange_Message;
+    public static String TestCaseTypeSection_EditFieldLabel_Datatype;
+    public static String TestCaseTypeSection_EditFieldLabel_MinInstances;
+    public static String TestCaseTypeSection_EditFieldLabel_MaxInstances;
+    public static String TestCaseTypeSection_EditFieldLabel_RequiresProduct;
+    public static String TestCaseTypeSection_TestCaseTypeSection_EditFieldLabel_PolicyCmptType;
+    public static String TestCaseTypeSection_EditFieldLabel_Relation;
+    public static String TestCaseTypeSection_EditFieldLabel_Name;
+    public static String TestCaseTypeSection_EditFieldLabel_Role;
+    public static String TestCaseTypeSection_EditFieldLabel_Attribute;
+    public static String TestCaseTypeSection_Dialog_SelectDatatypeAdd_Message;
+    public static String TestCaseTypeSection_Dialog_SelectPolicyCmptTypeAdd_Message;
+    public static String TestCaseTypeSection_Dialog_SelectRelationAdd_Message;
+    public static String TestCaseTypeSection_Dialog_SelectRelationChange_Message;
+    public static String TestCaseTypeSection_Dialog_SelectPolicyCmptTypeChange_Message;
+    public static String TestCaseTypeSection_Dialog_SelectDatatypeChange_Message;
+    public static String TestCaseTypeSection_Error_WrongTestAttributeIndex;
+    public static String TestCaseTypeSection_Dialog_SelectPolicyCmptType_Title;
+    public static String TestCaseTypeSection_Dialog_SelectAttribute_Title;
+    public static String TestCaseTypeSection_Dialog_SelectDatatype_Title;
+    public static String TestCaseTypeSection_Dialog_SelectRelation_Title;
 }

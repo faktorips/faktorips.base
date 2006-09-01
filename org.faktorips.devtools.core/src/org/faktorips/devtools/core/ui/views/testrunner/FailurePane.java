@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.views.testrunner;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -99,7 +98,6 @@ public class FailurePane {
                 if (text.trim().length()>0){
                     TableItem tableItem = new TableItem(fTable, SWT.NONE);
                     tableItem.setText(text);
-                    tableItem.setFont(JFaceResources.getBannerFont());
                     tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
                 }
             } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {

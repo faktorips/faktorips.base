@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -171,13 +172,13 @@ public class TestCaseTypeSection extends IpsSection {
             GridLayout buttonLayout = new GridLayout(1, true);
             buttons.setLayout(buttonLayout);
             
-            addAtributeButton = toolkit.createButton(buttons, "Add Attribute");
+            addAtributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_AddAttribute);
             
             createButtonSeparator(buttons);
-            removeAttributeButton = toolkit.createButton(buttons, "Remove Attribute");
-            changeAttributeButton = toolkit.createButton(buttons, "Change Attribute");
-            moveAttributeUp = toolkit.createButton(buttons, "Up");
-            moveAttributeDown = toolkit.createButton(buttons, "Down");
+            removeAttributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_RemoveAttribute);
+            changeAttributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_ChangeAttribute);
+            moveAttributeUp = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_MoveAttributeUp);
+            moveAttributeDown = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_MoveAttributeDown);
             
             addAtributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             removeAttributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -444,13 +445,13 @@ public class TestCaseTypeSection extends IpsSection {
         GridLayout buttonLayout = new GridLayout(1, true);
         buttons.setLayout(buttonLayout);
         
-        addRootTestValueParameterButton = toolkit.createButton(buttons, "Add Root Test Value");
-        addRootTestPolicyCmptTypeParamButton = toolkit.createButton(buttons, "Add Root Test Policy Cmpt");
-        changeTargetButton = toolkit.createButton(buttons, "Change Target");
-        removeButton = toolkit.createButton(buttons, "Remove");
+        addRootTestValueParameterButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_AddRootTestValue);
+        addRootTestPolicyCmptTypeParamButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_AddRootTestPolicyCmpt);
+        changeTargetButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_ChangeTarget);
+        removeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_Remove);
         createButtonSeparator(buttons);
-        addButton = toolkit.createButton(buttons, "Add Relation");
-        changeRelationButton = toolkit.createButton(buttons, "Change Relation");
+        addButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_AddRelation);
+        changeRelationButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_ChangeRelation);
         addRootTestValueParameterButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         addRootTestPolicyCmptTypeParamButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
@@ -488,14 +489,14 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void configureToolBar(){
         // Toolbar item show all
-        Action actionAll = new Action("structureAll", Action.AS_CHECK_BOX) {
+        Action actionAll = new Action("structureAll", Action.AS_CHECK_BOX) { //$NON-NLS-1$
             public void run() {
                 showAllClicked();
             }
         };
         actionAll.setChecked(showAll);
-        actionAll.setToolTipText("Show all");
-        actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif"));
+        actionAll.setToolTipText(Messages.TestCaseTypeSection_Action_ShowAll_ToolTip);
+        actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
         form.getToolBarManager().add(actionAll);
         form.updateToolBar();
     }
@@ -633,14 +634,14 @@ public class TestCaseTypeSection extends IpsSection {
         else if (object instanceof ITestPolicyCmptTypeParameter)
             testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object;
         else
-            throw new RuntimeException("Unexpected object class: " + object.getClass().getName());
+            throw new RuntimeException(NLS.bind(Messages.TestCaseTypeSection_Error_UnexpectedObjectClass, object.getClass().getName()));
         
         // open a dialog to select an attribute of the policy cmpt 
         // wich is related by the given test policy cmpt type param
         String[] attributeNames;
         try {
             attributeNames = selectAttributeByDialog(testPolicyCmptTypeParam,
-                    "Select attributes to add to the test policy cmpt type parameter", true);
+                    Messages.TestCaseTypeSection_Dialog_SelectAttributeAdd_Message, true);
         } catch (CoreException e1) {
             throw new RuntimeException(e1);
         }
@@ -681,7 +682,7 @@ public class TestCaseTypeSection extends IpsSection {
         String[] attributeNames;
         try {
             attributeNames = selectAttributeByDialog((ITestPolicyCmptTypeParameter)testAttribute.getParent(),
-                    "Select an attribute which will be used by the test attribute", false); 
+                    Messages.TestCaseTypeSection_Dialog_SelectAttributeChange_Message, false); 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }        
@@ -727,13 +728,13 @@ public class TestCaseTypeSection extends IpsSection {
     private void createTestParamDetails(Composite editFieldsComposite,
             ITestParameter testParam,
             IpsPartUIController uiController) {
-        Label label = toolkit.createFormLabel(editFieldsComposite, "Name:");
+        Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testParam.getName());
         addSectionSelectionListeners(editFieldName, label,testParam);
         sectionFirstEditField.put(getKeyFor(testParam), editFieldName);
         
-        label = toolkit.createFormLabel(editFieldsComposite, "Role:");
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Role);
         EditField editFieldRole = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterRole
                 .getEnumType()), TestParameterRole.getEnumType());
         addSectionSelectionListeners(editFieldRole, label, testParam);
@@ -818,7 +819,7 @@ public class TestCaseTypeSection extends IpsSection {
     private void createTestValueParamDetails(Composite editFieldsComposite,
             ITestValueParameter parameter,
             IpsPartUIController uiController) {
-        Label label = toolkit.createFormLabel(editFieldsComposite, "Datatype:");
+        Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
         EditField editFieldDatatype = new TextField(toolkit.createText(editFieldsComposite));
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
         editFieldDatatype.getControl().setEnabled(false);
@@ -834,21 +835,21 @@ public class TestCaseTypeSection extends IpsSection {
     private void createTestPolicyCmptTypeParamDetails(Composite editFieldsComposite,
             ITestPolicyCmptTypeParameter parameter,
             IpsPartUIController uiController) {
-        Label label = toolkit.createFormLabel(editFieldsComposite, "Minimum Instances:");
+        Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
         EditField editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMin.setText(""+parameter.getMinInstances());
+        editFieldMin.setText(""+parameter.getMinInstances()); //$NON-NLS-1$
         addSectionSelectionListeners(editFieldMin, label, parameter);
 
-        label = toolkit.createFormLabel(editFieldsComposite, "Maximum Instances:");
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
         EditField editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMax.setText(""+parameter.getMaxInstances());
+        editFieldMax.setText(""+parameter.getMaxInstances()); //$NON-NLS-1$
         addSectionSelectionListeners(editFieldMax, label, parameter);
         
-        label = toolkit.createFormLabel(editFieldsComposite, "Requires Product:");
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
         EditField editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
         addSectionSelectionListeners(editFieldReqProd, label, parameter);
         
-        label = toolkit.createFormLabel(editFieldsComposite, "Policy Class:");
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_TestCaseTypeSection_EditFieldLabel_PolicyCmptType);
         EditField editFieldPolicyCmptType = new TextField(toolkit.createText(editFieldsComposite));
         addSectionSelectionListeners(editFieldPolicyCmptType, label, parameter);
         editFieldPolicyCmptType.getControl().setEnabled(false);
@@ -856,7 +857,7 @@ public class TestCaseTypeSection extends IpsSection {
         
         EditField editFieldRelation = null;
         if (!parameter.isRoot()){
-            label = toolkit.createFormLabel(editFieldsComposite, "Relation:");
+            label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Relation);
             editFieldRelation = new TextField(toolkit.createText(editFieldsComposite));
             addSectionSelectionListeners(editFieldRelation, label, parameter);
             editFieldRelation.getControl().setEnabled(false);
@@ -886,19 +887,19 @@ public class TestCaseTypeSection extends IpsSection {
         Composite editFieldsComposite = toolkit.createLabelEditColumnComposite(section);
         section.setClient(editFieldsComposite);
         
-        Label label = toolkit.createFormLabel(editFieldsComposite, "Name:");
+        Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testAttribute.getName());
         addSectionSelectionListeners(editFieldName, label, testAttribute);
         
-        label = toolkit.createFormLabel(editFieldsComposite, "Role:");
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Role);
         EditField editFieldRole = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterRole
                 .getEnumType()), TestParameterRole.getEnumType());
         addSectionSelectionListeners(editFieldRole, label, testAttribute);
         // removed the combined entry for test attributes, obly input and expected are allowed
         ((Combo) editFieldRole.getControl()).remove(TestParameterRole.COMBINED.getName());
         
-        label = toolkit.createFormLabel(editFieldsComposite, "Attribute:");
+        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Attribute);
         EditField editFieldAttribute = new TextField(toolkit.createText(editFieldsComposite));
         editFieldAttribute.getControl().setEnabled(false);
         addSectionSelectionListeners(editFieldAttribute, label, testAttribute);
@@ -1103,7 +1104,7 @@ public class TestCaseTypeSection extends IpsSection {
     private void addRootTestValueParameterClicked() {
         String[] datatypeNames = null;
         try {
-            datatypeNames = selectValueDatatypeByDialog("Select datatypes which will be added as test values to the test case type", true); 
+            datatypeNames = selectValueDatatypeByDialog(Messages.TestCaseTypeSection_Dialog_SelectDatatypeAdd_Message, true); 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }        
@@ -1128,7 +1129,7 @@ public class TestCaseTypeSection extends IpsSection {
         String[] policyCmptTypeNames = null;
         try {
             policyCmptTypeNames = selectPolicyCmptTypeByDialog(null,
-                    "Select policy classes which will be added to the test case type", true); 
+                    Messages.TestCaseTypeSection_Dialog_SelectPolicyCmptTypeAdd_Message, true); 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }        
@@ -1161,7 +1162,7 @@ public class TestCaseTypeSection extends IpsSection {
         IRelation[] relations;
         try {
             relations = selectRelationByDialog(testPolicyCmptTypeParam,
-                    "Select relations which will be added to the test policy component", true); 
+                    Messages.TestCaseTypeSection_Dialog_SelectRelationAdd_Message, true); 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }        
@@ -1210,7 +1211,7 @@ public class TestCaseTypeSection extends IpsSection {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParamParent = (ITestPolicyCmptTypeParameter)testPolicyCmptTypeParam
                     .getParent();
             IRelation[] relations = selectRelationByDialog(testPolicyCmptTypeParamParent,
-                    "Select relation which will be used by the test policy component", false);
+                    Messages.TestCaseTypeSection_Dialog_SelectRelationChange_Message, false);
 
             if (relations == null)
                 return;
@@ -1239,7 +1240,7 @@ public class TestCaseTypeSection extends IpsSection {
             try {
                 String[] policyCmptTypeNames = null;
                 policyCmptTypeNames = selectPolicyCmptTypeByDialog(testPolicyCmptTypeParam.findRelation().findTarget(),
-                        "Select a policy class for the test policy component", false);
+                        Messages.TestCaseTypeSection_Dialog_SelectPolicyCmptTypeChange_Message, false);
                 if (policyCmptTypeNames == null)
                     return;
     
@@ -1254,7 +1255,7 @@ public class TestCaseTypeSection extends IpsSection {
             
             try {
                 String[] valueDatatypes = null;
-                valueDatatypes = selectValueDatatypeByDialog("Select a value datatype for the test value", false);
+                valueDatatypes = selectValueDatatypeByDialog(Messages.TestCaseTypeSection_Dialog_SelectDatatypeChange_Message, false);
                 if (valueDatatypes == null)
                     return;
     
@@ -1287,7 +1288,7 @@ public class TestCaseTypeSection extends IpsSection {
     private void moveTestAttribute(ITestAttribute testAttribute, boolean up) {
         Integer testAttributeIdx = (Integer) attributeIdx.get(getKeyFor(testAttribute));
         if (testAttributeIdx == null)
-            throw new RuntimeException("Couldn't determine the test attribute index!");
+            throw new RuntimeException(Messages.TestCaseTypeSection_Error_WrongTestAttributeIndex);
         
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
         testPolicyCmptTypeParameter.moveTestAttributes(new int[]{testAttributeIdx.intValue()}, up);
@@ -1476,7 +1477,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private String[] selectPolicyCmptTypeByDialog(IPolicyCmptType policyCmptType, String message, boolean multi) throws CoreException {
         ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), new DefaultLabelProvider());
-        selectDialog.setTitle("Policy Class Selection");
+        selectDialog.setTitle(Messages.TestCaseTypeSection_Dialog_SelectPolicyCmptType_Title);
         selectDialog.setMessage(message);
         selectDialog.setMultipleSelection(multi);
         
@@ -1518,7 +1519,7 @@ public class TestCaseTypeSection extends IpsSection {
             boolean multi) throws CoreException {
         ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), new DefaultLabelProvider());
         selectDialog.setMultipleSelection(multi);
-        selectDialog.setTitle("Attribute Selection");
+        selectDialog.setTitle(Messages.TestCaseTypeSection_Dialog_SelectAttribute_Title);
         selectDialog.setMessage(message);
 
         IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType();
@@ -1545,7 +1546,7 @@ public class TestCaseTypeSection extends IpsSection {
     private String[] selectValueDatatypeByDialog(String message, boolean multi) throws CoreException {
         ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), new DefaultLabelProvider());
         selectDialog.setMultipleSelection(multi);
-        selectDialog.setTitle("Relation Selection");
+        selectDialog.setTitle(Messages.TestCaseTypeSection_Dialog_SelectDatatype_Title);
         selectDialog.setMessage(message);
 
         Datatype[] datatypes = (Datatype[]) testCaseType.getIpsProject().findDatatypes(true, true, true);
@@ -1571,7 +1572,7 @@ public class TestCaseTypeSection extends IpsSection {
             boolean multi) throws CoreException {
         ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), new DefaultLabelProvider());
         selectDialog.setMultipleSelection(multi);
-        selectDialog.setTitle("Relation Selection");
+        selectDialog.setTitle(Messages.TestCaseTypeSection_Dialog_SelectRelation_Title);
         selectDialog.setMessage(message);
 
         IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType();

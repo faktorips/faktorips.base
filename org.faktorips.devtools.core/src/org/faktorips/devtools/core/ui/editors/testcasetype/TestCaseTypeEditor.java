@@ -31,8 +31,8 @@ public class TestCaseTypeEditor extends IpsObjectEditor {
      */
     protected void addPages() {
         try {
-            editorPage = new TestCaseTypeEditorPage(this, "Test Case Type", "Test Case Type Structure",
-                    "Test Case Type Details");
+            editorPage = new TestCaseTypeEditorPage(this, Messages.TestCaseTypeEditor_PageName, Messages.TestCaseTypeEditor_SectionTitle_Structure,
+                    Messages.TestCaseTypeEditor_SectionTitle_Details);
             addPage(editorPage);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -55,6 +55,6 @@ public class TestCaseTypeEditor extends IpsObjectEditor {
      * {@inheritDoc}
      */
     protected String getUniformPageTitle() {
-        return NLS.bind("Test Case Type: {0}", getTestCaseType().getName());
+        return NLS.bind(Messages.TestCaseTypeEditor_EditorTitle, getTestCaseType().getName());
     }
 }
