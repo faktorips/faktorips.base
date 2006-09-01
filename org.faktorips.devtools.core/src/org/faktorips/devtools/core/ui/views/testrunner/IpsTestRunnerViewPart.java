@@ -52,6 +52,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.util.StringUtil;
 
 /**
  * A ViewPart that shows the results of a ips test run.
@@ -688,7 +689,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * {@inheritDoc}
 	 */
 	public void testStarted(String qualifiedTestName) {
-        setInfoMessage(qualifiedTestName);
+        setInfoMessage(StringUtil.unqualifiedName(qualifiedTestName));
         isFailure = false;
         setRunToolBarButtonsStatus(true);
 		postStartTest(getTestId(qualifiedTestName), qualifiedTestName);

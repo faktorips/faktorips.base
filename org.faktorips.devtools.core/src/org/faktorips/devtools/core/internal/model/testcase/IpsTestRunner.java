@@ -93,6 +93,9 @@ public class IpsTestRunner implements IIpsTestRunner {
     // Contains the progress monitor 
     private IProgressMonitor testRunnerMonitor;
     
+    // The job to run the test
+    private TestRunnerJob job;
+    
     private IpsTestRunner() {
     }
 
@@ -175,6 +178,9 @@ public class IpsTestRunner implements IIpsTestRunner {
                 if (launch.canTerminate()){
                     terminated = true;
                     launch.terminate();
+                    notifyTestRunEnded("" + (System.currentTimeMillis()- testStartTime));
+                    if (!testRunnerMonitor.isCanceled())
+                        job.cancel();
                 }
             }
         } catch (DebugException e) {
@@ -400,8 +406,6 @@ public class IpsTestRunner implements IIpsTestRunner {
     }    
     
     private void notifyTestStarted(String qualifiedTestName) {
-        
-        
         // check if the test runner is canceled
         if (testRunnerMonitor.isCanceled())
             try {
@@ -461,7 +465,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 	 * {@inheritDoc}
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testsuite){
-		TestRunnerJob job = new TestRunnerJob(this, classpathRepository, testsuite);
+		job = new TestRunnerJob(this, classpathRepository, testsuite);
 
         job.addJobChangeListener(new JobChangeAdapter() {
             public void done(IJobChangeEvent event) {
