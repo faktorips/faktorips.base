@@ -42,6 +42,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -87,7 +88,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private Action fNextAction;
 	private Action fPreviousAction;
 	private ToggleOrientationAction[] fToggleOrientationActions;
-    private Action fShowStackTraceAction;
     
 	/* Sash form orientations */
 	static final int VIEW_ORIENTATION_VERTICAL = 0;
@@ -134,9 +134,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     // Contains the map to do the mapping between the test case ids (unique id in the table run pane
     // table) and the test case qualified name
     private HashMap testId2TestQualifiedNameMap = new HashMap();
-    
-    // Indicates if the stacktrace elemets will be shown or not
-    private boolean fShowStackTrace = true;
     
     /*
      * Action class to stop the currently running test.
@@ -209,26 +206,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
         public void run(){
             fTestRunPane.selectPreviousFailureOrError();
-        }
-    }    
-    
-    /*
-     * Action class to filter the stack trace elements
-     */
-    private class ShowStackTraceAction extends Action {
-        public ShowStackTraceAction() {
-            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
-            setText(Messages.IpsTestRunnerViewPart_Action_ShowStackTrace); 
-            setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowStackTraceToolTip); 
-            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
-            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
-            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
-            setEnabled(false);
-        }
-        public void run(){
-            fShowStackTrace = ! fShowStackTrace;
-            fShowStackTraceAction.setChecked(fShowStackTrace);
-            fTestRunPane.selectCurrentFailureOrError();
         }
     }    
     
@@ -379,7 +356,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		label.setImage(IpsPlugin.getDefault().getImage("failures.gif")); //$NON-NLS-1$
 		bottom.setTopLeft(label);
 
-		fFailurePane = new FailurePane(bottom);
+        ToolBar failureToolBar= new ToolBar(bottom, SWT.FLAT | SWT.WRAP);
+        bottom.setTopCenter(failureToolBar);
+		fFailurePane = new FailurePane(bottom, failureToolBar);
 		bottom.setContent(fFailurePane.getComposite()); 
 		
 		fSashForm.setWeights(new int[]{50, 50});
@@ -401,7 +380,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_VERTICAL),
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_HORIZONTAL),
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_AUTOMATIC)};
-        fShowStackTraceAction = new ShowStackTraceAction(); 
         
         toolBar.add(fNextAction);
         toolBar.add(fPreviousAction);
@@ -412,10 +390,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		for (int i = 0; i < fToggleOrientationActions.length; ++i)
 			viewMenu.add(fToggleOrientationActions[i]);		
         viewMenu.add(new Separator());
-        viewMenu.add(fShowStackTraceAction);
-        
-        fShowStackTraceAction.setEnabled(true);
-        fShowStackTraceAction.setChecked(fShowStackTrace);
         
 		actionBars.updateActionBars();
 		
@@ -829,7 +803,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 * @param testCaseDetails contains the details of the selcted test result.
 	 */
 	public void selectionOfTestCaseChanged(String[] testCaseFailures) {
-		fFailurePane.showFailureDetails(testCaseFailures, fShowStackTrace);
+		fFailurePane.showFailureDetails(testCaseFailures);
 	}
 
 	public IJavaProject getLaunchedProject() {

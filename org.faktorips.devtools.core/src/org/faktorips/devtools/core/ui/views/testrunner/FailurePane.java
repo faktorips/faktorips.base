@@ -17,11 +17,14 @@
 
 package org.faktorips.devtools.core.ui.views.testrunner;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.ToolBar;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
@@ -30,15 +33,50 @@ import org.faktorips.devtools.core.IpsPlugin;
  * @author Joerg Ortmann
  */
 public class FailurePane {
-    private static final String TEST_ERROR_MESSAGE_INDICATOR = ">>>";
-    private static final String TEST_ERROR_STACK_INDICATOR = "---";
+    private static final String TEST_ERROR_MESSAGE_INDICATOR = ">>>"; //$NON-NLS-1$
+    private static final String TEST_ERROR_STACK_INDICATOR = "---"; //$NON-NLS-1$
     
 	private Table fTable;
 	
-	public FailurePane(Composite parent) {
-		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
-	}
+    // Action
+    private Action fShowStackTraceAction;
 
+    // Indicates if the stacktrace elemets will be shown or not
+    private boolean fShowStackTrace = false;
+    
+    // Contains the last reported failures in this pane
+    private String[] fLastFailures = new String[0];
+    
+    /*
+     * Action class to filter the stack trace elements
+     */
+    private class ShowStackTraceAction extends Action {
+        public ShowStackTraceAction() {
+            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+            setText(Messages.IpsTestRunnerViewPart_Action_ShowStackTrace); 
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowStackTraceToolTip); 
+            setDisabledImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
+            setHoverImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
+            setEnabled(fShowStackTrace);
+        }
+        public void run(){
+            fShowStackTrace = ! fShowStackTrace;
+            fShowStackTraceAction.setChecked(fShowStackTrace);
+            showFailureDetails(fLastFailures);
+        }
+    }
+    
+	public FailurePane(Composite parent, ToolBar toolBar) {
+		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+        
+        // fill the failure trace viewer toolbar
+        ToolBarManager failureToolBarmanager= new ToolBarManager(toolBar);
+        fShowStackTraceAction = new ShowStackTraceAction();
+        failureToolBarmanager.add(fShowStackTraceAction);    
+        failureToolBarmanager.update(true);
+	}
+    
 	/**
 	 * Returns the composite used to present the failures.
 	 */
@@ -51,25 +89,32 @@ public class FailurePane {
      * If showStackTrace is <code>false</code> and the given failure details contains stack trace elements, then
      * these elements will be hidden.
 	 */
-	public void showFailureDetails(String[] testCaseFailures, boolean showStackTrace) {
-		fTable.removeAll();
+	public void showFailureDetails(String[] testCaseFailures) {
+        fShowStackTraceAction.setEnabled(false);
+        fLastFailures = testCaseFailures;
+        fTable.removeAll();
 		for (int i = 0; i < testCaseFailures.length; i++) {
-			
             if (testCaseFailures[i].startsWith(TEST_ERROR_MESSAGE_INDICATOR)){
-                TableItem tableItem = new TableItem(fTable, SWT.NONE);
-                tableItem.setText(testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length()));
-                tableItem.setFont(JFaceResources.getBannerFont());
-                tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
-            } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
-                if (showStackTrace){
+                String text = testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length());
+                if (text.trim().length()>0){
                     TableItem tableItem = new TableItem(fTable, SWT.NONE);
-                    tableItem.setText(testCaseFailures[i]);
+                    tableItem.setText(text);
+                    tableItem.setFont(JFaceResources.getBannerFont());
+                    tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_msg.gif")); //$NON-NLS-1$
+                }
+            } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
+                fShowStackTraceAction.setEnabled(true);
+                if (fShowStackTrace){
+                    TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                    tableItem.setText(testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length()));
                     tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/stkfrm_obj.gif")); //$NON-NLS-1$
                 }
             } else {
-                TableItem tableItem = new TableItem(fTable, SWT.NONE);
-                tableItem.setText(testCaseFailures[i]);
-                tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testfail.gif")); //$NON-NLS-1$
+                if (testCaseFailures[i].trim().length()>0){
+                    TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                    tableItem.setText(testCaseFailures[i]);
+                    tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testfail.gif")); //$NON-NLS-1$
+                }
             }
 		}
 	}
@@ -79,5 +124,5 @@ public class FailurePane {
 	 */
 	public void aboutToStart() {
 		fTable.removeAll();
-	}
+	}    
 }
