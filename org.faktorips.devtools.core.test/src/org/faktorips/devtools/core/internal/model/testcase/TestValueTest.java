@@ -94,6 +94,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         
         assertFalse(valueObjectUnknown.isInput());
         assertFalse(valueObjectUnknown.isExpectedResult());
-        assertFalse(valueObjectUnknown.isCombined());
+        // combined is the default role
+        assertTrue(valueObjectUnknown.isCombined());
     }
 }

@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.TreeItem;
@@ -32,6 +33,9 @@ public class TreeViewerExpandStateStorage {
 	// Stores the expanded items
 	private ArrayList expandedItems = new ArrayList();
 	
+    // Contains the currently selected tree item
+    private TreeItem[] selectedTreeItems;
+    
 	// Tree viewer which will be analysed and restored
 	private TreeViewer treeViewer;
 
@@ -40,6 +44,7 @@ public class TreeViewerExpandStateStorage {
 	}
 	
 	public void storeExpandedStatus(){
+        selectedTreeItems = treeViewer.getTree().getSelection();
 		expandedItems = new ArrayList();
 		TreeItem childs[] = treeViewer.getTree().getItems();
 		checkExpandedStatus(expandedItems, childs, ""); //$NON-NLS-1$
@@ -51,11 +56,21 @@ public class TreeViewerExpandStateStorage {
 			TreeItem childs[] = treeViewer.getTree().getItems();
 			searchAndExpandInTree(itemPath, childs, ""); //$NON-NLS-1$
 		}
+        // remove disposed tree items
+        List selectedTreeItemsList = new ArrayList(selectedTreeItems.length);
+        for (int i = 0; i < selectedTreeItems.length; i++) {
+            if (! selectedTreeItems[i].isDisposed())
+                selectedTreeItemsList.add(selectedTreeItems[i]);
+        }
+         treeViewer.getTree().setSelection((TreeItem[])selectedTreeItemsList.toArray(new TreeItem[0]));
 	}
 	
 	private boolean searchAndExpandInTree(String itemPath, TreeItem childs[], String parent){
 		for (int i = 0; i < childs.length; i++) {
-			String pathOfChild = parent + "/" + childs[i].getText(); //$NON-NLS-1$
+			String pathOfChild = getItemPath(parent, childs[i]);
+            if (! pathOfChild.startsWith(parent))
+                return false;
+            
 			if (itemPath.equals(pathOfChild)){
 				childs[i].setExpanded(true);
 				return true;
@@ -72,10 +87,14 @@ public class TreeViewerExpandStateStorage {
 		for (int i = 0; i < childs.length; i++) {
 			TreeItem item = childs[i];
 			if (item.getExpanded()){
-				String itemPath = parent + "/" + item.getText(); //$NON-NLS-1$
+                String itemPath = getItemPath(parent, item);
 				expandedItems.add(itemPath);
 				checkExpandedStatus(expandedItems, item.getItems(), itemPath);
 			}
 		}
 	}
+    
+    private String getItemPath(String parent, TreeItem item){
+        return parent + "//" + System.identityHashCode(item); //$NON-NLS-1$
+    }
 }

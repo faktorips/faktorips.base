@@ -138,10 +138,10 @@ public interface ITestCase extends IIpsObject {
             throws CoreException;
 
     /**
-     * Evaluates and returns an unique label (inside this test case) for the given test policy
+     * Evaluates and returns an unique name (inside this test case) for the given test policy
      * component.
      */
-    public String generateUniqueLabelForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String label);
+    public String generateUniqueNameForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String name);
 
     /**
      * Removes the given object from the list of input or expected result objects.

@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -38,7 +39,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseContentProvider  implements ITreeContentProvider {
+public class TestCaseContentProvider implements ITreeContentProvider {
 	private static Object[] EMPTY_ARRAY = new Object[0];
 	
 	/** Defines the type of the content which will be currently provided: 
@@ -201,42 +202,40 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof ITestCase){
 			ITestCase testCase = (ITestCase) inputElement;
-			ArrayList params = new ArrayList();
+			ArrayList elements = new ArrayList();
 			if (isCombined()){
 			    // return input and expected result objects
 			    ITestValue[] testValues = testCase.getTestValues();
 			    for (int i = 0; i < testValues.length; i++) {
-			        params.add(testValues[i]);
+			        elements.add(testValues[i]);
 			    }
 			    ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
 			    for (int i = 0; i < testPolicyCmpts.length; i++) {
-			        params.add(testPolicyCmpts[i]);
+			        elements.add(testPolicyCmpts[i]);
 			    }
-			    return params.toArray();
 			}else if(isExpectedResult()){
 				// return expected result objects
 			    ITestValue[] expectedResulTestValues = testCase.getExpectedResultTestValues();
 			    for (int i = 0; i < expectedResulTestValues.length; i++) {
 			        ITestValue value = expectedResulTestValues[i];
-			        params.add(value);
+			        elements.add(value);
 			    }
 				ITestPolicyCmpt[] expectedResultPolicyCmpts = testCase.getExpectedResultTestPolicyCmpts();
 				for (int i = 0; i < expectedResultPolicyCmpts.length; i++) {
-					params.add(expectedResultPolicyCmpts[i]);
+					elements.add(expectedResultPolicyCmpts[i]);
 				}
-				return params.toArray();
 			}else if(isInput()){
 			    // return input objects
 			    ITestValue[] inputTestValues = testCase.getInputTestValues();
 			    for (int i = 0; i < inputTestValues.length; i++) {
-			        params.add(inputTestValues[i]);
+			        elements.add(inputTestValues[i]);
 			    }
 			    ITestPolicyCmpt[] inputPolicyCmpts = testCase.getInputTestPolicyCmpts();
 			    for (int i = 0; i < inputPolicyCmpts.length; i++) {
-			        params.add(inputPolicyCmpts[i]);
+			        elements.add(inputPolicyCmpts[i]);
 			    }
-			    return params.toArray();
             }
+			return elements.toArray();
 		}
 		return EMPTY_ARRAY;
 	}
@@ -359,7 +358,7 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 					for (int i = 0; i < children.length; i++) {
 					    ITestPolicyCmptTypeParameter parameter = children[i];
 						if (parameterMatchesRole(parameter)){
-						    TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(parameter, testPolicyCmpt);
+						    TestCaseTypeRelation dummyRelation = getDummyRelation(parameter, testPolicyCmpt);
 						    childs.add(dummyRelation);
                         }
 						childNames.add(parameter.getName());
@@ -382,6 +381,18 @@ public class TestCaseContentProvider  implements ITreeContentProvider {
 			}
 		}
 	}
+
+    private HashMap dummyRelations = new HashMap();
+    
+    private TestCaseTypeRelation getDummyRelation(ITestPolicyCmptTypeParameter parameter, ITestPolicyCmpt testPolicyCmpt) {
+        String id = parameter.getName() + "#" + testPolicyCmpt.getName();
+        TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) dummyRelations.get(id);
+        if (dummyRelation == null){
+            dummyRelation = new TestCaseTypeRelation(parameter, testPolicyCmpt);
+            dummyRelations.put(id, dummyRelation);
+        }
+        return dummyRelation;
+    }
 
     /*
      * Returns <code>true</code> if the given paramter matches the current role which the content

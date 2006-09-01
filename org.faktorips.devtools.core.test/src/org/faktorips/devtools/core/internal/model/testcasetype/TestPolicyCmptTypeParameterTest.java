@@ -18,8 +18,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -30,55 +32,18 @@ import org.w3c.dom.Element;
 public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
 
     private ITestPolicyCmptTypeParameter policyCmptTypeParameterInput;
-    private ITestPolicyCmptTypeParameter policyCmptTypeParameterExpectedResult;
-    private ITestPolicyCmptTypeParameter policyCmptTypeParameterCombined;
 
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         policyCmptTypeParameterInput = type.newInputTestPolicyCmptTypeParameter();
-        policyCmptTypeParameterExpectedResult = type.newExpectedResultPolicyCmptTypeParameter();
-        policyCmptTypeParameterCombined = type.newCombinedPolicyCmptTypeParameter();
     }
 
     public void testIsRootParameter() {
         assertTrue(policyCmptTypeParameterInput.isRoot());
         ITestPolicyCmptTypeParameter targetChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
         assertFalse(targetChild.isRoot());
-    }
-
-    public void testNewAttributesDependsOnRole() throws Exception{
-        boolean exceptionThrown = false;
-        try{
-            policyCmptTypeParameterInput.newExpectedResultTestAttribute();
-        }catch (Exception e){
-            exceptionThrown = true;
-            assertEquals(e.getClass(), IllegalArgumentException.class);
-        }
-        assertTrue(exceptionThrown);
-        policyCmptTypeParameterInput.newInputTestAttribute();
-
-        exceptionThrown = false;
-        try{
-            policyCmptTypeParameterExpectedResult.newInputTestAttribute();
-        }catch (Exception e){
-            exceptionThrown = true;
-            assertEquals(e.getClass(), IllegalArgumentException.class);
-        }
-        assertTrue(exceptionThrown);
-        policyCmptTypeParameterExpectedResult.newExpectedResultTestAttribute();
-
-        exceptionThrown = false;
-        try{
-            policyCmptTypeParameterCombined.newInputTestAttribute();
-            policyCmptTypeParameterCombined.newExpectedResultTestAttribute();
-        }catch (CoreException e){
-            exceptionThrown = true;
-        }
-        assertFalse(exceptionThrown);
-        
-        policyCmptTypeParameterInput.newInputTestAttribute();
     }
     
     public void testInitFromXml() {
@@ -135,7 +100,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setMaxInstances(8);
         policyCmptTypeParameterInput.setRequiresProductCmpt(true);
         policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
-        ((TestParameter)policyCmptTypeParameterInput).setTestParameterRole(TestParameterRole.INPUT);
+        policyCmptTypeParameterInput.setTestParameterRole(TestParameterRole.INPUT);
         ITestPolicyCmptTypeParameter targetChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
 
         policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
@@ -156,7 +121,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setRequiresProductCmpt(false);
         policyCmptTypeParameterInput.newInputTestAttribute();
         policyCmptTypeParameterInput.newInputTestAttribute();
-        ((TestParameter)policyCmptTypeParameterInput).setTestParameterRole(TestParameterRole.EXPECTED_RESULT);
+        policyCmptTypeParameterInput.setTestParameterRole(TestParameterRole.EXPECTED_RESULT);
         policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
 
         // check the value stored before
@@ -167,9 +132,10 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertEquals(1, policyCmptTypeParameterInput.getTestAttributes().length);
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "Name1", "base.Test2", "relation1", 7, 8,
                 true, false, false);
+        // child role not specified therfor combinned is the default role
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
                 .getTestPolicyCmptTypeParamChild("childpolicyCmptType1"), "childpolicyCmptType1", "base.Test4",
-                "relation1", 7, 8, false, false, false);
+                "relation1", 7, 8, true, true, true);
         assertTrue(policyCmptTypeParameterInput.isRequiresProductCmpt());
     }
     
@@ -191,5 +157,17 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertEquals(isInput, targetChild.isInputParameter());
         assertEquals(isExpected, targetChild.isExpextedResultParameter());
         assertEquals(isCombined, targetChild.isCombinedParameter());
+    }
+    
+    public void testRemoveTestAttribute () throws CoreException{
+        ITestAttribute testAttribute1 = policyCmptTypeParameterInput.newInputTestAttribute();
+        ITestAttribute testAttribute2 = policyCmptTypeParameterInput.newInputTestAttribute();
+        ITestAttribute testAttribute3 = policyCmptTypeParameterInput.newExpectedResultTestAttribute();
+        assertEquals(3, policyCmptTypeParameterInput.getTestAttributes().length);
+        testAttribute2.delete();
+        assertEquals(2, policyCmptTypeParameterInput.getTestAttributes().length);
+        testAttribute1.delete();
+        testAttribute3.delete();
+        assertEquals(0, policyCmptTypeParameterInput.getTestAttributes().length);
     }
 }

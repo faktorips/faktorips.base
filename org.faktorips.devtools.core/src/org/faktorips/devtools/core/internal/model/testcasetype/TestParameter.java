@@ -14,11 +14,21 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -31,7 +41,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
 
     private boolean deleted = false;
 
-    protected TestParameterRole role = TestParameterRole.UNKNOWN;
+    protected TestParameterRole role = TestParameterRole.COMBINED;
 
     public TestParameter(IIpsObject parent, int id) {
         super(parent, id);
@@ -55,7 +65,9 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      * {@inheritDoc}
      */
     public void setName(String newName) {
+        String oldName = this.name;
         this.name = newName;
+        valueChanged(oldName, newName);
     }
     
     /**
@@ -69,7 +81,8 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      * {@inheritDoc}
      */
     public void delete() {
-        ((TestCaseType)getIpsObject()).removeTestParameter(this);
+        if (isRoot())
+            ((TestCaseType)getIpsObject()).removeTestParameter(this);
         updateSrcFile();
         deleted = true;
     }
@@ -102,6 +115,8 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         role = TestParameterRole.getTestParameterRole(element.getAttribute(PROPERTY_TEST_PARAMETER_ROLE));
+        if (role == null)
+            role = TestParameterRole.getUnknownTestParameterRole();
     }
 
     /**
@@ -110,32 +125,32 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
-        element.setAttribute(PROPERTY_TEST_PARAMETER_ROLE, role.toString());
+        element.setAttribute(PROPERTY_TEST_PARAMETER_ROLE, role.getId());
     }
     
     /**
      * {@inheritDoc}
      */
     public boolean isInputParameter() {
-        return role == TestParameterRole.INPUT || role == TestParameterRole.COMBINED;
+        return role.equals(TestParameterRole.INPUT) || role.equals(TestParameterRole.COMBINED);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isExpextedResultParameter() {
-        return role == TestParameterRole.EXPECTED_RESULT || role == TestParameterRole.COMBINED;
+        return role.equals(TestParameterRole.EXPECTED_RESULT) || role.equals(TestParameterRole.COMBINED);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isCombinedParameter() {
-        return role == TestParameterRole.COMBINED;
+        return role.equals(TestParameterRole.COMBINED);
     }
 
     /**
-     * Returns the role of the test parameter.
+     *  {@inheritDoc}
      */
     public TestParameterRole getTestParameterRole(){
         return role;
@@ -145,4 +160,35 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      * {@inheritDoc}
      */
     public abstract void setTestParameterRole(TestParameterRole testParameterRole);
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+    
+        // check for duplicate test parameter names
+        ITestParameter[] testParameter = null;
+        if (isRoot()) {
+            testParameter = ((ITestCaseType)getParent()).getTestParameters();
+        } else {
+            IIpsElement[] childrenOfParent = ((ITestParameter)getParent()).getChildren();
+            List testParameterChildrenOfParent = new ArrayList(childrenOfParent.length);
+            for (int i = 0; i < childrenOfParent.length; i++) {
+                if (childrenOfParent[i] instanceof ITestParameter){
+                    testParameterChildrenOfParent.add(childrenOfParent[i]);
+                }
+            }
+            testParameter = (ITestParameter[]) testParameterChildrenOfParent.toArray(new ITestParameter[0]);
+        }
+
+        for (int i = 0; i < testParameter.length; i++) {
+            if (testParameter[i] != this && testParameter[i].getName().equals(name)) {
+                String text = NLS.bind("Duplicate name \"{0}\".", name);
+                Message msg = new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
+                list.add(msg);
+                break;
+            }
+        }
+    }    
 }

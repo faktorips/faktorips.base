@@ -36,7 +36,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -89,7 +88,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 	public static final String REQUIRES_PRODUCT_CMPT_SUFFIX = " (P)"; //$NON-NLS-1$
 	
-	// The treeview which displays all test policy components which are available in this test
+	// The treeview which displays all test policy components and test values which are available in this test
 	private TreeViewer treeViewer;
 
 	// Contains the test case which is displayed in this section
@@ -115,6 +114,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	// Contains the content provider of the test policy component object
 	private TestCaseContentProvider contentProvider;
 
+    // Contains the label provider for the test objects
+    private TestCaseLabelProvider labelProvider;
+    
 	// The deatil area of the test case
 	private TestCaseDetailArea testCaseDetailArea;
 	
@@ -140,38 +142,51 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private boolean isTestRunFailure;
 	private int failureCount;
 	
-	public TestCaseSection(Composite parent, TestCaseEditor editor,
-			UIToolkit toolkit, TestCaseContentProvider contentProvider, 
-			String title, String detailTitle, 
-			ScrolledForm form) {
-		super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
-		this.editor = editor;
-		this.contentProvider = contentProvider;
-		this.form = form;
-    	this.sectionTreeStructureTitle = title;
-    	this.sectionDetailTitle = detailTitle;
-		initControls();
-		setText(title);
-		
-		GridLayout gridLayout = new GridLayout(2, false);
-		gridLayout.horizontalSpacing = 0;
-		gridLayout.marginWidth = 0;
-		gridLayout.marginHeight = 0;
-		parent.setLayout(gridLayout);
-		
-        // add listener to test runner
-		IpsPlugin.getDefault().getIpsTestRunner().addIpsTestRunListener(this);
+    // Indicates that the tree is refreshing
+    private boolean isTreeRefreshing = false;
+    
+	public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
+            TestCaseContentProvider contentProvider, String title, String detailTitle, ScrolledForm form) {
+        super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
         
-        // add listener on model, 
+        this.editor = editor;
+        this.contentProvider = contentProvider;
+        this.form = form;
+        this.sectionTreeStructureTitle = title;
+        this.sectionDetailTitle = detailTitle;
+        
+        initControls();
+        setText(title);
+
+        GridLayout gridLayout = new GridLayout(2, false);
+        gridLayout.horizontalSpacing = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
+        parent.setLayout(gridLayout);
+
+        // add listener to test runner
+        IpsPlugin.getDefault().getIpsTestRunner().addIpsTestRunListener(this);
+
+        // add listener on model,
         //   if the model changed reset the test run status
-        testCase.getIpsModel().addChangeListener(new ContentsChangeListener(){
+        testCase.getIpsModel().addChangeListener(new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(testCase.getIpsSrcFile())){
+                if (event.getIpsSrcFile().equals(testCase.getIpsSrcFile())) {
                     postResetTestRunStatus();
+                    refreshTree();
+                    return;
                 }
-            }   
-        });        
-	}
+                try {
+                    if (event.getIpsSrcFile().equals(testCase.findTestCaseType().getIpsSrcFile())) {
+                        postResetTestRunStatus();
+                        refreshTree();
+                    }
+                } catch (Exception e) {
+                    // ignore exception during find of test case type
+                }
+            }
+        });
+    }
     
     /**
      * {@inheritDoc}
@@ -189,44 +204,35 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		this.toolkit = toolkit;
 		this.testCase = contentProvider.getTestCase();
 		
-		createToolBarActions();
-		form.updateToolBar();
+		configureToolBar();
 		
+		// Layout main section with two columns
 		client.setLayout(new GridLayout(2, true));
 		client.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		// Tree structure section
-		Section structureSection = toolkit.getFormToolkit().createSection(client, Section.TITLE_BAR);
-		structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
-		structureSection.setText(sectionTreeStructureTitle);
-		Composite structureComposite = toolkit.getFormToolkit().createComposite(structureSection);
-		structureComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout structureLayout = new GridLayout(2, false);
-		structureLayout.horizontalSpacing = 0;
-		structureLayout.marginWidth = 0;
-		structureLayout.marginHeight = 3;
-		structureComposite.setLayout(structureLayout);
-		structureSection.setClient(structureComposite);
-		Composite treeComposite = toolkit.createLabelEditColumnComposite(structureComposite);
-		treeComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		Tree tree = toolkit.getFormToolkit().createTree(treeComposite,
-				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
-		tree.setLayoutData(new GridData(GridData.FILL_BOTH));
-		treeViewer = new TreeViewer(tree);
-		treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-		hookTreeListeners();
-		treeViewer.setContentProvider(contentProvider);
-		TestCaseLabelProvider labelProvider = new TestCaseLabelProvider();
-		treeViewer.setLabelProvider(new TestCaseMessageCueLabelProvider(labelProvider, this));
-		new TableMessageHoverService(treeViewer) {
-            protected MessageList getMessagesFor(Object element) throws CoreException {
-                if (element!=null){
-                	return validateElement(element);
-                } else
-                	return null;
-            }
-		};
-		treeViewer.setInput(testCase);
+        Section structureSection = toolkit.getFormToolkit().createSection(client, Section.TITLE_BAR);
+        structureSection.setLayoutData(new GridData(GridData.FILL_BOTH));
+        structureSection.setText(sectionTreeStructureTitle);
+        Composite structureComposite = toolkit.getFormToolkit().createComposite(structureSection);
+        structureComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout structureLayout = new GridLayout(2, false);
+        structureLayout.horizontalSpacing = 0;
+        structureLayout.marginWidth = 0;
+        structureLayout.marginHeight = 3;
+        structureComposite.setLayout(structureLayout);
+        structureSection.setClient(structureComposite);
+        Composite treeComposite = toolkit.createLabelEditColumnComposite(structureComposite);
+        treeComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Tree tree = toolkit.getFormToolkit().createTree(treeComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
+        tree.setLayoutData(new GridData(GridData.FILL_BOTH));
+        treeViewer = new TreeViewer(tree);
+        treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+        hookTreeListeners();
+        treeViewer.setContentProvider(contentProvider);
+        labelProvider = new TestCaseLabelProvider();
+        treeViewer.setLabelProvider(new TestCaseMessageCueLabelProvider(labelProvider, this));
+        treeViewer.setInput(testCase);
 
 		// Buttons belongs to the tree structure
 		Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
@@ -242,21 +248,23 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		productCmptButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		// Details section
-		prevTestPolicyCmpt = new ArrayList();
-		
-		testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this);
+        testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this);
 		testCaseDetailArea.createInitialDetailArea(client, sectionDetailTitle);
-		
+
+        // Initialize the previous selected objects empty
+		prevTestPolicyCmpt = new ArrayList();
 		prevIsValue = false;
-		refreshTree();
         
+        // Set the state of the buttons
         updateButtonEnableState(null);
+
+        refreshTree();
 	}
 
 	/**
 	 * Creates the tool bar actions.
 	 */
-	private void createToolBarActions() {
+	private void configureToolBar() {
 		// Toolbar item show without relation
 		Action actionRelation = new Action("withoutRelation", Action.AS_CHECK_BOX) { //$NON-NLS-1$
 			public void run() {
@@ -304,6 +312,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         
         form.getToolBarManager().add(actionTest);
         
+        form.updateToolBar();
 	}
 	
     /*
@@ -367,39 +376,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         contentProvider.setContentType(contentType);
         refreshTreeAndDetailArea();
     }
-    
-	/**
-	 * Select the given tree entry and display the details of the selected element.
-	 */
-	void searchChildsByLabelPath(String target) throws CoreException {
-		Tree tree = treeViewer.getTree();
-		TreeItem found = searchChildsByLabel(target, tree.getItems());
-		if (found != null) {
-			// show details of selected tree entry
-			if (!showAll && found.getData() instanceof ITestPolicyCmpt) {
-				ArrayList selEntry = new ArrayList(1);
-				selEntry.add((ITestPolicyCmpt) found.getData());
-						
-				testCaseDetailArea.createDetailSection(selEntry);
-				prevTestPolicyCmpt = selEntry;
-				prevIsValue = false;			
-				
-				redrawForm();
-			}
-			// select the tree entry
-			TreeItem[] select = new TreeItem[1];
-			select[0] = found;
-			tree.setSelection(select);
-			tree.setFocus();
-			selectionInTree(new StructuredSelection(found.getData()));
-			String uniqueKey = getUniqueKey(found.getData());
-			
-			EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniqueKey);
-			if (firstField != null){
-				firstField.getControl().setFocus();
-			}
-		}
-	}
 	
 	/**
 	 * Recursive search the given childs for the given target object.
@@ -462,50 +438,63 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 	
 	/**
-	 * Select the given object in the tree.
+	 * The selection in the tree changed the given object is selected.
 	 */
-	private void selectionInTree(IStructuredSelection selection) {
+	private void selectionInTreeChanged(IStructuredSelection selection) {
+        if (isTreeRefreshing)
+            return;
+        
 		updateButtonEnableState(selection.getFirstElement());		
-		if (!showAll){
-			List testPolicyCmpts = new ArrayList();
-			for (Iterator iterator = selection.iterator(); iterator.hasNext();) {
-				Object domainObject = iterator.next();
-				if (domainObject instanceof ITestValue){
-					prevTestPolicyCmpt = testPolicyCmpts;
-					if (!prevIsValue){
-						prevIsValue = true;
-                        testCaseDetailArea.clearDetailArea();
-						testCaseDetailArea.createValuesSection();
-						redrawForm();
+        
+        Object selected = selection.getFirstElement();
+        selectInDetailArea(selected, false);
+        
+        if (showAll){
+            // if all elements are show return
+            return;
+        }
+        
+        // show only the elements which belongs to the selection
+        //   if a test value is selected show all test value objects
+        //   if a test policy cmpt or a child of a policy cmpt is selected, show all elements inside
+        //     the hierarchy of the root test policy cmpt
+		for (Iterator iterator = selection.iterator(); iterator.hasNext();) {
+			Object domainObject = iterator.next();
+			if (domainObject instanceof ITestValue){
+				prevTestPolicyCmpt = new ArrayList();
+				if (!prevIsValue){
+					prevIsValue = true;
+                    testCaseDetailArea.clearDetailArea();
+					testCaseDetailArea.createValuesSection();
+					redrawForm();
+				}
+			} else {
+			    List testPolicyCmpts = new ArrayList();
+
+                ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
+				// add the element in selected root element list only once
+				ITestObject rootElem = testPolicyCmpt.getRoot();
+				boolean exists = false;
+				for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
+					if (((ITestPolicyCmpt) iter.next()).equals(rootElem)){
+						exists = true;
+						break;
 					}
-				} else {
-					ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
-					// add the element in selected root element list only once
-					ITestObject rootElem = testPolicyCmpt.getRoot();
-					boolean exists = false;
-					for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
-						if (((ITestPolicyCmpt) iter.next()).equals(rootElem)){
-							exists = true;
-							break;
-						}
-					}
-					if (!exists)
-						testPolicyCmpts.add(rootElem);
+				}
+				if (!exists)
+					testPolicyCmpts.add(rootElem);
+                
+				//	if the selection has changed redraw the detail section
+				if (testPolicyCmpts.size() > 0 && ! testPolicyCmpts.equals(prevTestPolicyCmpt)){
+				    testCaseDetailArea.clearDetailArea();
+				    testCaseDetailArea.createDetailSection(testPolicyCmpts);
+				    prevTestPolicyCmpt = testPolicyCmpts;
+				    prevIsValue = false;		
+				    
+				    redrawForm();
 				}
 			}
-			
-			//	if the selection has changed redraw the detail section
-			if (testPolicyCmpts.size() > 0 && ! testPolicyCmpts.equals(prevTestPolicyCmpt)){
-                testCaseDetailArea.clearDetailArea();
-				testCaseDetailArea.createDetailSection(testPolicyCmpts);
-				prevTestPolicyCmpt = testPolicyCmpts;
-				prevIsValue = false;		
-				
-				redrawForm();
-			}
 		}
-		Object selected = selection.getFirstElement();
-		selectInDetailArea(selected, false);
 	}
 	
 	/**
@@ -569,15 +558,23 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	/**
 	 * Add the tree listener to the tree.
 	 */
-	protected void hookTreeListeners() {
+	private void hookTreeListeners() {
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-					selectionInTree(selection);				
+					selectionInTreeChanged(selection);				
 				}
 			}
 		});
+        new TableMessageHoverService(treeViewer) {
+            protected MessageList getMessagesFor(Object element) throws CoreException {
+                if (element != null) {
+                    return validateElement(element);
+                } else
+                    return null;
+            }
+        };        
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
 				if (!(event.getSelection() instanceof IStructuredSelection)) {
@@ -680,7 +677,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 	
 	/**
-	 * Adds the button listener to the add and remove button.
+	 * Adds the button listener to the buttons.
 	 */
 	private void hookButtonListeners() {
 		addButton.addSelectionListener(new SelectionListener() {
@@ -882,7 +879,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				}
 				testPolicyCmpt.setProductCmpt(productCmpt);
 				testPolicyCmpt.setName(
-						testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmpt)));
+						testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, StringUtil.unqualifiedName(productCmpt)));
 				refreshTreeAndDetailArea();
 			}
 		}
@@ -1053,22 +1050,29 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		}
 		refreshTree();
 		redrawForm();
-		form.setRedraw(true);
+        form.setRedraw(true);
 	}
 	
 	/**
 	 * Refresh the tree.
 	 */
 	void refreshTree(){
-		treeViewer.getTree().setRedraw(false);
-		TreeViewerExpandStateStorage treeexpandStorage = new TreeViewerExpandStateStorage(treeViewer);
-		treeexpandStorage.storeExpandedStatus();
-		treeViewer.refresh();
-		treeViewer.expandAll();
-		treeViewer.collapseAll();
-		treeexpandStorage.restoreExpandedStatus();
-		treeViewer.getTree().setRedraw(true);
-		
+        if (treeViewer.getTree().isDisposed())
+            return;
+        
+        try{
+            isTreeRefreshing = true;
+    		treeViewer.getTree().setRedraw(false);
+    		TreeViewerExpandStateStorage treeexpandStorage = new TreeViewerExpandStateStorage(treeViewer);
+    		treeexpandStorage.storeExpandedStatus();
+    		treeViewer.refresh();
+    		treeViewer.expandAll();
+    		treeViewer.collapseAll();
+    		treeexpandStorage.restoreExpandedStatus();
+        } finally{
+            isTreeRefreshing = false;
+            treeViewer.getTree().setRedraw(true);
+        }
 	}
 	
 	/**
@@ -1251,7 +1255,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return testPolicyCmpt;
 	}
 	
-	/**
+	/*
 	 * Displays a dialog to select the type definition of a test relation.
 	 * Returns the selected test case type relation object or <code>null</code> if the user select nothing.
 	 */
@@ -1282,7 +1286,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		return null;
 	}
 	
-	/**
+	/*
 	 * Label provider for the test case type relation select dialog.
 	 */
 	private class TestCaseTypeRelationLabelProvider implements ILabelProvider{
@@ -1579,9 +1583,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 
 	/**
-	 * Returns the corresponding content provider.
+	 * Returns the content provider.
 	 */
 	TestCaseContentProvider getContentProvider() {
 		return contentProvider;
 	}
+
+    /** 
+     * Returns the label provider.
+     */
+    public TestCaseLabelProvider getLabelProvider() {
+        return labelProvider;
+    }
 }

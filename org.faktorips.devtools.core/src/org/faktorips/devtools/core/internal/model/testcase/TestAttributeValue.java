@@ -23,7 +23,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestParameterRole;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 public class TestAttributeValue  extends IpsObjectPart implements ITestAttributeValue {
     /* Specifies the default role, will be used if the corresponding test case type parameter 
      * is not specified or not found */
-    private static TestParameterRole DEFAULT_ROLE = TestParameterRole.UNKNOWN;
+    private static TestParameterRole DEFAULT_ROLE = TestParameterRole.COMBINED;
     
 	/* Tags */
 	static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
@@ -196,17 +196,17 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
             
             ITestCaseType testCaseType = testCase.findTestCaseType();
             if (testCaseType == null)
-                return role == defaultRole;
+                return role.equals(defaultRole);
 
             ITestAttribute testAttribute = findTestAttribute();
             if (testAttribute == null)
-                return role == defaultRole;
+                return role.equals(defaultRole);
 
             // compare the paramters role and return if the role matches the given role
-            if (testAttribute.isInputAttribute() && role == TestParameterRole.INPUT) {
+            if (testAttribute.isInputAttribute() && role.equals(TestParameterRole.INPUT)) {
                 return true;
             }
-            if (testAttribute.isExpextedResultAttribute() && role == TestParameterRole.EXPECTED_RESULT) {
+            if (testAttribute.isExpextedResultAttribute() && role.equals(TestParameterRole.EXPECTED_RESULT)) {
                 return true;
             }
         } catch (Exception e) {

@@ -24,12 +24,9 @@ public class TestCaseEditor extends IpsObjectEditor {
      */
     public void doSave(IProgressMonitor monitor) {
         super.doSave(monitor);
-        editorPage.refreshControlStatus();
     }
 
     /**
-     * Add two pages to edit test case input objects and test case expected result objects.
-     * 
      * (@inheritDoc)
      */
     protected void addPages() {

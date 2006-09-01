@@ -400,7 +400,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }    
     
     private void notifyTestStarted(String qualifiedTestName) {
-        testRunnerMonitor.worked(1);
+        
         
         // check if the test runner is canceled
         if (testRunnerMonitor.isCanceled())
@@ -417,6 +417,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     private void notifyTestFinished(String qualifiedTestName) {
+        testRunnerMonitor.worked(1);
+        
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testFinished(qualifiedTestName);

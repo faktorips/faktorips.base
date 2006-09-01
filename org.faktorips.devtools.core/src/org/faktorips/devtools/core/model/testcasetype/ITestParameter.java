@@ -29,6 +29,16 @@ public interface ITestParameter extends IIpsObjectPart {
 	/** Property names */
     public final static String PROPERTY_TEST_PARAMETER_ROLE = "testParameterRole"; //$NON-NLS-1$
     
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TESTPARAMETER-"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the test parameter name is duplicate.
+     */
+    public final static String MSGCODE_DUPLICATE_NAME = MSGCODE_PREFIX + "DuplicateName"; //$NON-NLS-1$
+    
 	/**
 	 * Returns the parameters's name, e.g. 'effectiveDate'.
 	 * {@inheritDoc}
@@ -65,6 +75,16 @@ public interface ITestParameter extends IIpsObjectPart {
 	 */
 	public boolean isCombinedParameter();
 	
+    /**
+     * Returns the role of the test parameter.
+     */
+	public TestParameterRole getTestParameterRole();
+
+    /**
+     * Sets the role of the test parameter.
+     */
+    public void setTestParameterRole(TestParameterRole testParameterRole);
+    
     /**
      * Returns the root test parameter.
      */

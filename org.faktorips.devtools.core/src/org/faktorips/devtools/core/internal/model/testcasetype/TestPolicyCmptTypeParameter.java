@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -32,7 +33,11 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -125,7 +130,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         ArgumentCheck.isTrue(testParameterRole.equals(TestParameterRole.INPUT)
                 || testParameterRole.equals(TestParameterRole.EXPECTED_RESULT)
                 || testParameterRole.equals(TestParameterRole.COMBINED));
+        TestParameterRole oldRole = this.role;
         this.role = testParameterRole;
+        valueChanged(oldRole, testParameterRole);
     }
     
 	/**
@@ -139,7 +146,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 * {@inheritDoc}
 	 */
 	public void setPolicyCmptType(String policyCmptType) {
-		this.policyCmptType = policyCmptType;
+		String oldPolicyCmptType = this.policyCmptType;
+        this.policyCmptType = policyCmptType;
+        valueChanged(oldPolicyCmptType, policyCmptType);
 	}
 
 	/**
@@ -245,8 +254,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 * {@inheritDoc}
 	 */
 	public ITestAttribute newInputTestAttribute() {
-        // assert that a new input attribute is allowed to be added to the current role of this parameter
-        ArgumentCheck.isTrue(TestParameterRole.isRoleMatching(getTestParameterRole(), TestParameterRole.INPUT));
 		TestAttribute a = newTestAttributeInternal(getNextPartId());
 		a.setTestAttributeRole(TestParameterRole.INPUT);
         updateSrcFile();
@@ -257,8 +264,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 * {@inheritDoc}
 	 */
 	public ITestAttribute newExpectedResultTestAttribute() {
-	    // assert that a new input attribute is allowed to be added to the current role of this parameter
-	    ArgumentCheck.isTrue(TestParameterRole.isRoleMatching(getTestParameterRole(), TestParameterRole.EXPECTED_RESULT));
 	    TestAttribute a = newTestAttributeInternal(getNextPartId());
 	    a.setTestAttributeRole(TestParameterRole.EXPECTED_RESULT);
 	    updateSrcFile();
@@ -355,12 +360,25 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		testPolicyCmptTypeChilds.add(p);
 		return p;
 	}
-	
+
+    /**
+     * {@inheritDoc}
+     */
 	public void removeTestPolicyCmptTypeParamChild(TestPolicyCmptTypeParameter testPolicyCmptTypeParamChildName) {
 		testPolicyCmptTypeChilds.remove(testPolicyCmptTypeParamChildName);
 	}
 
 	/**
+     * {@inheritDoc}
+	 */
+	public void delete() {
+        if (!isRoot())
+            ((ITestPolicyCmptTypeParameter)getParent()).removeTestPolicyCmptTypeParamChild(this);
+            
+        super.delete();
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */	
 	public ITestParameter getRootParameter() {
@@ -425,4 +443,55 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     public boolean isRoot() {
         return (! (getParent() instanceof TestPolicyCmptTypeParameter)); 
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveTestAttributes(int[] indexes, boolean up) {
+        ListElementMover mover = new ListElementMover(testAttributes);
+        int[] newIdxs = mover.move(indexes, up);
+        valueChanged(indexes, newIdxs);
+        return newIdxs;
+    }    
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        
+        // check if the policy component type exists
+        if (findPolicyCmptType() == null) {
+            String text = NLS.bind("The policy component type {0} does not exists.", policyCmptType);
+            Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this,
+                    PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
+            list.add(msg);
+        }
+
+        // check min and max instances
+        if (minInstances > maxInstances) {
+            String text = NLS.bind("The minimum instances {0} is greater than the maximum instances {1}.", "" + minInstances, "" + maxInstances);
+            Message msg = new Message(MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX, text, Message.ERROR, this,
+                    PROPERTY_MIN_INSTANCES); //$NON-NLS-1$
+            list.add(msg);
+        }
+         if (maxInstances < minInstances) {
+            String text = NLS.bind("The maximum instances {1} is less than the minimum instances {0}.", "" + minInstances, "" + maxInstances);
+            Message msg = new Message(MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN, text, Message.ERROR, this,
+                    PROPERTY_MAX_INSTANCES); //$NON-NLS-1$
+            list.add(msg);
+        }
+        
+        // check if the role of the parameter matches the role of the parent
+        if (!isRoot()){
+            TestParameterRole parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterRole();
+            if (!TestParameterRole.isChildRoleMatching(role, parentRole)) {
+                String text = NLS.bind("Role \"{0}\" not allowed if parent specifies role \"{1}\"", role.getName(), parentRole
+                        .getName());
+                Message msg = new Message(MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE, text, Message.ERROR, this,
+                        PROPERTY_TEST_PARAMETER_ROLE);
+                list.add(msg);
+            }
+        }
+    }    
 }

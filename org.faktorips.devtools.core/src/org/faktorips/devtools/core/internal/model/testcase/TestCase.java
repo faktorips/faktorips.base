@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestParameterRole;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -36,6 +35,7 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseHierarchyPath;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -414,7 +414,7 @@ public class TestCase extends IpsObject implements ITestCase {
      /**
       * {@inheritDoc}
       */
-    public String generateUniqueLabelForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String name) {
+    public String generateUniqueNameForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String name) {
         String uniqueLabel = name;
 
         // eval the unique idx of new component
@@ -514,11 +514,11 @@ public class TestCase extends IpsObject implements ITestCase {
             try {
                 ITestCaseType testCaseType = findTestCaseType();
                 if (testCaseType == null)
-                    return role == defaultRole;
+                    return role.equals(defaultRole);
 
                 ITestParameter testParameter = testCaseType.getTestParameterByName(testParameterName);
                 if (testParameter == null)
-                    return role == defaultRole;
+                    return role.equals(defaultRole);
 
                 return isRoleOrDefault(testParameter, role, defaultRole);
             } catch (Exception e) {
@@ -536,13 +536,13 @@ public class TestCase extends IpsObject implements ITestCase {
     boolean isRoleOrDefault(ITestParameter testParameter, TestParameterRole role, TestParameterRole defaultRole) {
         try {
             // compare the paramters role and return if the role matches the given role
-            if (testParameter.isInputParameter() && role == TestParameterRole.INPUT) {
+            if (testParameter.isInputParameter() && role.equals(TestParameterRole.INPUT)) {
                 return true;
             }
-            if (testParameter.isExpextedResultParameter() && role == TestParameterRole.EXPECTED_RESULT) {
+            if (testParameter.isExpextedResultParameter() && role.equals(TestParameterRole.EXPECTED_RESULT)) {
                 return true;
             }
-            if (testParameter.isCombinedParameter() && role == TestParameterRole.COMBINED) {
+            if (testParameter.isCombinedParameter() && role.equals(TestParameterRole.COMBINED)) {
                 return true;
             }
         } catch (Exception e) {

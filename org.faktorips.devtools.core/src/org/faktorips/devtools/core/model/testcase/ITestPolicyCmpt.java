@@ -56,12 +56,6 @@ public interface ITestPolicyCmpt extends ITestObject {
         + "ProductCmptNotExists"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that the policy component type was not found.
-     */
-    public final static String MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS = MSGCODE_PREFIX
-    + "PolicyCmptTypeNotExists"; //$NON-NLS-1$
-    
-    /**
      * Returns the qualified name of the test policy component type parameter class.
      */
 	public String getTestPolicyCmptTypeParameter();

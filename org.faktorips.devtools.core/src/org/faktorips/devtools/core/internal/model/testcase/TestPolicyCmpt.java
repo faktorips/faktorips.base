@@ -407,7 +407,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 				name = productCmpt;
 			}
             name = StringUtil.unqualifiedName(name);
-            name = getTestCase().generateUniqueLabelForTestPolicyCmpt(newTestPolicyCmpt, name);
+            name = getTestCase().generateUniqueNameForTestPolicyCmpt(newTestPolicyCmpt, name);
 			newTestPolicyCmpt.setName(name);
 			
 			// add the attributes which are defined in the test case type parameter
@@ -470,7 +470,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 			// check if the policy component type exists
 			if (param.findPolicyCmptType() == null){
 			    String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_PolicyCmptNotExists, param.getPolicyCmptType(), testPolicyCmptType);
-			    Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
+			    Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 			    list.add(msg);
 			}
 		}
@@ -478,7 +478,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		// check if the product component exists
 		if (StringUtils.isNotEmpty(productCmpt) && getIpsProject().findProductCmpt(productCmpt) == null){
             String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_ProductComponentNotExists, productCmpt, testPolicyCmptType);
-		    Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
+		    Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 		    list.add(msg);
 		}
 	}

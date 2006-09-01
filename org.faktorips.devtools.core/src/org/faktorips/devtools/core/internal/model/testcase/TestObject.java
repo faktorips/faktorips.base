@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.testcasetype.TestParameterRole;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 public abstract class TestObject extends IpsObjectPart implements ITestObject {
     /* Specifies the default role, will be used if the corresponding test case type parameter 
      * is not specified or not found */
-    public static TestParameterRole DEFAULT_ROLE = TestParameterRole.UNKNOWN;
+    public static TestParameterRole DEFAULT_ROLE = TestParameterRole.COMBINED;
 
     private boolean deleted = false;
 

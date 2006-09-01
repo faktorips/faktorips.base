@@ -48,7 +48,18 @@ public interface ITestAttribute extends IIpsObjectPart {
      * Validation message code to indicate that there is an unsupported role.
      */
     public final static String MSGCODE_WRONG_ROLE = MSGCODE_PREFIX + "WrongRole"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the role doesn't matches the parent role.<br>
+     * E.g. the parent defines the input role and the attribute has the expected result role.
+     */
+    public final static String MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE = MSGCODE_PREFIX + "RoleDoesNotMatchParentRole"; //$NON-NLS-1$
     
+    /**
+     * Validation message code to indicate that the attribute name is duplicate.
+     */
+    public final static String MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "DuplicateTestAttributeName"; //$NON-NLS-1$
+        
     /**
      * Returns the attribute's name.
      * {@inheritDoc}
@@ -82,7 +93,12 @@ public interface ITestAttribute extends IIpsObjectPart {
 	 * otherwise <code>false</code>.
 	 */
 	public boolean isInputAttribute();
-	
+    
+    /**
+     * Returns the role of the test attribute.
+     */
+    public TestParameterRole getTestAttributeRole();
+    
 	/**
 	 * Returns <code>true</code> if the test attribute is an expected result attribute, 
 	 * otherwise <code>false</code>.

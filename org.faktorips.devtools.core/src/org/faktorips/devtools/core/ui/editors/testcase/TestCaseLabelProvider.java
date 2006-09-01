@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.util.StringUtil;
 
 /**
  * Label provider for the test case domain.
@@ -134,6 +135,32 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	    }
 		return Messages.TestCaseLabelProvider_undefined;
 	}
+    
+    /**
+     * Returns the title text of a section which displays the given test policy cmpt.<br>
+     * Returns the name of the test policy cmpt and if a product cmpt is chosen the package of the
+     * product cmpt "inside []" and if the name is not equal to the test policy cmpt type param name 
+     * the name of the parm "inside ()"<br>
+     * Return format: name [package of product cmpt] (test policy cmpt type param name)
+     */
+    public String getTextForSection(ITestPolicyCmpt testPolicyCmpt){
+        String sectionText = testPolicyCmpt.getName();
+        if (testPolicyCmpt.getProductCmpt().length() > 0){
+            String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
+            sectionText += pckName.length() > 0 ? " [" + pckName + "]":"";
+        }
+        if (! testPolicyCmpt.getName().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
+            sectionText += " (" + testPolicyCmpt.getTestPolicyCmptTypeParameter() + ")";
+        return sectionText;
+    }
+
+    /**
+     * Returns the title text of a section which displays the given test value.<br>
+     * Returns the name of the test value.
+     */
+    public String getTextForSection(ITestValue testValue){
+        return StringUtils.capitalise(testValue.getTestValueParameter());
+    }
 
 	/**
 	 * {@inheritDoc}

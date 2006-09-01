@@ -53,7 +53,6 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.util.StringUtil;
 
 /**
  * Detail section class of the test case editor.
@@ -162,7 +161,7 @@ public class TestCaseDetailArea {
 		for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
 			ITestPolicyCmpt currTestPolicyCmpt = (ITestPolicyCmpt) iter.next();
 			
-			Composite borderedComosite = createBorder(dynamicArea);
+			Composite borderedComosite = createBorderComposite(dynamicArea);
 			if (currTestPolicyCmpt != null) {
 				try {
                     createPolicyCmptAndRelationSection(currTestPolicyCmpt, borderedComosite);
@@ -188,15 +187,10 @@ public class TestCaseDetailArea {
             return;
         
 		String uniquePath = testCaseSection.getUniqueKey(testPolicyCmpt);
-		
 		Section section = toolkit.getFormToolkit().createSection(details, 0);
-		String sectionText = testPolicyCmpt.getName();
-		if (testPolicyCmpt.getProductCmpt().length() > 0){
-			String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
-			sectionText += (pckName.length() > 0 ? " (" + pckName + ") " : "") + " [" + testPolicyCmpt.getTestPolicyCmptTypeParameter() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-		}
-		section.setText(sectionText);
+		section.setText(testCaseSection.getLabelProvider().getTextForSection(testPolicyCmpt));
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        // create separator line
 		toolkit.getFormToolkit().createCompositeSeparator(section);
 		
 		sectionControls.put(uniquePath, section);
@@ -368,28 +362,29 @@ public class TestCaseDetailArea {
 	public void createValuesSection() {
 		ITestValue[] values = contentProvider.getValues();
 		for (int i = 0; i < values.length; i++) {
-			final ITestValue value = values[i];
+			final ITestValue testValue = values[i];
 			
             // Create the edit field only if the content provider provides the role of the test value object
-            if ( ! ((testCaseSection.getContentProvider().isInput() && value.isInput()) ||
-                   (testCaseSection.getContentProvider().isExpectedResult() && value.isExpectedResult())))
+            if ( ! ((testCaseSection.getContentProvider().isInput() && testValue.isInput()) ||
+                   (testCaseSection.getContentProvider().isExpectedResult() && testValue.isExpectedResult())))
                 return;
             
-            IpsPartUIController uiController = createUIController(value);
+            IpsPartUIController uiController = createUIController(testValue);
 			
-            Composite borderedComposite = createBorder(dynamicArea);
+            Composite borderedComposite = createBorderComposite(dynamicArea);
             Section section = toolkit.getFormToolkit().createSection(borderedComposite, 0);
-            section.setText(StringUtils.capitalise(value.getTestValueParameter()));
+            section.setText(testCaseSection.getLabelProvider().getTextForSection(testValue));
             section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            // create separator line
             toolkit.getFormToolkit().createCompositeSeparator(section);
-            sectionControls.put(VALUESECTION + value.getTestValueParameter(), section);
+            sectionControls.put(VALUESECTION + testValue.getTestValueParameter(), section);
             Composite composite = toolkit.createLabelEditColumnComposite(section);
             section.setClient(composite);
             
 			ValueDatatype datatype = null;
 			ValueDatatypeControlFactory ctrlFactory = null;
 			try {
-				ITestValueParameter param = value.findTestValueParameter();
+				ITestValueParameter param = testValue.findTestValueParameter();
 				if (param != null){
 					datatype = param.findValueDatatype();
 					ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(datatype);
@@ -406,17 +401,17 @@ public class TestCaseDetailArea {
 			
 			editField.getControl().addFocusListener(new FocusAdapter() {
 	            public void focusGained(FocusEvent e) {
-	            	testCaseSection.selectTestValueInTree(value);
+	            	testCaseSection.selectTestValueInTree(testValue);
 	            }
 	        });
 			
-		    valueEditFields.put(value.getTestValueParameter(), editField);
+		    valueEditFields.put(testValue.getTestValueParameter(), editField);
             // mark as expected result
-            if (value.isExpectedResult()) {
+            if (testValue.isExpectedResult()) {
                 markAsExpected(editField);
             }
             // mark as failure
-            String failureLastTestRun = (String) failureCache.get(value.getTestValueParameter());
+            String failureLastTestRun = (String) failureCache.get(testValue.getTestValueParameter());
             if (failureLastTestRun != null){
                 testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
             }
@@ -428,7 +423,7 @@ public class TestCaseDetailArea {
 	/**
 	 * Create a bordered composite
 	 */
-	private Composite createBorder(Composite parent){
+	private Composite createBorderComposite(Composite parent){
 		
 		Composite c1 = toolkit.createLabelEditColumnComposite(parent);
 		c1.setLayoutData(new GridData(GridData.FILL_BOTH));

@@ -17,9 +17,11 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
@@ -153,5 +155,23 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
       assertEquals("Integer", ((ITestValueParameter) type.getInputTestParameters()[0]).getValueDatatype());
       assertEquals("Decimal", ((ITestValueParameter) type.getInputTestParameters()[1]).getValueDatatype());
       assertEquals("Money", ((ITestValueParameter) type.getExpectedResultTestParameters()[0]).getValueDatatype());
+    }
+    
+    public void testGenerateUniqueNameForTestAttribute() throws CoreException{
+        ITestPolicyCmptTypeParameter param1 = type.newInputTestPolicyCmptTypeParameter();
+        ITestAttribute testAttribute = param1.newInputTestAttribute();
+        testAttribute.setName(type.generateUniqueNameForTestAttribute(testAttribute, "Test"));
+        assertEquals("Test", testAttribute.getName());
+        
+        testAttribute = param1.newInputTestAttribute();
+        testAttribute.setName(type.generateUniqueNameForTestAttribute(testAttribute, "Test"));
+        assertEquals("Test (1)", testAttribute.getName());
+        
+        testAttribute = param1.newInputTestAttribute();
+        testAttribute.setName(type.generateUniqueNameForTestAttribute(testAttribute, "Test"));
+        assertEquals("Test (2)", testAttribute.getName());
+        
+        testAttribute.setName(type.generateUniqueNameForTestAttribute(testAttribute, "Test"));
+        assertEquals("Test (2)", testAttribute.getName());
     }
 }

@@ -57,6 +57,14 @@
             label="%org.faktorips.devtools.actions.ProductDefinitionActionSet"
             visible="false">
          <action
+               class="org.faktorips.devtools.core.ui.wizards.testcasetype.OpenNewTestCaseTypeWizardAction"
+               icon="icons/NewTestCaseType.gif"
+               id="org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction"
+               label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
+               style="push"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>               
+         <action
                class="org.faktorips.devtools.core.ui.wizards.testcase.OpenNewTestCaseWizardAction"
                icon="icons/NewTestCase.gif"
                id="org.faktorips.devtools.actions.OpenNewTestCaseWizardAction"
@@ -249,7 +257,8 @@
             id="testCaseEditor"
             name="Test Case Editor"/>
       <editor
-            default="false"
+      		class="org.faktorips.devtools.core.ui.editors.testcasetype.TestCaseTypeEditor"
+            default="true"
             extensions="ipstestcasetype"
             icon="icons/TestCaseType.gif"
             id="testCaseTypeEditor"

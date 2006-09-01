@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -99,6 +100,5 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals("attributeName2", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
-        
     }
 }

@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 
@@ -39,6 +40,30 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "TESTPOLICYCMPTTYPEPARAMETER-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the policy component type was not found.
+     */
+    public final static String MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS = MSGCODE_PREFIX
+    + "PolicyCmptTypeNotExists"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the min instances is less or equal the max instances.
+     */
+    public final static String MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX = MSGCODE_PREFIX
+    + "MinInstancesIsGreaterThanMax"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the max instances is greater or equal the min instances.
+     */
+    public final static String MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN = MSGCODE_PREFIX
+    + "MaxInstancesIsLessThanMin"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the role doesn't matches the parent role.<br>
+     * E.g. the parent defines the input role and the attribute has the expected result role.
+     */
+    public final static String MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE = MSGCODE_PREFIX + "RoleDoesNotMatchParentRole"; //$NON-NLS-1$
 
     /**
      * Returns the qualified name of policy component class.
@@ -147,5 +172,28 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
 	/**
 	* Sets the maximum allowed instances of the relation.   
 	*/
-	public void setMaxInstances(int manInstances);	
+	public void setMaxInstances(int manInstances);
+    
+    /**
+     * Removes the given test policy component type parameter from the list of childs.
+     */
+    public void removeTestPolicyCmptTypeParamChild(TestPolicyCmptTypeParameter testPolicyCmptTypeParamChildName);
+
+    /**
+     * Moves the test attributes identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first test attribute), no test attribute is moved up. 
+     * If one of the indexes is the number of attributes - 1 (the last test attribute)
+     * no attribute is moved down. 
+     * 
+     * @param indexes   The indexes identifying the attributes.
+     * @param up        <code>true</code>, to move the attributes up, 
+     * <false> to move them down.
+     * 
+     * @return The new indexes of the moved attributes.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * an attribute.
+     */
+    public int[] moveTestAttributes(int[] indexes, boolean up);
 }

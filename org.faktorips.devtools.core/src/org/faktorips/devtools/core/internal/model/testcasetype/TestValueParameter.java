@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -65,7 +66,9 @@ public class TestValueParameter extends TestParameter implements
         // a test value parameter supports only input role or expected result role
         ArgumentCheck.isTrue(testParameterRole.equals(TestParameterRole.INPUT)
                 || testParameterRole.equals(TestParameterRole.EXPECTED_RESULT));
+        TestParameterRole oldRole = this.role;
         this.role = testParameterRole;
+        valueChanged(oldRole, testParameterRole);
     }
     
 	/**
@@ -79,7 +82,9 @@ public class TestValueParameter extends TestParameter implements
 	 * {@inheritDoc}
 	 */
 	public void setValueDatatype(String datatypeId) {
+        String oldDatatype = this.datatype;
 		datatype = datatypeId;
+        valueChanged(oldDatatype, datatypeId);
 	}
 
 	/**
