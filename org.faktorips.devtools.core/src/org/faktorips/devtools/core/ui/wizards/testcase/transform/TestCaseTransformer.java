@@ -80,7 +80,7 @@ public class TestCaseTransformer {
     public ITestCase createTestCaseFromRuntimeXml(IFile file, String testCaseTypeName, 
     		IIpsPackageFragmentRoot root, String targetPackageName, String nameExtension) throws Exception{
         if (nameExtension == null){
-            nameExtension = "";
+            nameExtension = ""; //$NON-NLS-1$
         }
         
         String testCaseName = file.getName().substring(0, 
@@ -110,7 +110,7 @@ public class TestCaseTransformer {
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element elem = (Element) nl.item(i);
-                if ("testvalue".equals(elem.getAttribute("type"))){
+                if ("testvalue".equals(elem.getAttribute("type"))){ //$NON-NLS-1$ //$NON-NLS-2$
                     parseTestValue(elem, testCase.newTestValue());
                 } else {
                     String testPolicyCmptName = elem.getNodeName();
@@ -151,7 +151,7 @@ public class TestCaseTransformer {
             
             ITestCase testCase = testPolicyCmpt.getTestCase();
             if (testCase!=null)
-            	uniqueLabel = testCase.generateUniqueLabelForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);
+            	uniqueLabel = testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);
             testPolicyCmpt.setName(uniqueLabel);
         }else{
             testPolicyCmpt.setName(policyCmpt);
