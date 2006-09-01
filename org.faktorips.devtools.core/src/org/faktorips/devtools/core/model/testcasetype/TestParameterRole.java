@@ -37,12 +37,12 @@ public class TestParameterRole extends DefaultEnumValue {
     
     static {
         enumType = new DefaultEnumType("TestParameterRoleValue", TestParameterRole.class); //$NON-NLS-1$
-        INPUT = new TestParameterRole(enumType, "input", "Input"); //$NON-NLS-1$
-        EXPECTED_RESULT = new TestParameterRole(enumType, "expectedResult", "Expected Result"); //$NON-NLS-1$
-        COMBINED = new TestParameterRole(enumType, "combined", "Combined"); //$NON-NLS-1$
+        INPUT = new TestParameterRole(enumType, "input", Messages.TestParameterRole_Input); //$NON-NLS-1$
+        EXPECTED_RESULT = new TestParameterRole(enumType, "expectedResult", Messages.TestParameterRole_ExpectedResult); //$NON-NLS-1$
+        COMBINED = new TestParameterRole(enumType, "combined", Messages.TestParameterRole_Combined); //$NON-NLS-1$
         
         nonDefaultEnumType = new DefaultEnumType("TestParameterRoleValueUnknown", TestParameterRole.class); //$NON-NLS-1$
-        UNKNOWN = new TestParameterRole(nonDefaultEnumType, "unknown", "Unknown");
+        UNKNOWN = new TestParameterRole(nonDefaultEnumType, "unknown", Messages.TestParameterRole_Unknown); //$NON-NLS-1$
     }
 
     /**
