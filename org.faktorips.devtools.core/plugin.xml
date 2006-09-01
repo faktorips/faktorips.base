@@ -132,7 +132,13 @@
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
     	<objectContribution id="addIpsNature" objectClass="org.eclipse.jdt.core.IJavaProject">
-	    	<action id="addIpsNatureAction" class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction" menubarPath="additions" label="Add IPS-Nature" enablesFor="*" />
+	    	<action
+            class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction"
+            enablesFor="*"
+            icon="icons/AddIpsNature.gif"
+            id="addIpsNatureAction"
+            label="Add IPS-Nature"
+            menubarPath="additions"/>
       		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
     	</objectContribution>
   </extension>
@@ -347,10 +353,12 @@
     
   -->
    <extension point="org.eclipse.ui.propertyPages"> 
-        <page id="org.faktorips.projectpropertypage" 
-            name="FaktorIPS" 
-            objectClass="org.eclipse.core.resources.IProject" 
-            class="org.faktorips.plugin.ui.IpsProjectPropertyPage"> 
+        <page
+              class="org.faktorips.plugin.ui.IpsProjectPropertyPage"
+              icon="icons/IpsSrcFile.gif"
+              id="org.faktorips.projectpropertypage"
+              name="FaktorIPS"
+              objectClass="org.eclipse.core.resources.IProject"> 
          <filter
                name="nature"
                value="org.faktorips.plugin.productdefinitionnature">
@@ -359,10 +367,12 @@
     </extension> 
     
    <extension point="org.eclipse.ui.propertyPages"> 
-        <page id="org.faktorips.projectpropertypage" 
-            name="FaktorIPS" 
-            objectClass="org.eclipse.jdt.core.IJavaProject"
-            class="org.faktorips.plugin.ui.IpsProjectPropertyPage"> 
+        <page
+              class="org.faktorips.plugin.ui.IpsProjectPropertyPage"
+              icon="icons/IpsSrcFile.gif"
+              id="org.faktorips.projectpropertypage"
+              name="FaktorIPS"
+              objectClass="org.eclipse.jdt.core.IJavaProject"> 
          <filter
                name="nature"
                value="org.faktorips.plugin.productdefinitionnature">
@@ -472,6 +482,7 @@
          point="org.eclipse.ui.propertyPages">
       <page
             class="org.faktorips.devtools.core.ui.FolderPropertiesPage"
+            icon="icons/IpsSrcFile.gif"
             id="org.faktorips.devtools.core.folderProperties"
             name="%org.faktorips.devtools.core.folderProperties"
             objectClass="org.eclipse.core.resources.IFolder"/>
