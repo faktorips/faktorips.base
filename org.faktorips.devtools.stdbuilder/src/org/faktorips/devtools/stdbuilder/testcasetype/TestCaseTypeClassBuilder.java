@@ -182,6 +182,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberForTestValueParameter(JavaCodeFragmentBuilder codeBuilder, ITestValueParameter[] testValueParams, 
             String variablePrefix) throws CoreException {
         for (int i = 0; i < testValueParams.length; i++) {
+            if (!testValueParams[i].isValid())
+                continue;
             ITestValueParameter testValueParam = testValueParams[i];
         	DatatypeHelper helper = getCachedDatatypeHelper(testValueParam);
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
@@ -227,6 +229,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberForTestPolicyCmptParameter(JavaCodeFragmentBuilder codeBuilder, ITestPolicyCmptTypeParameter[] policyTypeParams, 
             String variablePrefix) throws CoreException {
         for (int i = 0; i < policyTypeParams.length; i++) {
+            if (!policyTypeParams[i].isValid())
+                continue;
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, getQualifiedNameFromTestPolicyCmptParam(policyTypeParams[i]), 
                     variablePrefix + policyTypeParams[i].getName());
@@ -421,6 +425,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
         
         for (int i = 0; i < policyTypeParams.length; i++) {
+            if (!policyTypeParams[i].isValid())
+                continue;
             ITestPolicyCmptTypeParameter policyTypeParam = policyTypeParams[i];
             String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam); 
             body.append("childElement = ");
@@ -441,6 +447,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */    
     private void buildInitForTestValueParameter(JavaCodeFragment body, ITestValueParameter[] valueParams, String variablePrefix) throws CoreException {
         for (int i = 0; i < valueParams.length; i++) {
+            if (!valueParams[i].isValid())
+                continue;
         	ITestValueParameter policyTypeParam = valueParams[i];
             body.appendln(variablePrefix + org.apache.commons.lang.StringUtils.capitalise(policyTypeParam.getName()) + " = ");
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);

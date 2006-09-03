@@ -184,7 +184,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
 
         for (int i = 0; i < testParameter.length; i++) {
             if (testParameter[i] != this && testParameter[i].getName().equals(name)) {
-                String text = NLS.bind("Duplicate name \"{0}\".", name);
+                String text = NLS.bind(Messages.TestParameter_ValidationError_DuplicateName, name);
                 Message msg = new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
                 list.add(msg);
                 break;

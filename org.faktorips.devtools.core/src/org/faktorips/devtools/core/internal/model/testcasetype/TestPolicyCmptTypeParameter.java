@@ -461,22 +461,23 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         super.validateThis(list);
         
         // check if the policy component type exists
-        if (findPolicyCmptType() == null) {
-            String text = NLS.bind("The policy component type {0} does not exists.", policyCmptType);
-            Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this,
+        IPolicyCmptType policyCmptTypeFound = findPolicyCmptType();
+        if (policyCmptTypeFound == null) {
+            String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptTypeNotExists, policyCmptType);
+            Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.ERROR, this,
                     PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
             list.add(msg);
         }
 
         // check min and max instances
         if (minInstances > maxInstances) {
-            String text = NLS.bind("The minimum instances {0} is greater than the maximum instances {1}.", "" + minInstances, "" + maxInstances);
+            String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MinGreaterThanMax, "" + minInstances, "" + maxInstances);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
             Message msg = new Message(MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX, text, Message.ERROR, this,
                     PROPERTY_MIN_INSTANCES); //$NON-NLS-1$
             list.add(msg);
         }
          if (maxInstances < minInstances) {
-            String text = NLS.bind("The maximum instances {1} is less than the minimum instances {0}.", "" + minInstances, "" + maxInstances);
+            String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MaxLessThanMin, "" + minInstances, "" + maxInstances);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
             Message msg = new Message(MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN, text, Message.ERROR, this,
                     PROPERTY_MAX_INSTANCES); //$NON-NLS-1$
             list.add(msg);
@@ -486,12 +487,57 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         if (!isRoot()){
             TestParameterRole parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterRole();
             if (!TestParameterRole.isChildRoleMatching(role, parentRole)) {
-                String text = NLS.bind("Role \"{0}\" not allowed if parent specifies role \"{1}\"", role.getName(), parentRole
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed, role.getName(), parentRole
                         .getName());
                 Message msg = new Message(MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE, text, Message.ERROR, this,
                         PROPERTY_TEST_PARAMETER_ROLE);
                 list.add(msg);
             }
         }
+        
+        // check if the relation exists
+        //  if the parameter is root, no relation is defined
+        if (! isRoot()){
+            IRelation relationFound = findRelation();
+            if (relationFound == null) {
+                String text = NLS.bind("The relation \"{0}\" doesn't exists.", relation);
+                Message msg = new Message(MSGCODE_RELATION_NOT_EXISTS, text, Message.ERROR, this,
+                        PROPERTY_RELATION); //$NON-NLS-1$
+                list.add(msg);
+            } else if (policyCmptTypeFound != null){
+                // check if the relation is specified and policy component type exists
+                //   that the policy cmpt type is a possible target of the relation  
+                IPolicyCmptType targetOfRelation = relationFound.findTarget();
+                if (targetOfRelation == null){
+                    String text = NLS.bind("The target \"{0}\" of relation \"{1}\" doesn't exists.", relationFound.getTarget(), relation);
+                    Message msg = new Message(MSGCODE_TARGET_OF_RELATION_NOT_EXISTS, text, Message.WARNING, this,
+                            PROPERTY_RELATION); //$NON-NLS-1$
+                    list.add(msg);
+                }else{
+                    // find all policy components of the target of the relation (incl. subclasses)
+                    ITypeHierarchy subTypeHierarchy = targetOfRelation.getSubtypeHierarchy();
+                    IPolicyCmptType[] subTypes = subTypeHierarchy.getAllSubtypes(targetOfRelation);
+                    if (subTypes == null)
+                        subTypes = new IPolicyCmptType[0];
+                    IIpsObject[] policyCmptTypes = new IIpsObject[subTypes.length + 1];
+                    System.arraycopy(subTypes, 0, policyCmptTypes, 0, subTypes.length);
+                    policyCmptTypes[subTypes.length] = targetOfRelation;
+                    boolean allowedType = false;
+                    for (int i = 0; i < policyCmptTypes.length; i++) {
+                        if (policyCmptTypes[i].getQualifiedName().equals(policyCmptTypeFound.getQualifiedName())){
+                            allowedType = true;
+                            break;
+                        }                        
+                    }
+    
+                    if (!allowedType){
+                        String text = NLS.bind("The policy component type \"{0}\" is not allowed for relation \"{1}\"", policyCmptType, relation);
+                        Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION, text, Message.ERROR, this,
+                                PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
+                        list.add(msg);
+                    }
+                }
+            }
+        } // check relation end
     }    
 }

@@ -178,7 +178,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                 if (launch.canTerminate()){
                     terminated = true;
                     launch.terminate();
-                    notifyTestRunEnded("" + (System.currentTimeMillis()- testStartTime));
+                    notifyTestRunEnded("" + (System.currentTimeMillis()- testStartTime)); //$NON-NLS-1$
                     if (!testRunnerMonitor.isCanceled())
                         job.cancel();
                 }
@@ -218,7 +218,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             	connected = false;
             } else {
                 // the test runner was terminated
-                notifyTestRunEnded("" + (System.currentTimeMillis()- testStartTime));
+                notifyTestRunEnded("" + (System.currentTimeMillis()- testStartTime)); //$NON-NLS-1$
             }
         }
         return connected;
@@ -413,13 +413,14 @@ public class IpsTestRunner implements IIpsTestRunner {
             } catch (CoreException e) {
                 // ignore exception
             }
+        testRunnerMonitor.subTask(qualifiedTestName);
             
         for (Iterator iter = fIpsTestRunListeners.iterator(); iter.hasNext();) {
 			IIpsTestRunListener listener = (IIpsTestRunListener) iter.next();
 			listener.testStarted(qualifiedTestName);
 		}
     }
-
+    
     private void notifyTestFinished(String qualifiedTestName) {
         testRunnerMonitor.worked(1);
         

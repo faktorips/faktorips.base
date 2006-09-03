@@ -385,7 +385,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     private HashMap dummyRelations = new HashMap();
     
     private TestCaseTypeRelation getDummyRelation(ITestPolicyCmptTypeParameter parameter, ITestPolicyCmpt testPolicyCmpt) {
-        String id = parameter.getName() + "#" + testPolicyCmpt.getName();
+        String id = parameter.getName() + "#" + testPolicyCmpt.getName(); //$NON-NLS-1$
         TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) dummyRelations.get(id);
         if (dummyRelation == null){
             dummyRelation = new TestCaseTypeRelation(parameter, testPolicyCmpt);

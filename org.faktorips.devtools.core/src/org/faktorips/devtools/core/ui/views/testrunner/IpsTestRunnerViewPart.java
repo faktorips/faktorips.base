@@ -37,6 +37,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ViewForm;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -95,6 +97,15 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	static final int VIEW_ORIENTATION_HORIZONTAL = 1;
 	static final int VIEW_ORIENTATION_AUTOMATIC = 2;
 	
+    // Persistence tags.
+    static final String TAG_PAGE= "page"; //$NON-NLS-1$
+    static final String TAG_RATIO= "ratio"; //$NON-NLS-1$
+    static final String TAG_TRACEFILTER= "tracefilter"; //$NON-NLS-1$ 
+    static final String TAG_ORIENTATION= "orientation"; //$NON-NLS-1$
+    static final String TAG_SCROLL= "scroll"; //$NON-NLS-1$
+    
+    private IMemento fMemento;  
+    
 	/* Queue used for processing Tree Entries */
 	private List fTableEntryQueue = new ArrayList();
 	
@@ -288,7 +299,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	public void createPartControl(Composite parent) {
 		fParent = parent;
-		
+        addResizeListener(parent);
+        
 		GridLayout gridLayout= new GridLayout(); 
 		gridLayout.marginWidth= 0;
 		gridLayout.marginHeight= 0;
@@ -303,8 +315,23 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		registerAsIpsTestRunListener();
+        
+        if (fMemento != null) {
+            restoreLayoutState(fMemento);
+        }
+        fMemento= null;        
 	}
 
+    private void restoreLayoutState(IMemento memento) {
+        Integer ratio= memento.getInteger(TAG_RATIO);
+        if (ratio != null) 
+            fSashForm.setWeights(new int[] { ratio.intValue(), 1000 - ratio.intValue()} );
+        Integer orientation= memento.getInteger(TAG_ORIENTATION);
+        if (orientation != null)
+            fOrientation= orientation.intValue();
+        computeOrientation();
+    }
+    
 	/**
 	 * Returns the failure pane.
 	 */
@@ -324,6 +351,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	 */
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
 		super.init(site, memento);
+        fMemento= memento;        
 	}
 	
 	private Composite createProgressCountPanel(Composite parent) {
@@ -382,6 +410,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_HORIZONTAL),
 				new ToggleOrientationAction(this, VIEW_ORIENTATION_AUTOMATIC)};
         
+        fToggleOrientationActions[2].setChecked(true);
+        
         toolBar.add(fNextAction);
         toolBar.add(fPreviousAction);
         toolBar.add(new Separator());
@@ -390,7 +420,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		
 		for (int i = 0; i < fToggleOrientationActions.length; ++i)
 			viewMenu.add(fToggleOrientationActions[i]);		
-        viewMenu.add(new Separator());
+        
         
 		actionBars.updateActionBars();
 		
@@ -398,6 +428,16 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         setNextPrevToolBarButtonsStatus(false);
 	}
 	
+    private void addResizeListener(Composite parent) {
+        parent.addControlListener(new ControlListener() {
+            public void controlMoved(ControlEvent e) {
+            }
+            public void controlResized(ControlEvent e) {
+                computeOrientation();
+            }
+        });
+    }
+    
 	private void computeOrientation() {
 		if (fOrientation != VIEW_ORIENTATION_AUTOMATIC) {
 			fCurrentOrientation = fOrientation;

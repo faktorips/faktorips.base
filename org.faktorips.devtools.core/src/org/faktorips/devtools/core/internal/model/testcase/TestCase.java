@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -154,6 +155,23 @@ public class TestCase extends IpsObject implements ITestCase {
         if (StringUtils.isEmpty(testCaseType))
             return null;
         return (ITestCaseType)getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestCaseTestCaseTypeDelta computeDeltaToTestCaseType() throws CoreException {
+        ITestCaseType testCaseType = findTestCaseType();
+        if (testCaseType != null) {
+            return new TestCaseTestCaseTypeDelta(this, testCaseType);
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreException {
     }
 
     /**
@@ -304,8 +322,7 @@ public class TestCase extends IpsObject implements ITestCase {
         // heck the found object 
         if (! (testParam instanceof ITestPolicyCmptTypeParameter)) {
             throw new CoreException(
-                    new IpsStatus(NLS.bind("Wrong instance of test parameter with name {0}, expected test policy component type parameter but " +
-                            "found {1}!", testPolicyCmptTypeName, testParam.getClass().getName())));
+                    new IpsStatus(NLS.bind(Messages.TestCase_Error_WrongInstanceParam, testPolicyCmptTypeName, testParam.getClass().getName())));
         }
         if (!testPolicyCmptTypeName.equals(testParam.getName())) {
             // incosistence between test case and test case type
@@ -368,7 +385,7 @@ public class TestCase extends IpsObject implements ITestCase {
              return null;
          } else {
              throw new CoreException(new IpsStatus(NLS.bind(
-                     "More than test object exists with name {0}", currElem)));
+                     Messages.TestCase_Error_MoreThanOneObject, currElem)));
          }
          return pc;
     }
@@ -380,8 +397,7 @@ public class TestCase extends IpsObject implements ITestCase {
     private void assertInstanceOfTestPolicyCmpt(String currElem, ITestObject testObject) throws CoreException {
         if (! ( testObject instanceof ITestPolicyCmpt))
              throw new CoreException(
-                     new IpsStatus(NLS.bind("Wrong instance of test policy component with name {0}, expected test policy component but " +
-                             "found {1}!", currElem, testObject.getClass().getName())));
+                     new IpsStatus(NLS.bind(Messages.TestCase_Error_WrongInstanceTestPolicyCmpt, currElem, testObject.getClass().getName())));
     }
     
     /*
@@ -405,7 +421,7 @@ public class TestCase extends IpsObject implements ITestCase {
                 if (pcTarget == null)
                     return null;
 
-                if (currElem.equals(pcTarget.getName())) {                     if (found){                         // exception more than one element found with the given path                         throw new CoreException(new IpsStatus(NLS.bind(                                 "More than test object exists with path {0}", searchedPath)));                     }                     found = true;                                             pc = pcTarget;                }
+                if (currElem.equals(pcTarget.getName())) {                     if (found){                         // exception more than one element found with the given path                         throw new CoreException(new IpsStatus(NLS.bind(                                 Messages.TestCase_Error_MoreThanOneObject, searchedPath)));                     }                     found = true;                                             pc = pcTarget;                }
             }
         }
         return pc;

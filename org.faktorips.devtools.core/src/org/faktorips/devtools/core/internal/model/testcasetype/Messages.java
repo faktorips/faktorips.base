@@ -35,6 +35,16 @@ public class Messages extends NLS {
 	}
 
 	public static String TestValueParameter_ValidateError_ValueDatatypeNotFound;
+    public static String TestPolicyCmptTypeParameter_ValidationError_PolicyCmptTypeNotExists;
+    public static String TestPolicyCmptTypeParameter_ValidationError_MinGreaterThanMax;
+    public static String TestPolicyCmptTypeParameter_ValidationError_MaxLessThanMin;
+    public static String TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed;
+    public static String TestValueParameter_ValidationError_RoleNotAllowed;
+    public static String TestParameter_ValidationError_DuplicateName;
+    public static String TestCaseType_Error_MoreThanOneValueParamWithRoleAndName;
+    public static String TestCaseType_Error_MoreThanOnePolicyParamWithRoleAndName;
+    public static String TestCaseType_Error_MoreThanOneParamWithName;
+    public static String TestCaseType_Error_MoreThanOneParamWithRoleAndName;
 
 
 }

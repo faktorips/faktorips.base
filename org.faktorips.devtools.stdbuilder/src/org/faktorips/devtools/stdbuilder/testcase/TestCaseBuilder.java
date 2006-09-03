@@ -212,10 +212,12 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /*
      * Add the given test values to the given element. 
      */
-    private void addTestValues(Document doc, Element input, ITestValue[] testValues) {
+    private void addTestValues(Document doc, Element input, ITestValue[] testValues) throws CoreException {
         if (testValues == null)
             return; 
         for (int i = 0; i < testValues.length; i++) {
+            if (!testValues[i].isValid())
+                continue;
             Element valueElem = XmlUtil.addNewChild(doc, input, testValues[i].getTestValueParameter());
             XmlUtil.addNewCDATAorTextChild(doc, valueElem, testValues[i].getValue());
             valueElem.setAttribute("type", "testvalue");
@@ -233,6 +235,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (testPolicyCmpt == null)
             return;
         for (int i = 0; i < testPolicyCmpt.length; i++) {
+            if (!testPolicyCmpt[i].isValid())
+                continue;
             Element testPolicyCmptElem = null;
             if (relation != null) {
                 ITestPolicyCmptTypeParameter parameter = relation.findTestPolicyCmptTypeParameter();
@@ -268,11 +272,13 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /*
      * Add the given relations to the given element.
      */
-    private void addRelations(Document doc, Element parent, ITestPolicyCmptRelation[] relations, boolean isInput){
+    private void addRelations(Document doc, Element parent, ITestPolicyCmptRelation[] relations, boolean isInput) throws CoreException{
         if (relations == null)
             return;
         if (relations.length > 0){
             for(int i = 0; i < relations.length; i++){
+                if (!relations[i].isValid())
+                    continue;
                 String relationType = "";
                 if (relations[i].isComposition()) {
                     try {
@@ -297,6 +303,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (testAttrValues == null)
             return;
         for (int i = 0; i < testAttrValues.length; i++) {
+            if (!testAttrValues[i].isValid())
+                continue;
+            
             if (testAttrValues[i].isInputAttribute() && isInput || testAttrValues[i].isExpextedResultAttribute() && ! isInput){
                 ITestAttribute testAttribute = testAttrValues[i].findTestAttribute();
                 if (testAttribute == null) {

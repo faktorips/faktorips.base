@@ -45,6 +45,18 @@ public interface ITestCase extends IIpsObject {
     public String getTestCaseType();
 
     /**
+     * Returns the delta between this test case and it's test case type.
+     * 
+     * @throws CoreException if an error occurs
+     */
+    public ITestCaseTestCaseTypeDelta computeDeltaToTestCaseType() throws CoreException;
+    
+    /**
+     * Fixes all differences that are described in the delta.   
+     */
+    public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreException;
+    
+    /**
      * Sets the test case type the test case belongs to.
      */
     public void setTestCaseType(String testCaseType);

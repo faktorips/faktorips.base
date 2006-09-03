@@ -238,7 +238,7 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
             }
             // check the correct role
             if (! testAttr.isInputAttribute() && ! testAttr.isExpextedResultAttribute()){
-                String text = NLS.bind("Unsupported role for test attribuet {0}", testAttr.getName());
+                String text = NLS.bind(Messages.TestAttributeValue_Error_WrongRole, testAttr.getName());
                 Message msg = new Message(ITestAttribute.MSGCODE_WRONG_ROLE, text, Message.WARNING, this, PROPERTY_VALUE);
                 messageList.add(msg);
             }        

@@ -51,7 +51,7 @@ public class TestCaseHierarchyPath{
      * unique path if there are more instances with the same name.
      */
     public static String evalTestPolicyCmptParamPath(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
-        String pathWithOffset = "";
+        String pathWithOffset = ""; //$NON-NLS-1$
         
         while (!testPolicyCmpt.isRoot()){
             int offset = 0;
@@ -64,7 +64,7 @@ public class TestCaseHierarchyPath{
                 if (relations[i].getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
                     offset ++;
             }
-            pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: "");
+            pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$ //$NON-NLS-2$
             testPolicyCmpt = parent;
         }
 
@@ -80,7 +80,7 @@ public class TestCaseHierarchyPath{
             if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpcs[i]))
                 offset ++;
         }
-        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + "." + pathWithOffset;
+        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + "." + pathWithOffset; //$NON-NLS-1$
         return pathWithOffset;
     }
     

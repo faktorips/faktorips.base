@@ -18,12 +18,14 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -139,12 +141,6 @@ public class TestCaseTypeSection extends IpsSection {
     // Indicates that the tree is refreshing
     private boolean isTreeRefreshing = false;
     
-    // Containers for all sections and their objects
-    private HashMap sections = new HashMap();
-    private HashMap sectionObjects = new HashMap();
-    private HashMap sectionFirstEditField = new HashMap();
-    private HashMap attributeIdx = new HashMap();
-    
     // Contains the currently selected object in the detail area
     private IIpsObjectPart currSelectedDetailObject;
     
@@ -154,8 +150,98 @@ public class TestCaseTypeSection extends IpsSection {
     //  show the correct validation result
     private List attributeControllers = new ArrayList();
 
-    private HashMap sectionButtons = new HashMap();
+    private SectionDetailObjectCache objectCache;
     
+    /*
+     * Object cache to store several object to render the ui
+     */
+    private class SectionDetailObjectCache{
+        // Containers for all sections and their objects
+        private HashMap sections = new HashMap();
+        private HashMap sectionObjects = new HashMap();
+        private HashMap sectionFirstEditField = new HashMap();
+        private HashMap attributeIdx = new HashMap();
+        private HashMap sectionButtons = new HashMap();
+        
+        /*
+         * Returns the key identifier for the given object
+         */
+        private Integer getKeyFor(IIpsObjectPart object){
+            return new Integer(System.identityHashCode(object));
+        }
+
+        /*
+         * Clear all container
+         */
+        public void clear() {
+            sections.clear();
+            sectionObjects.clear();
+            sectionFirstEditField.clear();
+            attributeControllers.clear();
+            attributeIdx.clear();
+            sectionButtons.clear();
+        }
+
+        public void putAttributeIdx(ITestAttribute attribute, int idx) {
+            attributeIdx.put(getKeyFor(attribute), new Integer(idx));
+        }
+
+        public void putSectionButtons(ITestParameter testParam, SectionButtons currSectionButtons) {
+            sectionButtons.put(getKeyFor(testParam), currSectionButtons);
+        }
+
+        public void putFirstEditFieldInSection(ITestParameter testParam, EditField editFieldName) {
+            sectionFirstEditField.put(getKeyFor(testParam), editFieldName);
+        }
+
+        public void putSection(IIpsObjectPart object, Section section) {
+            sections.put(getKeyFor(object), section);
+        }
+
+        public void putSectionObjects(IIpsObjectPart object) {
+            sectionObjects.put(getKeyFor(object), object);
+        }
+
+        public Section getSection(IIpsObjectPart mainSectionObject) {
+            return (Section) sections.get(getKeyFor(mainSectionObject));
+        }
+
+        public IIpsObjectPart getObject(IIpsObjectPart object) {
+            return (IIpsObjectPart) sectionObjects.get(getKeyFor(object));
+        }
+
+        public Collection getAllSections() {
+            return sections.values();
+        }
+
+        public EditField getSectionFirstEditField(Object selected) {
+            return (EditField) sectionFirstEditField.get(getKeyFor((IIpsObjectPart)selected));
+        }
+
+        public Integer getIdxFromAttribute(ITestAttribute testAttribute) {
+            return (Integer) attributeIdx.get(getKeyFor(testAttribute));
+        }
+
+        public Collection getAllSectionKeys() {
+            return sections.keySet();
+        }
+
+        public Section getSectionByKey(Integer key) {
+            return (Section) sections.get(key);
+        }
+
+        public Object getObjectByKey(Integer key) {
+            return (IIpsObjectPart) sectionObjects.get(key);
+        }
+
+        public Collection getAllSectionButtons() {
+            return sectionButtons.values();
+        }
+    }
+    
+    /*
+     * Class used to store button objects for each section
+     */
     private class SectionButtons{
         private Section section;
         private Button addAtributeButton;
@@ -175,20 +261,20 @@ public class TestCaseTypeSection extends IpsSection {
             addAtributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_AddAttribute);
             
             createButtonSeparator(buttons);
-            removeAttributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_RemoveAttribute);
             changeAttributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_ChangeAttribute);
+            removeAttributeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_RemoveAttribute);
             moveAttributeUp = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_MoveAttributeUp);
             moveAttributeDown = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_MoveAttributeDown);
             
             addAtributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            removeAttributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             changeAttributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            removeAttributeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             moveAttributeUp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             moveAttributeDown.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             
             addAtributeButton.setEnabled(false);
-            removeAttributeButton.setEnabled(false);
             changeAttributeButton.setEnabled(false);
+            removeAttributeButton.setEnabled(false);
             moveAttributeUp.setEnabled(false);
             moveAttributeDown.setEnabled(false);
             
@@ -196,10 +282,10 @@ public class TestCaseTypeSection extends IpsSection {
         }
         
         public void updateDetailButtonStatus(IIpsObjectPart mainSectionObject, IIpsObjectPart currSelectedDetailObject) {
-            if (section != sections.get(getKeyFor(mainSectionObject))){
+            if (section != objectCache.getSection(mainSectionObject)){
                 addAtributeButton.setEnabled(false);
-                removeAttributeButton.setEnabled(false);
                 changeAttributeButton.setEnabled(false);
+                removeAttributeButton.setEnabled(false);
                 moveAttributeUp.setEnabled(false);
                 moveAttributeDown.setEnabled(false);
                 return;
@@ -297,7 +383,7 @@ public class TestCaseTypeSection extends IpsSection {
         public void mouseDown(MouseEvent e) {
             currSelectedDetailObject = object;
             if (section == null){
-                Section section = (Section) sections.get(getKeyFor(object));
+                Section section = objectCache.getSection(object);
                 if (section != null){
                     selectSection(section);
                 }                
@@ -355,15 +441,12 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
     
-    private void postAsyncRunnable(Runnable r) {
-        if (!isDisposed())
-            getDisplay().asyncExec(r);
-    }       
-
     public TestCaseTypeSection(Composite parent, UIToolkit toolkit, final ITestCaseType testCaseType, String title,
             String detailTitle, ScrolledForm form) {
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
+        this.objectCache = new SectionDetailObjectCache();
+        
         this.testCaseType = testCaseType;
         this.sectionTreeStructureTitle = title;
         this.sectionDetailsTitle = detailTitle;
@@ -377,19 +460,7 @@ public class TestCaseTypeSection extends IpsSection {
         testCaseType.getIpsModel().addChangeListener(new ContentsChangeListener() {
             public void contentsChanged(ContentChangeEvent event) {
                 if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())) {
-                    try{
-                        setFormRedraw(false);
-                        refreshTree();
-                        refreshSectionTitles();
-                        // refresh attribute edit fields
-                        for (Iterator iter = attributeControllers.iterator(); iter.hasNext();) {
-                            UIController controller = (UIController) iter.next();
-                            controller.updateUI();
-                        }
-                        updateTreeButtonStatus(getRootSectionObject(currSelectedDetailObject));
-                    }finally{
-                        setFormRedraw(true);
-                    }
+                    postRefreshAll();
                 }
             }
         });        
@@ -401,6 +472,14 @@ public class TestCaseTypeSection extends IpsSection {
     protected void performRefresh() {
     }
 
+    /*
+     * Post the given runnable to the async executable list of the display
+     */
+    private void postAsyncRunnable(Runnable r) {
+        if (!isDisposed())
+            getDisplay().asyncExec(r);
+    }    
+    
     /**
      * {@inheritDoc}
      */
@@ -537,7 +616,7 @@ public class TestCaseTypeSection extends IpsSection {
             if (testParms != null && testParms.length > 0){
                 createDetailsForAllTestParams(testParms);
                 firstTestParam = testParms[0];
-                firstSection = (Section) sections.get(getKeyFor(firstTestParam));
+                firstSection = objectCache.getSection(firstTestParam);
             } else {
                 redrawForm();
                 return;
@@ -608,7 +687,7 @@ public class TestCaseTypeSection extends IpsSection {
             ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
             for (int i = 0; i < testAttributes.length; i++) {
                 createTestAttributeDetailSection(details, testAttributes[i]);
-                attributeIdx.put(getKeyFor(testAttributes[i]), new Integer(i));
+                objectCache.putAttributeIdx(testAttributes[i], i);
             }
         } else if (testParam instanceof ITestValueParameter){
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
@@ -617,7 +696,7 @@ public class TestCaseTypeSection extends IpsSection {
         if (testParam instanceof ITestPolicyCmptTypeParameter){
             SectionButtons currSectionButtons = new SectionButtons();
             currSectionButtons.createButtons(structureComposite, section);
-            sectionButtons.put(getKeyFor(testParam), currSectionButtons);
+            objectCache.putSectionButtons(testParam, currSectionButtons);
         }
         
         uiController.updateUI();
@@ -732,7 +811,7 @@ public class TestCaseTypeSection extends IpsSection {
         EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testParam.getName());
         addSectionSelectionListeners(editFieldName, label,testParam);
-        sectionFirstEditField.put(getKeyFor(testParam), editFieldName);
+        objectCache.putFirstEditFieldInSection(testParam, editFieldName);
         
         label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Role);
         EditField editFieldRole = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterRole
@@ -750,9 +829,9 @@ public class TestCaseTypeSection extends IpsSection {
         if (editField != null){
             editField.getControl().addFocusListener(new FocusAdapter() {
                 public void focusGained(FocusEvent e) {
-                    Section section = (Section) sections.get(getKeyFor(object));
+                    Section section = objectCache.getSection(object);
                     if (section != null){
-                        currSelectedDetailObject = (IIpsObjectPart) sectionObjects.get(getKeyFor(object));
+                        currSelectedDetailObject = objectCache.getObject(object);
                         selectSection(section);
                     }
                 }
@@ -785,7 +864,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Update the enable status of the detail buttons
      */
     private void updateDetailButtonStatus(IIpsObjectPart currSelectedDetailObject) {
-        for (Iterator iter = sectionButtons.values().iterator(); iter.hasNext();) {
+        for (Iterator iter = objectCache.getAllSectionButtons().iterator(); iter.hasNext();) {
             SectionButtons buttons = (SectionButtons) iter.next();
             buttons.updateDetailButtonStatus(getRootSectionObject(currSelectedDetailObject), currSelectedDetailObject);
         }
@@ -807,7 +886,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Reset the selection color of all sections
      */
     private void resetSectionSelectedColor(){
-        for (Iterator iter = sections.values().iterator(); iter.hasNext();) {
+        for (Iterator iter = objectCache.getAllSections().iterator(); iter.hasNext();) {
             Section section = (Section) iter.next();
             section.setBackground(form.getBackground());
         }
@@ -923,12 +1002,7 @@ public class TestCaseTypeSection extends IpsSection {
             detailsArea.dispose();
 
         currSelectedDetailObject = null;
-        sections.clear();
-        sectionObjects.clear();
-        sectionFirstEditField.clear();
-        attributeControllers.clear();
-        attributeIdx.clear();
-        sectionButtons.clear();
+        objectCache.clear();
         
         detailsArea = toolkit.getFormToolkit().createComposite(parentOfdetailsArea);
         detailsArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -955,18 +1029,12 @@ public class TestCaseTypeSection extends IpsSection {
      * Store the given section and the object which is displayed in the section
      */
     private void storeSection(Section section, IIpsObjectPart object) {
-        sections.put(getKeyFor(object), section);
-        sectionObjects.put(getKeyFor(object), object);
+        objectCache.putSection(object, section);
+        objectCache.putSectionObjects(object);
+        
         section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(section, object));
         section.addMouseListener(new SectionSelectMouseListener(section, object));
         section.addExpansionListener(new SectionExpandListern(section, object));
-    }
-    
-    /*
-     * Returns the key identifier for the givenn object
-     */
-    private Integer getKeyFor(IIpsObjectPart object){
-        return new Integer(System.identityHashCode(object));
     }
 
     /*
@@ -1005,7 +1073,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Selects the first edit field in the section contains the given object
      */
     private void selectFirstEditFieldInSection(Object selected) {
-        EditField editFieldName = (EditField) sectionFirstEditField.get(getKeyFor((IIpsObjectPart)selected));
+        EditField editFieldName = objectCache.getSectionFirstEditField(selected);
         if (editFieldName == null)
             return;
         editFieldName.getControl().setFocus();
@@ -1239,7 +1307,12 @@ public class TestCaseTypeSection extends IpsSection {
     
             try {
                 String[] policyCmptTypeNames = null;
-                policyCmptTypeNames = selectPolicyCmptTypeByDialog(testPolicyCmptTypeParam.findRelation().findTarget(),
+                IRelation relation  = testPolicyCmptTypeParam.findRelation();
+                IPolicyCmptType policyCmptTyp = null;
+                if (relation != null){
+                    policyCmptTyp = relation.findTarget();
+                }
+                policyCmptTypeNames = selectPolicyCmptTypeByDialog(policyCmptTyp,
                         Messages.TestCaseTypeSection_Dialog_SelectPolicyCmptTypeChange_Message, false);
                 if (policyCmptTypeNames == null)
                     return;
@@ -1286,7 +1359,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Moves the give test attribute up or down
      */
     private void moveTestAttribute(ITestAttribute testAttribute, boolean up) {
-        Integer testAttributeIdx = (Integer) attributeIdx.get(getKeyFor(testAttribute));
+        Integer testAttributeIdx = objectCache.getIdxFromAttribute(testAttribute);
         if (testAttributeIdx == null)
             throw new RuntimeException(Messages.TestCaseTypeSection_Error_WrongTestAttributeIndex);
         
@@ -1347,7 +1420,7 @@ public class TestCaseTypeSection extends IpsSection {
         refreshTree();
         createDetailsArea(param);
         currSelectedDetailObject = param;
-        selectSection((Section)sections.get(getKeyFor(param)));
+        selectSection(objectCache.getSection(param));
         selectFirstEditFieldInSection(param);
     }
     
@@ -1377,10 +1450,12 @@ public class TestCaseTypeSection extends IpsSection {
      * Refreshs all section titles
      */
     private void refreshSectionTitles() {
-        for (Iterator iter = sections.keySet().iterator(); iter.hasNext();) {
+        for (Iterator iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
             Integer key = (Integer) iter.next();
-            Section section = (Section) sections.get(key);
-            section.setText(labelProvider.getText((IIpsObjectPart) sectionObjects.get(key)));
+            Section section = objectCache.getSectionByKey(key);
+            if (section.isDisposed())
+                continue;
+            section.setText(labelProvider.getText(objectCache.getObjectByKey(key)));
             section.getParent().setRedraw(false);
             section.pack();
             section.getParent().layout();
@@ -1392,12 +1467,11 @@ public class TestCaseTypeSection extends IpsSection {
      * Redraw and select the section of the new attribute
      */
     private void redrawDetailArea(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam, IIpsObjectPart selectedObject) {
-        
         // store the expanded sections state
-        List expandedSectionKeys = new ArrayList(sections.size());
-        for (Iterator iter = sections.keySet().iterator(); iter.hasNext();) {
+        List expandedSectionKeys = new ArrayList();
+        for (Iterator iter = objectCache.getAllSectionKeys().iterator(); iter.hasNext();) {
             Integer key = (Integer) iter.next();
-            if (((Section)sections.get(key)).isExpanded())
+            if (objectCache.getSectionByKey(key).isExpanded())
                 expandedSectionKeys.add(key);
         }
         
@@ -1407,16 +1481,43 @@ public class TestCaseTypeSection extends IpsSection {
             prevSelectedTestParam = null;
             createDetailsArea(testPolicyCmptTypeParam);
             currSelectedDetailObject = selectedObject;
-            selectSection((Section)sections.get(getKeyFor(selectedObject)));
+            selectSection(objectCache.getSection(selectedObject));
 
             // restore the expanded section states
             for (Iterator iter = expandedSectionKeys.iterator(); iter.hasNext();) {
-                Section section = (Section)sections.get((Integer)iter.next());
+                Section section = objectCache.getSectionByKey((Integer)iter.next());
+                if (section == null)
+                    return;
                 section.setExpanded(true);
             }
         } finally {
             setFormRedraw(true);
         }
+    }
+    
+    /*
+     * Refresh the ui
+     */
+    private void postRefreshAll(){
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if (isDisposed())
+                    return;
+                try{
+                    setFormRedraw(false);
+                    refreshTree();
+                    refreshSectionTitles();
+                    // refresh attribute edit fields
+                    for (Iterator iter = attributeControllers.iterator(); iter.hasNext();) {
+                        UIController controller = (UIController) iter.next();
+                        controller.updateUI();
+                    }
+                    updateTreeButtonStatus(getRootSectionObject(currSelectedDetailObject));
+                }finally{
+                    setFormRedraw(true);
+                }                
+            }
+        });        
     }
     
     /*
@@ -1453,7 +1554,8 @@ public class TestCaseTypeSection extends IpsSection {
      * Sets the redraw state of the form
      */
     private void setFormRedraw(boolean redraw){
-        form.setRedraw(redraw);
+        if (!form.isDisposed())
+            form.setRedraw(redraw);
     }
     
     /*
@@ -1523,6 +1625,13 @@ public class TestCaseTypeSection extends IpsSection {
         selectDialog.setMessage(message);
 
         IPolicyCmptType policyCmptType = testPolicyCmptTypeParam.findPolicyCmptType();
+        if (policyCmptType==null){
+            String msg = NLS.bind("The policy component \"{0}\" not exists.\nPlease select an existing policy component before changing the test attributes.", testPolicyCmptTypeParam.getPolicyCmptType());
+            MessageDialog.openWarning(getShell(),
+                    "Change test attributes", msg);
+            return null;
+        }
+        
         ITypeHierarchy superTypeHierarchy = policyCmptType.getSupertypeHierarchy();
         IAttribute[] attributes = superTypeHierarchy.getAllAttributes(policyCmptType);
 

@@ -161,7 +161,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                "More than test value parameter exists with role {0} and name {1}", TestParameterRole.INPUT,
+                Messages.TestCaseType_Error_MoreThanOneValueParamWithRoleAndName, TestParameterRole.INPUT,
                 inputTestValueParameter)));
     }
 
@@ -182,7 +182,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                "More than test policy component type parameter exists with role {0} and name {1}",
+                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithRoleAndName,
                 TestParameterRole.INPUT, inputTestPolicyCmptTypeParameter)));
     }
 
@@ -198,7 +198,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return (ITestParameter)foundTestParameter.get(0);
         }
 
-        throw new CoreException(new IpsStatus(NLS.bind("More than test parameter exists with name {0}", testParameterName)));
+        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOneParamWithName, testParameterName)));
     }
     
     /**
@@ -255,7 +255,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                "More than test value parameter exists with role {0} and name {1}", TestParameterRole.INPUT,
+                Messages.TestCaseType_Error_MoreThanOneParamWithRoleAndName, TestParameterRole.INPUT,
                 expResultTestValueParameter)));
     }
 
@@ -276,7 +276,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                "More than test policy component type parameter exists with role {0} and name {1}",
+                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithRoleAndName,
                 TestParameterRole.INPUT, expResultTestPolicyCmptTypeParameter)));
     }
 
@@ -424,7 +424,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         ITestAttribute[] testAttribues = testPolicyCmptTypeParam.getTestAttributes();
         for (int i = 0; i < testAttribues.length; i++) {
             if (! (testAttribues[i] == testAttribute) && testAttribues[i].getName().equals(uniqueName)){
-                uniqueName = name + " (" + idx++ + ")";
+                uniqueName = name + " (" + idx++ + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return uniqueName;

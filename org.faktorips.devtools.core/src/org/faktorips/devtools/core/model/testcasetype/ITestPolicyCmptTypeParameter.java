@@ -66,6 +66,21 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public final static String MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE = MSGCODE_PREFIX + "RoleDoesNotMatchParentRole"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the relation wasn't found.
+     */
+    public final static String MSGCODE_RELATION_NOT_EXISTS = MSGCODE_PREFIX + "RelationNotExists"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the target of the relation wasn't found.
+     */
+    public final static String MSGCODE_TARGET_OF_RELATION_NOT_EXISTS = MSGCODE_PREFIX + "TargetOfRelationNotExists"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the policy cmpt type is not allowed for the relation.
+     */
+    public final static String MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION = MSGCODE_PREFIX + "WrongPolicyCmptTypeOfRelation"; //$NON-NLS-1$
+    
+    /**
      * Returns the qualified name of policy component class.
      */
 	public String getPolicyCmptType();

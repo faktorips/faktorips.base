@@ -221,7 +221,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         
         // check the correct role
         if (! isInputAttribute() && ! isExpextedResultAttribute()){
-            String text = NLS.bind("Role {0} not allowed for test attribuet {1}.", role, name);
+            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowed, role, name);
             Message msg = new Message(MSGCODE_WRONG_ROLE, text, Message.ERROR, this, PROPERTY_TEST_ATTRIBUTE_ROLE);
             messageList.add(msg);
         }
@@ -229,7 +229,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         // check if the role of the attribute matches the role of the parent
         TestParameterRole parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterRole();
         if (!TestParameterRole.isChildRoleMatching(role, parentRole)) {
-            String text = NLS.bind("Role \"{0}\" not allowed if parent specifies role \"{1}\".", role.getName(), parentRole
+            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowedIfParent, role.getName(), parentRole
                     .getName());
             Message msg = new Message(MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE, text, Message.ERROR, this,
                     PROPERTY_TEST_ATTRIBUTE_ROLE);
@@ -241,7 +241,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         ITestAttribute testAttributes[] = typeParam.getTestAttributes();
         for (int i = 0; i < testAttributes.length; i++) {
             if (testAttributes[i] != this && testAttributes[i].getName().equals(name)) {
-                String text = NLS.bind("Duplicate test attribute name \"{0}\".", name);
+                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, name);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
                         PROPERTY_NAME);
                 messageList.add(msg);

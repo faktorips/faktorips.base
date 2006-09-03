@@ -72,7 +72,7 @@ public class IpsTestAction extends IpsAction {
 					IIpsProject project = root.getIpsProject();
                     String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);
                     if (tocFilePackage != null)
-                        selectedPathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + "");
+                        selectedPathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + ""); //$NON-NLS-1$
 				} else if (element instanceof IIpsPackageFragment) {
 					IIpsPackageFragment child = (IIpsPackageFragment) element;
 					root = (IIpsPackageFragmentRoot) child.getRoot();
@@ -119,7 +119,7 @@ public class IpsTestAction extends IpsAction {
 			IIpsProject project = root.getIpsProject();
             String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);
             if (tocFilePackage !=  null)
-                selectedPathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + "");
+                selectedPathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + ""); //$NON-NLS-1$
 		}
 		return root;
 	}

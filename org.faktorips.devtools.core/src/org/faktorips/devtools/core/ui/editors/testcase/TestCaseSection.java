@@ -890,7 +890,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 	
 	private void showAll(boolean showAll){
-		this.showAll = showAll;
+		if (this.showAll == showAll)
+            return;
+        
+        this.showAll = showAll;
         prevIsValue = false;
         prevTestPolicyCmpt = new ArrayList();
 		if (showAll){

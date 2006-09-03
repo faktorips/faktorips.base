@@ -49,7 +49,7 @@ public class NewTestCaseWizard extends NewIpsObjectWizard {
     
     public NewTestCaseWizard() {
         super(IpsObjectType.TEST_CASE);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseWizard.gif"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseWizard.gif")); //$NON-NLS-1$
     }
     
     /**

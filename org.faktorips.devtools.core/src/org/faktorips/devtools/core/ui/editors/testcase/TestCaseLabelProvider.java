@@ -147,10 +147,10 @@ public class TestCaseLabelProvider implements ILabelProvider {
         String sectionText = testPolicyCmpt.getName();
         if (testPolicyCmpt.getProductCmpt().length() > 0){
             String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
-            sectionText += pckName.length() > 0 ? " [" + pckName + "]":"";
+            sectionText += pckName.length() > 0 ? " [" + pckName + "]":""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         if (! testPolicyCmpt.getName().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
-            sectionText += " (" + testPolicyCmpt.getTestPolicyCmptTypeParameter() + ")";
+            sectionText += " (" + testPolicyCmpt.getTestPolicyCmptTypeParameter() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         return sectionText;
     }
 
