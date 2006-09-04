@@ -35,7 +35,6 @@ public class NewProductComponentAction extends Action {
 		super();
 		this.window = window;
 		setText(Messages.NewProductComponentAction_name);
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("NewProductCmptWizard.gif")); //$NON-NLS-1$
 	}
 
 	/** 
