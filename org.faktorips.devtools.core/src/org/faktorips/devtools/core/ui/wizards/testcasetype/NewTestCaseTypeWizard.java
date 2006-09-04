@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.wizards.testcasetype;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
@@ -37,6 +38,7 @@ public class NewTestCaseTypeWizard extends NewIpsObjectWizard {
     
     public NewTestCaseTypeWizard() {
         super(IpsObjectType.TEST_CASE_TYPE);
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewTestCaseTypeWizard.png")); //$NON-NLS-1$
     }
     
     /**

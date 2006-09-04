@@ -39,7 +39,7 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
     
     public NewPcTypeWizard() {
         super(IpsObjectType.POLICY_CMPT_TYPE);
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewPolicyCmptTypeWizard.gif"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/NewPolicyCmptTypeWizard.png"));
     }
     
     /** 

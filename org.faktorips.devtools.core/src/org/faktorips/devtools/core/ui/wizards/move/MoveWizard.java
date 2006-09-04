@@ -89,7 +89,7 @@ public class MoveWizard extends Wizard {
 		} 
 		else if (operation == OPERATION_RENAME) {
 			super.setWindowTitle(Messages.MoveWizard_titleRename);
-            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.gif"));
+            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/RenameWizard.png"));
 		}
 		else {
 			String msg = Messages.bind(Messages.MoveWizard_warnInvalidOperation, ""+operation); //$NON-NLS-1$

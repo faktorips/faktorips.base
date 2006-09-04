@@ -45,7 +45,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
     public NewIpsObjectWizard(IpsObjectType type) {
         ipsObjectType = type;
         setWindowTitle(Messages.NewIpsObjectWizard_title + ipsObjectType.getName());
-        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/IpsElementWizard.gif"));
+        this.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/IpsElementWizard.png"));
     }
     
     /** 
