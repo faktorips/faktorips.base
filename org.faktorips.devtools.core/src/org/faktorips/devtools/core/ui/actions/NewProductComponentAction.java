@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction;
 
 /**
