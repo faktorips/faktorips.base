@@ -85,7 +85,7 @@ public class MoveWizard extends Wizard {
 		this.operation = operation;
 		if (operation == OPERATION_MOVE) {
 			super.setWindowTitle(Messages.MoveWizard_titleMove);
-            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MoveAndRenameWizard.gif"));
+            super.setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MoveAndRenameWizard.png"));
 		} 
 		else if (operation == OPERATION_RENAME) {
 			super.setWindowTitle(Messages.MoveWizard_titleRename);
