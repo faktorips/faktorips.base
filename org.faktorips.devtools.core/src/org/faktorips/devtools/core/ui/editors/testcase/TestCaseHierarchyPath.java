@@ -80,7 +80,7 @@ public class TestCaseHierarchyPath{
             if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpcs[i]))
                 offset ++;
         }
-        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + "." + pathWithOffset; //$NON-NLS-1$
+        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$
         return pathWithOffset;
     }
     
