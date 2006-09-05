@@ -35,6 +35,14 @@
             label="%org.faktorips.devtools.actions.ModellingActionSet"
             visible="false">
          <action
+               class="org.faktorips.devtools.core.ui.wizards.testcasetype.OpenNewTestCaseTypeWizardAction"
+               icon="icons/NewTestCaseType.gif"
+               id="org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction"
+               label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
+               style="push"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>               
+         <action
                label="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.label"
                icon="icons/NewTableStructureWizard.gif"
                tooltip="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.tooltip"
@@ -56,14 +64,6 @@
             id="org.faktorips.devtools.actions.ProductDefinitionActionSet"
             label="%org.faktorips.devtools.actions.ProductDefinitionActionSet"
             visible="false">
-         <action
-               class="org.faktorips.devtools.core.ui.wizards.testcasetype.OpenNewTestCaseTypeWizardAction"
-               icon="icons/NewTestCaseType.gif"
-               id="org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction"
-               label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
-               style="push"
-               toolbarPath="org.faktorips.devtools"
-               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>               
          <action
                class="org.faktorips.devtools.core.ui.wizards.testcase.OpenNewTestCaseWizardAction"
                icon="icons/NewTestCase.gif"
