@@ -19,6 +19,7 @@
       <perspective
             class="org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory"
             fixed="false"
+            icon="icons/IpsPerspective.gif"
             id="org.faktorips.devtools.core.productDefinitionPerspective"
             name="%org.faktorips.devtools.core.productDefinitionPerspective">
       </perspective>

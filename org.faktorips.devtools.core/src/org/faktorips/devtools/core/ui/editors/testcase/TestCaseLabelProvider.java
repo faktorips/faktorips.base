@@ -81,7 +81,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 			if (relation.isAssoziation()){
 				return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
 			}else {
-				return IpsPlugin.getDefault().getImage("Aggregation.gif"); //$NON-NLS-1$
+				return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
 			}
 		} catch (CoreException e) {
 			return getImageFromRelation(testPolicyCmptRelation);
@@ -97,7 +97,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 		if (testPcTypeRelation.isAccoziation()){
 			return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
 		}else{
-			return IpsPlugin.getDefault().getImage("Aggregation.gif"); //$NON-NLS-1$
+			return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
 		}
 	}
 

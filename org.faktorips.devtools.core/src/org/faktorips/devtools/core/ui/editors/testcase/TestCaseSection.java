@@ -1318,7 +1318,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				if (relation.isAssoziation()){
 					return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
 				}else {
-					return IpsPlugin.getDefault().getImage("Aggregation.gif"); //$NON-NLS-1$
+					return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
 				}
 			} catch (CoreException e) {
 				return null;

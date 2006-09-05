@@ -487,7 +487,10 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     public Image getImage() {
         if (this.type==RelationType.COMPOSITION) {
-            return IpsPlugin.getDefault().getImage("Aggregation.gif"); //$NON-NLS-1$
+            return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
+        }
+        if (this.type==RelationType.REVERSE_COMPOSITION) {
+            return IpsPlugin.getDefault().getImage("ReverseComposition.gif"); //$NON-NLS-1$
         }
         return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
     }
