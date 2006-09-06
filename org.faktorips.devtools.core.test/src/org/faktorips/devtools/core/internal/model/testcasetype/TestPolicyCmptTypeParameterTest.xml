@@ -4,7 +4,7 @@
 -->
 <testcases>
 
-	<PolicyCmptTypeParameter name="policyCmptType1" testParameterRole="input"
+	<PolicyCmptTypeParameter name="policyCmptType1" testParameterType="input"
 		policyCmptType="base.Test1" relation="relation1" requiresProductCmpt="true"
 		 minInstances="2"
 		 maxInstances="3">
@@ -12,18 +12,18 @@
 				policyCmptType="base.Test2" requiresProductCmpt="true"
 				 minInstances="4"
 				 maxInstances="5"
-				 relation="relation2" testParameterRole="expectedResult"/>
+				 relation="relation2" testParameterType="expectedResult"/>
 			<PolicyCmptTypeParameter name="policyCmptType3"
 				policyCmptType="base.Test3" requiresProductCmpt="true"
 				 minInstances="6"
 				 maxInstances="7"
-				 relation="relation3" testParameterRole="combined"/>				 
+				 relation="relation3" testParameterType="combined"/>				 
 			<TestAttribute modelAttribute="attribute1" minInstances="2" maxInstances="3"/>
 			<TestAttribute modelAttribute="attribute2" minInstances="2" maxInstances="3"/>
 			<TestAttribute modelAttribute="attribute3" />
 	</PolicyCmptTypeParameter>
 	
-	<PolicyCmptTypeParameter name="policyCmptType4" testParameterRole="expectedResult"
+	<PolicyCmptTypeParameter name="policyCmptType4" testParameterType="expectedResult"
 		policyCmptType="base.Test4" requiresProductCmpt="true"
 	 	minInstances="1"
 		maxInstances="1">
@@ -31,10 +31,10 @@
 				policyCmptType="base.Test4.1" requiresProductCmpt="true"
 				 minInstances="1"
 				 maxInstances="1"
-				 relation="relation4.1" testParameterRole="input"/>
+				 relation="relation4.1" testParameterType="input"/>
 	</PolicyCmptTypeParameter>
 				 
-	<PolicyCmptTypeParameter name="policyCmptType5" testParameterRole="combined"
+	<PolicyCmptTypeParameter name="policyCmptType5" testParameterType="combined"
 		policyCmptType="base.Test5" requiresProductCmpt="true"
 	 	minInstances="1"
 		maxInstances="1">
@@ -42,10 +42,10 @@
 				policyCmptType="base.Test5.1" requiresProductCmpt="true"
 				 minInstances="2"
 				 maxInstances="2"
-				 relation="relation5.1" testParameterRole="combined"/>
+				 relation="relation5.1" testParameterType="combined"/>
 	</PolicyCmptTypeParameter>
 			
-	<PolicyCmptTypeParameter name="policyCmptType6" testParameterRole="xyz"
+	<PolicyCmptTypeParameter name="policyCmptType6" testParameterType="xyz"
 		policyCmptType="base.Test6" requiresProductCmpt="true"
 	 	minInstances="1"
 		maxInstances="1"/>

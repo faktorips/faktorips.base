@@ -4,16 +4,16 @@
 -->
 <testcases>
 
-	<ValueParameter name="newSumInsured1" valueDatatype="Money" testParameterRole="input">
+	<ValueParameter name="newSumInsured1" valueDatatype="Money" testParameterType="input">
 	</ValueParameter>
 	
-	<ValueParameter name="newSumInsured2" valueDatatype="Decimal" testParameterRole="expectedResult">
+	<ValueParameter name="newSumInsured2" valueDatatype="Decimal" testParameterType="expectedResult">
 	</ValueParameter>
 	
-	<ValueParameter name="newSumInsured3" valueDatatype="Money" testParameterRole="combined">
+	<ValueParameter name="newSumInsured3" valueDatatype="Money" testParameterType="combined">
 	</ValueParameter>
 	
-	<ValueParameter name="newSumInsured4" valueDatatype="Money" testParameterRole="xyz">
+	<ValueParameter name="newSumInsured4" valueDatatype="Money" testParameterType="xyz">
 	</ValueParameter>
 				
 </testcases>

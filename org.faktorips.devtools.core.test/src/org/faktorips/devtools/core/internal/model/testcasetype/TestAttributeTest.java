@@ -48,7 +48,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element attributeEl = XmlUtil.getFirstElement(docEl);
         testAttribute.initFromXml(attributeEl);
-        assertEquals("attributeName1", testAttribute.getName());
+        assertEquals("attribute1", testAttribute.getName());
         assertEquals("attribute1", testAttribute.getAttribute());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
@@ -56,27 +56,27 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         attributeEl = XmlUtil.getElement(docEl, 1);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute2", testAttribute.getAttribute());
-        assertEquals("attributeName2", testAttribute.getName());
+        assertEquals("attribute2", testAttribute.getName());
         assertFalse(testAttribute.isInputAttribute());
         assertTrue(testAttribute.isExpextedResultAttribute());
 
         attributeEl = XmlUtil.getElement(docEl, 2);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute3", testAttribute.getAttribute());
-        assertEquals("attributeName3", testAttribute.getName());
+        assertEquals("attribute3", testAttribute.getName());
         assertFalse(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
         
         attributeEl = XmlUtil.getElement(docEl, 3);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute4", testAttribute.getAttribute());
-        assertEquals("attributeName4", testAttribute.getName());
+        assertEquals("attribute4", testAttribute.getName());
         assertFalse(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
         
         boolean exceptionOccored = false;
         try {
-            // test unsupported test attribute role
+            // test unsupported test attribute type
             ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.COMBINED);
         } catch (Exception e) {
             exceptionOccored = true;
@@ -95,7 +95,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         
         testAttribute.initFromXml(el);
         assertEquals("attribute2", testAttribute.getAttribute());
-        assertEquals("attributeName2", testAttribute.getName());
+        assertEquals("attribute2", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
     }

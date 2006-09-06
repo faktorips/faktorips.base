@@ -214,15 +214,15 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         
         // check the correct role
         if (! isInputAttribute() && ! isExpextedResultAttribute()){
-            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowed, type, name);
+            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowed, type.getName(), name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);
         }
         
-        // check if the role of the attribute matches the role of the parent
-        TestParameterType parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
-        if (!TestParameterType.isChildTypeMatching(type, parentRole)) {
-            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowedIfParent, type.getName(), parentRole
+        // check if the type of the attribute matches the type of the parent
+        TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
+        if (!TestParameterType.isChildTypeMatching(type, parentType)) {
+            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowedIfParent, type.getName(), parentType
                     .getName());
             Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                     PROPERTY_TEST_ATTRIBUTE_TYPE);
@@ -234,7 +234,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         ITestAttribute testAttributes[] = typeParam.getTestAttributes();
         for (int i = 0; i < testAttributes.length; i++) {
             if (testAttributes[i] != this && testAttributes[i].getName().equals(attribute)) {
-                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, modelAttribute);
+                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, attribute);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
                         PROPERTY_ATTRIBUTE);
                 messageList.add(msg);

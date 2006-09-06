@@ -83,8 +83,8 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
                 .getTestPolicyCmptTypeParamChild("policyCmptType5.1"), "policyCmptType5.1", "base.Test5.1",
                 "relation5.1", 2, 2, true, true, true);
 
-        // wrong type role doesn't result in an exception,
-        // the parameter will be parsed and stored as unknown parameter type role
+        // wrong type type doesn't result in an exception,
+        // the parameter will be parsed and stored as unknown parameter type type
         paramEl = XmlUtil.getElement(docEl, "PolicyCmptTypeParameter", 3);
         policyCmptTypeParameterInput.initFromXml(paramEl);
         assertFalse(policyCmptTypeParameterInput.isInputParameter());
@@ -132,7 +132,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertEquals(1, policyCmptTypeParameterInput.getTestAttributes().length);
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "Name1", "base.Test2", "relation1", 7, 8,
                 true, false, false);
-        // child role not specified therfor combinned is the default role
+        // child type not specified therfor combinned is the default type
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
                 .getTestPolicyCmptTypeParamChild("childpolicyCmptType1"), "childpolicyCmptType1", "base.Test4",
                 "relation1", 7, 8, true, true, true);

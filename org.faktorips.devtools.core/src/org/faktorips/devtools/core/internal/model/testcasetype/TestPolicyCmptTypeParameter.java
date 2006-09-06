@@ -497,11 +497,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             list.add(msg);
         }
         
-        // check if the role of the parameter matches the role of the parent
+        // check if the type of the parameter matches the type of the parent
         if (!isRoot()){
-            TestParameterType parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
-            if (!TestParameterType.isChildTypeMatching(type, parentRole)) {
-                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed, type.getName(), parentRole
+            TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
+            if (!TestParameterType.isChildTypeMatching(type, parentType)) {
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed, type.getName(), parentType
                         .getName());
                 Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                         PROPERTY_TEST_PARAMETER_TYPE);

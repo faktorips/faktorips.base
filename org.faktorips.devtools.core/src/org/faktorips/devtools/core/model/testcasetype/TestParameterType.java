@@ -103,10 +103,10 @@ public class TestParameterType extends DefaultEnumValue {
         if (type1.equals(type2))
             return true;
         
-        if (type1.equals(COMBINED) && (type2.equals(INPUT) || type2.equals(EXPECTED_RESULT)))
+        if (type2.equals(COMBINED) && (type2.equals(INPUT) || type2.equals(EXPECTED_RESULT)))
             return true;
 
-        if (type1.equals(COMBINED) && (type1.equals(INPUT) || type1.equals(EXPECTED_RESULT)))
+        if (type2.equals(COMBINED) && (type1.equals(INPUT) || type1.equals(EXPECTED_RESULT)))
             return true;
         
         return false;

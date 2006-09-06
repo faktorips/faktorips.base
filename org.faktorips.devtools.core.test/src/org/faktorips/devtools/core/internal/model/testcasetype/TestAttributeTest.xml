@@ -4,15 +4,15 @@
 -->
 <testcases>
 
-	<TestAttribute name="attributeName1" attribute="attribute1" testAttributeRole="input">
+	<TestAttribute attribute="attribute1" testAttributeType="input">
 	</TestAttribute>
 
-	<TestAttribute name="attributeName2" attribute="attribute2" testAttributeRole="expectedResult">
+	<TestAttribute attribute="attribute2" testAttributeType="expectedResult">
 	</TestAttribute>
 	
-	<TestAttribute name="attributeName3" attribute="attribute3" testAttributeRole="combined">
+	<TestAttribute attribute="attribute3" testAttributeType="combined">
 	</TestAttribute>
 	
-	<TestAttribute name="attributeName4" attribute="attribute4" testAttributeRole="xyz">
+	<TestAttribute attribute="attribute4" testAttributeType="xyz">
 	</TestAttribute>		
 </testcases>

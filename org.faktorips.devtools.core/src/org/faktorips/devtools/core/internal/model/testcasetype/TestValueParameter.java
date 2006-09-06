@@ -164,7 +164,7 @@ public class TestValueParameter extends TestParameter implements
         
         // check the correct role
         if (isCombinedParameter() || (! isInputParameter()&& ! isExpextedResultParameter())){
-            String text = NLS.bind(Messages.TestValueParameter_ValidationError_RoleNotAllowed, type, name);
+            String text = NLS.bind(Messages.TestValueParameter_ValidationError_RoleNotAllowed, type.getName(), name);
             Message msg = new Message(MSGCODE_WRONG_ROLE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }
