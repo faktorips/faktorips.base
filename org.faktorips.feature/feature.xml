@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="FaktorIPS"
-      version="0.9.30"
+      version="0.9.31"
       provider-name="FaktorZehn"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -121,7 +121,7 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          id="org.faktorips.devtools.core"
          download-size="0"
          install-size="0"
-         version="0.9.30"/>
+         version="0.9.31"/>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder"
