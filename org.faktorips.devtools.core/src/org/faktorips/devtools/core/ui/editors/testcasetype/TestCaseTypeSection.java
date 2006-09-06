@@ -1109,23 +1109,31 @@ public class TestCaseTypeSection extends IpsSection {
     private void createTestPolicyCmptTypeParamDetails(Composite editFieldsComposite,
             ITestPolicyCmptTypeParameter parameter,
             IpsPartUIController uiController) {
-        Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
-        EditField editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMin.setText(""+parameter.getMinInstances()); //$NON-NLS-1$
-        addSectionSelectionListeners(editFieldMin, label, parameter);
+        Label label;
+        if (!parameter.isRoot()) {
+            // min and max instances only for child parameters
+            label = toolkit.createFormLabel(editFieldsComposite,
+                    Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
+            EditField editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
+            editFieldMin.setText("" + parameter.getMinInstances()); //$NON-NLS-1$
+            addSectionSelectionListeners(editFieldMin, label, parameter);
 
-        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
-        EditField editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMax.setText(""+parameter.getMaxInstances()); //$NON-NLS-1$
-        addSectionSelectionListeners(editFieldMax, label, parameter);
-        
-        label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
+            label = toolkit.createFormLabel(editFieldsComposite,
+                    Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
+            EditField editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
+            editFieldMax.setText("" + parameter.getMaxInstances()); //$NON-NLS-1$
+            addSectionSelectionListeners(editFieldMax, label, parameter);
+
+            // connect to model
+            uiController.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
+            uiController.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
+        }
+        label = toolkit.createFormLabel(editFieldsComposite,
+                Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
         EditField editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
         addSectionSelectionListeners(editFieldReqProd, label, parameter);
-        
+
         // connect to model
-        uiController.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
-        uiController.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
         uiController.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
     }
 
