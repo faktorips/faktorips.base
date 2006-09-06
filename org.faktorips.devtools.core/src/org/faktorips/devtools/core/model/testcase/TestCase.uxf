@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>860</x><y>350</y><w>40</w><h>180</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;160</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>860</x><y>220</y><w>130</w><h>30</h></coordinates><panel_attributes>IpsTestCase</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>860</x><y>340</y><w>130</w><h>30</h></coordinates><panel_attributes>TestObject</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>900</x><y>230</y><w>40</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Class</type><coordinates><x>90</x><y>160</y><w>180</w><h>80</h></coordinates><panel_attributes>TestParameterType
+--
+input
+result
+combined</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>860</x><y>350</y><w>40</w><h>180</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;160</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>860</x><y>220</y><w>130</w><h>30</h></coordinates><panel_attributes>IpsTestCase</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>860</x><y>340</y><w>130</w><h>30</h></coordinates><panel_attributes>TestObject</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>900</x><y>230</y><w>40</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
 </panel_attributes><additional_attributes>20;20;20;110</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>436</x><y>230</y><w>69</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
 r2=/InputType</panel_attributes><additional_attributes>34;20;34;110</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>460</x><y>340</y><w>180</w><h>110</h></coordinates><panel_attributes>TestParameter
 --
@@ -16,11 +20,7 @@ r1=Role</panel_attributes><additional_attributes>20;20;20;150;280;150</additiona
 m1=1
 m2=*</panel_attributes><additional_attributes>20;20;190;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>80</x><y>220</y><w>470</w><h>800</h></coordinates><panel_attributes>lt=&lt;-
 m1=0..1
-r1=Role</panel_attributes><additional_attributes>30;20;20;780;450;780;450;740</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>90</x><y>160</y><w>180</w><h>80</h></coordinates><panel_attributes>TestParameterRole
---
-input
-result
-combined</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>430</x><y>650</y><w>210</w><h>100</h></coordinates><panel_attributes>TestPolicyCmptTypeParameter
+r1=Role</panel_attributes><additional_attributes>30;20;20;780;450;780;450;740</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>430</x><y>650</y><w>210</w><h>100</h></coordinates><panel_attributes>TestPolicyCmptTypeParameter
 
 --
 requiresProductCmpt
