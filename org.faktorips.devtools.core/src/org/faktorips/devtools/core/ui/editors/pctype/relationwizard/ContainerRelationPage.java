@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -131,18 +132,25 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 	}
 	
 	/**
-	 * Returns the container relations of the source policy component type.
+	 * Returns the container relations of the source policy component type which matches the same target.
 	 * 
 	 * @throws CoreException if there was an error getting the type hierarchy.
 	 */
 	private ArrayList getSourceContainerRelations() throws CoreException {
 		ArrayList containerRelations = new ArrayList();
+        IPolicyCmptType targetPolicyCmptType = wizard.getRelation().findTarget();
 		ITypeHierarchy hierarchy = wizard.getRelation().getPolicyCmptType().getSupertypeHierarchy();
 		IRelation[] relations = hierarchy.getAllRelations(wizard.getRelation().getPolicyCmptType());
 		for (int i = 0; i < relations.length; i++) {
-			if (relations[i].isReadOnlyContainer()) {
-				containerRelations.add(relations[i]);
-			}
+            IPolicyCmptType targetOfContainerRelation = relations[i].findTarget();
+            boolean isSubType = false;
+            if (targetPolicyCmptType != null && targetOfContainerRelation != null) {
+                ITypeHierarchy subtypesOfContainerRelation = targetOfContainerRelation.getSubtypeHierarchy();
+                isSubType = subtypesOfContainerRelation.isSubtypeOf(targetPolicyCmptType, targetOfContainerRelation);
+            }
+            if (relations[i].isReadOnlyContainer() && (isSubType || targetOfContainerRelation.equals(targetPolicyCmptType))) {
+                containerRelations.add(relations[i]);
+            }
 		}
 		return containerRelations;
 	}	
