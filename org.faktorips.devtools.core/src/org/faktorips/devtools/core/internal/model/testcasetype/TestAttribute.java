@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -52,7 +52,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
     
 	private boolean deleted = false;
     
-	private TestParameterRole role = TestParameterRole.COMBINED;
+	private TestParameterType type = TestParameterType.COMBINED;
     
 	public TestAttribute(IIpsObject parent, int id) {
 		super(parent, id);
@@ -62,13 +62,11 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
 		super(parent, id);
 	}
 	
-    /**
-     * {@inheritDoc}
+    /** 
+     * Overridden.
      */
-    public void setName(String newName) {
-        String oldName = this.name;
-        this.name = newName;
-        valueChanged(oldName, name);
+    public String getName() {
+        return attribute;
     }
     
 	/**
@@ -122,9 +120,9 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
 		super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
 		attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
-		role = TestParameterRole.getTestParameterRole(element.getAttribute(PROPERTY_TEST_ATTRIBUTE_ROLE));
-        if (role == null)
-            role = TestParameterRole.getUnknownTestParameterRole();
+		type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE));
+        if (type == null)
+            type = TestParameterType.getUnknownTestParameterType();
 	}
 
     /**
@@ -134,7 +132,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
 		super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
 		element.setAttribute(PROPERTY_ATTRIBUTE, attribute);
-		element.setAttribute(PROPERTY_TEST_ATTRIBUTE_ROLE, role.getId());
+		element.setAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE, type.getId());
 	}  
 	
     /** 
@@ -171,38 +169,33 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
 	 * {@inheritDoc}
 	 */
 	public boolean isExpextedResultAttribute() {
-		return role.equals(TestParameterRole.EXPECTED_RESULT);
+		return type.equals(TestParameterType.EXPECTED_RESULT);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public boolean isInputAttribute() {
-		return role.equals(TestParameterRole.INPUT);
+		return type.equals(TestParameterType.INPUT);
 	}
     
     /**
      * {@inheritDoc}
      */
-    public TestParameterRole getTestAttributeRole() {
-        return role;
+    public TestParameterType getTestAttributeType() {
+        return type;
     }
 
     /**
-     * Sets the role of the test attribute. The following roles could be set.
-     * <p><ul>
-     * <li>INPUT: the test attribute specifies test attribute input objects
-     * <li>EXPECTED_RESULT: the test attribute specifies test attribute expected result objects
-     * </ul>
+     * {@inheritDoc}
      */
-	public void setTestAttributeRole(TestParameterRole role) {
-		// assert that the given role is an input or an expected result role,
-		// because attributes could have the role combined (input and expected result together)
-		ArgumentCheck.isTrue(role.equals(TestParameterRole.INPUT) ||
-				role.equals(TestParameterRole.EXPECTED_RESULT));
-		TestParameterRole oldRole = this.role;
-        this.role = role;
-        valueChanged(oldRole, role);
+    public void setTestAttributeType(TestParameterType type) {
+        // assert that the given role is an input or an expected result role,
+        // because attributes could have the role combined (input and expected result together)
+        ArgumentCheck.isTrue(type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.EXPECTED_RESULT));
+        TestParameterType oldType = this.type;
+        this.type = type;
+        valueChanged(oldType, type);
     }
     
     /**
@@ -212,8 +205,8 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         super.validateThis(messageList);
         
         // check if the attribute exists
-        IAttribute attribute = findAttribute();
-        if (attribute == null){
+        IAttribute modelAttribute = findAttribute();
+        if (modelAttribute == null){
             String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, getAttribute());
             Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestAttribute.PROPERTY_ATTRIBUTE);
             messageList.add(msg);
@@ -221,18 +214,18 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         
         // check the correct role
         if (! isInputAttribute() && ! isExpextedResultAttribute()){
-            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowed, role, name);
-            Message msg = new Message(MSGCODE_WRONG_ROLE, text, Message.ERROR, this, PROPERTY_TEST_ATTRIBUTE_ROLE);
+            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowed, type, name);
+            Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);
         }
         
         // check if the role of the attribute matches the role of the parent
-        TestParameterRole parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterRole();
-        if (!TestParameterRole.isChildRoleMatching(role, parentRole)) {
-            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowedIfParent, role.getName(), parentRole
+        TestParameterType parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
+        if (!TestParameterType.isChildTypeMatching(type, parentRole)) {
+            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowedIfParent, type.getName(), parentRole
                     .getName());
-            Message msg = new Message(MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE, text, Message.ERROR, this,
-                    PROPERTY_TEST_ATTRIBUTE_ROLE);
+            Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
+                    PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);
         }
         
@@ -240,10 +233,10 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         TestPolicyCmptTypeParameter typeParam = (TestPolicyCmptTypeParameter)getParent();
         ITestAttribute testAttributes[] = typeParam.getTestAttributes();
         for (int i = 0; i < testAttributes.length; i++) {
-            if (testAttributes[i] != this && testAttributes[i].getName().equals(name)) {
-                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, name);
+            if (testAttributes[i] != this && testAttributes[i].getName().equals(attribute)) {
+                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, modelAttribute);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
-                        PROPERTY_NAME);
+                        PROPERTY_ATTRIBUTE);
                 messageList.add(msg);
                 break;
             }

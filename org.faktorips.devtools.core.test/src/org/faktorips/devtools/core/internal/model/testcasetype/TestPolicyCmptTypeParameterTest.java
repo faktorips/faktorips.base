@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -100,7 +100,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setMaxInstances(8);
         policyCmptTypeParameterInput.setRequiresProductCmpt(true);
         policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
-        policyCmptTypeParameterInput.setTestParameterRole(TestParameterRole.INPUT);
+        policyCmptTypeParameterInput.setTestParameterType(TestParameterType.INPUT);
         ITestPolicyCmptTypeParameter targetChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
 
         policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
@@ -121,7 +121,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setRequiresProductCmpt(false);
         policyCmptTypeParameterInput.newInputTestAttribute();
         policyCmptTypeParameterInput.newInputTestAttribute();
-        policyCmptTypeParameterInput.setTestParameterRole(TestParameterRole.EXPECTED_RESULT);
+        policyCmptTypeParameterInput.setTestParameterType(TestParameterType.EXPECTED_RESULT);
         policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
 
         // check the value stored before

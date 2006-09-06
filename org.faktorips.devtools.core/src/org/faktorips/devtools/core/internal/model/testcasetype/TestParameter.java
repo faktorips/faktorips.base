@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -41,7 +41,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
 
     private boolean deleted = false;
 
-    protected TestParameterRole role = TestParameterRole.COMBINED;
+    protected TestParameterType type = TestParameterType.COMBINED;
 
     public TestParameter(IIpsObject parent, int id) {
         super(parent, id);
@@ -114,9 +114,9 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
-        role = TestParameterRole.getTestParameterRole(element.getAttribute(PROPERTY_TEST_PARAMETER_ROLE));
-        if (role == null)
-            role = TestParameterRole.getUnknownTestParameterRole();
+        type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_PARAMETER_TYPE));
+        if (type == null)
+            type = TestParameterType.getUnknownTestParameterType();
     }
 
     /**
@@ -125,41 +125,41 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
-        element.setAttribute(PROPERTY_TEST_PARAMETER_ROLE, role.getId());
+        element.setAttribute(PROPERTY_TEST_PARAMETER_TYPE, type.getId());
     }
     
     /**
      * {@inheritDoc}
      */
     public boolean isInputParameter() {
-        return role.equals(TestParameterRole.INPUT) || role.equals(TestParameterRole.COMBINED);
+        return type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.COMBINED);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isExpextedResultParameter() {
-        return role.equals(TestParameterRole.EXPECTED_RESULT) || role.equals(TestParameterRole.COMBINED);
+        return type.equals(TestParameterType.EXPECTED_RESULT) || type.equals(TestParameterType.COMBINED);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isCombinedParameter() {
-        return role.equals(TestParameterRole.COMBINED);
+        return type.equals(TestParameterType.COMBINED);
     }
 
     /**
      *  {@inheritDoc}
      */
-    public TestParameterRole getTestParameterRole(){
-        return role;
+    public TestParameterType getTestParameterType(){
+        return type;
     }
     
     /**
      * {@inheritDoc}
      */
-    public abstract void setTestParameterRole(TestParameterRole testParameterRole);
+    public abstract void setTestParameterType(TestParameterType testParameterRole);
     
     /**
      * {@inheritDoc}
@@ -182,12 +182,14 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
             testParameter = (ITestParameter[]) testParameterChildrenOfParent.toArray(new ITestParameter[0]);
         }
 
-        for (int i = 0; i < testParameter.length; i++) {
-            if (testParameter[i] != this && testParameter[i].getName().equals(name)) {
-                String text = NLS.bind(Messages.TestParameter_ValidationError_DuplicateName, name);
-                Message msg = new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
-                list.add(msg);
-                break;
+        if (testParameter != null){
+            for (int i = 0; i < testParameter.length; i++) {
+                if (testParameter[i] != this && testParameter[i].getName().equals(name)) {
+                    String text = NLS.bind(Messages.TestParameter_ValidationError_DuplicateName, name);
+                    Message msg = new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
+                    list.add(msg);
+                    break;
+                }
             }
         }
     }    

@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -126,12 +126,26 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    public void setTestParameterRole(TestParameterRole testParameterRole) {
-        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterRole.INPUT)
-                || testParameterRole.equals(TestParameterRole.EXPECTED_RESULT)
-                || testParameterRole.equals(TestParameterRole.COMBINED));
-        TestParameterRole oldRole = this.role;
-        this.role = testParameterRole;
+    public String getDatatype() {
+        return getPolicyCmptType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDatatype(String datatype) {
+        setPolicyCmptType(datatype);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTestParameterType(TestParameterType testParameterRole) {
+        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterType.INPUT)
+                || testParameterRole.equals(TestParameterType.EXPECTED_RESULT)
+                || testParameterRole.equals(TestParameterType.COMBINED));
+        TestParameterType oldRole = this.type;
+        this.type = testParameterRole;
         valueChanged(oldRole, testParameterRole);
     }
     
@@ -255,7 +269,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 */
 	public ITestAttribute newInputTestAttribute() {
 		TestAttribute a = newTestAttributeInternal(getNextPartId());
-		a.setTestAttributeRole(TestParameterRole.INPUT);
+		a.setTestAttributeType(TestParameterType.INPUT);
         updateSrcFile();
 		return a;
 	}
@@ -265,7 +279,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 */
 	public ITestAttribute newExpectedResultTestAttribute() {
 	    TestAttribute a = newTestAttributeInternal(getNextPartId());
-	    a.setTestAttributeRole(TestParameterRole.EXPECTED_RESULT);
+	    a.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
 	    updateSrcFile();
 	    return a;
 	}
@@ -485,12 +499,12 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         
         // check if the role of the parameter matches the role of the parent
         if (!isRoot()){
-            TestParameterRole parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterRole();
-            if (!TestParameterRole.isChildRoleMatching(role, parentRole)) {
-                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed, role.getName(), parentRole
+            TestParameterType parentRole = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
+            if (!TestParameterType.isChildTypeMatching(type, parentRole)) {
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed, type.getName(), parentRole
                         .getName());
-                Message msg = new Message(MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE, text, Message.ERROR, this,
-                        PROPERTY_TEST_PARAMETER_ROLE);
+                Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
+                        PROPERTY_TEST_PARAMETER_TYPE);
                 list.add(msg);
             }
         }
@@ -500,7 +514,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         if (! isRoot()){
             IRelation relationFound = findRelation();
             if (relationFound == null) {
-                String text = NLS.bind("The relation \"{0}\" doesn't exists.", relation);
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RelationNotExists, relation);
                 Message msg = new Message(MSGCODE_RELATION_NOT_EXISTS, text, Message.ERROR, this,
                         PROPERTY_RELATION); //$NON-NLS-1$
                 list.add(msg);
@@ -509,7 +523,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                 //   that the policy cmpt type is a possible target of the relation  
                 IPolicyCmptType targetOfRelation = relationFound.findTarget();
                 if (targetOfRelation == null){
-                    String text = NLS.bind("The target \"{0}\" of relation \"{1}\" doesn't exists.", relationFound.getTarget(), relation);
+                    String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TargetOfRelationNotExists, relationFound.getTarget(), relation);
                     Message msg = new Message(MSGCODE_TARGET_OF_RELATION_NOT_EXISTS, text, Message.WARNING, this,
                             PROPERTY_RELATION); //$NON-NLS-1$
                     list.add(msg);
@@ -531,7 +545,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                     }
     
                     if (!allowedType){
-                        String text = NLS.bind("The policy component type \"{0}\" is not allowed for relation \"{1}\"", policyCmptType, relation);
+                        String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForRelation, policyCmptType, relation);
                         Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION, text, Message.ERROR, this,
                                 PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
                         list.add(msg);

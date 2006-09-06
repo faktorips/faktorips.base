@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 public class TestAttributeValue  extends IpsObjectPart implements ITestAttributeValue {
     /* Specifies the default role, will be used if the corresponding test case type parameter 
      * is not specified or not found */
-    private static TestParameterRole DEFAULT_ROLE = TestParameterRole.COMBINED;
+    private static TestParameterType DEFAULT_ROLE = TestParameterType.COMBINED;
     
 	/* Tags */
 	static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
@@ -173,14 +173,14 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
      * {@inheritDoc}
      */
 	public boolean isExpextedResultAttribute() {
-        return (isRoleOrDefault(TestParameterRole.EXPECTED_RESULT, DEFAULT_ROLE));
+        return (isRoleOrDefault(TestParameterType.EXPECTED_RESULT, DEFAULT_ROLE));
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isInputAttribute() {
-        return (isRoleOrDefault(TestParameterRole.INPUT, DEFAULT_ROLE));
+        return (isRoleOrDefault(TestParameterType.INPUT, DEFAULT_ROLE));
     }
     
     /**
@@ -189,7 +189,7 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
      * role is the default role otherwise <code>false</code>.<br>
      * Return <code>false</code> if an error occurs.<br>
      */
-    private boolean isRoleOrDefault(TestParameterRole role, TestParameterRole defaultRole) {
+    private boolean isRoleOrDefault(TestParameterType role, TestParameterType defaultRole) {
         try {
             TestObject parent = (TestObject) getParent(); 
             ITestCase testCase = (TestCase) parent.getRoot().getParent();
@@ -203,10 +203,10 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
                 return role.equals(defaultRole);
 
             // compare the paramters role and return if the role matches the given role
-            if (testAttribute.isInputAttribute() && role.equals(TestParameterRole.INPUT)) {
+            if (testAttribute.isInputAttribute() && role.equals(TestParameterType.INPUT)) {
                 return true;
             }
-            if (testAttribute.isExpextedResultAttribute() && role.equals(TestParameterRole.EXPECTED_RESULT)) {
+            if (testAttribute.isExpextedResultAttribute() && role.equals(TestParameterType.EXPECTED_RESULT)) {
                 return true;
             }
         } catch (Exception e) {
@@ -239,7 +239,7 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
             // check the correct role
             if (! testAttr.isInputAttribute() && ! testAttr.isExpextedResultAttribute()){
                 String text = NLS.bind(Messages.TestAttributeValue_Error_WrongRole, testAttr.getName());
-                Message msg = new Message(ITestAttribute.MSGCODE_WRONG_ROLE, text, Message.WARNING, this, PROPERTY_VALUE);
+                Message msg = new Message(ITestAttribute.MSGCODE_WRONG_TYPE, text, Message.WARNING, this, PROPERTY_VALUE);
                 messageList.add(msg);
             }        
         }

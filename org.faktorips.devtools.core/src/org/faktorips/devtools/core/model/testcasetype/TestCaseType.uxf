@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Relation</type><coordinates><x>546</x><y>186</y><w>69</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Class</type><coordinates><x>200</x><y>116</y><w>180</w><h>80</h></coordinates><panel_attributes>TestParameterType
+--
+input
+result
+combined</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>546</x><y>186</y><w>69</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
 r2=/InputType</panel_attributes><additional_attributes>34;20;34;110</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>570</x><y>296</y><w>180</w><h>110</h></coordinates><panel_attributes>TestParameter
 --
 name
@@ -13,11 +17,7 @@ r1=Role</panel_attributes><additional_attributes>20;20;20;150;280;150</additiona
 m1=1
 m2=*</panel_attributes><additional_attributes>20;20;190;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>190</x><y>176</y><w>470</w><h>800</h></coordinates><panel_attributes>lt=&lt;-
 m1=0..1
-r1=Role</panel_attributes><additional_attributes>30;20;20;780;450;780;450;740</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>200</x><y>116</y><w>180</w><h>80</h></coordinates><panel_attributes>TestParameterRole
---
-input
-result
-combined</panel_attributes><additional_attributes></additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>540</x><y>606</y><w>210</w><h>100</h></coordinates><panel_attributes>TestPolicyCmptTypeParameter
+r1=Role</panel_attributes><additional_attributes>30;20;20;780;450;780;450;740</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>540</x><y>606</y><w>210</w><h>100</h></coordinates><panel_attributes>TestPolicyCmptTypeParameter
 
 --
 requiresProductCmpt

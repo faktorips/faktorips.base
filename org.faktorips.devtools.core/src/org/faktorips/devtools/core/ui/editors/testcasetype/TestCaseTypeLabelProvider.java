@@ -22,10 +22,11 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -41,7 +42,7 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
         if (element instanceof ITestValueParameter){
             return IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$ 
         } else if (element instanceof ITestPolicyCmptTypeParameter){
-            return IpsPlugin.getDefault().getImage("PolicyCmptType.gif"); //$NON-NLS-1$ 
+            return IpsObjectType.POLICY_CMPT_TYPE.getImage();
         }
         return null; 
 	}
@@ -50,14 +51,14 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
      * Returns the displayed text of the test value parameter or test policy cmpt type param.<br>
      * If the element is a test value parameter then return the name of the param.<br>
      * If the element is a test policy cmpt type param return the name of the param and if a relation is
-     * specified and the relation name is not equal the param name return "name (relation)".
+     * specified and the target name is not equal the param name return "name : relation".
      * 
 	 * {@inheritDoc}
 	 */
 	public String getText(Object element) {
         if (element instanceof ITestValueParameter) {
             ITestValueParameter testValueParam = (ITestValueParameter)element;
-            return testValueParam.getName() + getRoleExtension(testValueParam.getTestParameterRole());
+            return testValueParam.getName() + getRoleExtension(testValueParam.getTestParameterType());
         } else if (element instanceof ITestPolicyCmptTypeParameter) {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)element;
 
@@ -66,20 +67,20 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
             targetExtension = testPolicyCmptTypeParam.getPolicyCmptType()==null?"":StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType()); //$NON-NLS-1$
             if (StringUtils.isNotEmpty(targetExtension)
                     && !targetExtension.equals(testPolicyCmptTypeParam.getName()))
-                targetExtension = " (" + targetExtension + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                targetExtension = " : " + targetExtension; //$NON-NLS-1$
             else
                 // no relation or relation is equal test param name
                 targetExtension = "";                 //$NON-NLS-1$
 
-            return testPolicyCmptTypeParam.getName() + targetExtension + getRoleExtension(testPolicyCmptTypeParam.getTestParameterRole());
+            return testPolicyCmptTypeParam.getName() + targetExtension + getRoleExtension(testPolicyCmptTypeParam.getTestParameterType());
         } else if (element instanceof ITestAttribute) {
             ITestAttribute testAttribute = (ITestAttribute)element;
             String extension = ""; //$NON-NLS-1$
             if (StringUtils.isNotEmpty(testAttribute.getAttribute())
                     && !testAttribute.getAttribute().equals(testAttribute.getName())) {
-                extension = " (" + testAttribute.getAttribute() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                extension = " : " + testAttribute.getAttribute(); //$NON-NLS-1$
             }
-            return StringUtils.capitalise(testAttribute.getName()) + extension + getRoleExtension(testAttribute.getTestAttributeRole());
+            return StringUtils.capitalise(testAttribute.getName()) + extension + getRoleExtension(testAttribute.getTestAttributeType());
         }
             
 		return Messages.TestCaseTypeLabelProvider_Undefined;
@@ -88,7 +89,7 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
     /**
      * Returns the role extension of the given role, format: " - roleName"
      */
-    private String getRoleExtension(TestParameterRole role){
+    private String getRoleExtension(TestParameterType role){
         return " - " + role.getName(); //$NON-NLS-1$
     }
     

@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -63,12 +63,12 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
     public void testToXml() {
         valueParamInput.setValueDatatype("Money");
         valueParamInput.setName("newSumInsured");
-        valueParamInput.setTestParameterRole(TestParameterRole.INPUT);
+        valueParamInput.setTestParameterType(TestParameterType.INPUT);
         Element el = valueParamInput.toXml(newDocument());
         
         valueParamInput.setValueDatatype("Integer");
         valueParamInput.setName("test");
-        valueParamInput.setTestParameterRole(TestParameterRole.EXPECTED_RESULT);
+        valueParamInput.setTestParameterType(TestParameterType.EXPECTED_RESULT);
         valueParamInput.initFromXml(el);
         
         assertEquals("Money", valueParamInput.getValueDatatype());

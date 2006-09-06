@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 public abstract class TestObject extends IpsObjectPart implements ITestObject {
     /* Specifies the default role, will be used if the corresponding test case type parameter 
      * is not specified or not found */
-    public static TestParameterRole DEFAULT_ROLE = TestParameterRole.COMBINED;
+    public static TestParameterType DEFAULT_ROLE = TestParameterType.COMBINED;
 
     private boolean deleted = false;
 
@@ -77,12 +77,12 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
             
             if (param != null)
-                return testCase.isRoleOrDefault(param, TestParameterRole.INPUT, DEFAULT_ROLE);
+                return testCase.isRoleOrDefault(param, TestParameterType.INPUT, DEFAULT_ROLE);
         } catch (Exception e) {
             // ignore exception check role of root
         }
         return testCase.isRoleOrDefault(root.getTestParameterName(), 
-                TestParameterRole.INPUT, DEFAULT_ROLE);
+                TestParameterType.INPUT, DEFAULT_ROLE);
     }
 
     /**
@@ -99,12 +99,12 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
             
             if (param != null)
-                return testCase.isRoleOrDefault(param, TestParameterRole.EXPECTED_RESULT, DEFAULT_ROLE);
+                return testCase.isRoleOrDefault(param, TestParameterType.EXPECTED_RESULT, DEFAULT_ROLE);
         } catch (Exception e) {
             // ignore exception check role of root
         }
         return testCase.isRoleOrDefault(root.getTestParameterName(), 
-                TestParameterRole.EXPECTED_RESULT, DEFAULT_ROLE);
+                TestParameterType.EXPECTED_RESULT, DEFAULT_ROLE);
     }
 
     /**
@@ -121,12 +121,12 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
             
             if (param != null)
-                return testCase.isRoleOrDefault(param, TestParameterRole.COMBINED, DEFAULT_ROLE);
+                return testCase.isRoleOrDefault(param, TestParameterType.COMBINED, DEFAULT_ROLE);
         } catch (Exception e) {
             // ignore exception check role of root
         }
         return testCase.isRoleOrDefault(root.getTestParameterName(), 
-                TestParameterRole.COMBINED, DEFAULT_ROLE);
+                TestParameterType.COMBINED, DEFAULT_ROLE);
         
     }
 

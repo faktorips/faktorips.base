@@ -34,8 +34,8 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-    public static String TestParameterRole_Input;
-    public static String TestParameterRole_ExpectedResult;
-    public static String TestParameterRole_Combined;
-    public static String TestParameterRole_Unknown;
+    public static String TestParameterType_Input;
+    public static String TestParameterType_ExpectedResult;
+    public static String TestParameterType_Combined;
+    public static String TestParameterType_Unknown;
 }

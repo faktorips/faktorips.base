@@ -155,8 +155,4 @@ public interface ITestCaseType extends IIpsObject {
     public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(String expResultTestPolicyCmptTypeParameter)
             throws CoreException;
     
-    /**
-     * Evaluates and returns an unique name (inside this test case) for the test attribute.
-     */
-    public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name);       
 }

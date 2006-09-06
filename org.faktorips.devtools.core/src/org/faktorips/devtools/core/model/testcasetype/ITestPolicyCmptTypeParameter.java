@@ -60,10 +60,10 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     + "MaxInstancesIsLessThanMin"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the role doesn't matches the parent role.<br>
-     * E.g. the parent defines the input role and the attribute has the expected result role.
+     * Validation message code to indicate that the type doesn't matches the parent type.<br>
+     * E.g. the parent has input type and the attribute has the expected result type.
      */
-    public final static String MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE = MSGCODE_PREFIX + "RoleDoesNotMatchParentRole"; //$NON-NLS-1$
+    public final static String MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE = MSGCODE_PREFIX + "TypeDoesNotMatchParentType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the relation wasn't found.

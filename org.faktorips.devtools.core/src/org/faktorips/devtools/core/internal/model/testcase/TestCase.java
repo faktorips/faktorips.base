@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseHierarchyPath;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -219,14 +219,14 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public ITestValue[] getInputTestValues() {
-        return (ITestValue[])getTestObjects(TestParameterRole.INPUT, TestValue.class, null).toArray(new ITestValue[0]);
+        return (ITestValue[])getTestObjects(TestParameterType.INPUT, TestValue.class, null).toArray(new ITestValue[0]);
     }
 
     /**
      * {@inheritDoc}
      */
     public ITestPolicyCmpt[] getInputTestPolicyCmpts() {
-        return (ITestPolicyCmpt[])getTestObjects(TestParameterRole.INPUT, TestPolicyCmpt.class, null).toArray(
+        return (ITestPolicyCmpt[])getTestObjects(TestParameterType.INPUT, TestPolicyCmpt.class, null).toArray(
                 new ITestPolicyCmpt[0]);
     }
 
@@ -238,7 +238,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public ITestValue[] getExpectedResultTestValues() {
-        return (ITestValue[])getTestObjects(TestParameterRole.EXPECTED_RESULT, TestValue.class, null).toArray(
+        return (ITestValue[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestValue.class, null).toArray(
                 new ITestValue[0]);
     }
 
@@ -246,7 +246,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts() {
-        return (ITestPolicyCmpt[])getTestObjects(TestParameterRole.EXPECTED_RESULT, TestPolicyCmpt.class, null)
+        return (ITestPolicyCmpt[])getTestObjects(TestParameterType.EXPECTED_RESULT, TestPolicyCmpt.class, null)
                 .toArray(new ITestPolicyCmpt[0]);
     }
 
@@ -494,7 +494,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * is not <code>null</code>. For instance if all parameter are <code>null</code> then all
      * parameters are returned.
      */
-    private List getTestObjects(TestParameterRole role, Class parameterClass, String name) {
+    private List getTestObjects(TestParameterType role, Class parameterClass, String name) {
         List result = new ArrayList(testObjects.size());
         for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
             TestObject testObject = (TestObject)iter.next();
@@ -526,7 +526,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * Return <code>false</code> if an error occurs.<br>
      * (Packageprivate helper method.)
      */
-    boolean isRoleOrDefault(String testParameterName, TestParameterRole role, TestParameterRole defaultRole) {
+    boolean isRoleOrDefault(String testParameterName, TestParameterType role, TestParameterType defaultRole) {
             try {
                 ITestCaseType testCaseType = findTestCaseType();
                 if (testCaseType == null)
@@ -549,16 +549,16 @@ public class TestCase extends IpsObject implements ITestCase {
      * Return <code>false</code> if an error occurs.<br>
      * (Packageprivate helper method.)
      */
-    boolean isRoleOrDefault(ITestParameter testParameter, TestParameterRole role, TestParameterRole defaultRole) {
+    boolean isRoleOrDefault(ITestParameter testParameter, TestParameterType role, TestParameterType defaultRole) {
         try {
             // compare the paramters role and return if the role matches the given role
-            if (testParameter.isInputParameter() && role.equals(TestParameterRole.INPUT)) {
+            if (testParameter.isInputParameter() && role.equals(TestParameterType.INPUT)) {
                 return true;
             }
-            if (testParameter.isExpextedResultParameter() && role.equals(TestParameterRole.EXPECTED_RESULT)) {
+            if (testParameter.isExpextedResultParameter() && role.equals(TestParameterType.EXPECTED_RESULT)) {
                 return true;
             }
-            if (testParameter.isCombinedParameter() && role.equals(TestParameterRole.COMBINED)) {
+            if (testParameter.isCombinedParameter() && role.equals(TestParameterType.COMBINED)) {
                 return true;
             }
         } catch (Exception e) {

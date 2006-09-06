@@ -27,7 +27,8 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 public interface ITestParameter extends IIpsObjectPart {
 	
 	/** Property names */
-    public final static String PROPERTY_TEST_PARAMETER_ROLE = "testParameterRole"; //$NON-NLS-1$
+    public final static String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$
+    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.
@@ -50,6 +51,16 @@ public interface ITestParameter extends IIpsObjectPart {
 	 */
 	public void setName(String newName);
 	
+    /**
+     * Sets the datatype.
+     */
+    public void setDatatype(String datatype);
+    
+    /**
+     * Returns the datatype.
+     */
+    public String getDatatype();
+    
 	/**
 	 * Returns <code>true</code> if the test parameter is an input parameter, 
 	 * otherwise <code>false</code>.
@@ -76,14 +87,14 @@ public interface ITestParameter extends IIpsObjectPart {
 	public boolean isCombinedParameter();
 	
     /**
-     * Returns the role of the test parameter.
+     * Returns the type of the test parameter.
      */
-	public TestParameterRole getTestParameterRole();
+	public TestParameterType getTestParameterType();
 
     /**
-     * Sets the role of the test parameter.
+     * Sets the parameter type of the test parameter.
      */
-    public void setTestParameterRole(TestParameterRole testParameterRole);
+    public void setTestParameterType(TestParameterType testParameterRole);
     
     /**
      * Returns the root test parameter.

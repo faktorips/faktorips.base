@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -62,12 +62,26 @@ public class TestValueParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    public void setTestParameterRole(TestParameterRole testParameterRole) {
+    public String getDatatype() {
+        return getValueDatatype();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDatatype(String datatype) {
+        setValueDatatype(datatype);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setTestParameterType(TestParameterType testParameterRole) {
         // a test value parameter supports only input role or expected result role
-        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterRole.INPUT)
-                || testParameterRole.equals(TestParameterRole.EXPECTED_RESULT));
-        TestParameterRole oldRole = this.role;
-        this.role = testParameterRole;
+        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterType.INPUT)
+                || testParameterRole.equals(TestParameterType.EXPECTED_RESULT));
+        TestParameterType oldRole = this.type;
+        this.type = testParameterRole;
         valueChanged(oldRole, testParameterRole);
     }
     
@@ -150,8 +164,8 @@ public class TestValueParameter extends TestParameter implements
         
         // check the correct role
         if (isCombinedParameter() || (! isInputParameter()&& ! isExpextedResultParameter())){
-            String text = NLS.bind(Messages.TestValueParameter_ValidationError_RoleNotAllowed, role, name);
-            Message msg = new Message(MSGCODE_WRONG_ROLE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_ROLE);
+            String text = NLS.bind(Messages.TestValueParameter_ValidationError_RoleNotAllowed, type, name);
+            Message msg = new Message(MSGCODE_WRONG_ROLE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }
     }

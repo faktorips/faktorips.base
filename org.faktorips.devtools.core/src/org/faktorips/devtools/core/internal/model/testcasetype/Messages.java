@@ -45,6 +45,9 @@ public class Messages extends NLS {
     public static String TestCaseType_Error_MoreThanOnePolicyParamWithRoleAndName;
     public static String TestCaseType_Error_MoreThanOneParamWithName;
     public static String TestCaseType_Error_MoreThanOneParamWithRoleAndName;
+    public static String TestPolicyCmptTypeParameter_ValidationError_RelationNotExists;
+    public static String TestPolicyCmptTypeParameter_ValidationError_TargetOfRelationNotExists;
+    public static String TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForRelation;
 
 
 }

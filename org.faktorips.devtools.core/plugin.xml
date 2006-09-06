@@ -311,6 +311,24 @@
     	   <description>Creates a new Product Component</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.testcase.NewTestCaseWizard"
+            icon="icons/NewTestCase.gif"
+            id="newTestCaseWizard"
+            name="New Test Case">
+    	   <description>Creates a new Test Case</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.testcasetype.NewTestCaseTypeWizard"
+            icon="icons/NewTestCaseType.gif"
+            id="newTestCaseTypeWizard"
+            name="New Test Case Type">
+    	   <description>Creates a new Test Case Type</description>
+    	   <selection class="org.eclipse.core.resources.IResource"/>
+	    </wizard>
     </extension>
 
     <extension

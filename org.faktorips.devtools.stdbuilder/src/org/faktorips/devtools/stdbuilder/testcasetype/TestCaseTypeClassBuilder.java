@@ -66,10 +66,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
     
     // property key for the constructor's Javadoc.
-    private final static String MEMBER_VARIABLES_INPUT_JAVADOC = "MEMBER_VARIABLES_INPUT_JAVADOC";
-    private final static String MEMBER_VARIABLES_EXPECTEDRESULT_JAVADOC = "MEMBER_VARIABLES_EXPECTEDRESULT_JAVADOC";
-    private final static String MEMBER_POLICYCMPT_INPUT_JAVADOC = "MEMBER_POLICYCMPT_INPUT_JAVADOC";
-    private final static String MEMBER_POLICYCMPT_EXPECTEDRESULT_JAVADOC = "MEMBER_POLICYCMPT_EXPECTEDRESULT_JAVADOC";
     private final static String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC";
     private final static String INITINPUTFROMXML_JAVADOC = "INITINPUTFROMXML_JAVADOC";
     private final static String INITEXPECTEDRESULTFROMXML_JAVADOC = "INITEXPECTEDRESULTFROMXML_JAVADOC";
@@ -159,14 +155,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberVariables(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) throws CoreException {
         codeBuilder.varDeclaration(Modifier.PRIVATE, IRuntimeRepository.class.getName(), "repository");
 
-        codeBuilder.multiLineComment(getLocalizedText(getIpsSrcFile(), MEMBER_VARIABLES_INPUT_JAVADOC));
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getInputTestValueParameters(), inputPrefix);
-        codeBuilder.multiLineComment(getLocalizedText(getIpsSrcFile(), MEMBER_VARIABLES_EXPECTEDRESULT_JAVADOC));
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getExpectedResultTestValueParameters(), expectedResultPrefix);
 
-        codeBuilder.multiLineComment(getLocalizedText(getIpsSrcFile(), MEMBER_POLICYCMPT_INPUT_JAVADOC));
         buildMemberForTestPolicyCmptParameter(codeBuilder, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix);
-        codeBuilder.multiLineComment(getLocalizedText(getIpsSrcFile(), MEMBER_POLICYCMPT_EXPECTEDRESULT_JAVADOC));
         buildMemberForTestPolicyCmptParameter(codeBuilder, testCaseType.getExpectedResultTestPolicyCmptTypeParameters(), expectedResultPrefix);
     }
 

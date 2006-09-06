@@ -60,7 +60,7 @@ public class Messages extends NLS {
     public static String TestCaseTypeSection_TestCaseTypeSection_EditFieldLabel_PolicyCmptType;
     public static String TestCaseTypeSection_EditFieldLabel_Relation;
     public static String TestCaseTypeSection_EditFieldLabel_Name;
-    public static String TestCaseTypeSection_EditFieldLabel_Role;
+    public static String TestCaseTypeSection_EditFieldLabel_TestParameterType;
     public static String TestCaseTypeSection_EditFieldLabel_Attribute;
     public static String TestCaseTypeSection_Dialog_SelectDatatypeAdd_Message;
     public static String TestCaseTypeSection_Dialog_SelectPolicyCmptTypeAdd_Message;
@@ -73,4 +73,26 @@ public class Messages extends NLS {
     public static String TestCaseTypeSection_Dialog_SelectAttribute_Title;
     public static String TestCaseTypeSection_Dialog_SelectDatatype_Title;
     public static String TestCaseTypeSection_Dialog_SelectRelation_Title;
+    public static String RelationRefControl_Button_Browse;
+    public static String RelationRefControl_Title;
+    public static String RelationRefControl_Description;
+    public static String NewChildParameterWizard_Title;
+    public static String NewRootParameterWizard_Title;
+    public static String NewChildParamWizardPage_Title;
+    public static String NewChildParamWizardPage_Description;
+    public static String NewChildParamWizardPage_Label_Relation;
+    public static String NewChildParamWizardPage_Label_Target;
+    public static String NewChildParamWizardPage_Error_RelationDoesNotExists;
+    public static String NewTestParamDetailWizardPage_Title;
+    public static String NewTestParamDetailWizardPage_Description;
+    public static String NewRootParamWizardPage_Title;
+    public static String NewRootParamWizardPage_Description;
+    public static String NewRootParamWizardPage_Label_Datatype;
+    public static String NewRootParamWizardPage_Error_DatatypeDoesNotExists;
+    public static String TestCaseTypeSection_Button_NewRootParameter;
+    public static String TestCaseTypeSection_Button_NewChildParameter;
+    public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttribute;
+    public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeType;
+    public static String TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists;
+    public static String TestCaseTypeSection_ErrorDialog_AttributeChangingTitle;
 }

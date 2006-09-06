@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.TestParameterRole;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -77,7 +77,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         boolean exceptionOccored = false;
         try {
             // test unsupported test attribute role
-            ((TestAttribute)testAttribute).setTestAttributeRole(TestParameterRole.COMBINED);
+            ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.COMBINED);
         } catch (Exception e) {
             exceptionOccored = true;
         } finally{
@@ -87,13 +87,11 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
     public void testToXml() {
         testAttribute.setAttribute("attribute2");
-        ((TestAttribute)testAttribute).setTestAttributeRole(TestParameterRole.INPUT);
-        testAttribute.setName("attributeName2");
+        ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.INPUT);
         Element el = testAttribute.toXml(newDocument());
 
-        testAttribute.setAttribute("test");
-        testAttribute.setName("attributeName3");
-        ((TestAttribute)testAttribute).setTestAttributeRole(TestParameterRole.EXPECTED_RESULT);
+        testAttribute.setAttribute("attributeName3");
+        ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         
         testAttribute.initFromXml(el);
         assertEquals("attribute2", testAttribute.getAttribute());

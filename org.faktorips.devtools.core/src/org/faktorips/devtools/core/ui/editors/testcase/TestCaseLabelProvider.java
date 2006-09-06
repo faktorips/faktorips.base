@@ -23,12 +23,12 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.util.StringUtil;
 
 /**
  * Label provider for the test case domain.
@@ -46,9 +46,9 @@ public class TestCaseLabelProvider implements ILabelProvider {
         } else if (element instanceof ITestPolicyCmpt) {
         	ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) element;
         	if (StringUtils.isNotEmpty(testPolicyCmpt.getProductCmpt())){
-        		return IpsPlugin.getDefault().getImage("ProductCmpt.gif"); //$NON-NLS-1$ 
+        		return IpsObjectType.PRODUCT_CMPT_TYPE.getImage();
         	} else {
-        		return IpsPlugin.getDefault().getImage("PolicyCmptType.gif"); //$NON-NLS-1$ 
+        		return IpsObjectType.POLICY_CMPT_TYPE.getImage();
         	}
         } else if(element instanceof ITestValue){
         	return IpsPlugin.getDefault().getImage("Datatype.gif"); //$NON-NLS-1$ 
@@ -138,19 +138,14 @@ public class TestCaseLabelProvider implements ILabelProvider {
     
     /**
      * Returns the title text of a section which displays the given test policy cmpt.<br>
-     * Returns the name of the test policy cmpt and if a product cmpt is chosen the package of the
-     * product cmpt "inside []" and if the name is not equal to the test policy cmpt type param name 
-     * the name of the parm "inside ()"<br>
-     * Return format: name [package of product cmpt] (test policy cmpt type param name)
+     * Returns the name of the test policy cmpt and if the name is not equal to the test policy cmpt type param name 
+     * the name of the parm after " : "<br>
+     * Return format: name : test policy cmpt type param name
      */
     public String getTextForSection(ITestPolicyCmpt testPolicyCmpt){
         String sectionText = testPolicyCmpt.getName();
-        if (testPolicyCmpt.getProductCmpt().length() > 0){
-            String pckName = StringUtil.getPackageName(testPolicyCmpt.getProductCmpt());
-            sectionText += pckName.length() > 0 ? " [" + pckName + "]":""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
         if (! testPolicyCmpt.getName().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter()))
-            sectionText += " (" + testPolicyCmpt.getTestPolicyCmptTypeParameter() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            sectionText += " : " + testPolicyCmpt.getTestPolicyCmptTypeParameter(); //$NON-NLS-1$
         return sectionText;
     }
 

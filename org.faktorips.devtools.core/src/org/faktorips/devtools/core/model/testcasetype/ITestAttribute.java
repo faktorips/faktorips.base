@@ -31,7 +31,7 @@ public interface ITestAttribute extends IIpsObjectPart {
 	/** Property names */
     public final static String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
     
-    public final static String PROPERTY_TEST_ATTRIBUTE_ROLE = "testAttributeRole"; //$NON-NLS-1$
+    public final static String PROPERTY_TEST_ATTRIBUTE_TYPE = "testAttributeType"; //$NON-NLS-1$
     
     /**
      * Prefix for all message codes of this class.
@@ -45,15 +45,15 @@ public interface ITestAttribute extends IIpsObjectPart {
         + "AttributeNotFound"; //$NON-NLS-1$
     
     /**
-     * Validation message code to indicate that there is an unsupported role.
+     * Validation message code to indicate that there is an unsupported type.
      */
-    public final static String MSGCODE_WRONG_ROLE = MSGCODE_PREFIX + "WrongRole"; //$NON-NLS-1$
+    public final static String MSGCODE_WRONG_TYPE = MSGCODE_PREFIX + "WrongType"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the role doesn't matches the parent role.<br>
-     * E.g. the parent defines the input role and the attribute has the expected result role.
+     * Validation message code to indicate that the type doesn't matches the parent type.<br>
+     * E.g. the parent defines the input type and the attribute has the expected result type.
      */
-    public final static String MSGCODE_ROLE_DOES_NOT_MATCH_PARENT_ROLE = MSGCODE_PREFIX + "RoleDoesNotMatchParentRole"; //$NON-NLS-1$
+    public final static String MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE = MSGCODE_PREFIX + "TypeDoesNotMatchParentType"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the attribute name is duplicate.
@@ -65,11 +65,6 @@ public interface ITestAttribute extends IIpsObjectPart {
      * {@inheritDoc}
      */
     public String getName();
-
-    /**
-     * Sets the attribute's name.
-     */
-    public void setName(String newName);
     
     /**
      * Returns the attribute.
@@ -95,13 +90,22 @@ public interface ITestAttribute extends IIpsObjectPart {
 	public boolean isInputAttribute();
     
     /**
-     * Returns the role of the test attribute.
+     * Returns the parameter type of the test attribute.
      */
-    public TestParameterRole getTestAttributeRole();
+    public TestParameterType getTestAttributeType();
     
 	/**
 	 * Returns <code>true</code> if the test attribute is an expected result attribute, 
 	 * otherwise <code>false</code>.
 	 */
 	public boolean isExpextedResultAttribute();
+    
+    /**
+     * Sets the role of the test attribute. The following roles could be set.
+     * <p><ul>
+     * <li>INPUT: the test attribute specifies test attribute input objects
+     * <li>EXPECTED_RESULT: the test attribute specifies test attribute expected result objects
+     * </ul>
+     */
+    public void setTestAttributeType(TestParameterType type);    
 }
