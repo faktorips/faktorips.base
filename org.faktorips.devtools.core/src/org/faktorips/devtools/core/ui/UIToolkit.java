@@ -121,7 +121,6 @@ public class UIToolkit {
 			layout.marginWidth = 2;
 		} else {
 			newComposite = new Composite(parent, SWT.NONE);
-			newComposite.setBackground(parent.getBackground());
 			layout.marginHeight = 0;
 			layout.marginWidth = 0;
 		}
@@ -148,7 +147,6 @@ public class UIToolkit {
 			layout.marginWidth = 2;
 		} else {
 			newComposite = new Composite(parent, SWT.NONE);
-			newComposite.setBackground(parent.getBackground());
 			layout.marginHeight = 0;
 			layout.marginWidth = 0;
 		}
@@ -186,7 +184,6 @@ public class UIToolkit {
 			newLabel = formToolkit.createLabel(parent, text);
 		} else {
 			newLabel = new Label(parent, SWT.NONE);
-			newLabel.setBackground(parent.getBackground());
 			if (text != null) {
 				newLabel.setText(text);
 			}
