@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -400,6 +401,9 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     private TestPolicyCmptTypeParameter newTestPolicyCmptTypeParameterInternal(int id) {
         TestPolicyCmptTypeParameter p = new TestPolicyCmptTypeParameter(this, id);
         testParameters.add(p);
+        // root parameters have always 1 min and 1 max instances
+        p.setMinInstances(1);
+        p.setMaxInstances(1);
         return p;
     }
 
@@ -411,4 +415,21 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         testParameters.add(p);
         return p;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name){
+        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
+        String uniqueName = name;
+
+        int idx = 1;
+        ITestAttribute[] testAttribues = testPolicyCmptTypeParam.getTestAttributes();
+        for (int i = 0; i < testAttribues.length; i++) {
+            if (! (testAttribues[i] == testAttribute) && testAttribues[i].getName().equals(uniqueName)){
+                uniqueName = name + " (" + idx++ + ")";
+            }
+        }
+        return uniqueName;
+    }    
 }

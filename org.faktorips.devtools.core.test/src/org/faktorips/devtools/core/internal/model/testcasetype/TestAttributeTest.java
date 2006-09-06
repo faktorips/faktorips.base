@@ -48,29 +48,29 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element attributeEl = XmlUtil.getFirstElement(docEl);
         testAttribute.initFromXml(attributeEl);
-        assertEquals("attribute1", testAttribute.getName());
         assertEquals("attribute1", testAttribute.getAttribute());
+        assertEquals("attribute1Name", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
         
         attributeEl = XmlUtil.getElement(docEl, 1);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute2", testAttribute.getAttribute());
-        assertEquals("attribute2", testAttribute.getName());
+        assertEquals("attribute2Name", testAttribute.getName());
         assertFalse(testAttribute.isInputAttribute());
         assertTrue(testAttribute.isExpextedResultAttribute());
 
         attributeEl = XmlUtil.getElement(docEl, 2);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute3", testAttribute.getAttribute());
-        assertEquals("attribute3", testAttribute.getName());
+        assertEquals("attribute3Name", testAttribute.getName());
         assertFalse(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
         
         attributeEl = XmlUtil.getElement(docEl, 3);
         testAttribute.initFromXml(attributeEl);
         assertEquals("attribute4", testAttribute.getAttribute());
-        assertEquals("attribute4", testAttribute.getName());
+        assertEquals("attribute4Name", testAttribute.getName());
         assertFalse(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
         
@@ -87,15 +87,17 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
     public void testToXml() {
         testAttribute.setAttribute("attribute2");
+        testAttribute.setName("attribute2Name");
         ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.INPUT);
         Element el = testAttribute.toXml(newDocument());
 
         testAttribute.setAttribute("attributeName3");
+        testAttribute.setName("attribute3Name");
         ((TestAttribute)testAttribute).setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         
         testAttribute.initFromXml(el);
         assertEquals("attribute2", testAttribute.getAttribute());
-        assertEquals("attribute2", testAttribute.getName());
+        assertEquals("attribute2Name", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
     }

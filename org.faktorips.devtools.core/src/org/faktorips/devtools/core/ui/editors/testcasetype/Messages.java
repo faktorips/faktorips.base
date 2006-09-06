@@ -91,6 +91,7 @@ public class Messages extends NLS {
     public static String NewRootParamWizardPage_Error_DatatypeDoesNotExists;
     public static String TestCaseTypeSection_Button_NewRootParameter;
     public static String TestCaseTypeSection_Button_NewChildParameter;
+    public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeName;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttribute;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeType;
     public static String TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists;

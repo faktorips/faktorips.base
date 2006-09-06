@@ -66,7 +66,16 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
      * Overridden.
      */
     public String getName() {
-        return attribute;
+        return name;
+    }
+    
+    /** 
+     * {@inheritDoc}
+     */
+    public void setName(String name) {
+        String oldName = this.name;
+        this.name = name;
+        valueChanged(oldName, name);
     }
     
 	/**
@@ -233,10 +242,10 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         TestPolicyCmptTypeParameter typeParam = (TestPolicyCmptTypeParameter)getParent();
         ITestAttribute testAttributes[] = typeParam.getTestAttributes();
         for (int i = 0; i < testAttributes.length; i++) {
-            if (testAttributes[i] != this && testAttributes[i].getName().equals(attribute)) {
-                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, attribute);
+            if (testAttributes[i] != this && testAttributes[i].getName().equals(name)) {
+                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, name);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
-                        PROPERTY_ATTRIBUTE);
+                        PROPERTY_NAME);
                 messageList.add(msg);
                 break;
             }

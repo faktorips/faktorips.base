@@ -59,7 +59,12 @@ public interface ITestAttribute extends IIpsObjectPart {
      * Validation message code to indicate that the attribute name is duplicate.
      */
     public final static String MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "DuplicateTestAttributeName"; //$NON-NLS-1$
-        
+
+    /**
+     * Sets the attribute's name.
+     */
+    public void setName(String newName);
+    
     /**
      * Returns the attribute's name.
      * {@inheritDoc}
