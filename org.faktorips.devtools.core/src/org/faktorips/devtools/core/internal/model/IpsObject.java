@@ -91,6 +91,10 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * Overridden.
      */
     public IResource getCorrespondingResource() {
+        IIpsSrcFile srcFile= getIpsSrcFile();
+        if(srcFile!=null){
+            return srcFile.getCorrespondingFile();
+        }
         return null;
     }
     
