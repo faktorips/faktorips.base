@@ -22,12 +22,9 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.FileEditorInput;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -79,15 +76,7 @@ public class OpenEditorAction extends IpsAction {
         }
     	try {
 	        IWorkbench workbench= IpsPlugin.getDefault().getWorkbench();
-	        IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
-	        IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(fileToEdit.getName());
-	        if(editor!=null & editorInput!=null){
-	        	// Open editor for registered filetype
-				workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
-	        }else{
-	        	// Let IDE guess filtype and open the corresponding editor
-	        	IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
-	        }
+	        IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
 		}
