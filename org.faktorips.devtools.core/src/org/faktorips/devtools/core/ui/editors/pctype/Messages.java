@@ -91,7 +91,6 @@ public class Messages extends NLS {
 	public static String RulesSection_titleMissingAttribute;
 	public static String MethodEditDialog_title;
 	public static String MethodEditDialog_signatureTitle;
-	public static String MethodEditDialog_implementationTitle;
 	public static String MethodEditDialog_labelAccesModifier;
 	public static String MethodEditDialog_labelAbstract;
 	public static String MethodEditDialog_labelType;
@@ -100,7 +99,6 @@ public class Messages extends NLS {
 	public static String RelationsSection_title;
 	public static String RelationEditDialog_title;
 	public static String RelationEditDialog_propertiesTitle;
-	public static String RelationEditDialog_productSideTitle;
 	public static String RelationEditDialog_labelType;
 	public static String RelationEditDialog_labelReadOnlyContainer;
 	public static String RelationEditDialog_labelTarget;
