@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
@@ -26,61 +25,49 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.StringUtil;
 
 /**
- * Represents an IpsSrcFile with immutable content 
+ * Represents an IpsSrcFile with an immutable content. Instances of this IpsSrcFile cannot be accessed 
+ * via the finder Methods of the IpsProject.
  * 
- * @author Thorsten Guenther
+ * @author Thorsten Guenther, Peter Erzberger
  */
 public class IpsSrcFileImmutable extends IpsSrcFile {
 
+    private IpsSourceFileContents contents;
+    private IIpsProject project;
+    
 	/**
-	 * Name of the sourcefile without version.
-	 */
-	private String unversionedName;
-	
-	/**
-	 * Create a new IpsSrcFile with immutable content.
+	 * Create a new IpsSrcFileImmutable with a content based on the provided InputStream. The content of this
+     * IpsSrcFile cannot be changed. 
 	 * 
-	 * @param parent
-	 * @param name
+	 * @param project the IIpsProject this IpsSrcFile relates to
+	 * @param name the name of this IpsSrcFile
+     * @param content the content of this IpsSrcFile
 	 */
-	public IpsSrcFileImmutable(IIpsElement parent, String name, String version, InputStream in) {
-		super(parent, name);
-		
-		// the name of this remote file is the name and the version concatenated, but
-		// the name given to the superclass must end to a valid ips-object-extension.
-		// so we have to set the complete name (with version) explicitly.
-		this.name = name + version;
-		this.unversionedName = name;
-		
-		try {
-			setContents(in);
-		} catch (CoreException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}
+	public IpsSrcFileImmutable(IIpsProject ipsProject, String name, InputStream content) {
+		super(null, name);
+		this.project = ipsProject;
+		setContents(content);
 	}
 
 	/**
-	 * Returns a file which would be the local resource if the remote file would be local. Do NOT use
-	 * this handle to manipulate the content - it is possible that the given handle points to an existing
-	 * resource (e.g. the checked out version of a resource under version control).
+     * Returns null.
 	 */
 	public IFile getCorrespondingFile() {
-		return null;//((IFolder)getIpsPackageFragment().getCorrespondingResource()).getFile(unversionedName);
+		return null;
 	}
 	
 	/**
-	 * Returns a file which would be the local resource if the remote file would be local. Do NOT use
-	 * this handle to manipulate the content - it is possible that the given handle points to an existing
-	 * resource (e.g. the checked out version of a resource under version control).
+     * Returns null.
 	 */
 	public IResource getCorrespondingResource() {
-		return getCorrespondingFile();
+		return null;
 	}
 
 	/**
@@ -90,13 +77,14 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 		// No save on remote files
 	}
 	
-	private void setContents(InputStream in) throws CoreException {
+	private void setContents(InputStream in) {
         
 		try {
-			String data = StringUtil.readFromInputStream(in, getEncoding());
-			IpsPlugin.getDefault().getManager().putSrcFileContents(this, data, getEncoding());
-		} catch (IOException e) {
-			throw new CoreException(new IpsStatus(e));
+            String encoding = project.getXmlFileCharset();
+			String data = StringUtil.readFromInputStream(in, encoding);
+            contents = new IpsSourceFileContents(this, data, encoding);
+		} catch (Exception e) {
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus(e));
 		}
 	}
 	
@@ -132,13 +120,27 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 	 * {@inheritDoc}
 	 */
 	public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(unversionedName));
+        return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
 	}
 
 	/**
+     * {@inheritDoc}
+     */
+    public IIpsProject getIpsProject() {
+        return project;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public boolean isMutable() {
 		return false;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsObject getIpsObject() throws CoreException {
+        return contents.getIpsObject();
+    }
 }

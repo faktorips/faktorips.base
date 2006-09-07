@@ -45,7 +45,6 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 
@@ -97,6 +96,7 @@ public abstract class IpsObjectEditor extends FormEditor
             throws PartInitException {
         super.init(site, input);
         IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+        
         if (input instanceof IFileEditorInput) {
         	IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
@@ -139,7 +139,6 @@ public abstract class IpsObjectEditor extends FormEditor
     			return;
     		}
     		String name = path.lastSegment().substring(0, nameIndex) + extension;
-    		String version = path.lastSegment().substring(nameIndex);
     		path = path.removeLastSegments(1).append(name);
     		
     		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
@@ -151,15 +150,9 @@ public abstract class IpsObjectEditor extends FormEditor
     		if (!file.exists()) {
     			return;
     		}
-
-    		path = path.removeLastSegments(1);
-    		IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(file.getParent());
-    		
-    		if (el instanceof IIpsPackageFragment) {
-    			ipsSrcFile = new IpsSrcFileImmutable((IIpsPackageFragment)el, name, version, storage.getContents());
-     		}
-    		
-    		
+//TODO pk: work in progress 2006-09-07
+    		IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            ipsSrcFile = new IpsSrcFileImmutable(el.getIpsProject(), name, storage.getContents());
     		
     	} catch (CoreException e) {
     		throw new PartInitException(e.getStatus());
