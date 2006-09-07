@@ -17,8 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype.relationwizard;
 
-import java.util.ArrayList;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,9 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 
@@ -87,12 +83,12 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		boolean isPageVisible=false;
 		
 		// visible only if target has a container relation
-		try {
-			isPageVisible = getSourceContainerRelations().size() > 0;
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-			wizard.showErrorPage(e);
-		}
+        try {
+            isPageVisible = wizard.getRelation().findContainerRelationCandidates().length > 0;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            wizard.showErrorPage(e);
+        }
 		
 		// visible only if this relation is no container relation
 		if (wizard.getRelation().isReadOnlyContainer()){
@@ -109,16 +105,15 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		// insert all container relations of the source in the drop down field
 		if (! prevTarget.equals(wizard.getRelation().getTarget())){
 			prevTarget = wizard.getRelation().getTarget();
-			ArrayList containerRelations = null;
 			try {
-				containerRelations = getSourceContainerRelations();
-				String[] names = new String[containerRelations.size() + 1];
-				names[0] = ""; // first entry to select none container relation //$NON-NLS-1$
-				for (int i = 0; i < containerRelations.size(); i++) {
-					names[i+1] = ((IRelation)containerRelations.get(i)).getName();
-				}
-				if (containerRelations.size()>0){
-					containerRelationsField.getCombo().setItems(names);
+			    IRelation[] containerRelations = wizard.getRelation().findContainerRelationCandidates();
+				if (containerRelations.length>0){
+                    String[] names = new String[containerRelations.length + 1];
+                    names[0] = ""; // first entry to select none container relation //$NON-NLS-1$
+                    for (int i = 0; i < containerRelations.length; i++) {
+                        names[i+1] = containerRelations[i].getName();
+                    }					
+                    containerRelationsField.getCombo().setItems(names);
 				}else{
 					containerRelationsField.getCombo().setItems(new String[0]);
 				}
@@ -130,28 +125,4 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 		}
 		return true;
 	}
-	
-	/**
-	 * Returns the container relations of the source policy component type which matches the same target.
-	 * 
-	 * @throws CoreException if there was an error getting the type hierarchy.
-	 */
-	private ArrayList getSourceContainerRelations() throws CoreException {
-		ArrayList containerRelations = new ArrayList();
-        IPolicyCmptType targetPolicyCmptType = wizard.getRelation().findTarget();
-		ITypeHierarchy hierarchy = wizard.getRelation().getPolicyCmptType().getSupertypeHierarchy();
-		IRelation[] relations = hierarchy.getAllRelations(wizard.getRelation().getPolicyCmptType());
-		for (int i = 0; i < relations.length; i++) {
-            IPolicyCmptType targetOfContainerRelation = relations[i].findTarget();
-            boolean isSubType = false;
-            if (targetPolicyCmptType != null && targetOfContainerRelation != null) {
-                ITypeHierarchy subtypesOfContainerRelation = targetOfContainerRelation.getSubtypeHierarchy();
-                isSubType = subtypesOfContainerRelation.isSubtypeOf(targetPolicyCmptType, targetOfContainerRelation);
-            }
-            if (relations[i].isReadOnlyContainer() && (isSubType || targetOfContainerRelation.equals(targetPolicyCmptType))) {
-                containerRelations.add(relations[i]);
-            }
-		}
-		return containerRelations;
-	}	
 }

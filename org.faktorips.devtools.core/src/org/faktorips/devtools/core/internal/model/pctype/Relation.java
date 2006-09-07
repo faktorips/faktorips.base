@@ -698,6 +698,51 @@ public class Relation extends IpsObjectPart implements IRelation {
         }
         return null;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IRelation[] findContainerRelationCandidates() throws CoreException {
+        List containerRelationCandidates = new ArrayList();
+        IPolicyCmptType targetPolicyCmptType = findTarget();
+        if (targetPolicyCmptType != null){
+            IPolicyCmptType type = getPolicyCmptType();
+            IPolicyCmptType[] supertypes = type.getSupertypeHierarchy().getAllSupertypesInclSelf(type);
+            // search for relations inside each policy cmpt inside the supertype hierarchy
+            for (int i = 0; i < supertypes.length; i++) {
+                // check all relations of the policy cmpt type
+                IRelation[] relations = supertypes[i].getRelations();
+                for (int j = 0; j < relations.length; j++) {
+                    if (!relations[j].isReadOnlyContainer())
+                        continue;
+                    
+                    IPolicyCmptType targetOfContainerRelation = relations[j].findTarget();
+                    if (targetOfContainerRelation == null)
+                        continue;
+                    
+                    // check if the target of the container relation is the same policy cmpt type
+                    // the relation uses as target
+                    if (targetOfContainerRelation.equals(targetPolicyCmptType)) {
+                        // candidate found: the target of the container relation is equal the
+                        // target of this relation
+                        containerRelationCandidates.add(relations[j]);
+                        continue;
+                    }
+                    
+                    // check if the target of the container relation is a subertype of the
+                    // target of this relation
+                    ITypeHierarchy hierarchyOfTarget = targetPolicyCmptType.getSupertypeHierarchy();
+                    if (hierarchyOfTarget.isSupertypeOf(targetOfContainerRelation, targetPolicyCmptType)){
+                        // candidate found: the target of the container relation is a supertype of the
+                        // target of this relation
+                        containerRelationCandidates.add(relations[j]);
+                        continue;
+                    }
+                }
+            }
+        }
+        return (IRelation[]) containerRelationCandidates.toArray(new IRelation[0]);
+    }
 
     /**
      * Overridden.

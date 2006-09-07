@@ -17,8 +17,11 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import org.faktorips.devtools.core.DefaultTestContent;
+import java.util.Arrays;
+import java.util.List;
+
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -135,6 +138,89 @@ public class RelationTest extends AbstractIpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    /**
+     * Test of searching the correct container relation candidates.
+     */
+    public void testSearchContainerRelationCandidates() throws Exception {
+        IPolicyCmptType contract = content.getContract();
+        IPolicyCmptType coverage = content.getCoverage();
+        IPolicyCmptType motorContract = content.getMotorContract();
+        IPolicyCmptType collisionCoverage = content.getCollisionCoverage();
+        IPolicyCmptType vehicle = content.getVehicle();
+        
+        // Setup test objects (clear existing relation)
+        clearAllRelations(contract);
+        clearAllRelations(coverage);
+        clearAllRelations(motorContract);
+        clearAllRelations(collisionCoverage);
+        clearAllRelations(vehicle);
+        
+        // New relation which will be used to get the container relation candidates
+        IRelation motorContract2CollisionCoverage = motorContract.newRelation();
+        motorContract2CollisionCoverage.setTarget(collisionCoverage.getQualifiedName());
+        motorContract2CollisionCoverage.setTargetRoleSingular("CollisionCoverage");
+        
+        
+        // Non container relation on supertype
+        IRelation contract2Coverage = contract.newRelation();
+        contract2Coverage.setTarget(coverage.getQualifiedName());
+        contract2Coverage.setReadOnlyContainer(false);
+        contract2Coverage.setTargetRoleSingular("Coverage");
+        
+        // Container relation on supertype with target in supertype hierarchy of rel. target
+        IRelation contRelContract2Coverage = contract.newRelation();
+        contRelContract2Coverage.setTarget(coverage.getQualifiedName());
+        contRelContract2Coverage.setTargetRoleSingular("CoverageContainer");
+        contRelContract2Coverage.setReadOnlyContainer(true);
+        
+        // Container relation on supertype with other target as rel. target
+        IRelation contRelContract2vehicle = contract.newRelation();
+        contRelContract2vehicle.setTarget(vehicle.getQualifiedName());
+        contRelContract2vehicle.setTargetRoleSingular("VehicleContainer");
+        contRelContract2vehicle.setReadOnlyContainer(true);
+        
+        // ==> check if the container relation of the super type and the container rel to the target
+        //     will be returned as container candidate for the new relation
+        IRelation[] containerRelationCandidates = motorContract2CollisionCoverage.findContainerRelationCandidates();
+        assertEquals(1, containerRelationCandidates.length);
+        assertEquals(contRelContract2Coverage, containerRelationCandidates[0]);
+        
+        // Container relation on supertype with target equal rel. target
+        IRelation contRelContract2CollisionCoverage = contract.newRelation();
+        contRelContract2CollisionCoverage.setTarget(collisionCoverage.getQualifiedName());
+        contRelContract2CollisionCoverage.setTargetRoleSingular("CollisionCoverageContainer");
+        contRelContract2CollisionCoverage.setReadOnlyContainer(true);
+        
+        // Container relation to target on policy cmpt the new relation belongs to
+        IRelation contRelMotorContract2CollisionCoverage = motorContract.newRelation();
+        contRelMotorContract2CollisionCoverage.setTarget(collisionCoverage.getQualifiedName());
+        contRelMotorContract2CollisionCoverage.setTargetRoleSingular("CollisionCoverageContainer");
+        contRelMotorContract2CollisionCoverage.setReadOnlyContainer(true);
+        
+        // Container relation not to target on policy cmpt the new relation belongs to
+        IRelation contRelMotorContract2Vehicle = motorContract.newRelation();
+        contRelMotorContract2Vehicle.setTarget(vehicle.getQualifiedName());
+        contRelMotorContract2Vehicle.setTargetRoleSingular("VehicleContainer");
+        contRelMotorContract2Vehicle.setReadOnlyContainer(true);
+        
+        // ==> check if the container relation of the super type and the container rel to the target
+        //     will be returned as container candidate for the new relation
+        containerRelationCandidates = motorContract2CollisionCoverage.findContainerRelationCandidates();
+        assertEquals(3, containerRelationCandidates.length);
+        List result = Arrays.asList(containerRelationCandidates);
+        assertTrue(result.contains(contRelContract2CollisionCoverage));
+        assertTrue(result.contains(contRelMotorContract2CollisionCoverage));
+        assertTrue(result.contains(contRelContract2Coverage));
+        assertFalse(result.contains(contRelMotorContract2Vehicle));
+    }
+
+    private void clearAllRelations(IPolicyCmptType pcType){
+        IRelation[] relations = pcType.getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            relations[i].delete();
+        }
     }
     
     public void testValidate() throws Exception {

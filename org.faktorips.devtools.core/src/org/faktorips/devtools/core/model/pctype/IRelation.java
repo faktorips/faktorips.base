@@ -473,4 +473,13 @@ public interface IRelation extends IIpsObjectPart {
      */
     public void setMaxCardinalityProductSide(int newValue);
     
+    /**
+     * Searches for container relations - in the supertype hierarchy of the policy cmpt this
+     * relation belongs to - which are canditates of a corresponding container relation for this
+     * relation. See <code>getContainerRelation()</code> for further details. 
+     * Returns and emty array if no such container relation exists.
+     * 
+     * @throws CoreException if an error occurs while searching.
+     */
+    public IRelation[] findContainerRelationCandidates() throws CoreException;    
 }
