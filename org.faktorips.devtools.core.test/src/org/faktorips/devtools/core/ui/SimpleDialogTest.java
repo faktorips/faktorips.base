@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.ITestAnswerProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDialog;
 
 /**
@@ -60,15 +59,15 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
 	private void openEditor(IIpsObject file) throws Exception {
 		IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
 
-    	OpenEditorAction.openEditorForFile((IFile) file.getCorrespondingResource());
+    	IpsPlugin.getDefault().openEditor((IFile) file.getCorrespondingResource());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 		
 		answer = GenerationSelectionDialog.CHOICE_BROWSE;
-    	OpenEditorAction.openEditorForFile((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
+        IpsPlugin.getDefault().openEditor((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
         plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 
 		answer = GenerationSelectionDialog.CHOICE_CREATE;
-    	OpenEditorAction.openEditorForFile((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
+        IpsPlugin.getDefault().openEditor((IFile) content.getComfortCollisionCoverageA().getCorrespondingResource());
 		plugin.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(false);
 	}
 	
