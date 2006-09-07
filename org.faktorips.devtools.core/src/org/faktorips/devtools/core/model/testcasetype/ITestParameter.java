@@ -64,16 +64,16 @@ public interface ITestParameter extends IIpsObjectPart {
 	/**
 	 * Returns <code>true</code> if the test parameter is an input parameter, 
 	 * otherwise <code>false</code>.
-     * Note if the parameter is a child parameter then the role (input, expected result, or combined) 
-     * of the root test parameter will be checked. All childs inherit the role of the root parameter.
+     * Note if the parameter is a child parameter then the type (input, expected result, or combined) 
+     * of the root test parameter will be checked. All childs inherit the type of the root parameter.
 	 */
 	public boolean isInputParameter();
 	
 	/**
 	 * Returns <code>true</code> if the parameter is an expected result parameter, 
 	 * otherwise <code>false</code>.
-     * Note if the parameter is a child parameter then the role (input, expected result, or combined) 
-     * of the root test parameter will be checked. All childs inherit the role of the root parameter.
+     * Note if the parameter is a child parameter then the type (input, expected result, or combined) 
+     * of the root test parameter will be checked. All childs inherit the type of the root parameter.
 	 */
 	public boolean isExpextedResultParameter();
 
@@ -81,8 +81,8 @@ public interface ITestParameter extends IIpsObjectPart {
 	 * Returns <code>true</code> if the test parameter is a combined parameter, 
 	 * otherwise <code>false</code>. A combined test parameter is a parameter that specifies
 	 * both input objects and expected results objects.
-     * Note if the parameter is a child parameter then the role (input, expected result, or combined) 
-     * of the root test parameter will be checked. All childs inherit the role of the root parameter.
+     * Note if the parameter is a child parameter then the type (input, expected result, or combined) 
+     * of the root test parameter will be checked. All childs inherit the type of the root parameter.
 	 */
 	public boolean isCombinedParameter();
 	
@@ -94,7 +94,7 @@ public interface ITestParameter extends IIpsObjectPart {
     /**
      * Sets the parameter type of the test parameter.
      */
-    public void setTestParameterType(TestParameterType testParameterRole);
+    public void setTestParameterType(TestParameterType testParameterType);
     
     /**
      * Returns the root test parameter.

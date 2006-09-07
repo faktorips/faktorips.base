@@ -159,7 +159,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     /**
      * {@inheritDoc}
      */
-    public abstract void setTestParameterType(TestParameterType testParameterRole);
+    public abstract void setTestParameterType(TestParameterType testParameterType);
     
     /**
      * {@inheritDoc}

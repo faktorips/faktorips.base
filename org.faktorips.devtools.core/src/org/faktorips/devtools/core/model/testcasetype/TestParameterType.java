@@ -60,7 +60,7 @@ public class TestParameterType extends DefaultEnumValue {
     }
     
     /**
-     * Returns the enum type which contains all test parameter roles.
+     * Returns the enum type which contains all test parameter types.
      */
     public final static EnumType getEnumType() {
         return enumType;
@@ -79,7 +79,7 @@ public class TestParameterType extends DefaultEnumValue {
      */
     public final static TestParameterType getTestParameterType(Integer index) {
         EnumValue[] types = enumType.getValues();
-        if (index.intValue()>=types.length)
+        if (index.intValue()>=types.length || index.intValue() < 0)
             return null;
         return (TestParameterType) types[index.intValue()];
     }
@@ -99,7 +99,7 @@ public class TestParameterType extends DefaultEnumValue {
      * 
      * @throws NullPointerException if one of the given Type are null.
      */
-    public static boolean isRoleMatching(TestParameterType type1, TestParameterType type2){
+    public static boolean isTypeMatching(TestParameterType type1, TestParameterType type2){
         if (type1.equals(type2))
             return true;
         
@@ -118,7 +118,7 @@ public class TestParameterType extends DefaultEnumValue {
      * Returns <code>true</code> if the parent type is combined and the other type is either input or expected result.
      * Otherwise returns <code>false</code>.
      * 
-     * @throws NullPointerException if one of the given roles are null.
+     * @throws NullPointerException if one of the given types are null.
      */
     public static boolean isChildTypeMatching(TestParameterType typeChild, TestParameterType typeParent) {
         if (typeChild.equals(typeParent))

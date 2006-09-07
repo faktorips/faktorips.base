@@ -182,7 +182,13 @@ public class TestCaseTypeRelation implements Validatable{
 			}
 		}
 		
-		if (testPolicyCmptRelation != null)
+		if (testPolicyCmptRelation != null){
 			list.add(testPolicyCmptRelation.validateGroup());
+        } else {
+            // no relations found
+            MessageList msgList = parentTestPolicyCmpt.validate();
+            list.add(msgList.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES));
+        }
+        
 	}
 }

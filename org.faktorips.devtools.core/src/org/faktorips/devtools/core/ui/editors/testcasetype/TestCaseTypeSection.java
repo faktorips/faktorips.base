@@ -455,6 +455,8 @@ public class TestCaseTypeSection extends IpsSection {
             TableItem tableItem = (TableItem)element;
             if (property.equals(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE)) {
                 TestParameterType selectedType = TestParameterType.getTestParameterType((Integer)value);
+                if (selectedType == null)
+                    return;
                 getTestAttributeFromObject(tableItem.getData()).setTestAttributeType(selectedType);
                 tableItem.setText(2, selectedType.getName());
             } else if (property.equals(ITestAttribute.PROPERTY_NAME)){

@@ -76,13 +76,13 @@ public class TestValueParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    public void setTestParameterType(TestParameterType testParameterRole) {
-        // a test value parameter supports only input role or expected result role
-        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterType.INPUT)
-                || testParameterRole.equals(TestParameterType.EXPECTED_RESULT));
-        TestParameterType oldRole = this.type;
-        this.type = testParameterRole;
-        valueChanged(oldRole, testParameterRole);
+    public void setTestParameterType(TestParameterType testParameterType) {
+        // a test value parameter supports only input type or expected result type
+        ArgumentCheck.isTrue(testParameterType.equals(TestParameterType.INPUT)
+                || testParameterType.equals(TestParameterType.EXPECTED_RESULT));
+        TestParameterType oldType = this.type;
+        this.type = testParameterType;
+        valueChanged(oldType, testParameterType);
     }
     
 	/**
@@ -162,10 +162,10 @@ public class TestValueParameter extends TestParameter implements
             list.add(msg);
         }
         
-        // check the correct role
+        // check the correct type
         if (isCombinedParameter() || (! isInputParameter()&& ! isExpextedResultParameter())){
-            String text = NLS.bind(Messages.TestValueParameter_ValidationError_RoleNotAllowed, type.getName(), name);
-            Message msg = new Message(MSGCODE_WRONG_ROLE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
+            String text = NLS.bind(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type.getName(), name);
+            Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }
     }

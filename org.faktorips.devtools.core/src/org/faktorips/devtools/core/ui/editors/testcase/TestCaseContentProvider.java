@@ -357,7 +357,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 					ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
 					for (int i = 0; i < children.length; i++) {
 					    ITestPolicyCmptTypeParameter parameter = children[i];
-						if (parameterMatchesRole(parameter)){
+						if (parameterMatchesType(parameter)){
 						    TestCaseTypeRelation dummyRelation = getDummyRelation(parameter, testPolicyCmpt);
 						    childs.add(dummyRelation);
                         }
@@ -395,10 +395,10 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     }
 
     /*
-     * Returns <code>true</code> if the given paramter matches the current role which the content
+     * Returns <code>true</code> if the given paramter matches the current type which the content
      * provider provides.
      */
-    private boolean parameterMatchesRole(ITestPolicyCmptTypeParameter parameter) {
+    private boolean parameterMatchesType(ITestPolicyCmptTypeParameter parameter) {
         return (isExpectedResult() && parameter.isExpextedResultParameter())
                 || (isInput() && parameter.isInputParameter());
     }

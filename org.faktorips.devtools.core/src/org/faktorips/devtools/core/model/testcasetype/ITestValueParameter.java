@@ -41,9 +41,9 @@ public interface ITestValueParameter extends ITestParameter {
     public final static String MSGCODE_VALUEDATATYPE_NOT_FOUND = MSGCODE_PREFIX + "ValueDatatypeNotFound"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that there is an unsupported role.
+     * Validation message code to indicate that there is an unsupported type.
      */
-    public final static String MSGCODE_WRONG_ROLE = MSGCODE_PREFIX + "WrongRole"; //$NON-NLS-1$
+    public final static String MSGCODE_WRONG_TYPE = MSGCODE_PREFIX + "WrongType"; //$NON-NLS-1$
 
     /**
      * Returns the datatype.

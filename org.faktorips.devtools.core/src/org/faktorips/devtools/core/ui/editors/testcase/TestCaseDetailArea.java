@@ -205,7 +205,7 @@ public class TestCaseDetailArea {
 		boolean firstEditField = true;
         for (int i = 0; i < testAttributeValues.length; i++) {
 			final ITestAttributeValue attributeValue = testAttributeValues[i];
-			// Create the edit field only if the content provider provides the role of the test attribute object
+			// Create the edit field only if the content provider provides the type of the test attribute object
             if ((testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute())
                     || testCaseSection.getContentProvider().isExpectedResult() && testAttributeValues[i].isExpextedResultAttribute()){
                 EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite, attributeValue);
@@ -367,7 +367,7 @@ public class TestCaseDetailArea {
 		for (int i = 0; i < values.length; i++) {
 			final ITestValue testValue = values[i];
 			
-            // Create the edit field only if the content provider provides the role of the test value object
+            // Create the edit field only if the content provider provides the type of the test value object
             if ( ! ((testCaseSection.getContentProvider().isInput() && testValue.isInput()) ||
                    (testCaseSection.getContentProvider().isExpectedResult() && testValue.isExpectedResult())))
                 return;

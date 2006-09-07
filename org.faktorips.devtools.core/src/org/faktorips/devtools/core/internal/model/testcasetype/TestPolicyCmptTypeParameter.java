@@ -140,13 +140,13 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
     /**
      * {@inheritDoc}
      */
-    public void setTestParameterType(TestParameterType testParameterRole) {
-        ArgumentCheck.isTrue(testParameterRole.equals(TestParameterType.INPUT)
-                || testParameterRole.equals(TestParameterType.EXPECTED_RESULT)
-                || testParameterRole.equals(TestParameterType.COMBINED));
-        TestParameterType oldRole = this.type;
-        this.type = testParameterRole;
-        valueChanged(oldRole, testParameterRole);
+    public void setTestParameterType(TestParameterType testParameterType) {
+        ArgumentCheck.isTrue(testParameterType.equals(TestParameterType.INPUT)
+                || testParameterType.equals(TestParameterType.EXPECTED_RESULT)
+                || testParameterType.equals(TestParameterType.COMBINED));
+        TestParameterType oldType = this.type;
+        this.type = testParameterType;
+        valueChanged(oldType, testParameterType);
     }
     
 	/**
@@ -501,7 +501,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         if (!isRoot()){
             TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
             if (!TestParameterType.isChildTypeMatching(type, parentType)) {
-                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed, type.getName(), parentType
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TypeNotAllowed, type.getName(), parentType
                         .getName());
                 Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                         PROPERTY_TEST_PARAMETER_TYPE);

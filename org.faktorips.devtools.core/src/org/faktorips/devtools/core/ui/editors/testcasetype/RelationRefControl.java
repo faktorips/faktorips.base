@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
@@ -30,6 +33,11 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.util.StringUtil;
 
+/**
+ * Control to select a relation.
+ * 
+ * @author Joerg Ortmann
+ */
 public class RelationRefControl extends TextButtonControl {
     private String dialogTitle;
     private String dialogMessage;
@@ -76,7 +84,12 @@ public class RelationRefControl extends TextButtonControl {
     protected IRelation[] getRelations() throws CoreException {
         ITypeHierarchy superTypeHierarchy = parentPolicyCmptType.getSupertypeHierarchy();
         IRelation[] relations = superTypeHierarchy.getAllRelations(parentPolicyCmptType);
-        return relations;
+        List relationsToSelect = new ArrayList(relations.length);
+        for (int i = 0; i < relations.length; i++) {
+            if (relations[i].isAssoziation() || relations[i].isForwardComposition())
+                relationsToSelect.add(relations[i]);
+        }
+        return (IRelation[]) relationsToSelect.toArray(new IRelation[0]);
     }
 
     public IRelation findRelation() throws CoreException{

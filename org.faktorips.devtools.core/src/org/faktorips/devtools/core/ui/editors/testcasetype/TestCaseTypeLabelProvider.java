@@ -58,7 +58,7 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
 	public String getText(Object element) {
         if (element instanceof ITestValueParameter) {
             ITestValueParameter testValueParam = (ITestValueParameter)element;
-            return testValueParam.getName() + getRoleExtension(testValueParam.getTestParameterType());
+            return testValueParam.getName() + getTypeExtension(testValueParam.getTestParameterType());
         } else if (element instanceof ITestPolicyCmptTypeParameter) {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)element;
 
@@ -72,7 +72,7 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
                 // no relation or relation is equal test param name
                 targetExtension = "";                 //$NON-NLS-1$
 
-            return testPolicyCmptTypeParam.getName() + targetExtension + getRoleExtension(testPolicyCmptTypeParam.getTestParameterType());
+            return testPolicyCmptTypeParam.getName() + targetExtension + getTypeExtension(testPolicyCmptTypeParam.getTestParameterType());
         } else if (element instanceof ITestAttribute) {
             ITestAttribute testAttribute = (ITestAttribute)element;
             String extension = ""; //$NON-NLS-1$
@@ -80,17 +80,17 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
                     && !testAttribute.getAttribute().equals(testAttribute.getName())) {
                 extension = " : " + testAttribute.getAttribute(); //$NON-NLS-1$
             }
-            return StringUtils.capitalise(testAttribute.getName()) + extension + getRoleExtension(testAttribute.getTestAttributeType());
+            return StringUtils.capitalise(testAttribute.getName()) + extension + getTypeExtension(testAttribute.getTestAttributeType());
         }
             
 		return Messages.TestCaseTypeLabelProvider_Undefined;
 	}
 
     /**
-     * Returns the role extension of the given role, format: " - roleName"
+     * Returns the type extension of the given type, format: " - typeName"
      */
-    private String getRoleExtension(TestParameterType role){
-        return " - " + role.getName(); //$NON-NLS-1$
+    private String getTypeExtension(TestParameterType type){
+        return " - " + type.getName(); //$NON-NLS-1$
     }
     
 	/**

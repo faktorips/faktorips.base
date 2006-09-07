@@ -116,9 +116,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         if (e.field == editFieldRelation) {
             relationChanged(editFieldRelation.getText());
         }
-//        if (e.field == editFieldTarget){
-//            targetChanged(editFieldTarget.getText());
-//        }
+        
         wizard.postAsyncRunnable(new Runnable() {
             public void run() {
                 if (wizard.getShell().isDisposed())
@@ -127,23 +125,6 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
             }
         });
     }
-    
-//    /**
-//     * Target has changed.
-//     */
-//    private void targetChanged(String newTarget) {
-//        if (newTarget.equals(prevTarget))
-//            return;
-//        prevTarget = newTarget;
-//        
-//        try {
-//            policyCmptTypeTarget = relTargetRefControl.findPcType();
-//        } catch (CoreException e) {
-//            IpsPlugin.logAndShowErrorDialog(e);
-//        }
-//
-//        postNewTestParameter();
-//    }
 
     /**
      * Relation has changed.

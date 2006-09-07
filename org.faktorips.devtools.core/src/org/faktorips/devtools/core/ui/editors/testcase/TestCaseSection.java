@@ -27,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -77,7 +76,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
@@ -145,7 +143,119 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     // Indicates that the tree is refreshing
     private boolean isTreeRefreshing = false;
     
-	public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
+	/*
+     * Action which provides the content type filter.
+     */
+    private class ToggleContentTypeAction extends Action {
+        private final int fActionContentType;
+        
+        public ToggleContentTypeAction(int actionContentType) {
+            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+            fActionContentType = actionContentType;
+            if (actionContentType == TestCaseContentProvider.INPUT) {
+                buttonChecked();
+                setText(Messages.TestCaseSection_FilterInput);
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
+                setToolTipText(Messages.TestCaseSection_FilterInput_ToolTip);
+            } else if (actionContentType == TestCaseContentProvider.EXPECTED_RESULT) {
+                buttonChecked();
+                setText(Messages.TestCaseSection_FilterExpected); 
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
+                setToolTipText(Messages.TestCaseSection_FilterExpected_ToolTip);
+            } else if (actionContentType == TestCaseContentProvider.COMBINED) {     
+                buttonChecked();
+                setText(Messages.TestCaseSection_FilterCombined);  
+                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseCombined.gif")); //$NON-NLS-1$
+                setToolTipText(Messages.TestCaseSection_FilterCombined_ToolTip);
+            }
+        }
+        
+        public void run() {
+            if (isChecked()) {
+                switchContentType(fActionContentType);
+            }
+        }
+        
+        private void buttonChecked(){
+            if (contentProvider.getContentType() == fActionContentType)
+                setChecked(true);
+        }
+    }
+
+    /*
+     * Label provider for the test case type relation select dialog.
+     */
+    private class TestCaseTypeRelationLabelProvider implements ILabelProvider{
+    	/**
+    	 * {@inheritDoc}
+    	 */
+    	public Image getImage(Object element) {
+    		return getImageFromRelationType((TestCaseTypeRelation)element);
+    	}
+    
+    	/**
+    	 * Returns the image of the given relation test case type parameter.
+    	 */
+    	private Image getImageFromRelationType(TestCaseTypeRelation dummyRelation) {
+    		try {
+    			ITestPolicyCmptTypeParameter typeParam = null;
+    			typeParam = dummyRelation.getTestPolicyCmptTypeParam();
+    			IRelation relation = typeParam.findRelation();
+    			if (relation == null){
+    				return null;
+    			}				      	
+    			if (relation.isAssoziation()){
+    				return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+    			}else {
+    				return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
+    			}
+    		} catch (CoreException e) {
+    			return null;
+    		}
+    	}
+    
+    	/**
+    	 * {@inheritDoc}
+    	 */
+    	public String getText(Object element) {
+        	TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
+        	String text = dummyRelation.getName();
+        	if (dummyRelation.isRequiresProductCmpt()){
+        		text += REQUIRES_PRODUCT_CMPT_SUFFIX;
+        	}
+        	return text;
+    	}
+    
+    	/**
+    	 * {@inheritDoc}
+    	 */
+    
+    	public void addListener(ILabelProviderListener listener) {
+    	}
+    
+    	/**
+    	 * {@inheritDoc}
+    	 */
+    
+    	public void dispose() {
+    	}
+    
+    	/**
+    	 * {@inheritDoc}
+    	 */
+    
+    	public boolean isLabelProperty(Object element, String property) {
+    		return false;
+    	}
+    
+    	/**
+    	 * {@inheritDoc}
+    	 */
+    	public void removeListener(ILabelProviderListener listener) {
+    	}		
+    }
+
+    public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, String title, String detailTitle, ScrolledForm form) {
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
         
@@ -328,45 +438,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         
         for (int i = 0; i < fToggleContentTypeActions.length; ++i)
             form.getToolBarManager().add(fToggleContentTypeActions[i]);
-    }
-    
-    /*
-     * Action which provides the content type filter.
-     */
-    private class ToggleContentTypeAction extends Action {
-        private final int fActionContentType;
-        
-        public ToggleContentTypeAction(int actionContentType) {
-            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
-            fActionContentType = actionContentType;
-            if (actionContentType == TestCaseContentProvider.INPUT) {
-                buttonChecked();
-                setText(Messages.TestCaseSection_FilterInput);
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
-                setToolTipText(Messages.TestCaseSection_FilterInput_ToolTip);
-            } else if (actionContentType == TestCaseContentProvider.EXPECTED_RESULT) {
-                buttonChecked();
-                setText(Messages.TestCaseSection_FilterExpected); 
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
-                setToolTipText(Messages.TestCaseSection_FilterExpected_ToolTip);
-            } else if (actionContentType == TestCaseContentProvider.COMBINED) {     
-                buttonChecked();
-                setText(Messages.TestCaseSection_FilterCombined);  
-                setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseCombined.gif")); //$NON-NLS-1$
-                setToolTipText(Messages.TestCaseSection_FilterCombined_ToolTip);
-            }
-        }
-        
-        public void run() {
-            if (isChecked()) {
-                switchContentType(fActionContentType);
-            }
-        }
-        
-        private void buttonChecked(){
-            if (contentProvider.getContentType() == fActionContentType)
-                setChecked(true);
-        }
     }
     
     /*
@@ -735,7 +806,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				addRelation(relationType);
 			} else if (selectedObject instanceof ITestPolicyCmpt){
 				// open a dialog to ask for the type of relation which 
-				// are defined in the test case type parameter if more than one role defined
+				// are defined in the test case type parameter if more than one type defined
 				ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selectedObject;
 				TestCaseTypeRelation relationType = selectTestCaseTypeRelationByDialog(testPolicyCmpt);
 				if (relationType != null)
@@ -938,19 +1009,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 
 	private void runTestClicked(){
-        try {
-            // check if the file is dirty
-            if (testCase.getIpsSrcFile().isDirty()) {
-                String msg = Messages.TestCaseSection_Dialog_SaveBeforeStartTest;
-                MessageDialog.openInformation(getShell(),
-                        Messages.TestCaseSection_Dialog_SaveBeforeStartTest_Title, msg);
-                return;
-            }
-            // show test runner view
-			IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IpsTestRunnerViewPart.EXTENSION_ID);
-		} catch (Exception e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}
 		// run test test
 		try {
 			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
@@ -1280,7 +1338,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             dummyRelations[i] = relation;
         }        
 		if (dummyRelations.length == 1){
-            // exactly one role found, return this role
+            // exactly one type found, return this type
             return dummyRelations[0];
         }else{
             selectDialog.setElements(dummyRelations);
@@ -1291,79 +1349,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         }
 		return null;
-	}
-	
-	/*
-	 * Label provider for the test case type relation select dialog.
-	 */
-	private class TestCaseTypeRelationLabelProvider implements ILabelProvider{
-		/**
-		 * {@inheritDoc}
-		 */
-		public Image getImage(Object element) {
-			return getImageFromRelationType((TestCaseTypeRelation)element);
-		}
-
-		/**
-		 * Returns the image of the given relation test case type parameter.
-		 */
-		private Image getImageFromRelationType(TestCaseTypeRelation dummyRelation) {
-			try {
-				ITestPolicyCmptTypeParameter typeParam = null;
-				typeParam = dummyRelation.getTestPolicyCmptTypeParam();
-				IRelation relation = typeParam.findRelation();
-				if (relation == null){
-					return null;
-				}				      	
-				if (relation.isAssoziation()){
-					return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
-				}else {
-					return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
-				}
-			} catch (CoreException e) {
-				return null;
-			}
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public String getText(Object element) {
-	    	TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
-	    	String text = dummyRelation.getName();
-	    	if (dummyRelation.isRequiresProductCmpt()){
-	    		text += REQUIRES_PRODUCT_CMPT_SUFFIX;
-	    	}
-	    	return text;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-
-		public void addListener(ILabelProviderListener listener) {
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-
-		public void dispose() {
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-
-		public boolean isLabelProperty(Object element, String property) {
-			return false;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void removeListener(ILabelProviderListener listener) {
-		}		
 	}
 	
 	/**

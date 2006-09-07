@@ -61,8 +61,8 @@ public class Messages extends NLS {
     public static String IpsTestRunner_Error_WrongTestProtocol;
     public static String TestPolicyCmpt_ValidationWarning_PolicyCmptNotExists;
     public static String TestPolicyCmpt_ValidationWarning_ProductComponentNotExists;
-    public static String TestAttribute_Error_RoleNotAllowed;
-    public static String TestAttribute_Error_RoleNotAllowedIfParent;
+    public static String TestAttribute_Error_TypeNotAllowed;
+    public static String TestAttribute_Error_TypeNotAllowedIfParent;
     public static String TestAttribute_Error_DuplicateName;
     public static String TestCase_Error_WrongInstanceParam;
     public static String TestCase_Error_MoreThanOneObject;

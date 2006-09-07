@@ -149,8 +149,8 @@ public interface ITestPolicyCmpt extends ITestObject {
      * Returns the first relation with the indicated test policy cmpt type name 
      * or null if no such relation exists.
      * <p>
-     * Note that a relation's name is equal to it's target role, so you
-     * can also use the target role as parameter.
+     * Note that a relation's name is equal to it's target type, so you
+     * can also use the target type as parameter.
      * 
      * @throws IllegalArgumentException if testPolicyCmptType is <code>null</code>.
      */

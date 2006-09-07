@@ -255,11 +255,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     } 
     
 	/*
-	 * Runs the last runned test.
-	 */
-	private void rerunTestRun()  {
+     * Runs the last runned test.
+     */
+    private void rerunTestRun() {
         IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(repositoryPackage, testPackage);
-	}
+    }
 	
 	/*
 	 * UIJob to refresh the counter in th user interface.

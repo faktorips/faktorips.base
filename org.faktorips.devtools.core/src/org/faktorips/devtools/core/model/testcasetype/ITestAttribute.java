@@ -106,7 +106,7 @@ public interface ITestAttribute extends IIpsObjectPart {
 	public boolean isExpextedResultAttribute();
     
     /**
-     * Sets the role of the test attribute. The following roles could be set.
+     * Sets the type of the test attribute. The following types could be set.
      * <p><ul>
      * <li>INPUT: the test attribute specifies test attribute input objects
      * <li>EXPECTED_RESULT: the test attribute specifies test attribute expected result objects

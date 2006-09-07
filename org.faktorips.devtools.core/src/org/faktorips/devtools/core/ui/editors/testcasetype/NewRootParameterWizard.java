@@ -35,8 +35,8 @@ import org.faktorips.util.memento.Memento;
 /**
  * Wizard to create a root test policy cmpt type param or value datatype.
  * First page selection of value datatype or policy cmpt type.
- * Second page if value datatype: name and role
- *             if policy cmpt type: name, role, min instance, max instance and requires product
+ * Second page if value datatype: name and type
+ *             if policy cmpt type: name, type, min instance, max instance and requires product
  * 
  * @author Joerg Ortmann
  */

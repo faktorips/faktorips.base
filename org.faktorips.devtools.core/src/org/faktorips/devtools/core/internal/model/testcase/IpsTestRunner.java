@@ -32,8 +32,12 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -46,10 +50,13 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.progress.IProgressService;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 
 /**
@@ -109,6 +116,17 @@ public class IpsTestRunner implements IIpsTestRunner {
     	return ipsTestRunner;
     }
 
+    /*
+     * Save all dirty editors in the workbench. Returns whether the operation succeeded.
+     * @return whether all saving was completed
+     */
+    private static boolean saveAllEditors(boolean confirm) {
+        if (IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() == null) {
+            return false;
+        }
+        return IpsPlugin.getDefault().getWorkbench().saveAllEditors(confirm);
+    }   
+    
     /**
      * {@inheritDoc}
      */
@@ -167,6 +185,75 @@ public class IpsTestRunner implements IIpsTestRunner {
         vmRunner.run(vmConfig, launch, null);
         DebugPlugin.getDefault().getLaunchManager().addLaunch(launch);
         connect();
+    }
+
+    /*
+     * Ask for saving dirty editors, and wait for builders.
+     */
+    private boolean checkPrelauchConditions() {
+        try {
+            // ask for saving dirty editors
+            if (!saveAllEditors(true))
+                return false;
+
+            // show test runner view
+            IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                    IpsTestRunnerViewPart.EXTENSION_ID);
+
+            // wait until builder finished
+            final IJobManager jobManager = Platform.getJobManager();
+            boolean wait = (jobManager.find(ResourcesPlugin.FAMILY_AUTO_BUILD).length > 0)
+                    || (jobManager.find(ResourcesPlugin.FAMILY_MANUAL_BUILD).length > 0)
+                    || (jobManager.find(ResourcesPlugin.FAMILY_AUTO_REFRESH).length > 0)
+                    || ! jobManager.isIdle();
+
+            if (wait) {
+                Job job = new Job("Launching") {
+                    public IStatus run(final IProgressMonitor monitor) {
+                        IJobChangeListener listener = new IJobChangeListener() {
+                            public void sleeping(IJobChangeEvent event) {
+                            }
+                            public void scheduled(IJobChangeEvent event) {
+                            }
+                            public void running(IJobChangeEvent event) {
+                            }
+                            public void done(IJobChangeEvent event) {
+                                removeJobChangeListener(this);
+                            }
+                            public void awake(IJobChangeEvent event) {
+                            }
+                            public void aboutToRun(IJobChangeEvent event) {
+                            }
+                        };
+                        addJobChangeListener(listener);
+                        try {
+                            jobManager.join(ResourcesPlugin.FAMILY_MANUAL_BUILD, monitor);
+                            jobManager.join(ResourcesPlugin.FAMILY_AUTO_BUILD, monitor);
+                            jobManager.join(ResourcesPlugin.FAMILY_AUTO_REFRESH, monitor);
+                        } catch (InterruptedException e) {
+                            // just continue.
+                        }
+
+                        if (!monitor.isCanceled()) {
+                        }
+                        return Status.OK_STATUS;
+                    }
+                };
+                IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
+                IProgressService progressService = workbench.getProgressService();
+                job.setPriority(Job.INTERACTIVE);
+                job.setName("Launching");
+                if (wait) {
+                    progressService.showInDialog(workbench.getActiveWorkbenchWindow().getShell(), job);
+                }
+                // wait 1000ms to ensure that the builder has started
+                job.schedule(1000);
+            }
+        } catch (Exception e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -466,6 +553,10 @@ public class IpsTestRunner implements IIpsTestRunner {
 	 * {@inheritDoc}
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testsuite){
+        // check for dirty editors and wait for builders
+        if (!checkPrelauchConditions())
+            return;
+        
 		job = new TestRunnerJob(this, classpathRepository, testsuite);
 
         job.addJobChangeListener(new JobChangeAdapter() {

@@ -473,6 +473,18 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 			    Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 			    list.add(msg);
 			}
+            
+            // validate the minimum instances
+            ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
+            for (int i = 0; i < childParams.length; i++) {
+                if(getTestPolicyCmptRelations(childParams[i].getName()).length == 0){
+                    if (childParams[i].getMinInstances()>0){
+                      String text =  NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached, "" + childParams[i].getMinInstances(), childParams[i].getName()); //$NON-NLS-1$
+                      Message msg = new Message(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
+                      list.add(msg);
+                    }
+                }
+            }
 		}
         
 		// check if the product component exists

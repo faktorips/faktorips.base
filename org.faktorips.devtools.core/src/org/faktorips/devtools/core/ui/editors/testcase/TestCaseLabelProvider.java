@@ -46,7 +46,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
         } else if (element instanceof ITestPolicyCmpt) {
         	ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) element;
         	if (StringUtils.isNotEmpty(testPolicyCmpt.getProductCmpt())){
-        		return IpsObjectType.PRODUCT_CMPT_TYPE.getImage();
+        		return IpsObjectType.PRODUCT_CMPT.getImage();
         	} else {
         		return IpsObjectType.POLICY_CMPT_TYPE.getImage();
         	}

@@ -161,7 +161,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                Messages.TestCaseType_Error_MoreThanOneValueParamWithRoleAndName, TestParameterType.INPUT,
+                Messages.TestCaseType_Error_MoreThanOneValueParamWithTypeAndName, TestParameterType.INPUT,
                 inputTestValueParameter)));
     }
 
@@ -182,7 +182,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithRoleAndName,
+                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
                 TestParameterType.INPUT, inputTestPolicyCmptTypeParameter)));
     }
 
@@ -255,7 +255,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                Messages.TestCaseType_Error_MoreThanOneParamWithRoleAndName, TestParameterType.INPUT,
+                Messages.TestCaseType_Error_MoreThanOneParamWithTypeAndName, TestParameterType.INPUT,
                 expResultTestValueParameter)));
     }
 
@@ -276,7 +276,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         }
 
         throw new CoreException(new IpsStatus(NLS.bind(
-                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithRoleAndName,
+                Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
                 TestParameterType.INPUT, expResultTestPolicyCmptTypeParameter)));
     }
 
@@ -295,7 +295,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     /**
-     * Sets the role of the test parameter. The following roles could be set.
+     * Sets the type of the test parameter. The following types could be set.
      * <p><ul>
      * <li>INPUT: the test parameter specifies only test case input objects
      * <li>EXPECTED_RESULT: the test parameter specifies only test case expected result objects
@@ -366,18 +366,18 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     /*
-     * Returns the test parameters which matches the given role, is instance of the given 
+     * Returns the test parameters which matches the given type, is instance of the given 
      * class and matches the given name. The particular object aspect will only check if the particular field is not
      * <code>null</code>. For instance if all parameter are <code>null</code> then all
      * parameters are returned.
      */
-    private List getTestParameters(TestParameterType role, Class parameterClass, String name) {
+    private List getTestParameters(TestParameterType type, Class parameterClass, String name) {
         List result = new ArrayList(testParameters.size());
         for (Iterator iter = testParameters.iterator(); iter.hasNext();) {
             TestParameter parameter = (TestParameter)iter.next();
             boolean addParameter = true;
-            if (parameter.getTestParameterType() != null && role != null
-                    && ! TestParameterType.isRoleMatching(role, parameter.getTestParameterType())) {
+            if (parameter.getTestParameterType() != null && type != null
+                    && ! TestParameterType.isTypeMatching(type, parameter.getTestParameterType())) {
                 addParameter = false;
                 continue;
             }

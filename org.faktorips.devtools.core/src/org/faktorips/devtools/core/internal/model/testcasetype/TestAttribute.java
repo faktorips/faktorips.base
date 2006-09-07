@@ -199,8 +199,8 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
      * {@inheritDoc}
      */
     public void setTestAttributeType(TestParameterType type) {
-        // assert that the given role is an input or an expected result role,
-        // because attributes could have the role combined (input and expected result together)
+        // assert that the given type is an input or an expected result type,
+        // because attributes could have the type combined (input and expected result together)
         ArgumentCheck.isTrue(type.equals(TestParameterType.INPUT) || type.equals(TestParameterType.EXPECTED_RESULT));
         TestParameterType oldType = this.type;
         this.type = type;
@@ -221,9 +221,9 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
             messageList.add(msg);
         }
         
-        // check the correct role
+        // check the correct type
         if (! isInputAttribute() && ! isExpextedResultAttribute()){
-            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowed, type.getName(), name);
+            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowed, type.getName(), name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);
         }
@@ -231,7 +231,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         // check if the type of the attribute matches the type of the parent
         TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
         if (!TestParameterType.isChildTypeMatching(type, parentType)) {
-            String text = NLS.bind(Messages.TestAttribute_Error_RoleNotAllowedIfParent, type.getName(), parentType
+            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowedIfParent, type.getName(), parentType
                     .getName());
             Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                     PROPERTY_TEST_ATTRIBUTE_TYPE);

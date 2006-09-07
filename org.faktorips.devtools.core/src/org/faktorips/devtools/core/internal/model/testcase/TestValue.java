@@ -178,7 +178,7 @@ public class TestValue extends TestObject implements ITestValue {
             // validate the correct role of the test value parameter
             if (param.isCombinedParameter() || (!isInput() && !isExpectedResult())) {
                 String text = NLS.bind(Messages.TestValue_ErrorWrongRole, param.getName());
-                Message msg = new Message(ITestValueParameter.MSGCODE_WRONG_ROLE, text, Message.WARNING, this,
+                Message msg = new Message(ITestValueParameter.MSGCODE_WRONG_TYPE, text, Message.WARNING, this,
                         ITestValueParameter.PROPERTY_TEST_PARAMETER_TYPE);
                 list.add(msg);
             }

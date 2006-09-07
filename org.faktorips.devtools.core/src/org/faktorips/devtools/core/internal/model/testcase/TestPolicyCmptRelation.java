@@ -295,14 +295,14 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		}
 		
 		if (count < testCaseTypeParam.getMinInstances()){
-			String text =  NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached, "" + testCaseTypeParam.getMinInstances()); //$NON-NLS-1$
-			Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			String text =  NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached, "" + testCaseTypeParam.getMinInstances(), testPolicyCmptTypeParameter); //$NON-NLS-1$
+			Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
 			messageList.add(msg);
 		}
 		
 		if (count > testCaseTypeParam.getMaxInstances()){
-			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MaximumReached, "" + testCaseTypeParam.getMaxInstances());  //$NON-NLS-1$
-			Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MaximumReached, "" + testCaseTypeParam.getMaxInstances(), testPolicyCmptTypeParameter);  //$NON-NLS-1$
+			Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
 			messageList.add(msg);			
 		}
 		

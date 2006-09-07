@@ -38,16 +38,14 @@ public class Messages extends NLS {
     public static String TestPolicyCmptTypeParameter_ValidationError_PolicyCmptTypeNotExists;
     public static String TestPolicyCmptTypeParameter_ValidationError_MinGreaterThanMax;
     public static String TestPolicyCmptTypeParameter_ValidationError_MaxLessThanMin;
-    public static String TestPolicyCmptTypeParameter_ValidationError_RoleNotAllowed;
-    public static String TestValueParameter_ValidationError_RoleNotAllowed;
+    public static String TestPolicyCmptTypeParameter_ValidationError_TypeNotAllowed;
+    public static String TestValueParameter_ValidationError_TypeNotAllowed;
     public static String TestParameter_ValidationError_DuplicateName;
-    public static String TestCaseType_Error_MoreThanOneValueParamWithRoleAndName;
-    public static String TestCaseType_Error_MoreThanOnePolicyParamWithRoleAndName;
+    public static String TestCaseType_Error_MoreThanOneValueParamWithTypeAndName;
+    public static String TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName;
     public static String TestCaseType_Error_MoreThanOneParamWithName;
-    public static String TestCaseType_Error_MoreThanOneParamWithRoleAndName;
+    public static String TestCaseType_Error_MoreThanOneParamWithTypeAndName;
     public static String TestPolicyCmptTypeParameter_ValidationError_RelationNotExists;
     public static String TestPolicyCmptTypeParameter_ValidationError_TargetOfRelationNotExists;
     public static String TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForRelation;
-
-
 }

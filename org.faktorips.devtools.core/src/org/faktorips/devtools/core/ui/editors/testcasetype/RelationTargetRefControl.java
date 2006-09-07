@@ -26,7 +26,11 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 
-
+/**
+ * Control to select a specific target of relation.
+ * 
+ * @author Joerg Ortmann
+ */
 public class RelationTargetRefControl extends PcTypeRefControl {
     private IPolicyCmptType policyCmptTypeTarget;
     

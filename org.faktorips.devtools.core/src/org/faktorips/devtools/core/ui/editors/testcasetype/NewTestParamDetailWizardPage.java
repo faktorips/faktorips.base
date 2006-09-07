@@ -85,6 +85,12 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         controller.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
         controller.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
         controller.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
+        
+        // min and max are not editable for root parameters
+        if (testParameter.isRoot()){
+            editFieldMin.getControl().setEnabled(false);
+            editFieldMax.getControl().setEnabled(false);
+        }
     }
 
     /**
