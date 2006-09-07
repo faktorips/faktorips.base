@@ -51,8 +51,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         a.newRelation().setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
         c.newRelation().setTarget(b.getQualifiedName());
-        a.getIpsSrcFile().save(true, null);
-        c.getIpsSrcFile().save(true, null);
+        
+        IWorkspaceRunnable runnable = new IWorkspaceRunnable(){
+            public void run(IProgressMonitor monitor) throws CoreException {
+                a.getIpsSrcFile().save(true, null);
+                c.getIpsSrcFile().save(true, null);
+            }
+        };
+        ipsProject.getProject().getWorkspace().run(runnable, null);
         graph = new DependencyGraph(ipsProject);
     }
     
