@@ -206,7 +206,7 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         createExtensionFields(workArea, uiToolkit, IExtensionPropertyDefinition.POSITION_BOTTOM);
 	}
     
-	/**
+	/*
 	 * Create the product relevant property controls.
 	 */
 	private void createProdRelevantPropertiesFields(UIToolkit uiToolkit, Composite c) {
@@ -277,7 +277,7 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         addFocusListenerUpdateButtons(targetRolePluralProdRelevantField);
 	}
 	
-	/**
+	/*
 	 * Sets the enabled state of the product relevant property controls.
 	 */	
 	private void setProdRelevantEnabled(boolean isProdRelevantEnabled) {
