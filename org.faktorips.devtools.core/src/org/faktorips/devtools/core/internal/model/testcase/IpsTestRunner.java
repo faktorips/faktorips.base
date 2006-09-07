@@ -180,6 +180,24 @@ public class IpsTestRunner implements IIpsTestRunner {
         args[2] = testsuites;
         
         vmConfig.setProgramArguments(args);
+
+        // get the max heap size for the test runner, should be passed as
+        //  program argument "-ipstestrunner.xmx <size>" (e.g. "-ipstestrunner.xmx 512M")
+        String testRunnerMaxHeapSize = ""; //$NON-NLS-1$
+        String[] applicationArgs = Platform.getApplicationArgs();
+        // do not process the last one as it will never have a parameter
+        for (int i = 0; i < applicationArgs.length -1; i++) {
+            if ("-ipstestrunner.xmx".equalsIgnoreCase(applicationArgs[i])) { //$NON-NLS-1$
+                testRunnerMaxHeapSize = applicationArgs[i+1];
+                break;
+            }
+        }
+        if (testRunnerMaxHeapSize.length()>0)
+            testRunnerMaxHeapSize = "-Xmx" + testRunnerMaxHeapSize; //$NON-NLS-1$
+        
+        if (testRunnerMaxHeapSize.length()>0)
+            vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSize});
+        
         launch= new Launch(null, ILaunchManager.RUN_MODE, null);
         testStartTime = System.currentTimeMillis();
         vmRunner.run(vmConfig, launch, null);
@@ -208,7 +226,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                     || ! jobManager.isIdle();
 
             if (wait) {
-                Job job = new Job("Launching") {
+                Job job = new Job(Messages.IpsTestRunner_LaunchingWaitJob_Name) {
                     public IStatus run(final IProgressMonitor monitor) {
                         IJobChangeListener listener = new IJobChangeListener() {
                             public void sleeping(IJobChangeEvent event) {
@@ -242,11 +260,11 @@ public class IpsTestRunner implements IIpsTestRunner {
                 IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
                 IProgressService progressService = workbench.getProgressService();
                 job.setPriority(Job.INTERACTIVE);
-                job.setName("Launching");
+                job.setName(Messages.IpsTestRunner_LaunchingWaitJob_Name);
                 if (wait) {
                     progressService.showInDialog(workbench.getActiveWorkbenchWindow().getShell(), job);
                 }
-                // wait 1000ms to ensure that the builder has started
+                // if a save was performed, wait 1000ms to ensure that the builder has started
                 job.schedule(1000);
             }
         } catch (Exception e) {

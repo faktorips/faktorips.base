@@ -69,4 +69,5 @@ public class Messages extends NLS {
     public static String TestCase_Error_WrongInstanceTestPolicyCmpt;
     public static String TestAttributeValue_Error_WrongRole;
     public static String TestValue_ErrorWrongRole;
+    public static String IpsTestRunner_LaunchingWaitJob_Name;
 }
