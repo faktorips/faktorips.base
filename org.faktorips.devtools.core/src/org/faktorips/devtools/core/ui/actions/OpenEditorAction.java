@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import java.util.Iterator;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,6 +29,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**
@@ -45,15 +48,29 @@ public class OpenEditorAction extends IpsAction {
     }
     
     public void run(IStructuredSelection selection) {
-		IIpsSrcFile srcFile = getIpsSrcFileForSelection(selection);
-		if (srcFile != null) {
-			openEditorForFile(srcFile.getCorrespondingFile());
-		}else{
-			Object selectedObject= selection.getFirstElement();
-			if(selectedObject instanceof IFile){
-				openEditorForFile((IFile) selectedObject);
-			}
+		IIpsSrcFile[] srcFiles= getIpsSrcFilesForSelection(selection);
+        for (int i = 0; i < srcFiles.length; i++) {
+            openEditor(srcFiles[i]);
+        }
+        for (Iterator iter= selection.iterator(); iter.hasNext();) {
+            Object selected= iter.next();
+            if(selected instanceof IFile){
+                openEditorForFile((IFile) selected);
+            }
 		}
+    }
+
+    public static void openEditor(IIpsSrcFile srcFile){
+        if(srcFile==null){
+            return;
+        }
+        openEditorForFile(srcFile.getCorrespondingFile());
+    }
+    public static void openEditor(IIpsObject ipsObject){
+        if(ipsObject==null){
+            return;
+        }
+        openEditor(ipsObject.getIpsSrcFile());
     }
     
     public static void openEditorForFile(IFile fileToEdit){

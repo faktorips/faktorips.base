@@ -96,20 +96,30 @@ public abstract class IpsAction extends Action {
 
 	abstract public void run(IStructuredSelection selection);
 
-	/**
-	 * This method returns all <code>IIpsObject</code>s found in the given
-	 * selection. Returns an empty array if the selection is empty or
-	 * does not contain <code>IpsObject</code>s.
-	 */
-	protected IIpsObject[] getIpsObjectsForSelection(
-			IStructuredSelection selection) {
-		List ipsObjects = new ArrayList();
-		for (Iterator i = selection.iterator(); i.hasNext();) {
-			IIpsObject ipso = getIpsObjectForSelection(i.next());
-			ipsObjects.add(ipso);
-		}
-		return (IIpsObject[]) ipsObjects.toArray(new IIpsObject[0]);
-	}
+    /**
+     * This method returns all <code>IIpsObject</code>s found in the given
+     * selection. Returns an empty array if the selection is empty or
+     * does not contain <code>IpsObject</code>s.
+     */
+    protected IIpsObject[] getIpsObjectsForSelection(IStructuredSelection selection) {
+        List ipsObjects = new ArrayList();
+        for (Iterator i = selection.iterator(); i.hasNext();) {
+            ipsObjects.add(getIpsObjectForSelection(i.next()));
+        }
+        return (IIpsObject[]) ipsObjects.toArray(new IIpsObject[ipsObjects.size()]);
+    }
+    /**
+     * Returns all <code>IIpsSrcFile</code>s found in the given
+     * selection. Returns an empty array if the selection is empty or
+     * does not contain <code>IIpsSrcFiles</code>s.
+     */
+    protected IIpsSrcFile[] getIpsSrcFilesForSelection(IStructuredSelection selection) {
+        List ipsSrcFiles = new ArrayList();
+        for (Iterator i = selection.iterator(); i.hasNext();) {
+            ipsSrcFiles.add(getIpsSrcFileForSelection(i.next()));
+        }
+        return (IIpsSrcFile[]) ipsSrcFiles.toArray(new IIpsSrcFile[ipsSrcFiles.size()]);
+    }
 
 	/**
 	 * This method returns an <code>IIpsObject</code> for the first element of
@@ -195,6 +205,28 @@ public abstract class IpsAction extends Action {
 		return null;
 	}
 
+    /**
+     * Returns the <code>IIpsSrcFile</code> for the given Object. 
+     * If the given object is an <code>IIpsSrcFile</code> it is
+     * returned. If the given object is an <code>IIpsObject</code>, the
+     * corresponding <code>IIpsSrcFile</code> is returned.
+     * <p>
+     * Returns <code>null</code> if the selection is empty or does not contain
+     * the expected types.
+     * @see IpsAction#getIpsObjectForSelection(IStructuredSelection)
+     */
+    private IIpsSrcFile getIpsSrcFileForSelection(Object selected) {
+        if(selected instanceof IIpsSrcFile){
+            // avoid reading IpsSrcFile in getIpsObjectForSelection()
+            return (IIpsSrcFile) selected;
+        }
+        IIpsObject ipsObject = getIpsObjectForSelection(selected);
+        if (ipsObject != null) {
+            return ipsObject.getIpsSrcFile();
+        }
+        return null;
+    }
+    
 	/**
 	 * This method returns the <code>IIpsSrcFile</code> for the given
 	 * selection. The first element of the <code>StructuredSelection</code> is
@@ -206,18 +238,9 @@ public abstract class IpsAction extends Action {
 	 * the expected types.
 	 * @see IpsAction#getIpsObjectForSelection(IStructuredSelection)
 	 */
-	protected IIpsSrcFile getIpsSrcFileForSelection(
-			IStructuredSelection selection) {
+	protected IIpsSrcFile getIpsSrcFileForSelection(IStructuredSelection selection) {
 		Object selected= selection.getFirstElement();
-		if(selected instanceof IIpsSrcFile){
-			// avoid reading IpsSrcFile in getIpsObjectForSelection()
-			return (IIpsSrcFile) selected;
-		}
-		IIpsObject ipsObject = getIpsObjectForSelection(selected);
-		if (ipsObject != null) {
-			return ipsObject.getIpsSrcFile();
-		}
-		return null;
+        return getIpsSrcFileForSelection(selected);
 	}
 
 	/**

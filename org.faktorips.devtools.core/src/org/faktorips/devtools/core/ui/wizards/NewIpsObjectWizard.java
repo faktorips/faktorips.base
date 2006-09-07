@@ -80,7 +80,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
             IIpsSrcFile srcFile = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
             finishIpsObject(srcFile.getIpsObject());
             srcFile.save(true, null);
-            OpenEditorAction.openEditorForFile(srcFile.getCorrespondingFile());
+            OpenEditorAction.openEditor(srcFile);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

@@ -17,7 +17,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -91,7 +90,7 @@ public class GeneralInfoSection extends IpsSection {
 	            try {
 	                IPolicyCmptType supertype = (IPolicyCmptType)supertypeField.getIpsObject(pcType.getIpsProject(), IpsObjectType.POLICY_CMPT_TYPE);
 	                if (supertype!=null) {
-	                	OpenEditorAction.openEditorForFile((IFile) supertype.getCorrespondingResource());
+                        OpenEditorAction.openEditor(supertype);
 	                }
 	            } catch (Exception e) {
 	                IpsPlugin.logAndShowErrorDialog(e);
