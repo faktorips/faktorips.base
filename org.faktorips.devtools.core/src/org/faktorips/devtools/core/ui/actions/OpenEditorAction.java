@@ -22,11 +22,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.IDE;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 
 /**
@@ -45,42 +41,16 @@ public class OpenEditorAction extends IpsAction {
     }
     
     public void run(IStructuredSelection selection) {
+        // ignores IFiles even if the underlying object is an IpsSrcFile
 		IIpsSrcFile[] srcFiles= getIpsSrcFilesForSelection(selection);
         for (int i = 0; i < srcFiles.length; i++) {
-            openEditor(srcFiles[i]);
+            IpsPlugin.getDefault().openEditor(srcFiles[i]);
         }
         for (Iterator iter= selection.iterator(); iter.hasNext();) {
             Object selected= iter.next();
             if(selected instanceof IFile){
-                openEditorForFile((IFile) selected);
+                IpsPlugin.getDefault().openEditor((IFile) selected);
             }
 		}
     }
-
-    public static void openEditor(IIpsSrcFile srcFile){
-        if(srcFile==null){
-            return;
-        }
-        openEditorForFile(srcFile.getCorrespondingFile());
-    }
-    public static void openEditor(IIpsObject ipsObject){
-        if(ipsObject==null){
-            return;
-        }
-        openEditor(ipsObject.getIpsSrcFile());
-    }
-    
-    public static void openEditorForFile(IFile fileToEdit){
-        if(fileToEdit==null){
-        	return;
-        }
-    	try {
-	        IWorkbench workbench= IpsPlugin.getDefault().getWorkbench();
-	        IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
-        } catch (PartInitException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-		}
-    }
-    
-    
 }

@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 
 
 /**
@@ -80,7 +79,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewWizard {
             IIpsSrcFile srcFile = pack.createIpsFile(ipsObjectType, objectPage.getIpsObjectName(), true, null);
             finishIpsObject(srcFile.getIpsObject());
             srcFile.save(true, null);
-            OpenEditorAction.openEditor(srcFile);
+            IpsPlugin.getDefault().openEditor(srcFile);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

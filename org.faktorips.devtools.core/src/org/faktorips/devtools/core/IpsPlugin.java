@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -37,12 +38,17 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsModelManager;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
@@ -441,4 +447,44 @@ public class IpsPlugin extends AbstractUIPlugin {
 
 		}
 	}
+    
+	/**
+     * Opens an editor for the IpsObject contained in the given IpsSrcFile.  
+     * @param srcFile
+	 */
+    public void openEditor(IIpsSrcFile srcFile){
+        if(srcFile==null){
+            return;
+        }
+        openEditor(srcFile.getCorrespondingFile());
+    }
+    /**
+     * Opens the given IpsObject in its editor.  
+     * @param srcFile
+     */
+    public void openEditor(IIpsObject ipsObject){
+        if(ipsObject==null){
+            return;
+        }
+        openEditor(ipsObject.getIpsSrcFile());
+    }
+    /**
+     * Opens the file referenced by the given IFile in an editor. The type of editor to be opened
+     * is derived from the file-extension using the editor-registry. If no entry is existent, 
+     * the workbench guesses the filetype by looking at the file's content and opens the corresponding
+     * editor.
+     * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
+     * @param fileToEdit
+     */
+    public void openEditor(IFile fileToEdit){
+        if(fileToEdit==null){
+            return;
+        }
+        try {
+            IWorkbench workbench= IpsPlugin.getDefault().getWorkbench();
+            IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
+        } catch (PartInitException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
 }
