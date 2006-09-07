@@ -37,20 +37,11 @@ public class Messages extends NLS {
 	public static String TestCaseEditor_Title_Failure;
 	public static String TestCaseEditor_Title_Error;
 	public static String TestCaseEditor_Title_Success;
-	public static String TestCaseEditor_Input_Title;
-	public static String TestCaseEditor_ExpectedResult_Title;
-	public static String TestCaseEditor_Input_SectionTitle;
-	public static String TestCaseEditor_Input_Description;
-	public static String TestCaseEditor_Combined_Title;
 	public static String TestCaseEditor_Combined_SectionTitle;
 	public static String TestCaseEditor_Combined_Description;
-	public static String TestCaseEditor_ExpectedResult_SectionTitle;
-	public static String TestCaseEditor_ExpectedResult_Description;
-	public static String TestCaseLabelProvider_undefined;
 	public static String TestCaseSection_ButtonAdd;
 	public static String TestCaseSection_ButtonRemove;
 	public static String TestCaseSection_ButtonProductCmpt;
-	public static String TestCaseDetailArea_SectionValuesText;
 	public static String TestCaseSection_Error_CreatingRelation;
 	public static String TestCaseSection_DialogSelectProductCmpt_Title;
 	public static String TestCaseSection_DialogSelectProductCmpt_Description;
@@ -60,7 +51,6 @@ public class Messages extends NLS {
 	public static String TestPolicyCmptSelectionDialog_Error_NoTestPolicyCmptFound;
 	public static String TestPolicyCmptSelectionDialog_Description;
 	public static String TestPolicyCmptSelectionDialog_Error_WrongType;
-	
 	public static String TestCaseSection_FailureFormat_FailureIn;
 	public static String TestCaseSection_FailureFormat_Actual;
 	public static String TestCaseSection_FailureFormat_Expected;
@@ -73,9 +63,9 @@ public class Messages extends NLS {
     public static String TestCaseSection_FilterExpected_ToolTip;
     public static String TestCaseSection_FilterCombined;
     public static String TestCaseSection_FilterCombined_ToolTip;
-    public static String TestCaseSection_Dialog_SaveBeforeStartTest;
-    public static String TestCaseSection_Dialog_SaveBeforeStartTest_Title;
-    public static String TestCaseSection_ToolBar_WithoutRelation;
     public static String TestCaseSection_ToolBar_FlatStructure;
     public static String TestCaseSection_ToolBar_RunTest;
+    public static String TestCaseSection_ToolBar_WithoutRelation;
+    public static String TestCaseEditor_Combined_Title;
+    public static String TestCaseLabelProvider_undefined;
 }

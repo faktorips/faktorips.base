@@ -489,18 +489,18 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     /*
-     * Returns the test objects which matches the given role, is instance of the given class and
+     * Returns the test objects which matches the given type, is instance of the given class and
      * matches the given name. The particular object aspect will only check if the particular field
      * is not <code>null</code>. For instance if all parameter are <code>null</code> then all
      * parameters are returned.
      */
-    private List getTestObjects(TestParameterType role, Class parameterClass, String name) {
+    private List getTestObjects(TestParameterType type, Class parameterClass, String name) {
         List result = new ArrayList(testObjects.size());
         for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
             TestObject testObject = (TestObject)iter.next();
             boolean addParameter = true;
             
-            if (role != null && ! isRoleOrDefault(testObject.getTestParameterName(), role, TestObject.DEFAULT_ROLE)){
+            if (type != null && ! isTypeOrDefault(testObject.getTestParameterName(), type, TestObject.DEFAULT_TYPE)){
                 addParameter = false;
                 continue;
             }
@@ -520,23 +520,23 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     /**
-     * Returns <code>true</code> if the given role is the role of the corresponding test
+     * Returns <code>true</code> if the given type is the type of the corresponding test
      * parameter. If the test parameter couldn't determined return <code>true</code> if the given
-     * role is the default role otherwise <code>false</code>.<br>
+     * type is the default type otherwise <code>false</code>.<br>
      * Return <code>false</code> if an error occurs.<br>
      * (Packageprivate helper method.)
      */
-    boolean isRoleOrDefault(String testParameterName, TestParameterType role, TestParameterType defaultRole) {
+    boolean isTypeOrDefault(String testParameterName, TestParameterType type, TestParameterType defaultType) {
             try {
                 ITestCaseType testCaseType = findTestCaseType();
                 if (testCaseType == null)
-                    return role.equals(defaultRole);
+                    return type.equals(defaultType);
 
                 ITestParameter testParameter = testCaseType.getTestParameterByName(testParameterName);
                 if (testParameter == null)
-                    return role.equals(defaultRole);
+                    return type.equals(defaultType);
 
-                return isRoleOrDefault(testParameter, role, defaultRole);
+                return isTypeOrDefault(testParameter, type, defaultType);
             } catch (Exception e) {
                 // ignore exceptions
             }
@@ -544,21 +544,21 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     /**
-     * Returns <code>true</code> if the given role is the role of the corresponding test
+     * Returns <code>true</code> if the given type is the type of the corresponding test
      * parameter.<br>
      * Return <code>false</code> if an error occurs.<br>
      * (Packageprivate helper method.)
      */
-    boolean isRoleOrDefault(ITestParameter testParameter, TestParameterType role, TestParameterType defaultRole) {
+    boolean isTypeOrDefault(ITestParameter testParameter, TestParameterType type, TestParameterType defaultType) {
         try {
-            // compare the paramters role and return if the role matches the given role
-            if (testParameter.isInputParameter() && role.equals(TestParameterType.INPUT)) {
+            // compare the paramters type and return if the type matches the given type
+            if (testParameter.isInputParameter() && type.equals(TestParameterType.INPUT)) {
                 return true;
             }
-            if (testParameter.isExpextedResultParameter() && role.equals(TestParameterType.EXPECTED_RESULT)) {
+            if (testParameter.isExpextedResultParameter() && type.equals(TestParameterType.EXPECTED_RESULT)) {
                 return true;
             }
-            if (testParameter.isCombinedParameter() && role.equals(TestParameterType.COMBINED)) {
+            if (testParameter.isCombinedParameter() && type.equals(TestParameterType.COMBINED)) {
                 return true;
             }
         } catch (Exception e) {

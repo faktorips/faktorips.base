@@ -46,9 +46,9 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestAttributeValue  extends IpsObjectPart implements ITestAttributeValue {
-    /* Specifies the default role, will be used if the corresponding test case type parameter 
+    /* Specifies the default type, will be used if the corresponding test case type parameter 
      * is not specified or not found */
-    private static TestParameterType DEFAULT_ROLE = TestParameterType.COMBINED;
+    private static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
     
 	/* Tags */
 	static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
@@ -173,40 +173,40 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
      * {@inheritDoc}
      */
 	public boolean isExpextedResultAttribute() {
-        return (isRoleOrDefault(TestParameterType.EXPECTED_RESULT, DEFAULT_ROLE));
+        return (isTypeOrDefault(TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE));
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isInputAttribute() {
-        return (isRoleOrDefault(TestParameterType.INPUT, DEFAULT_ROLE));
+        return (isTypeOrDefault(TestParameterType.INPUT, DEFAULT_TYPE));
     }
     
     /**
-     * Returns <code>true</code> if the given role is the role of the corresponding test
+     * Returns <code>true</code> if the given type is the type of the corresponding test
      * attribute. If the test attribute couldn't determined return <code>true</code> if the given
-     * role is the default role otherwise <code>false</code>.<br>
+     * type is the default type otherwise <code>false</code>.<br>
      * Return <code>false</code> if an error occurs.<br>
      */
-    private boolean isRoleOrDefault(TestParameterType role, TestParameterType defaultRole) {
+    private boolean isTypeOrDefault(TestParameterType type, TestParameterType defaultType) {
         try {
             TestObject parent = (TestObject) getParent(); 
             ITestCase testCase = (TestCase) parent.getRoot().getParent();
             
             ITestCaseType testCaseType = testCase.findTestCaseType();
             if (testCaseType == null)
-                return role.equals(defaultRole);
+                return type.equals(defaultType);
 
             ITestAttribute testAttribute = findTestAttribute();
             if (testAttribute == null)
-                return role.equals(defaultRole);
+                return type.equals(defaultType);
 
-            // compare the paramters role and return if the role matches the given role
-            if (testAttribute.isInputAttribute() && role.equals(TestParameterType.INPUT)) {
+            // compare the paramters type and return if the type matches the given type
+            if (testAttribute.isInputAttribute() && type.equals(TestParameterType.INPUT)) {
                 return true;
             }
-            if (testAttribute.isExpextedResultAttribute() && role.equals(TestParameterType.EXPECTED_RESULT)) {
+            if (testAttribute.isExpextedResultAttribute() && type.equals(TestParameterType.EXPECTED_RESULT)) {
                 return true;
             }
         } catch (Exception e) {
@@ -236,9 +236,9 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
             } else {
                 ValidationUtils.checkValue(attribute.getDatatype(), value, this, PROPERTY_VALUE, messageList);
             }
-            // check the correct role
+            // check the correct type
             if (! testAttr.isInputAttribute() && ! testAttr.isExpextedResultAttribute()){
-                String text = NLS.bind(Messages.TestAttributeValue_Error_WrongRole, testAttr.getName());
+                String text = NLS.bind(Messages.TestAttributeValue_Error_WrongType, testAttr.getName());
                 Message msg = new Message(ITestAttribute.MSGCODE_WRONG_TYPE, text, Message.WARNING, this, PROPERTY_VALUE);
                 messageList.add(msg);
             }        

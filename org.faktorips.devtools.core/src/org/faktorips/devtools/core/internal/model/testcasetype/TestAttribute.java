@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.testcase.Messages;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -216,7 +215,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         // check if the attribute exists
         IAttribute modelAttribute = findAttribute();
         if (modelAttribute == null){
-            String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, getAttribute());
+            String text = NLS.bind(Messages.TestAttribute_Error_AttributeNotFound, getAttribute());
             Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, ITestAttribute.PROPERTY_ATTRIBUTE);
             messageList.add(msg);
         }

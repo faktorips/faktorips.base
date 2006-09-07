@@ -38,13 +38,8 @@ public class Messages extends NLS {
 	public static String IpsTestRunner_Job_Name;
 	public static String TestAttributeValue_ValidateError_TestAttributeNotFound;
 	public static String TestAttributeValue_ValidateError_AttributeNotFound;
-	public static String TestAttributeValue_ValidateError_DatatypeNotFound;
-	public static String TestAttributeValue_ValidateError_ValueIsNoDatatype;
-	public static String TestCase_Error_TestCaseTypeNotFound;
 	public static String TestCase_Error_NoRelationOrPolicyCmptGiven;
 	public static String TestCase_Error_TestPolicyCmptNotFound;
-	public static String TestCase_Error_SearchingRelationTarget;
-	public static String TestCase_Error_RelationNotFound;
 	public static String TestCase_ValidateError_TestCaseTypeNotFound;
 	public static String TestPolicyCmpt_Error_RelationNotFound;
 	public static String TestPolicyCmpt_ValidationError_TestCaseTypeNotFound;
@@ -61,13 +56,11 @@ public class Messages extends NLS {
     public static String IpsTestRunner_Error_WrongTestProtocol;
     public static String TestPolicyCmpt_ValidationWarning_PolicyCmptNotExists;
     public static String TestPolicyCmpt_ValidationWarning_ProductComponentNotExists;
-    public static String TestAttribute_Error_TypeNotAllowed;
-    public static String TestAttribute_Error_TypeNotAllowedIfParent;
-    public static String TestAttribute_Error_DuplicateName;
     public static String TestCase_Error_WrongInstanceParam;
     public static String TestCase_Error_MoreThanOneObject;
     public static String TestCase_Error_WrongInstanceTestPolicyCmpt;
-    public static String TestAttributeValue_Error_WrongRole;
-    public static String TestValue_ErrorWrongRole;
+    public static String TestAttributeValue_Error_WrongType;
+    public static String TestValue_ErrorWrongType;
     public static String IpsTestRunner_LaunchingWaitJob_Name;
+    public static String TestCase_Error_TestCaseTypeNotFound;
 }

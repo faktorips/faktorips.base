@@ -132,7 +132,11 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
 
         newTestParameter.setRelation(relation);
         newTestParameter.setName(relation);
-
+        // set the same role like the parent
+        ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter)newTestParameter.getParent();
+        if (parent != null)
+            newTestParameter.setTestParameterType(parent.getTestParameterType());
+        
         controller = new IpsPartUIController((IIpsObjectPart)newTestParameter);
         childParamSelectWizardPage.connectToModel(controller, newTestParameter);
         detailWizardPage.connectToModel(controller, newTestParameter);

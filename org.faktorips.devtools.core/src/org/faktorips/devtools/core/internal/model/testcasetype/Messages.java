@@ -48,4 +48,9 @@ public class Messages extends NLS {
     public static String TestPolicyCmptTypeParameter_ValidationError_RelationNotExists;
     public static String TestPolicyCmptTypeParameter_ValidationError_TargetOfRelationNotExists;
     public static String TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForRelation;
+    
+    public static String TestAttribute_Error_TypeNotAllowed;
+    public static String TestAttribute_Error_TypeNotAllowedIfParent;
+    public static String TestAttribute_Error_AttributeNotFound;
+    public static String TestAttribute_Error_DuplicateName;
 }

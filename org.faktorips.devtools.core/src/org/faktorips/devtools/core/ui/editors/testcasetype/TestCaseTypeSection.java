@@ -65,6 +65,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
@@ -1381,8 +1382,25 @@ public class TestCaseTypeSection extends IpsSection {
         if (testParameter != null)
             testParameter.delete();
         
-        currSelectedDetailObject = getSelectedTestParameterInTree();
+        currSelectedDetailObject = (IIpsObjectPart) (testParameter.isRoot()?null:testParameter.getParent());
+        if (currSelectedDetailObject == null){
+            // try to obtain the previous tree item and if extist use this item as new sel object after delete
+            TreeItem[] selection = treeViewer.getTree().getSelection();
+            TreeItem[] childs = treeViewer.getTree().getItems();
+            TreeItem prevTreeItem = null;
+            for (int i = 0; i < childs.length; i++) {
+                if (childs[i].equals(selection[0]))
+                    break;
+                prevTreeItem = childs[i];
+            }
+            if (prevTreeItem != null)
+                currSelectedDetailObject = (ITestParameter) prevTreeItem.getData();
+        }
         refreshTreeAndDetails(getRootSectionObject(currSelectedDetailObject));
+        
+        // redraw details for the new selected object
+        currSelectedDetailObject = getSelectedTestParameterInTree();
+        createDetailsArea((ITestParameter)currSelectedDetailObject);
     }
 
     /*

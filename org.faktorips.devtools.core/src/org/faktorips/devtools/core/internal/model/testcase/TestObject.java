@@ -34,9 +34,9 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public abstract class TestObject extends IpsObjectPart implements ITestObject {
-    /* Specifies the default role, will be used if the corresponding test case type parameter 
+    /* Specifies the default type, will be used if the corresponding test case type parameter 
      * is not specified or not found */
-    public static TestParameterType DEFAULT_ROLE = TestParameterType.COMBINED;
+    public static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
 
     private boolean deleted = false;
 
@@ -77,12 +77,12 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
             
             if (param != null)
-                return testCase.isRoleOrDefault(param, TestParameterType.INPUT, DEFAULT_ROLE);
+                return testCase.isTypeOrDefault(param, TestParameterType.INPUT, DEFAULT_TYPE);
         } catch (Exception e) {
-            // ignore exception check role of root
+            // ignore exception check type of root
         }
-        return testCase.isRoleOrDefault(root.getTestParameterName(), 
-                TestParameterType.INPUT, DEFAULT_ROLE);
+        return testCase.isTypeOrDefault(root.getTestParameterName(), 
+                TestParameterType.INPUT, DEFAULT_TYPE);
     }
 
     /**
@@ -99,12 +99,12 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
             
             if (param != null)
-                return testCase.isRoleOrDefault(param, TestParameterType.EXPECTED_RESULT, DEFAULT_ROLE);
+                return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
         } catch (Exception e) {
-            // ignore exception check role of root
+            // ignore exception check type of root
         }
-        return testCase.isRoleOrDefault(root.getTestParameterName(), 
-                TestParameterType.EXPECTED_RESULT, DEFAULT_ROLE);
+        return testCase.isTypeOrDefault(root.getTestParameterName(), 
+                TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE);
     }
 
     /**
@@ -121,12 +121,12 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
             
             if (param != null)
-                return testCase.isRoleOrDefault(param, TestParameterType.COMBINED, DEFAULT_ROLE);
+                return testCase.isTypeOrDefault(param, TestParameterType.COMBINED, DEFAULT_TYPE);
         } catch (Exception e) {
-            // ignore exception check role of root
+            // ignore exception check type of root
         }
-        return testCase.isRoleOrDefault(root.getTestParameterName(), 
-                TestParameterType.COMBINED, DEFAULT_ROLE);
+        return testCase.isTypeOrDefault(root.getTestParameterName(), 
+                TestParameterType.COMBINED, DEFAULT_TYPE);
         
     }
 
