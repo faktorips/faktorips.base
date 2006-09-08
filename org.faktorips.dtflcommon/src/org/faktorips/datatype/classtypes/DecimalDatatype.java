@@ -76,17 +76,8 @@ public class DecimalDatatype extends ValueClassDatatype implements NumericDataty
         if (dividend == null || divisor == null) {
             throw new NullPointerException("dividend and divisor both can not be null.");
         }
-        Decimal a = (Decimal)getValue(dividend);
-        Decimal b = (Decimal)getValue(divisor);
-        
-        if (a == null) {
-            throw new NumberFormatException("The dividend '" + dividend + "' can not be parsed to a Double");
-        }
-        
-        if (b == null) {
-            throw new NumberFormatException("The divisor '" + divisor + "' can not be parsed to a Double");
-        }
-
+        Decimal a = Decimal.valueOf(dividend);
+        Decimal b = Decimal.valueOf(divisor);
         try {
             a.divide(b, 0, BigDecimal.ROUND_UNNECESSARY);
         }
