@@ -957,6 +957,9 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     public void generateFieldConstantForProperty(IAttribute a, Datatype datatype, JavaCodeFragmentBuilder membersBuilder){
+        if(a.getOverwrites()){
+            return;
+        }
         appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", a.getName(), a, membersBuilder);
         membersBuilder.append("public final static ");
         membersBuilder.appendClassName(String.class);
