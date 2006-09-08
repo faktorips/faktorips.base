@@ -372,29 +372,30 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
     
     private NumericDatatype getAndValidateNumericDatatype(ValueDatatype datatype, MessageList list) {
-        if (!(datatype instanceof NumericDatatype)) {
-            IAttribute attr = null;
-            if (getParent() instanceof IConfigElement) {
-            	try {
-					attr = ((IConfigElement)getParent()).findPcTypeAttribute();
-				} catch (CoreException e) {
-					IpsPlugin.log(e);
-				}
-            }
-            else if (getParent() instanceof IAttribute) {
-            	attr = (IAttribute)getParent();
-            }
+    	if (datatype instanceof NumericDatatype) {
+    		return (NumericDatatype)datatype;
+    	}
+    	if (list==null) {
+    		return null; // wg. null handling in containsValueSet() // flyspray #439
+    	}
+        IAttribute attr = null;
+        if (getParent() instanceof IConfigElement) {
+        	try {
+				attr = ((IConfigElement)getParent()).findPcTypeAttribute();
+			} catch (CoreException e) {
+				IpsPlugin.log(e);
+			}
+        }
+        else if (getParent() instanceof IAttribute) {
+        	attr = (IAttribute)getParent();
+        }
 
-            String text = Messages.RangeValueSet_msgDatatypeNotNumeric;
-        	
-            Object obj = attr==null?(Object)this:attr;
-        	list.add(new Message(MSGCODE_NOT_NUMERIC_DATATYPE, text, Message.ERROR, obj, IAttribute.PROPERTY_DATATYPE));
-        	
-        	return null;
-        }
-        else {
-        	return (NumericDatatype)datatype;
-        }
+        String text = Messages.RangeValueSet_msgDatatypeNotNumeric;
+    	
+        Object obj = attr==null?(Object)this:attr;
+    	list.add(new Message(MSGCODE_NOT_NUMERIC_DATATYPE, text, Message.ERROR, obj, IAttribute.PROPERTY_DATATYPE));
+    	
+    	return null;
     }
 
     private void validateParsable(ValueDatatype datatype, String value, MessageList list, Object invalidObject, String property) {
