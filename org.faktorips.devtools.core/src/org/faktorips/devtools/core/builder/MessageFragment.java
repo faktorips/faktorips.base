@@ -26,8 +26,8 @@ import org.faktorips.codegen.JavaCodeFragment;
 
 /**
  * A class that represents a text of a validation message. The original text string might contain parameters. A
- * parameter is indicated with <code>[]</code> within the string. A MessageFragment instance is a disassembled 
- * representation of the message string. In contains a JavaCodeFragment for the message. The parameters are
+ * parameter is indicated with <code>{}</code> within the string. A MessageFragment instance is a disassembled 
+ * representation of the message string. It contains a JavaCodeFragment for the message. The parameters are
  * part of the code represented by the code fragment. The names, the types and the values of the parameters can be
  * requested from this MessageFragment. 
  *  
@@ -35,7 +35,19 @@ import org.faktorips.codegen.JavaCodeFragment;
  */
 public class MessageFragment{
 	
-	
+    /**
+     * A parameter name type constant used for the creation of a MessageFragment to indicate that default parameter names
+     * are used within the JavaCodeFragment to represent the parameters. A default parameter name consists of
+     * the parts <i>param</i> followed by an integer number e.g. param0
+     */
+	public final static int DEFAULT_PARAMETER_NAMES = 0;
+    
+    /**
+     * A parameter name type constant used for the creation of a MessageFragment to indicate that the parameter values
+     * are used within the JavaCodeFragment to represent the parameters.
+     */
+    public final static int VALUES_AS_PARAMETER_NAMES = 1;
+    
 	private JavaCodeFragment frag;
 	private String[] parameterNames;
 	private String[] parameterValues;
@@ -75,6 +87,13 @@ public class MessageFragment{
 		return parameterNames.length;
 	}
 	
+    /**
+     * Returns true if this message fragment contains any parameters.
+     */
+    public boolean hasParameters(){
+        return parameterNames.length > 0;
+    }
+    
 	/**
 	 * Returns the qualified java names for the classes of the parametes.
 	 */
@@ -101,16 +120,23 @@ public class MessageFragment{
 	}
 
 	/**
-	 * Tries to convert the parameter at the indexed position into an integer and returns it. If the
+	 * Tries to convert the parameter value at the indexed position into an integer and returns it. If the
 	 * conversion is not successful -1 is returned.
 	 * 
 	 * @throws ArrayIndexOutOfBoundsException if the provided index is out of the range of the parameter
 	 * 		   array hold by this message fragment.
 	 */
     public int considerParameterAsIndex(int index){
+        return considerParameterAsIndex(parameterValues[index]);
+    }
+    
+    private static int considerParameterAsIndex(String parameter){
         try{
-            Integer value = Integer.valueOf(parameterValues[index]);
-            return value.intValue();
+            int value = Integer.valueOf(parameter).intValue();
+            if(value < 0){
+                return -1;
+            }
+            return value;
         }
         catch(NumberFormatException e){
             return -1;
@@ -118,9 +144,28 @@ public class MessageFragment{
     }
 
     /**
-     * Creates a MessageFragment from the provided message string.
+     * Creates a MessageFragment from the provided message string with default parameter names.
      */
-	public final static MessageFragment createMessageFragment(String messageText){
+    public final static MessageFragment createMessageFragment(String messageText){
+        return createMessageFragment(messageText, DEFAULT_PARAMETER_NAMES);
+    }
+    
+    /**
+     * Creates a MessageFragment from the provided message string.
+     * 
+     * @param messageText the original message text containing parameters marked by braces
+     * @param parameterNameType the type of parameter name contained in the JavaCodeFragment for
+     *          the parameters extracted in the original message. Two kinds of parameter names are
+     *          available expressed by the two avaiable constants.
+     * @throws IllegalArgumentException if the value of the parameter parameterNameType is different
+     *          from one of the constant values.  
+     */
+	public final static MessageFragment createMessageFragment(String messageText, int parameterNameType){
+        
+        if(parameterNameType != DEFAULT_PARAMETER_NAMES && parameterNameType != VALUES_AS_PARAMETER_NAMES){
+            throw new IllegalArgumentException("The value of the parameter parameterNameType must be one of the constant values" +
+                    "DEFAULT_PARAMETER_NAMES, VALUES_AS_PARAMETER_NAMES");
+        }
 		
 		messageText = StringUtils.escape(messageText);
 		Pattern p = Pattern.compile("\\{[^\\}]*\\}"); //$NON-NLS-1$
@@ -140,12 +185,25 @@ public class MessageFragment{
 			frag.append(messageText.subSequence(beginIndex, m.start()).toString());
 			frag.appendln("\");"); //$NON-NLS-1$
 			frag.append("text.append("); //$NON-NLS-1$
-			String paraName = "param" + numberOfParams++; //$NON-NLS-1$
+            String pValue = messageText.subSequence(m.start() + 1, m.end() - 1).toString();
+            paraValues.add(pValue);
+            beginIndex = m.end();
+            String paraName = null;
+            if(parameterNameType == VALUES_AS_PARAMETER_NAMES){
+                int parameterAsIndex = considerParameterAsIndex(pValue);
+                if(parameterAsIndex != -1){
+                    paraName = "p" + String.valueOf(parameterAsIndex);
+                }
+                else{
+                    paraName = pValue;
+                }
+            }
+            else if(parameterNameType == DEFAULT_PARAMETER_NAMES){
+                paraName = "param" + numberOfParams++; //$NON-NLS-1$    
+            }
+            paraNames.add(paraName);
 			frag.append(paraName);
 			frag.appendln(");"); //$NON-NLS-1$
-			paraNames.add(paraName);
-			paraValues.add(messageText.subSequence(m.start() + 1, m.end() - 1).toString());
-		    beginIndex = m.end();
 		}
 		if(beginIndex < messageText.length()){
 			frag.append("text.append(\""); //$NON-NLS-1$
