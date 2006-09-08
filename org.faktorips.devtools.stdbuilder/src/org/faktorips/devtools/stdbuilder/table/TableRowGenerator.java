@@ -66,7 +66,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
 
     public String generate(IIpsSrcFile ipsSrcFile) throws CoreException
   {
-    StringBuffer stringBuffer = new StringBuffer();
+    final StringBuffer stringBuffer = new StringBuffer();
     stringBuffer.append(TEXT_1);
     stringBuffer.append(getJavaSourceFileBuilder().getPackage(ipsSrcFile));
     stringBuffer.append(TEXT_2);

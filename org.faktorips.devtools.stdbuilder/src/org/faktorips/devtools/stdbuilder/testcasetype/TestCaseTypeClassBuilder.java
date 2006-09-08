@@ -132,7 +132,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         
-        codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(), IpsTestCase2.class.getName() , new String[0]);
+        codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(), getSuperClassName() , new String[0]);
         buildMemberVariables(codeBuilder, testCaseType);
         buildConstructor(codeBuilder);
         buildMethodGetRepository(codeBuilder);
@@ -141,6 +141,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.classEnd();
         
         return codeBuilder.getFragment();
+    }
+    
+    protected String getSuperClassName(){
+        return IpsTestCase2.class.getName();
     }
 
     //
@@ -232,7 +236,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /*
      * Returns the qualified name of the policy component where the given test policy component type parameter points to.
      */
-    private String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter testPolicyTypeParam) throws CoreException{
+    protected String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter testPolicyTypeParam) throws CoreException{
         IPolicyCmptType policyCmptType = testPolicyTypeParam.findPolicyCmptType();
         if ( policyCmptType== null){
         	throw new CoreException(
@@ -420,17 +424,30 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             if (!policyTypeParams[i].isValid())
                 continue;
             ITestPolicyCmptTypeParameter policyTypeParam = policyTypeParams[i];
-            String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam); 
             body.append("childElement = ");
             body.appendClassName(XmlUtil.class);
             body.appendln(".getFirstElement(element, \"" + policyTypeParams[i].getName() + "\");");
             body.appendln("if (childElement != null){");
-            body.append(variablePrefix + policyTypeParams[i].getName() + " = new ");
-            body.appendClassName(qualifiedPolicyCmptName);
-            body.appendln("();");
-            body.appendln(variablePrefix + policyTypeParams[i].getName() + ".initFromXml(childElement, true, repository, null);");
+            buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix);
+            body.appendln(variablePrefix + policyTypeParam.getName() + ".initFromXml(childElement, true, repository, null);");
             body.appendln("}");
         }
+    }
+
+    /*
+     * Generates the construtor for a PolicyCmptParameter in the initInputFromXml method.<br>
+     * <p> 
+     * Example:
+     * <p>
+     * <pre>
+    *        [PolicyCmptTypeParameter.name] = new [PolicyCmptTypeParameter.name]();
+     * </pre>
+     */    
+    protected void buildConstrutorForTestPolicyCmptParameter(JavaCodeFragment body, ITestPolicyCmptTypeParameter policyTypeParam, String variablePrefix) throws CoreException{
+        String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam); 
+        body.append(variablePrefix + policyTypeParam.getName() + " = new ");
+        body.appendClassName(qualifiedPolicyCmptName);
+        body.appendln("();");
     }
     
     /*
