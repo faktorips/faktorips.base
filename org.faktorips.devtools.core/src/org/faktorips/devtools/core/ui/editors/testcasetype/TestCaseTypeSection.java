@@ -1342,12 +1342,16 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void addRootParameterClicked() {
         // open wizard to add a new root tes parameter
+        boolean dirty = testCaseType.getIpsSrcFile().isDirty();
         Memento memento = testCaseType.newMemento();
         NewRootParameterWizard wizard = new NewRootParameterWizard(testCaseType);
         WizardDialog dialog = new WizardDialog(getShell(), wizard);
         dialog.open();
         if (dialog.getReturnCode() == Window.CANCEL) {
             testCaseType.setState(memento);
+            if (!dirty) {
+                testCaseType.getIpsSrcFile().markAsClean();
+            }
             return;
         }
         refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
@@ -1358,6 +1362,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void addChildParameterClicked() {
         // open wizard to add a new child test parameter
+        boolean dirty = testCaseType.getIpsSrcFile().isDirty();
         ITestParameter testParamSelected = getSelectedTestParameterInTree();
         if (!(testParamSelected instanceof ITestPolicyCmptTypeParameter))
             return;
@@ -1369,6 +1374,9 @@ public class TestCaseTypeSection extends IpsSection {
         dialog.open();
         if (dialog.getReturnCode() == Window.CANCEL) {
             testCaseType.setState(memento);
+            if (!dirty) {
+                testCaseType.getIpsSrcFile().markAsClean();
+            }            
             return;
         }
         refreshTreeAndDetails(wizard.getNewCreatedTestParameter());

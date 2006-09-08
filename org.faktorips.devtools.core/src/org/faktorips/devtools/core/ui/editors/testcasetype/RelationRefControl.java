@@ -23,11 +23,13 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
@@ -51,6 +53,10 @@ public class RelationRefControl extends TextButtonControl {
         this.dialogTitle = Messages.RelationRefControl_Title;
         this.dialogMessage = Messages.RelationRefControl_Description;
         this.parentPolicyCmptType = parentPolicyCmptType;
+        
+        RelationCompletionProcessor completionProcessor = new RelationCompletionProcessor(parentPolicyCmptType, true);
+        completionProcessor.setComputeProposalForEmptyPrefix(true);
+        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
     }
 
     /**
