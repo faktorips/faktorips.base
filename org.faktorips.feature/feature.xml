@@ -12,18 +12,62 @@
    </description>
 
    <copyright url="http://www.faktorips.org">
-      Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+      Evaluations-Lizenzbedingungen der Faktor Zehn GmbH – Version 0.1
 
-Alle Rechte vorbehalten.
+Präambel
 
-Dieses Programm und alle mitgelieferten Sachen (Dokumentationen,Beispiele,
-Konfigurationen, etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-
-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
-genutzt werden, die Bestandteil der Auslieferung ist und auch unter
-http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+Die Faktor Zehn GmbH mit Sitz in München wird zum Zwecke der Neu- und Weiterentwicklung von Software-Produk­ten die Faktor Zehn Community („F10C“) gründen und deren Mitgliedern ein nicht exklusives Nutzungs­recht an Software, und zugehörigen Dokumentation, Informationen etc., im folgenden „Lizenzgegenstände“, gewähren.
 
-Mitwirkende:
-Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
+Zu Evaluationszwecken werden dem Interessenten beschränkte Nutzungsrechte an den Lizenzgegenständen ausschließlich auf Grundlage und nach Maßgabe der nachstehenden Lizenzbedingungen gewährt:
+
+Lizenzbedingungen
+
+Interessent ist die Person, Firma oder Institution, die die Lizenzgegenstände zur Verwendung nur zu Evaluationszwecken, z.B. durch Download von dem Internet-Server erhält.
+
+Durch Download und/oder die Nutzung der Lizenzgegenstände erkennt der Interessent die vorliegenden Lizenzbedingungen an.
+
+Umfang der Evaluationslizenz
+
+Der Interessent erhält im Wege des Downloads in elektronischer Form die Lizenzgegenstände. Die Nutzungsrechte an den vom Interessenten auf diesem Wege erworbenen Lizenzgegenstände bestimmen sich wie folgt:
+
+(1) Faktor Zehn GmbH überträgt dem Interessent ein zeitlich nicht beschränktes, nicht ausschließliches und nicht übertragbares Nutzungsrecht an den Lizenzgegenständen.
+
+Dieses Nutzungsrecht ist in seinem Umfang wie folgt beschränkt:
+
+(a) Der Interessent darf die Lizenzgegenstände nur zu Testzwecken in der Evaluation nutzen. Eine Nutzung zu anderen Zwecken ist vollständig untersagt.
+
+(b) Die Lizenzgegenstände dürfen Dritten in keiner Weise zur Verfügung gestellt werden. Die Abtretung der hier eingeräumten Nutzungsrecht an einen Dritten ist ausgeschlossen.
+
+(2) Der Interessent ist nicht berechtigt, Dritten Rechte an den Lizenzgegenständen einzuräumen.
+
+(3) Die Lizenzgegenstände dürfen nur zu eigenen Zwecken genutzt werden. Die Vervielfältigung und Weitergabe ist nicht gestattet.
+
+(4) Urheberrechtshinweise in den Lizenzgegenständen dürfen nicht entfernt, verändert oder unkenntlich gemacht werden.
+
+Gewährleistung und Haftung
+
+Soweit gesetzlich zulässig, wird die Faktor Zehn GmbH ausdrücklich von jeder Haftung für Schäden, die aus der Nutzung der Lizenzgegenstände entstehen, freigestellt.
+
+Rechte Dritter
+
+Teile der Software können der Regelungen von Lizenzvereinbarungen Dritter unterliegen. Insbesondere könnten Teile enthalten, deren Nutzung in folgenden Lizenzvereinbarungen geregelt sind:
+
+- Common Public License Version 1.0 (verfügbar unter http://www.eclipse.org/legal/cpl-v10.html)
+- Apache Software License 1.1 (verfügbar unter http://www.apache.org/licenses/LICENSE)
+- Apache Software License 2.0 (verfügbar unter http://www.apache.org/licenses/LICENSE-2.0)
+- IBM Public License 1.0 (verfügbar unter http://oss.software.ibm.com/developerworks/opensource/license10.html)
+- Metro Link Public License 1.00 (verfügbar unter http://www.opengroup.org/openmotif/supporters/metrolink/license.html)
+- Mozilla Public License Version 1.1 (verfügbar unter http://www.mozilla.org/MPL/MPL-1.1.html)
+
+Der Nutzer ist verpflichtet die Lizenzvereinbarungen zur Kenntnis zu nehmen und erkennt diese mit der Nutzung der Lizenzgegenstände an.
+
+Sonstiges
+
+Sollte eine Bestimmung dieses Vertrages unwirksam sein oder werden oder der Vertrag eine Regelungslücke enthalten, so bleibt die Rechtswirksamkeit der übrigen Vertragsbestimmungen hiervon unberührt. Die Parteien werden sich in diesem Fall bemühen, eine dem wirklich Gewollten nahe liegende wirksame Regelung zu treffen.
+
+Als vereinbarter Gerichtsstand gilt der Sitz von Faktor Zehn GmbH.
+
+Es gilt das Recht der Bundesrepublik Deutschland.
    </copyright>
 
    <license url="http://www.example.com/license">
