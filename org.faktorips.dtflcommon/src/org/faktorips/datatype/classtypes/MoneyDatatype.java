@@ -17,6 +17,9 @@
 
 package org.faktorips.datatype.classtypes;
 
+import java.math.BigDecimal;
+
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueClassDatatype;
 import org.faktorips.values.Money;
 
@@ -25,7 +28,7 @@ import org.faktorips.values.Money;
  * 
  * @author Jan Ortmann
  */
-public class MoneyDatatype extends ValueClassDatatype {
+public class MoneyDatatype extends ValueClassDatatype implements NumericDatatype {
 
 	public MoneyDatatype() {
 		super(Money.class);
@@ -53,6 +56,34 @@ public class MoneyDatatype extends ValueClassDatatype {
      * {@inheritDoc}
      */
     public boolean supportsCompare() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String subtract(String minuend, String subtrahend) {
+        if (minuend == null || subtrahend == null) {
+            throw new NullPointerException("Minuend and subtrahend both can not be null.");
+        }
+        return Money.valueOf(minuend).subtract(Money.valueOf(subtrahend)).toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean divisibleWithoutRemainder(String dividend, String divisor) {
+        if (dividend == null || divisor == null) {
+            throw new NullPointerException("dividend and divisor both can not be null.");
+        }
+        Money a = Money.valueOf(dividend);
+        Money b = Money.valueOf(divisor);
+        try {
+            a.getAmount().divide(b.getAmount(), 0, BigDecimal.ROUND_UNNECESSARY);
+        }
+        catch (ArithmeticException e) {
+            return false;
+        }
         return true;
     }
 }
