@@ -102,13 +102,12 @@ public interface IValueSet extends IIpsObjectPart {
      * A message is stored in the message list, if the value set doesn't contain the indicated value.
      * 
      * @param value The value to check.
-     * @param list The list to add messages, if any. Can be null if no messages are needed.
-     * @param invalidObject The object the message refers to. Ignored if <code>list</code>
-     *                      is <code>null</code>. Can be <code>null</code> itself. 
+     * @param list The list to add messages, if any (might not be <code>null</code>).
+     * @param invalidObject The object the message refers to. Can be <code>null</code>. 
      * @param invalidProperty The property of the object the message refers to. Ignored if 
-     *                        <code>list</code> or <code>invalidObject</code> is <code>null</code>.
+     *                        <code>invalidObject</code> is <code>null</code>.
      *                        Can be <code>null</code> itself.
-     * @throws NullPointerException if datatype is <code>null</code>. 
+     * @throws NullPointerException if list is <code>null</code>. 
      */
     public boolean containsValue(String value, 
 			MessageList list, Object invalidObject, String invalidProperty);
@@ -126,14 +125,13 @@ public interface IValueSet extends IIpsObjectPart {
      * Returns <code>true</code> if this valueset contains the other valueset, otherwise <code>false</code>.
      * 
      * @param subset The valueset to check.
-     * @param list The list to which a message is added in case the given valueset is not a subset of this valueset. 
-     * @param invalidObject The object the message refers to. Ignored if <code>list</code>
-     *                      is <code>null</code>. Can be <code>null</code> itself. 
+     * @param list The list to which a message is added in case the given valueset is not a subset of this valueset.
+     * @param invalidObject The object the message refers to. Can be <code>null</code> . 
      * @param invalidProperty The property of the object the message refers to. Ignored if 
-     *                        <code>list</code> or <code>invalidObject</code> is <code>null</code>.
+     *                        <code>invalidObject</code> is <code>null</code>.
      *                        Can be <code>null</code> itself.
      * 
-     * @throws NullPointerException if subset or datatype is <code>null</code>. 
+     * @throws NullPointerException if subset or list is <code>null</code>. 
      */
     public boolean containsValueSet(IValueSet subset,  
     		MessageList list, Object invalidObject, String invalidProperty);

@@ -65,27 +65,27 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public boolean containsValue(String value) {
-    	return containsValue(value, null, null, null);
+    	return containsValue(value, new MessageList(), null, null);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
+        if (list == null) {
+            throw new NullPointerException("MessageList required");
+        }
+        
     	ValueDatatype datatype = getValueDatatype();
     	
     	if (datatype == null) {
-    		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, Message.WARNING, invalidObject, invalidProperty));
-    		}
+            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, invalidProperty);
     		return false;
     	}
     	
         if (!datatype.isParsable(value)) {
-        	if (list != null) {
-        		String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
-        		addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
-        	}
+            String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
+            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
             return false;
         }
         
@@ -95,10 +95,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             	return true;
             }
         }
-        if (list != null) {
-        	String text = Messages.EnumValueSet_msgValueNotInEnumeration;
-        	addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, invalidProperty);
-        }
+        String text = Messages.EnumValueSet_msgValueNotInEnumeration;
+        addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, invalidProperty);
+
         return false;
     }
     
@@ -106,27 +105,25 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
+        if (list == null) {
+            throw new NullPointerException("MessageList required");
+        }
+        
     	ValueDatatype datatype = getValueDatatype();
     	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	if (datatype == null || subDatatype == null) {
-    		if (list != null) {
-    			addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, invalidProperty);
-    		}
+   			addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, invalidProperty);
     		return false;
     	}
     	
     	if (!(subset instanceof EnumValueSet)) {
-    		if (list != null) {
-    			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset, invalidObject, invalidProperty);
-    		}
+   			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset, invalidObject, invalidProperty);
     		return false;
     	}
     	
     	if (!datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
-    		if (list != null) {
-    			String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeMissmatch, subDatatype.getQualifiedName(), datatype.getQualifiedName());
-    			addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject, invalidProperty);
-    		}
+    	    String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeMissmatch, subDatatype.getQualifiedName(), datatype.getQualifiedName());
+    	    addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject, invalidProperty);
     		return false;
     	}
     	
@@ -144,7 +141,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * {@inheritDoc}
      */
 	public boolean containsValueSet(IValueSet subset) {
-		return containsValueSet(subset, null, null, null);
+		return containsValueSet(subset, new MessageList(), null, null);
 	}
 
     /**

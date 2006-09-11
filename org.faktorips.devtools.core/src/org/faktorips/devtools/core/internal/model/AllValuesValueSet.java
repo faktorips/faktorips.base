@@ -83,30 +83,30 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
      * {@inheritDoc}
      */
     public boolean containsValue(String value) {
-        return containsValue(value, null, null, null);
+        return containsValue(value, new MessageList(), null, null);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
+        if (list == null) {
+            throw new NullPointerException("MessageList required");
+        }
+        
     	ValueDatatype datatype = getValueDatatype();
     	if (datatype == null) {
-    		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknownDatatype, Message.WARNING, invalidObject, invalidProperty));
-    		}
+            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknownDatatype, invalidObject, invalidProperty);
     		return false;
     	}
     	
     	if (!datatype.isParsable(value)) {
-        	if (list != null) {
-        		String msg = NLS.bind(Messages.AllValuesValueSet_msgValueNotParsable, value, datatype.getName());
-        		addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
-
-        		// the value can not be parsed - so it is not contained, too...
-        		msg = NLS.bind(Messages.AllValuesValueSet_msgValueNotContained, datatype.getName());
-        		addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, msg, invalidObject, invalidProperty);
-        	}
+    	    String msg = NLS.bind(Messages.AllValuesValueSet_msgValueNotParsable, value, datatype.getName());
+    	    addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
+    	    
+    	    // the value can not be parsed - so it is not contained, too...
+    	    msg = NLS.bind(Messages.AllValuesValueSet_msgValueNotContained, datatype.getName());
+    	    addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, msg, invalidObject, invalidProperty);
             return false;
 		}
 
@@ -117,13 +117,15 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
      * {@inheritDoc}
      */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
+        if (list == null) {
+            throw new NullPointerException("MessageList required");
+        }
+        
     	ValueDatatype datatype = getValueDatatype();
     	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	
     	if (datatype == null || subDatatype == null) {
-    		if (list != null) {
-    			list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknowndDatatype, Message.WARNING, invalidObject, invalidProperty));
-    		}
+            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.AllValuesValueSet_msgUnknowndDatatype, invalidObject, invalidProperty);
     		return false;
     	}
     	
@@ -131,10 +133,8 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     		return true;
     	}
 
-    	if (list != null) {
-    		String msg = NLS.bind(Messages.AllValuesValueSet_msgNoSubset, subset.toShortString(), this.toShortString());
-    		list.add(new Message(MSGCODE_NOT_SUBSET, msg, Message.ERROR, invalidObject, invalidProperty));
-    	}
+    	String msg = NLS.bind(Messages.AllValuesValueSet_msgNoSubset, subset.toShortString(), this.toShortString());
+        addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, invalidProperty);
 		return false;
 	}
 
@@ -142,7 +142,7 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
      * {@inheritDoc}
      */
 	public boolean containsValueSet(IValueSet subset) {
-		return containsValueSet(subset, null, null, null);
+		return containsValueSet(subset, new MessageList(), null, null);
 	}
 
 	/**
