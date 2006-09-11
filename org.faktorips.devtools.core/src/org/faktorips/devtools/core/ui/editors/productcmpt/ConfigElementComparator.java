@@ -71,7 +71,7 @@ public class ConfigElementComparator implements Comparator {
 				return 0;
 			}
 			
-			if (t1.getSupertypeHierarchy().isSupertypeOf(t1, t2)) {
+			if (t1.getSupertypeHierarchy().isSupertypeOf(t1, t2) || t2.getSupertypeHierarchy().isSupertypeOf(t1, t2)) {
 				return -1;
 			}
 			else if (t1.getQualifiedName().equals(t2.getQualifiedName())){
@@ -86,5 +86,4 @@ public class ConfigElementComparator implements Comparator {
 		}
 		return 0;
 	}
-
 }
