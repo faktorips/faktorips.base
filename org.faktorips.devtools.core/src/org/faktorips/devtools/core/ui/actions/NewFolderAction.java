@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -159,6 +160,9 @@ public class NewFolderAction extends IpsAction {
                 return Messages.NewFolderAction_FoldernameMustNotContainBlanks;
             }
             if (newText.trim().equals(EMPTY_STRING)) {
+                return Messages.NewFolderAction_InvalidFoldername;
+            }
+            if (!JavaConventions.validatePackageName(newText).isOK()) {
                 return Messages.NewFolderAction_InvalidFoldername;
             }
             IFolder folder = getFolder(parent, newText);
