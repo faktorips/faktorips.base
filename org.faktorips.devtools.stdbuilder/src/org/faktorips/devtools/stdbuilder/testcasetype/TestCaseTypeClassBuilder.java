@@ -373,8 +373,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln(MARKER_END_USER_CODE);
         buildInitForTestPolicyCmptParameter(body, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix);
         buildInitForTestValueParameter(body, testCaseType.getInputTestValueParameters(), inputPrefix);
-        codeBuilder.method(Modifier.PUBLIC, "void", "initInputFromXml", new String[]{"element"}, 
-                new String[]{Element.class.getName()}, body, javaDoc, ANNOTATION_GENERATED);
+        buildMethodInit(codeBuilder, "initInputFromXml", body, javaDoc);
     }
     
     /*
@@ -396,7 +395,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln(MARKER_END_USER_CODE);        
         buildInitForTestPolicyCmptParameter(body, testCaseType.getExpectedResultTestPolicyCmptTypeParameters(), expectedResultPrefix);
         buildInitForTestValueParameter(body, testCaseType.getExpectedResultTestValueParameters(), expectedResultPrefix);
-        codeBuilder.method(Modifier.PUBLIC, "void", "initExpectedResultFromXml", new String[]{"element"}, 
+        buildMethodInit(codeBuilder, "initExpectedResultFromXml", body, javaDoc);
+    }
+    
+    /*
+     * Capsulates the generation of the method declaration.
+     */
+    protected void buildMethodInit(JavaCodeFragmentBuilder codeBuilder, String methodName, JavaCodeFragment body, String javaDoc){
+        codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[]{"element"}, 
                 new String[]{Element.class.getName()}, body, javaDoc, ANNOTATION_GENERATED);
     }
     
