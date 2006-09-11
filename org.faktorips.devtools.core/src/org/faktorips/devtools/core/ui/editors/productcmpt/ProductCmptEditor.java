@@ -488,7 +488,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
         now.set(GregorianCalendar.SECOND, 0);
         now.set(GregorianCalendar.MILLISECOND, 0);
         
-        
 		boolean editable = true;
 
 		if (now.after(validFrom)) {

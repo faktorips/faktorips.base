@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.RangeValueSet;
@@ -83,7 +84,7 @@ public class ValueSetEditControl extends ControlComposite {
         }
         parentArea.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
         createValidTypesCombo(toolkit, parentArea);
-        valueSetArea = createValueCntrlArea(toolkit, parentArea);
+        valueSetArea = createValueControlArea(toolkit, parentArea);
         IValueSet valueSet = attribute.getValueSet();
         getControlForValueSet(valueSet);
         validTypesCombo.setText(valueSet.getValueSetType().getName());
@@ -134,7 +135,7 @@ public class ValueSetEditControl extends ControlComposite {
         setLayout(mainAreaLayout);
     }
 
-    private Composite createValueCntrlArea(UIToolkit toolkit, Composite parentArea) {
+    private Composite createValueControlArea(UIToolkit toolkit, Composite parentArea) {
         Composite valueArea = toolkit.createComposite(parentArea);
         GridData stackData = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
         stackData.horizontalSpan = 2;
@@ -152,7 +153,9 @@ public class ValueSetEditControl extends ControlComposite {
         ValueSetType[] types = ValueSetType.getValueSetTypes();
 
         for (int i = 0; i < types.length; i++) {
-            validTypesCombo.add(types[i].getName());
+            if (types[i] != ValueSetType.RANGE || datatype instanceof NumericDatatype) {
+                validTypesCombo.add(types[i].getName());
+            }
         }
 
         validTypesCombo.addModifyListener(new TypeModifyListener());
@@ -178,7 +181,9 @@ public class ValueSetEditControl extends ControlComposite {
         
         validTypesCombo.removeAll();
         for (int i = 0; i < valueSetTypes.length; i++) {
-            validTypesCombo.add(valueSetTypes[i].getName());
+            if (valueSetTypes[i] != ValueSetType.RANGE || datatype instanceof NumericDatatype) {
+                validTypesCombo.add(valueSetTypes[i].getName());
+            }
             if (oldType == valueSetTypes[i]) {
                 newType = oldType;
             }
