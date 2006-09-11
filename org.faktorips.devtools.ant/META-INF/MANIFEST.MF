@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Custom FaktorIPS Ant-Tasks
+Bundle-SymbolicName: org.faktorips.ant; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-ClassPath: org.faktorips.ant/
+Bundle-Activator: org.faktorips.ant.AntPlugin
+Bundle-Vendor: faktorzehn.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.apache.ant,
+ org.eclipse.ant.core,
+ org.eclipse.core.resources
+Eclipse-AutoStart: true

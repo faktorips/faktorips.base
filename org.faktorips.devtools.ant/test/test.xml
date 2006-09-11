@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="test" default="doIT">
+
+	<taskdef name="faktorips.import" classname="org.faktorips.ant.projectimporter.ProjectImporter"/>
+
+	<target name="doIT">
+		<faktorips.import />
+	</target>
+
+	
+</project>
