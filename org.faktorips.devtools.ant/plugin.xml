@@ -4,16 +4,19 @@
 	<extension point="org.eclipse.ant.core.antTasks">
 		<antTask
         class="org.faktorips.ant.projectimporter.ProjectImporter"
-        eclipseRuntime="true"
-        headless="true"
-        library="ant-tasks.jar"
+        eclipseRuntime="false"
+        headless="false"
+        library="ant_tasks/ant-tasks.jar"
         name="importProject"/>
 	</extension>
 	
 
 
 	<extension point="org.eclipse.ant.core.extraClasspathEntries">
-		<extraClasspathEntry library="ant-tasks.jar"/>
+		<extraClasspathEntry
+        eclipseRuntime="false"
+        headless="false"
+        library="ant_tasks/ant-tasks.jar"/>
 	</extension>
 
 </plugin>
