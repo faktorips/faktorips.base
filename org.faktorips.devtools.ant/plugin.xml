@@ -4,8 +4,8 @@
 	<extension point="org.eclipse.ant.core.antTasks">
 		<antTask
         class="org.faktorips.ant.projectimporter.ProjectImporter"
-        eclipseRuntime="false"
-        headless="false"
+        eclipseRuntime="true"
+        headless="true"
         library="ant_tasks/ant-tasks.jar"
         name="importProject"/>
 	</extension>
