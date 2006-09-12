@@ -45,14 +45,16 @@ public interface IRuntimeIdStrategy {
 	
 	/**
 	 * Compares the runtime ids of the given product components. This method was introduced
-	 * because a simple call to <code>equals()</code> comparing the both runtimeIds returned by a
+	 * because a simple call to <code>equals()</code> comparing the two runtime ids returned by a
 	 * call to <code>getRuntimeId()</code> can not be used to decide whether the runtime ids of
-	 * two product compontes are the same or not. This is because the strategy might use some internal 
-	 * qualification of the simple runtime-id-string, and so two runtime-id-strings might be equal,
-	 * but not represent the same product component.
+	 * two product compontes are the same or not. This is because the strategy might also use the templates
+	 * the product component are based on to decide if the two have an identical id.
+	 * E.g. a product 1 based on the template MotorProduct and a product 2 based on the template HomeProduct
+	 * might both have the same runtime id 42, but because they are based on different templates they are
+	 * considered as different.  
 	 * 
-	 * @param cmpt1 The first product component the runtime id is to check.
-	 * @param cmpt2 The second product component the runtime id is to check.
+	 * @param cmpt1 The first product component to check.
+	 * @param cmpt2 The second product component to check.
 	 * @return <code>true</code> if the runtime ids of both product components 
 	 * are the same, <code>false</code> otherwise.
 	 */
