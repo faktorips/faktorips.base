@@ -112,8 +112,10 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
                     names[0] = ""; // first entry to select none container relation //$NON-NLS-1$
                     for (int i = 0; i < containerRelations.length; i++) {
                         names[i+1] = containerRelations[i].getName();
-                    }					
+                    }
                     containerRelationsField.getCombo().setItems(names);
+                    // default is the first container relation
+                    containerRelationsField.getCombo().select(1);
 				}else{
 					containerRelationsField.getCombo().setItems(new String[0]);
 				}
