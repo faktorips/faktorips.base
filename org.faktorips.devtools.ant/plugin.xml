@@ -14,8 +14,8 @@
 
 	<extension point="org.eclipse.ant.core.extraClasspathEntries">
 		<extraClasspathEntry
-        eclipseRuntime="false"
-        headless="false"
+        eclipseRuntime="true"
+        headless="true"
         library="ant_tasks/ant-tasks.jar"/>
 	</extension>
 

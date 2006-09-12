@@ -5,7 +5,7 @@
 	
 
 	<target name="doIT">
-		<faktorips.import />
+		<faktorips.import dir="dir" name="name" />
 	</target>
 
 </project>
