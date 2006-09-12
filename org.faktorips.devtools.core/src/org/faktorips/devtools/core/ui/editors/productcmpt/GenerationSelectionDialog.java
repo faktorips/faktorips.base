@@ -46,8 +46,21 @@ import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 public class GenerationSelectionDialog extends TitleAreaDialog {
 
 	private IProductCmpt cmpt;
+    
+    /**
+     * Cache the choice (view, set working date or create new generation) because
+     * if the choice is needed, this dialog is allready disposed and the information 
+     * about the choice can not be requested from the buttons, because these buttons 
+     * are disposed, too.
+     */
 	private int choice;
+    
+    /**
+     * Cache the selected generation (see above, <code>choice</code>).
+     */
 	private int generationIndex;
+    
+    private Combo validFromDates;
 	
 	public static final int CHOICE_CREATE = 0;
 	public static final int CHOICE_BROWSE = 1;
@@ -85,7 +98,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		selectPane.setLayout(new GridLayout(2, false));
 		
 		createButton = new Button(selectPane, SWT.RADIO);
-		createButton.addSelectionListener(new MySelectionListener(null));
 		Label l1 = new Label(selectPane, SWT.NONE);
 		l1.setText(Messages.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs.getFormattedWorkingDate()));
 		l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
@@ -98,7 +110,6 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 			new Composite(selectPane, SWT.NONE).setLayoutData(new GridData(1, 3));
 			
 			browseButton = new Button(selectPane, SWT.RADIO);
-			browseButton.addSelectionListener(new MySelectionListener(null));
 			Label l2 = new Label(selectPane, SWT.NONE);
 			l2.setText(Messages.bind(Messages.GenerationSelectionDialog_labelBrowse, generationConceptName, prefs.getFormattedWorkingDate()));
 			l2.addMouseListener(new ActivateButtonOnClickListener(browseButton));
@@ -115,24 +126,36 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		l3.addMouseListener(new ActivateButtonOnClickListener(switchButton));
 		choices.put(switchButton, new Integer(CHOICE_SWITCH));
 		
-		Combo combo = new Combo(switchPane, SWT.DROP_DOWN);
-		combo.addSelectionListener(new SelectionListener() {
+        validFromDates = new Combo(switchPane, SWT.DROP_DOWN);
+        validFromDates.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 		
 			public void widgetSelected(SelectionEvent e) {
 				switchButton.setSelection(true);
+                createButton.setSelection(false);
+                if (browseButton != null) {
+                    browseButton.setSelection(false);
+                }
+
+                generationIndex = validFromDates.getSelectionIndex();
+                updateChoice(switchButton);
 			}
 		});
 		
 		IIpsObjectGeneration[] generations = cmpt.getGenerations();
 		for (int i = 0; i < generations.length; i++) {
-			combo.add(generations[i].getName());
+            validFromDates.add(generations[i].getName());
 		}
-		combo.select(0);
+        validFromDates.select(0);
 		
-		switchButton.addSelectionListener(new MySelectionListener(combo));
+
+        if (browseButton != null) {
+            browseButton.addSelectionListener(new MySelectionListener(validFromDates));
+        }
+        createButton.addSelectionListener(new MySelectionListener(validFromDates));
+		switchButton.addSelectionListener(new MySelectionListener(validFromDates));
 		
 		String winTitle = Messages.bind(
 				Messages.ProductCmptEditor_title_GenerationMissmatch, cmpt
@@ -179,7 +202,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 	 * was selected.
 	 */
 	public IProductCmptGeneration getSelectedGeneration() {
-		if (generationIndex <= -1) {
+        if (generationIndex == -1) {
 			return null;
 		}
 		return (IProductCmptGeneration)cmpt.getGenerations()[generationIndex];
@@ -197,15 +220,8 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		}
 		
 		public void widgetSelected(SelectionEvent e) {
-
 			updateChoice((Button)e.widget);
-			
-			if (data != null) {
-				GenerationSelectionDialog.this.generationIndex = data.getSelectionIndex();
-			}
-			else {
-				GenerationSelectionDialog.this.generationIndex = -1;
-			}
+			GenerationSelectionDialog.this.generationIndex = data.getSelectionIndex();
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
