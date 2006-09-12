@@ -18,9 +18,7 @@
 package org.faktorips.ant.projectimporter;
 
 import org.apache.tools.ant.BuildException;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.faktorips.ant.CoolEmptyClass;
 /**
  * Implements a custom Ant-Task, which imports a given Directory to a running Eclipse Workspace as
  * Project.
@@ -48,13 +46,25 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
     public void execute() throws BuildException {
 
+
+        
         // check if properties are set
         if (this.baseDir == "" || this.projectName == "") {
             throw new BuildException("Please provide both attributes, 'dir' AND 'name'");
         }
 
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-        System.out.println("Hello World. Workspace: " + workspace.toString());
+        
+        
+        String type = CoolEmptyClass.HELLO;
+        System.out.println(type);
+        
+        
+//        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+//
+//        System.out.println("Hello World. Workspace: " + workspace.toString());
+        
+//        IProgressMonitor monitor = (IProgressMonitor) getProject().getReferences().get(AntCorePlugin.ECLIPSE_PROGRESS_MONITOR);
+        //System.out.println(monitor.toString());
     }
 }

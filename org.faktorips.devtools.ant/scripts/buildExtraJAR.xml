@@ -42,6 +42,10 @@
 					<include name="plugins/org.eclipse.osgi*.jar"/>
 					<include name="plugins/org.eclipse.ant.core*.jar"/>
 				</fileset>
+				
+				<dirset dir="${basedir}/">
+					<include name="**/*" />
+				</dirset>
 			</classpath>
 			<src path="ant_src/"/>
 		</javac>

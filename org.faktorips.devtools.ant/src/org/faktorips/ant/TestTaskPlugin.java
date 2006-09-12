@@ -6,15 +6,15 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class AntPlugin extends Plugin {
+public class TestTaskPlugin extends Plugin {
 
 	//The shared instance.
-	private static AntPlugin plugin;
+	private static TestTaskPlugin plugin;
 	
 	/**
 	 * The constructor.
 	 */
-	public AntPlugin() {
+	public TestTaskPlugin() {
 		plugin = this;
 	}
 
@@ -36,7 +36,7 @@ public class AntPlugin extends Plugin {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static AntPlugin getDefault() {
+	public static TestTaskPlugin getDefault() {
 		return plugin;
 	}
 
