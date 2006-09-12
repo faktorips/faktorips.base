@@ -35,6 +35,7 @@ public class Messages extends NLS {
     public static String AddIpsNatureAction_fullProject;
     public static String AddIpsNatureAction_modelProject;
     public static String AddIpsNatureAction_productDefinitionProject;
+    public static String AddIpsNatureAction_ProjectType;
     public static String AddIpsNatureAction_runtimeIdPrefix;
     public static String AddIpsNatureAction_sourceFolderName;
     public static String FindProductReferencesAction_description;

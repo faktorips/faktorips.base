@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -22,10 +21,10 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -33,12 +32,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -50,6 +47,8 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Radiobutton;
 
 /**
  * An action that adds the ips nature to a project.
@@ -111,7 +110,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         try {
             AddIpsNatureDialog dialog = new AddIpsNatureDialog(getShell());
             if (dialog.open() == Window.CANCEL)
-                throw new OperationCanceledException();
+                return;
             IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
             IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
@@ -178,19 +177,20 @@ public class AddIpsNatureAction extends ActionDelegate {
         return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
     }
 
-    private class AddIpsNatureDialog extends Dialog {
+    private class AddIpsNatureDialog extends TitleAreaDialog {
         private Text errorMessageText;
         private String errorMessage;
 
         private Text sourceFolderText;
         private Text runtimeIdText;
 
-        private Button modelProjectButton;
-        private Button productDefinitionProjectButton;
-        private Button fullProjectButton;
+        private Radiobutton modelProjectButton;
+        private Radiobutton productDefinitionProjectButton;
+        private Radiobutton fullProjectButton;
 
         public AddIpsNatureDialog(Shell parentShell) {
             super(parentShell);
+            this.setTitleImage(IpsPlugin.getDefault().getImageDescriptor("wizards/AddIpsNatureWizard.png").createImage()); //$NON-NLS-1$
         }
 
         /*
@@ -219,46 +219,32 @@ public class AddIpsNatureAction extends ActionDelegate {
          * (non-Javadoc) Method declared on Dialog.
          */
         protected Control createDialogArea(Composite parent) {
-            Composite composite = (Composite)super.createDialogArea(parent);
-            GridLayout gl = new GridLayout();
-            int ncol = 2;
-            gl.numColumns = ncol;
-            composite.setLayout(gl);
-            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-            gd.horizontalAlignment = GridData.BEGINNING;
-            gd.widthHint = 150;
+            Composite composite0 = (Composite)super.createDialogArea(parent);
+            UIToolkit kit = new UIToolkit(null);
+            Group composite = kit.createGroup(composite0, SWT.SHADOW_NONE, null);
 
-            new Label(composite, SWT.NONE).setText(Messages.AddIpsNatureAction_sourceFolderName);
-            sourceFolderText = new Text(composite, SWT.BORDER);
-            sourceFolderText.setLayoutData(gd);
+            Group group1 = kit.createGroup(composite, SWT.SHADOW_IN, Messages.AddIpsNatureAction_ProjectType);
+
+            modelProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_modelProject);
+            modelProjectButton.setChecked(isModelProject && !isProductDefinitionProject);
+
+            productDefinitionProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_productDefinitionProject);
+            productDefinitionProjectButton.setChecked(isProductDefinitionProject && !isModelProject);
+
+            fullProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_fullProject);
+            fullProjectButton.setChecked(isModelProject && isProductDefinitionProject);
+
+            kit.createVerticalSpacer(composite, 5);
+            Composite composite2 = kit.createLabelEditColumnComposite(composite);
+
+            kit.createLabel(composite2, Messages.AddIpsNatureAction_sourceFolderName, false);
+            sourceFolderText = kit.createText(composite2, SWT.BORDER);
             sourceFolderText.setText(sourceFolderName);
-            sourceFolderText.selectAll();
+            kit.createVerticalSpacer(composite, 5);
 
-            new Label(composite, SWT.NONE).setText(Messages.AddIpsNatureAction_runtimeIdPrefix);
-            runtimeIdText = new Text(composite, SWT.BORDER);
-            runtimeIdText.setLayoutData(gd);
+            kit.createLabel(composite2, Messages.AddIpsNatureAction_runtimeIdPrefix, false);
+            runtimeIdText = kit.createText(composite2, SWT.BORDER);
             runtimeIdText.setText(runtimeIdPrefix);
-
-            modelProjectButton = new Button(composite, SWT.RADIO);
-            modelProjectButton.setText(Messages.AddIpsNatureAction_modelProject);
-            gd = new GridData(GridData.FILL_HORIZONTAL);
-            gd.horizontalSpan = ncol;
-            modelProjectButton.setLayoutData(gd);
-            modelProjectButton.setSelection(isModelProject && !isProductDefinitionProject);
-
-            productDefinitionProjectButton = new Button(composite, SWT.RADIO);
-            productDefinitionProjectButton.setText(Messages.AddIpsNatureAction_productDefinitionProject);
-            gd = new GridData(GridData.FILL_HORIZONTAL);
-            gd.horizontalSpan = ncol;
-            productDefinitionProjectButton.setLayoutData(gd);
-            productDefinitionProjectButton.setSelection(isProductDefinitionProject && !isModelProject);
-
-            fullProjectButton = new Button(composite, SWT.RADIO);
-            fullProjectButton.setText(Messages.AddIpsNatureAction_fullProject);
-            gd = new GridData(GridData.FILL_HORIZONTAL);
-            gd.horizontalSpan = ncol;
-            fullProjectButton.setLayoutData(gd);
-            fullProjectButton.setSelection(isModelProject && isProductDefinitionProject);
 
             errorMessageText = new Text(composite, SWT.READ_ONLY);
             errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
@@ -296,9 +282,9 @@ public class AddIpsNatureAction extends ActionDelegate {
             if (buttonId == IDialogConstants.OK_ID) {
                 sourceFolderName = sourceFolderText.getText();
                 runtimeIdPrefix = runtimeIdText.getText();
-                isModelProject = modelProjectButton.getSelection() || fullProjectButton.getSelection();
-                isProductDefinitionProject = productDefinitionProjectButton.getSelection()
-                        || fullProjectButton.getSelection();
+                isModelProject = modelProjectButton.isChecked() || fullProjectButton.isChecked();
+                isProductDefinitionProject = productDefinitionProjectButton.isChecked()
+                        || fullProjectButton.isChecked();
             }
             super.buttonPressed(buttonId);
         }
