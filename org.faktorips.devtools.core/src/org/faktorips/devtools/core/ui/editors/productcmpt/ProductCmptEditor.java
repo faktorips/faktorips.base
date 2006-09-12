@@ -288,6 +288,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		else {
 			dontFixDifferencesBetweenAttributeAndConfigElement = true;
 		}
+        deltasShowing = false;
 	}
 
 	/**
@@ -295,7 +296,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 	 */
 	private void refreshStructure() {
 		
-		if (this.propertiesPage != null && active) {
+		if (this.propertiesPage != null) {
 			this.propertiesPage.refreshStructure();
 		}
 	}
