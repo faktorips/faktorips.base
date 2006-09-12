@@ -26,6 +26,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -35,6 +37,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -83,13 +86,62 @@ public class NewPcTypeRelationWizard extends Wizard {
     private ExtensionPropertyControlFactory extensionFactoryReverseRelation;
     
     public NewPcTypeRelationWizard(IRelation relation) {
-		super();
+    	super();
+
+    	ArgumentCheck.notNull(relation);
 		super.setWindowTitle(Messages.NewPcTypeRelationWizard_title);
 		this.relation = relation;
 
 		uiControllerRelation = createUIController(this.relation);
         extensionFactory = new ExtensionPropertyControlFactory(relation.getClass());
+        
+    	// add listener on model,
+		// if the model changed check if the new relation has to be updated
+		relation.getIpsModel().addChangeListener(new ContentsChangeListener() {
+			public void contentsChanged(ContentChangeEvent event) {
+				updateNewReverseRelationAndRelationContainer(event);
+			}
+		});            
 	}
+    
+    /*
+     * Update the new reverse relation and resets the container if necessary.
+     */
+    private void updateNewReverseRelationAndRelationContainer(ContentChangeEvent event){
+		if (event.getIpsSrcFile().equals(
+				relation.getIpsObject().getIpsSrcFile())) {
+
+			if (relation.isReadOnlyContainer()){
+				relation.setContainerRelation(""); //$NON-NLS-1$
+			}
+			
+			if (isNewReverseRelation() && reverseRelation != null){
+				reverseRelation.setTarget(relation.getPolicyCmptType().getQualifiedName());
+				reverseRelation.setTargetRoleSingular(relation.getPolicyCmptType().getName());
+				reverseRelation.setRelationType(getCorrespondingRelationType(relation.getRelationType()));
+				
+				if (relation.isReadOnlyContainer()){
+					reverseRelation.setReadOnlyContainer(true);
+				}else{
+					reverseRelation.setReadOnlyContainer(false);
+				}
+				
+				IRelation containerRelation;
+				try {
+					containerRelation = relation.findContainerRelation();
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+					showErrorPage(e);
+					return;
+				}
+				if (containerRelation != null){
+					reverseRelation.setContainerRelation(containerRelation.getReverseRelation());
+				}else{
+					reverseRelation.setContainerRelation(""); //$NON-NLS-1$
+				}
+			}
+		}
+    }
     
     public void createExtensionFactoryReverseRelation(){
         extensionFactoryReverseRelation = new ExtensionPropertyControlFactory(relation.getClass());

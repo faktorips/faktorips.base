@@ -218,7 +218,13 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
     			// create a new reverse relation
     			wizard.restoreMementoTargetBeforeChange();
     			wizard.storeMementoTargetBeforeChange();
-    			createNewReverseRelation();
+    			try {
+					createNewReverseRelation();
+				} catch (CoreException e) {
+					IpsPlugin.log(e);
+					wizard.showErrorPage(e);
+					return false;
+				}
     
                 createPropertyFields();
                 setStatusPropertyFields();
@@ -313,7 +319,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	/*
 	 * Create a new reverse relation, i.e. create a new relation on the target policy component type object.
 	 */
-	private void createNewReverseRelation() {
+	private void createNewReverseRelation() throws CoreException {
 		if (wizard.getTargetPolicyCmptType()==null)
 			return;
 		
@@ -321,6 +327,12 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		newReverseRelation.setTarget(wizard.getPolicyCmptTypeQualifiedName());
 		newReverseRelation.setTargetRoleSingular(wizard.getRelation().getPolicyCmptType().getName());
 		newReverseRelation.setRelationType(wizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
+		IRelation containerRelation = wizard.getRelation().findContainerRelation();
+		if (containerRelation != null){
+			newReverseRelation.setContainerRelation(containerRelation.getReverseRelation());
+		}
+		if (wizard.getRelation().isReadOnlyContainer())
+			newReverseRelation.setReadOnlyContainer(true);
 		
 		wizard.setDefaultsByRelationType(newReverseRelation);
 		wizard.storeReverseRelation(newReverseRelation);
