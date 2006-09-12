@@ -92,6 +92,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 					.getGenerationByEffectiveDate(IpsPlugin.getDefault()
 							.getIpsPreferences().getWorkingDate());
 	    	boolean select = generation.equals(editableGeneration);
+
 	    	if (!select && !automatic) {
 	    		String genName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
 	    		String title = Messages.bind(Messages.GenerationsSection_titleShowGeneration, genName);
@@ -100,7 +101,16 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 	    		args[1] = generation.getName();
 	    		args[2] = IpsPlugin.getDefault().getIpsPreferences().getFormattedWorkingDate();
 	    		String message = Messages.bind(Messages.GenerationsSection_msgShowGeneration, args);	    		
-	    		select = MessageDialog.openConfirm(page.getSite().getShell(), title, message);
+                
+                MessageDialog dlg = new MessageDialog(page.getSite().getShell(), title, null, message, MessageDialog.NONE, new String[] {Messages.GenerationsSection_buttonReadOnly, Messages.GenerationsSection_buttonEditable, Messages.GenerationsSection_buttonCancel}, 0);
+                int result = dlg.open();
+                if (result == 0) {
+                    select = true;
+                }
+                else if (result == 1) {
+                    select = true;
+                    IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(generation.getValidFrom());
+                }
 	    	}
 			if (select || automatic) {
 				page.getProductCmptEditor().setActiveGeneration(generation);

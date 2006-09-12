@@ -172,4 +172,10 @@ public class Messages extends NLS {
 
 	public static String ProductAttributesSection_labelRuntimeId;
 
+    public static String GenerationsSection_buttonReadOnly;
+
+    public static String GenerationsSection_buttonEditable;
+
+    public static String GenerationsSection_buttonCancel;
+
 }
