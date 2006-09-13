@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
+import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 
 /**
  * An action that adds the ips nature to a project.
@@ -251,16 +252,15 @@ public class AddIpsNatureAction extends ActionDelegate {
             UIToolkit kit = new UIToolkit(null);
             Group composite = kit.createGroup(composite0, SWT.SHADOW_NONE, null);
 
-            Group group1 = kit.createGroup(composite, SWT.SHADOW_IN, Messages.AddIpsNatureAction_ProjectType);
+            RadiobuttonGroup radiobuttonGroup = kit.createRadiobuttonGroup(composite, SWT.SHADOW_IN, Messages.AddIpsNatureAction_ProjectType);
 
-            modelProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_modelProject);
+            modelProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_modelProject);
             modelProjectButton.setChecked(isModelProject && !isProductDefinitionProject);
 
-            productDefinitionProjectButton = kit.createRadiobutton(group1,
-                    Messages.AddIpsNatureAction_productDefinitionProject);
+            productDefinitionProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_productDefinitionProject);
             productDefinitionProjectButton.setChecked(isProductDefinitionProject && !isModelProject);
 
-            fullProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_fullProject);
+            fullProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_fullProject);
             fullProjectButton.setChecked(isModelProject && isProductDefinitionProject);
 
             kit.createVerticalSpacer(composite, 5);
