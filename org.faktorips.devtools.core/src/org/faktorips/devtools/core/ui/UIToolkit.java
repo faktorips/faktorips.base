@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
+import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
@@ -516,20 +517,33 @@ public class UIToolkit {
 		return createGroup(parent, SWT.NONE, text);
 	}
 
-	public Group createGroup(Composite parent, int style, String text) {
-//		if (formToolkit != null) {
-//			throw new RuntimeException("Not implemented for forms!"); //$NON-NLS-1$
-//		}
-		Group newGroup = new Group(parent, style);
-		if (text != null) {
-			newGroup.setText(text);
-		}
-		newGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-		GridLayout layout = new GridLayout();
-		newGroup.setLayout(layout);
+    public Group createGroup(Composite parent, int style, String text) {
+//      if (formToolkit != null) {
+//          throw new RuntimeException("Not implemented for forms!"); //$NON-NLS-1$
+//      }
+        Group newGroup = new Group(parent, style);
+        if (text != null) {
+            newGroup.setText(text);
+        }
+        newGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        newGroup.setLayout(layout);
 
-		return newGroup;
-	}
+        return newGroup;
+    }
+
+    public RadiobuttonGroup createRadiobuttonGroup(Composite parent, int style, String text) {
+        RadiobuttonGroup newRadiobuttonGroup = new RadiobuttonGroup(parent, style, this);
+        Group newGroup = newRadiobuttonGroup.getGroup();
+        if (text != null) {
+            newGroup.setText(text);
+        }
+        newGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        newGroup.setLayout(layout);
+
+        return newRadiobuttonGroup;
+    }
 
 	public Group createGridGroup(Composite parent, String text,
 			int numOfColumns, boolean equalSize) {
