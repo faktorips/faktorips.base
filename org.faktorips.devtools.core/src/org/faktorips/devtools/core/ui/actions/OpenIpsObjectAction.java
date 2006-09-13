@@ -47,17 +47,17 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
     
     public OpenIpsObjectAction() {
         super();
-        setText("Open IPS Object..."); 
-        setDescription("Open a IPS object in the editor"); 
-        setToolTipText("Open a IPS Object"); 
+        setText(Messages.OpenIpsObjectAction_titleText); 
+        setDescription(Messages.OpenIpsObjectAction_description); 
+        setToolTipText(Messages.OpenIpsObjectAction_tooltip); 
         setAccelerator(SWT.CTRL | SWT.SHIFT | 'I');
-        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("OpenIpsObject.gif"));
+        setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("OpenIpsObject.gif")); //$NON-NLS-1$
     }
 
     public void run() {
         Shell parent= IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-        String dialogTitle = "Open IPS Object"; 
-        String dialogMessage = "&Select a object to open (? = any character, * = any String):"; 
+        String dialogTitle = Messages.OpenIpsObjectAction_dialogTitle; 
+        String dialogMessage = Messages.OpenIpsObjectAction_dialogMessage; 
 
         try {
             OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent, dialogTitle, dialogMessage);
@@ -82,7 +82,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
      */
     protected IIpsObject[] getIpsObjects(){
         IIpsObject[] objects = new IIpsObject[0];
-        if(getCurrentPerspective().getId().equals("org.eclipse.team.ui.TeamSynchronizingPerspective")){
+        if(getCurrentPerspective().getId().equals("org.eclipse.team.ui.TeamSynchronizingPerspective")){ //$NON-NLS-1$
             return objects;
         }
         try {
@@ -90,7 +90,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         } catch (CoreException e) {
             // if we fail to get the objects, we won't be able to open them either.
         }
-        if(getCurrentPerspective().getId().equals("org.faktorips.devtools.core.productDefinitionPerspective")){
+        if(getCurrentPerspective().getId().equals("org.faktorips.devtools.core.productDefinitionPerspective")){ //$NON-NLS-1$
             List list = new ArrayList();
             for (int i = 0; i < objects.length; i++) {
                 IIpsObject object = objects[i];

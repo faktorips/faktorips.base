@@ -44,6 +44,11 @@ public class Messages extends NLS {
     public static String FindProductReferencesAction_name;
     public static String FindPolicyReferencesAction_description;
     public static String FindPolicyReferencesAction_name;
+    public static String OpenIpsObjectAction_description;
+    public static String OpenIpsObjectAction_dialogMessage;
+    public static String OpenIpsObjectAction_dialogTitle;
+    public static String OpenIpsObjectAction_titleText;
+    public static String OpenIpsObjectAction_tooltip;
     public static String ShowAttributesAction_description;
     public static String ShowAttributesAction_name;
     public static String ShowStructureAction_description;
