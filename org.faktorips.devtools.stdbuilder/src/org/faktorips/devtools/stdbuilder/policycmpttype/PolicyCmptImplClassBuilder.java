@@ -1166,15 +1166,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String pObjectProperties = "objectProperties";
         JavaCodeFragment body = new JavaCodeFragment();
         MessageFragment msgFrag = MessageFragment.createMessageFragment(r.getMessageText(), MessageFragment.VALUES_AS_PARAMETER_NAMES);
+        String[] validatedAttributes = r.getValidatedAttributes();
         if(!r.isValidatedAttrSpecifiedInSrc()){
-            if(msgFrag.hasParameters()){
+            if(validatedAttributes.length > 0){
                 body.appendClassName(ObjectProperty.class);
                 body.append("[] ");
                 body.append(pObjectProperties);
                 body.append(" = new ");
                 body.appendClassName(ObjectProperty.class);
                 body.append("[]{");
-                String[] validatedAttributes = r.getValidatedAttributes();
                 for (int j = 0; j < validatedAttributes.length; j++) {
                     IAttribute attr = getPcType().getSupertypeHierarchy().findAttribute(getPcType(), validatedAttributes[j]);
                     String propertyConstName = interfaceBuilder.getPropertyName(attr, attr.findDatatype());
@@ -1208,7 +1208,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.append(", ");
         body.append(r.getMessageSeverity().getJavaSourcecode());
         body.append(", ");
-        body.append(msgFrag.hasParameters() || r.isValidatedAttrSpecifiedInSrc() ? pObjectProperties : "objectProperty");
+        body.append(validatedAttributes.length > 0 || r.isValidatedAttrSpecifiedInSrc() ? pObjectProperties : "objectProperty");
         body.append(");");
 
         List parameterNames = new ArrayList();
