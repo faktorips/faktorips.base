@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Custom FaktorIPS Ant-Tasks
 Bundle-SymbolicName: org.faktorips.devtools.ant;singleton:=true
 Bundle-Version: 0.9.34
-Bundle-Activator: org.faktorips.ant.TestTaskPlugin
+Bundle-Activator: org.faktorips.devtools.ant.TestTaskPlugin
 Bundle-Vendor: faktorzehn.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.resources,

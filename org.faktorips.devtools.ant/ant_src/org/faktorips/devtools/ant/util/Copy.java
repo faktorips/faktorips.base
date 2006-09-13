@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.ant.util;
+package org.faktorips.devtools.ant.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

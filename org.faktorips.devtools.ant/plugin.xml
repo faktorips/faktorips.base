@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.ant.core.antTasks">
 		<antTask
-        class="org.faktorips.ant.projectimporter.ProjectImporter"
+        class="org.faktorips.devtools.ant.projectimporter.ProjectImporter"
         eclipseRuntime="true"
         headless="true"
         library="ant_tasks/ant-tasks.jar"

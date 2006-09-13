@@ -1,4 +1,4 @@
-package org.faktorips.ant;
+package org.faktorips.devtools.ant;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;

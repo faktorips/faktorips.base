@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.ant.projectimporter;
+package org.faktorips.devtools.ant.projectimporter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.ant.util.Copy;
+import org.faktorips.devtools.ant.util.Copy;
 
 /**
  * Implements a custom Ant-Task, which imports a given Directory to a running Eclipse Workspace as
