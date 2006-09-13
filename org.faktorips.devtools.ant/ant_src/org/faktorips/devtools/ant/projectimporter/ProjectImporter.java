@@ -72,11 +72,9 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      */
     public void execute() throws BuildException {
 
-        // Check dir-attribute
-        if (this.getDir().equals("") || this.getDir() == null) {
-            throw new BuildException("Please provide the 'dir' attribute.");
-        }
-
+        // Check Dir-Attribute
+        this.checkDir();
+        
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
@@ -122,6 +120,31 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
             throw new BuildException(e);
         }
 
+    }
+
+    /**
+     * Does some Security-Checks on provided Directory-Attribute
+     * 
+     * @author Marcel Senf <marcel.senf@faktorzehn.de>
+     * @throws BuildException
+     */
+    private void checkDir() throws BuildException {
+
+        if (this.getDir().equals("") || this.getDir() == null) {
+            throw new BuildException("Please provide the 'dir' attribute.");
+        }
+
+        if (!new File(this.getDir()).exists()) {
+            throw new BuildException("Directory " + this.getDir() + " doesn't exist.");
+        }
+
+        if (!new File(this.getDir()).isDirectory()) {
+            throw new BuildException("Provided 'dir' " + this.getDir() + " is not a Directory.");
+        }
+
+        if (!new File(this.getDir()).canRead()) {
+            throw new BuildException("Provided 'dir' " + this.getDir() + " is not readable.");
+        }
     }
 
 }
