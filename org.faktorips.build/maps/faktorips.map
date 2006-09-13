@@ -9,7 +9,7 @@ plugin@org.faktorips.util=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.valuetypes=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.stdbuilder.test=HEAD,/usr/local/cvsroot
 plugin@org.faktorips.devtools.core.test=HEAD,/usr/local/cvsroot
-plugin@org.faktorips.ant=HEAD,/usr/local/cvsroot
+plugin@org.faktorips.devtools.ant=HEAD,/usr/local/cvsroot
 
 
 
