@@ -114,6 +114,8 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
             // open and rebuild the project
             project.open(monitor);
+            project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+            
             project.build(IncrementalProjectBuilder.CLEAN_BUILD, monitor);
             project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
             
