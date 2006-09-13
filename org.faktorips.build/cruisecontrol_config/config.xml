@@ -669,7 +669,7 @@
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature.test" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.updatesite" />
-	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.ant" /> 
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.ant" /> 
 
 	       <!-- BBV-Projekt ->
 	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.devtools" />
@@ -730,7 +730,9 @@
             
           </publishers>
         </project>   
-<project name="de.bbv.faktorips.eclipsetest" buildafterfailed="false">
+		
+		
+		<project name="de.bbv.faktorips.eclipsetest" buildafterfailed="false">
           <listeners>
             <currentbuildstatuslistener file="logs/${project.name}/buildStatus.txt" />
             
