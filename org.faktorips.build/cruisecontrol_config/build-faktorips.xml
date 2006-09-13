@@ -240,7 +240,7 @@
 				</exec>
 
 				<!-- checkout org.faktorips.integrationtest project -->
-        		<cvs command="co org.faktorips.integrationtest" dest="{dir}" cvsroot="${cvsroot}" quiet="true" />
+        		<cvs command="co org.faktorips.integrationtest" dest="{dir}" cvsroot="${cvsroot}" />
 				<!-- start antrunner with import-buildfile -->
         		<property name="importbuildfile" value="${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml" />
         		<exec executable="/usr/bin/java" failonerror="true" logError="true">
