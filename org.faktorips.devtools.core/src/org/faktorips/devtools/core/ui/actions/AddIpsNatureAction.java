@@ -1,10 +1,15 @@
 /***************************************************************************************************
- *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
- * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
- * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.ui.actions;
@@ -31,6 +36,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -53,7 +59,7 @@ import org.faktorips.devtools.core.ui.controls.Radiobutton;
 /**
  * An action that adds the ips nature to a project.
  * 
- * @author Jan Ortmann
+ * @author Jan Ortmann, Daniel Hohenberger
  */
 public class AddIpsNatureAction extends ActionDelegate {
 
@@ -68,10 +74,11 @@ public class AddIpsNatureAction extends ActionDelegate {
      * {@inheritDoc}
      */
     public void selectionChanged(IAction action, ISelection newSelection) {
-        if (newSelection instanceof IStructuredSelection)
+        if (newSelection instanceof IStructuredSelection) {
             selection = (IStructuredSelection)newSelection;
-        else
+        } else {
             selection = StructuredSelection.EMPTY;
+        }
     }
 
     private IJavaProject getJavaProject() {
@@ -109,8 +116,9 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
         try {
             AddIpsNatureDialog dialog = new AddIpsNatureDialog(getShell());
-            if (dialog.open() == Window.CANCEL)
+            if (dialog.open() == Window.CANCEL) {
                 return;
+            }
             IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
             IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
             for (int i = 0; i < roots.length; i++) {
@@ -135,15 +143,15 @@ public class AddIpsNatureAction extends ActionDelegate {
                     " ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
             props.setProductCmptNamingStrategy(namingStrategy);
             ipsProject.setProperties(props);
-            IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName); //$NON-NLS-1$
+            IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName); 
             if (!ipsModelFolder.exists()) {
                 ipsModelFolder.create(true, true, null);
             }
             IpsObjectPath path = new IpsObjectPath();
             path.setOutputDefinedPerSrcFolder(false);
-            path.setBasePackageNameForGeneratedJavaClasses(runtimeIdPrefix); //$NON-NLS-1$
+            path.setBasePackageNameForGeneratedJavaClasses(runtimeIdPrefix); 
             path.setOutputFolderForGeneratedJavaFiles(javaSrcFolder);
-            path.setBasePackageNameForExtensionJavaClasses(runtimeIdPrefix); //$NON-NLS-1$
+            path.setBasePackageNameForExtensionJavaClasses(runtimeIdPrefix); 
             path.newSourceFolderEntry(ipsModelFolder);
             ipsProject.setIpsObjectPath(path);
 
@@ -187,6 +195,11 @@ public class AddIpsNatureAction extends ActionDelegate {
         private Radiobutton modelProjectButton;
         private Radiobutton productDefinitionProjectButton;
         private Radiobutton fullProjectButton;
+
+        /**
+         * Image for title area
+         */
+        private Image dlgTitleImage = null;
 
         public AddIpsNatureDialog(Shell parentShell) {
             super(parentShell);
@@ -238,7 +251,8 @@ public class AddIpsNatureAction extends ActionDelegate {
             modelProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_modelProject);
             modelProjectButton.setChecked(isModelProject && !isProductDefinitionProject);
 
-            productDefinitionProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_productDefinitionProject);
+            productDefinitionProjectButton = kit.createRadiobutton(group1,
+                    Messages.AddIpsNatureAction_productDefinitionProject);
             productDefinitionProjectButton.setChecked(isProductDefinitionProject && !isModelProject);
 
             fullProjectButton = kit.createRadiobutton(group1, Messages.AddIpsNatureAction_fullProject);
@@ -298,6 +312,32 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
             super.buttonPressed(buttonId);
         }
+
+        /* (non-Javadoc)
+         * Method declared in Window.
+         */
+        protected Control createContents(Composite parent) {
+
+            Control contents = super.createContents(parent);
+            setTitle(Messages.AddIpsNatureAction_dialogTitle);
+            dlgTitleImage = IpsPlugin.getDefault().getImageDescriptor("wizards/AddIpsNatureWizard.png").createImage(); //$NON-NLS-1$
+            setTitleImage(dlgTitleImage);
+            setMessage(Messages.AddIpsNatureAction_dialogMessage);
+
+            return contents;
+        }
+
+        /** 
+         * This implementation of this <code>Window</code>
+         * method disposes of the banner image when the dialog is closed.
+         */
+        public boolean close() {
+            if (dlgTitleImage != null) {
+                dlgTitleImage.dispose();
+            }
+            return super.close();
+        }
+
     }
 
 }
