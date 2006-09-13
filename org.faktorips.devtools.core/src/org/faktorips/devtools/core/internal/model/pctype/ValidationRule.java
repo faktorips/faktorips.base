@@ -339,7 +339,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		msgSeverity = MessageSeverity.getMessageSeverity(element
 				.getAttribute(PROPERTY_MESSAGE_SEVERITY));
 		checkValueAgainstValueSetRule = Boolean.valueOf(
-				element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
+				element.getAttribute(PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET))
 				.booleanValue();
 		validatedAttrSpecifiedInSrc = Boolean.valueOf(
 				element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
@@ -373,9 +373,9 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
 		newElement.setAttribute(PROPERTY_MESSAGE_TEXT, msgText);
 		newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
-		newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(checkValueAgainstValueSetRule));
+		newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(validatedAttrSpecifiedInSrc));
 		newElement.setAttribute(PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET,
-				String.valueOf(validatedAttrSpecifiedInSrc));
+                String.valueOf(checkValueAgainstValueSetRule));
 		Document doc = newElement.getOwnerDocument();
 		for (int i = 0; i < functions.size(); i++) {
 			Element fctElement = doc.createElement("BusinessFunction"); //$NON-NLS-1$
