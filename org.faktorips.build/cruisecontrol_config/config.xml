@@ -710,7 +710,7 @@
 	      >
               
               <failure reportWhenFixed="true" address="faktorips-devel@faktorzehn.de" />
-	      <always address="marcel.senf@faktorzehn.de" />
+	      
   
               <!-- define cvs-user mailaddresses -->
 	      <map alias="senf" address="marcel.senf@faktorzehn.de"/>
@@ -794,16 +794,16 @@
 	      >
               
               <failure reportWhenFixed="true" address="faktorips-bbv-devel@faktorzehn.de" />
-	      <always address="marcel.senf@faktorzehn.de" />
+	      
   
               <!-- define cvs-user mailaddresses -->
 	      <map alias="senf" address="marcel.senf@faktorzehn.de"/>
 	      <map alias="guenther" address="thorsten.guenther@faktorzehn.de"/>
-              <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
-              <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
+          <map alias="eidenschink" address="max.eidenschink@faktorzehn.de"/>
+          <map alias="ortmann" address="jan.ortmann@faktorzehn.de"/>
 	      <map alias="hums" address="renate.hums@faktorzehn.de"/>
 	      <map alias="erzberger" address="peter.erzberger@faktorzehn.de"/>
-              <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
+          <map alias="hinz" address="martin.hinz@faktorzehn.de"/>
 	      <map alias="waertel" address="thorsten.waertel@kqv.de"/>				
 	      <map alias="hohenberger" address="daniel.hohenberger@faktorzehn.de"/>
 	      <map alias="widmaier" address="stefan.widmaier@faktorzehn.de"/>
