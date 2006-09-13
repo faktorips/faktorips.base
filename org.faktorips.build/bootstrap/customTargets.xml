@@ -17,11 +17,7 @@
 		<property name="id" value="org.faktorips.feature.test"/>
 	</ant>
 	
-	<ant antfile="${genericTargets}" target="${target}" >
-		<property name="type" value="plugin" />
-		<property name="id" value="org.faktorips.ant"/>
-	</ant>
-	
+
 
 
 </target>
@@ -46,12 +42,6 @@
 </target>
 
 
-<target name="assemble.org.faktorips.ant">
-	<ant antfile="${assembleScriptName}" dir="${buildDirectory}">
-		<property name="zipargs" value="" />
-	</ant>
-</target>
-
 	
 <!-- ===================================================================== -->
 <!-- Check out map files from correct repository -->
@@ -69,8 +59,6 @@
                 dest="${buildDirectory}/maps"
                 command="export -r ${mapVersionTag} org.faktorips.build/maps"
         />
-
-
 
 </target>
 
