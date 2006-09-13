@@ -101,7 +101,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
             // check if project already exists in current workspace
             if (project.exists()) {
-                throw new BuildException("Project " + project.getName() + " already exist.");
+                throw new BuildException("Project " + project.getName() + " already exists.");
             }
             project.create(description, monitor);
 
