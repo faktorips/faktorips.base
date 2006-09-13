@@ -229,10 +229,10 @@
 	                </fileset>
 	            </copy>
 
-                <!-- execute test-script -->
+                <!-- execute test-script >
                 <exec executable="/bin/bash" dir="${dir}/environment/" failonerror="true" logError="true">
                         <arg line="runtests all" />
-                </exec>
+                </exec-->
                
 			    <!-- check if there are errors in testcase-logs -->
 				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
@@ -240,7 +240,7 @@
 				</exec>
 
 				<!-- checkout org.faktorips.integrationtest project -->
-        		<cvs command="co org.faktorips.integrationtest" dest="{dir}" cvsroot="${cvsroot}" />
+        		<cvs command="co org.faktorips.integrationtest" dest="${dir}" cvsroot="${cvsroot}" />
 				<!-- start antrunner with import-buildfile -->
         		<property name="importbuildfile" value="${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml" />
         		<exec executable="/usr/bin/java" failonerror="true" logError="true">
