@@ -239,10 +239,6 @@
 			<arg line="lookForFailure.pl"/>
 		</exec>
 
-               <!-- update updatesite-->
-               <exec executable="/usr/bin/perl" dir="${dir}/org.faktorips.build/">
-                        <arg line="publishUpdateSite.pl" />
-               </exec>
 
 
         </target>
