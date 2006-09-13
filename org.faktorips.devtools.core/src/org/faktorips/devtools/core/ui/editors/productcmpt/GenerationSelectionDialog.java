@@ -97,11 +97,13 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		Composite selectPane = new Composite(workArea, SWT.None);
 		selectPane.setLayout(new GridLayout(2, false));
 		
-		createButton = new Button(selectPane, SWT.RADIO);
-		Label l1 = new Label(selectPane, SWT.NONE);
-		l1.setText(Messages.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs.getFormattedWorkingDate()));
-		l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
-		choices.put(createButton, new Integer(CHOICE_CREATE));
+        if (cmpt.getValidTo() == null || cmpt.getValidTo().after(prefs.getWorkingDate())) {            
+            createButton = new Button(selectPane, SWT.RADIO);
+            Label l1 = new Label(selectPane, SWT.NONE);
+            l1.setText(Messages.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs.getFormattedWorkingDate()));
+            l1.addMouseListener(new ActivateButtonOnClickListener(createButton));
+            choices.put(createButton, new Integer(CHOICE_CREATE));
+        }
 		
 		if (cmpt.findGenerationEffectiveOn(prefs.getWorkingDate()) != null) {
 			// neccessary to get the same space between create- and browse-line
@@ -115,7 +117,7 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 			l2.addMouseListener(new ActivateButtonOnClickListener(browseButton));
 			choices.put(browseButton, new Integer(CHOICE_BROWSE));
 		}
-
+        
 		switchButton = new Button(selectPane, SWT.RADIO);
 		Composite switchPane = new Composite(selectPane, SWT.NONE);
 		GridLayout gridLayout = new GridLayout(2, false);
@@ -134,7 +136,9 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		
 			public void widgetSelected(SelectionEvent e) {
 				switchButton.setSelection(true);
-                createButton.setSelection(false);
+                if (createButton != null) {
+                    createButton.setSelection(false);
+                }
                 if (browseButton != null) {
                     browseButton.setSelection(false);
                 }
@@ -154,7 +158,9 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         if (browseButton != null) {
             browseButton.addSelectionListener(new MySelectionListener(validFromDates));
         }
-        createButton.addSelectionListener(new MySelectionListener(validFromDates));
+        if (createButton != null) {
+            createButton.addSelectionListener(new MySelectionListener(validFromDates));
+        }
 		switchButton.addSelectionListener(new MySelectionListener(validFromDates));
 		
 		String winTitle = Messages.bind(
@@ -172,7 +178,9 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 
 	private void initSelectionFromPreferences() {
 		choice = IpsPlugin.getDefault().getPreferenceStore().getInt(STORED_CHOICE_ID);
-		createButton.setSelection(choice == CHOICE_CREATE);
+		if (createButton != null) {
+            createButton.setSelection(choice == CHOICE_CREATE);
+        }
 		if (browseButton != null) {
 			browseButton.setSelection(choice == CHOICE_BROWSE);
 		}
@@ -249,7 +257,9 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 			if (browseButton != null) {
 				browseButton.setSelection(false);
 			}
-			createButton.setSelection(false);
+            if (createButton != null) {
+                createButton.setSelection(false);
+            }
 			switchButton.setSelection(false);
 			toSelect.setSelection(true);
 			updateChoice(toSelect);

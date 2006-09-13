@@ -24,11 +24,18 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.internal.model.product.Messages;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
+import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 
@@ -38,6 +45,7 @@ import org.w3c.dom.Element;
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
     
     private List generations = new ArrayList(0);
+    private GregorianCalendar validTo = null; //$NON-NLS-1$
 
     public TimedIpsObject(IIpsSrcFile file) {
         super(file);
@@ -110,6 +118,13 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
                 }
             }
         }
+        
+        // exclude an (invalid) generation which has a valid-from date after the valid-to date 
+        // of this IpsObject.
+        if (generation != null && getValidTo() != null && generation.getValidFrom().after(getValidTo())) {
+            return null;
+        }
+        
         return generation;
     }
 
@@ -196,7 +211,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        // nothing else to do so far
+        validTo = XmlUtil.parseXmlDateStringToGregorianCalendar(element.getAttribute(PROPERTY_VALID_TO));
     }
     
     /**
@@ -216,7 +231,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        // nothing else to do so far
+        element.setAttribute(PROPERTY_VALID_TO, XmlUtil.gregorianCalendarToXmlDateString(validTo));
     }
     
     /**
@@ -236,4 +251,45 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     protected final void reinitPartCollections() {
         generations.clear();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public GregorianCalendar getValidTo() {
+        return validTo;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValidTo(GregorianCalendar validTo) {
+        GregorianCalendar oldId = this.validTo;
+        this.validTo = validTo;
+        valueChanged(oldId, validTo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        GregorianCalendar validTo = getValidTo();
+        if (validTo != null) {
+            IIpsObjectGeneration[] generations = getGenerations();
+            for (int i = 0; i < generations.length; i++) {
+                if (generations[i].getValidFrom().after(validTo)) {
+                    IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+                    String params[] = new String[4];
+                    params[0] = prefs.getValidFromFormat().format(validTo.getTime());
+                    params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+                    params[2] = "" + generations[i].getGenerationNo(); //$NON-NLS-1$
+                    params[3] = prefs.getValidFromFormat().format(generations[i].getValidFrom().getTime());
+                    String msg = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgIvalidValidToDate, params);
+                    list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
+                }
+            }
+        }
+    }
+    
+    
 }

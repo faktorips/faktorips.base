@@ -27,6 +27,22 @@ import java.util.GregorianCalendar;
 public interface ITimedIpsObject extends IIpsObject {
     
     /**
+     * Name of the property for the valid-to date for this product component
+     */
+    public final static String PROPERTY_VALID_TO = "validTo"; //$NON-NLS-1$
+
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "TIMEDIPSOBJECT-"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the valid-to date for this object is invalid
+     */
+    public final static String MSGCODE_INVALID_VALID_TO = MSGCODE_PREFIX + "InvalidValidToDate"; //$NON-NLS-1$
+
+
+    /**
      * Returns true if this object's data changes at the indicated point in time,
      * otherwise false.
      */
@@ -86,5 +102,14 @@ public interface ITimedIpsObject extends IIpsObject {
      */
     public int getNumOfGenerations();
     
+    /**
+     * @return The date this IpsObject is valid to.
+     */
+    public GregorianCalendar getValidTo();
+
+    /**
+     * Set the date this IpsObject is valid to.
+     */
+    public void setValidTo(GregorianCalendar validTo);
     
 }

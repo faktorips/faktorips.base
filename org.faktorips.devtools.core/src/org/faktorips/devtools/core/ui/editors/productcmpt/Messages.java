@@ -178,4 +178,6 @@ public class Messages extends NLS {
 
     public static String GenerationsSection_buttonCancel;
 
+    public static String ProductAttributesSection_labelValidTo;
+
 }

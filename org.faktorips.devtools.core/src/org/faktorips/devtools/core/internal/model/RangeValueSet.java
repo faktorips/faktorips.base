@@ -137,7 +137,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      */
     public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
-            throw new NullPointerException("MessageList required.");
+            throw new NullPointerException("MessageList required."); //$NON-NLS-1$
         }
         
         ValueDatatype datatype = getValueDatatype();
@@ -188,7 +188,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
-            throw new NullPointerException("MessageList required");
+            throw new NullPointerException("MessageList required"); //$NON-NLS-1$
         }
         
         ValueDatatype datatype = getValueDatatype();

@@ -32,6 +32,16 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
      */
     public final static String TAG_NAME = "Generation"; //$NON-NLS-1$
     
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "IPSOBJECTGEN-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the valid-from date of this generation
+     * is invalid.
+     */
+    public final static String MSGCODE_INVALID_VALID_FROM = MSGCODE_PREFIX + "InvalidValidFromDate"; //$NON-NLS-1$
 
     /**
      * Returns the object this is a generation of.

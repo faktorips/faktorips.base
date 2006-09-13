@@ -351,4 +351,18 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         
         assertTrue(generation.canCreateValidRelation(target, relation));
     }
+    
+    public void testValidateValidFrom() throws Exception {
+        IPolicyCmptType type = newPolicyCmptType(ipsProject, "type");
+        generation.getProductCmpt().setPolicyCmptType(type.getQualifiedName());
+        generation.getProductCmpt().setValidTo(new GregorianCalendar(2000, 10, 1));
+        generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
+        
+        MessageList ml = generation.validate();
+        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
+        
+        generation.setValidFrom(new GregorianCalendar(2000, 9, 1));
+        ml = generation.validate();
+        assertNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_INVALID_VALID_FROM));
+    }
 }

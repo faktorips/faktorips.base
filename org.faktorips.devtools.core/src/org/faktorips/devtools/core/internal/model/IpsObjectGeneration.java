@@ -20,11 +20,15 @@ package org.faktorips.devtools.core.internal.model;
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -159,8 +163,11 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      */
 	public GregorianCalendar getValidTo() {
 		IIpsObjectGeneration[] generations = this.getTimedIpsObject().getGenerations();
-		
-		for (int i = 0; i < generations.length; i++) {
+
+        GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
+        GregorianCalendar validTo = null;
+        
+		for (int i = 0; i < generations.length && validTo == null; i++) {
 			if (generations[i].getGenerationNo() == this.getGenerationNo()+1) {
 				GregorianCalendar date = generations[i].getValidFrom();
 				if (date != null) {
@@ -173,11 +180,24 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 					// the follow-up generation is valid from.
 					date.setTimeInMillis(date.getTimeInMillis() - 1);
 				}
-				return date;
+                validTo = date;
 			}
 		}
-		return null;
-	}
+
+        if (parentValidTo == null) {
+            // no restriction given by parent, so we can return the default value
+            return validTo;
+        }
+        
+        if (validTo == null || validTo.after(parentValidTo)) {
+            // a restriction given by the parent exists, so we have to apply
+            return parentValidTo;
+        }
+        else {
+            return validTo;
+        }
+
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -204,4 +224,26 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 		}
 		return null;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
+        
+        if (parentValidTo != null && getValidFrom().after(parentValidTo)) {
+            IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences(); 
+            String[] params = new String[3];
+            params[0] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+            params[1] = prefs.getValidFromFormat().format(getValidFrom().getTime());
+            params[2] = prefs.getValidFromFormat().format(parentValidTo.getTime());
+            String msg = Messages.bind(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
+            
+            list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
+        }
+        
+    }
+    
+    
 }
