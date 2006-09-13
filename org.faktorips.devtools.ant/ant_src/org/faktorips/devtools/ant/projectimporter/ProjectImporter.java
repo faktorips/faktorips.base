@@ -72,6 +72,11 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      */
     public void execute() throws BuildException {
 
+        // Check dir-attribute
+        if (this.getDir().equals("") || this.getDir() == null){
+            throw new BuildException("Please provide the 'dir' attribute.");
+        }
+        
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
