@@ -31,7 +31,9 @@ public class Messages extends NLS {
     }
     public static String AddIpsNatureAction_defaultRuntimeIdPrefix;
     public static String AddIpsNatureAction_defaultSourceFolderName;
+    public static String AddIpsNatureAction_dialogMessage;
     public static String AddIpsNatureAction_dialogTitle;
+    public static String AddIpsNatureAction_ErrorNoSourceFolderName;
     public static String AddIpsNatureAction_fullProject;
     public static String AddIpsNatureAction_modelProject;
     public static String AddIpsNatureAction_productDefinitionProject;
