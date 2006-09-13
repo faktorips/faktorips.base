@@ -689,7 +689,9 @@
                  usequiet="true"
 		 usedebug="no"
 		 uselogger="false"
-		 />
+		 >
+		 	<property name="eclipsetest.logdir" value="logs/${project.name}/" />
+		 	</ant>
           </schedule>
           
           <log logdir="logs/org.faktorips.eclipsetest/" >
