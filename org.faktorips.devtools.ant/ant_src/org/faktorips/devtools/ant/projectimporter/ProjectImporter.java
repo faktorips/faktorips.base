@@ -16,6 +16,7 @@ package org.faktorips.devtools.ant.projectimporter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.ant.core.AntCorePlugin;
@@ -38,24 +39,37 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
     /** path to project dir file */
     private String projectDir = "";
 
+    /**
+     * Sets the ANT-Attribute which describes the location of the Eclipseproject to import.
+     * 
+     * @param dir Path to the Project as String
+     */
     public void setDir(String dir) {
-        System.out.println(dir);
         this.projectDir = dir;
     }
 
+    /**
+     * Returns the Path of the Eclipseproject to import as String
+     * 
+     * @return Path as String
+     */
     public String getDir() {
         return this.projectDir;
     }
 
+    /**
+     * Assembles the Path to the .project File
+     * 
+     * @return File
+     */
     private File getProjectFile() {
         return new File(this.projectDir + "/.project");
 
     }
 
-    public ProjectImporter() {
-        super();
-    }
-
+    /**
+     * Excecutes the Ant-Task {@inheritDoc}
+     */
     public void execute() throws BuildException {
 
         // Fetch Workspace
@@ -67,20 +81,31 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
         try {
             // get description provieded in .project File
-            IProjectDescription description = workspace.loadProjectDescription(new FileInputStream(this
-                    .getProjectFile()));
+            InputStream inputStream = new FileInputStream(this.getProjectFile());
+            IProjectDescription description = null;
+
+            try {
+                description = workspace.loadProjectDescription(inputStream);
+            }
+            catch (Exception e) {
+                throw new BuildException(e);
+            }
+            finally {
+                inputStream.close();
+            }
 
             // create new project with name provided in description
             IProject project = workspace.getRoot().getProject(description.getName());
-            
+
             // check if project already exists in current workspace
-            if (project.exists()){
-                throw new BuildException("Project "+project.getName()+" already exists.");
+            if (project.exists()) {
+                throw new BuildException("Project " + project.getName() + " does alreade exist.");
             }
             project.create(description, monitor);
 
             // copy files
-            Copy.copyDir(this.getDir(), project.getLocation().toString());
+            Copy copyUtil = new Copy();
+            copyUtil.copyDir(this.getDir(), project.getLocation().toString());
 
             // open and refresh the project - this will cause a complete rebuild
             project.open(monitor);
@@ -92,6 +117,5 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
         }
 
     }
-
 
 }

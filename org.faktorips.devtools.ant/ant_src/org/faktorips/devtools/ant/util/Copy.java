@@ -29,11 +29,11 @@ public class Copy {
     /**
      * Do a recursive Directory-Copy
      * 
-     * @param fromDir
-     * @param toDir
+     * @param fromDir Source Directory as String
+     * @param toDir   Target Directory as String
      * @throws IOException
      */
-    public static void copyDir(String fromDir, String toDir) throws IOException {
+    public void copyDir(String fromDir, String toDir) throws IOException {
         File dirFile = new File(fromDir);
         if (!dirFile.exists()) {
             return;
@@ -62,33 +62,45 @@ public class Copy {
 
     /**
      * Copy a single File
+     * 
+     * @param from - Path to the Sourcefile as String
+     * @param to   - Path to the Targetfile as String
      */
-    public static void copyFile(String from, String to) throws FileNotFoundException, IOException {
+    public void copyFile(String from, String to) throws FileNotFoundException, IOException {
         mkdirs(to);
         InputStream input = new BufferedInputStream(new FileInputStream(from));
         OutputStream output = new BufferedOutputStream(new FileOutputStream(to));
         int c;
-        while ((c = input.read()) != -1) {
-            output.write(c);
+        try{
+            while ((c = input.read()) != -1) {
+                output.write(c);
+            }
+        }catch (IOException e){
+            throw e;
+        }finally{
+            input.close();
+            output.close();
         }
-        input.close();
-        output.close();
 
     }
 
     /**
-     * Create a single Directory
-     * @param dir
+     * Create a Directory.
+     * Supports creating multiple Directories at once.
+     * Example: mkdir("/path/to/a/new/dir") will create all subdirs
+     * 
+     * @param dir - Directory-Name as String
      */
-    public static void mkdir(String dir) {
+    public void mkdir(String dir) {
         new File(dir).mkdirs();
     }
 
     /**
      * Create multiple directories recursive
-     * @param file
+     * 
+     * @param file - new Path as String
      */
-    public static void mkdirs(String file) {
+    public void mkdirs(String file) {
         file = file.replace('/', File.separatorChar);
         int pos = file.lastIndexOf(File.separatorChar);
         if (pos != -1) {
