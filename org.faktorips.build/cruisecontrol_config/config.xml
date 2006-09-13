@@ -659,8 +659,8 @@
 	       
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.core" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.stdbuilder" />
-               <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.fl" />
-               <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.runtime" />
+           <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.fl" />
+           <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.runtime" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.util" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.valuetypes" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.dtflcommon" />
@@ -669,6 +669,7 @@
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature.test" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.updatesite" />
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.ant" /> 
 
 	       <!-- BBV-Projekt ->
 	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.devtools" />
