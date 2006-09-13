@@ -17,7 +17,7 @@
 		<property name="id" value="org.faktorips.feature.test"/>
 	</ant>
 	
-	<ant antfile="${genericTaragets}" target="${target}" >
+	<ant antfile="${genericTargets}" target="${target}" >
 		<property name="type" value="plugin" />
 		<property name="id" value="org.faktorips.ant"/>
 	</ant>
