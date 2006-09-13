@@ -78,6 +78,7 @@ public class Copy {
         }catch (IOException e){
             throw e;
         }finally{
+            if ((input != null) && (output != null))
             input.close();
             output.close();
         }
