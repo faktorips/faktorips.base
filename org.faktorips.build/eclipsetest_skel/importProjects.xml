@@ -1,8 +1,0 @@
-<project name="importProjects" default="import">
-	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.projectimporter.ProjectImporter"/>
-	
-	<target name="import">
-		<faktorips.import dir="${sourcedir}"/>
-	</target>
-
-</project>
