@@ -91,7 +91,9 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
                 throw new BuildException(e);
             }
             finally {
-                inputStream.close();
+                if (inputStream != null){
+                    inputStream.close();
+                }
             }
 
             // create new project with name provided in description
