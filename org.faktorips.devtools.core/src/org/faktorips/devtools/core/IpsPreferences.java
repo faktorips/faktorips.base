@@ -20,7 +20,6 @@ package org.faktorips.devtools.core;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
@@ -102,11 +101,6 @@ public class IpsPreferences {
     	prefStore.setDefault(EDIT_RECENT_GENERATION, false);
     	prefStore.setDefault(MODIFY_RUNTIME_ID, false);
     	prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
-    	if (Locale.getDefault().getLanguage().equals(Locale.GERMAN.getLanguage())) {
-        	prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Typ"); //$NON-NLS-1$
-    	} else {
-    		prefStore.setDefault(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX, "Type"); //$NON-NLS-1$
-    	}
     	prefStore.setDefault(ENABLE_GENERATING, true);
     }
 
