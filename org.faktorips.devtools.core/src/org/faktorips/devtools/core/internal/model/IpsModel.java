@@ -109,7 +109,8 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	// project name.
 	private HashMap projectDatatypesMap = new HashMap();
 
-	// a map containing a map per ips project. The map's key is the project name.
+	// a map containing a map per ips project. The map's key is the project
+	// name.
 	// The maps contained in the map, contain the datatypes as keys and the
 	// datatype helper as values.
 	private HashMap projectDatatypeHelpersMap = new HashMap();
@@ -196,15 +197,18 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
 		return shrinked;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object[] getNonIpsResources() throws CoreException {
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+				.getProjects();
 		IProject[] nonIpsProjects = new IProject[projects.length];
 		int counter = 0;
 		for (int i = 0; i < projects.length; i++) {
-			if (!projects[i].isOpen() || !projects[i].hasNature(IIpsProject.NATURE_ID)) {
+			if (!projects[i].isOpen()
+					|| !projects[i].hasNature(IIpsProject.NATURE_ID)) {
 				nonIpsProjects[counter] = projects[i];
 				counter++;
 			}
@@ -706,47 +710,6 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 	}
 
-	/**
-	 * ResourceDeltaVisitor to update any model objects on resource changes.
-	 */
-	private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
-		public boolean visit(IResourceDelta delta) {
-			IResource resource = delta.getResource();
-			try {
-				if (resource == null || resource.getType() != IResource.FILE) {
-					return true;
-				}
-				IIpsProject ipsProject = getIpsProject(resource.getProject());
-				if (checkProjectPropertiesFileModification(ipsProject, resource)) {
-					return false;
-				}
-				IIpsElement element = getIpsElement(resource);
-				if (element == null) {
-					return true;
-				}
-				if (!(element instanceof IIpsSrcFile)) {
-					return true;
-				}
-				IpsSrcFile srcFile = (IpsSrcFile) element;
-				if (delta.getKind() == IResourceDelta.REMOVED) {
-					IpsPlugin.getDefault().getManager().removeSrcFileContents(
-							srcFile);
-					return true;
-				}
-				IpsModelManager manager = IpsPlugin.getDefault().getManager();
-				manager.putSrcFileContents(srcFile, srcFile
-						.getContentFromCorrespondingFile(), srcFile
-						.getIpsProject().getXmlFileCharset());
-				return true;
-			} catch (Exception e) {
-				IpsPlugin.log(new IpsStatus(
-						"Error updating model objects after resource " //$NON-NLS-1$
-								+ resource + " changed.", e)); //$NON-NLS-1$
-			}
-			return true;
-		}
-	}
-
 	/*
 	 * Checks if the project's properties file was changed. If yes, removes data
 	 * from cache and returns true, otherwise false.
@@ -1204,11 +1167,11 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				for (int j = i + 1; j < cmptsToCheck.length; j++) {
 					strategyJ = cmptsToCheck[j].getIpsProject()
 							.getRuntimeIdStrategy();
-					checkRuntimeId(strategyI, cmptsToCheck[i], cmptsToCheck[j], result,
-							true);
+					checkRuntimeId(strategyI, cmptsToCheck[i], cmptsToCheck[j],
+							result, true);
 					if (!strategyI.equals(strategyJ)) {
-						checkRuntimeId(strategyJ, cmptsToCheck[i], cmptsToCheck[j],
-								result, true);
+						checkRuntimeId(strategyJ, cmptsToCheck[i],
+								cmptsToCheck[j], result, true);
 					}
 				}
 			} else {
@@ -1216,11 +1179,11 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					if (cmptsToCheck[i] != baseCheck[j]) {
 						strategyJ = baseCheck[j].getIpsProject()
 								.getRuntimeIdStrategy();
-						checkRuntimeId(strategyI, cmptsToCheck[i], baseCheck[j], result,
-								false);
+						checkRuntimeId(strategyI, cmptsToCheck[i],
+								baseCheck[j], result, false);
 						if (!strategyI.equals(strategyJ)) {
-							checkRuntimeId(strategyJ, cmptsToCheck[i], baseCheck[j],
-									result, false);
+							checkRuntimeId(strategyJ, cmptsToCheck[i],
+									baseCheck[j], result, false);
 						}
 					}
 				}
@@ -1229,8 +1192,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		return result;
 	}
 
-	private void checkRuntimeId(IRuntimeIdStrategy strategy, IProductCmpt cmpt1,
-			IProductCmpt cmpt2, MessageList list, boolean addBoth) {
+	private void checkRuntimeId(IRuntimeIdStrategy strategy,
+			IProductCmpt cmpt1, IProductCmpt cmpt2, MessageList list,
+			boolean addBoth) {
 		if (strategy.sameRuntimeId(cmpt1, cmpt2)) {
 			ObjectProperty[] objects;
 
@@ -1250,6 +1214,48 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					cmpt1.getQualifiedName(), cmpt2.getQualifiedName());
 			list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg,
 					Message.ERROR, objects));
+		}
+	}
+
+	/**
+	 * ResourceDeltaVisitor to update any model objects on resource changes.
+	 */
+	private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
+		public boolean visit(IResourceDelta delta) {
+			IResource resource = delta.getResource();
+			try {
+				if (resource == null || resource.getType() != IResource.FILE) {
+					return true;
+				}
+				IIpsProject ipsProject = getIpsProject(resource.getProject());
+				if (checkProjectPropertiesFileModification(ipsProject, resource)) {
+					return false;
+				}
+				IIpsElement element = getIpsElement(resource);
+				if (element == null) {
+					return true;
+				}
+				if (!(element instanceof IIpsSrcFile)) {
+					return true;
+				}
+				IpsSrcFile srcFile = (IpsSrcFile) element;
+				getValidationResultCache().removeStaleData(srcFile.getIpsObject());
+				if (delta.getKind() == IResourceDelta.REMOVED) {
+					IpsPlugin.getDefault().getManager().removeSrcFileContents(
+							srcFile);
+					return true;
+				}
+				IpsModelManager manager = IpsPlugin.getDefault().getManager();
+				manager.putSrcFileContents(srcFile, srcFile
+						.getContentFromCorrespondingFile(), srcFile
+						.getIpsProject().getXmlFileCharset());
+				return true;
+			} catch (Exception e) {
+				IpsPlugin.log(new IpsStatus(
+						"Error updating model objects after resource " //$NON-NLS-1$
+								+ resource + " changed.", e)); //$NON-NLS-1$
+			}
+			return true;
 		}
 	}
 
