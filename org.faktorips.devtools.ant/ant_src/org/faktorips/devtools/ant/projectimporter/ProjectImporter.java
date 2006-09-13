@@ -19,13 +19,13 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import org.apache.tools.ant.BuildException;
-import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.ant.util.Copy;
 
 /**
@@ -73,16 +73,15 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
     public void execute() throws BuildException {
 
         // Check dir-attribute
-        if (this.getDir().equals("") || this.getDir() == null){
+        if (this.getDir().equals("") || this.getDir() == null) {
             throw new BuildException("Please provide the 'dir' attribute.");
         }
-        
+
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-        // Fetch ProgressMonitor
-        IProgressMonitor monitor = (IProgressMonitor)getProject().getReferences().get(
-                AntCorePlugin.ECLIPSE_PROGRESS_MONITOR);
+        // Create
+        IProgressMonitor monitor = new NullProgressMonitor();
 
         try {
             // get description provieded in .project File
@@ -96,7 +95,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
                 throw new BuildException(e);
             }
             finally {
-                if (inputStream != null){
+                if (inputStream != null) {
                     inputStream.close();
                 }
             }
