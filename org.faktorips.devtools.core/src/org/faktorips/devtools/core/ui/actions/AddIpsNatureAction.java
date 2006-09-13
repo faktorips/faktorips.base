@@ -204,17 +204,6 @@ public class AddIpsNatureAction extends ActionDelegate {
         public AddIpsNatureDialog(Shell parentShell) {
             super(parentShell);
         }
-        
-        /**
-         * {@inheritcDoc}
-         */
-        protected Control createContents(Composite parent) {
-			Control c = super.createContents(parent);
-			setTitle("Add IPS-Nature"); // TODO internationalisieren
-			setMessage("Adds the FaktorIPS-Nature to this project."); // TODO internationalisieren
-            setTitleImage(IpsPlugin.getDefault().getImageDescriptor("wizards/AddIpsNatureWizard.png").createImage()); //$NON-NLS-1$
-			return c;
-		}
 
         /*
          * (non-Javadoc)
