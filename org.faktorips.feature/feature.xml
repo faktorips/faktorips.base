@@ -165,46 +165,46 @@ Es gilt das Recht der Bundesrepublik Deutschland.
          id="org.faktorips.devtools.core"
          download-size="0"
          install-size="0"
-         version="0.9.33"/>
+         version="0.9.34"/>
 
    <plugin
          id="org.faktorips.devtools.stdbuilder"
          download-size="0"
          install-size="0"
-         version="0.9.33"
+         version="0.9.34"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.dtflcommon"
          download-size="0"
          install-size="0"
-         version="0.9.33"
+         version="0.9.34"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.fl"
          download-size="0"
          install-size="0"
-         version="0.9.33"
+         version="0.9.34"
          unpack="false"/>
 
    <plugin
          id="org.faktorips.runtime"
          download-size="0"
          install-size="0"
-         version="0.9.33"/>
+         version="0.9.34"/>
 
    <plugin
          id="org.faktorips.util"
          download-size="0"
          install-size="0"
-         version="0.9.33"/>
+         version="0.9.34"/>
 
    <plugin
          id="org.faktorips.valuetypes"
          download-size="0"
          install-size="0"
-         version="0.9.33"/>
+         version="0.9.34"/>
 
    <plugin
          id="org.faktorips.devtools.ant"
