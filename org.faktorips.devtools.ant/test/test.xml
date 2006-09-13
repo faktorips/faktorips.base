@@ -5,7 +5,7 @@
 	
 
 	<target name="doIT">
-		<faktorips.import dir="dir" name="name" />
+		<faktorips.import dir="/home/senf/ImportierMich" />
 	</target>
 
 </project>

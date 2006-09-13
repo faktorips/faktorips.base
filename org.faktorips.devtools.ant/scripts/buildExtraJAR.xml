@@ -18,7 +18,10 @@
 		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 	</target>
 
+
+	
 	<target name="ant_tasks/ant-tasks.jar" depends="init" unless="ant_tasks/ant-tasks.jar">
+
 		<property name="destdir" value="${temp.folder}/ant_tasks/ant-tasks.jar.bin"/>
 		<delete dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin"/>
 		<mkdir dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin"/>
@@ -34,6 +37,7 @@
 					<include name="org.eclipse.osgi/bin"/>
 					<include name="org.eclipse.ant.core/bin"/>
 				</dirset>
+				
 				<fileset dir="${eclipse.home}">
 					<include name="plugins/org.eclipse.core.resources*.jar"/>
 					<include name="plugins/org.eclipse.core.runtime*.jar"/>
@@ -43,12 +47,15 @@
 					<include name="plugins/org.eclipse.ant.core*.jar"/>
 				</fileset>
 				
-				<dirset dir="${basedir}/">
-					<include name="**/*" />
-				</dirset>
+			
+				<fileset dir="${basedir}">
+					<include name="lib/*.jar" />
+				</fileset>
+				
 			</classpath>
 			<src path="ant_src/"/>
 		</javac>
+
 		<!-- copy necessary resources -->
 		<copy todir="${temp.folder}/ant_tasks/ant-tasks.jar.bin">
 			<fileset dir="ant_src/" excludes="**/*.java"/>
