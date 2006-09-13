@@ -10,4 +10,5 @@ build-faktorips.xml zentrales ant-buildfile, welches den checkout macht und ansc
 die dateien in diesem verzeichnis werden per cron-job alle 5min aus dem cvs aktualisiert
 (in /opt/cc/work/skel ) und sind von dort ins work-verzeichniss verlinkt.
 
-Cruisecontrol muss nicht neugestartet werden, damit die änderungen übernommen werden.
+Cruisecontrol muss nicht neugestartet werden, damit die Änderungen übernommen werden.
+Die Reaktionszeit liegt also bei ca. 5-7 Minuten.
