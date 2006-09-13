@@ -690,7 +690,7 @@
 		 usedebug="no"
 		 uselogger="false"
 		 >
-		 	<property name="eclipsetest.logdir" value="logs/${project.name}/" />
+		 	<property name="eclipsetest.logdir" value="eclipsetest/environment/results/xml/" />
 		 	</ant>
           </schedule>
           

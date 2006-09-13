@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -111,10 +112,11 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
             Copy copyUtil = new Copy();
             copyUtil.copyDir(this.getDir(), project.getLocation().toString());
 
-            // open and refresh the project - this will cause a complete rebuild
+            // open and rebuild the project
             project.open(monitor);
-            project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-
+            project.build(IncrementalProjectBuilder.CLEAN_BUILD, monitor);
+            project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+            
         }
         catch (Exception e) {
             throw new BuildException(e);
