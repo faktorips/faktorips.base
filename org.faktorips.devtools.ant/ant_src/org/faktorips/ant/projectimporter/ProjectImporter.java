@@ -82,6 +82,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
             // copy files
             Copy.copyDir(this.getDir(), project.getLocation().toString());
 
+            // open and refresh the project - this will cause a complete rebuild
             project.open(monitor);
             project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
