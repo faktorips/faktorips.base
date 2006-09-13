@@ -15,7 +15,7 @@ public class TestTaskPlugin extends Plugin {
 	 * The constructor.
 	 */
 	public TestTaskPlugin() {
-		plugin = this;
+		plugin = this; 
 	}
 
 	/**
