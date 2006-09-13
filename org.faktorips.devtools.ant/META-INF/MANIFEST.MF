@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Custom FaktorIPS Ant-Tasks
-Bundle-SymbolicName: org.faktorips.ant; singleton:=true
-Bundle-Version: 0.0.1
+Bundle-SymbolicName: org.faktorips.devtools.ant;singleton:=true
+Bundle-Version: 0.9.34
 Bundle-Activator: org.faktorips.ant.TestTaskPlugin
 Bundle-Vendor: faktorzehn.org
 Bundle-Localization: plugin
