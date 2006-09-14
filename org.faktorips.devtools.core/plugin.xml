@@ -176,10 +176,6 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
-         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
-      </perspectiveExtension>
-      <perspectiveExtension targetID="org.faktorips.devtools.core.productDefinitionPerspective">
-         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
@@ -564,42 +560,42 @@
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipspct"
-            id="org.faktorips.devtools.core.policyClass"
+            id="policyClass"
             name="Policy Class"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipsproduct"
-            id="org.faktorips.devtools.core.productComponent"
+            id="productComponent"
             name="Product Component"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipstablestructure"
-            id="org.faktorips.devtools.core.tableStructure"
+            id="tableStructure"
             name="Table Structure"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipstablecontents"
-            id="org.faktorips.devtools.core.TableContents"
+            id="TableContents"
             name="Table Contents"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipstestcase"
-            id="org.faktorips.devtools.core.testCase"
+            id="testCase"
             name="Test Case"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             default-charset="UTF-8"
             file-extensions="ipstestcasetype"
-            id="org.faktorips.devtools.core.testCaseType"
+            id="testCaseType"
             name="TestCase Type"
             priority="normal"/>
    </extension>
@@ -699,6 +695,8 @@
       <externalValueConverter class="org.faktorips.devtools.extsystems.excel.DateValueConverter"/>
    </extension>
    <extension
+         id="org.faktorips.devtools.core.ipsProblemsDecorator"
+         name="IPS-Problemsdecorator"
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="false"
@@ -720,5 +718,26 @@
             icon="icons/IpsProjectNatureOverlay.gif"
             id="org.faktorips.devtools.core.ui.IpsProjectNatureImage"
             natureId="org.faktorips.devtools.core.ipsnature"/>
+   </extension>
+   <extension
+         id="org.faktorips.devtools.core.productCmptMergeViewer"
+         point="org.eclipse.compare.contentMergeViewers">
+      <viewer
+            class="org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareViewerCreator"
+            extensions="ipsproduct"
+            id="org.faktorips.devtools.core.productCmptCompareViewer"/>
+      <contentTypeBinding
+            contentMergeViewerId="org.faktorips.devtools.core.productCmptCompareViewer"
+            contentTypeId="org.faktorips.devtools.core.productComponent"/>
+   </extension>
+   <extension
+         point="org.eclipse.compare.structureCreators">
+      <structureCreator
+            class="org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItemCreator"
+            extensions="ipsproduct"
+            id="org.faktorips.devtools.core.ui.team.compare.productCmptCompareItemCreator"/>
+      <contentTypeBinding
+            contentTypeId="org.faktorips.devtools.core.productComponent"
+            structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productCmptCompareItemCreator"/>
    </extension>
 </plugin>

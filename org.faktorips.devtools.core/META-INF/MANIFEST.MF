@@ -29,7 +29,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.ui,
  org.eclipse.update.configurator,
  org.eclipse.debug.core,
- org.eclipse.ui.views
+ org.eclipse.ui.views,
+ org.eclipse.compare,
+ org.eclipse.team.cvs.core
 Eclipse-AutoStart: true
 Export-Package: org.apache.poi.ddf,
  org.apache.poi.dev,
@@ -88,6 +90,7 @@ Export-Package: org.apache.poi.ddf,
  org.faktorips.devtools.core.ui.editors.testcase,
  org.faktorips.devtools.core.ui.forms,
  org.faktorips.devtools.core.ui.search,
+ org.faktorips.devtools.core.ui.team.compare,
  org.faktorips.devtools.core.ui.views.modelexplorer,
  org.faktorips.devtools.core.ui.views.testrunner,
  org.faktorips.devtools.core.ui.wizards,
