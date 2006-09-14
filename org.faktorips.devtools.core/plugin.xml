@@ -97,6 +97,42 @@
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.core.ChangeWorkingDateAction.tooltip"/>
       </actionSet>
+
+      <actionSet
+            label="IPS Navigation"
+            description="IPS Navigation Action Set"
+            visible="false"
+            id="org.faktorips.devtools.actions.NavigationActionSet">
+         <action
+               class="org.faktorips.devtools.core.ui.actions.OpenIpsObjectAction"
+               definitionId="org.faktorips.devtools.core.openIpsObject"
+               icon="icons/OpenIpsObject.gif"
+               id="org.faktorips.devtools.core.openIpsObject"
+               label="Open IPS Object"
+               menubarPath="navigate/open.ext2"
+               toolbarPath="org.eclipse.search.searchActionSet/Search"
+               tooltip="Open IPS Object">
+         </action>
+      </actionSet>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            name="Open IPS Object"
+            description="Open a IPS object in the editor"
+            categoryId="org.faktorips.devtools.core.ui.category.navigate"
+            id="org.faktorips.devtools.core.openIpsObject">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
+            carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
+      <key
+            sequence="M1+M2+I"
+            commandId="org.faktorips.devtools.core.openIpsObject"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
    </extension>
    
 
