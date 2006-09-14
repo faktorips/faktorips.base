@@ -135,11 +135,6 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
                 handleFilterSelectionChanged();
             }
         });
-        filterList.addListener(SWT.MouseDoubleClick, new Listener() {
-            public void handleEvent(Event evt) {
-                handleDefaultSelected();
-            }
-        });
         GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
         data.widthHint = convertWidthInCharsToPixels(50);
         data.heightHint = convertHeightInCharsToPixels(5);
