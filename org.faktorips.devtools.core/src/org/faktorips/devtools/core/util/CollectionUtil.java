@@ -45,7 +45,10 @@ public class CollectionUtil {
     
     /**
      * Creates a new arraylist that contains the object references in the 
-     * array in the same order. The list's capacity is equal to the array's length. 
+     * array in the same order. The list's capacity is equal to the array's length.
+     * 
+     * Note that the list returned by this method can be modified (without modifying
+     * the array) - which is not possible if used java.util.Arrays.asList()
      * 
      * @throws NullPointerException if array is <code>null</code>.
      */
