@@ -176,6 +176,10 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
+         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.faktorips.devtools.core.productDefinitionPerspective">
+         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
