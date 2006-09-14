@@ -302,7 +302,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 * 
 	 * @throws CoreException
 	 */
-	protected PolicyCmptType newPolicyCmptType(IIpsPackageFragmentRoot root, String qualifiedName) throws CoreException {
+	protected PolicyCmptType newPolicyCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName) throws CoreException {
 	    return (PolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
 	}
 	

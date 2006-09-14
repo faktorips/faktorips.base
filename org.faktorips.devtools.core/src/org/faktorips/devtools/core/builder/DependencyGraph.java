@@ -67,6 +67,7 @@ public class DependencyGraph {
         dependsOnMap = new HashMap();
         List allIpsObjects = new ArrayList();
         ipsProject.findAllIpsObjects(allIpsObjects);
+        System.out.print("all: " + allIpsObjects);
         for (Iterator it = allIpsObjects.iterator(); it.hasNext();) {
             IIpsObject ipsObject = (IIpsObject)it.next();
             QualifiedNameType[] dependsOn = ipsObject.dependsOn();

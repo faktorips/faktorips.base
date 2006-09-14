@@ -55,10 +55,7 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -173,11 +170,12 @@ public class ProductAttributesSection extends IpsSection {
 		editControls.add(runtimeId);
 
         // create label and text control for the valid-to date of the displayed product component
-        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
-        Text validTo = toolkit.createText(rootPane);
-        toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
-        toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
-        editControls.add(validTo);
+//       pk: disabled for version 0.9.35        
+//        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
+//        Text validTo = toolkit.createText(rootPane);
+//        toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+//        toolkit.createVerticalSpacer(rootPane, 2).setBackground(rootPane.getBackground());
+//        editControls.add(validTo);
 
         // create controls for config elements
 		createEditControls();
@@ -185,15 +183,16 @@ public class ProductAttributesSection extends IpsSection {
 		IpsObjectUIController controller = new IpsObjectUIController(generation.getProductCmpt());
 		controller.add(field, generation.getProductCmpt(), IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
 		controller.add(runtimeId, generation.getProductCmpt(), IProductCmpt.PROPERTY_RUNTIME_ID);
-        GregorianCalendarField validToField = new GregorianCalendarField(validTo);
-        controller.add(validToField, generation.getProductCmpt(), IProductCmpt.PROPERTY_VALID_TO);
-
-        validToField.addChangeListener(new ValueChangeListener() {
-            public void valueChanged(FieldValueChangedEvent e) {
-                updateGenerationText();
-            }
-        });
-        
+//       pk: disabled for version 0.9.35        
+//        GregorianCalendarField validToField = new GregorianCalendarField(validTo);
+//        controller.add(validToField, generation.getProductCmpt(), IProductCmpt.PROPERTY_VALID_TO);
+//
+//        validToField.addChangeListener(new ValueChangeListener() {
+//            public void valueChanged(FieldValueChangedEvent e) {
+//                updateGenerationText();
+//            }
+//        });
+//        
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();
 		

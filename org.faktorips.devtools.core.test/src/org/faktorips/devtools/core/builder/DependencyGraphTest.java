@@ -44,10 +44,15 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
-        a = newPolicyCmptType(root, "A");
-        b = newPolicyCmptType(root, "B");
-        c = newPolicyCmptType(root, "C");
-        d = newPolicyCmptType(root, "D");
+        ipsProject.getProject().getWorkspace().run(new IWorkspaceRunnable(){
+            public void run(IProgressMonitor monitor) throws CoreException {
+                a = newPolicyCmptType(root, "A");
+                b = newPolicyCmptType(root, "B");
+                c = newPolicyCmptType(root, "C");
+                d = newPolicyCmptType(root, "D");
+            }
+        }, null);
+
         a.newRelation().setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
         c.newRelation().setTarget(b.getQualifiedName());
@@ -56,10 +61,10 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
             public void run(IProgressMonitor monitor) throws CoreException {
                 a.getIpsSrcFile().save(true, null);
                 c.getIpsSrcFile().save(true, null);
+                graph = new DependencyGraph(ipsProject);
             }
         };
         ipsProject.getProject().getWorkspace().run(runnable, null);
-        graph = new DependencyGraph(ipsProject);
     }
     
     /*
@@ -69,6 +74,8 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
 
         QualifiedNameType[] dependants = graph.getDependants(a.getQualifiedNameType());
         List dependsOnList = CollectionUtil.toArrayList(dependants);
+        System.out.print(dependsOnList);
+        System.out.print(c.getQualifiedNameType());
         assertTrue(dependsOnList.contains(c.getQualifiedNameType()));
         assertEquals(1, dependants.length);
 
