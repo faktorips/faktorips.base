@@ -124,6 +124,9 @@
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
             id="org.faktorips.devtools.core.openIpsObject">
       </command>
+      <category
+            id="org.faktorips.devtools.core.ui.category.navigate"
+            name="IPS Navigation"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
