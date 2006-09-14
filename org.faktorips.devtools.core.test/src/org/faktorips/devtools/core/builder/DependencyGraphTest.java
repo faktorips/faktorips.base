@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.builder;
 import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -39,43 +40,43 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     private IPolicyCmptType c;
     private IPolicyCmptType d;
     
-    
     public void setUp() throws Exception{
         super.setUp();
-        ipsProject = this.newIpsProject("TestProject");
+        
+        ipsProject = newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
-        ipsProject.getProject().getWorkspace().run(new IWorkspaceRunnable(){
-            public void run(IProgressMonitor monitor) throws CoreException {
-                a = newPolicyCmptType(root, "A");
-                b = newPolicyCmptType(root, "B");
-                c = newPolicyCmptType(root, "C");
-                d = newPolicyCmptType(root, "D");
-            }
-        }, null);
-
+        
+        a = newPolicyCmptType(root, "A");
+        b = newPolicyCmptType(root, "B");
+        c = newPolicyCmptType(root, "C");
+        d = newPolicyCmptType(root, "D");
         a.newRelation().setTarget(d.getQualifiedName());
         c.setSupertype(a.getQualifiedName());
         c.newRelation().setTarget(b.getQualifiedName());
-        
+
         IWorkspaceRunnable runnable = new IWorkspaceRunnable(){
             public void run(IProgressMonitor monitor) throws CoreException {
                 a.getIpsSrcFile().save(true, null);
                 c.getIpsSrcFile().save(true, null);
+                // Dependency-graph has to be created here (see below for explanation)
                 graph = new DependencyGraph(ipsProject);
             }
         };
-        ipsProject.getProject().getWorkspace().run(runnable, null);
+        
+        ResourcesPlugin.getWorkspace().run(runnable, null);
+
+        // Dont create the dependency-graph here because this can lead 
+        // to multithreading-problems (race-condition) which can cause 
+        // this test to fail
+        // graph = new DependencyGraph(ipsProject);
     }
     
     /*
      * Test method for 'org.faktorips.plugin.builder.DependencyGraph.getDependants(String)'
      */
     public void testGetDependants() throws CoreException {
-
         QualifiedNameType[] dependants = graph.getDependants(a.getQualifiedNameType());
         List dependsOnList = CollectionUtil.toArrayList(dependants);
-        System.out.print(dependsOnList);
-        System.out.print(c.getQualifiedNameType());
         assertTrue(dependsOnList.contains(c.getQualifiedNameType()));
         assertEquals(1, dependants.length);
 
@@ -100,13 +101,13 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     public void testUpdate() throws Exception {
         a.getRelations()[0].delete();
         IWorkspaceRunnable runnable = new IWorkspaceRunnable(){
-
             public void run(IProgressMonitor monitor) throws CoreException {
                 a.getIpsSrcFile().save(true, null);
             }
-            
         };
+        
         ipsProject.getProject().getWorkspace().run(runnable, null);
+        
         QualifiedNameType[] dependants = graph.getDependants(a.getQualifiedNameType());
         //not only the changed IpsObject has to be updated in the dependency graph but also all dependants of it
         graph.update(a.getQualifiedNameType());
@@ -129,7 +130,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
 
         dependants = graph.getDependants(d.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
+        
         assertEquals(0, dependants.length);
     }
-
 }

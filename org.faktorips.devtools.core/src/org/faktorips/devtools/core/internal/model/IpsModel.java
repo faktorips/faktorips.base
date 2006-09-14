@@ -37,12 +37,14 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.osgi.util.NLS;
@@ -1227,7 +1229,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	 * ResourceDeltaVisitor to update any model objects on resource changes.
 	 */
 	private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
-		public boolean visit(IResourceDelta delta) {
+		public boolean visit(final IResourceDelta delta) {
 			IResource resource = delta.getResource();
 			try {
 				if (resource == null || resource.getType() != IResource.FILE) {
@@ -1237,24 +1239,30 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				if (checkProjectPropertiesFileModification(ipsProject, resource)) {
 					return false;
 				}
-				IIpsElement element = getIpsElement(resource);
+				final IIpsElement element = getIpsElement(resource);
 				if (element == null) {
 					return true;
 				}
 				if (!(element instanceof IIpsSrcFile)) {
 					return true;
 				}
-				IpsSrcFile srcFile = (IpsSrcFile) element;
-				getValidationResultCache().removeStaleData(srcFile.getIpsObject());
-				if (delta.getKind() == IResourceDelta.REMOVED) {
-					IpsPlugin.getDefault().getManager().removeSrcFileContents(
-							srcFile);
-					return true;
-				}
-				IpsModelManager manager = IpsPlugin.getDefault().getManager();
-				manager.putSrcFileContents(srcFile, srcFile
-						.getContentFromCorrespondingFile(), srcFile
-						.getIpsProject().getXmlFileCharset());
+                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        IpsSrcFile srcFile = (IpsSrcFile) element;
+                        getValidationResultCache().removeStaleData(srcFile.getIpsObject());
+                        if (delta.getKind() == IResourceDelta.REMOVED) {
+                            IpsPlugin.getDefault().getManager().removeSrcFileContents(
+                                    srcFile);
+                            return ;
+                        }
+                        IpsModelManager manager = IpsPlugin.getDefault().getManager();
+                        manager.putSrcFileContents(srcFile, srcFile
+                                .getContentFromCorrespondingFile(), srcFile
+                                .getIpsProject().getXmlFileCharset());
+                    }
+                };
+                
+                ResourcesPlugin.getWorkspace().run(runnable, null);
 				return true;
 			} catch (Exception e) {
 				IpsPlugin.log(new IpsStatus(
