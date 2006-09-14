@@ -39,5 +39,9 @@ public class Messages extends NLS {
     public static String ProductCmptCompareItem_PolicyComponentType;
     public static String ProductCmptCompareItem_RuntimeID;
     public static String ProductCmptCompareItem_SourceFile;
+    public static String ProductCmptCompareItem_ValueSet_Value;
+    public static String ProductCmptCompareItem_ValueSet;
+    public static String ProductCmptCompareItem_AllValues;
+    public static String ProductCmptCompareItem_Attribute;
     public static String ProductCmptCompareItem_Relation;
 }

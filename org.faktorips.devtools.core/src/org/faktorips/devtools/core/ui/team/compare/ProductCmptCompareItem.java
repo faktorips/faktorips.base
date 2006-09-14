@@ -60,8 +60,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
  * The TextMergeViewer uses this information to display differences in a way similar to the java source compare.
  * @see org.eclipse.compare.contentmergeviewer.IDocumentRange
  * @author Stefan Widmaier
- * 
- * FIXME Tests for traverse()
  */
 public class ProductCmptCompareItem implements IStreamContentAccessor, IStructureComparator, ITypedElement, IDocumentRange{
     private static final String COLON_BLANK= ": "; //$NON-NLS-1$
@@ -136,12 +134,16 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
     }
     
     /**
-     * Returns a StringRepresentation of the tree (subtree respectively) this ProductCmptCompareItem represents.
+     * Returns a StringRepresentation of the tree (subtree respectively) this ProductCmptCompareItem
+     * represents. The string is appended to the given <code>StringBuffer</code> and can be
+     * retrieved by calling StringBuffer#toString().
      * <p>
-     * Calculates the length (in textformat) of this CompareItem. The length is the length of 
-     * the contentString of this compareItem in addition to the contentStrings of all its children.
-     * The given offset is the startingindex of the contents of this element relative
-     * to the complete document (filecontent).
+     * This method also calculates the length of the string-representation of this CompareItem. The
+     * string representation has a length equal to the contentString of this compareItem in addition
+     * to the contentStrings of all its children. The given offset is the startingindex of the
+     * contents of this element relative to the string-representaition of the <code>IIpsSrcFile</code>
+     * and the contained <code>IProductCmpt</code>.
+     * 
      * @return
      */
     private int getTreeContentString(StringBuffer sb, int offset) {
@@ -179,6 +181,15 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
         return currentLength;
     }
     
+    /**
+     * Iterates over the given list of <code>ProductCmptCompareItem</code>s and calls
+     * #getTreeContentString() on each of them without setting the range (offset and length) of this
+     * <code>ProductCmptCompareItem</code>.
+     * 
+     * @return The length of the string-representation of the given list of
+     *         <code>ProductCmptCompareItem</code>s combined. This also includes linebreakes
+     *         between these items.
+     */
     private int iterateOverList(List list, StringBuffer sb, int offset){
         int currentLength= 0;
         for (Iterator iter = list.iterator(); iter.hasNext();) {
@@ -192,7 +203,10 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
         return currentLength;
     }
 
-
+    /**
+     * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
+     * contain a <code>IConfigElement</code>.
+     */
     private List getConfigElements(List elements){
         List ces= new ArrayList();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
@@ -203,6 +217,11 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
         }
         return ces;
     }
+
+    /**
+     * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
+     * contain a <code>IProductComponentRelation</code>.
+     */
     private List getRelations(List elements){
         List rels= new ArrayList();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
@@ -213,22 +232,6 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
         }
         return rels;
     }
-    
-    
-//    private StringBuffer addRelationsContent() {
-//        StringBuffer sb= new StringBuffer();
-//        for (Iterator iter = children.iterator(); iter.hasNext();) {
-//            IIpsElement element= ((ProductCmptCompareItem)iter.next()).getIpsElement();
-//            if(element instanceof IProductCmptRelation){
-//                IProductCmptRelation rel= (IProductCmptRelation) element;
-//                sb.append(TAB).append(TAB).append(rel.getTarget());
-//                if(iter.hasNext()){
-//                    sb.append(NEWLINE);
-//                }
-//            }
-//        }
-//        return sb;
-//    }
     
     /**
      * Returns the contents of this CompareItem as string. This includes the type,
@@ -246,9 +249,9 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
             }else if(ipsElement instanceof IConfigElement){
                 IConfigElement ce= (IConfigElement) ipsElement;
                 sb.append(TAB).append(TAB).append(ce.getName()).append(NEWLINE);
-                sb.append(TAB).append(TAB).append(TAB).append("Value").append(COLON_BLANK);
+                sb.append(TAB).append(TAB).append(TAB).append(Messages.ProductCmptCompareItem_ValueSet_Value).append(COLON_BLANK);
                 sb.append(ce.getValue()).append(NEWLINE);
-                sb.append(TAB).append(TAB).append(TAB).append("ValueSet").append(COLON_BLANK);
+                sb.append(TAB).append(TAB).append(TAB).append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
                 sb.append(getValueSetContent(ce));
             }else if(ipsElement instanceof IIpsObjectGeneration){
                 IIpsObjectGeneration gen= (IIpsObjectGeneration) ipsElement;
@@ -272,11 +275,17 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
         return sb.toString();
     }
     
+    /**
+     * Returns a string representation of a <code>ValueSet</code>. An <code>EnumValueSet</code>
+     * is represented as a list of values separated by comma ("[1,5,7]"). A
+     * <code>RangeValueSet</code> is represented by its upper and lower bound ("[1..7]"). A
+     * <code>AllValuesValueSet</code> is represented by "<all values>".
+     */
     private StringBuffer getValueSetContent(IConfigElement ce) {
         StringBuffer sb= new StringBuffer();
         IValueSet set= ce.getValueSet();
         if(set instanceof EnumValueSet){
-            sb.append("[");
+            sb.append("["); //$NON-NLS-1$
             String[] values= ((EnumValueSet)set).getValues();
             for (int i = 0; i < values.length; i++) {
                 sb.append(values[i]);
@@ -284,16 +293,16 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
                     sb.append(COMMA);
                 }
             }
-            sb.append("]");
+            sb.append("]"); //$NON-NLS-1$
         }else if(set instanceof RangeValueSet){
             RangeValueSet rangeSet= (RangeValueSet) set;
-            sb.append("[");
+            sb.append("["); //$NON-NLS-1$
             sb.append(rangeSet.getUpperBound());
-            sb.append("...");
+            sb.append(".."); //$NON-NLS-1$
             sb.append(rangeSet.getLowerBound());
-            sb.append("]");
+            sb.append("]"); //$NON-NLS-1$
         }else if(set instanceof AllValuesValueSet){
-            sb.append("<all values>");
+            sb.append(Messages.ProductCmptCompareItem_AllValues);
         }
         return sb;
     }
@@ -311,6 +320,7 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
     
     /**
      * Returns the name of this CompareItem. Includes type and name of the wrapped IpsElement but not its children.
+     * Only to be used at instanciation.
      */
     private String initName(){
         StringBuffer sb= new StringBuffer();
@@ -320,7 +330,7 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
                 sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE).append(rel.getName()).append(QUOTE);
             }else if(ipsElement instanceof IConfigElement){
                 IConfigElement ce= (IConfigElement) ipsElement;
-                sb.append("Attribute").append(COLON_BLANK).append(QUOTE).append(ce.getName()).append(QUOTE);
+                sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE).append(ce.getName()).append(QUOTE);
             }else if(ipsElement instanceof IIpsObjectGeneration){
                 IIpsObjectGeneration gen= (IIpsObjectGeneration) ipsElement;
                 sb.append(Messages.ProductCmptCompareItem_Generation).append(COLON_BLANK).append(QUOTE).append(gen.getName()).append(QUOTE);
@@ -362,8 +372,8 @@ public class ProductCmptCompareItem implements IStreamContentAccessor, IStructur
     }
     
     /**
-     * Returns true if this compareitem and the given compareitem are equal in name, policycomponenttype and runtime id.
-     * Children are not included in the compare.
+     * Returns true if this compareitem and the given compareitem are equal in name,
+     * policycomponenttype and runtime id. Children are not included in the compare. 
      * {@inheritDoc}
      */
     public boolean equals(Object o) {

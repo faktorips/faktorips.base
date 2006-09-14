@@ -54,7 +54,6 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
  * remote product component. By doubleclicking such a node, a text representation of the product
  * components is displayed in the content mergeviewer (parallel scrollable textviewers at the bottom
  * of the compare window). 
- * FIXME Tests
  * 
  * @author Stefan Widmaier
  */
@@ -107,6 +106,7 @@ public class ProductCmptCompareItemCreator implements IStructureCreator {
                 };
                 InputStream is= remoteContent.getContents();
                 String name= ((ITypedElement) input).getName();
+                // FIXME workaround for retrieving filename without using internal classes
                 if(input instanceof ResourceEditionNode){
                     ResourceEditionNode revision= (ResourceEditionNode) input;
                     name= revision.getRemoteResource().getName();
@@ -125,10 +125,6 @@ public class ProductCmptCompareItemCreator implements IStructureCreator {
                     return getStructureForIpsSrcFile((IIpsSrcFile)element);
                 }
             }
-//        }else if(input instanceof ResourceRevisionNode){
-//            
-//        }else if(input instanceof TypedBufferedContent){
-//            
         }else if(input instanceof HistoryItem){
             IResource res= ((HistoryItem) input).getResource();
             IIpsElement element= IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
@@ -166,7 +162,7 @@ public class ProductCmptCompareItemCreator implements IStructureCreator {
                         new ProductCmptCompareItem(generation, rels[j]);
                     }
                 }
-                // create the root document and ranges for all nodes
+                // create the name, root document and ranges for all nodes
                 root.initDocumentRange();
                 return root;
             }
