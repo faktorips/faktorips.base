@@ -163,7 +163,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public void reinitModel() {
         ((IpsModel)getIpsModel()).stopListeningToResourceChanges();
-        manager = new IpsModelManager();
+        manager.flushCache();
         ((IpsModel)getIpsModel()).startListeningToResourceChanges();
     }
     

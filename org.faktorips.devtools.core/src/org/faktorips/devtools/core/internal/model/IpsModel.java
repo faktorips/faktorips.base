@@ -87,6 +87,12 @@ import org.w3c.dom.Document;
 public class IpsModel extends IpsElement implements IIpsModel,
 		IResourceChangeListener {
 
+	public final static boolean TRACE_MODEL_MANAGEMENT;
+	
+	static {
+		TRACE_MODEL_MANAGEMENT = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue();
+	}
+	
 	private List changeListeners;
 
 	/*

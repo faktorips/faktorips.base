@@ -214,7 +214,10 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      * @see org.faktorips.devtools.core.model.IIpsProject#getXmlFileCharset()
      */
     public String getContentFromCorrespondingFile() throws CoreException {
-        InputStream is = getCorrespondingFile().getContents();
+    	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+    		System.out.println("IpsSrcFile.readContentFromCorrespondingFile " + this);
+    	}
+    	InputStream is = getCorrespondingFile().getContents();
         try {
             return StringUtil.readFromInputStream(is, getEncoding());
         } catch (IOException e) {

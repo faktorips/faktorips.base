@@ -33,15 +33,27 @@ public class IpsModelManager {
     
     private Map cache = new HashMap(1000);
     
+    public IpsModelManager() {
+    	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+    		System.out.println("ModelCache created.");
+    	}
+    }
     public IIpsModel getModel() {
         return model;
     }
     
     IpsSourceFileContents getSrcFileContents(IIpsSrcFile file) {
-        return (IpsSourceFileContents)cache.get(file);
+    	IpsSourceFileContents contents = (IpsSourceFileContents)cache.get(file);
+    	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+    		System.out.println("ModelCache.get() for " + file + " returns " + contents);
+    	}
+        return contents;
     }
     
     public void putSrcFileContents(IIpsSrcFile file, String newContent, String encoding) {
+    	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+    		System.out.println("ModelCache.put() for " + file);
+    	}
     	IpsSourceFileContents contents = getSrcFileContents(file);
     	if (contents==null) {
     		contents = new IpsSourceFileContents(file, newContent, encoding);
@@ -56,12 +68,18 @@ public class IpsModelManager {
      */
     public void flushCache() {
         cache.clear();
+    	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+    		System.out.println("ModelCached flushed.");
+    	}
     }
 
 	/**
 	 * @param srcFile
 	 */
 	public void removeSrcFileContents(IIpsSrcFile srcFile) {
+    	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+    		System.out.println("ModelCache.remove() for " + srcFile);
+    	}
 		cache.remove(srcFile);
 	}
 }
