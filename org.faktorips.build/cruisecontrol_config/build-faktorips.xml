@@ -15,9 +15,7 @@
                 
         </target>
         
-        
-	
-        
+
         <!-- project targets. please note: each new target has to be a dependant of 
              "updateBuildTemplate" -->
         
@@ -243,6 +241,11 @@
         		<cvs command="co org.faktorips.integrationtest" dest="${dir}" cvsroot="${cvsroot}" />
 				<!-- start antrunner with import-buildfile -->
         		<property name="importbuildfile" value="${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml" />
+        	
+        		<!-- delete workspace -->
+        		<delete>
+        			<fileset dir="${dir}/environment/workspace/" includes="**/*"/>
+        		</delete>
         		<exec executable="/usr/bin/java" failonerror="true" logError="true">
         			<arg line="-jar  ${dir}/environment/eclipse/startup.jar -data ${dir}/environment/workspace/ -application org.eclipse.ant.core.antRunner -buildfile ${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml -Dsourcedir=${dir}/org.faktorips.integrationtest/" />
         		</exec>
