@@ -144,22 +144,13 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
             return;
         }
         try {
-        	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFile.save() begin: " + this);
-        	}
             ByteArrayInputStream is = new ByteArrayInputStream(getContents().getBytes(getEncoding()));
         	markAsClean();
             getCorrespondingFile().setContents(is, force, true, monitor);
             // notify listeners because dirty state has changed!
             ContentChangeEvent event = new ContentChangeEvent(this);
             ((IpsModel)getIpsModel()).notifyChangeListeners(event);
-        	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFile.save() finished: " + this);
-        	}
         } catch (UnsupportedEncodingException e) {
-        	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFile.save() failed: " + this);
-        	}
             throw new CoreException(new IpsStatus(e));
         }
     }
