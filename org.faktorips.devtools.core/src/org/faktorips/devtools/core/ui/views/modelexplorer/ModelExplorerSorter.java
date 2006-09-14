@@ -23,10 +23,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -37,7 +39,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
  * @author Stefan Widmaier
  */
 public class ModelExplorerSorter extends ViewerSorter{
-
 	public int compare(Viewer viewer, Object o1, Object o2) {
 		if(o1==null || o2==null){
 			return 0;
@@ -56,18 +57,12 @@ public class ModelExplorerSorter extends ViewerSorter{
 		if(o1 instanceof ITableContents && o2 instanceof IProductCmpt){
 			return 1;
 		}
-
 		// place folders above files
 		if (o1 instanceof IIpsPackageFragment && !(o2 instanceof IIpsPackageFragment)) {
 			return -1;
 		}
 		else if (!(o1 instanceof IIpsPackageFragment) && o2 instanceof IIpsPackageFragment) {
 			return 1;
-		}
-
-		// sort IpsProjects lexicographically, super implementation is not sufficient/consistent in this case
-		if(o1 instanceof IpsProject && o2 instanceof IpsProject){
-			return ((IpsProject)o1).getName().compareTo(((IpsProject)o2).getName());
 		}
 
 		if (o1 instanceof IIpsPackageFragment && o2 instanceof IIpsPackageFragment) {
@@ -83,14 +78,19 @@ public class ModelExplorerSorter extends ViewerSorter{
 			// sort IpsProjects lexicographically
 			return fragment.getName().compareTo(fragment2.getName());
 		}
+        if(o1 instanceof IRelation && o2 instanceof IAttribute){
+            return 1;
+        }
+        if(o1 instanceof IAttribute && o2 instanceof IRelation){
+            return -1;
+        }
 		
 		// ------- IResource sorting -------
-		// place IpsProjects above IProjects
-		if(o1 instanceof IpsProject && o2 instanceof IProject){
-			return -1;
-		}
-		if(o1 instanceof IProject && o2 instanceof IpsProject){
-			return 1;
+		// sort IpsProjects and IProjects lexicographically 
+		if((o1 instanceof IIpsProject||o1 instanceof IProject) && (o2 instanceof IIpsProject||o2 instanceof IProject)){
+		    String name1= getProjectName(o1).toLowerCase();
+            String name2= getProjectName(o2).toLowerCase();
+			return name1.compareTo(name2);
 		}
 		// Place model-data above other resources
 		if(o1 instanceof IIpsElement && o2 instanceof IResource){
@@ -111,5 +111,15 @@ public class ModelExplorerSorter extends ViewerSorter{
 		return super.compare(viewer, o1, o2);
 		
 	}
+
+    private String getProjectName(Object o) {
+        if(o instanceof IProject){
+            return ((IProject)o).getName();
+        }else if(o instanceof IIpsProject){
+            return ((IIpsProject)o).getName();
+        }else{
+            return "";
+        }
+    }
 	
 }
