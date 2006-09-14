@@ -316,10 +316,10 @@
 			<arg line="lookForFailure_bbv.pl"/>
 		</exec-->
 
-		<!-- update updatesite-->
+		<!-- update updatesite>
  	       <exec executable="/usr/bin/perl" dir="${dir}/de.bbv.faktorips.build/">
 	                <arg line="publishUpdateSite.pl" />
-	       </exec>
+	       </exec-->
 
         </target>
 
