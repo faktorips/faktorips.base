@@ -30,11 +30,11 @@
    <feature url="features/org.faktorips.feature.nls1_0.9.25.jar" id="org.faktorips.feature.nls1" version="0.9.25">
       <category name="FaktorIPS 0.9.25"/>
    </feature>
-   <feature url="features/org.faktorips.feature_0.9.35.jar" id="org.faktorips.feature" version="0.9.35">
-      <category name="FaktorIPS 0.9.35"/>
+   <feature url="features/org.faktorips.feature_0.9.36.jar" id="org.faktorips.feature" version="0.9.36">
+      <category name="FaktorIPS 0.9.36"/>
    </feature>
-   <feature url="features/org.faktorips.feature.nls1_0.9.35.jar" id="org.faktorips.feature.nls1" version="0.9.35">
-      <category name="FaktorIPS 0.9.35"/>
+   <feature url="features/org.faktorips.feature.nls1_0.9.36.jar" id="org.faktorips.feature.nls1" version="0.9.36">
+      <category name="FaktorIPS 0.9.36"/>
    </feature>
    <category-def name="FaktorIPS 0.9.32" label="FaktorIPS 0.9.32">
       <description>
@@ -61,9 +61,9 @@
          A product modeling and definition system, mainly targeted for the insurance industry. Version 0.9.25
       </description>
    </category-def>
-   <category-def name="FaktorIPS 0.9.35" label="FaktorIPS 0.9.35">
+   <category-def name="FaktorIPS 0.9.36" label="FaktorIPS 0.9.36">
       <description>
-         A product modeling and definition system, mainly targeted for the insurance industry. Version 0.9.35
+         A product modeling and definition system, mainly targeted for the insurance industry. Version 0.9.36
       </description>
    </category-def>
 </site>
