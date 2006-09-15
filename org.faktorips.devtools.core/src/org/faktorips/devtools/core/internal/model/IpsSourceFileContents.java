@@ -87,8 +87,14 @@ public class IpsSourceFileContents {
     
     void setSourceTextInternal(String newSourceText) {
     	if (ObjectUtils.equals(sourceText, newSourceText)) {
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("IpsSrcFileContents.setSourceTextInternal(): source text unchanged.");
+            }
     		return;
     	}
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsSrcFileContents.setSourceTextInternal(): source text has changed.");
+        }
     	sourceText = newSourceText;
     	contentParsable = null; // force reparse on next request 
     }
@@ -175,13 +181,13 @@ public class IpsSourceFileContents {
         if (ipsObject==null) {
             ipsObject = type.newObject(ipsSrcFile);
         	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFileContents: Created IpsObject: " + ipsObject);
+        		System.out.println("IpsSrcFileContents.parse(): Created IpsObject: " + ipsObject);
         	}
         }
         try {
 			ipsObject.initFromXml(getXmlElement());
         	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFileContents: Initialized IpsObject from xml: " + ipsObject);
+        		System.out.println("IpsSrcFileContents.parse(): Initialized IpsObject from xml: " + ipsObject);
         	}
 		} catch (Exception e) {
 			throw new CoreException(new IpsStatus(e));
