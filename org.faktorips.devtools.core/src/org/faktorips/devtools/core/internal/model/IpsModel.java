@@ -1245,6 +1245,9 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					return true;
 				}
 				IpsSrcFile srcFile = (IpsSrcFile) element;
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: " + srcFile);
+                }
 				getValidationResultCache().removeStaleData(srcFile.getIpsObject());
 				if (delta.getKind() == IResourceDelta.REMOVED) {
 				    IpsPlugin.getDefault().getManager().removeSrcFileContents(
