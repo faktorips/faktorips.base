@@ -258,7 +258,6 @@
 		    		<classpath>
 		    		    <pathelement location="${classes}"/>
 		    		    <pathelement path="${java.class.path}"/> 
-		    			<path refid="classpath" />
 		    			<fileset dir="${dir}/environment/workspace/org.faktorips.integrationtest/lib/" >
 		    				<patternset> 
 		    					<include name="*.jar" />
