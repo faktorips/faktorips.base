@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -50,10 +52,14 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.progress.IProgressService;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
@@ -69,8 +75,10 @@ public class IpsTestRunner implements IIpsTestRunner {
     private static final int ACCEPT_TIMEOUT = 1500;
     
 	private int port;
-    private IJavaProject project;    
+    private IIpsProject ipsProject;    
     private BufferedReader reader;
+    
+    private String testRunnerMaxHeapSize = ""; //$NON-NLS-1$
     
     private String classpathRepositories;
     private String testsuites;
@@ -130,15 +138,15 @@ public class IpsTestRunner implements IIpsTestRunner {
     /**
      * {@inheritDoc}
      */
-    public void setJavaProject(IJavaProject project){
-    	 this.project = project;
+    public void setIpsProject(IIpsProject ipsProject){
+    	 this.ipsProject = ipsProject;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IJavaProject getJavaProject(){
-    	 return project;
+    public IIpsProject getIpsProject(){
+    	 return ipsProject;
     }
     
     /**
@@ -160,7 +168,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     	if (! (testsuites.indexOf("{")>=0)) //$NON-NLS-1$
     		testsuites = "{" + testsuites + "}"; //$NON-NLS-1$ //$NON-NLS-2$
     	
-    	IVMInstall vmInstall= getVMInstall(project);
+    	IVMInstall vmInstall= getVMInstall(ipsProject.getJavaProject());
         
         if (vmInstall == null)
             return;
@@ -168,30 +176,25 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (vmRunner == null)
             return;
 
-        String[] classPath = computeClasspath(project);
+        String[] classPath = computeClasspath(ipsProject.getJavaProject());
         
         VMRunnerConfiguration vmConfig= new VMRunnerConfiguration(SocketIpsTestRunner.class.getName(), classPath);
-        String[] args = new String[3];
+        String[] args = new String[4];
         
         port= SocketUtil.findFreePort();  //$NON-NLS-1$        
         
+        // sets the arguments for the socket test runner
         args[0]= Integer.toString(port);
         args[1] = classpathRepositories;
         args[2] = testsuites;
+        args[3] = ""; //$NON-NLS-1$
+        // create the string containing the repository packages
+        for (Iterator iter = getAllRepositoryPackagesAsString(ipsProject).iterator(); iter.hasNext();) {
+            args[3] += "{" + (String) iter.next() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
         
         vmConfig.setProgramArguments(args);
 
-        // get the max heap size for the test runner, should be passed as
-        //  program argument "-ipstestrunner.xmx <size>" (e.g. "-ipstestrunner.xmx 512M")
-        String testRunnerMaxHeapSize = ""; //$NON-NLS-1$
-        String[] applicationArgs = Platform.getApplicationArgs();
-        // do not process the last one as it will never have a parameter
-        for (int i = 0; i < applicationArgs.length -1; i++) {
-            if ("-ipstestrunner.xmx".equalsIgnoreCase(applicationArgs[i])) { //$NON-NLS-1$
-                testRunnerMaxHeapSize = applicationArgs[i+1];
-                break;
-            }
-        }
         if (testRunnerMaxHeapSize.length()>0)
             testRunnerMaxHeapSize = "-Xmx" + testRunnerMaxHeapSize; //$NON-NLS-1$
         
@@ -205,10 +208,25 @@ public class IpsTestRunner implements IIpsTestRunner {
         connect();
     }
 
+    /**
+     * Returns the max heap size for the test runner, should be passed as program argument
+     * "-ipstestrunner.xmx <size>" (e.g. "-ipstestrunner.xmx 512M")
+     */
+    public String getMaxHEapSizeFromAppArgs(){
+        String[] applicationArgs = Platform.getApplicationArgs();
+        // do not process the last one as it will never have a parameter
+        for (int i = 0; i < applicationArgs.length -1; i++) {
+            if ("-ipstestrunner.xmx".equalsIgnoreCase(applicationArgs[i])) { //$NON-NLS-1$
+                return applicationArgs[i+1];
+            }
+        }
+        return ""; //$NON-NLS-1$
+    }
+    
     /*
      * Ask for saving dirty editors, and wait for builders.
      */
-    private boolean checkPrelauchConditions() {
+    private boolean checkPrelauchConditions(final String classpathRepository, final String testsuite) {
         try {
             // ask for saving dirty editors
             if (!saveAllEditors(true))
@@ -245,16 +263,22 @@ public class IpsTestRunner implements IIpsTestRunner {
                         };
                         addJobChangeListener(listener);
                         try {
-                            jobManager.join(ResourcesPlugin.FAMILY_MANUAL_BUILD, monitor);
                             jobManager.join(ResourcesPlugin.FAMILY_AUTO_BUILD, monitor);
+                            jobManager.join(ResourcesPlugin.FAMILY_MANUAL_BUILD, monitor);
                             jobManager.join(ResourcesPlugin.FAMILY_AUTO_REFRESH, monitor);
                         } catch (InterruptedException e) {
                             // just continue.
                         }
 
                         if (!monitor.isCanceled()) {
+                            try {
+                                startTestRunnerJob(classpathRepository, testsuite, true);
+                            } catch (CoreException e) {
+                                IpsPlugin.log(e);
+                            }                    
+                            return Status.OK_STATUS;
                         }
-                        return Status.OK_STATUS;
+                        return Status.CANCEL_STATUS;
                     }
                 };
                 IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
@@ -264,13 +288,14 @@ public class IpsTestRunner implements IIpsTestRunner {
                 if (wait) {
                     progressService.showInDialog(workbench.getActiveWorkbenchWindow().getShell(), job);
                 }
-                // if a save was performed, wait 1000ms to ensure that the builder has started
-                job.schedule(1000);
+                job.schedule();
+                return false;
             }
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }
+        
         return true;
     }
 
@@ -384,7 +409,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             String testName = line.substring(SocketIpsTestRunner.TEST_FINISHED.length());  //$NON-NLS-1$
         	notifyTestFinished(testName);
         }else if (line.startsWith(SocketIpsTestRunner.TEST_FAILED)) { //$NON-NLS-1$
-        	// format: qualifiedName|testObject|testedAttribute|expectedValue|actualValue
+        	// format: qualifiedName|testObject|testedAttribute|expectedValue|actualValue|message
             String failureDetailsLine = line.substring(SocketIpsTestRunner.TEST_FAILED.length());
             String qualifiedTestName = failureDetailsLine.substring(0, failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
             ArrayList failureTokens = new ArrayList(5);
@@ -474,6 +499,41 @@ public class IpsTestRunner implements IIpsTestRunner {
         return classPath;
     }
     
+    /**
+     * Returns a list off repository packages of the given ips project and its referenced projects
+     * and referenced projects by the referenced projects ...
+     */
+     private List getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreException{
+         List repositoryPackages = new ArrayList();
+         getRepositoryPackages(ipsProject, repositoryPackages);
+         IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
+         for (int i = 0; i < ipsProjects.length; i++) {
+             getRepositoryPackages(ipsProjects[i], repositoryPackages);
+         }
+         return repositoryPackages;
+     }
+     
+     /*
+      * Adds all repository packages of the given ips project to the given list. Add the repository
+      * package only if the toc file exists.
+      */
+     private void getRepositoryPackages(IIpsProject ipsProject, List repositoryPackages) throws CoreException {
+         IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
+         for (int i = 0; i < ipsRoots.length; i++) {
+             IIpsArtefactBuilderSet builderSet = ipsProject.getArtefactBuilderSet();
+             IFile tocFile = builderSet.getRuntimeRepositoryTocFile(ipsRoots[i]);
+             if (tocFile != null && tocFile.exists()){
+                 String repositoryPck = builderSet.getTocFilePackageName(ipsRoots[i]);
+                 if (repositoryPck != null && ! repositoryPackages.contains(repositoryPck))
+                     repositoryPackages.add(repositoryPck);
+             }
+         }
+         IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
+         for (int i = 0; i < ipsProjects.length; i++) {
+             getRepositoryPackages(ipsProjects[i], repositoryPackages);
+         }
+     }
+     
     /**
      * Adds the given ips test run listener to the collection of listeners
      */
@@ -568,14 +628,26 @@ public class IpsTestRunner implements IIpsTestRunner {
 	}
 	
 	/**
-	 * {@inheritDoc}
+     * {@inheritDoc}
 	 */
-	public void startTestRunnerJob(String classpathRepository, String testsuite){
+	public void startTestRunnerJob(String classpathRepository, String testsuite) throws CoreException{
+        startTestRunnerJob(classpathRepository, testsuite, false);
+	}
+    
+    /**
+     * Starts the test runner.
+     */
+    private void startTestRunnerJob(String classpathRepository, String testsuite, boolean force) throws CoreException{
         // check for dirty editors and wait for builders
-        if (!checkPrelauchConditions())
+        if (!force && !checkPrelauchConditions(classpathRepository, testsuite))
             return;
         
-		job = new TestRunnerJob(this, classpathRepository, testsuite);
+        testRunnerMaxHeapSize = IpsPlugin.getDefault().getIpsPreferences().getIpsTestRunnerMaxHeapSize();
+        if (!StringUtils.isNumeric(testRunnerMaxHeapSize)){
+            throw new CoreException(new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize, testRunnerMaxHeapSize)));
+        }
+        
+        job = new TestRunnerJob(this, classpathRepository, testsuite);
 
         job.addJobChangeListener(new JobChangeAdapter() {
             public void done(IJobChangeEvent event) {
@@ -586,7 +658,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         job.setRule(workspace.getRoot());
         job.schedule();
-	}
+    }
     
 	/*
 	 * Job class to run the selected tests.

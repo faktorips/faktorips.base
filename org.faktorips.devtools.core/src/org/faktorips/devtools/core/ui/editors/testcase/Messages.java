@@ -68,4 +68,15 @@ public class Messages extends NLS {
     public static String TestCaseSection_ToolBar_WithoutRelation;
     public static String TestCaseEditor_Combined_Title;
     public static String TestCaseLabelProvider_undefined;
+    public static String TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
+    public static String TestCaseSection_MessageDialog_TitleStoreExpectedResults;
+    public static String TestCaseSection_MessageDialog_QuestionStoreExpectedResults;
+    public static String TestCaseSection_Action_StoreExpectedResults;
+    public static String TestCaseSection_Action_ToolTipStoreExpectedResults;
+    public static String TestCaseSection_Action_StoreExpectedResult;
+    public static String TestCaseSection_Action_ToolTipStoreExpectedResult;
+    public static String TestCaseSection_Action_RunTestAndStoreExpectedResults;
+    public static String TestCaseSection_MessageDialog_TitleRunTestAndStoreExpectedResults;
+    public static String TestCaseSection_MessageDialog_QuestionRunTestAndStoreExpectedResults;
+    public static String TestCaseSection_SectionTitleToolTip_StoredExpectedResults;
 }

@@ -71,9 +71,9 @@ public interface ITestCaseType extends IIpsObject {
     /**
      * Returns all test parameters.
      * <p>
-     * Returns <code>null</code> if the test case type contains no test parameters.
+     * Returns an empty list if the test case type contains no test parameters.
      */
-    public ITestParameter[] getTestParameters() throws CoreException;
+    public ITestParameter[] getTestParameters();
     
     /**
      * Returns all input parameters or an empty array if the test case type hasn't got any input
@@ -88,7 +88,7 @@ public interface ITestCaseType extends IIpsObject {
     public ITestValueParameter[] getTestValueParameters();
     
     /**
-     * Returns all test policy component type parameters or an empty array if the test case
+     * Returns all root test policy component type parameters or an empty array if the test case
      * type hasn't got any test policy component type parameters.
      */
     public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters();
@@ -159,4 +159,21 @@ public interface ITestCaseType extends IIpsObject {
      * Evaluates and returns an unique name (inside this test case) for the test attribute.
      */
     public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name); 
+    
+    /**
+     * Moves the test parameter identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first test parameter), nothing is moved up. 
+     * If one of the indexes is the number of attributes - 1 (the last test attribute)
+     * nothing moved down
+     * @param indexes   The indexes identifying the test parameter.
+     * @param up        <code>true</code>, to move up, 
+     * <false> to move them down.
+     * 
+     * @return The new indexes of the moved test parameter.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * an attribute.
+     */
+    public int[] moveTestParameters(int[] indexes, boolean up);    
 }

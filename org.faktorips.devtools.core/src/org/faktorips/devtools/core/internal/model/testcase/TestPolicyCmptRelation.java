@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -147,7 +148,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 * {@inheritDoc}
 	 */
 	public void delete() {
-		((TestPolicyCmpt) getIpsObject()).removeTestPcTypeRelation(this);
+		((TestPolicyCmpt) getParent()).removeTestPcTypeRelation(this);
 		updateSrcFile();
 		deleted = true;
 	}
@@ -163,7 +164,23 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 * {@inheritDoc}
 	 */
 	public Image getImage() {
-		return null;
+        if (isAccoziation()){
+            // TODO Joerg: icon link product cmpt or link policy cmpt type
+            return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
+        } else {
+            try {
+                ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
+                if (param != null){
+                    IRelation relation = param.findRelation();
+                    if (relation != null){
+                        return relation.getImage();
+                    }
+                }
+            } catch (CoreException e) {
+                // ignore exception, return default image
+            }
+            return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+        }
 	}
 
 	/**

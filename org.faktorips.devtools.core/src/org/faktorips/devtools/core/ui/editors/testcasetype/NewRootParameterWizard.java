@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.util.StringUtil;
@@ -123,6 +124,9 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
             newTestParameter = testCaseType.newInputTestValueParameter();
         } else if (newDatatype instanceof IPolicyCmptType){
             newTestParameter = testCaseType.newInputTestPolicyCmptTypeParameter();
+            // root parameters have always 1 min and 1 max instances
+            ((ITestPolicyCmptTypeParameter)newTestParameter).setMinInstances(1);
+            ((ITestPolicyCmptTypeParameter)newTestParameter).setMaxInstances(1);
             isTestPolicyCmptTypeParam = true;
         } else{
             return null;

@@ -74,6 +74,12 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage
 				getFieldEditorParent());
 		addField(changeOverTimeField);
 
+        StringFieldEditor ipsTestRunnerMaxHeapSize = new StringFieldEditor(
+                IpsPreferences.IPSTESTRUNNER_MAX_HEAP_SIZE,
+                Messages.FaktorIpsPreferencePage_labelMaxHeapSizeIpsTestRunner,
+                getFieldEditorParent());
+        addField(ipsTestRunnerMaxHeapSize);
+        
         String label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditRecentGenerations, IpsPlugin.getDefault()
 				.getIpsPreferences().getChangesOverTimeNamingConvention()
 				.getGenerationConceptNamePlural());

@@ -17,12 +17,17 @@
 
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
+import java.util.List;
+
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,13 +40,15 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private ITestCaseType type;
-    
+    private IIpsPackageFragmentRoot root;
+
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
+        root = ipsProject.getIpsPackageFragmentRoots()[0];
         type = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculationTest");
     }
 
@@ -153,5 +160,46 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
       assertEquals("Integer", ((ITestValueParameter) type.getInputTestParameters()[0]).getValueDatatype());
       assertEquals("Decimal", ((ITestValueParameter) type.getInputTestParameters()[1]).getValueDatatype());
       assertEquals("Money", ((ITestValueParameter) type.getExpectedResultTestParameters()[0]).getValueDatatype());
+    }
+
+    public void testDependsOn() throws Exception {
+        List dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
+        assertEquals(0, dependsOnList.size());
+        
+        IPolicyCmptType pcType1 = newPolicyCmptType(root, "PolicyCmptType1");
+        IPolicyCmptType pcType2 = newPolicyCmptType(root, "PolicyCmptType2");
+        IPolicyCmptType pcType3 = newPolicyCmptType(root, "PolicyCmptType3");
+        
+        // test dependency to policy cmpt type of root
+        ITestPolicyCmptTypeParameter param1 = type.newInputTestPolicyCmptTypeParameter();
+        param1.setPolicyCmptType(pcType1.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
+        assertEquals(1, dependsOnList.size());
+        assertTrue(dependsOnList.contains(pcType1.getQualifiedNameType()));
+
+        // test dependency to policy cmpt type of child
+        ITestPolicyCmptTypeParameter param2 = param1.newTestPolicyCmptTypeParamChild();
+        param2.setPolicyCmptType(pcType2.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
+        assertEquals(2, dependsOnList.size());
+        assertTrue(dependsOnList.contains(pcType1.getQualifiedNameType()));
+        assertTrue(dependsOnList.contains(pcType2.getQualifiedNameType()));
+ 
+        // test duplicate dependency
+        ITestPolicyCmptTypeParameter param3 = param1.newTestPolicyCmptTypeParamChild();
+        param3.setPolicyCmptType(pcType1.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
+        assertEquals(2, dependsOnList.size());
+        assertTrue(dependsOnList.contains(pcType1.getQualifiedNameType()));
+        assertTrue(dependsOnList.contains(pcType2.getQualifiedNameType()));
+
+        // test dependency to policy cmpt type child of child
+        ITestPolicyCmptTypeParameter param4 = param3.newTestPolicyCmptTypeParamChild();
+        param4.setPolicyCmptType(pcType3.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
+        assertEquals(3, dependsOnList.size());
+        assertTrue(dependsOnList.contains(pcType1.getQualifiedNameType()));
+        assertTrue(dependsOnList.contains(pcType2.getQualifiedNameType()));
+        assertTrue(dependsOnList.contains(pcType3.getQualifiedNameType()));
     }
 }

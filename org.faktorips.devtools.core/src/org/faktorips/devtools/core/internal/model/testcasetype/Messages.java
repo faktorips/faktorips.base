@@ -53,4 +53,5 @@ public class Messages extends NLS {
     public static String TestAttribute_Error_TypeNotAllowedIfParent;
     public static String TestAttribute_Error_AttributeNotFound;
     public static String TestAttribute_Error_DuplicateName;
+    public static String TestParameter_ValidateError_InvalidTestParamName;
 }

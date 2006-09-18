@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
  */
 public class TestCaseHierarchyPath{
 	// Seperator between each hierarchy element
-	private static final String separator = "//"; //$NON-NLS-1$
+	public static final String separator = "//"; //$NON-NLS-1$
 	    
 	// Contains the complete hierarchy path
 	private String hierarchyPath = ""; //$NON-NLS-1$
@@ -47,8 +47,6 @@ public class TestCaseHierarchyPath{
 	
     /**
      * Evaluate the test policy component type parameter path of the given test policy component.
-     * An offset concatenated to the name of the test policy component type parameter indicates the
-     * unique path if there are more instances with the same name.
      */
     public static String evalTestPolicyCmptParamPath(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         String pathWithOffset = ""; //$NON-NLS-1$
@@ -80,7 +78,7 @@ public class TestCaseHierarchyPath{
             if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpcs[i]))
                 offset ++;
         }
-        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$
+        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + offset + (pathWithOffset.length()>0? "." + pathWithOffset: ""); //$NON-NLS-1$ //$NON-NLS-2$
         return pathWithOffset;
     }
     

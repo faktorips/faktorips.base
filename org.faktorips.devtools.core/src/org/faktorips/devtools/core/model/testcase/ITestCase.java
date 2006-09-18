@@ -70,6 +70,12 @@ public interface ITestCase extends IIpsObject {
     public ITestCaseType findTestCaseType() throws CoreException;
 
     /**
+     * Returns all test objects or an empty array if the test case hasn't got any
+     * test objetcs.
+     */
+    public ITestObject[] getTestObjects();
+    
+    /**
      * Returns all policy component objects or an empty array if the test case hasn't got any
      * policy component objetcs.
      */
@@ -80,6 +86,12 @@ public interface ITestCase extends IIpsObject {
      * value objects.
      */
     public ITestValue[] getTestValues();
+    
+    /**
+     * Returns all input test objects or an empty array if the test case hasn't got any test
+     * input objects.
+     */
+    public ITestObject[] getInputTestObjects();
     
     /**
      * Returns all input test value objects or an empty array if the test case hasn't got any test
@@ -93,6 +105,12 @@ public interface ITestCase extends IIpsObject {
      */
     public ITestPolicyCmpt[] getInputTestPolicyCmpts();
 
+    /**
+     * Returns all expected result test objects or an empty array if the test case hasn't got any test
+     * expected result objects.
+     */
+    public ITestObject[] getExpectedResultTestObjects();
+    
     /**
      * Returns all expected result test value objects or an empty array if the test case hasn't got
      * any expected result test value objects.

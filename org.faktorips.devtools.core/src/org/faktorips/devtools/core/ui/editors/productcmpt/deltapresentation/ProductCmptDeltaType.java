@@ -23,7 +23,7 @@ import org.faktorips.values.DefaultEnumType;
 import org.faktorips.values.DefaultEnumValue;
 
 /**
- * Type for product component deltas
+ * Type for test case deltas
  * 
  * @author Thorsten Guenther
  */

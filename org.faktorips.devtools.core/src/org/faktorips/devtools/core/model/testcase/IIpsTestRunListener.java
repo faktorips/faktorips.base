@@ -29,10 +29,10 @@ public interface IIpsTestRunListener {
  	 * A test run has started.
  	 * 
  	 * @param testCount the number of individual tests that will be run
- 	 * @param repositoryPackage the repository where the test are selected from
+ 	 * @param classpathRepository the repository where the test are selected from
  	 * @param testPackage the package including the tests
  	 */
-	public void testRunStarted(int testCount, String repositoryPackage, String testPackage);
+	public void testRunStarted(int testCount, String classpathRepository, String testPackage);
 	
  	/**
  	 * A test has started for the given full qualified test name.
@@ -46,8 +46,9 @@ public interface IIpsTestRunListener {
     
 	/**
 	 * An test has failed.
+     * Message format: qualifiedTestName|testObject|testedAttribute|expectedValue|actualValue|message
 	 */    
-    public void testFailureOccured(String testFailureOccured, String[] failureDetails);
+    public void testFailureOccured(String qualifiedTestName, String[] failureDetails);
 
 	/**
 	 * Information about a member that this test case is about to be run.

@@ -90,4 +90,6 @@ public class Messages extends NLS {
 	public static String FaktorIpsPreferencePage_labelWorkingModeEdit;
 
 	public static String FaktorIpsPreferencePage_modifyRuntimeId;
+
+    public static String FaktorIpsPreferencePage_labelMaxHeapSizeIpsTestRunner;
 }

@@ -56,6 +56,13 @@ public interface ITestPolicyCmpt extends ITestObject {
         + "ProductCmptNotExists"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the required product component is set to <code>false</code>
+     * but there is a product component specified.
+     */
+    public final static String MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED = MSGCODE_PREFIX
+        + "ProductComponentNotRequired"; //$NON-NLS-1$
+    
+    /**
      * Returns the qualified name of the test policy component type parameter class.
      */
 	public String getTestPolicyCmptTypeParameter();
@@ -66,11 +73,12 @@ public interface ITestPolicyCmpt extends ITestObject {
 	public void setTestPolicyCmptTypeParameter(String pcType);
 	
     /**
-     * Returns the test policy component type or <code>null</code> if the policy component type does not exists.
+     * Returns the test policy component type parameter or <code>null</code> if the test policy
+     * component type parameter does not exists.
      * 
      * @throws CoreException if an error occurs while searching for the policy component type.
      */	
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptType() throws CoreException;
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter() throws CoreException;
 	
     /**
      * Returns the qualified name of the product componet.
@@ -154,7 +162,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws IllegalArgumentException if testPolicyCmptType is <code>null</code>.
      */
-    public ITestPolicyCmptRelation getTestPcTypeRelation(String testPolicyCmptType);
+    public ITestPolicyCmptRelation getTestPolicyCmptRelation(String testPolicyCmptType);
     
     /**
      * Returns the test case which this test policy component belongs to.
@@ -179,5 +187,5 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws CoreException in case of an error.
      */
-    public void removeRelation(ITestPolicyCmptRelation relation) throws CoreException; 
+    public void removeRelation(ITestPolicyCmptRelation relation) throws CoreException;
 }

@@ -63,6 +63,9 @@ public class IpsTestAction extends IpsAction {
 		try {
 			List selectedElements = selection.toList();
 			List selectedPathElements = new ArrayList(1);
+            // Contains the root of the selected element, only one root is necessary to
+            // obtain the java project for the test runner, if more elements selected
+            // the root of the last selected entry will be used
 			IIpsPackageFragmentRoot root = null;
 
 			for (Iterator iter = selectedElements.iterator(); iter.hasNext();) {
@@ -98,8 +101,11 @@ public class IpsTestAction extends IpsAction {
 			
 			if (root!=null){
 				selectedPathElements = removeDuplicatEntries(selectedPathElements);
-				if (assertSelectedElemsInSameProject(selectedPathElements))
-					runTest(selectedPathElements, root.getIpsProject().getJavaProject());
+                if (assertSelectedElemsInSameProject(selectedPathElements)) {
+                    // get the ips project from the first root, currently it is not possible
+                    // to select more than one root from different projects (means different java projects)
+                    runTest(selectedPathElements, root.getIpsProject());
+                }
 			}
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
@@ -181,19 +187,20 @@ public class IpsTestAction extends IpsAction {
 	/*
 	 * Run the test.
 	 */
-	private void runTest(List selectedPathElements, IJavaProject javaProject) {
+	private void runTest(List selectedPathElements, IIpsProject ipsProject) throws CoreException {
 		if (selectedPathElements.size() > 0){
 			String testRootsString= ""; //$NON-NLS-1$
 			String testPackagesString= ""; //$NON-NLS-1$
-			
-			// create the strings containing the roots and packages
+			// create the strings containing the roots and packages format for the root string: {root1}{root2}{...}{rootn}
+            // format for the packages string: {pck1}{pck2}{...}{pckn}
 			for (Iterator iter = selectedPathElements.iterator(); iter.hasNext();) {
 				String selectedPathElement = (String) iter.next();
+                // cut the project from the front of the given string
 				String withoutProject = selectedPathElement.substring(selectedPathElement.indexOf(SEPARATOR) + SEPARATOR.length());
 				testRootsString += "{" + withoutProject.substring(0, withoutProject.indexOf(SEPARATOR)) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
 				testPackagesString += "{" + withoutProject.substring(withoutProject.indexOf(SEPARATOR) + SEPARATOR.length()) + "}";  //$NON-NLS-1$ //$NON-NLS-2$
 			}
-			
+            
 			// show view
 			try {
 				showTestCaseResultView(IpsTestRunnerViewPart.EXTENSION_ID);
@@ -204,9 +211,7 @@ public class IpsTestAction extends IpsAction {
 			
 			// run the test
 			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
-			// get the java project from the first root, currently it is not possible
-			// to select more than one root from different projects (means different java projects)
-			testRunner.setJavaProject(javaProject);
+			testRunner.setIpsProject(ipsProject);
 			testRunner.startTestRunnerJob(testRootsString, testPackagesString);
 		}
 	}

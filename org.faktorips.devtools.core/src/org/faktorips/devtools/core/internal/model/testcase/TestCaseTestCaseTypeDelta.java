@@ -1,30 +1,38 @@
-/*******************************************************************************
+/***************************************************************************************************
  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation 
- *
- *******************************************************************************/
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.util.ArgumentCheck;
 
@@ -35,92 +43,394 @@ import org.faktorips.util.ArgumentCheck;
  * @author Joerg Ortmann
  */
 public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
-//    private ITestCase testCase;
-//    private ITestCaseType testCaseType;
+    private ITestCase testCase;
+    private ITestCaseType testCaseType;
 
-//    // TestCase Side
-//    private ITestPolicyCmptRelation[] relationsWithMissingTypeParam;
-//    private ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute;
-//    private ITestValue[] testValuesWithMissingTestValueParam;
-//
-//    // TestCaseTypeSide
-//    private ITestAttribute[] testAttributesWithMissingTestAttributeValue;
-//    private ITestValueParameter[] testValueParametersWithMissingTestValue;
+    // TestCase Side
+    private ITestValue[] testValuesWithMissingTestValueParam;
+    private ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam;
+    private ITestPolicyCmptRelation[] testPolicyCmptRelationsWithMissingTypeParam;
+    private ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute;
+    private ITestPolicyCmpt[] testPolicyCmptWithDifferentSortOrder;
 
+    // TestCaseTypeSide
+    private ITestValueParameter[] testValueParametersWithMissingTestValue;
+    private ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParametersWithMissingTestPolicyCmpt;
+    private ITestAttribute[] testAttributesWithMissingTestAttributeValue;
+    
+    private boolean differentTestParameterOrder = false;
+    
+    // Contains the corresponding test policy cmpt (vale) for the missing test attributs (key)
+    private HashMap testAttributes2TestPolicyCmpt = new HashMap();
+
+    // Contains test policy cmpt with wrong sort order (childs)
+    private List testPolicyCmptChildWithWrongSortOrder = new ArrayList();
+    
+    // Contains the test case objects with missing test case type parameter
+    private List testCaseSideObjects;
+    
     public TestCaseTestCaseTypeDelta(ITestCase testCase, ITestCaseType testCaseType) throws CoreException {
         ArgumentCheck.notNull(testCase);
         ArgumentCheck.notNull(testCaseType);
-//        this.testCase = testCase;
-//        this.testCaseType = testCaseType;
+        this.testCase = testCase;
+        this.testCaseType = testCaseType;
+
+        // test case side
+        computeTestValueWithMissingTestParameter();
+        testCaseSideObjects = computeTestPolicyCmptStructWithMissingTestParameter();
         
-        computeTestValueWithMissingTestValueParam();
+        // test case type side        
+        computeTestValueParameterWithMissingTestValue();
+        computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(testCaseSideObjects);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestPolicyCmpt getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute){
+        return (ITestPolicyCmpt) testAttributes2TestPolicyCmpt.get(testAttribute);
     }
     
-    private void computeTestValueWithMissingTestValueParam() throws CoreException {
-//        List missing = new ArrayList();
-//        ITestValue[] testValues = testCase.getTestValues();
-//        for (int i = 0; i < testValues.length; i++) {
-//            ITestParameter testParameter = testCaseType.getTestParameterByName(testValues[i].getName());
-//            if (testParameter instanceof ITestValueParametdder)
-//            missing.add(testValues[i]);
-//        }
-//        testValuesWithMissingTestValueParam = (ITestValue[]) missing.toArray(new ITestValue[0]);
+    /*
+     * Computes all missing test values (test case side)
+     */
+    private void computeTestValueParameterWithMissingTestValue() {
+        List missing = new ArrayList();
+        ITestValueParameter[] params = testCaseType.getTestValueParameters();
+        List values = Arrays.asList(testCase.getTestValues());
+        for (int i = 0; i < params.length; i++) {
+            boolean found = false;
+            int idxInTestCase=0;
+            for (Iterator iter = values.iterator(); iter.hasNext();) {
+                ITestValue value = (ITestValue)iter.next();
+                if (value.getTestValueParameter().equals(params[i].getName())) {
+                    found = true;
+                    // check if the order is equal
+                    checkSortOrder(params[i], value);
+                    break;
+                }
+                idxInTestCase ++;
+            }
+            if (!found){
+                missing.add(params[i]);
+                // new root parameter always changes the order of the root test parameters
+                differentTestParameterOrder = true;
+            }
+        }
+        testValueParametersWithMissingTestValue = (ITestValueParameter[])missing.toArray(new ITestValueParameter[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public ITestCaseType getTestCaseType() {
-        return null;
+    private void checkSortOrder(ITestParameter testParameter, ITestObject testObject) {
+        if (differentTestParameterOrder)
+            // no more check necessary, is already in delta
+            return;
+        
+        List testParams = Arrays.asList(testCaseType.getTestParameters());
+        List testObjects = Arrays.asList(testCase.getTestObjects());
+        int idxInTestCaseType = testParams.indexOf(testParameter);
+        int idxInTestCase = testObjects.indexOf(testObject);
+        if (idxInTestCase == -1)
+            throw new RuntimeException("Object not found in test case: " + testObject); //$NON-NLS-1$
+        if (idxInTestCaseType == -1)
+            throw new RuntimeException("Object not found in test case type: " + testParameter); //$NON-NLS-1$
+        
+        if (idxInTestCaseType != idxInTestCase){
+            differentTestParameterOrder = true;
+        }
     }
 
-    /**
-     * {@inheritDoc}
+    /*
+     * Check if the child has a different sort order
      */
-    public ITestCase getTestCase() {
-        return null;
+    private boolean hasChildDifferntSortOrder(ITestPolicyCmpt cmpt) {
+        if (testPolicyCmptChildWithWrongSortOrder.contains(cmpt))
+            return true;
+        
+        return false;
+    }
+    
+    /*
+     * Computes all missing test policy cmpts, test policy cmpt relations and test attribute values
+     * (test case side)
+     */
+    private void computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(List testCaseSideObjects) throws CoreException {
+        List missingTestPolicyCmptTypeParameter = new ArrayList();
+        missingTestPolicyCmptTypeParameter.addAll(Arrays.asList(testCaseType.getTestPolicyCmptTypeParameters()));
+        List missingTestAttributes = new ArrayList();
+        List differentSortOrderForTestPolicyCmpts = new ArrayList();
+        
+        // search the corresponding test case type parameter object for each test case side object in the given list 
+        // and if found remove it from the list. The resulting list contains test parameter object with no corresponding
+        // object on the test case side.
+        for (Iterator iter = testCaseSideObjects.iterator(); iter.hasNext();) {
+            IIpsObjectPart element = (IIpsObjectPart)iter.next();
+            if (element instanceof ITestPolicyCmpt){
+                ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)element).findTestPolicyCmptTypeParameter();
+                // ignore if the test parameter wasn't found, this was already checked on the test case side 
+                if (param != null){
+                    missingTestPolicyCmptTypeParameter.remove(param);
+                    computeTestAttributeWithMissingTestAttributeValue(param, (ITestPolicyCmpt)element, missingTestAttributes); 
+                    
+                    if (((ITestPolicyCmpt)element).isRoot())
+                        // check if the order is equal
+                        checkSortOrder(param, (ITestPolicyCmpt)element);
+                    else{
+                        ITestPolicyCmpt parent = (ITestPolicyCmpt) ((ITestPolicyCmpt)element).getParentPolicyCmpt();
+                        if (differentSortOrderForTestPolicyCmpts.contains(parent))
+                            continue;
+                        
+                        if (hasChildDifferntSortOrder((ITestPolicyCmpt)element)){
+                            differentTestParameterOrder = true;
+                            differentSortOrderForTestPolicyCmpts.add(parent);
+                        }
+                    }
+                }
+            }
+        }
+        
+        testPolicyCmptTypeParametersWithMissingTestPolicyCmpt = (ITestPolicyCmptTypeParameter[])missingTestPolicyCmptTypeParameter
+                .toArray(new ITestPolicyCmptTypeParameter[0]);
+        testAttributesWithMissingTestAttributeValue = (ITestAttribute[])missingTestAttributes
+                .toArray(new ITestAttribute[0]);
+        testPolicyCmptWithDifferentSortOrder = (ITestPolicyCmpt[]) differentSortOrderForTestPolicyCmpts.toArray(new ITestPolicyCmpt[0]);
+    }
+
+    /*
+     * Computes all missing test attribute values (test case side)
+     */
+    private void computeTestAttributeWithMissingTestAttributeValue(ITestPolicyCmptTypeParameter param,
+            ITestPolicyCmpt cmpt,
+            List missingTestAttributes) throws CoreException {
+        List testAttributes = new ArrayList();
+        testAttributes.addAll(Arrays.asList(param.getTestAttributes()));
+        ITestAttributeValue[] testAttrValues = cmpt.getTestAttributeValues();
+        for (int i = 0; i < testAttrValues.length; i++) {
+            // ignore if the test attribute wasn't found, this was already checked on the test case
+            // side
+            ITestAttribute testAttr = testAttrValues[i].findTestAttribute();
+            if (testAttr != null) {
+                testAttributes.remove(testAttr);
+            }
+        }
+        // add the resulting list of test attributes (these objects wasn't found by the test case side)
+        missingTestAttributes.addAll(testAttributes);
+        
+        // if there are missing test attributes, store the corresponding test policy cmpt
+        for (Iterator iter = testAttributes.iterator(); iter.hasNext();) {
+            testAttributes2TestPolicyCmpt.put(iter.next(), cmpt);
+        }
+    }
+
+    /*
+     * Computes all missing test value parameters (test case type side).
+     */
+    private void computeTestValueWithMissingTestParameter() throws CoreException {
+        List missing = new ArrayList();
+        ITestValue[] testValues = testCase.getTestValues();
+        for (int i = 0; i < testValues.length; i++) {
+            ITestParameter testParameter = testCaseType.getTestParameterByName(testValues[i].getTestValueParameter());
+            if (testParameter == null)
+                // not found by name
+                missing.add(testValues[i]);
+            else if (!(testParameter instanceof ITestValueParameter))
+                // wrong instanceof
+                missing.add(testValues[i]);
+        }
+        testValuesWithMissingTestValueParam = (ITestValue[])missing.toArray(new ITestValue[0]);
+    }
+    
+    /*
+     * Computes all missing test case type side objects.
+     */
+    private List computeTestPolicyCmptStructWithMissingTestParameter() throws CoreException {
+        List missingTestPolicyCmpts = new ArrayList();
+        List missingTestPolicyCmptRelations = new ArrayList();
+        List missingTestAttributeValues = new ArrayList();
+
+        // helper list to store all test policy cmpt and test policy cmpt relations
+        //   will be used later to search for params without these test case objects
+        List allTestPolicyCmpt = new ArrayList();
+        
+        ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
+        for (int i = 0; i < testPolicyCmpts.length; i++) {
+            // store only root objects in the list of test case objetcs, don't care about child elements
+            // this is done by validation inside the test case
+            allTestPolicyCmpt.add(testPolicyCmpts[i]);
+            ITestPolicyCmpt cmpt = testPolicyCmpts[i];
+            computeTestPolicyCmptStructWithMissingTestParameter(cmpt, missingTestPolicyCmpts,
+                    missingTestPolicyCmptRelations, missingTestAttributeValues, allTestPolicyCmpt);
+        }
+
+        testPolicyCmptsWithMissingTypeParam = (ITestPolicyCmpt[])missingTestPolicyCmpts.toArray(new ITestPolicyCmpt[0]);
+        testPolicyCmptRelationsWithMissingTypeParam = (ITestPolicyCmptRelation[])missingTestPolicyCmptRelations
+                .toArray(new ITestPolicyCmptRelation[0]);
+        testAttributeValuesWithMissingTestAttribute = (ITestAttributeValue[])missingTestAttributeValues
+                .toArray(new ITestAttributeValue[0]);
+        
+        return allTestPolicyCmpt;
+    }
+
+    /*
+     * Computes all missing test case type side objects, starting with given test policy cmpt.
+     */
+    private void computeTestPolicyCmptStructWithMissingTestParameter(ITestPolicyCmpt cmpt,
+            List missingTestPolicyCmpts,
+            List missingTestPolicyCmptRelations,
+            List missingTestAttributeValues,
+            List allTestPolicyCmpt) throws CoreException {
+        ITestPolicyCmptTypeParameter param = cmpt.findTestPolicyCmptTypeParameter();
+        if (param == null) {
+            missingTestPolicyCmpts.add(cmpt);
+        } else {
+            // search the sub content of the test policy cmpt
+            computeTestPolicyCmptRelationStructWithMissingTestParameter(cmpt.getTestPolicyCmptRelations(),
+                    missingTestPolicyCmpts, missingTestPolicyCmptRelations, missingTestAttributeValues, allTestPolicyCmpt);
+            computeTestAttributeValuesWithMissingTestAttribute(cmpt, missingTestAttributeValues);
+        }
+    }
+
+    /*
+     * Computes all missing test case type side objects, starting with given test policy cmpt relation.
+     */
+    private List computeTestPolicyCmptRelationStructWithMissingTestParameter(ITestPolicyCmptRelation[] testPolicyCmptRelations,
+            List missingTestPolicyCmpt,
+            List missingTestPolicyCmptRelation,
+            List missingTestAttributeValue, 
+            List allTestPolicyCmpt) throws CoreException {
+        List objects = new ArrayList();
+        
+        ITestPolicyCmptTypeParameter prevParam = null;
+        for (int i = 0; i < testPolicyCmptRelations.length; i++) {
+            objects.add(testPolicyCmptRelations[i]);
+            ITestPolicyCmptTypeParameter param = testPolicyCmptRelations[i].findTestPolicyCmptTypeParameter();
+            if (param == null) {
+                missingTestPolicyCmptRelation.add(testPolicyCmptRelations[i]);
+            } else {
+                if (testPolicyCmptRelations[i].isComposition()) {
+                    ITestPolicyCmpt cmpt = testPolicyCmptRelations[i].findTarget();
+                    if (cmpt == null){
+                        // ignore error if target of relation not found
+                        continue;
+                    }
+                    // add the child test policy cmpt, thus the attributes could be checked later
+                    allTestPolicyCmpt.add(cmpt);
+                    if (prevParam != null && isWrongIfTestPolicyCmptRelationSortOrder(prevParam, param)){
+                        testPolicyCmptChildWithWrongSortOrder.add(cmpt);
+                    }
+                    
+                    computeTestPolicyCmptStructWithMissingTestParameter(cmpt, missingTestPolicyCmpt,
+                            missingTestPolicyCmptRelation, missingTestAttributeValue, allTestPolicyCmpt);
+                }
+            }
+            prevParam = param;
+        }
+        return objects;
+    }
+    
+    /*
+     * Check if the sort order of the given relation is wrong. Returns true if the order is different.
+     */
+    private boolean isWrongIfTestPolicyCmptRelationSortOrder(ITestPolicyCmptTypeParameter prevParam,
+            ITestPolicyCmptTypeParameter param) {
+        ArgumentCheck.isTrue(!param.isRoot());        
+        ITestPolicyCmptTypeParameter parentPrev = (ITestPolicyCmptTypeParameter) prevParam.getParent();
+        ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) param.getParent();
+        ArgumentCheck.isTrue(parent == parentPrev);
+        ITestPolicyCmptTypeParameter[] childs = parent.getTestPolicyCmptTypeParamChilds();
+        boolean prevBefore = false;
+        for (int i = 0; i < childs.length; i++) {
+            if (childs[i] == prevParam){
+                prevBefore = true;
+            } else if (childs[i] == param && ! prevBefore){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Computes the missing test attribues (test case type side).
+     */
+    private void computeTestAttributeValuesWithMissingTestAttribute(ITestPolicyCmpt cmpt,
+            List missingTestAttributeValue) throws CoreException {
+        ITestAttributeValue testAttributeValues[] = cmpt.getTestAttributeValues();
+        for (int i = 0; i < testAttributeValues.length; i++) {
+            if (testAttributeValues[i].findTestAttribute() == null)
+                missingTestAttributeValue.add(testAttributeValues[i]);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isEmpty() {
-        return false;
+        return testValuesWithMissingTestValueParam.length == 0 && testPolicyCmptsWithMissingTypeParam.length == 0
+                && testPolicyCmptRelationsWithMissingTypeParam.length == 0
+                && testAttributeValuesWithMissingTestAttribute.length == 0
+                && testAttributesWithMissingTestAttributeValue.length == 0
+                && testPolicyCmptTypeParametersWithMissingTestPolicyCmpt.length == 0
+                && testValueParametersWithMissingTestValue.length == 0
+                && ! differentTestParameterOrder;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ITestPolicyCmptRelation[] getTestPolicyCmptRelationsWithMissingTestPolicyCmptTypeParam() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ITestAttributeValue[] getTestAttributeValuesWithMissingTestAttribute() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ITestValue[] getTestValuesWithMissingTestValueParameter() {
-        return null;
-    }
-
+    
     
     /**
      * {@inheritDoc}
      */
-    public ITestAttribute[] getTestAttributesWithMissingTestAttributeValue() {
-        return null;
+    public boolean isDifferentTestParameterOrder() {
+        return differentTestParameterOrder;
     }
 
     /**
      * {@inheritDoc}
      */
+    public ITestCaseType getTestCaseType() {
+        return testCaseType;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestCase getTestCase() {
+        return testCase;
+    }
+
+    //
+    // Missing test case type side objects
+    //
+    
+    public ITestValue[] getTestValuesWithMissingTestValueParam() {
+        return testValuesWithMissingTestValueParam;
+    }
+    
+    public ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam() {
+        return testPolicyCmptsWithMissingTypeParam;
+    }
+    
+    public ITestPolicyCmptRelation[] getTestPolicyCmptRelationsWithMissingTypeParam() {
+        return testPolicyCmptRelationsWithMissingTypeParam;
+    }
+    
+    public ITestAttributeValue[] getTestAttributeValuesWithMissingTestAttribute() {
+        return testAttributeValuesWithMissingTestAttribute;
+    }
+    public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrder(){
+        return testPolicyCmptWithDifferentSortOrder;
+    }
+    
+    //
+    // Missing test case type side objects
+    //
+    
     public ITestValueParameter[] getTestValueParametersWithMissingTestValue() {
-        return null;
+        return testValueParametersWithMissingTestValue;
+    }
+
+    public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt() {
+        return testPolicyCmptTypeParametersWithMissingTestPolicyCmpt;
+    }
+    
+    public ITestAttribute[] getTestAttributesWithMissingTestAttributeValue() {
+        return testAttributesWithMissingTestAttributeValue;
     }
 }

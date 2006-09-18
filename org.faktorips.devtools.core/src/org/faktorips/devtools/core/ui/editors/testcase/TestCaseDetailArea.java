@@ -28,9 +28,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -43,6 +47,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
@@ -72,17 +77,18 @@ public class TestCaseDetailArea {
 	// Contains all test policy component edit sections
 	private HashMap sectionControls = new HashMap();
 	
-	// Container holds all value edit fields
-	private HashMap valueEditFields = new HashMap();
+	// Container holds all edit fields for test values and test attribute values
+	private HashMap allEditFields = new HashMap();
 	
 	// Contains the first edit field of each test policy component in the edit area
     private HashMap firstAttributeEditFields = new HashMap();
 	
-    // Contains the edit fields of each test policy component in the edit area
-    private HashMap attributeEditFields = new HashMap();
-
     // Contains the failures of the last test run
-    private HashMap failureCache = new HashMap();
+    private HashMap failureMessageCache = new HashMap();
+    private HashMap failureDetailCache = new HashMap();
+    
+    // Contains the mapping between the edit field and model objects
+    private HashMap editField2ModelObject = new HashMap();
     
     // Contains all ui controller
 	private ArrayList uiControllers = new ArrayList();
@@ -95,6 +101,47 @@ public class TestCaseDetailArea {
 	//   area which contains alls detail controls
 	private Composite dynamicArea;
 	
+    /*
+     * Mouse listener class to select the section if the mouse button is clicked
+     */
+    private class SectionSelectMouseListener implements MouseListener {
+        private ITestPolicyCmpt testPolicyCmptType;
+        private ITestPolicyCmptRelation testPolicyCmptTypeRelation;
+        private ITestValue testValue;
+        
+        public SectionSelectMouseListener(IIpsObjectPart object){
+            if (object instanceof ITestPolicyCmpt) {
+                testPolicyCmptType = (ITestPolicyCmpt)object;
+            } else if (object instanceof ITestPolicyCmptRelation){
+                testPolicyCmptTypeRelation = (ITestPolicyCmptRelation) object;
+            } else if (object instanceof ITestValue){
+                testValue = (ITestValue) object;
+            }
+        }
+        public SectionSelectMouseListener(ITestPolicyCmptRelation testPolicyCmptTypeRelation){
+            this.testPolicyCmptTypeRelation = testPolicyCmptTypeRelation;
+        }
+        
+        public void mouseDown(MouseEvent e) {
+            if (testPolicyCmptType != null){
+                testCaseSection.selectInTreeByObject(testPolicyCmptType, false);
+                testCaseSection.selectInDetailArea(testPolicyCmptType, false);
+            }else if (testPolicyCmptTypeRelation != null){
+                testCaseSection.selectInTreeByObject(testPolicyCmptTypeRelation, false);
+                testCaseSection.selectInDetailArea(testPolicyCmptTypeRelation, false);
+            }else if (testValue != null){
+                testCaseSection.selectTestValueInTree(testValue);
+                testCaseSection.selectInDetailArea(testValue, false);
+            }
+        }
+        public void mouseDoubleClick(MouseEvent e) {
+            // nothing to do
+        }
+        public void mouseUp(MouseEvent e) {
+            // nothing to do
+        }
+    }
+    
 	public TestCaseDetailArea(UIToolkit toolkit, TestCaseContentProvider contentProvider, TestCaseSection testCaseSection) {
 		this.toolkit = toolkit;
 		this.contentProvider = contentProvider;
@@ -123,7 +170,7 @@ public class TestCaseDetailArea {
 	 * Returns the test value edit fields given by the unique key.
 	 */
 	public EditField getTestValueEditField(String uniqueKey) {
-		return (EditField) valueEditFields.get(uniqueKey);
+		return (EditField) allEditFields.get(uniqueKey);
 	}
 
 	/**
@@ -133,6 +180,13 @@ public class TestCaseDetailArea {
 		return (Section) sectionControls.get(uniqueKey);
 	}
 	
+    /**
+     * Returns the edit field which is identified by the given unique key.
+     */
+    public EditField getEditField(String uniqueKey){
+        return (EditField) allEditFields.get(uniqueKey);
+    }
+    
 	/**
 	 * Creates the main detail area.
 	 */
@@ -150,32 +204,27 @@ public class TestCaseDetailArea {
 		detailsArea.setLayout(detailLayout);
 	}
 	
-	/**
-	 * Create the detail area depending on the given test policy component types.<br>
-	 * The detail will be cleaned and filled with the given element and all childs of the given element.<br>
-	 * The test policy component will be rendered starting by the root element of the 
-	 * given element, the root will be only displayed once if more than one childs are given.
-	 * @throws RuntimeException if an error occurs creating the content
-	 */
-	public void createDetailSection(List testPolicyCmpts) {
-        if (testPolicyCmpts == null)
-            return;
-        
-		for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
-			ITestPolicyCmpt currTestPolicyCmpt = (ITestPolicyCmpt) iter.next();
-			
-			Composite borderedComosite = createBorderComposite(dynamicArea);
-			if (currTestPolicyCmpt != null) {
-				try {
-                    createPolicyCmptAndRelationSection(currTestPolicyCmpt, borderedComosite);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
+    /**
+     * Creates the details for the given test objects.
+     */
+    public void createTestObjectSections(List testObjects){
+        try {
+            for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
+                ITestObject testObject = (ITestObject) iter.next();
+                if (testObject instanceof ITestValue) {
+                    Composite borderedComosite = createBorderComposite(dynamicArea);
+                    createTestValuesSection((ITestValue)testObject, borderedComosite);
+                } else if (testObject instanceof ITestPolicyCmpt) {
+                    Composite borderedComosite = createBorderComposite(dynamicArea);
+                    createPolicyCmptAndRelationSection((ITestPolicyCmpt)testObject, borderedComosite);
                 }
-			}
-		}
-	}
-	
-	/**
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
 	 * Creates the section with the test policy component object.<br>
 	 * If the element is a child then the relation name could be given as input
 	 * to display it in the section title beside the test policy component.
@@ -195,7 +244,9 @@ public class TestCaseDetailArea {
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         // create separator line
 		toolkit.getFormToolkit().createCompositeSeparator(section);
-		
+		section.addMouseListener(new SectionSelectMouseListener(testPolicyCmpt));
+        section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(testPolicyCmpt));
+        
 		sectionControls.put(uniquePath, section);
 
 		Composite attributeComposite = toolkit.createLabelEditColumnComposite(section);
@@ -206,12 +257,15 @@ public class TestCaseDetailArea {
         for (int i = 0; i < testAttributeValues.length; i++) {
 			final ITestAttributeValue attributeValue = testAttributeValues[i];
 			// Create the edit field only if the content provider provides the type of the test attribute object
-            if ((testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute())
-                    || testCaseSection.getContentProvider().isExpectedResult() && testAttributeValues[i].isExpextedResultAttribute()){
-                EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite, attributeValue);
-            
+            if (testCaseSection.getContentProvider().isCombined()
+                    || (testCaseSection.getContentProvider().isInput() && testAttributeValues[i].isInputAttribute())
+                    || testCaseSection.getContentProvider().isExpectedResult()
+                    && testAttributeValues[i].isExpextedResultAttribute()) {
+                EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
+                        attributeValue);
+
                 // store the first attribute of each policy cmpt for fast focus setting
-                if (firstEditField){
+                if (firstEditField) {
                     firstAttributeEditFields.put(testCaseSection.getUniqueKey(testPolicyCmpt), editField);
                     firstEditField = false;
                 }
@@ -251,29 +305,37 @@ public class TestCaseDetailArea {
 			failure = true;
 		}
 		
-		// if no error occurs create the edit field for the current attribute
-		if (!failure){
-			toolkit.createFormLabel(attributeComposite, StringUtils.capitalise(attributeValue.getTestAttribute()));
-			editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null);
-			uiController.add(editField, ITestAttributeValue.PROPERTY_VALUE);
-			// store the edit field
-            String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
-			attributeEditFields.put(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), editField);
-			editField.getControl().addFocusListener(new FocusAdapter() {
-		        public void focusGained(FocusEvent e) {
-		            testCaseSection.selectInTreeByObject(testPolicyCmptForSelection, false);
-	        }});
-			// mark as expected result
-			if (attributeValue.isExpextedResultAttribute()) {
-    			markAsExpected(editField);
-			}
-			// mark as failure
-            String failureLastTestRun = (String) failureCache.get(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute());
-            if (failureLastTestRun != null){
-                testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
-            }
-			uiController.updateUI();
+		// if an error occured get the value datatype ctrl factory for a string
+		if (failure)
+            ctrlFactory = IpsPlugin.getDefault().getValueDatatypeControlFactory(ValueDatatype.STRING);
+        
+		Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalise(attributeValue.getTestAttribute()));
+        addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
+        
+        editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null);
+		uiController.add(editField, ITestAttributeValue.PROPERTY_VALUE);
+		// store the edit field
+        String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
+        allEditFields.put(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), editField);
+        editField2ModelObject.put(editField, attributeValue);
+        addSectionSelectionListeners(editField, null, testPolicyCmptForSelection);
+        
+		// mark as expected result
+		if (attributeValue.isExpextedResultAttribute()) {
+			markAsExpected(editField);
 		}
+		// mark as failure
+        String failureLastTestRun = (String) failureMessageCache.get(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute());
+        if (failureLastTestRun != null){
+            testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
+            // create context menu
+            String[] failureDetails = (String[]) failureDetailCache.get(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute());
+            if (failureDetails != null){
+                testCaseSection.postAddExpectedResultContextMenu(editField.getControl(), failureDetails);
+            }
+        }
+		uiController.updateUI();
+	
         return editField;
 	}
 
@@ -281,8 +343,7 @@ public class TestCaseDetailArea {
      * Marks the given edit field as expected result.
      */
     private void markAsExpected(final EditField editField) {
-        editField.getControl().setBackground(
-        		testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+        editField.getControl().setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
     }
 	
 	/*
@@ -294,9 +355,14 @@ public class TestCaseDetailArea {
 		String uniquePath = testCaseSection.getUniqueKey(currRelation);
 		
 		Section section = toolkit.getFormToolkit().createSection(details,0);
-		section.setText(currRelation.getTestPolicyCmptTypeParameter());
+		section.setText(testCaseSection.getLabelProvider().getTextForSection(currRelation));
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+        // create separator line
+        toolkit.getFormToolkit().createCompositeSeparator(section);
+        
+        section.addMouseListener(new SectionSelectMouseListener(currRelation));
+        section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(currRelation));
+        
 		Composite hyperlinkArea = toolkit.createGridComposite(details, 2, false, true);
 		sectionControls.put(uniquePath, section);
 
@@ -321,17 +387,21 @@ public class TestCaseDetailArea {
 			});
 			relationHyperlink.addFocusListener(new FocusListener() {
 	            public void focusGained(FocusEvent e) {
+                    
 	            	testCaseSection.selectInTreeByObject(currRelation, false);
 	            }
 	            public void focusLost(FocusEvent e) {
 	            }
 	        });
-			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-		} else {
+			Label label = toolkit.createLabel(hyperlinkArea, " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currRelation.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
+            addSectionSelectionListeners(null, label, currRelation);
+        } else {
 			// target not found in current test case
-			toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currRelation.getTarget()));
-			toolkit.createLabel(hyperlinkArea, " (" + TestCaseHierarchyPath.getFolderName(currRelation.getTarget()) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath.unqualifiedName(currRelation.getTarget()));
+            addSectionSelectionListeners(null, label, currRelation);
+            label = toolkit.createLabel(hyperlinkArea, " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currRelation.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
+            addSectionSelectionListeners(null, label, currRelation);
+        }
 	}
 	
 	/**
@@ -362,10 +432,7 @@ public class TestCaseDetailArea {
 	/**
 	 * Creates the section for the value objects.
 	 */
-	public void createValuesSection() {
-		ITestValue[] values = contentProvider.getValues();
-		for (int i = 0; i < values.length; i++) {
-			final ITestValue testValue = values[i];
+	private void createTestValuesSection(final ITestValue testValue, Composite details) {
 			
             // Create the edit field only if the content provider provides the type of the test value object
             if ( ! ((testCaseSection.getContentProvider().isInput() && testValue.isInput()) ||
@@ -374,13 +441,16 @@ public class TestCaseDetailArea {
             
             IpsPartUIController uiController = createUIController(testValue);
 			
-            Composite borderedComposite = createBorderComposite(dynamicArea);
-            Section section = toolkit.getFormToolkit().createSection(borderedComposite, 0);
+            Section section = toolkit.getFormToolkit().createSection(details, 0);
             section.setText(testCaseSection.getLabelProvider().getTextForSection(testValue));
             section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             // create separator line
             toolkit.getFormToolkit().createCompositeSeparator(section);
             sectionControls.put(VALUESECTION + testValue.getTestValueParameter(), section);
+            
+            section.addMouseListener(new SectionSelectMouseListener(testValue));
+            section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(testValue));
+            
             Composite composite = toolkit.createLabelEditColumnComposite(section);
             section.setClient(composite);
             
@@ -408,19 +478,20 @@ public class TestCaseDetailArea {
 	            }
 	        });
 			
-		    valueEditFields.put(testValue.getTestValueParameter(), editField);
+            allEditFields.put(testValue.getTestValueParameter(), editField);
+            editField2ModelObject.put(editField, testValue);
+            
             // mark as expected result
             if (testValue.isExpectedResult()) {
                 markAsExpected(editField);
             }
             // mark as failure
-            String failureLastTestRun = (String) failureCache.get(testValue.getTestValueParameter());
+            String failureLastTestRun = (String) failureMessageCache.get(testValue.getTestValueParameter());
             if (failureLastTestRun != null){
                 testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
             }
             
 		    uiController.updateUI();
-		}
 	}
 
 	/**
@@ -467,11 +538,11 @@ public class TestCaseDetailArea {
 	 * Resets the containers containing the control references.
 	 */
 	private void resetContainers() {
-		valueEditFields.clear();
         firstAttributeEditFields.clear();
-		attributeEditFields.clear();
+        allEditFields.clear();
 		sectionControls.clear();
-		uiControllers.clear(); 
+		uiControllers.clear();
+        editField2ModelObject.clear();
 	}
 	
 	/**
@@ -492,32 +563,77 @@ public class TestCaseDetailArea {
 		resetContainers();
 	}
 
-	/**
-	 * Mark the given attribute field as failure.
-	 */
-    void markAttributeAsFailure(String editFieldUniqueKey, String failureDetails) {
-        failureCache.put(editFieldUniqueKey, failureDetails);
-        EditField editField = (EditField) attributeEditFields.get(editFieldUniqueKey);
-        if (editField != null){
-			testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureDetails);
-		}
-	}
-    
     /**
-     * Mark the given attribute field as failure.
+     * Mark the test attribute value field or test value field - which is identified by the given key -
+     * as failure.
+     * @param failureDetails2 
      */
-    void markTestValueAsFailure(String editFieldUniqueKey, String failureDetails) {
-        failureCache.put(editFieldUniqueKey, failureDetails);
-        EditField editField = (EditField) valueEditFields.get(editFieldUniqueKey);
+    void markEditFieldAsFailure(String editFieldUniqueKey, String failureMessage, String[] failureDetails2) {
+        failureMessageCache.put(editFieldUniqueKey, failureMessage);
+        failureDetailCache.put(editFieldUniqueKey, failureDetails2);
+        EditField editField = (EditField) allEditFields.get(editFieldUniqueKey);
         if (editField != null){
-            testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureDetails);
+            testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureMessage);
         }
     }
-    
+
+    /**
+     * Stores the given actual value as expected result.
+     */
+    void storeActualValueInExpResult(String editFieldUniqueKey, String actualValue, String message) {
+        EditField editField = (EditField) allEditFields.get(editFieldUniqueKey);
+        if (editField != null){
+            updateValue(editField, actualValue);
+            testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, message);
+        }
+    }
+
+    private void updateValue(EditField editField, String actualValue) {
+        IIpsObjectPart object = (IIpsObjectPart) editField2ModelObject.get(editField);
+        if (object != null){
+            if (object instanceof ITestValue){
+                ((ITestValue)object).setValue(actualValue);
+            } else if (object instanceof ITestAttributeValue){
+                ((ITestAttributeValue)object).setValue(actualValue);
+            }
+        }
+    }
+
     /**
      * Resets the test run, clear failure cache.
      */
     public void resetTestRun() {
-        failureCache.clear();
+        failureMessageCache.clear();
+        failureDetailCache.clear();
+    }
+    
+    /*
+     * Adds a listener to mark the section as selected if the given edit field gets the focus
+     */
+    private void addSectionSelectionListeners(EditField editField, Control label, final IIpsObjectPart object) {
+        if (editField != null){
+            editField.getControl().addFocusListener(new FocusAdapter() {
+                public void focusGained(FocusEvent e) {
+                    if (object instanceof ITestPolicyCmpt)
+                        testCaseSection.selectInTreeByObject((ITestPolicyCmpt)object, false);
+                    else if (object instanceof ITestPolicyCmptRelation)
+                        testCaseSection.selectInTreeByObject((ITestPolicyCmptRelation)object, false);
+                }
+            });
+            editField.getControl().addMouseListener(new SectionSelectMouseListener(object));
+        }
+        if (label != null){
+            label.addMouseListener(new SectionSelectMouseListener(object));
+        }
+    }
+    
+    /**
+     * Updates the ui for all ui controller
+     */
+    void updateUi(){
+        for (Iterator iter = uiControllers.iterator(); iter.hasNext();) {
+            IpsPartUIController controller = (IpsPartUIController)iter.next();
+            controller.updateUI();
+        }
     }
 }

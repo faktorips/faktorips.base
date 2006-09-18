@@ -15,8 +15,11 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -27,15 +30,19 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseHierarchyPath;
 import org.faktorips.util.ArgumentCheck;
@@ -49,10 +56,6 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestCase extends IpsObject implements ITestCase {
-
-    /* Tags */
-    static final String TAG_NAME_INPUT = "Input"; //$NON-NLS-1$
-    static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult"; //$NON-NLS-1$
 
     /* Name of corresponding test case type */
     private String testCaseType = ""; //$NON-NLS-1$
@@ -135,6 +138,43 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
+    public QualifiedNameType[] dependsOn() throws CoreException {
+        Set qualifiedNameTypes = new HashSet();
+        // the test case depends on the test case type
+        if (StringUtils.isNotEmpty(testCaseType)) {
+            qualifiedNameTypes.add(new QualifiedNameType(testCaseType, IpsObjectType.TEST_CASE_TYPE));
+        }
+        // add dependency to product cmpts
+        ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
+        for (int i = 0; i < testCmpts.length; i++) {
+            addQualifiedNameTypesForTestPolicyCmpt(qualifiedNameTypes, testCmpts[i]);
+        }
+        return (QualifiedNameType[])qualifiedNameTypes.toArray(new QualifiedNameType[0]);
+    }
+
+    /*
+     * Adds the dependencies to the given list for the given test policy cmpt and their childs
+     */
+    private void addQualifiedNameTypesForTestPolicyCmpt(Set qualifiedNameTypes, ITestPolicyCmpt cmpt) throws CoreException {
+        if (cmpt == null){
+            return;
+        }
+        
+        if (StringUtils.isNotEmpty(cmpt.getProductCmpt())){
+            qualifiedNameTypes.add(new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT));
+        }
+        ITestPolicyCmptRelation[] testRelations = cmpt.getTestPolicyCmptRelations();
+        for (int i = 0; i < testRelations.length; i++) {
+            // get the dependencies for the childs of the given test policy cmpt
+            if (testRelations[i].isComposition()){
+                addQualifiedNameTypesForTestPolicyCmpt(qualifiedNameTypes, testRelations[i].findTarget());
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getTestCaseType() {
         return testCaseType;
     }
@@ -172,6 +212,105 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreException {
+        // Test case side
+        ITestValue[] testValuesWithMissingTestValueParam = delta.getTestValuesWithMissingTestValueParam();
+        ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam = delta.getTestPolicyCmptsWithMissingTypeParam();
+        ITestPolicyCmptRelation[] testPolicyCmptRelationsWithMissingTypeParam = delta.getTestPolicyCmptRelationsWithMissingTypeParam();
+        ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute = delta.getTestAttributeValuesWithMissingTestAttribute();
+
+        // Test case type side
+        ITestValueParameter[] testValueParametersWithMissingTestValue = delta.getTestValueParametersWithMissingTestValue();
+        ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParametersWithMissingTestPolicyCmpt = delta.getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt();
+        ITestAttribute[] testAttributesWithMissingTestAttributeValue = delta.getTestAttributesWithMissingTestAttributeValue();
+
+        /* Test case side */
+        
+        // delete test values
+        for (int i = 0; i < testValuesWithMissingTestValueParam.length; i++) {
+            testValuesWithMissingTestValueParam[i].delete();
+        }
+        // delete root and child test policy cmpts
+        for (int i = 0; i < testPolicyCmptsWithMissingTypeParam.length; i++) {
+            testPolicyCmptsWithMissingTypeParam[i].delete();
+        }
+        // delete test policy cmpt relations
+        for (int i = 0; i < testPolicyCmptRelationsWithMissingTypeParam.length; i++) {
+            testPolicyCmptRelationsWithMissingTypeParam[i].delete();
+        }
+        // delete test attribute values
+        for (int i = 0; i < testAttributeValuesWithMissingTestAttribute.length; i++) {
+            testAttributeValuesWithMissingTestAttribute[i].delete();
+        }
+        
+        /* Test case type side */
+        
+        // add missing test value parameters
+        for (int i = 0; i < testValueParametersWithMissingTestValue.length; i++) {
+            ITestValue testValue = newTestValue();
+            testValue.setTestValueParameter(testValueParametersWithMissingTestValue[i].getName());
+        }
+        
+        // add missing test policy cmpt type parameters
+        for (int i = 0; i < testPolicyCmptTypeParametersWithMissingTestPolicyCmpt.length; i++) {
+            if (testPolicyCmptTypeParametersWithMissingTestPolicyCmpt[i].isRoot()) {
+                String name = testPolicyCmptTypeParametersWithMissingTestPolicyCmpt[i].getName();
+                ITestPolicyCmpt testPolicyCpmt = newTestPolicyCmpt();
+                testPolicyCpmt.setTestPolicyCmptTypeParameter(name);
+                testPolicyCpmt.setName(name);
+            } else {
+                throw new RuntimeException("Merge of child test test policy cmpts is not supported!"); //$NON-NLS-1$
+            }
+        }
+        
+        // add missing test attributes
+        for (int i = 0; i < testAttributesWithMissingTestAttributeValue.length; i++) {
+            ITestPolicyCmpt testPolicyCmpt = delta.getTestPolicyCmptForMissingTestAttribute(testAttributesWithMissingTestAttributeValue[i]);
+            ITestAttributeValue testAttributeValue = testPolicyCmpt.newTestAttributeValue();
+            testAttributeValue.setTestAttribute(testAttributesWithMissingTestAttributeValue[i].getName());
+        }
+        
+        if (delta.isDifferentTestParameterOrder()){
+            // fix the order of the root test objects
+            List newTestObjectOrder = new ArrayList(testObjects.size());
+            HashMap oldTestObject = new HashMap(testObjects.size());
+            for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
+                ITestObject testObject = (ITestObject)iter.next();
+                String testParameterName = ""; //$NON-NLS-1$
+                ITestParameter testParameter;
+                if (testObject instanceof ITestPolicyCmpt){
+                    testParameterName = ((ITestPolicyCmpt)testObject).getTestPolicyCmptTypeParameter();
+                    testParameter = ((ITestPolicyCmpt)testObject).findTestPolicyCmptTypeParameter();
+                } else if (testObject instanceof ITestValue){
+                    testParameterName = ((ITestValue)testObject).getTestValueParameter();
+                    testParameter = ((ITestValue)testObject).findTestValueParameter();
+                } else {
+                    throw new RuntimeException("Unsupported test object type: " + testObject.getClass()); //$NON-NLS-1$
+                }
+                if (testParameter == null)
+                    throw new RuntimeException("Test parameter not found: " + testParameterName); //$NON-NLS-1$
+                
+                oldTestObject.put(testParameter, testObject);
+            }
+            
+            ITestParameter[] testParameters = delta.getTestCaseType().getTestParameters();
+            for (int i = 0; i < testParameters.length; i++) {
+                ITestObject testObject = (ITestObject) oldTestObject.get(testParameters[i]);
+                if (testObject == null)
+                    throw new RuntimeException("Test object not found for test parameter: " + testParameters[i].getName() + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+                
+                newTestObjectOrder.add(testObject);
+            }
+            testObjects = newTestObjectOrder;
+            
+            // fix childs
+            //  order relations in order of the test parameter
+            ITestPolicyCmpt[] cmpts = delta.getTestPolicyCmptWithDifferentSortOrder();
+            for (int i = 0; i < cmpts.length; i++) {
+                ((TestPolicyCmpt)cmpts[i]).fixDifferentChildSortOrder();
+            }
+            
+            valueChanged(false, true);
+        }
     }
 
     /**
@@ -195,6 +334,17 @@ public class TestCase extends IpsObject implements ITestCase {
     //
     // Getters for test objects
     //
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestObject[] getTestObjects() {
+        List foundTestObjects = getTestObjects(null, null, null);
+        if (foundTestObjects.size() == 0)
+            return null;
+
+        return (ITestObject[]) foundTestObjects.toArray(new ITestObject[0]);
+    }    
     
     /**
      * {@inheritDoc}
@@ -218,6 +368,13 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * {@inheritDoc}
      */
+    public ITestObject[] getInputTestObjects() {
+        return (ITestObject[])getTestObjects(TestParameterType.INPUT, null, null).toArray(new ITestObject[0]);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public ITestValue[] getInputTestValues() {
         return (ITestValue[])getTestObjects(TestParameterType.INPUT, TestValue.class, null).toArray(new ITestValue[0]);
     }
@@ -234,6 +391,14 @@ public class TestCase extends IpsObject implements ITestCase {
     // Getters for expected result objects
     //    
 
+    /**
+     * {@inheritDoc}
+     */
+    public ITestObject[] getExpectedResultTestObjects() {
+        return (ITestObject[])getTestObjects(TestParameterType.EXPECTED_RESULT, null, null).toArray(
+                new ITestObject[0]);
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -319,7 +484,7 @@ public class TestCase extends IpsObject implements ITestCase {
             return null;
         }
 
-        // heck the found object 
+        // check the correct instance of the found object 
         if (! (testParam instanceof ITestPolicyCmptTypeParameter)) {
             throw new CoreException(
                     new IpsStatus(NLS.bind(Messages.TestCase_Error_WrongInstanceParam, testPolicyCmptTypeName, testParam.getClass().getName())));

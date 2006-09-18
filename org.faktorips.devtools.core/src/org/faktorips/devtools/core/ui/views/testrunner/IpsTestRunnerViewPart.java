@@ -64,8 +64,9 @@ import org.faktorips.util.StringUtil;
 public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListener {
 	public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.testRunner"; //$NON-NLS-1$
 	
+    //Ui refresh intervall
 	static final int REFRESH_INTERVAL = 200;
-	
+
 	/* Ui components */
 	private Composite fCounterComposite;
 	private IpsTestCounterPanel fCounterPanel;
@@ -137,9 +138,9 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	private int testId;
 	
 	// Test last test run context
-	private String repositoryPackage;
+	private String classpathRepository;
 	private String testPackage;
-	
+    
 	// The project which contains the runned tests 
 	private IJavaProject fTestProject;
 	
@@ -183,7 +184,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		}
 		
 		public void run(){
-			rerunTestRun();
+			try {
+                rerunTestRun();
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
 		}
 	}
     
@@ -257,8 +262,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	/*
      * Runs the last runned test.
      */
-    private void rerunTestRun() {
-        IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(repositoryPackage, testPackage);
+    private void rerunTestRun() throws CoreException {
+        IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(classpathRepository, testPackage);
     }
 	
 	/*
@@ -319,7 +324,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         if (fMemento != null) {
             restoreLayoutState(fMemento);
         }
-        fMemento= null;        
+        fMemento= null;      
 	}
 
     private void restoreLayoutState(IMemento memento) {
@@ -783,8 +788,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 	/**
 	 * {@inheritDoc}
 	 */
-	public void testRunStarted(int testCount, String repositoryPackage, String testPackage){
-		this.repositoryPackage = repositoryPackage;
+	public void testRunStarted(int testCount, String classpathRepository, String testPackage){
+		this.classpathRepository = classpathRepository;
 		this.testPackage = testPackage;
 		
         testId2TestQualifiedNameMap.clear();
@@ -799,7 +804,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fUpdateJob.schedule(0);
 		
 		// store the project which contains the tests, will be used to open the test in the editor
-		fTestProject = IpsPlugin.getDefault().getIpsTestRunner().getJavaProject();
+		fTestProject = IpsPlugin.getDefault().getIpsTestRunner().getIpsProject().getJavaProject();
 	}
 
 	/**

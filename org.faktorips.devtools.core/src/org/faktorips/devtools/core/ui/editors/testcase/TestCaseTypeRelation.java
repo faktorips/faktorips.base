@@ -83,6 +83,8 @@ public class TestCaseTypeRelation implements Validatable{
 	 * Returns the name of the test relation type parameter (test policy component type parameter).
 	 */
 	public String getName(){
+        if (testPolicyCmptTypeParameter == null)
+            return ""; //$NON-NLS-1$
 		return testPolicyCmptTypeParameter.getName();
 	}
 

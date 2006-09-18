@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -113,7 +114,7 @@ import org.faktorips.values.EnumValue;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeSection extends IpsSection {
+public class TestCaseTypeSection extends IpsSection implements ContentsChangeListener {
     private Image empytImage;
     
     // The editing test case type
@@ -136,9 +137,10 @@ public class TestCaseTypeSection extends IpsSection {
     
     // Buttons
     //   belongs to tree structure
-    private Button addRootParameterButton;
-    private Button addChildButton;
+    private Button addParameterButton;
     private Button removeButton;
+    private Button moveUpButton;
+    private Button moveDownButton;
     
     // The form which contains this section
     private ScrolledForm form;
@@ -529,15 +531,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         private Image getImageForAttribute(Object element) throws CoreException {
-            Image defaultImage;
-            IAttribute attribute = ((ITestAttribute) element).findAttribute();
-            if (attribute != null){
-                defaultImage = attribute.getImage();
-            } else {
-                // default image if attribute not found
-                defaultImage = IpsPlugin.getDefault().getImage("MissingAttribute.gif"); //$NON-NLS-1$
-            }
-            return defaultImage;
+            return ((ITestAttribute) element).getImage();
         }
     }
 
@@ -601,17 +595,7 @@ public class TestCaseTypeSection extends IpsSection {
         this.form = form;
         
         initControls();
-        setText(title);
-        
-        // add listener on model,
-        //   if the model changed reset the test run status
-        testCaseType.getIpsModel().addChangeListener(new ContentsChangeListener() {
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())) {
-                    postRefreshAll();
-                }
-            }
-        });        
+        setText(title);    
     }
 
     /**
@@ -667,26 +651,30 @@ public class TestCaseTypeSection extends IpsSection {
         labelProvider = new TestCaseTypeLabelProvider();
         MessageCueLabelProvider msgCueLabelProvider = new MessageCueLabelProvider(labelProvider);
         treeViewer.setLabelProvider(msgCueLabelProvider);
-        TestCaseTypeContentProvider contentProvider = new TestCaseTypeContentProvider();
+        TestCaseTypeContentProvider contentProvider = new TestCaseTypeContentProvider(testCaseType);
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setInput(testCaseType);        
         treeViewer.expandAll();
         treeViewer.collapseAll();
         hookTreeListeners();
-
+        treeViewer.expandToLevel(2);
+        
         // Buttons belongs to the tree structure
         Composite buttons = toolkit.getFormToolkit().createComposite(structureComposite);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);
         buttons.setLayout(buttonLayout);
         
-        addRootParameterButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_NewRootParameter);
-        addChildButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_NewChildParameter);
+        addParameterButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_NewRootParameter);
         removeButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_Remove);
+        moveUpButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_Up);
+        moveDownButton = toolkit.createButton(buttons, Messages.TestCaseTypeSection_Button_Down);
         
-        addRootParameterButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        addChildButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        addParameterButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         removeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        moveUpButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        moveDownButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
         updateTreeButtonStatus(null);
         hookButtonListeners();
 
@@ -704,12 +692,17 @@ public class TestCaseTypeSection extends IpsSection {
         parentOfdetailsArea.setLayout(detailLayout);
         detailsSection.setClient(parentOfdetailsArea);
         
-        if (showAll)
+        if (showAll){
             createDetailsArea(null);
+        }
         
         configureToolBar();
         
         redrawForm();
+        
+        // register istself as listener for model changes,
+        // to refresh section titles etc.
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
     
     /*
@@ -749,7 +742,8 @@ public class TestCaseTypeSection extends IpsSection {
         clearDetailArea();
         
         if (testParam == null && ! showAll){
-            updateTreeButtonStatus(null);
+            updateTreeButtonStatus(getSelectedObjectInTree());
+            prevSelectedTestParam = null;
             return;
         }
         
@@ -757,11 +751,7 @@ public class TestCaseTypeSection extends IpsSection {
         Section firstSection = null;
         if (showAll){
             ITestParameter[] testParms = null;
-            try {
-                testParms = testCaseType.getTestParameters();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            testParms = testCaseType.getTestParameters();
             if (testParms != null && testParms.length > 0){
                 createDetailsForAllTestParams(testParms);
                 firstTestParam = testParms[0];
@@ -779,6 +769,7 @@ public class TestCaseTypeSection extends IpsSection {
         prevSelectedTestParam = firstTestParam;
         
         currSelectedDetailObject = firstTestParam;
+        
         selectSection(firstSection);
     }
     
@@ -1099,19 +1090,31 @@ public class TestCaseTypeSection extends IpsSection {
 
     /*
      * Select the given section, means change the color of the section and store the current object.
+     * And select the corresponding tree item if withFocusChange is <code>true</code>.
      * If the given section is <code>null</code> do nothing.
      */
-    private void selectSection(Section section) {
+    private void selectSection(Section section, boolean withFocusChange){
         if (section == null)
             return;
         resetSectionSelectedColor();
         section.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
         updateDetailButtonStatus(currSelectedDetailObject);
         
-        // select the corresponding object in the tree
-        ITestParameter testParam = getRootSectionObject(currSelectedDetailObject);
-        treeViewer.setSelection(new StructuredSelection(testParam));
-        updateTreeButtonStatus(testParam);
+        if (withFocusChange){
+            // select the corresponding object in the tree
+            ITestParameter testParam = getRootSectionObject(currSelectedDetailObject);
+            treeViewer.setSelection(new StructuredSelection(testParam));
+            updateTreeButtonStatus(testParam);
+        }
+    }
+    
+    /*
+     * Select the given section, means change the color of the section and store the current object.
+     * And select the corresponding tree item.
+     * If the given section is <code>null</code> do nothing.
+     */
+    private void selectSection(Section section) {
+        selectSection(section, true);
     }
 
     /*
@@ -1287,17 +1290,6 @@ public class TestCaseTypeSection extends IpsSection {
      * Adds the button listener for the tree area.
      */
     private void hookButtonListeners() {
-        addChildButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    addChildParameterClicked();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
         removeButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
                 try {
@@ -1309,10 +1301,32 @@ public class TestCaseTypeSection extends IpsSection {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        addRootParameterButton.addSelectionListener(new SelectionListener() {
+        addParameterButton.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
                 try {
-                    addRootParameterClicked();
+                    addParameterClicked();
+                } catch (Exception ex) {
+                    IpsPlugin.logAndShowErrorDialog(ex);
+                }
+            }
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+        moveUpButton.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+                try {
+                    moveUpClicked(getSelectedObjectInTree());
+                } catch (Exception ex) {
+                    IpsPlugin.logAndShowErrorDialog(ex);
+                }
+            }
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+        moveDownButton.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+                try {
+                    moveDownClicked(getSelectedObjectInTree());
                 } catch (Exception ex) {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
@@ -1338,91 +1352,135 @@ public class TestCaseTypeSection extends IpsSection {
     }
     
     /*
-     * Add root parameter clicked.
+     * Add root or child parameter.
      */
-    private void addRootParameterClicked() {
-        // open wizard to add a new root tes parameter
+    private void addParameterClicked() {
+        Object selObject = getSelectedObjectInTree();
         boolean dirty = testCaseType.getIpsSrcFile().isDirty();
-        Memento memento = testCaseType.newMemento();
-        NewRootParameterWizard wizard = new NewRootParameterWizard(testCaseType);
-        WizardDialog dialog = new WizardDialog(getShell(), wizard);
-        dialog.open();
-        if (dialog.getReturnCode() == Window.CANCEL) {
-            testCaseType.setState(memento);
-            if (!dirty) {
-                testCaseType.getIpsSrcFile().markAsClean();
+        if (selObject instanceof TestCaseTypeTreeRootElement){
+            // open wizard to add a new root test parameter
+            Memento memento = testCaseType.newMemento();
+            NewRootParameterWizard wizard = new NewRootParameterWizard(testCaseType);
+            WizardDialog dialog = new WizardDialog(getShell(), wizard);
+            dialog.open();
+            if (dialog.getReturnCode() == Window.CANCEL) {
+                testCaseType.setState(memento);
+                if (!dirty) {
+                    testCaseType.getIpsSrcFile().markAsClean();
+                }
+                return;
             }
-            return;
+            refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
+        } else {
+            // open wizard to add a new child test parameter
+            if (!(selObject instanceof ITestPolicyCmptTypeParameter))
+                return;
+
+            Memento memento = testCaseType.newMemento();
+            NewChildParameterWizard wizard = new NewChildParameterWizard(testCaseType,
+                    (ITestPolicyCmptTypeParameter)selObject);
+            WizardDialog dialog = new WizardDialog(getShell(), wizard);
+            dialog.open();
+            if (dialog.getReturnCode() == Window.CANCEL) {
+                testCaseType.setState(memento);
+                if (!dirty) {
+                    testCaseType.getIpsSrcFile().markAsClean();
+                }
+                return;
+            }
+            refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
         }
-        refreshTreeAndDetails(wizard.getNewCreatedTestParameter()); 
     }
     
-    /*
-     * Add button was clicked.
-     */
-    private void addChildParameterClicked() {
-        // open wizard to add a new child test parameter
-        boolean dirty = testCaseType.getIpsSrcFile().isDirty();
-        ITestParameter testParamSelected = getSelectedTestParameterInTree();
-        if (!(testParamSelected instanceof ITestPolicyCmptTypeParameter))
-            return;
-
-        Memento memento = testCaseType.newMemento();
-        NewChildParameterWizard wizard = new NewChildParameterWizard(testCaseType,
-                (ITestPolicyCmptTypeParameter)testParamSelected);
-        WizardDialog dialog = new WizardDialog(getShell(), wizard);
-        dialog.open();
-        if (dialog.getReturnCode() == Window.CANCEL) {
-            testCaseType.setState(memento);
-            if (!dirty) {
-                testCaseType.getIpsSrcFile().markAsClean();
-            }            
-            return;
-        }
-        refreshTreeAndDetails(wizard.getNewCreatedTestParameter());
-    }
-
     /*
      * Remove button was clicked.
      */
     private void removeClicked() {
-        ITestParameter testParameter = getSelectedTestParameterInTree();
-        if (testParameter != null)
-            testParameter.delete();
+        Object selObject = getSelectedObjectInTree();
+        if (! (selObject instanceof ITestParameter))
+            return;
         
-        currSelectedDetailObject = (IIpsObjectPart) (testParameter.isRoot()?null:testParameter.getParent());
-        if (currSelectedDetailObject == null){
-            // try to obtain the previous tree item and if extist use this item as new sel object after delete
-            TreeItem[] selection = treeViewer.getTree().getSelection();
-            TreeItem[] childs = treeViewer.getTree().getItems();
-            TreeItem prevTreeItem = null;
+        ITestParameter testParameter = (ITestParameter) selObject;
+        testParameter.delete();
+        
+        // try to obtain the previous tree item and if extist use this item as new sel object
+        // after delete, if no previous found select the next item
+        TreeItem[] selection = treeViewer.getTree().getSelection();
+        TreeItem[] childs = treeViewer.getTree().getItems();
+        TreeItem prevTreeItem = searchChilds(childs, selection[0], null);
+        if (prevTreeItem == null || ! (prevTreeItem.getData() instanceof ITestParameter)){
+            // try to find the previous item
+            childs = selection[0].getParentItem().getItems();
             for (int i = 0; i < childs.length; i++) {
                 if (childs[i].equals(selection[0]))
-                    break;
-                prevTreeItem = childs[i];
+                    prevTreeItem = childs[i];
+                else
+                    if (prevTreeItem != null){
+                        prevTreeItem = childs[i];
+                        break;
+                    }
             }
-            if (prevTreeItem != null)
-                currSelectedDetailObject = (ITestParameter) prevTreeItem.getData();
         }
+        if (prevTreeItem != null && prevTreeItem.getData() instanceof ITestParameter)
+            currSelectedDetailObject = (ITestParameter)prevTreeItem.getData();
+        else
+            currSelectedDetailObject = null;
+
         refreshTreeAndDetails(getRootSectionObject(currSelectedDetailObject));
         
         // redraw details for the new selected object
-        currSelectedDetailObject = getSelectedTestParameterInTree();
+        selObject = getSelectedObjectInTree();
+        if (! (selObject instanceof ITestParameter))
+            return;
+        
+        currSelectedDetailObject = (ITestParameter) selObject;
         createDetailsArea((ITestParameter)currSelectedDetailObject);
+        
+        postSelectedTestParameterInTree((ITestParameter)currSelectedDetailObject);
     }
 
+    /*
+     * Move the selected test parameter up 
+     */
+    private void moveUpClicked(Object selectedObjInTree){
+        if (selectedObjInTree instanceof ITestParameter)
+            moveTestParameter((ITestParameter)selectedObjInTree, true);
+    }
+    
+    /*
+     * Move the selected test parameter down 
+     */
+    private void moveDownClicked(Object selectedObjInTree){
+        if (selectedObjInTree instanceof ITestParameter)
+            moveTestParameter((ITestParameter)selectedObjInTree, false);
+    }
+    
+    private TreeItem searchChilds(TreeItem[] childs, TreeItem selectedItem, TreeItem prevTreeItem){
+        for (int i = 0; i < childs.length; i++) {
+            if (childs[i].equals(selectedItem))
+                return prevTreeItem;
+
+            prevTreeItem = childs[i];
+            
+            TreeItem found = searchChilds(childs[i].getItems(), selectedItem, prevTreeItem);
+            if (found != null)
+                return found;
+            
+        }
+        return null;
+    }
     /*
      * Gets the currently selected test parameter or null if no test parameter is selected in the
      * tree
      */
-    private ITestParameter getSelectedTestParameterInTree(){
+    private Object getSelectedObjectInTree(){
         ISelection selection = treeViewer.getSelection();
         if (! (selection instanceof IStructuredSelection))
             return null;
         Object selectedElem = ((IStructuredSelection)selection).getFirstElement();
-        if (! (selectedElem instanceof ITestParameter))
+        if (! (selectedElem instanceof ITestParameter || selectedElem instanceof TestCaseTypeTreeRootElement))
             return null;
-        return (ITestParameter) selectedElem;
+        return selectedElem;
     }
     
     /*
@@ -1481,38 +1539,90 @@ public class TestCaseTypeSection extends IpsSection {
     }
     
     /*
+     * Moves the give test attribute up or down
+     */
+    private void moveTestParameter(ITestParameter testParameter, boolean up) {
+        int[] selectedTestParamIndexes = null;
+        if (testParameter.isRoot()){
+            ITestParameter[] testParams = testCaseType.getTestParameters();
+            for (int i = 0; i < testParams.length; i++) {
+                if (testParams[i].equals(testParameter)){
+                    selectedTestParamIndexes = new int[]{i};
+                    break;
+                }
+            }
+            if (selectedTestParamIndexes == null){
+                throw new RuntimeException("Unable to determine the index of the given test parameter!"); //$NON-NLS-1$
+            }
+            testCaseType.moveTestParameters(selectedTestParamIndexes, up);            
+        } else {
+            ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) testParameter.getParent();
+            List childs = Arrays.asList(parent.getTestPolicyCmptTypeParamChilds());
+            selectedTestParamIndexes = new int[]{childs.indexOf(testParameter)};
+            parent.moveTestPolicyCmptTypeChild(selectedTestParamIndexes, up);
+        }
+
+        postRefreshAll();
+        postSelectedTestParameterInTree(testParameter);
+    }
+    
+    /*
      * The selection in the tree changed the given object is selected.
      * @throws CoreException 
      */
     private void selectionInTreeChanged(IStructuredSelection selection) {
+        if (isTreeRefreshing)
+            return;
+        
         if (selection instanceof IStructuredSelection){
             Object selectedObj = ((IStructuredSelection) selection).getFirstElement();
             if (selectedObj != null && selectedObj instanceof ITestParameter){
                 // if the selected object is the previous rendered object 
                 // or all elements are visible return
-                if (showAll || (ITestParameter) selectedObj == prevSelectedTestParam)
+                if (showAll){
+                    // select section for the tree entry
+                    selectSection(objectCache.getSection((ITestParameter)selectedObj), false);
+                    return;
+                }
+                if (selectedObj == prevSelectedTestParam)
                     return;
 
                 createDetailsArea((ITestParameter) selectedObj);
+            } else {
+                createDetailsArea(null);
             }
             
-            updateTreeButtonStatus((ITestParameter) selectedObj);
+            updateTreeButtonStatus(selectedObj);
         }
     }
     
     /*
      * Updates the enable state of the buttons which belongs to the tree
      */
-    private void updateTreeButtonStatus(ITestParameter parameter) {
-        if (parameter instanceof ITestValueParameter){
+    private void updateTreeButtonStatus(Object object) {
+        if (object == null){
+            object = getSelectedObjectInTree();
+        }
+        if (object instanceof ITestValueParameter){
             removeButton.setEnabled(true);
-            addChildButton.setEnabled(false);
-        } else if (parameter instanceof ITestPolicyCmptTypeParameter){
+            addParameterButton.setEnabled(false);
+            moveUpButton.setEnabled(true);
+            moveDownButton.setEnabled(true);
+        } else if (object instanceof ITestPolicyCmptTypeParameter){
             removeButton.setEnabled(true);
-            addChildButton.setEnabled(true);
+            addParameterButton.setEnabled(true);
+            moveUpButton.setEnabled(true);
+            moveDownButton.setEnabled(true);
+        } else if (object instanceof TestCaseTypeTreeRootElement){
+            removeButton.setEnabled(false);
+            addParameterButton.setEnabled(true);
+            moveUpButton.setEnabled(false);
+            moveDownButton.setEnabled(false);
         } else{
             removeButton.setEnabled(false);
-            addChildButton.setEnabled(false);
+            addParameterButton.setEnabled(false);
+            moveUpButton.setEnabled(false);
+            moveDownButton.setEnabled(false);
         }
     }
 
@@ -1640,6 +1750,17 @@ public class TestCaseTypeSection extends IpsSection {
     }
     
     /*
+     * Select the given test parameter in the tree
+     */
+    private void postSelectedTestParameterInTree(final ITestParameter testParam) {
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                treeViewer.setSelection(new StructuredSelection(testParam));
+            }
+            });
+    }
+    
+    /*
      * Create a bordered composite
      */
     private Composite createBorderComposite(Composite parent){
@@ -1721,5 +1842,15 @@ public class TestCaseTypeSection extends IpsSection {
             }
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void contentsChanged(ContentChangeEvent event) {
+        // refresh all if the test case type changes, redraw section titles etc.
+        if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())){
+            postRefreshAll();
+        }
     }
 }

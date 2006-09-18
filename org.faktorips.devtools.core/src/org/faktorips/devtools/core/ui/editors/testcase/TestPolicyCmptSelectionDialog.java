@@ -167,7 +167,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         
         if (newSelection.getFirstElement() instanceof ITestPolicyCmpt){
         	try {
-				ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) ((ITestPolicyCmpt)newSelection.getFirstElement()).findTestPolicyCmptType();
+				ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) ((ITestPolicyCmpt)newSelection.getFirstElement()).findTestPolicyCmptTypeParameter();
 				if (param.getPolicyCmptType().equals(filteredPolicyCmptType)){
 					messageLabel.setText(""); //$NON-NLS-1$
 					getOkButton().setEnabled(true);
@@ -303,7 +303,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 		}
 		ITestPolicyCmptTypeParameter param = null;
 		try {
-			param = (ITestPolicyCmptTypeParameter) testPolicyCmpt.findTestPolicyCmptType();
+			param = (ITestPolicyCmptTypeParameter) testPolicyCmpt.findTestPolicyCmptTypeParameter();
 			if (param.getPolicyCmptType().equals(filteredPolicyCmptType))
 				found = true;
 		} catch (CoreException e) {

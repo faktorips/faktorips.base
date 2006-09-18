@@ -62,6 +62,9 @@ public class TestCaseMessageCueLabelProvider extends LabelProvider {
 		    return image;
 		}
         
+        if (image == null)
+            return null;
+        
 		ProblemImageDescriptor descriptor = new ProblemImageDescriptor(image, list.getSeverity());
 		return IpsPlugin.getDefault().getImage(descriptor);
     }

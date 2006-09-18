@@ -90,6 +90,12 @@ public class IpsPreferences {
     
     public final static String NAVIGATE_TO_MODEL = IpsPlugin.PLUGIN_ID + ".navigateToModel"; //$NON-NLS-1$
     
+    /**
+     * Constant identifying the ips test runner max heap size preference.
+     */
+    public final static String IPSTESTRUNNER_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ipsTestTunnerMaxHeapSize"; //$NON-NLS-1$
+    
+    
     private IPreferenceStore prefStore;
     
     public IpsPreferences(IPreferenceStore prefStore) {
@@ -102,6 +108,7 @@ public class IpsPreferences {
     	prefStore.setDefault(MODIFY_RUNTIME_ID, false);
     	prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
     	prefStore.setDefault(ENABLE_GENERATING, true);
+        prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
     }
 
     /**
@@ -182,6 +189,10 @@ public class IpsPreferences {
      */
     public boolean getEnableGenerating(){
     	return prefStore.getBoolean(ENABLE_GENERATING); 
+    }
+    
+    public String getIpsTestRunnerMaxHeapSize(){
+        return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
     
     /**

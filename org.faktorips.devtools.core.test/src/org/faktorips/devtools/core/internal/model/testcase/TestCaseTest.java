@@ -17,14 +17,20 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,6 +42,7 @@ import org.w3c.dom.Element;
 public class TestCaseTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
+    private IIpsPackageFragmentRoot root;
     private ITestCase testCase;
     private ITestCaseType testCaseType;
     
@@ -45,6 +52,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
+        root = ipsProject.getIpsPackageFragmentRoots()[0];
         testCaseType = (ITestCaseType) newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType1");
         testCaseType.newInputTestValueParameter().setName("inputTestValue0");
         testCaseType.newInputTestValueParameter().setName("inputTestValue1");
@@ -197,5 +205,34 @@ public class TestCaseTest extends AbstractIpsPluginTest {
       assertEquals("expResultTestPolicyCmpt0", testCase.getExpectedResultTestPolicyCmpts()[0].getTestPolicyCmptTypeParameter());
       
       assertEquals("testCaseType1", testCase.getTestCaseType());
+    }
+    
+    public void testDependsOn() throws Exception {
+        List dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
+        assertEquals(1, dependsOnList.size());
+        assertTrue(dependsOnList.contains(testCaseType.getQualifiedNameType()));
+        
+        ITestCase testCase2 = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseType2");
+        List dependsOnList2 = CollectionUtil.toArrayList(testCase2.dependsOn());
+        assertEquals(0, dependsOnList2.size());
+        
+        IProductCmpt prodCmpt1 = newProductCmpt(root, "ProductCmpt1");
+        IProductCmpt prodCmpt2 = newProductCmpt(root, "ProductCmpt2");
+
+        // test dependency to product cmpt, root test cmpt
+        ITestPolicyCmpt testPolicyCmpt1 = testCase.newTestPolicyCmpt();
+        testPolicyCmpt1.setProductCmpt(prodCmpt1.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
+        assertEquals(2, dependsOnList.size());
+        assertTrue(dependsOnList.contains(prodCmpt1.getQualifiedNameType()));
+
+        // test dependency to product cmpt, child test cmpt
+        ITestPolicyCmptRelation testRelation1 = testPolicyCmpt1.newTestPolicyCmptRelation();
+        ITestPolicyCmpt testPolicyCmpt2 = testRelation1.newTargetTestPolicyCmptChild();
+        testPolicyCmpt2.setProductCmpt(prodCmpt2.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
+        assertEquals(3, dependsOnList.size());
+        assertTrue(dependsOnList.contains(prodCmpt1.getQualifiedNameType()));
+        assertTrue(dependsOnList.contains(prodCmpt2.getQualifiedNameType()));
     }
 }

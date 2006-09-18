@@ -19,12 +19,12 @@ package org.faktorips.devtools.core.model.testcase;
 
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 
 /**
- * A product test case / test case type delta describes the difference
- * between what a test case based on specific test case type
- * should contain and what it actually contains. 
+ * A test case / test case type delta describes the difference between what a test case based on
+ * specific test case type should contain and what it actually contains.
  */
 public interface ITestCaseTestCaseTypeDelta {
 
@@ -45,10 +45,25 @@ public interface ITestCaseTestCaseTypeDelta {
     public boolean isEmpty();
     
     /**
+     * Returns <code>true</code> if the sort order of the test parameter changed.
+     */
+    public boolean isDifferentTestParameterOrder();
+    
+    //
+    // Missing test case type side objects
+    //
+    
+    /**
+     * Test Case Side: Returns the test policy components with missing test policy cmpt type
+     * parameter.
+     */
+    public ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam();
+    
+    /**
      * Test Case Side: Returns the test policy components relation with missing test policy cmpt
      * type parameter.
      */
-    public ITestPolicyCmptRelation[] getTestPolicyCmptRelationsWithMissingTestPolicyCmptTypeParam();
+    public ITestPolicyCmptRelation[] getTestPolicyCmptRelationsWithMissingTypeParam();
 
     /**
      * Test Case Side: Returns the test attribute value with missing test attribute.
@@ -58,9 +73,18 @@ public interface ITestCaseTestCaseTypeDelta {
     /**
      * Test Case Side: Returns the test value with missing test value parameter
      */
-    public ITestValue[] getTestValuesWithMissingTestValueParameter();
+    public ITestValue[] getTestValuesWithMissingTestValueParam();
     
+    //
+    // Missing test case type side objects
+    //
     
+    /**
+     * Test Case Type Side: Returns the root test policy cmpt type parameter with missing test
+     * policy cmpt.
+     */
+    public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt();
+
     /**
      *  Test Case Type Side: Returns the test attribute with missing test attribute value. 
      */
@@ -70,4 +94,16 @@ public interface ITestCaseTestCaseTypeDelta {
      * Test Case Type Side: Returns the test value parameter with missing test value.
      */
     public ITestValueParameter[] getTestValueParametersWithMissingTestValue();
+
+    /**
+     * Returns the test policy cmpt for the missing test attribute.<br>
+     * Returns <code>null</code> if the given test attribute has no corresponding test policy cmpt.
+     */
+    public ITestPolicyCmpt getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute);
+
+    /**
+     * Returns the test policy cmpts which have a different sort order compared to their corresponding
+     * test policy cmpt type parameter.
+     */
+    public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrder();
 }

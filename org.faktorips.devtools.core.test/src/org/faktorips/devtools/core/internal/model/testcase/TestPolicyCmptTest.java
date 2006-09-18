@@ -64,7 +64,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals("policyCmptType1", policyCmptTypeObjectExpected.getName());
         assertEquals(2, policyCmptTypeObjectExpected.getTestPolicyCmptRelations().length);
         assertEquals(3, policyCmptTypeObjectExpected.getTestAttributeValues().length);
-        assertRelation(policyCmptTypeObjectExpected.getTestPcTypeRelation("relation2"), "base.Test2");  
+        assertRelation(policyCmptTypeObjectExpected.getTestPolicyCmptRelation("relation2"), "base.Test2");  
         
         assertTrue(policyCmptTypeObjectExpected.getTestPolicyCmptRelations()[0].isAccoziation());
         assertFalse(policyCmptTypeObjectExpected.getTestPolicyCmptRelations()[0].isComposition());
@@ -97,7 +97,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals("Label1", policyCmptTypeObjectExpected.getName());
         assertEquals(2, policyCmptTypeObjectExpected.getTestPolicyCmptRelations().length);
         assertEquals(1, policyCmptTypeObjectExpected.getTestAttributeValues().length);
-        assertRelation(policyCmptTypeObjectExpected.getTestPcTypeRelation("relation1"),
+        assertRelation(policyCmptTypeObjectExpected.getTestPolicyCmptRelation("relation1"),
                 "base.Test4");
         assertEquals("productCmpt1", policyCmptTypeObjectExpected.getProductCmpt());
     }

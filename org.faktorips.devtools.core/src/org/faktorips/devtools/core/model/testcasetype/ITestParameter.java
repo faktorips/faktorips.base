@@ -40,6 +40,11 @@ public interface ITestParameter extends IIpsObjectPart {
      */
     public final static String MSGCODE_DUPLICATE_NAME = MSGCODE_PREFIX + "DuplicateName"; //$NON-NLS-1$
     
+    /**
+     * Validation message code to indicate the correct name format.
+     */
+    public static final String MSGCODE_INVALID_NAME = MSGCODE_PREFIX + "InvalidName"; //$NON-NLS-1$
+    
 	/**
 	 * Returns the parameters's name, e.g. 'effectiveDate'.
 	 * {@inheritDoc}

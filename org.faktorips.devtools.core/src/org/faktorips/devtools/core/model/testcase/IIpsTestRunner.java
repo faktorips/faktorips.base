@@ -20,7 +20,7 @@ package org.faktorips.devtools.core.model.testcase;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.core.model.IIpsProject;
 
 /**
  * Specification of an ips test runner.
@@ -65,15 +65,20 @@ public interface IIpsTestRunner {
 	/**
 	 * Sets the java project the test which will be started by this runner belongs to.
 	 */
-	public void setJavaProject(IJavaProject project);
+	public void setIpsProject(IIpsProject ipsProject);
 	
 	/**
-	 * Returns the java project.
+	 * Returns the ips project.
 	 */
-	public IJavaProject getJavaProject();	
+	public IIpsProject getIpsProject();	
 	
 	/**
 	 * Starts a new job for running tests.
+     * 
+     * @param classpathRepository the repository where the test are selected from
+     * @param testPackage the package including the tests
+     * 
+	 * @throws CoreException if an error occured.
 	 */
-	public void startTestRunnerJob(String classpathRepository, String testsuite);
+	public void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
 }

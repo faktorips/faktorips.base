@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
@@ -192,5 +194,13 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
                 }
             }
         }
-    }    
+        
+        // check the correct name format
+        IStatus status = JavaConventions.validateFieldName(name);
+        if (!status.isOK()){
+            String text = NLS.bind(Messages.TestParameter_ValidateError_InvalidTestParamName, name);
+            Message msg = new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME);
+            list.add(msg);
+        }
+    }
 }

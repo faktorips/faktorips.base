@@ -26,13 +26,18 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -41,11 +46,14 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -57,6 +65,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.Validatable;
@@ -66,6 +75,7 @@ import org.faktorips.devtools.core.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
@@ -75,6 +85,7 @@ import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
@@ -82,9 +93,8 @@ import org.faktorips.util.message.MessageList;
 /**
  * Section to show the test case.
  */
-public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
+public class TestCaseSection extends IpsSection implements IIpsTestRunListener, ContentsChangeListener {
 	private static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
-	public static final String REQUIRES_PRODUCT_CMPT_SUFFIX = " (P)"; //$NON-NLS-1$
 	
 	// The treeview which displays all test policy components and test values which are available in this test
 	private TreeViewer treeViewer;
@@ -119,8 +129,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private TestCaseDetailArea testCaseDetailArea;
 	
 	// Previous selected entries in the tree to
-	private List prevTestPolicyCmpt;
-	boolean prevIsValue;
+	private List prevTestObjects;
 	
 	// The form which contains this section
 	private ScrolledForm form;
@@ -142,6 +151,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	
     // Indicates that the tree is refreshing
     private boolean isTreeRefreshing = false;
+    
+    // Indicates if the corresponding test case type changed
+    private boolean testCaseTypeChanged = false;
+    
+    // Contains the color for the failure indicators
+    private Color fFailureColor;
+    // Color to indicate test ok
+    private Color fOkColor;
+    
+    // Listener for the run test and store expected result action
+    private IIpsTestRunListener runAndStoreExpectedResultListener;
+
+    // Contains all failure details for one test run
+    private List allFailureDetails = new ArrayList();
     
 	/*
      * Action which provides the content type filter.
@@ -203,12 +226,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     			IRelation relation = typeParam.findRelation();
     			if (relation == null){
     				return null;
-    			}				      	
-    			if (relation.isAssoziation()){
-    				return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
-    			}else {
-    				return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
-    			}
+    			}		
+                return relation.getImage();
     		} catch (CoreException e) {
     			return null;
     		}
@@ -221,7 +240,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         	TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
         	String text = dummyRelation.getName();
         	if (dummyRelation.isRequiresProductCmpt()){
-        		text += REQUIRES_PRODUCT_CMPT_SUFFIX;
+        		text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
         	}
         	return text;
     	}
@@ -238,6 +257,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     	 */
     
     	public void dispose() {
+            fFailureColor.dispose();
+            fOkColor.dispose();
     	}
     
     	/**
@@ -255,8 +276,94 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     	}		
     }
 
+    /*
+     * Class to represent one ips test runner failure
+     */
+    private class FailureDetails{
+        private String[] failureDetails;
+        
+        public FailureDetails(String[] failureDetails) {
+            this.failureDetails = failureDetails;
+        }
+        public String getActualValue() {
+            return failureDetails[4];
+        }
+        public String getAttributeName() {
+            return failureDetails[2];
+        }
+        public String getExpectedValue() {
+            return failureDetails[3];
+        }
+        public String getMessage() {
+            return failureDetails[5];
+        }
+        public String getObjectName() {
+            return failureDetails[1];
+        }
+        public String[] getFailureDetails(){
+            return failureDetails;
+        }
+    }
+
+    /*
+     * Class to represent the context menu to store the actual value in the expected value field
+     */
+    private class EditFieldMenu extends MenuManager implements IMenuListener, ISelectionProvider{
+        private List failureDetailsList;
+        public EditFieldMenu(String text, List failureDetailsList){
+            super(text);
+            this.failureDetailsList = failureDetailsList;
+        }
+        public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        }
+        public ISelection getSelection() {
+            return null;
+        }
+        public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+        }
+        public void setSelection(ISelection selection) {
+        }
+        public List getFailureDetailsList() {
+            return failureDetailsList;
+        }
+        public void menuAboutToShow(IMenuManager manager) {
+            final EditFieldMenu contextMenuManager = (EditFieldMenu) manager;
+
+            Action actionStoreActualValue = new Action("actionStoreActualValue", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                public void run() {
+                    List failureDetailsList = contextMenuManager.getFailureDetailsList();
+                    if(failureDetailsList.size()>1){
+                        boolean overwriteExpectedResult = MessageDialog
+                                .openQuestion(getShell(), Messages.TestCaseSection_MessageDialog_TitleStoreExpectedResults,
+                                        Messages.TestCaseSection_MessageDialog_QuestionStoreExpectedResults);
+                        if (!overwriteExpectedResult) {
+                            return;
+                        }                        
+                    }
+                    for (Iterator iter = failureDetailsList.iterator(); iter.hasNext();) {
+                        FailureDetails failureDetails = (FailureDetails)iter.next();
+                        testCaseDetailArea.storeActualValueInExpResult(getUniqueEditFieldKey(failureDetails
+                                .getObjectName(), failureDetails.getAttributeName()), failureDetails.getActualValue(),
+                                failureDetails.getMessage());
+                    }
+                    testCaseDetailArea.updateUi();
+                }
+            };
+            if (failureDetailsList.size()>1){
+                actionStoreActualValue.setText(Messages.TestCaseSection_Action_StoreExpectedResults);
+                actionStoreActualValue.setToolTipText(Messages.TestCaseSection_Action_ToolTipStoreExpectedResults);
+            } else {
+                actionStoreActualValue.setText(Messages.TestCaseSection_Action_StoreExpectedResult);
+                actionStoreActualValue.setToolTipText(Messages.TestCaseSection_Action_ToolTipStoreExpectedResult);
+            }
+            actionStoreActualValue.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseStoreExpResult.gif")); //$NON-NLS-1$
+            
+            manager.add(actionStoreActualValue);
+        }
+    }
+    
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
-            TestCaseContentProvider contentProvider, String title, String detailTitle, ScrolledForm form) {
+            TestCaseContentProvider contentProvider, String title, String detailTitle, ScrolledForm form){
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
         
         this.editor = editor;
@@ -267,6 +374,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         
         initControls();
         setText(title);
+        
+        // Colors are taken from the JUnit test runner to show a corporate identify for test support
+        fFailureColor = new Color(getDisplay(), 159, 63, 63);
+        fOkColor = new Color(getDisplay(), 95, 191, 95);
 
         GridLayout gridLayout = new GridLayout(2, false);
         gridLayout.horizontalSpacing = 0;
@@ -274,39 +385,62 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         gridLayout.marginHeight = 0;
         parent.setLayout(gridLayout);
 
-        // add listener to test runner
-        IpsPlugin.getDefault().getIpsTestRunner().addIpsTestRunListener(this);
+        registerTestRunListener();
 
         // add listener on model,
         //   if the model changed reset the test run status
-        testCase.getIpsModel().addChangeListener(new ContentsChangeListener() {
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.getIpsSrcFile().equals(testCase.getIpsSrcFile())) {
-                    postResetTestRunStatus();
-                    refreshTree();
-                    return;
-                }
-                try {
-                    if (event.getIpsSrcFile().equals(testCase.findTestCaseType().getIpsSrcFile())) {
-                        postResetTestRunStatus();
-                        refreshTree();
-                    }
-                } catch (Exception e) {
-                    // ignore exception during find of test case type
-                }
+        testCase.getIpsModel().addChangeListener(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void contentsChanged(ContentChangeEvent event) {
+        // refresh if the test case changed
+        if (event.getIpsSrcFile().equals(testCase.getIpsSrcFile())) {
+            postResetTestRunStatus();
+            refreshTree();
+            return;
+        }
+        // refresh and check for delta to the test case type 
+        //   if the test case type changed
+        try {
+            if (event.getIpsSrcFile().equals(testCase.findTestCaseType().getIpsSrcFile())) {
+                postResetTestRunStatus();
+                refreshTreeAndDetailArea();
+                testCaseTypeChanged = true;
             }
-        });
+        } catch (Exception e) {
+            // ignore exception during find of test case type
+        }        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void refresh() {
+        super.refresh();
+        // if in the meanwhile the test case type changed check for inconsistence between test case
+        // and test case type
+        try {
+            if (testCaseTypeChanged &&  ! (testCase.findTestCaseType().getIpsSrcFile().isDirty())) {
+                testCaseTypeChanged = false;
+                checkForInconsistenciesBetweenTestCaseAndTestCaseType();
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
     
     /**
      * {@inheritDoc}
      */    
     public void dispose() {
-        IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener((IIpsTestRunListener) this);
+        removeAllListener();
         super.dispose();
     }
-    
-	/**
+
+    /**
 	 * Initialization of the main section.
 	 * {@inheritDoc}
 	 */
@@ -361,14 +495,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         testCaseDetailArea = new TestCaseDetailArea(toolkit, contentProvider, this);
 		testCaseDetailArea.createInitialDetailArea(client, sectionDetailTitle);
 
-        // Initialize the previous selected objects empty
-		prevTestPolicyCmpt = new ArrayList();
-		prevIsValue = false;
+        // Initialize the previous selected objects as empty list
+		prevTestObjects = new ArrayList();
         
         // Set the state of the buttons
         updateButtonEnableState(null);
 
         refreshTree();
+        
+        // check for delta to the test case type
+        checkForInconsistenciesBetweenTestCaseAndTestCaseType();
 	}
 
 	/**
@@ -385,7 +521,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		actionRelation.setToolTipText(Messages.TestCaseSection_ToolBar_WithoutRelation);
 		actionRelation.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("ShowRelationTypeNodes.gif")); //$NON-NLS-1$
 		
-		// Toolbar item show all
+        // Toolbar item show all
 		actionAll = new Action("structureAll", Action.AS_CHECK_BOX) { //$NON-NLS-1$
 			public void run() {
 				showAllClicked();
@@ -394,15 +530,30 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		actionAll.setChecked(false);
 		actionAll.setToolTipText(Messages.TestCaseSection_ToolBar_FlatStructure);
 		actionAll.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
-		
-		// Toolbar item run test
-		Action actionTest = new Action("runTest", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+        
+        // Toolbar item run and store expected result
+		Action actionRunAndStoreExpectedResult = new Action("runAndStoreExpectedResult", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
-				runTestClicked();
+				runAndStoreExpectedResultClicked();
 			}
 		};
-		actionTest.setToolTipText(Messages.TestCaseSection_ToolBar_RunTest);
-		actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
+        actionRunAndStoreExpectedResult.setToolTipText(Messages.TestCaseSection_Action_RunTestAndStoreExpectedResults);
+        actionRunAndStoreExpectedResult.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRunAndStoreExpResult.gif")); //$NON-NLS-1$
+        // enable run test case functionality only if a toc file exists for this test case
+        try {
+            actionRunAndStoreExpectedResult.setEnabled(getTocFilePackage() != null);
+        } catch (CoreException e) {
+            actionRunAndStoreExpectedResult.setEnabled(false);
+        }
+        
+        // Toolbar item run test
+        Action actionTest = new Action("runTest", Action.AS_PUSH_BUTTON) { //$NON-NLS-1$
+            public void run() {
+                runTestClicked();
+            }
+        };
+        actionTest.setToolTipText(Messages.TestCaseSection_ToolBar_RunTest);
+        actionTest.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
         
         // enable run test case functionality only if a toc file exists for this test case
         try {
@@ -411,15 +562,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             actionTest.setEnabled(false);
         }
         
+        // Add actions for fitering the content type
         addContentTypeAction();
         
         form.getToolBarManager().add(new Separator());
-        
 		form.getToolBarManager().add(actionRelation);
 		form.getToolBarManager().add(actionAll);
 		
         form.getToolBarManager().add(new Separator());
+        form.getToolBarManager().add(actionRunAndStoreExpectedResult);
         
+        form.getToolBarManager().add(new Separator());
         form.getToolBarManager().add(actionTest);
         
         form.updateToolBar();
@@ -454,7 +607,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	private TreeItem searchChildsByLabel(String labelPath, TreeItem[] childs) {
 		for (int i = 0; i < childs.length; i++) {
 			TreeItem currItem = childs[i];
-				if (currItem.getText().equals(labelPath) || currItem.getText().equals(labelPath + REQUIRES_PRODUCT_CMPT_SUFFIX))
+				if (currItem.getText().equals(labelPath) || currItem.getText().equals(labelPath + Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt))
 					return currItem;
 			currItem = searchChildsByLabel(labelPath, currItem.getItems());
 			if (currItem != null)
@@ -473,7 +626,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		TreeItem currItem = null;
 		for (int i = 0; i < childs.length; i++) {
 			currItem = childs[i];
-			if (currItem.getText().equals(currPathItem) || currItem.getText().equals(currPathItem + REQUIRES_PRODUCT_CMPT_SUFFIX)){
+			if (currItem.getText().equals(currPathItem) || currItem.getText().equals(currPathItem + Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt)){
 				if (hierarchyPath.hasNext())
 					currItem = searchChildsByHierarchyPath(hierarchyPath, currItem.getItems());
 				break;
@@ -517,55 +670,34 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         
 		updateButtonEnableState(selection.getFirstElement());		
         
-        Object selected = selection.getFirstElement();
-        selectInDetailArea(selected, false);
-        
-        if (showAll){
-            // if all elements are show return
-            return;
+		if (!showAll){
+            // show only the elements which belongs to the selection
+            //   if a test value is selected show the value objects
+            //   if a test policy cmpt or a child of a policy cmpt is selected, show all elements inside
+            //     the hierarchy of the root test policy cmpt
+            List objectsToDisplay = new ArrayList();
+            for (Iterator iterator = selection.iterator(); iterator.hasNext();) {
+    			Object domainObject = iterator.next();
+    			
+                if (domainObject instanceof ITestValue){
+                    objectsToDisplay.add(domainObject);
+                } else {
+                    ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
+                    objectsToDisplay.add(testPolicyCmpt.getRoot());
+                }
+    		}
+    		//  if the selection has changed redraw the detail section
+    		if (! objectsToDisplay.equals(prevTestObjects)){
+    		    testCaseDetailArea.clearDetailArea();
+    		    testCaseDetailArea.createTestObjectSections(objectsToDisplay);
+    		    prevTestObjects = objectsToDisplay;
+    		    redrawForm();
+            }
         }
         
-        // show only the elements which belongs to the selection
-        //   if a test value is selected show all test value objects
-        //   if a test policy cmpt or a child of a policy cmpt is selected, show all elements inside
-        //     the hierarchy of the root test policy cmpt
-		for (Iterator iterator = selection.iterator(); iterator.hasNext();) {
-			Object domainObject = iterator.next();
-			if (domainObject instanceof ITestValue){
-				prevTestPolicyCmpt = new ArrayList();
-				if (!prevIsValue){
-					prevIsValue = true;
-                    testCaseDetailArea.clearDetailArea();
-					testCaseDetailArea.createValuesSection();
-					redrawForm();
-				}
-			} else {
-			    List testPolicyCmpts = new ArrayList();
-
-                ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
-				// add the element in selected root element list only once
-				ITestObject rootElem = testPolicyCmpt.getRoot();
-				boolean exists = false;
-				for (Iterator iter = testPolicyCmpts.iterator(); iter.hasNext();) {
-					if (((ITestPolicyCmpt) iter.next()).equals(rootElem)){
-						exists = true;
-						break;
-					}
-				}
-				if (!exists)
-					testPolicyCmpts.add(rootElem);
-                
-				//	if the selection has changed redraw the detail section
-				if (testPolicyCmpts.size() > 0 && ! testPolicyCmpts.equals(prevTestPolicyCmpt)){
-				    testCaseDetailArea.clearDetailArea();
-				    testCaseDetailArea.createDetailSection(testPolicyCmpts);
-				    prevTestPolicyCmpt = testPolicyCmpts;
-				    prevIsValue = false;		
-				    
-				    redrawForm();
-				}
-			}
-		}
+		// Mark the section of the tree object as selected 
+        Object selected = selection.getFirstElement();
+        selectInDetailArea(selected, false);
 	}
 	
 	/**
@@ -604,7 +736,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		}else if (selection instanceof ITestPolicyCmpt){
 			ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selection;
 			try {
-				ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptType();
+				ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
 				// root elements could not be deleted
 				removeButton.setEnabled(!((ITestPolicyCmpt)selection).isRoot());	
 				if (param != null){
@@ -673,6 +805,16 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		});
 	}
 
+    /**
+     * Select the section which is identified by the unique path.
+     */
+    private void selectSection(String uniquePath){
+        Section sectionCtrl = testCaseDetailArea.getSection(uniquePath);
+        if (sectionCtrl != null){
+            sectionCtrl.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+        }
+    }
+    
 	/**
 	 * Select the given object in the detail area, change the color of the section.
 	 * 
@@ -680,7 +822,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * @param withFocusChange If <code>true</code> also the focus will be set to the first edit field in the
 	 *                        found section. If <code>false</code> no focus will be moved. 
 	 */
-	private void selectInDetailArea(Object selected, boolean withFocusChange){
+	void selectInDetailArea(Object selected, boolean withFocusChange){
 		String uniquePath=""; //$NON-NLS-1$
 		testCaseDetailArea.resetSectionColors(form);
 		if(selected instanceof ITestValue){
@@ -692,10 +834,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					valueTextCtrl.getControl().setFocus();
 				}
 			}
-			Section sectionCtrl = testCaseDetailArea.getSection(VALUESECTION + uniquePath);
-			if (sectionCtrl != null){
-				sectionCtrl.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-			}
+            selectSection(VALUESECTION + uniquePath);
 			return;
 		}else{
 			uniquePath = getUniqueKey(selected);
@@ -707,10 +846,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 					firstField.getControl().setFocus();
 				}
 			}
-			Section sectionCtrl = testCaseDetailArea.getSection(uniquePath);
-			if (sectionCtrl != null){
-				sectionCtrl.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
-			}
+            selectSection(uniquePath);
 		}
 	}
 
@@ -936,7 +1072,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 				ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) selectedObj;
 				ITestPolicyCmptTypeParameter testTypeParam;
 				try {
-					testTypeParam = testPolicyCmpt.findTestPolicyCmptType();
+					testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
 				} catch (CoreException e) {
 					// ignored, the validation shows the unknown type failure message
 					return;
@@ -957,75 +1093,90 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	}
 	
 	private void showAllClicked(){
-		showAll(! showAll);
-	}
-	
-	private void showAll(boolean showAll){
-		
-        this.showAll = showAll;
-        prevIsValue = false;
-        prevTestPolicyCmpt = new ArrayList();
-		if (showAll){
-			ArrayList allInputTestPolicyCmpts;
-			ITestPolicyCmpt[] policyCmpts = contentProvider.getPolicyCmpts();
-			allInputTestPolicyCmpts = new ArrayList(policyCmpts.length);
-			for (int i = 0; i < policyCmpts.length; i++) {
-				allInputTestPolicyCmpts.add(policyCmpts[i]);
-			}
-
-            testCaseDetailArea.clearDetailArea();
-			testCaseDetailArea.createValuesSection();
-			testCaseDetailArea.createDetailSection(allInputTestPolicyCmpts);
-			prevIsValue = true;
-			prevTestPolicyCmpt = allInputTestPolicyCmpts;
-            treeViewer.expandAll();
-			redrawForm();
-		}else{
-			ISelection selection = treeViewer.getSelection();
-			if (selection instanceof IStructuredSelection){
-				Object domainObject = ((IStructuredSelection)selection).getFirstElement();
-				if (domainObject instanceof ITestValue){
-                    testCaseDetailArea.clearDetailArea();
-					testCaseDetailArea.createValuesSection();
-				} else {
-				    testCaseDetailArea.clearDetailArea();
-                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) getTestPolicyCmpFromDomainObject(domainObject);
-                    if (testPolicyCmpt != null){
-                        testPolicyCmpt = (ITestPolicyCmpt) testPolicyCmpt.getRoot();
-    					ArrayList list = new ArrayList();
-    					list.add(testPolicyCmpt);
-					
-    					testCaseDetailArea.createDetailSection(list);
-    					prevTestPolicyCmpt = list;
-    					prevIsValue = false;
-                    } else{
-                        prevTestPolicyCmpt = new ArrayList();
-                        prevIsValue = false;
-                    }
-			}
-			redrawForm();
-            }
+        showAll(! showAll);
+        
+        // Mark the section of the tree object as selected 
+        ISelection selection = treeViewer.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            Object selected = ((IStructuredSelection)selection).getFirstElement();
+            selectInDetailArea(selected, false);        
         }
 	}
 
+    private void runAndStoreExpectedResultClicked() {
+        boolean overwriteExpectedResult = MessageDialog.openQuestion(getShell(), Messages.TestCaseSection_MessageDialog_TitleRunTestAndStoreExpectedResults,
+                Messages.TestCaseSection_MessageDialog_QuestionRunTestAndStoreExpectedResults);
+        if (!overwriteExpectedResult) {
+            return;
+        }
+        resetTestRunStatus();
+        showAll(true);
+        registerRunTestAndStoreExpectedResultLister();
+        startTestRunner();
+    }
+
+    /*
+     * Show all objects in the detail area if showAll is <code>true</code>, otherwise show only
+     * the object which is selected in the tree
+     */
+	private void showAll(boolean showAll){
+        this.showAll = showAll;
+		if (showAll) {
+            // show all test objects wich are provided by the content provider
+            createDetailsSectionsForAll();
+            treeViewer.expandAll();
+        } else {
+            // show only the selected test objetcs
+            ISelection selection = treeViewer.getSelection();
+            if (selection instanceof IStructuredSelection) {
+                Object domainObject = ((IStructuredSelection)selection).getFirstElement();
+                testCaseDetailArea.clearDetailArea();
+                List list = new ArrayList();
+                if (domainObject instanceof ITestValue) {
+                    list.addAll(Arrays.asList(new ITestValue[] { (ITestValue)domainObject }));
+                    testCaseDetailArea.createTestObjectSections(list);
+                    prevTestObjects = list;
+                } else {
+                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)getTestPolicyCmpFromDomainObject(domainObject);
+                    if (testPolicyCmpt != null) {
+                        list.addAll(Arrays.asList(new ITestPolicyCmpt[] { (ITestPolicyCmpt)testPolicyCmpt.getRoot() }));
+                        testCaseDetailArea.createTestObjectSections(list);
+                        prevTestObjects = list;
+                    } else {
+                        // no valid selection in tree
+                        prevTestObjects.clear();
+                    }
+                }
+            }
+        }
+		redrawForm();
+	}
+
+    /*
+     * Draws the detail section for all test object in the test case, which are provided by the content provider. 
+     */
+    private void createDetailsSectionsForAll() {
+        testCaseDetailArea.clearDetailArea();
+        List list = new ArrayList();
+        list.addAll(Arrays.asList(contentProvider.getTestObjects()));
+        testCaseDetailArea.createTestObjectSections(list);
+        prevTestObjects = list;
+    }
+
 	private void runTestClicked(){
-		// run test test
-		try {
-			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
-			testRunner.setJavaProject(testCase.getIpsProject().getJavaProject());
-			String repositoryPackage = getTocFilePackage();
-            if (repositoryPackage != null)
-                testRunner.startTestRunnerJob(repositoryPackage, testCase.getQualifiedName());
-		} catch (CoreException e) {
-			IpsPlugin.logAndShowErrorDialog(e);
-		}
+        resetTestRunStatus();
+        registerTestRunListener();
+	    startTestRunner();
 	}
     
     /*
      * Returns the toc file package name which stores the current test case.
      */
     private String getTocFilePackage() throws CoreException {
-        IIpsPackageFragmentRoot root = testCase.getIpsPackageFragment().getRoot();
+        IIpsPackageFragment packageFragment = testCase.getIpsPackageFragment();
+        if (packageFragment == null)
+            return null;
+        IIpsPackageFragmentRoot root = packageFragment.getRoot();
         IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
         return builderSet.getTocFilePackageName(root);        
     }
@@ -1100,22 +1251,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * Refresh the tree and form.
 	 */
 	private void refreshTreeAndDetailArea(){
-		prevIsValue = false;
 		form.setRedraw(false);
-        testCaseDetailArea.clearDetailArea();
-        if (showAll){
-		    testCaseDetailArea.createValuesSection();
-			testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
-		} else {
-			if (prevIsValue){
-				testCaseDetailArea.createValuesSection();
-			} else {
-				testCaseDetailArea.createDetailSection(prevTestPolicyCmpt);
-			}
-		}
-		refreshTree();
-		redrawForm();
-        form.setRedraw(true);
+        try {
+            testCaseDetailArea.clearDetailArea();
+
+            if (showAll) {
+                createDetailsSectionsForAll();
+            } else {
+                testCaseDetailArea.createTestObjectSections(prevTestObjects);
+            }
+            refreshTree();
+            redrawForm();
+        } finally {
+            form.setRedraw(true);
+        }
 	}
 	
 	/**
@@ -1173,7 +1322,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 */
 	private void  selectInTreeByObject(ITestPolicyCmpt testPolicyCmpt, ITestPolicyCmptRelation relation, boolean focusChange) {
 		if (!isDoubleClicked){
-        	selectInDetailArea(testPolicyCmpt, false);
+            if (testPolicyCmpt != null)
+                selectInDetailArea(testPolicyCmpt, false);
+            else if (relation != null)
+                selectInDetailArea(relation, false);
+            
         	// goto the corresponding test policy component in the tree
     		Tree tree = treeViewer.getTree();
         	TreeItem found = searchChildsByObject(testPolicyCmpt, relation, tree.getItems());
@@ -1265,7 +1418,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	    	}else if (element instanceof ITestPolicyCmpt){
 	    		ITestPolicyCmpt pc = (ITestPolicyCmpt) element;
 	    		if (! pc.isRoot()){
-		    		TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(pc.findTestPolicyCmptType(), pc.getParentPolicyCmpt());
+		    		TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(pc.findTestPolicyCmptTypeParameter(), pc.getParentPolicyCmpt());
 		    		return dummyRelation.validate();
 	    		}
 	    	}
@@ -1295,7 +1448,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	    	}else if (element instanceof ITestPolicyCmpt){
 	    		ITestPolicyCmpt pc = (ITestPolicyCmpt) element;
 	    		if (! pc.isRoot()){
-		    		TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(pc.findTestPolicyCmptType(), pc.getParentPolicyCmpt());
+		    		TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(pc.findTestPolicyCmptTypeParameter(), pc.getParentPolicyCmpt());
 		    		messageList.add(dummyRelation.validate());
 	    		}
 	    	}
@@ -1330,7 +1483,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		selectDialog.setTitle(Messages.TestCaseSection_DialogSelectTestRelation_Title);
 		selectDialog.setMessage(Messages.TestCaseSection_DialogSelectTestRelation_Description);
 		
-		ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptType();
+		ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt.findTestPolicyCmptTypeParameter();
 		TestCaseTypeRelation[] dummyRelations = new TestCaseTypeRelation[param.getTestPolicyCmptTypeParamChilds().length];
         ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
         for (int i = 0; i < childParams.length; i++) {
@@ -1380,13 +1533,22 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		return MessageFormat.format(failureFormat, failureDetails); 
 	}
 	
+    /*
+     * Converts the given failure details to one store actual value in expected result detail row.
+     */
+    private String failureDetailsToStoreInExpResultToString(String[] failureDetails) {
+        // FIXME Joerg: eigenes format
+        return failureDetailsToString(failureDetails);
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
 	public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
-		if (! canListenToTestRun(qualifiedTestName))
+		if (! canListenToTestRun(qualifiedTestName)){
 			return;
-
+        }
+        
 		isTestRunError = true;
 	}
 
@@ -1394,59 +1556,136 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * {@inheritDoc}
 	 */
 	public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
-		if (! canListenToTestRun(qualifiedTestName))
+		if (! canListenToTestRun(qualifiedTestName)){
 			return;
-		
+        }
+        
 		isTestRunFailure = true;
 		failureCount ++;
 		
-		String objectName = failureDetails[1];
-		String attributeName = failureDetails[2];
+        FailureDetails failureDetailsObj = new FailureDetails(failureDetails);
         String formatedFailure = failureDetailsToString(failureDetails);
+
+        // inform about the failure in the form title
+        postAddFailureTooltipInFormTitle(formatedFailure);
+
+        String uniqueEditFieldKey = getUniqueEditFieldKey(failureDetailsObj.getObjectName(), failureDetailsObj
+                .getAttributeName());
+
+        // indicate edit fiels as failure
+        testCaseDetailArea.markEditFieldAsFailure(uniqueEditFieldKey, formatedFailure, failureDetails);
+
+        // create context menu to store actual value
+        EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(failureDetailsObj.getObjectName(),
+                failureDetailsObj.getAttributeName()));
+        if (editField != null){
+            postAddExpectedResultContextMenu(editField.getControl(), failureDetailsObj, false);
+        }
         
-        postAddFailureTooltip(formatedFailure);
-		
+        // store the failure details for later use (e.g. store all actual values)
+        allFailureDetails.add(failureDetailsObj);
+	}
+    
+    /*
+     * Returns the unique key to indicate the edit field
+     */
+    private String getUniqueEditFieldKey(String objectName, String attributeName){
         if (StringUtils.isEmpty(attributeName) || "<null>".equals(attributeName)){ //$NON-NLS-1$
             // no attribute given expect that the failure was in an value object
-            testCaseDetailArea.markTestValueAsFailure(objectName, formatedFailure);
+            return objectName;
         } else {
-            // mark attribut edit field as failure
-            try {
-                testCaseDetailArea.markAttributeAsFailure(objectName + attributeName, formatedFailure);
-            } catch (Exception e) {
-                // ignore the excpetion while marking the edit field with the failure 
-            }
+            return objectName + attributeName;
         }
-	}
-
-	private void postAddFailureTooltip(final String failureToolTip) {
-        postSyncRunnable(new Runnable() {
+    }
+    
+    private void postAddFailureTooltipInFormTitle(final String failureToolTip) {
+        postAsyncRunnable(new Runnable() {
             public void run() {
                 if (isDisposed())
                     return;
                 form.getContent().setToolTipText(form.getContent().getToolTipText() + "\n" + failureToolTip); //$NON-NLS-1$
             }
         });
+    }    
+    
+    void postAddExpectedResultContextMenu(Control control, String[] failureDetails){
+        postAddExpectedResultContextMenu(control, new FailureDetails(failureDetails), false);
     }
     
+    private void postAddExpectedResultContextMenu(Control control, FailureDetails failureDetails, boolean isSectionTitleMenu) {
+        ArrayList list = new ArrayList(1);
+        list.add(failureDetails);
+        postAddExpectedResultContextMenu(control, list, isSectionTitleMenu);
+    }
+    
+    private Control getSectionTitleControl(){
+        return form.getContent();
+    }
+    
+    private Menu sectionTitleContextMenu;
+    
+    private void postAddExpectedResultContextMenu(final Control control, final List failureDetails, final boolean isSectionTitleMenu) {
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if (isDisposed())
+                    return;
+                
+                if (failureDetails.size() == 0)
+                    return;
+                
+                EditFieldMenu menuMgr = new EditFieldMenu(
+                        "#PopupMenu", failureDetails); //$NON-NLS-1$
+                menuMgr.setRemoveAllWhenShown(true);
+                menuMgr.addMenuListener(menuMgr);
+                
+                Menu menu = menuMgr.createContextMenu(control);
+                control.setMenu(menu);
+                if (isSectionTitleMenu){
+                    sectionTitleContextMenu = menu;
+                }
+            }
+        });
+    }
+
 	/**
 	 * {@inheritDoc}
 	 */	
 	public void testFinished(String qualifiedTestName) {
-		if (! canListenToTestRun(qualifiedTestName))
+		if (! canListenToTestRun(qualifiedTestName)){
 			return;
-		
+        }
+        
 		postSetTestRunStatus(isTestRunError, isTestRunFailure, failureCount);
+        
+        // create context menu to store actual value as expected value
+        List allFailuresCopy = new ArrayList();
+        allFailuresCopy.addAll(allFailureDetails);
+        postAddExpectedResultContextMenu(getSectionTitleControl(), allFailuresCopy, true);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void testStarted(String qualifiedTestName) {
-		if (! canListenToTestRun(qualifiedTestName))
+		if (! canListenToTestRun(qualifiedTestName)){
 			return;
+        }
+        
+        // resets the status, thus if a test runner for this test case is started in the background
+        // - e.g. by using the modelexplorer - the status will be removed correctly
         postResetTestRunStatus();
 		
+        // remove the contextmenu in the section title
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if (isDisposed())
+                    return;
+                if (sectionTitleContextMenu != null) {
+                    sectionTitleContextMenu.dispose();
+                }
+            }
+        });
+        
 		isTestRunError = false;
 		isTestRunFailure = false;
 		failureCount = 0;
@@ -1457,7 +1696,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 	 * {@inheritDoc}
 	 */	
 	public void testRunEnded(String elapsedTime) {
-		// nothing to do
+	    // nothing to do
 	}
 
 	/**
@@ -1485,8 +1724,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		if (!isDisposed())
 			getDisplay().syncExec(r);
 	}	
-
-	/*
+    
+    void postAsyncRunnable(Runnable r) {
+        if (!isDisposed())
+            getDisplay().asyncExec(r);
+    }   
+	
+    /*
 	 * Returns <code>true</code> if the test run listener is relevant for this test case.<br>
      * Returns <code>false<code> if the file is changed and not saved (source file is dirty).<br>
      * Returns <code>false<code> if the given test case name doesn't match the current editing test case.
@@ -1504,30 +1748,51 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 			public void run() {
 				if (isDisposed())
                     return;
-                if (isError) {
-                    form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
-                    form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-                    form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Error);
-                } else if (isFailure) {
-                    form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_RED));
-                    form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-                    form.getContent().setToolTipText(
-                                    NLS.bind(Messages.TestCaseEditor_Title_Failure, "" + failureCount) + form.getContent().getToolTipText()); //$NON-NLS-1$
-                } else {
-                    form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
-                    form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-                    form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Success);
-                }
+                setTitleStatus(isError, isFailure, false, failureCount, form.getContent().getToolTipText());
 			}
+
 		});
 	}
 	
-	void postSetFailureBackgroundAndToolTip(final EditField editField, final String expectedResult) {
+    /*
+     * Sets the status in the section title. One of:<ul>
+     * <li>error - color red, tooltip contains error ocurred (no further details)
+     * <li>failure - color red, tooltip contains failure details
+     * <li>overridden - color yellow, tooltip informs about the overridden fields
+     * <li>ok - color green, no tooltip
+     * </ul>
+     */
+	private void setTitleStatus(boolean isError,
+            boolean isFailure,
+            boolean isOverridden,
+            int failureCount,
+            String titleMessage) {
+        if (isError) {
+            form.getContent().setBackground(fFailureColor);
+            form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+            form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Error);
+        } else if (isFailure) {
+            form.getContent().setBackground(fFailureColor);
+            form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+            form.getContent().setToolTipText(
+                    NLS.bind(Messages.TestCaseEditor_Title_Failure, "" + failureCount) + titleMessage); //$NON-NLS-1$
+        } else if (isOverridden) {
+            form.getContent().setBackground(getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+            form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
+            form.getContent().setToolTipText(titleMessage);
+        } else {
+            form.getContent().setBackground(fOkColor);
+            form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+            form.getContent().setToolTipText(Messages.TestCaseEditor_Title_Success);
+        }
+    }
+
+    void postSetFailureBackgroundAndToolTip(final EditField editField, final String expectedResult) {
 		postSyncRunnable(new Runnable() {
 			public void run() {
 				if(isDisposed()) 
 					return;
-				editField.getControl().setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_RED));
+				editField.getControl().setBackground(fFailureColor);
 				editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 				editField.getControl().setToolTipText(expectedResult);
 				editField.getControl().setFocus();
@@ -1535,6 +1800,19 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 		});
 	}
 
+    public void postSetOverriddenValueBackgroundAndToolTip(final EditField editField, final String message) {
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if(isDisposed()) 
+                    return;
+                editField.getControl().setBackground(fOkColor);
+                editField.getControl().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+                editField.getControl().setToolTipText(message);
+                editField.getControl().setFocus();
+            }
+        });
+    }
+    
 	void postShowAll() {
 		postSyncRunnable(new Runnable() {
 			public void run() {
@@ -1565,6 +1843,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
         form.getContent().setToolTipText(""); //$NON-NLS-1$
         testCaseDetailArea.resetTestRun();
+        allFailureDetails.clear();
     }
 	
 	/**
@@ -1586,5 +1865,157 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     public TestCaseLabelProvider getLabelProvider() {
         return labelProvider;
+    }
+
+    /*
+     * Starts the test runner to execute this test case
+     */
+    private void startTestRunner() {
+        try {
+            IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
+            testRunner.setIpsProject(testCase.getIpsProject());
+            String repositoryPackage = getTocFilePackage();
+            if (repositoryPackage != null)
+                testRunner.startTestRunnerJob(repositoryPackage, testCase.getQualifiedName());
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+    
+    /*
+     * Checks for delta between test case and test case type in an async way
+     */
+    private void checkForInconsistenciesBetweenTestCaseAndTestCaseType(){
+        if (!isDisposed())
+            getDisplay().asyncExec(new Runnable() {
+                public void run() {
+                    if (isDisposed())
+                        return;
+                    performInconsistenciesCheck();
+                }
+            });
+    }
+    
+    /*
+     * Performs the inconsistencies check 
+     */
+    private void performInconsistenciesCheck(){
+        try {
+            ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+            if (!delta.isEmpty()){
+                TestCaseDeltaDialog dialog = new TestCaseDeltaDialog(delta, getShell());
+                dialog.setBlockOnOpen(true);
+                if ((dialog.open() == TestCaseDeltaDialog.OK)){
+                    testCase.getIpsModel().removeChangeListener(this);
+                    try {
+                        testCase.fixDifferences(delta);
+                        refreshTreeAndDetailArea();
+                    } finally {
+                        testCase.getIpsModel().addChangeListener(this);
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }        
+    }
+
+    /*
+     * Register the listener to run the test and store the expected result.
+     */
+    private void registerRunTestAndStoreExpectedResultLister() {
+        if (runAndStoreExpectedResultListener != null){
+            IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(runAndStoreExpectedResultListener);
+            runAndStoreExpectedResultListener = null;
+        }        
+        runAndStoreExpectedResultListener = new RunAndStoreExpectedResultListener(this);
+        IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(this);
+        IpsPlugin.getDefault().getIpsTestRunner().addIpsTestRunListener(runAndStoreExpectedResultListener);
+    }
+
+    /*
+     * Register the test run listener.
+     */
+    private void registerTestRunListener(){
+        IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(this);
+        IpsPlugin.getDefault().getIpsTestRunner().addIpsTestRunListener(this);
+        if (runAndStoreExpectedResultListener != null){
+            IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(runAndStoreExpectedResultListener);
+            runAndStoreExpectedResultListener = null;
+        }
+    }
+
+    /*
+     * Removes the listener for the ips test runner
+     */
+    private void removeAllListener() {
+        if (runAndStoreExpectedResultListener != null){
+            IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(runAndStoreExpectedResultListener);
+        }
+        IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(this);
+    }
+    
+    /**
+     * Forwarded listener function for test run and store expected result. This method is calling when
+     * the test runner ends and if failures occured during the test run.
+     */
+    public void testFailureOccuredToStoreExpResult(String qualifiedTestName, final List failureDetailsList) {
+        if (!canListenToTestRun(qualifiedTestName)) {
+            return;
+        }
+
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if (isDisposed())
+                    return;
+                // register as the runner (removes the run and store exp. result listener)
+                registerTestRunListener();
+                
+                String titleMessage = Messages.TestCaseSection_SectionTitleToolTip_StoredExpectedResults;
+                for (Iterator iter = failureDetailsList.iterator(); iter.hasNext();) {
+                    final String[] failureDetails = (String[])iter.next();
+                    final String formatedMessage = failureDetailsToStoreInExpResultToString(failureDetails);
+                    titleMessage += titleMessage.length()>0? "\n" + formatedMessage : formatedMessage; //$NON-NLS-1$
+                    form.getContent().setBackground(fFailureColor);
+                    form.getContent().setForeground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
+
+                    String objectName = failureDetails[1];
+                    String attributeName = failureDetails[2];
+                    String actualValue = failureDetails[4];
+                    String uniqueKey = getUniqueEditFieldKey(objectName, attributeName);
+                    testCaseDetailArea.storeActualValueInExpResult(uniqueKey, actualValue, formatedMessage);                    
+                }
+                if (failureDetailsList.size()>0){
+                    // set the status in the title
+                    setTitleStatus(false, false, true, 0, titleMessage);
+                } else {
+                    // test is ok, no expected value overridden
+                    setTitleStatus(false, false, false, 0, ""); //$NON-NLS-1$
+                }
+            }
+        });
+    }
+    
+    /**
+     * Forwarded listener function for test run and store expected result
+     */
+    public void testRunEndedToStoreExpResult(String qualifiedTestName) {
+        if (!qualifiedTestName.equals(testCase.getQualifiedName())) {
+            return;
+        }
+
+        postAsyncRunnable(new Runnable() {
+            public void run() {
+                if (isDisposed())
+                    return;
+     
+                if (isTestRunError) {
+                    setTitleStatus(true, false, false, 0, ""); //$NON-NLS-1$
+                    return;
+                }
+
+                testCaseDetailArea.updateUi();
+            }
+        });
     }
 }

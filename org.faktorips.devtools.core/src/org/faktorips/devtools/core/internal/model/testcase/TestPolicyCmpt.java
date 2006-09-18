@@ -18,16 +18,19 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -137,7 +140,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptTypeParameter findTestPolicyCmptType() throws CoreException {
+	public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter() throws CoreException {
         if (StringUtils.isEmpty(testPolicyCmptType)) {
             return null;
         }
@@ -220,7 +223,18 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		element.setAttribute(PROPERTY_PRODUCTCMPT, productCmpt);
 	}
 	
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	public Image getImage() {
+        if (StringUtils.isNotEmpty(productCmpt)){
+            return IpsObjectType.PRODUCT_CMPT.getImage();
+        } else {
+            return IpsObjectType.POLICY_CMPT_TYPE.getImage();
+        }
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public ITestAttributeValue newTestAttributeValue() {
@@ -270,7 +284,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ITestPolicyCmptRelation getTestPcTypeRelation(String testPolicyCmptType) {
+	public ITestPolicyCmptRelation getTestPolicyCmptRelation(String testPolicyCmptType) {
 		ArgumentCheck.notNull(testPolicyCmptType);
 		for (Iterator it = testPolicyCmptRelations.iterator(); it.hasNext();) {
 			ITestPolicyCmptRelation r = (ITestPolicyCmptRelation) it.next();
@@ -443,6 +457,46 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		return newTestPcTypeRelation;
 	}
 	
+    /**
+     * Fix the sort order of the child test policy cmpt relations in order to the corresponding test
+     * policy cmpt type parameter.
+     * 
+     * @throws CoreException in case of an error
+     */
+    void fixDifferentChildSortOrder() throws CoreException {
+        List oldRelations = testPolicyCmptRelations;
+        // fill temp. storage of the relations for a test parameter
+        HashMap param2Relations = new HashMap(oldRelations.size());
+        for (Iterator iter = oldRelations.iterator(); iter.hasNext();) {
+            ITestPolicyCmptRelation testPolicyCmptRelation = (ITestPolicyCmptRelation)iter.next();
+            ITestPolicyCmptTypeParameter paramOfRelation = testPolicyCmptRelation.findTestPolicyCmptTypeParameter();
+            List relationList = (List)param2Relations.get(paramOfRelation);
+            if (relationList == null) {
+                relationList = new ArrayList();
+            }
+            relationList.add(testPolicyCmptRelation);
+            param2Relations.put(paramOfRelation, relationList);
+        }
+        
+        // sort the list of relations for each parameter in order of their parameter
+        List newChildList = new ArrayList();
+        ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
+        if (param == null)
+            throw new RuntimeException("Test parameter not found: " + testPolicyCmptType + "!"); //$NON-NLS-1$ //$NON-NLS-2$
+        ITestPolicyCmptTypeParameter[] paramChild = param.getTestPolicyCmptTypeParamChilds();
+        // iterate over all relations in the corresponding parameter and add the relation lists to
+        // the new whole relation list
+        for (int i = 0; i < paramChild.length; i++) {
+            // get the list of relations for the parameter
+            List relations = (List)param2Relations.get(paramChild[i]);
+            if (relations == null)
+                // ignore if there are no such kind of relation 
+                continue;
+            newChildList.addAll(relations);
+        }
+        testPolicyCmptRelations = newChildList;
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -493,5 +547,12 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		    Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 		    list.add(msg);
 		}
+        
+        // check if a product component is not required but the test policy cmpt defines a product cmpt
+        if (param != null && StringUtils.isNotEmpty(productCmpt) && !param.isRequiresProductCmpt()){
+            String text = NLS.bind(Messages.TestPolicyCmpt_ValidationError_ProductCmptNotRequiredButIsRelatedToProductCmpt, testPolicyCmptType);
+            Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
+            list.add(msg);
+        }
 	}
 }

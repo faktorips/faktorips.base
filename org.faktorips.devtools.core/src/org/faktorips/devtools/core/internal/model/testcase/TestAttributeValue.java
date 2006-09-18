@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -159,7 +160,15 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
      * {@inheritDoc}
      */
     public Image getImage() {
-		return null;
+        try {
+            ITestAttribute testAttribute = findTestAttribute();
+            if (testAttribute != null){
+                return testAttribute.getImage();
+            }            
+        } catch (CoreException e) {
+            // ignore exception, return default image
+        }
+        return IpsPlugin.getDefault().getImage("MissingAttribute.gif"); //$NON-NLS-1$
     }
     
     /**

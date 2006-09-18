@@ -15,9 +15,12 @@
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
@@ -26,12 +29,15 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
+import org.faktorips.devtools.core.util.ListElementMover;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -40,10 +46,6 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestCaseType extends IpsObject implements ITestCaseType {
-
-    /* Tags */
-    static final String TAG_NAME_INPUT = "Input"; //$NON-NLS-1$
-    static final String TAG_NAME_EXPECTED_RESULT = "ExpectedResult"; //$NON-NLS-1$
 
     /* Children */
     private List testParameters = new ArrayList();
@@ -104,6 +106,30 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public QualifiedNameType[] dependsOn() throws CoreException {
+        Set qualifiedNameTypes = new HashSet();
+        addQualifiedNameTypesForTestPolicyCmptTypeParams(qualifiedNameTypes, getTestPolicyCmptTypeParameters());
+        return (QualifiedNameType[]) qualifiedNameTypes
+                .toArray(new QualifiedNameType[qualifiedNameTypes.size()]);
+
+    }
+
+    /*
+     * Adds the qualified names for all test policy cmpt type parameters (root and childs) to the
+     * given list
+     */
+    private void addQualifiedNameTypesForTestPolicyCmptTypeParams(Set qualifiedNameTypes, ITestPolicyCmptTypeParameter[] parameters) {
+        for (int i = 0; i < parameters.length; i++) {
+            if (StringUtils.isNotEmpty(parameters[i].getPolicyCmptType())) {
+                qualifiedNameTypes.add(new QualifiedNameType(parameters[i].getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
+            }
+            addQualifiedNameTypesForTestPolicyCmptTypeParams(qualifiedNameTypes, parameters[i].getTestPolicyCmptTypeParamChilds());
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -204,10 +230,10 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * {@inheritDoc}
      */
-    public ITestParameter[] getTestParameters() throws CoreException {
+    public ITestParameter[] getTestParameters() {
         List foundTestParameter = getTestParameters(null, null, null);
         if (foundTestParameter.size() == 0)
-            return null;
+            return new ITestParameter[0];
 
         return (ITestParameter[]) foundTestParameter.toArray(new ITestParameter[0]);
     }
@@ -401,9 +427,6 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     private TestPolicyCmptTypeParameter newTestPolicyCmptTypeParameterInternal(int id) {
         TestPolicyCmptTypeParameter p = new TestPolicyCmptTypeParameter(this, id);
         testParameters.add(p);
-        // root parameters have always 1 min and 1 max instances
-        p.setMinInstances(1);
-        p.setMaxInstances(1);
         return p;
     }
 
@@ -427,9 +450,26 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         ITestAttribute[] testAttribues = testPolicyCmptTypeParam.getTestAttributes();
         for (int i = 0; i < testAttribues.length; i++) {
             if (! (testAttribues[i] == testAttribute) && testAttribues[i].getName().equals(uniqueName)){
-                uniqueName = name + " (" + idx++ + ")";
+                uniqueName = name + " (" + idx++ + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return uniqueName;
-    }    
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveTestParameters(int[] indexes, boolean up) {
+        ListElementMover mover = new ListElementMover(testParameters);
+        int[] newIdxs = mover.move(indexes, up);
+        valueChanged(indexes, newIdxs);
+        return newIdxs;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList messageList) throws CoreException {
+        super.validateThis(messageList);
+    }
 }

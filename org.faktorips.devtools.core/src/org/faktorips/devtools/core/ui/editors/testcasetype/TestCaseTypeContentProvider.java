@@ -17,13 +17,10 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 
 /**
  * Content provider for the test case domain.
@@ -31,12 +28,22 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
  * @author Joerg Ortmann
  */
 public class TestCaseTypeContentProvider implements ITreeContentProvider {
-	private static Object[] EMPTY_ARRAY = new Object[0];
-	
-	/**
+    private static Object[] EMPTY_ARRAY = new Object[0];
+
+    private TestCaseTypeTreeRootElement rootElement;
+    
+	public TestCaseTypeContentProvider(ITestCaseType testCaseType) {
+        this.rootElement = new TestCaseTypeTreeRootElement(testCaseType);
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof TestCaseTypeTreeRootElement){
+            ITestCaseType testCaseType = ((TestCaseTypeTreeRootElement)parentElement).getTestCaseType();
+            return testCaseType.getTestParameters();
+        }
         if (parentElement instanceof ITestPolicyCmptTypeParameter){
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter) parentElement;
             return testPolicyCmptTypeParam.getTestPolicyCmptTypeParamChilds();
@@ -67,20 +74,7 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
 	 * {@inheritDoc}
 	 */
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof ITestCaseType){
-            ITestCaseType testCaseType = (ITestCaseType) inputElement;
-            ArrayList elemens = new ArrayList();
-            ITestValueParameter testValueParams[] = testCaseType.getTestValueParameters();
-            for (int i = 0; i < testValueParams.length; i++) {
-                elemens.add(testValueParams[i]);
-            }
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParams[] = testCaseType.getTestPolicyCmptTypeParameters();
-            for (int i = 0; i < testPolicyCmptTypeParams.length; i++) {
-                elemens.add(testPolicyCmptTypeParams[i]);
-            }
-            return elemens.toArray();
-        }
-        return EMPTY_ARRAY;
+        return new Object[]{rootElement};
 	}
 	
 	/**
@@ -95,4 +89,6 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to do
 	}
+    
+    
 }

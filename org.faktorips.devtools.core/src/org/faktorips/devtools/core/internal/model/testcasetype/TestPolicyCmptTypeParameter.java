@@ -24,9 +24,12 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -264,7 +267,33 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 		element.setAttribute(PROPERTY_MAX_INSTANCES, "" + maxInstances); //$NON-NLS-1$
 	}
 	
-	/**
+    /**
+     * If no relation is specified then return the policy cmpt type image or if a product cmpt is required the
+     * the product cmpt image. If a relation is specified then return the image which is provided by the relation
+     * or if the relation is not found the default "relation.gif" image.
+     * 
+     * {@inheritDoc}
+     */
+    public Image getImage() {
+        if (StringUtils.isEmpty(relation))
+            if (requiresProductCmpt)
+                return IpsObjectType.PRODUCT_CMPT.getImage();
+            else
+                return IpsObjectType.POLICY_CMPT_TYPE.getImage();
+        
+        if (!isRoot()) {
+            try {
+                IRelation relation = findRelation();
+                if (relation != null)
+                    return relation.getImage();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+        return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public ITestAttribute newInputTestAttribute() {
@@ -467,6 +496,16 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
         valueChanged(indexes, newIdxs);
         return newIdxs;
     }    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up){
+        ListElementMover mover = new ListElementMover(testPolicyCmptTypeChilds);
+        int[] newIdxs = mover.move(indexes, up);
+        valueChanged(indexes, newIdxs);
+        return newIdxs;
+    }
     
     /**
      * {@inheritDoc}

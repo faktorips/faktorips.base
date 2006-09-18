@@ -211,4 +211,22 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * an attribute.
      */
     public int[] moveTestAttributes(int[] indexes, boolean up);
+
+    /**
+     * Moves the child identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first child), nothing is moved up. 
+     * If one of the indexes is the number of child - 1 (the last child)
+     * nothing is moved down. 
+     * 
+     * @param indexes   The indexes identifying the child.
+     * @param up        <code>true</code>, to move the child up, 
+     * <false> to move them down.
+     * 
+     * @return The new indexes of the moved child.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * an child.
+     */
+    public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up);
 }

@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -150,6 +152,12 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             return false;
         }
         if ("".equals(editFieldParamType.getText()) || "".equals(editFieldName.getText())){ //$NON-NLS-1$ //$NON-NLS-2$
+            return false;
+        }
+        
+        IStatus status = JavaConventions.validateFieldName(editFieldName.getText());
+        if (!status.isOK()){
+            setErrorMessage(NLS.bind(Messages.NewRootParamWizardPage_ValidationError_InvalidTestParameterName, editFieldName.getText()));
             return false;
         }
         

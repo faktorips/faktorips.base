@@ -70,11 +70,15 @@ public class Messages extends NLS {
     public static String NewRootParamWizardPage_Label_Datatype;
     public static String NewRootParamWizardPage_Error_DatatypeDoesNotExists;
     public static String TestCaseTypeSection_Button_NewRootParameter;
-    public static String TestCaseTypeSection_Button_NewChildParameter;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeName;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttribute;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeType;
     public static String TestCaseTypeSection_ErrorDialog_AttributeChangingNotAllowedBecausePolicyCmptTypeNotExists;
     public static String TestCaseTypeSection_ErrorDialog_AttributeChangingTitle;
     public static String RelationRefControl_Button_Browse;
+    public static String TestCaseTypeTreeRootElement_RootElement_Text;
+    public static String NewChildParamWizardPage_ValidationError_InvalidTestParameterName;
+    public static String NewRootParamWizardPage_ValidationError_InvalidTestParameterName;
+    public static String TestCaseTypeSection_Button_Up;
+    public static String TestCaseTypeSection_Button_Down;
 }

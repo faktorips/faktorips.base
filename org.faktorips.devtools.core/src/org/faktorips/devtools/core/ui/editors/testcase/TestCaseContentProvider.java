@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
@@ -101,7 +102,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	 * Input, expected result or both objects.<br>
 	 * Rerurns <code>null</code> if this content provider has an unkown type.
 	 */
-	public ITestPolicyCmpt[] getPolicyCmpt(){
+	public ITestPolicyCmpt[] getTestPolicyCmpts(){
 		if (isInput()){
 			return testCase.getInputTestPolicyCmpts();
 		}else if (isExpectedResult()){
@@ -117,7 +118,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	 * Input or expected result objects.<br>
 	 * Rerurns <code>null</code> if this content provider has an unkown type.
 	 */
-	public ITestValue[] getValues(){
+	public ITestValue[] getTestValues(){
 		if (isCombined()){
             return testCase.getTestValues();
 		}else if (isExpectedResult()){
@@ -127,6 +128,22 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         }
 		return null;
 	}
+
+    /**
+     * Returns the all test objects.<br>
+     * Input or expected result objects.<br>
+     * Rerurns <code>null</code> if this content provider has no test objects.
+     */
+    public ITestObject[] getTestObjects(){
+        if (isCombined()){
+            return testCase.getTestObjects();
+        }else if (isExpectedResult()){
+            return testCase.getExpectedResultTestObjects();
+        }else if (isInput()){
+            return testCase.getInputTestObjects();
+        }
+        return null;
+    }
 	
 	/**
 	 * Returns <code>true</code> if this content provider provides the input objetcs of the test case.
@@ -196,46 +213,29 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 		return children.length > 0;
 	}
 
-	/**
+    /**
+     * Returns the content of the test case this provider belongs to.
+     */
+    public Object[] getElements() {
+        return getElements(testCase);
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof ITestCase){
 			ITestCase testCase = (ITestCase) inputElement;
-			ArrayList elements = new ArrayList();
 			if (isCombined()){
 			    // return input and expected result objects
-			    ITestValue[] testValues = testCase.getTestValues();
-			    for (int i = 0; i < testValues.length; i++) {
-			        elements.add(testValues[i]);
-			    }
-			    ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
-			    for (int i = 0; i < testPolicyCmpts.length; i++) {
-			        elements.add(testPolicyCmpts[i]);
-			    }
+			    return testCase.getTestObjects();
 			}else if(isExpectedResult()){
 				// return expected result objects
-			    ITestValue[] expectedResulTestValues = testCase.getExpectedResultTestValues();
-			    for (int i = 0; i < expectedResulTestValues.length; i++) {
-			        ITestValue value = expectedResulTestValues[i];
-			        elements.add(value);
-			    }
-				ITestPolicyCmpt[] expectedResultPolicyCmpts = testCase.getExpectedResultTestPolicyCmpts();
-				for (int i = 0; i < expectedResultPolicyCmpts.length; i++) {
-					elements.add(expectedResultPolicyCmpts[i]);
-				}
+                return testCase.getExpectedResultTestObjects();
 			}else if(isInput()){
 			    // return input objects
-			    ITestValue[] inputTestValues = testCase.getInputTestValues();
-			    for (int i = 0; i < inputTestValues.length; i++) {
-			        elements.add(inputTestValues[i]);
-			    }
-			    ITestPolicyCmpt[] inputPolicyCmpts = testCase.getInputTestPolicyCmpts();
-			    for (int i = 0; i < inputPolicyCmpts.length; i++) {
-			        elements.add(inputPolicyCmpts[i]);
-			    }
+                return testCase.getInputTestObjects();
             }
-			return elements.toArray();
 		}
 		return EMPTY_ARRAY;
 	}
