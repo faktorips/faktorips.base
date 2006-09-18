@@ -330,9 +330,9 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         }    
         private boolean checkVisibility(ITestPolicyCmpt testPolicyCmpt, TestCaseDeltaType deltaType) {
             if (deltaType == TestCaseDeltaType.MISSING_TEST_ATTRIBUTE_VALUE) {
-                return isTestAttributeValueInList(testPolicyCmpt);
-            } else if (deltaType == TestCaseDeltaType.MISSING_TEST_ATTRIBUTE){
                 return isTestAttributeInList(testPolicyCmpt);
+            } else if (deltaType == TestCaseDeltaType.MISSING_TEST_ATTRIBUTE){
+                return isTestAttributeValueInList(testPolicyCmpt);
             }
             return false;
         }
