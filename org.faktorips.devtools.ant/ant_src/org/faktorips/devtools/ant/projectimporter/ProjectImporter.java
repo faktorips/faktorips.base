@@ -37,7 +37,11 @@ import org.faktorips.devtools.ant.util.Copy;
  */
 public class ProjectImporter extends org.apache.tools.ant.Task {
 
-    /** path to project dir file */
+    /**
+     * path to project dir file
+     * 
+     * @deprecated Please access via Set/Get Methods
+     */
     private String projectDir = "";
 
     /**
@@ -64,7 +68,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      * @return File
      */
     private File getProjectFile() {
-        return new File(this.projectDir + "/.project");
+        return new File(this.getDir() + "/.project");
 
     }
 
@@ -75,7 +79,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
         // Check Dir-Attribute
         this.checkDir();
-        
+
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
@@ -104,21 +108,20 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
             // check if project already exists in current workspace
             if (project.exists()) {
-                throw new BuildException("Project " + project.getName() + " already exists.");
+                throw new BuildException("Project " + project.getName() + " does already exist.");
             }
             project.create(description, monitor);
 
             // copy files
+
             Copy copyUtil = new Copy();
             copyUtil.copyDir(this.getDir(), project.getLocation().toString());
 
             // open and rebuild the project
+
             project.open(monitor);
             project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-            
-            project.build(IncrementalProjectBuilder.CLEAN_BUILD, monitor);
             project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-            
         }
         catch (Exception e) {
             throw new BuildException(e);
