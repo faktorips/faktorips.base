@@ -2,10 +2,10 @@
 <project name="test" default="doIT">
 
 	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.projectimporter.ProjectImporter"/>
-	<taskdef name="elcipse.incrementalbuild" classname="org.eclipse.core.resources.ant.IncrementalBuild" />
 
 	<target name="doIT">
 		<faktorips.import dir="/home/senf/org.faktorips.integrationtest" />
+		
 		
 		<mkdir dir="/home/senf/runtime-New_configuration/logs/"/>
 		<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
