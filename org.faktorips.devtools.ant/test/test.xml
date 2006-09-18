@@ -12,9 +12,9 @@
 
     		<formatter type="xml" usefile="true"/>
     		<classpath>
-    		    <pathelement location="${classes}"/>
+    		    <pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/bin/"/>
     		    <pathelement path="${java.class.path}"/> 
-    			<path refid="classpath" />
+
     			<fileset dir="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/lib/" >
     				<patternset> 
     					<include name="*.jar" />
