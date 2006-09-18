@@ -96,10 +96,10 @@ public interface ITestCaseTestCaseTypeDelta {
     public ITestValueParameter[] getTestValueParametersWithMissingTestValue();
 
     /**
-     * Returns the test policy cmpt for the missing test attribute.<br>
+     * Returns the test policy cmpts for the missing test attribute.<br>
      * Returns <code>null</code> if the given test attribute has no corresponding test policy cmpt.
      */
-    public ITestPolicyCmpt getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute);
+    public ITestPolicyCmpt[] getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute);
 
     /**
      * Returns the test policy cmpts which have a different sort order compared to their corresponding

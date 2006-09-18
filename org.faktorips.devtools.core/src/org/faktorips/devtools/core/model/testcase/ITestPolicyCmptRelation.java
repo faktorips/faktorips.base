@@ -20,7 +20,6 @@ package org.faktorips.devtools.core.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Specification of a test policy component relation.
@@ -123,20 +122,5 @@ public interface ITestPolicyCmptRelation extends IIpsObjectPart  {
 	/**
 	 * Returns the test case this relation belongs to.
 	 */
-	public ITestCase getTestCase();
-	
-	/**
-	 * Returns the result of the group validation of this relation.<br>
-	 * Validate the min and max instances of this relation type on the parent of this relation.
-	 * 
-	 * @throws CoreException if an error occurs while validating.
-	 */
-	public MessageList validateGroup() throws CoreException;
-	
-	/**
-	 * Returns the result of the single validation of this relation.<br>
-	 * 
-	 * @throws CoreException if an error occurs while validating.
-	 */
-	public MessageList validateSingle() throws CoreException;	
+	public ITestCase getTestCase();	
 }

@@ -1829,8 +1829,10 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         List attributesInDialog = new ArrayList(attributes.length);
         // remove product relevant attributes
         for (int i = 0; i < attributes.length; i++) {
-            if (!attributes[i].isProductRelevant())
+            // TODO Joerg: ist das richtig?
+            if (attributes[i].isChangeable()){
                 attributesInDialog.add(attributes[i]);
+            }
         }
         selectDialog.setElements(attributesInDialog.toArray(new IAttribute[0]));
         if (selectDialog.open() == Window.OK) {

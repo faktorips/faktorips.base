@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.pctype.IRelation;
@@ -24,6 +27,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -175,22 +179,31 @@ public class TestCaseTypeRelation implements Validatable{
 		}
 		
 		// delegate the validation to the corresponding test policy component relation
+        //   validate all relations with the same name, because this relations are grouped to one
+        //   element
 		ITestPolicyCmptRelation[] relations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
-		ITestPolicyCmptRelation testPolicyCmptRelation = null;
-		for (int i = 0; i < relations.length; i++) {
+		HashMap messages = new HashMap();
+        for (int i = 0; i < relations.length; i++) {
+		    ITestPolicyCmptRelation testPolicyCmptRelation = null;
 			if (relations[i].getTestPolicyCmptTypeParameter().equals(getName())){
-				testPolicyCmptRelation = relations[i];
-				break;
+                testPolicyCmptRelation = relations[i];
+                MessageList msgList = testPolicyCmptRelation.validate();
+                // add only unique messages
+                for (Iterator iter = msgList.iterator(); iter.hasNext();){
+                    Message msg = (Message)iter.next();
+                    messages.put(msg.getCode(), msg);
+                }
 			}
 		}
-		
-		if (testPolicyCmptRelation != null){
-			list.add(testPolicyCmptRelation.validateGroup());
-        } else {
-            // no relations found
+        // add the unique test relation messages to the list of messages
+        for (Iterator iter = messages.values().iterator(); iter.hasNext();) {
+            list.add((Message)iter.next());
+        }
+        
+		if (relations.length == 0) {
+            // no relations found, delegate the validation to the parent policy cmpt
             MessageList msgList = parentTestPolicyCmpt.validate();
             list.add(msgList.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES));
         }
-        
 	}
 }

@@ -276,62 +276,73 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public MessageList validateGroup() throws CoreException {
-		MessageList messageList = new MessageList();
+	public void validateGroup(MessageList messageList) throws CoreException {
 		
+        // check all messages only once, thus if the same test relation is used more than one
+        //  only one message are added to the list of validation errors
+        
 		// validate if the test policy component type parameter exists
-		ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter();
-		if (testCaseTypeParam == null){
-			String text = Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound;
-			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
-			messageList.add(msg);	
-		}
+        ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter();
+        if (messageList.getMessageByCode(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND) == null){
+    		if (testCaseTypeParam == null){
+    			String text = Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeParamNotFound;
+    			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
+    			messageList.add(msg);	
+    		}
+        }
 		// abort the rest of the validation if the test case type parameter not found
 		if (testCaseTypeParam == null){
-			return messageList;
+			return;
 		}
 		
 		// validate if the model relation exists
-		IRelation modelRelation = testCaseTypeParam.findRelation();
-		if (modelRelation == null){
-			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_ModelRelationNotFound, testCaseTypeParam.getRelation());
-			Message msg = new Message(MSGCODE_MODEL_RELATION_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
-			messageList.add(msg);		
-		}
+        if (messageList.getMessageByCode(MSGCODE_MODEL_RELATION_NOT_FOUND) == null){
+            IRelation modelRelation = testCaseTypeParam.findRelation();
+            if (modelRelation == null){
+    			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_ModelRelationNotFound, testCaseTypeParam.getRelation());
+    			Message msg = new Message(MSGCODE_MODEL_RELATION_NOT_FOUND, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+    			messageList.add(msg);		
+    		}
+        }
 		
-		// validate the min and max occurence defined in the test policy component type parameter
-		ITestPolicyCmpt parentTestPolicyCmpt = (ITestPolicyCmpt) getParent();
-		ITestPolicyCmptRelation[] parentRelations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
-		
-		int count = 0;
-		for (int i = 0; i < parentRelations.length; i++) {
-			ITestPolicyCmptRelation currRelation = parentRelations[i];
-			if (currRelation.getTestPolicyCmptTypeParameter().equals(getTestPolicyCmptTypeParameter())){
-				count ++;
-			}
-		}
-		
-		if (count < testCaseTypeParam.getMinInstances()){
-			String text =  NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached, "" + testCaseTypeParam.getMinInstances(), testPolicyCmptTypeParameter); //$NON-NLS-1$
-			Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
-			messageList.add(msg);
-		}
-		
-		if (count > testCaseTypeParam.getMaxInstances()){
-			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MaximumReached, "" + testCaseTypeParam.getMaxInstances(), testPolicyCmptTypeParameter);  //$NON-NLS-1$
-			Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
-			messageList.add(msg);			
-		}
-		
-		return messageList;
+        // validate the min and max occurence defined in the test policy component type
+        // parameter
+        ITestPolicyCmpt parentTestPolicyCmpt = (ITestPolicyCmpt)getParent();
+        ITestPolicyCmptRelation[] parentRelations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
+
+        int count = 0;
+        for (int i = 0; i < parentRelations.length; i++) {
+            ITestPolicyCmptRelation currRelation = parentRelations[i];
+            if (currRelation.getTestPolicyCmptTypeParameter().equals(getTestPolicyCmptTypeParameter())) {
+                count++;
+            }
+        }
+
+        if (messageList.getMessageByCode(MSGCODE_MIN_INSTANCES_NOT_REACHED) == null) {
+            if (count < testCaseTypeParam.getMinInstances()) {
+                String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached,
+                        "" + testCaseTypeParam.getMinInstances(), testPolicyCmptTypeParameter); //$NON-NLS-1$
+                Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this,
+                        ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
+                messageList.add(msg);
+            }
+        }
+
+        if (messageList.getMessageByCode(MSGCODE_MAX_INSTANCES_REACHED) == null) {
+            if (count > testCaseTypeParam.getMaxInstances()) {
+                String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MaximumReached,
+                        "" + testCaseTypeParam.getMaxInstances(), testPolicyCmptTypeParameter); //$NON-NLS-1$
+                Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this,
+                        ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
+                messageList.add(msg);
+            }
+        }
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public MessageList validateSingle() throws CoreException {
-		MessageList messageList = new MessageList();
-		
+	public void validateSingle(MessageList messageList) throws CoreException {
 		// validate if the test case type param exists
 		ITestPolicyCmptTypeParameter param = null;
 		try {
@@ -354,16 +365,14 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 				messageList.add(msg);	
 			}
 		}
-		
-		return messageList;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void validateThis(MessageList list) throws CoreException {
-		super.validateThis(list);
-		list.add(validateSingle());
-		list.add(validateGroup());
+        super.validateThis(list);
+        validateGroup(list);
+		validateSingle(list);
 	}
 }

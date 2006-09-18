@@ -264,9 +264,11 @@ public class TestCase extends IpsObject implements ITestCase {
         
         // add missing test attributes
         for (int i = 0; i < testAttributesWithMissingTestAttributeValue.length; i++) {
-            ITestPolicyCmpt testPolicyCmpt = delta.getTestPolicyCmptForMissingTestAttribute(testAttributesWithMissingTestAttributeValue[i]);
-            ITestAttributeValue testAttributeValue = testPolicyCmpt.newTestAttributeValue();
-            testAttributeValue.setTestAttribute(testAttributesWithMissingTestAttributeValue[i].getName());
+            ITestPolicyCmpt[] testPolicyCmpts = delta.getTestPolicyCmptForMissingTestAttribute(testAttributesWithMissingTestAttributeValue[i]);
+            for (int j = 0; j < testPolicyCmpts.length; j++) {
+                ITestAttributeValue testAttributeValue = testPolicyCmpts[j].newTestAttributeValue();
+                testAttributeValue.setTestAttribute(testAttributesWithMissingTestAttributeValue[i].getName());
+            }
         }
         
         if (delta.isDifferentTestParameterOrder()){

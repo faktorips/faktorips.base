@@ -194,7 +194,8 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         if (wrapperObject.isHasToBeDeletedTestAttributes()){
             for (Iterator iter = missingTestAttributes.iterator(); iter.hasNext();) {
                 ITestAttribute testAttr = (ITestAttribute)iter.next();
-                if (wrapperObject.getBaseObject().equals(in.getTestPolicyCmptForMissingTestAttribute(testAttr))){
+                ITestPolicyCmpt[] testPolicyCmptsWithMissingTestAttr = in.getTestPolicyCmptForMissingTestAttribute(testAttr);
+                if (Arrays.asList(testPolicyCmptsWithMissingTestAttr).contains(wrapperObject.getBaseObject())) {
                     result.add(testAttr);
                 }
             }
@@ -364,10 +365,13 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         /*
          * Check if the given test policy cmpt has missing test attributes (to be added)
          */
-        private boolean isTestAttributeInList(ITestPolicyCmpt cmpt){
+        private boolean isTestAttributeInList(ITestPolicyCmpt cmpt) {
             for (Iterator iter = missingTestAttributes.iterator(); iter.hasNext();) {
-                if (cmpt.equals(in.getTestPolicyCmptForMissingTestAttribute((ITestAttribute)iter.next())))
+                ITestPolicyCmpt[] testPolicyCmptsWithMissingTestAttr = in
+                        .getTestPolicyCmptForMissingTestAttribute((ITestAttribute)iter.next());
+                if (Arrays.asList(testPolicyCmptsWithMissingTestAttr).contains(cmpt)) {
                     return true;
+                }
             }
             return false;
         }

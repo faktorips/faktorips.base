@@ -87,8 +87,13 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     /**
      * {@inheritDoc}
      */
-    public ITestPolicyCmpt getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute){
-        return (ITestPolicyCmpt) testAttributes2TestPolicyCmpt.get(testAttribute);
+    public ITestPolicyCmpt[] getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute){
+        List testPolicyCmptsWithMissingTestAttr = (List) testAttributes2TestPolicyCmpt.get(testAttribute);
+        if (testPolicyCmptsWithMissingTestAttr != null){
+            return (ITestPolicyCmpt[]) testPolicyCmptsWithMissingTestAttr.toArray(new ITestPolicyCmpt[0]);
+        } else {
+            return new ITestPolicyCmpt[0];
+        }
     }
     
     /*
@@ -213,11 +218,22 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             }
         }
         // add the resulting list of test attributes (these objects wasn't found by the test case side)
-        missingTestAttributes.addAll(testAttributes);
+        for (Iterator iter = testAttributes.iterator(); iter.hasNext();) {
+            ITestAttribute testAttr = (ITestAttribute)iter.next();
+            if (! missingTestAttributes.contains(testAttr)){
+                missingTestAttributes.add(testAttr);
+            }
+        }
         
         // if there are missing test attributes, store the corresponding test policy cmpt
         for (Iterator iter = testAttributes.iterator(); iter.hasNext();) {
-            testAttributes2TestPolicyCmpt.put(iter.next(), cmpt);
+            ITestAttribute testAttr = (ITestAttribute) iter.next();
+            List cmptWithMissingTestAttrList = (List) testAttributes2TestPolicyCmpt.get(testAttr);
+            if (cmptWithMissingTestAttrList == null){
+                cmptWithMissingTestAttrList = new ArrayList(1);
+            }
+            cmptWithMissingTestAttrList.add(cmpt);
+            testAttributes2TestPolicyCmpt.put(testAttr, cmptWithMissingTestAttrList);
         }
     }
 

@@ -399,6 +399,36 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         fixAndAssert(delta);
     }
     
+    /**
+     * Test - if there are more test policy cmpt of the same instance - that new test attributes are
+     * created for each instance
+     */
+    public void testNewAttributeForEqualInstances() throws CoreException{
+        // test case type side
+        ITestPolicyCmptTypeParameter param = testCaseType.newInputTestPolicyCmptTypeParameter();
+        param.setName("Param");
+        ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
+        paramChild.setName("ParamChild");
+        paramChild.newInputTestAttribute().setName("TestAttribute1");
+        paramChild.newInputTestAttribute().setName("TestAttribute2");
+        
+        // test case side
+        ITestPolicyCmpt cmpt = testCase.newTestPolicyCmpt();
+        cmpt.setTestPolicyCmptTypeParameter(param.getName());
+        ITestPolicyCmpt cmptChild1 = cmpt.newTestPolicyCmptRelation().newTargetTestPolicyCmptChild();
+        cmptChild1.setTestPolicyCmptTypeParameter(paramChild.getName());
+        ((ITestPolicyCmptRelation)cmptChild1.getParent()).setTestPolicyCmptTypeParameter(paramChild.getName());
+        ITestPolicyCmpt cmptChild2 = cmpt.newTestPolicyCmptRelation().newTargetTestPolicyCmptChild();
+        cmptChild2.setTestPolicyCmptTypeParameter(paramChild.getName());
+        ((ITestPolicyCmptRelation)cmptChild2.getParent()).setTestPolicyCmptTypeParameter(paramChild.getName());
+        
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        assertFalse(delta.isEmpty());
+        // a test attribute will only added once if more instances of the same test parameter are in the test case
+        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 2, 0);
+        fixAndAssert(delta);
+    }
+    
     /*
      * Asserts the container length
      */

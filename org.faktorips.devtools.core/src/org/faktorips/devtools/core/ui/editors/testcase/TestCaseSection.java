@@ -399,7 +399,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         // refresh if the test case changed
         if (event.getIpsSrcFile().equals(testCase.getIpsSrcFile())) {
             postResetTestRunStatus();
-            refreshTree();
             return;
         }
         // refresh and check for delta to the test case type 
@@ -1433,7 +1432,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
     	MessageList messageList = new MessageList();
     	// validate element
 		if (element instanceof ITestPolicyCmptRelation){
-			messageList.add(((ITestPolicyCmptRelation)element).validateSingle());
+			messageList.add(((Validatable)element).validate());
 	    }else if (element instanceof ITestPolicyCmpt){
 	    	messageList.add(((Validatable)element).validate());
     	}else if (element instanceof TestCaseTypeRelation){
@@ -1444,10 +1443,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 		// if the relation level is hidden then validate the parent to display parent validation failures
 		if (contentProvider.isWithoutRelations()){
 			if (element instanceof ITestPolicyCmptRelation){
-				messageList.add(((ITestPolicyCmptRelation)element).validateGroup());
+				messageList.add(((Validatable)element).validate());
 	    	}else if (element instanceof ITestPolicyCmpt){
 	    		ITestPolicyCmpt pc = (ITestPolicyCmpt) element;
 	    		if (! pc.isRoot()){
+                    // validate the parent expect if the parent is root
 		    		TestCaseTypeRelation dummyRelation = new TestCaseTypeRelation(pc.findTestPolicyCmptTypeParameter(), pc.getParentPolicyCmpt());
 		    		messageList.add(dummyRelation.validate());
 	    		}
@@ -1548,7 +1548,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 		if (! canListenToTestRun(qualifiedTestName)){
 			return;
         }
-        
 		isTestRunError = true;
 	}
 
