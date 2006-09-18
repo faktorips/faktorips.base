@@ -17,6 +17,7 @@
 
     			<fileset dir="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/lib/" >
     				<patternset> 
+    					<exclude name="*Abstract*" />
     					<include name="*.jar" />
     				</patternset>
     			</fileset>
