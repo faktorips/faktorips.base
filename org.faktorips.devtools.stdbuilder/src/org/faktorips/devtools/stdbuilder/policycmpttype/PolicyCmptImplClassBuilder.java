@@ -444,19 +444,26 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         methodsBuilder.append("this.");
         methodsBuilder.append(getFieldNameForAttribute(a));
         methodsBuilder.appendln(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
-        if (GENERATE_CHANGE_LISTENER_SUPPORT) {
-            methodsBuilder.appendln("if (changeListeners!=null) {");
-            methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
-            methodsBuilder.appendClassName(PolicyCmptChangedEvent.class);
-            methodsBuilder.append("(this, PolicyCmptChangedEvent.PROPERTY_CHANGED, ");
-            methodsBuilder.appendQuoted(getFieldNameForAttribute(a));
-            methodsBuilder.appendln("));");
-            methodsBuilder.appendln("}");
-        }
+        generateListenerSupport( methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHANGED", getFieldNameForAttribute(a) );
+        
         methodsBuilder.closeBracket();
     }
 
-    /**
+    protected void generateListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String event, String fieldName) {
+    	if (GENERATE_CHANGE_LISTENER_SUPPORT) {
+            methodsBuilder.appendln("if (changeListeners!=null) {");
+            methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
+            methodsBuilder.appendClassName(PolicyCmptChangedEvent.class);
+            methodsBuilder.append("(this, ");
+            methodsBuilder.append(event);
+            methodsBuilder.append(", ");
+            methodsBuilder.appendQuoted(fieldName);
+            methodsBuilder.appendln("));");
+            methodsBuilder.appendln("}");
+        }
+	}
+
+	/**
      * {@inheritDoc}
      */
     protected void generateCodeForRelationInCommon(IRelation relation, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
@@ -813,6 +820,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
             methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, targetClass, relation, reverseRelation));
         }
+        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_ADDED" , fieldname);
         methodsBuilder.closeBracket();
     }
     
@@ -892,6 +900,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             methodsBuilder.append(';');
         }
+        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_REMOVED", fieldname);
         methodsBuilder.closeBracket();
     }
     
@@ -947,6 +956,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(generateCodeToSynchronizeReverseRelation(fieldname, 
                     getQualifiedClassName(target), relation, reverseRelation));
         }
+        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_CHANGED", fieldname);
         methodsBuilder.closeBracket();
     }
     
