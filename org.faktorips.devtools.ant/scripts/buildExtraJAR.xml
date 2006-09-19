@@ -45,6 +45,7 @@
 					<include name="plugins/org.eclipse.core.jobs*.jar"/>
 					<include name="plugins/org.eclipse.osgi*.jar"/>
 					<include name="plugins/org.eclipse.ant.core*.jar"/>
+					<include name="plugins/org.eclipse.jdt.core*.jar"/>
 				</fileset>
 				
 			

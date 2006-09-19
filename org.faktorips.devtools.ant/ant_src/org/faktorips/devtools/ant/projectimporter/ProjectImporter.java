@@ -19,6 +19,13 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.taskdefs.optional.junit.BatchTest;
+import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask;
+import org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner;
+import org.apache.tools.ant.taskdefs.optional.sitraka.bytecode.ClassPathLoader;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.selectors.FilenameSelector;
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -27,6 +34,11 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaModel;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.JavaModel;
 import org.faktorips.devtools.ant.util.Copy;
 
 /**
@@ -43,6 +55,8 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      * @deprecated Please access via Set/Get Methods
      */
     private String projectDir = "";
+    
+    private String property;
 
     /**
      * Sets the ANT-Attribute which describes the location of the Eclipseproject to import.
@@ -122,11 +136,17 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
             project.open(monitor);
             project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
             project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+
+            project.close(monitor);
         }
         catch (Exception e) {
             throw new BuildException(e);
         }
 
+    }
+    
+    public void setProperty(String p){
+        this.property = p;
     }
 
     /**
