@@ -40,7 +40,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
 
     private IpsObjectType ipsObjectType;
     private String kind;
-
+ 
     public AbstractXmlFileBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
         super(builderSet);
         ArgumentCheck.notNull(kind, this);
