@@ -195,6 +195,11 @@ public class IpsPreferences {
         .setValue(ENABLE_GENERATING, generate);
     }
     
+    /**
+     * Returns the max heap size in megabytes for the ips test runner. This parameter specify the
+     * maximum size of the memory allocation pool for the test runner. Will be used to set the Xmx
+     * Java virtual machines option for the ips test runner virtual machine.
+     */
     public String getIpsTestRunnerMaxHeapSize(){
         return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
