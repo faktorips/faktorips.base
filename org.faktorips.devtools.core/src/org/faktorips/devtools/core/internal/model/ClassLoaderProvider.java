@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,6 +154,7 @@ public class ClassLoaderProvider {
 		for (int i = 0; i < entry.length; i++) {
 			if (entry[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
 				IPath jarPath = root.append(entry[i].getPath());
+				
 				IPath copyPath = copyJar(jarPath);
 				if (copyPath!=null) {
 					urlsList.add(copyPath.toFile().toURL());
@@ -172,16 +174,15 @@ public class ClassLoaderProvider {
 	
 	private IPath copyJar(IPath jarPath) throws IOException, CoreException {
 		IPath workspaceLocation = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-		IPath relativeJarPath = jarPath.removeFirstSegments(workspaceLocation.segmentCount());
-		IFile jarFile = (IFile)ResourcesPlugin.getWorkspace().getRoot().findMember(relativeJarPath);
+		File jarFile = jarPath.toFile();
 		if (jarFile==null) {
 			return null;
 		}
 		int index = jarFile.getName().lastIndexOf('.');
-		String name = jarFile.getName().substring(0, index);
-		File copy = File.createTempFile(name, '.' + jarFile.getFileExtension());
+		String name =  jarFile.getName();
+		File copy = File.createTempFile(name.substring(0,index-1),name.substring(index));
 		copy.deleteOnExit();
-		InputStream is = jarFile.getContents();
+		InputStream is = new FileInputStream(jarFile);
 		FileOutputStream os = new FileOutputStream(copy);
 		byte[] buffer = new byte[16384];
 		int bytesRead = 0;
@@ -194,7 +195,7 @@ public class ClassLoaderProvider {
 		is.close();
 		os.close();
 		return new Path(copy.getPath());
-	}
+}
 	
 	/**
 	 * @param containerLocation is the full path in the filesytem.
