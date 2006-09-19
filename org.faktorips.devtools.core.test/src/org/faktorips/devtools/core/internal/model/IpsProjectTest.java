@@ -89,7 +89,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = props.getIpsObjectPath();
         path.newIpsProjectRefEntry(baseProject);
         ipsProject.setProperties(props);
-        
     }
     
     public void testValidate() throws Exception {
