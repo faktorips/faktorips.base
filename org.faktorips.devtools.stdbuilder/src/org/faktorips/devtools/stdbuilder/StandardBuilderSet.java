@@ -265,11 +265,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     /**
      * {@inheritDoc}
      */
-    public String getClassNameForTableBasedEnum(ITableStructure structure) {
-        // TODO real implementation
-        return "org.faktorips.integrationtest.tables.TableAsEnumTypeDatatype";
-    }
-
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
         return new TableStructureEnumDatatypeHelper(datatype);
     }

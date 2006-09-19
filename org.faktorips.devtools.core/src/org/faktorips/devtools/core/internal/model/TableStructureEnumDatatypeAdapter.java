@@ -156,7 +156,7 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 	 */
 	public String getJavaClassName() {
 		try {
-			return project.getArtefactBuilderSet().getClassNameForTableBasedEnum(table);
+			return project.getArtefactBuilderSet().getDatatypeHelperForTableBasedEnum(this).getJavaClassName();
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
