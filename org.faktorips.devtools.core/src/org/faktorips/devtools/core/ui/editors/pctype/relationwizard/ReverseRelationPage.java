@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Relation wizard page to specify if none, a new one, or an existing reverse relation should be used.
+ * Relation wizard page to specify is a new one, an existing, or none reverse relation should be created / used.
  */
 public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 	private static final String PAGE_ID = "NewPcTypeRelationWizard.ReverseRelation"; //$NON-NLS-1$
@@ -51,22 +51,24 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 		
 		// create radio buttons
 		ReverseRelationSelectionListener listener = new ReverseRelationSelectionListener();
-		noReverseRelation = uiToolkit.createRadioButton(parent, Messages.NewPcTypeRelationWizard_reverseRelation_labelNoReverseRelation);
-		noReverseRelation.addSelectionListener(listener);
-		
-		uiToolkit.createVerticalSpacer(parent, 1);
-		
+
 		newReverseRelation = uiToolkit.createRadioButton(parent, Messages.NewPcTypeRelationWizard_reverseRelation_labelNewReverseRelation);
 		newReverseRelation.addSelectionListener(listener);
 		
 		uiToolkit.createVerticalSpacer(parent, 1);
-		
+
 		useExistingRelation = uiToolkit.createRadioButton(parent, Messages.NewPcTypeRelationWizard_reverseRelation_labelUseExistingRelation);
 		useExistingRelation.addSelectionListener(listener);
 		
+		uiToolkit.createVerticalSpacer(parent, 1);
+		
+		noReverseRelation = uiToolkit.createRadioButton(parent, Messages.NewPcTypeRelationWizard_reverseRelation_labelNoReverseRelation);
+		noReverseRelation.addSelectionListener(listener);
+		
 		// set the default selection
-		noReverseRelation.setSelection(true);
-		prevSelection = noReverseRelation;
+		newReverseRelation.setSelection(true);
+		prevSelection = newReverseRelation;
+		wizard.setNewReverseRelation();
 	}
 
 	/**

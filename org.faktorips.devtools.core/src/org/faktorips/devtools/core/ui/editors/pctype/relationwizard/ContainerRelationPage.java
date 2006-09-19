@@ -116,6 +116,7 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
                     containerRelationsField.getCombo().setItems(names);
                     // default is the first container relation
                     containerRelationsField.getCombo().select(1);
+                    wizard.getUiControllerRelation().updateModel();
 				}else{
 					containerRelationsField.getCombo().setItems(new String[0]);
 				}
