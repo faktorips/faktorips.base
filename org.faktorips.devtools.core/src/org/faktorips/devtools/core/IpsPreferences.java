@@ -188,7 +188,11 @@ public class IpsPreferences {
      * Returns the value of the enable generating preference.
      */
     public boolean getEnableGenerating(){
-    	return prefStore.getBoolean(ENABLE_GENERATING); 
+        return prefStore.getBoolean(ENABLE_GENERATING); 
+    }
+    public void setEnableGenerating(boolean generate){
+        IpsPlugin.getDefault().getIpsPreferences().prefStore
+        .setValue(ENABLE_GENERATING, generate);
     }
     
     public String getIpsTestRunnerMaxHeapSize(){
