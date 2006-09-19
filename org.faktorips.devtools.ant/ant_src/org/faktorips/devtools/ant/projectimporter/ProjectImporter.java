@@ -50,7 +50,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      */
     private String projectDir = "";
 
- 
+  
     /**
      * Sets the ANT-Attribute which describes the location of the Eclipseproject to import.
      * 
