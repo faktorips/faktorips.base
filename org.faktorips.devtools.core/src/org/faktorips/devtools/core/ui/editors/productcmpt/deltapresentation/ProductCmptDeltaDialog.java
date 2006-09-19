@@ -79,15 +79,15 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 		// layouting
 		
 		// create composite with margins
-		Composite listParent = toolkit.createGridComposite(root, 3, false, true);
+		Composite listParent = toolkit.createGridComposite(root, 3, false, false);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridData.minimumHeight = 10+30+50+10;
 		listParent.setLayoutData(gridData);
-		
-		// line 1 (label for list)
+
+        // line 1 (label for list)
 		toolkit.createVerticalSpacer(listParent, 1);
 		String text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectGeneration, genTextPlural);
-		Label label = toolkit.createLabel(listParent, text, true);
+		Label label = toolkit.createLabel(listParent, text, false);
 		((GridData)label.getLayoutData()).minimumHeight = 10;
 		toolkit.createVerticalSpacer(listParent, 1);
 		
@@ -100,18 +100,18 @@ public class ProductCmptDeltaDialog extends TitleAreaDialog {
 			generationsList.add(generations[i].getName());
 		}
 
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridData.minimumHeight = 30;
 		generationsList.setLayoutData(gridData);
 
-		// line 4 (label for tree)
+		// line 3 (label for tree)
 		toolkit.createVerticalSpacer(listParent, 1);
 		text = NLS.bind(Messages.ProductCmptDeltaDialog_labelSelectedDifferences, genTextSingular);
-		label = toolkit.createLabel(listParent, text, true);
+		label = toolkit.createLabel(listParent, text, false);
 		((GridData)label.getLayoutData()).minimumHeight = 10;
 		toolkit.createVerticalSpacer(listParent, 1);
 		
-		// line 3 (tree)
+		// line 4 (tree)
 		toolkit.createVerticalSpacer(listParent, 1);
 		tree = new TreeViewer(listParent);
 		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);

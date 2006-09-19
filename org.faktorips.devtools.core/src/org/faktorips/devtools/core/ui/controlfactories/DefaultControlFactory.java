@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * A default factory that creates a simple text control for any value datatype if 
@@ -47,7 +46,6 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 	 * {@inheritDoc}
 	 */
 	public boolean isFactoryFor(ValueDatatype datatype) {
-		ArgumentCheck.notNull(datatype);
 		return true;
 	}
 

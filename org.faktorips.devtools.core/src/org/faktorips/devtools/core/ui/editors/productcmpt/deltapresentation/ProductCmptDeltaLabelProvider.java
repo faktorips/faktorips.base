@@ -82,6 +82,9 @@ final class ProductCmptDeltaLabelProvider implements ILabelProvider {
 		if (element instanceof ProductCmptDeltaType) {
 			return ((ProductCmptDeltaType)element).getImage();
 		}
+        else if (element instanceof ProductCmptDeltaDetail) {
+            return ((ProductCmptDeltaDetail)element).getImage();
+        }
 		return null;
 	}
 }

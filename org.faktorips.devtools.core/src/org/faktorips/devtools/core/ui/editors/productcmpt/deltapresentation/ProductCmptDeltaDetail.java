@@ -17,6 +17,10 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
+import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
+
 /**
  * Representation of exactly one delta by its type and a message describing the delta.
  * 
@@ -38,4 +42,24 @@ final class ProductCmptDeltaDetail {
 	public String getMessage() {
 		return message;
 	}
+    
+    public Image getImage() {
+        if (type == ProductCmptDeltaType.MISSING_ATTRIBUTE) {
+            return DeltaCompositeIcon.createDeleteImage(ConfigElementType.PRODUCT_ATTRIBUTE.getImage());
+        }
+        if (type == ProductCmptDeltaType.MISSING_CFGELEMENT) {
+            return DeltaCompositeIcon.createAddImage(ConfigElementType.PRODUCT_ATTRIBUTE.getImage());
+        }
+        if (type == ProductCmptDeltaType.CFGELEMENT_TYPE_MISMATCH) {
+            return DeltaCompositeIcon.createModifyImage(ConfigElementType.PRODUCT_ATTRIBUTE.getImage());
+        }
+        if (type == ProductCmptDeltaType.RELATION_MISMATCH) {
+            return DeltaCompositeIcon.createDeleteImage(IpsPlugin.getDefault().getImage("Relation.gif"));
+        }
+        if (type == ProductCmptDeltaType.VALUESET_MISMATCH) {
+            return DeltaCompositeIcon.createModifyImage(IpsPlugin.getDefault().getImage("ValueSet.gif"));
+        }
+        
+        return null;
+    }
 }
