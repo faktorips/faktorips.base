@@ -56,7 +56,7 @@ public class IpsModelManager {
     
     public void putSrcFileContents(IIpsSrcFile file, String newContent, String encoding) {
     	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-    		System.out.println("ModelCache.put() for " + file);
+    		System.out.println("ModelCache.put() for " + file + " Thread " + Thread.currentThread().getName());
     	}
     	IpsSourceFileContents contents = getSrcFileContentsInternal(file);
     	if (contents==null) {

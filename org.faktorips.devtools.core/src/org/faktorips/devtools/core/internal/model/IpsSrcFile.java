@@ -224,7 +224,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      */
     public String getContentFromCorrespondingFile() throws CoreException {
     	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-    		System.out.println("IpsSrcFile.readContentFromCorrespondingFile " + this);
+    		System.out.println("IpsSrcFile.readContentFromCorrespondingFile " + this + " Thread: " + Thread.currentThread().getName());
     	}
     	InputStream is = getCorrespondingFile().getContents();
         try {

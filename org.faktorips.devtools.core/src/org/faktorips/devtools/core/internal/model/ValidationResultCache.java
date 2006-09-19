@@ -76,7 +76,7 @@ public class ValidationResultCache {
 	 * has changed. Does nothing if the given container is <code>null</code>.
 	 * <p>
 	 * Implementation note: At the moment we clear the whole cache if an object part
-	 * container changes as due to the dependencies between objects other the validation 
+	 * container changes as due to the dependencies between objects the validation 
 	 * result of other objects can also change if one object is changed. We might use
 	 * the exact dependencies between objects to solve this more efficiently.  
 	 */
