@@ -109,8 +109,12 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 					wizard.restoreMementoTargetBeforeChange();
 					wizard.setNoneReverseRelation();
 				}
-				if (getWizard().getContainer() != null)
+				if (getWizard().getContainer() != null){
 					getWizard().getContainer().updateButtons();
+				}
+				
+				// informs the property page of the reverse relation about the change
+				wizard.resetReverseRelationPropertiesPage();
 			}
 		}
 

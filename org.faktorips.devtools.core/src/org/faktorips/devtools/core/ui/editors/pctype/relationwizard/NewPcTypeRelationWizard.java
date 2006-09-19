@@ -548,4 +548,12 @@ public class NewPcTypeRelationWizard extends Wizard {
         }
         return false;
     }
+    
+	/**
+	 * Resets the reverse relation property page, thus if the page is displayed
+	 * again the objects will be new initialized
+	 */
+    void resetReverseRelationPropertiesPage(){
+    	reverseRelationPropertiesPage.reset();
+    }
 }

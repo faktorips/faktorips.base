@@ -161,6 +161,14 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
         mainComposite.setRedraw(true);
     }
     
+    /*
+     * Resets the previous state of this page
+     */
+    void reset(){
+		prevIsExisting = false;
+		prevIsNew = false;
+    }
+    
     /**
 	 * {@inheritDoc}
 	 */
