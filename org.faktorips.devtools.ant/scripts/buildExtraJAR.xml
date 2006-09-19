@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.eclipse.core.resources" default="main" basedir="..">
-
+<!-- THIS BUILDER IS NEEDED FOR LOCAL DEVELOPMENT ONLY -->
 	<property name="bootclasspath" value=""/>
 
 	<target name="main" depends="clean, ant_tasks/ant-tasks.jar">
@@ -38,7 +38,7 @@
 					<include name="org.eclipse.ant.core/bin"/>
 				</dirset>
 				
-				<fileset dir="${eclipse.home}">
+				<fileset dir="/home/senf/Desktop/eclipse32/eclipse/">
 					<include name="plugins/org.eclipse.core.resources*.jar"/>
 					<include name="plugins/org.eclipse.core.runtime*.jar"/>
 					<include name="plugins/org.eclipse.equinox.common*.jar"/>

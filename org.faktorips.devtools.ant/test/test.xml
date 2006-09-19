@@ -4,17 +4,14 @@
 	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.projectimporter.ProjectImporter"/>
 
 	<target name="doIT">
-		<faktorips.import dir="/home/senf/org.faktorips.integrationtest" />
 		
-		
+		<faktorips.import dir="/home/senf/org.faktorips.integrationtest"/>
 		<mkdir dir="/home/senf/runtime-New_configuration/logs/"/>
+		
 		<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
 
     		<formatter type="xml" usefile="true"/>
     		<classpath>
-    		    <pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/bin/"/>
-    		    <pathelement path="${java.class.path}"/> 
-
     			<fileset dir="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/lib/" >
     				<patternset> 
     					<exclude name="*Abstract*" />
@@ -27,7 +24,7 @@
 			<batchtest filtertrace="off"  todir="/home/senf/runtime-New_configuration/logs/"> 
 				<fileset dir="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/bin/">
 					<patternset id="test.sources">
-					    <include name="**/*.class"/>
+					    <include name="**/*"/>
 					</patternset>
 				</fileset>
 			</batchtest>
