@@ -232,11 +232,6 @@
                         <arg line="runtests all" />
                 </exec>
                
-			    <!-- check if there are errors in testcase-logs -->
-				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
-					<arg line="lookForFailure.pl"/>
-				</exec>
-
 				<!-- checkout org.faktorips.integrationtest project -->
         		<cvs command="co org.faktorips.integrationtest" dest="${dir}" cvsroot="${cvsroot}" quiet="true"/>
 				<!-- start antrunner with import-buildfile -->
@@ -278,13 +273,20 @@
 					<batchtest filtertrace="off"  todir="${eclipsetest.logdir}"> 
 						<fileset dir="${classes}">
 							<patternset id="test.sources">
-							    <include name="**/*.class"/>
+								<exclude name="**/*Abstract*" />
+							    <include name="**/*Test.class"/>
 							</patternset>
 						</fileset>
 					</batchtest>
 	        		
 				</junit>
 
+        	
+        	<!-- check if there are errors in testcase-logs -->
+			<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
+				<arg line="lookForFailure.pl"/>
+			</exec>
+        	
         </target>
 
         <!-- this target builds bbv and bbv-test features and executes testcases 
