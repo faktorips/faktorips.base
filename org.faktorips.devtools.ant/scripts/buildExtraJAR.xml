@@ -46,6 +46,7 @@
 					<include name="plugins/org.eclipse.osgi*.jar"/>
 					<include name="plugins/org.eclipse.ant.core*.jar"/>
 					<include name="plugins/org.eclipse.jdt.core*.jar"/>
+					<include name="plugins/org.junit_3.8.1/*.jar"/>
 				</fileset>
 				
 			

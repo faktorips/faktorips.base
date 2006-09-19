@@ -253,10 +253,18 @@
         	
         		<!-- run org.faktorips.integrationtest tests -->
         		<property name="classes" value="${dir}/environment/workspace/org.faktorips.integrationtest/bin/" />
+        	    <property name="libdir" value="${dir}/environment/workspace/org.faktorips.integrationtest/lib/" />
 	        	<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
 
 		    		<formatter type="xml" usefile="true"/>
 		    		<classpath>
+		        		    <pathelement location="${libdir}/../bin"/>
+		        		    <pathelement location="${libdir}/commons-lang-1.0.1.jar"/>
+		        		    <pathelement location="${libdir}/enums.jar"/>
+		        		    <pathelement location="${libdir}/faktorips-runtime.jar"/>
+		        		    <pathelement location="${libdir}/faktorips-valuetypes.jar"/>
+		        			<pathelement location="${libdir}/junit.jar"/>
+
 		    		    <pathelement location="${classes}"/>
 		    		    <pathelement path="${java.class.path}"/> 
 		    			<fileset dir="${dir}/environment/workspace/org.faktorips.integrationtest/lib/" >

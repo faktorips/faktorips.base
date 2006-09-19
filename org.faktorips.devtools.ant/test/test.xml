@@ -4,28 +4,37 @@
 	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.projectimporter.ProjectImporter"/>
 
 	<target name="doIT">
+
+		<delete includeemptydirs="true" dir="/home/senf/runtime-New_configuration/*" />
 		
-		<faktorips.import dir="/home/senf/org.faktorips.integrationtest"/>
+		<faktorips.import dir="/home/senf/org.faktorips.integrationtest" />
 		<mkdir dir="/home/senf/runtime-New_configuration/logs/"/>
 		
-		<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
+		<junit fork="yes"  haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
 
     		<formatter type="xml" usefile="true"/>
+			
     		<classpath>
-    			<fileset dir="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/lib/" >
-    			</fileset>
+    		    <pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest//bin"/>
+    		    <pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest//lib/commons-lang-1.0.1.jar"/>
+    		    <pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest//lib/enums.jar"/>
+    		    <pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest//lib/faktorips-runtime.jar"/>
+    		    <pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest//lib/faktorips-valuetypes.jar"/>
+    			<pathelement location="/home/senf/runtime-New_configuration/org.faktorips.integrationtest//lib/junit.jar"/>
     		</classpath>
-    		
+
+			
+			
     		<!-- put result logfiles into given logdir (passed by setup.xml in project org.faktorips.eclipsetest -->
 			<batchtest filtertrace="off"  todir="/home/senf/runtime-New_configuration/logs/"> 
 				<fileset dir="/home/senf/runtime-New_configuration/org.faktorips.integrationtest/bin/">
     				<patternset> 
     					<exclude name="**/*Abstract*" />
-    					<include name="**/*Test*" />
+    					<include name="**/*Test.*" />
     				</patternset>
 				</fileset>
 			</batchtest>
-	        		
+
 		</junit>
 	</target>
 
