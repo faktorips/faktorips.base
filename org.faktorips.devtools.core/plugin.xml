@@ -176,6 +176,7 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
+         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
@@ -670,6 +671,7 @@
                showTitle="true"
                standalone="false"
                visible="false"/>
+         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
       </perspectiveExtension>
    </extension>
    <extension
