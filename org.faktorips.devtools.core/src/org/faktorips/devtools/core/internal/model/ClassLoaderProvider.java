@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -173,7 +172,6 @@ public class ClassLoaderProvider {
 	}
 	
 	private IPath copyJar(IPath jarPath) throws IOException, CoreException {
-		IPath workspaceLocation = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 		File jarFile = jarPath.toFile();
 		if (jarFile==null) {
 			return null;
