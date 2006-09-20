@@ -148,7 +148,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      */
     private void checkDir() throws BuildException {
 
-        if (this.getDir().equals("") || this.getDir() == null) {
+        if ( this.getDir() == null ||this.getDir().equals("") ) {
             throw new BuildException("Please provide the 'dir' attribute.");
         }
 

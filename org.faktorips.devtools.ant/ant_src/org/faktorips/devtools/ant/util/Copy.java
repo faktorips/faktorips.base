@@ -92,7 +92,7 @@ public class Copy {
      * 
      * @param dir - Directory-Name as String
      */
-    public void mkdir(String dir) {
+    private void mkdir(String dir) {
         new File(dir).mkdirs();
     }
 
@@ -101,7 +101,7 @@ public class Copy {
      * 
      * @param file - new Path as String
      */
-    public void mkdirs(String file) {
+    private void mkdirs(String file) {
         file = file.replace('/', File.separatorChar);
         int pos = file.lastIndexOf(File.separatorChar);
         if (pos != -1) {
