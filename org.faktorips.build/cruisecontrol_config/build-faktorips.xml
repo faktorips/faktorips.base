@@ -267,12 +267,12 @@
 
 		    		<formatter type="xml" usefile="true"/>
 		    		<classpath>
-		        		    <pathelement location="${libdir}/../bin"/>
-		        		    <pathelement location="${libdir}/commons-lang-1.0.1.jar"/>
-		        		    <pathelement location="${libdir}/enums.jar"/>
-		        		    <pathelement location="${libdir}/faktorips-runtime.jar"/>
-		        		    <pathelement location="${libdir}/faktorips-valuetypes.jar"/>
-		        			<pathelement location="${libdir}/junit.jar"/>
+	        		    <pathelement location="${libdir}/../bin"/>
+	        		    <pathelement location="${libdir}/commons-lang-1.0.1.jar"/>
+	        		    <pathelement location="${libdir}/enums.jar"/>
+	        		    <pathelement location="${libdir}/faktorips-runtime.jar"/>
+	        		    <pathelement location="${libdir}/faktorips-valuetypes.jar"/>
+	        			<pathelement location="${libdir}/junit.jar"/>
 
 		    		    <pathelement location="${classes}"/>
 		    		    <pathelement path="${java.class.path}"/> 
@@ -283,7 +283,7 @@
 		    			</fileset>
 		    		</classpath>
 		    		
-	        		<!-- put result logfiles into given logdir (passed by setup.xml in project org.faktorips.eclipsetest -->
+	        		<!-- put result logfiles into given logdir (passed by config.xml in project org.faktorips.eclipsetest -->
 					<batchtest filtertrace="off"  todir="${eclipsetest.logdir}"> 
 						<fileset dir="${classes}">
 							<patternset id="test.sources">
