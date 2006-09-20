@@ -842,7 +842,7 @@
           </schedule>
           
           <log logdir="logs/${project.name}/" >
-            <merge dir="checkout/${project.name}/build/logs/"/>
+            <merge dir="checkout/${project.name}/scripts/"/>
           </log>
           
           <publishers>

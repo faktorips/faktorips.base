@@ -118,7 +118,7 @@
 	          
 	        <!-- Call the target that does everything -->
 	        <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml"  target="clean"  />
-	        <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="ant_tasks/ant-tasks.jar"  />
+	        <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="main"  />
 			
 		</target>
 	
