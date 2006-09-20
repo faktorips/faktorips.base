@@ -261,7 +261,7 @@
         		</delete>
 
         		<!-- import and build integrationtest sources via eclipse antRunner (see ../eclipsetest_skel/importProjects.xml)-->
-        		<exec executable="/usr/bin/java" failonerror="true" logError="true">
+        		<exec executable="/usr/bin/java" failonerror="false" logError="true">
         			<arg line="-jar  ${dir}/environment/eclipse/startup.jar -data ${dir}/environment/workspace/ -application org.eclipse.ant.core.antRunner -buildfile ${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml -Dsourcedir=${dir}/org.faktorips.integrationtest/" />
         		</exec>
         	

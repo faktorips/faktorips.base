@@ -17,7 +17,7 @@ public class TestTaskPlugin extends Plugin {
 	public TestTaskPlugin() {
 		plugin = this; 
 	}
-
+ 
 	/**
 	 * This method is called upon plug-in activation
 	 */
