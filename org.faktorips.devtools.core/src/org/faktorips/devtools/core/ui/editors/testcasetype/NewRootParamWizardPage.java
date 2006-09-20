@@ -17,12 +17,14 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -36,6 +38,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 
 /**
  * Wizard page to create a new root test policy cmpt type parameter.<br>
@@ -46,15 +49,19 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  */
 public class NewRootParamWizardPage extends WizardPage implements ValueChangeListener  {
     private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
-    private static final int PAGE_NUMBER = 1;
+    private static final int PAGE_NUMBER = 2;
     
     private NewRootParameterWizard wizard;
     
-    private EditField editFieldDatatype;
+    private EditField editFieldDatatypeOrRule;
     private EditField editFieldName;
     private EditField editFieldParamType;
     
-    private String prevDatatype;
+    private String prevDatatypeOrRule;
+    
+    private Composite parentComposite;
+    
+    private Composite contentComposite;
     
     public NewRootParamWizardPage(NewRootParameterWizard wizard){
         super(PAGE_ID, Messages.NewRootParamWizardPage_Title, null);
@@ -66,33 +73,36 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
      * {@inheritDoc}
      */
     public void createControl(Composite parent) {
+        parentComposite = parent;
+        
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
-        Composite c = uiToolkit.createLabelEditColumnComposite(parent);
         
-        uiToolkit.createLabel(c, Messages.NewRootParamWizardPage_Label_Datatype);
-        editFieldDatatype = new TextButtonField(uiToolkit.createDatatypeRefEdit(wizard.getTestCaseType()
-                .getIpsProject(), c));
-        editFieldDatatype.addChangeListener(this);
+        Composite c = uiToolkit.createLabelEditColumnComposite(parent);
+        contentComposite = c;
+        
+        // in case of a rule parameter no reference browser necessary
+        if (wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_RULE_PARAMETER){
+            uiToolkit.createLabel(c, Messages.NewRootParamWizardPage_Label_Datatype);
+            createRefEditControl(c);
+        }
         
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         editFieldName = new TextField(uiToolkit.createText(c));
         editFieldName.addChangeListener(this);
         
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        editFieldParamType = new EnumValueField(uiToolkit.createCombo(c, TestParameterType
-                .getEnumType()), TestParameterType.getEnumType());
-        editFieldParamType.addChangeListener(this);
+        createEditFieldParamType(c);
         
         setControl(c);
         
         setPageComplete(false);
     }
-    
+
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */    
-    void connectToModel(IpsPartUIController controller, ITestParameter testParameter){
+    protected void connectToModel(IpsPartUIController controller, ITestParameter testParameter){
         controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
         controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }
@@ -101,9 +111,9 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
      * {@inheritDoc}
      */
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == editFieldDatatype) {
+        if (e.field == editFieldDatatypeOrRule) {
             try {
-                datatypeChanged(editFieldDatatype.getText());
+                datatypeChanged(editFieldDatatypeOrRule.getText());
             } catch (CoreException ex) {
                 IpsPlugin.logAndShowErrorDialog(ex);
             }
@@ -118,21 +128,25 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     }
 
     /**
-     * Datatype has changed.
+     * Datatype or rule has changed.
      */
-    private void datatypeChanged(String newDatatype) throws CoreException{
-        if (newDatatype.equals(prevDatatype))
+    private void datatypeChanged(String newDatatypeOrRule) throws CoreException{
+        if (newDatatypeOrRule.equals(prevDatatypeOrRule) || StringUtils.isEmpty(newDatatypeOrRule)){
             return;
-        prevDatatype = newDatatype;
+        }
+        prevDatatypeOrRule = newDatatypeOrRule;
         
-        Datatype datatype = findDatatype(newDatatype);
-        
-        wizard.newTestParameter(datatype);
+        if (wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_RULE_PARAMETER){
+            if (findDatatype(newDatatypeOrRule) == null){
+                return;
+            }
+            Datatype datatype = findDatatype(newDatatypeOrRule);
+            wizard.newTestParameter(datatype);
+        }
     }
     
     /**
      * Finds and returns the datatype with the given name.
-
      * @throws CoreException
      */
     private Datatype findDatatype(String datatype) throws CoreException{
@@ -146,11 +160,22 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
      */
     private boolean validatePage() throws CoreException {
         setErrorMessage(null);
-        String datatype = editFieldDatatype.getText();
-        if (findDatatype(datatype)==null) {
-            setErrorMessage(NLS.bind(Messages.NewRootParamWizardPage_Error_DatatypeDoesNotExists, datatype));
-            return false;
+        
+        String datatypeOrRule = ""; //$NON-NLS-1$
+        if (editFieldDatatypeOrRule != null && !editFieldDatatypeOrRule.getControl().isDisposed()) {
+            datatypeOrRule = editFieldDatatypeOrRule.getText();
+            if (StringUtils.isEmpty(datatypeOrRule)) {
+                return false;
+            }
         }
+        
+        if (wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_RULE_PARAMETER){
+            if (findDatatype(datatypeOrRule)==null) {
+                setErrorMessage(NLS.bind(Messages.NewRootParamWizardPage_Error_DatatypeDoesNotExists, datatypeOrRule));
+                return false;
+            }
+        }
+        
         if ("".equals(editFieldParamType.getText()) || "".equals(editFieldName.getText())){ //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
@@ -187,4 +212,71 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         return super.getNextPage();
     }
     
+    protected void resetPage(){
+        if (wizard.getController() != null) {
+            wizard.getController().remove(editFieldName);
+            wizard.getController().remove(editFieldParamType);
+        }
+        
+        prevDatatypeOrRule = ""; //$NON-NLS-1$
+        editFieldDatatypeOrRule.setText(""); //$NON-NLS-1$
+        editFieldName.setText(""); //$NON-NLS-1$
+        
+        contentComposite.dispose();
+        createControl(parentComposite);
+        
+        parentComposite.pack();
+        parentComposite.getParent().layout();
+
+        // in case of a rule parameter create the test rule parameter, no further input is necessary
+        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER){
+            wizard.newTestRuleParameter();
+        }
+        
+        setErrorMessage(null);
+    }
+
+    /*
+     * Creates the datattyppe or rule browse control
+     */
+    private void createRefEditControl(Composite c) {
+        if (editFieldDatatypeOrRule != null){
+            editFieldDatatypeOrRule.getControl().dispose();
+        }
+        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER){
+            editFieldDatatypeOrRule = new TextButtonField(wizard.getUiToolkit().createPcTypeRefControl(
+                    wizard.getTestCaseType().getIpsProject(), c));
+        } else if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_VALUE_PARAMETER){
+            DatatypeRefControl datatypeRefControl = wizard.getUiToolkit().createDatatypeRefEdit(
+                    wizard.getTestCaseType().getIpsProject(), c);
+            datatypeRefControl.setOnlyValueDatatypesAllowed(true);
+            editFieldDatatypeOrRule = new TextButtonField(datatypeRefControl);
+        } else {
+            throw new RuntimeException("Unsupported kind of test parameter!"); //$NON-NLS-1$
+        }
+        editFieldDatatypeOrRule.addChangeListener(this);
+    }
+    
+    /*
+     * Creates the type edit drop down, after creating this edit field the selection is removed
+     */
+    private void createEditFieldParamType(Composite c) {
+        if (editFieldParamType != null) {
+            editFieldParamType.getControl().dispose();
+        }
+        editFieldParamType = new EnumValueField(wizard.getUiToolkit().createCombo(c, TestParameterType.getEnumType()),
+                TestParameterType.getEnumType());
+        editFieldParamType.addChangeListener(this);
+        
+        // disable type drop down for test rule parameter, because only expected is allowed
+        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER){
+            editFieldParamType.getControl().setEnabled(false);
+            // remove combined type entry in drop down, because combined is not allowed for a test value parameter
+            ((Combo)editFieldParamType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));            
+            ((Combo)editFieldParamType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT));            
+        } else if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_VALUE_PARAMETER){
+            // remove combined type entry in drop down, because combined is not allowed for a test value parameter
+            ((Combo)editFieldParamType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));
+        }        
+    }
 }

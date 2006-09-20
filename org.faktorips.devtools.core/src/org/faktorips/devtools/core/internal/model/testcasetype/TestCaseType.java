@@ -15,6 +15,7 @@
 package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,10 +31,13 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.ListElementMover;
@@ -88,6 +92,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return newTestPolicyCmptTypeParameterInternal(id);
         } else if (TestValueParameter.TAG_NAME.equals(xmlTagName)) {
             return newTestValueParameterInternal(id);
+        } else if (TestRuleParameter.TAG_NAME.equals(xmlTagName)) {
+            return newTestRuleParameterInternal(id);
         }
         throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
@@ -136,6 +142,14 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestValueParameter[] getTestValueParameters() {
         return (ITestValueParameter[])getTestParameters(null, TestValueParameter.class, null).toArray(
                 new ITestValueParameter[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITestRuleParameter[] getTestRuleParameters() {
+        return (ITestRuleParameter[])getTestParameters(null, TestRuleParameter.class, null).toArray(
+                new ITestRuleParameter[0]);
     }
 
     /**
@@ -359,6 +373,16 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return param;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public TestRuleParameter newExpectedResultRuleParameter() {
+        TestRuleParameter param = newTestRuleParameterInternal(getNextPartId());
+        param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
+        updateSrcFile();
+        return param;
+    }
+    
     //
     // Create methods for combined test parameters
     //
@@ -382,7 +406,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         updateSrcFile();
         return param;
     }
-
+    
     /**
      * Removes the test parameter from the test case type. Package private because the paramter in
      * this package removes itselfs from the list when delete is calling.
@@ -439,6 +463,15 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return p;
     }
     
+    /*
+     * Creates a new test rule parameter without updating the src file.
+     */
+    private TestRuleParameter newTestRuleParameterInternal(int id) {
+        TestRuleParameter p = new TestRuleParameter(this, id);
+        testParameters.add(p);
+        return p;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -466,6 +499,43 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return newIdxs;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public IValidationRule[] getTestRuleCandidates() throws CoreException {
+        List validationRules = new ArrayList();
+        getValidationRules(getTestPolicyCmptTypeParameters(), validationRules);
+        return (IValidationRule[]) validationRules.toArray(new IValidationRule[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IValidationRule findValidationRule(String validationRuleName) throws CoreException {
+        IValidationRule[] validationRules = getTestRuleCandidates();
+        for (int i = 0; i < validationRules.length; i++) {
+            if (validationRules[i].getName().equals(validationRuleName)){
+                return validationRules[i];
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Get all validation rules from all policy cmpts which are related inside this test case type
+     */
+    private void getValidationRules(ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters, List validationRules) throws CoreException {
+        for (int i = 0; i < testPolicyCmptTypeParameters.length; i++) {
+            ITestPolicyCmptTypeParameter parameter = testPolicyCmptTypeParameters[i];
+            IPolicyCmptType policyCmptType = parameter.findPolicyCmptType();
+            if (policyCmptType == null){
+                return;
+            }
+            validationRules.addAll(Arrays.asList(policyCmptType.getRules()));
+            getValidationRules(testPolicyCmptTypeParameters[i].getTestPolicyCmptTypeParamChilds(), validationRules);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */

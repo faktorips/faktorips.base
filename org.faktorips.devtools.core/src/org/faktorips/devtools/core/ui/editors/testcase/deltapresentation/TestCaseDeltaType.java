@@ -30,6 +30,7 @@ import org.faktorips.values.DefaultEnumValue;
  * policy cmpt)
  * <li>MISSING_TEST_ATTRIBUTE_VALUE (Test case side) - Missing test attribute values (will be
  * added). A config element test attribute exists, but the test attribute value is missing.
+ * <li>DIFFERENT_SORT_ORDER (Test case side) - Different order
  * <li>MISSING_TEST_PARAM (Test case type side) - Missing test parameters (will be removed). A test
  * policy cmpt, test policy cmpt relation, or test value exisits, but the config element is missing.
  * <li>MISSING_TEST_ATTRIBUTE (Test case type side) - Missing test attributes (will be removed). A
@@ -79,7 +80,7 @@ class TestCaseDeltaType extends DefaultEnumValue {
         MISSING_TEST_PARAM = new TestCaseDeltaType(enumType, "missingTestParam", Messages.TestCaseDeltaType_MissingTestParam, "CfgElementTypeMismatch.GIF"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         MISSING_TEST_ATTRIBUTE = new TestCaseDeltaType(enumType, "missingTestAttribute", Messages.TestCaseDeltaType_MissingTestAttribute, "CfgElementTypeMismatch.GIF"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     
-        DIFFERENT_SORT_ORDER = new TestCaseDeltaType(enumType, "differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ConfigDefElement.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        DIFFERENT_SORT_ORDER = new TestCaseDeltaType(enumType, "differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ChangedOrder.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private Image icon;

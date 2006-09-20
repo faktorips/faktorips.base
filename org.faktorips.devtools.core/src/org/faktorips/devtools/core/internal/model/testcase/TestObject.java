@@ -39,11 +39,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
     public static TestParameterType DEFAULT_TYPE = TestParameterType.COMBINED;
 
     private boolean deleted = false;
-
-    /**
-     * Returns the name of the corresponding test parameter.
-     */
-    protected abstract String getTestParameterName();
     
     /**
      * {@inheritDoc}
@@ -71,13 +66,14 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         TestCase testCase = (TestCase) root.getParent();
         try {
             ITestParameter param = null;
-            if (this instanceof ITestPolicyCmpt)
+            if (this instanceof ITestPolicyCmpt){
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this);
-            else if (this instanceof ITestPolicyCmptRelation)
+            }else if (this instanceof ITestPolicyCmptRelation){
                 param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptRelation)this);
-            
-            if (param != null)
+            }
+            if (param != null){
                 return testCase.isTypeOrDefault(param, TestParameterType.INPUT, DEFAULT_TYPE);
+            }
         } catch (Exception e) {
             // ignore exception check type of root
         }

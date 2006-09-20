@@ -97,8 +97,6 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         editFieldParamType.addChangeListener(this);
         
         setControl(c);
-        
-        setPageComplete(false);
     }
     
     /**

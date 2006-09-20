@@ -22,9 +22,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
@@ -43,9 +47,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
         	return ((ITestPolicyCmptRelation)element).getImage();
         } else if (element instanceof ITestPolicyCmpt) {
         	return ((ITestPolicyCmpt) element).getImage();
-        } else if(element instanceof ITestValue){
-        	return ((ITestValue) element).getImage();
-	    } else if (element instanceof TestCaseTypeRelation){
+        } else if (element instanceof TestCaseTypeRelation){
 	    	return getImageFromRelationType((TestCaseTypeRelation)element);
 	    } else if (element instanceof IIpsObjectPart) {
             return ((IIpsObjectPart) element).getImage();
@@ -85,9 +87,12 @@ public class TestCaseLabelProvider implements ILabelProvider {
 				// will be check when openening the editor, therefor we can ignore is here
 			}
 			return text;
-		} else if(element instanceof ITestValue){
-			ITestValue testValueParameter = (ITestValue) element;
-			return testValueParameter.getTestValueParameter(); //$NON-NLS-1$ 
+		} else if (element instanceof ITestRule){
+            ITestRule testRule = (ITestRule)element;
+            String extForPolicyCmptForValidationRule = getLabelExtensionForTestRule(testRule);
+            return testRule.getValidationRule() + extForPolicyCmptForValidationRule;
+        } else if (element instanceof ITestObject){
+			return ((ITestObject)element).getTestParameterName();
 	    } else if(element instanceof TestCaseTypeRelation){
 	    	TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) element;
 	    	String text = dummyRelation.getName();
@@ -95,14 +100,34 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	    		text += Messages.TestCaseLabelProvider_LabelSuffix_RequiresProductCmpt;
 	    	}
 	    	return text;
-	    }
+	    } else if (element instanceof IIpsObjectPart){
+	        // e.g. tree node element for test rule parameters
+            return ((IIpsObjectPart) element).getName();
+        }
 		return Messages.TestCaseLabelProvider_undefined;
 	}
+
+    /*
+     * Returns the extension for the test rule: " - <policy cmpt type name>"
+     */
+    private String getLabelExtensionForTestRule(ITestRule testRule) {
+        String extForPolicyCmptForValidationRule = ""; //$NON-NLS-1$
+        IValidationRule validationRule;
+        try {
+            validationRule = testRule.findValidationRule();
+            if (validationRule != null) {
+                extForPolicyCmptForValidationRule = " - " + ((PolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
+            }
+        } catch (CoreException e) {
+            // ignore exception, return empty extension 
+        }
+        return extForPolicyCmptForValidationRule;
+    }
     
     /**
      * Returns the title text of a section which displays the given test policy cmpt.<br>
-     * Returns the name of the test policy cmpt and if the name is not equal to the test policy cmpt type param name 
-     * the name of the parm after " : "<br>
+     * Returns the name of the test policy cmpt and if the name is not equal to the test policy cmpt
+     * type param name the name of the parm after " : "<br>
      * Return format: name : test policy cmpt type param name
      */
     public String getTextForSection(ITestPolicyCmpt testPolicyCmpt){
@@ -128,6 +153,14 @@ public class TestCaseLabelProvider implements ILabelProvider {
         return StringUtils.capitalise(testValue.getTestValueParameter());
     }
 
+    /**
+     * Returns the title text of a section which displays the given test rule.<br>
+     * Returns the validation rule and the corresponding policy cmpt.
+     */
+    public String getTextForSection(ITestRule testRule){
+        return getText(testRule);
+    }
+    
     /**
      * Returns the label for the target of a assoziation.
      */

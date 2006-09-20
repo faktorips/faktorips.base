@@ -150,7 +150,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * {@inheritDoc}
      */
-    protected String getTestParameterName() {
+    public String getTestParameterName() {
         return testPolicyCmptType;
     } 
     

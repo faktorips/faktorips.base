@@ -15,6 +15,7 @@
 			<ValueObject testValueParameter="expResultTestValue2" />
 			<PolicyCmptTypeObject name="expPolicyCmptType0" testPolicyCmptType="expResultTestPolicyCmpt0" />
 			<PolicyCmptTypeObject name="expPolicyCmptType1" testPolicyCmptType="expResultTestPolicyCmpt1" />
+			<RuleObject validationRule="validationRule0" testRuleParameter="expResultTestRule1" violationType="xyz"/>
 	
 	</TestCase>
 </testcases>

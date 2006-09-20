@@ -67,11 +67,12 @@ public class TestParameterType extends DefaultEnumValue {
     }
     
     /**
-     * Returns the test parameter type by the given id or <code>null</code> if the id not represent a
+     * Returns the test parameter type by the given id or <code>UNKNOWN</code> if the id not represent a
      * test parameter type.
      */
     public final static TestParameterType getTestParameterType(String id) {
-        return (TestParameterType) enumType.getEnumValue(id);
+        TestParameterType type = (TestParameterType) enumType.getEnumValue(id);
+        return type==null?UNKNOWN:type;
     }
     
     /**
@@ -83,13 +84,6 @@ public class TestParameterType extends DefaultEnumValue {
             return null;
         return (TestParameterType) types[index.intValue()];
     }
-    
-    /**
-     * Returns the unknown test parameter type.
-     */
-    public final static TestParameterType getUnknownTestParameterType() {
-        return (TestParameterType) nonDefaultEnumType.getEnumValue(0);
-    }    
     
     /**
      * Special compare method to check if the Type matches each other.<br>
@@ -128,6 +122,23 @@ public class TestParameterType extends DefaultEnumValue {
             return true;
         
         return false;
+    }
+    
+    /**
+     * Returns the index of the given type inside the default enumeration.
+     */
+    public static int getIndexOfType(TestParameterType type){
+        int idxOf = -1;
+        for (int i = 0; i < TestParameterType.getEnumType().getNumOfValues(); i++) {
+            if (type == TestParameterType.getTestParameterType(new Integer(i))){
+                idxOf = i;
+                break;
+            }
+        }
+        if (idxOf == -1){
+            throw new RuntimeException("Wrong content of test parameter type enum!"); //$NON-NLS-1$
+        }
+        return idxOf;
     }
     
     /**

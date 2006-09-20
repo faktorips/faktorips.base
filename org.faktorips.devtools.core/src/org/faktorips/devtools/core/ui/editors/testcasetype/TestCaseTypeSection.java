@@ -59,6 +59,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -87,6 +88,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -850,6 +852,7 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
 
         createTestParamDetails(editFieldsComposite, testParam, uiController);
         
+        // create details depending on the test parameter
         if (testParam instanceof ITestPolicyCmptTypeParameter){
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter) testParam;
             
@@ -1065,6 +1068,14 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
 
         uiController.add(editFieldName, ITestParameter.PROPERTY_NAME);
         uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
+        
+        // remove enties in the combo box depending on the given test parameter
+        if (testParam instanceof ITestValueParameter){
+            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));
+        } else if (testParam instanceof ITestRuleParameter){
+            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.COMBINED));            
+            ((Combo)editFieldType.getControl()).remove(TestParameterType.getIndexOfType(TestParameterType.INPUT)); 
+        }
     }
 
     /*
@@ -1094,9 +1105,10 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
      * If the given section is <code>null</code> do nothing.
      */
     private void selectSection(Section section, boolean withFocusChange){
-        if (section == null)
-            return;
         resetSectionSelectedColor();
+        if (section == null){
+            return;
+        }
         section.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
         updateDetailButtonStatus(currSelectedDetailObject);
         
@@ -1421,38 +1433,31 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
                     }
             }
         }
-        if (prevTreeItem != null && prevTreeItem.getData() instanceof ITestParameter)
+        if (prevTreeItem != null && prevTreeItem.getData() instanceof ITestParameter){
             currSelectedDetailObject = (ITestParameter)prevTreeItem.getData();
-        else
+        } else {
             currSelectedDetailObject = null;
-
-        refreshTreeAndDetails(getRootSectionObject(currSelectedDetailObject));
+        }
         
-        // redraw details for the new selected object
-        selObject = getSelectedObjectInTree();
-        if (! (selObject instanceof ITestParameter))
-            return;
-        
-        currSelectedDetailObject = (ITestParameter) selObject;
-        createDetailsArea((ITestParameter)currSelectedDetailObject);
-        
-        postSelectedTestParameterInTree((ITestParameter)currSelectedDetailObject);
+        redrawDetails((ITestParameter)currSelectedDetailObject);
     }
 
     /*
      * Move the selected test parameter up 
      */
     private void moveUpClicked(Object selectedObjInTree){
-        if (selectedObjInTree instanceof ITestParameter)
+        if (selectedObjInTree instanceof ITestParameter){
             moveTestParameter((ITestParameter)selectedObjInTree, true);
+        }
     }
     
     /*
      * Move the selected test parameter down 
      */
     private void moveDownClicked(Object selectedObjInTree){
-        if (selectedObjInTree instanceof ITestParameter)
+        if (selectedObjInTree instanceof ITestParameter){
             moveTestParameter((ITestParameter)selectedObjInTree, false);
+        }
     }
     
     private TreeItem searchChilds(TreeItem[] childs, TreeItem selectedItem, TreeItem prevTreeItem){
@@ -1562,6 +1567,22 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
             parent.moveTestPolicyCmptTypeChild(selectedTestParamIndexes, up);
         }
 
+        redrawDetails(testParameter);
+    }
+    
+    /**
+     * Redraw the details for the current selection
+     */
+    private void redrawDetails(ITestParameter testParameter){
+        // redraw details for the new selected object
+        Object selObject = getSelectedObjectInTree();
+        if (!(selObject instanceof ITestParameter)) {
+            return;
+        }
+        currSelectedDetailObject = (ITestParameter)selObject;
+        createDetailsArea((ITestParameter)currSelectedDetailObject);
+        treeViewer.setSelection(new StructuredSelection(testParameter));
+        
         postRefreshAll();
         postSelectedTestParameterInTree(testParameter);
     }
@@ -1571,8 +1592,10 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
      * @throws CoreException 
      */
     private void selectionInTreeChanged(IStructuredSelection selection) {
-        if (isTreeRefreshing)
+        // skip if this method was called while the tree is refreshing
+        if (isTreeRefreshing){
             return;
+        }
         
         if (selection instanceof IStructuredSelection){
             Object selectedObj = ((IStructuredSelection) selection).getFirstElement();
@@ -1582,16 +1605,17 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
                 if (showAll){
                     // select section for the tree entry
                     selectSection(objectCache.getSection((ITestParameter)selectedObj), false);
-                    return;
+                } else if (selectedObj != prevSelectedTestParam) {
+                    createDetailsArea((ITestParameter) selectedObj);
                 }
-                if (selectedObj == prevSelectedTestParam)
-                    return;
-
-                createDetailsArea((ITestParameter) selectedObj);
             } else {
-                createDetailsArea(null);
+                if (! showAll){
+                    // no details are created
+                    createDetailsArea(null);
+                }
+                // select no section
+                selectSection(null);
             }
-            
             updateTreeButtonStatus(selectedObj);
         }
     }
@@ -1603,14 +1627,14 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         if (object == null){
             object = getSelectedObjectInTree();
         }
-        if (object instanceof ITestValueParameter){
-            removeButton.setEnabled(true);
-            addParameterButton.setEnabled(false);
-            moveUpButton.setEnabled(true);
-            moveDownButton.setEnabled(true);
-        } else if (object instanceof ITestPolicyCmptTypeParameter){
+        if (object instanceof ITestPolicyCmptTypeParameter){
             removeButton.setEnabled(true);
             addParameterButton.setEnabled(true);
+            moveUpButton.setEnabled(true);
+            moveDownButton.setEnabled(true);
+        } else if (object instanceof ITestParameter){
+            removeButton.setEnabled(true);
+            addParameterButton.setEnabled(false);
             moveUpButton.setEnabled(true);
             moveDownButton.setEnabled(true);
         } else if (object instanceof TestCaseTypeTreeRootElement){
@@ -1829,8 +1853,7 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         List attributesInDialog = new ArrayList(attributes.length);
         // remove product relevant attributes
         for (int i = 0; i < attributes.length; i++) {
-            // TODO Joerg: ist das richtig?
-            if (attributes[i].isChangeable()){
+            if (attributes[i].isChangeable() || attributes[i].isDerivedOrComputed()){
                 attributesInDialog.add(attributes[i]);
             }
         }

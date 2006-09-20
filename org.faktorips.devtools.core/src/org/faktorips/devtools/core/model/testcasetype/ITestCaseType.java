@@ -15,7 +15,9 @@
 package org.faktorips.devtools.core.model.testcasetype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 /**
  * Specification of a test case type.
@@ -49,6 +51,11 @@ public interface ITestCaseType extends IIpsObject {
      */
     public ITestPolicyCmptTypeParameter newExpectedResultPolicyCmptTypeParameter();
 
+    /**
+     * Creates a new test expected result rule parameter.
+     */
+    public TestRuleParameter newExpectedResultRuleParameter();
+    
     /**
      * Creates a new test combined value parameter.
      */
@@ -86,6 +93,12 @@ public interface ITestCaseType extends IIpsObject {
      * any test value parameters.
      */
     public ITestValueParameter[] getTestValueParameters();
+    
+    /**
+     * Returns all test rule parameters or an empty array if the test case
+     * type hasn't got any test rule parameters.
+     */
+    public ITestRuleParameter[] getTestRuleParameters();
     
     /**
      * Returns all root test policy component type parameters or an empty array if the test case
@@ -175,5 +188,20 @@ public interface ITestCaseType extends IIpsObject {
      * @throws IndexOutOfBoundsException if one of the indexes does not identify
      * an attribute.
      */
-    public int[] moveTestParameters(int[] indexes, boolean up);    
+    public int[] moveTestParameters(int[] indexes, boolean up);
+    
+    /**
+     * Returns all validation rules from the test policy cmpts which are related by the test policy
+     * cmpt type parameters inside this test case type.
+     * 
+     * @throws CoreException if an error occurs
+     */
+    public IValidationRule[] getTestRuleCandidates() throws CoreException;
+    
+    /**
+     * Searchs and returns the validation rule with the given name which is inside the test case type.
+     * The rule will be searched in all policy cmpt types which are related by test test policy cmpt type 
+     * parameters.
+     */
+    public IValidationRule findValidationRule(String validationRuleName) throws CoreException;
 }

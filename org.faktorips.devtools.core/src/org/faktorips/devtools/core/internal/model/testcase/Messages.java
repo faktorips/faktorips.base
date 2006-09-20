@@ -65,4 +65,8 @@ public class Messages extends NLS {
     public static String TestCase_Error_TestCaseTypeNotFound;
     public static String IpsTestRunner_Error_WrongHeapSize;
     public static String TestPolicyCmpt_ValidationError_ProductCmptNotRequiredButIsRelatedToProductCmpt;
+    public static String TestCase_Error_TestParameterNotFound;
+    public static String TestRule_ValidationError_ValidationRuleNotAvailable;
+    public static String TestRule_ValidationError_DuplicateValidationRule;
+    public static String TestRule_ValidationError_TestRuleParameterNotFound;
 }

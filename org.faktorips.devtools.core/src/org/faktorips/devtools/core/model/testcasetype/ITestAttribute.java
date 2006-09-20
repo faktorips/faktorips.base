@@ -61,6 +61,11 @@ public interface ITestAttribute extends IIpsObjectPart {
     public final static String MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "DuplicateTestAttributeName"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that computed or derived attributes have type expected result.
+     */
+    public final static String MSGCODE_EXPECTED_OR_COMPUTED_BUT_NOT_EXPECTED_RES = MSGCODE_PREFIX + "ExpectedOrComputedButNotExpectedRes"; //$NON-NLS-1$
+    
+    /**
      * Sets the attribute's name.
      */
     public void setName(String newName);

@@ -75,6 +75,11 @@ public interface ITestCaseTestCaseTypeDelta {
      */
     public ITestValue[] getTestValuesWithMissingTestValueParam();
     
+    /**
+     * Test Case Side: Returns the test rules with missing test value parameter
+     */
+    public ITestRule[] getTestRulesWithMissingTestValueParam();
+    
     //
     // Missing test case type side objects
     //

@@ -130,8 +130,6 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         name = element.getAttribute(PROPERTY_NAME);
 		attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
 		type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE));
-        if (type == null)
-            type = TestParameterType.getUnknownTestParameterType();
 	}
 
     /**
@@ -256,6 +254,16 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
                         PROPERTY_NAME);
                 messageList.add(msg);
                 break;
+            }
+        }
+        
+        // check that a derived or computed test attribute must have the expected result type
+        if (modelAttribute != null){
+            if (modelAttribute.isDerivedOrComputed() && type != TestParameterType.EXPECTED_RESULT){
+                String text = NLS.bind(Messages.TestAttribute_ValidationError_WrongParameterTypeIfDerivedOrComputed, type.getName());
+                Message msg = new Message(MSGCODE_EXPECTED_OR_COMPUTED_BUT_NOT_EXPECTED_RES, text, Message.ERROR, this,
+                        PROPERTY_TEST_ATTRIBUTE_TYPE);
+                messageList.add(msg);
             }
         }
     }

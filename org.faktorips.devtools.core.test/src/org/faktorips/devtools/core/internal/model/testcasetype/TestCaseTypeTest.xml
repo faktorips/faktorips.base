@@ -17,6 +17,8 @@
 			minInstances="6" maxInstances="7"></PolicyCmptTypeParameter>
 		<PolicyCmptTypeParameter name="policyCmptType2" testParameterType="expectedResult" policyCmptType="base.Test4"
 			minInstances="8" maxInstances="9"></PolicyCmptTypeParameter>	
+		<RuleParameter name="rule1" testParameterType="expectedResult">
+		</RuleParameter>
 	
 	</TestCaseType>
 </testcases>

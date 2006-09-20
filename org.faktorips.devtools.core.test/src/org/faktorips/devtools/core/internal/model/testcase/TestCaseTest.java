@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.CollectionUtil;
@@ -64,6 +65,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         testCaseType.newExpectedResultValueParameter().setName("expResultTestValue2");
         testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("expResultTestPolicyCmpt0");
         testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("expResultTestPolicyCmpt1");
+        testCaseType.newExpectedResultRuleParameter().setName("expResultTestRule1");
         
         testCase = (ITestCase) newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseType1");
         testCase.setTestCaseType(testCaseType.getName());
@@ -72,14 +74,20 @@ public class TestCaseTest extends AbstractIpsPluginTest {
     private void assertTestCaseObjects( 
             int testInputValues, int testExpResultValues,
             int testInputPolicyCmpts, int testExpPolicyCmpts){
+        assertTestCaseObjects(testInputValues, testExpResultValues, testInputPolicyCmpts, testExpPolicyCmpts, 0);
+    }
+    
+    private void assertTestCaseObjects( 
+            int testInputValues, int testExpResultValues,
+            int testInputPolicyCmpts, int testExpPolicyCmpts, int testExpResultRules){
         assertEquals(testInputValues, testCase.getInputTestValues().length);
         assertEquals(testExpResultValues, testCase.getExpectedResultTestValues().length);
         assertEquals(testInputPolicyCmpts, testCase.getInputTestPolicyCmpts().length);
         assertEquals(testExpPolicyCmpts, testCase.getExpectedResultTestPolicyCmpts().length);
+        assertEquals(testExpResultRules, testCase.getExpectedResultTestRules().length);
     }
     
     public void testNewParameterAndGet() throws Exception {
-        
         ITestValue param1 = testCase.newTestValue();
         param1.setTestValueParameter("inputTestValue0");
         assertNotNull(param1);
@@ -113,6 +121,11 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertNotNull(param6);
         assertTestCaseObjects(1,1,1,2);
         
+        ITestRule param7 = testCase.newTestRule();
+        param7.setTestRuleParameter("expResultTestRule1");
+        assertNotNull(param7);
+        assertTestCaseObjects(1,1,1,2,1);
+        
         assertEquals(param1, testCase.getInputTestValues()[0]);
         assertEquals(param2, testCase.getExpectedResultTestValues()[0]);
         assertEquals(param3, testCase.findTestPolicyCmpt("inputTestPolicyCmpt0"));
@@ -120,6 +133,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals(param3, testCase.getInputTestPolicyCmpts()[0]);
         assertEquals(param4, testCase.getExpectedResultTestPolicyCmpts()[0]);
         assertEquals(param6, testCase.getExpectedResultTestPolicyCmpts()[1]);
+        assertEquals(param7, testCase.getExpectedResultTestRules()[0]);
     }
        
     public void testInitFromXml() throws CoreException  {
@@ -127,7 +141,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         Element typeEl = XmlUtil.getFirstElement(docEl);
         testCase.initFromXml(typeEl);
         
-        assertTestCaseObjects(2, 3, 2, 2);
+        assertEquals(10, testCase.getTestObjects().length);
+        assertTestCaseObjects(2, 3, 2, 2, 1);
         
         assertEquals("testCaseType1", testCase.getTestCaseType());
         
@@ -162,6 +177,12 @@ public class TestCaseTest extends AbstractIpsPluginTest {
             assertTrue(testPc[i].isExpectedResult());
             assertFalse(testPc[i].isCombined());
         }
+        
+        ITestRule[] testRules = testCase.getExpectedResultTestRules();
+        assertEquals("expResultTestRule1", testRules[0].getTestRuleParameter());
+        assertTrue(testRules[0].isExpectedResult());
+        assertFalse(testRules[0].isCombined());
+        assertTrue(testRules[0].isExpectedResult());
     }
     
     public void testToXml() {
@@ -176,6 +197,8 @@ public class TestCaseTest extends AbstractIpsPluginTest {
       ITestPolicyCmpt policyCmptExpected0 = testCase.newTestPolicyCmpt();
       policyCmptExpected0.setTestPolicyCmptTypeParameter("expResultTestPolicyCmpt0");
       testCase.setTestCaseType("testCaseType1");
+      ITestRule rule = testCase.newTestRule();
+      rule.setTestRuleParameter("expResultTestRule1");
       
       Document doc = newDocument();
       Element el = testCase.toXml(doc);
@@ -185,6 +208,7 @@ public class TestCaseTest extends AbstractIpsPluginTest {
       valueParamInput1.setTestValueParameter("Test");
       valueParamExpectedResult1.setTestValueParameter("Test2");
       testCase.newTestValue().setTestValueParameter("inputTestValueDummy");
+      testCase.newTestRule().setTestRuleParameter("xyz");
       
       // read the xml which was written before
       testCase.initFromXml(el);
@@ -197,12 +221,14 @@ public class TestCaseTest extends AbstractIpsPluginTest {
       assertEquals(valueParamExpectedResult1, testCase.getExpectedResultTestValues()[0]);
       assertEquals(policyCmptInput0, testCase.getInputTestPolicyCmpts()[0]);
       assertEquals(policyCmptExpected0, testCase.getExpectedResultTestPolicyCmpts()[0]);
- 
+      assertEquals(rule, testCase.getExpectedResultTestRules()[0]);
+      
       assertEquals("inputTestValue0", testCase.getInputTestValues()[0].getTestValueParameter());
       assertEquals("inputTestValue1", testCase.getInputTestValues()[1].getTestValueParameter());
       assertEquals("expResultTestValue0", testCase.getExpectedResultTestValues()[0].getTestValueParameter());
       assertEquals("inputTestPolicyCmpt0", testCase.getInputTestPolicyCmpts()[0].getTestPolicyCmptTypeParameter());
       assertEquals("expResultTestPolicyCmpt0", testCase.getExpectedResultTestPolicyCmpts()[0].getTestPolicyCmptTypeParameter());
+      assertEquals("expResultTestRule1", testCase.getExpectedResultTestRules()[0].getTestRuleParameter());
       
       assertEquals("testCaseType1", testCase.getTestCaseType());
     }

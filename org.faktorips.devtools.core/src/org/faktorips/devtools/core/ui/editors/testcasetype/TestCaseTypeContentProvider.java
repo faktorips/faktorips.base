@@ -43,8 +43,7 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
         if (parentElement instanceof TestCaseTypeTreeRootElement){
             ITestCaseType testCaseType = ((TestCaseTypeTreeRootElement)parentElement).getTestCaseType();
             return testCaseType.getTestParameters();
-        }
-        if (parentElement instanceof ITestPolicyCmptTypeParameter){
+        } else if (parentElement instanceof ITestPolicyCmptTypeParameter){
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter) parentElement;
             return testPolicyCmptTypeParam.getTestPolicyCmptTypeParamChilds();
         }

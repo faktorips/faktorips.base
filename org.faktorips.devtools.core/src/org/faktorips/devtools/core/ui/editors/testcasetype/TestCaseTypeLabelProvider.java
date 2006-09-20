@@ -22,8 +22,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.util.StringUtil;
 
@@ -37,10 +37,8 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
 	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
-        if (element instanceof ITestValueParameter){
-            return ((ITestValueParameter)element).getImage();
-        } else if (element instanceof ITestPolicyCmptTypeParameter){
-            return ((ITestPolicyCmptTypeParameter) element).getImage();
+        if (element instanceof ITestParameter){
+            return ((ITestParameter)element).getImage();
         } else if (element instanceof TestCaseTypeTreeRootElement){
             return ((TestCaseTypeTreeRootElement) element).getImgage();
         }
@@ -56,25 +54,25 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
 	 * {@inheritDoc}
 	 */
 	public String getText(Object element) {
-        if (element instanceof ITestValueParameter) {
-            ITestValueParameter testValueParam = (ITestValueParameter)element;
-            return testValueParam.getName() + getTypeExtension(testValueParam.getTestParameterType());
-        } else if (element instanceof ITestPolicyCmptTypeParameter) {
+        if (element instanceof ITestPolicyCmptTypeParameter) {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)element;
 
             String targetExtension = ""; //$NON-NLS-1$
-            
-            targetExtension = testPolicyCmptTypeParam.getPolicyCmptType()==null?"":StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType()); //$NON-NLS-1$
-            if (StringUtils.isNotEmpty(targetExtension)
-                    && !targetExtension.equals(testPolicyCmptTypeParam.getName()))
-                targetExtension = " : " + targetExtension; //$NON-NLS-1$
-            else
-                // no relation or relation is equal test param name
-                targetExtension = "";                 //$NON-NLS-1$
 
-            String productExt = testPolicyCmptTypeParam.isRequiresProductCmpt()?" (P)":""; //$NON-NLS-1$ //$NON-NLS-2$
-            
-            return testPolicyCmptTypeParam.getName() + targetExtension + getTypeExtension(testPolicyCmptTypeParam.getTestParameterType()) + productExt;
+            targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType()); //$NON-NLS-1$
+            if (StringUtils.isNotEmpty(targetExtension) && !targetExtension.equals(testPolicyCmptTypeParam.getName())){
+                targetExtension = " : " + targetExtension; //$NON-NLS-1$
+            } else{
+                // no relation or relation is equal test param name
+                targetExtension = ""; //$NON-NLS-1$
+            }
+            String productExt = testPolicyCmptTypeParam.isRequiresProductCmpt() ? " (P)" : ""; //$NON-NLS-1$ //$NON-NLS-2$
+
+            return testPolicyCmptTypeParam.getName() + targetExtension
+                    + getTypeExtension(testPolicyCmptTypeParam.getTestParameterType()) + productExt;
+        } else if (element instanceof ITestParameter) {
+            ITestParameter testParam = (ITestParameter)element;
+            return testParam.getName() + getTypeExtension(testParam.getTestParameterType());
         } else if (element instanceof ITestAttribute) {
             ITestAttribute testAttribute = (ITestAttribute)element;
             String extension = ""; //$NON-NLS-1$
@@ -82,9 +80,10 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
                     && !testAttribute.getAttribute().equals(testAttribute.getName())) {
                 extension = " : " + testAttribute.getAttribute(); //$NON-NLS-1$
             }
-            return StringUtils.capitalise(testAttribute.getName()) + extension + getTypeExtension(testAttribute.getTestAttributeType());
-        } else if (element instanceof TestCaseTypeTreeRootElement){
-            return ((TestCaseTypeTreeRootElement) element).getText();
+            return StringUtils.capitalise(testAttribute.getName()) + extension
+                    + getTypeExtension(testAttribute.getTestAttributeType());
+        } else if (element instanceof TestCaseTypeTreeRootElement) {
+            return ((TestCaseTypeTreeRootElement)element).getText();
         }
             
 		return Messages.TestCaseTypeLabelProvider_Undefined;

@@ -81,4 +81,10 @@ public class Messages extends NLS {
     public static String NewRootParamWizardPage_ValidationError_InvalidTestParameterName;
     public static String TestCaseTypeSection_Button_Up;
     public static String TestCaseTypeSection_Button_Down;
+    public static String ValidationRuleRefControl_Button_Browse;
+    public static String NewRootParamFirstWizardPage_Title;
+    public static String NewRootParamFirstWizardPage_Decription;
+    public static String NewRootParamFirstWizardPage_RadioButton_TestPolicyCmptTypeParameter;
+    public static String NewRootParamFirstWizardPage_RadioButton_TestValueParameter;
+    public static String NewRootParamFirstWizardPage_RadioButton_TestRuleParameter;
 }

@@ -165,8 +165,17 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	public Image getImage() {
         if (isAccoziation()){
-            // TODO Joerg: icon link product cmpt or link policy cmpt type
-            return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
+            // return the linked product cmpt image if the target relates a product cmpt,
+            // or return the linked policy cmpt if target not found or no product cmpt is related
+            try {
+                ITestPolicyCmpt cmpt = findTarget();
+                if (cmpt != null && StringUtils.isNotEmpty(cmpt.getProductCmpt())){
+                    return IpsPlugin.getDefault().getImage("LinkProductCmpt.gif"); //$NON-NLS-1$
+                }
+            } catch (CoreException e) {
+                // ignored exception, return default image
+            }
+            return IpsPlugin.getDefault().getImage("LinkPolicyCmptType.gif"); //$NON-NLS-1$
         } else {
             try {
                 ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
@@ -350,13 +359,14 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		} catch (CoreException e) {
 			//	ignore exception, the param will be used to indicate errors
 		}
-		
+        
+		// check if the corresponding test parameter exists
 		if (param == null){
 			String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_TestCaseTypeNotFound, getTestPolicyCmptTypeParameter());
 			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
 			messageList.add(msg);	
-		} 
-		
+        }
+        
 		// for assoziations check if the target is in the test case
 		if (isAccoziation()){
 			if (getTestCase().findTestPolicyCmpt(getTarget()) == null){

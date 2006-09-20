@@ -18,8 +18,10 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -32,7 +34,10 @@ import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -183,7 +188,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	    	return getChildsForTestPolicyCmptRelation((ITestPolicyCmptRelation) parentElement);
 	    }else if(parentElement instanceof TestCaseTypeRelation){
 	    	return getChildsForTestCaseTypeRelation((TestCaseTypeRelation) parentElement);
-	    }
+	    }else if (parentElement instanceof ITestRuleParameter){
+            return testCase.getTestRule(((ITestRuleParameter)parentElement).getName());
+        }
 	    return EMPTY_ARRAY;
 	}
 	
@@ -224,20 +231,62 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	 * {@inheritDoc}
 	 */
 	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof ITestCase){
+		List elements = new ArrayList();
+        if (inputElement instanceof ITestCase){
 			ITestCase testCase = (ITestCase) inputElement;
 			if (isCombined()){
 			    // return input and expected result objects
-			    return testCase.getTestObjects();
+                elements.addAll(Arrays.asList(testCase.getTestObjects()));
 			}else if(isExpectedResult()){
 				// return expected result objects
-                return testCase.getExpectedResultTestObjects();
+                elements.addAll(Arrays.asList(testCase.getExpectedResultTestObjects()));
 			}else if(isInput()){
 			    // return input objects
-                return testCase.getInputTestObjects();
+                elements.addAll(Arrays.asList(testCase.getInputTestObjects()));
             }
 		}
-		return EMPTY_ARRAY;
+        List orderedList = new ArrayList();
+        HashMap name2elements = new HashMap();
+        for (Iterator iter = elements.iterator(); iter.hasNext();) {
+            ITestObject element = (ITestObject)iter.next();
+            name2elements.put(element.getTestParameterName(), element);
+        }
+        
+        // return the ordered list, the ordered list depends on the test case type,
+        // because the test rule objects displayed as group, iterate the list of test case type parameter
+        // and add the corresponding elements
+        
+        // furthermore show the test rule objects as childs of a dummy test rule parameter node 
+        ITestCaseType testCaseType = null;
+        try {
+            testCaseType = testCase.findTestCaseType();
+        } catch (CoreException e) {
+            // ignore exception while retrieving the test rule parameter
+        }
+        if (testCaseType != null){
+            ITestParameter[] params = testCaseType.getTestParameters();
+            for (int i = 0; i < params.length; i++) {
+                ITestObject testObject = (ITestObject) name2elements.get(params[i].getName());
+                if (testObject != null && ! (params[i] instanceof ITestRuleParameter)){
+                    orderedList.add(testObject);
+                } else if (params[i] instanceof ITestRuleParameter) {
+                    if (isCombined() || isExpectedResult()){
+                        // test rule objects are not visible if the input filter is chosen
+                        orderedList.add(params[i]);
+                    }
+                }
+                name2elements.remove(params[i].getName());
+            }
+            // add all elements which are not in the test parameter on the end
+            for (Iterator iter = name2elements.values().iterator(); iter.hasNext();) {
+                ITestObject element = (ITestObject)iter.next();
+                orderedList.add(element);
+            }
+        } else {
+            // ignore the sort order of the test case type if the test case type not exists
+            orderedList.addAll(elements);
+        }
+		return (Object[]) orderedList.toArray(new Object[0]);
 	}
 	
 	/**

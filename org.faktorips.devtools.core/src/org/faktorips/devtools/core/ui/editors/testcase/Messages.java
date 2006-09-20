@@ -79,4 +79,7 @@ public class Messages extends NLS {
     public static String TestCaseSection_MessageDialog_TitleRunTestAndStoreExpectedResults;
     public static String TestCaseSection_MessageDialog_QuestionRunTestAndStoreExpectedResults;
     public static String TestCaseSection_SectionTitleToolTip_StoredExpectedResults;
+    public static String TestCaseSection_SelectDialogValidationRule_Title;
+    public static String TestCaseSection_SelectDialogValidationRule_Decription;
+    public static String TestCaseDetailArea_Label_Violation;
 }

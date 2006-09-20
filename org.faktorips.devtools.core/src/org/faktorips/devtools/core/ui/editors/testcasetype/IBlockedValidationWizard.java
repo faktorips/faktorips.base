@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.jface.wizard.IWizard;
+import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 
 /**
  * Interface for a wizard wich disables the next button if the editing object is not valid.
@@ -43,4 +44,9 @@ public interface IBlockedValidationWizard extends IWizard{
      * Starts given runnable in an asynchronous manner.
      */
     public void postAsyncRunnable(Runnable runnable);
+    
+    /**
+     * Returns the ui controller.
+     */
+    public IpsPartUIController getController();
 }

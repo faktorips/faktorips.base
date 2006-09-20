@@ -26,6 +26,11 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  */
 public interface ITestObject extends IIpsObjectPart  {
     /**
+     * Returns the name of the corresponding test parameter.
+     */
+    public String getTestParameterName();
+    
+    /**
      * Returns the root test policy component element.
      */    
     public ITestObject getRoot();

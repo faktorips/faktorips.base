@@ -55,9 +55,9 @@ public class DeltaCompositeIcon extends CompositeImageDescriptor {
             
         drawImage(baseImage.getImageData(), 0, 0);
         if (imageFor == TO_BE_DELETED)
-            drawImage(IpsPlugin.getDefault().getImage("Delete.gif").getImageData(), 0, 0); //$NON-NLS-1$
+            drawImage(IpsPlugin.getDefault().getImage("DeleteOverlay.gif").getImageData(), 0, 0); //$NON-NLS-1$
         else if (imageFor == NEW)
-            drawImage(IpsPlugin.getDefault().getImage("New.gif").getImageData(), 0, 0);         //$NON-NLS-1$
+            drawImage(IpsPlugin.getDefault().getImage("AddOverlay.gif").getImageData(), 0, 0);         //$NON-NLS-1$
     }
 
     protected Point getSize() {

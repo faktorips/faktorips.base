@@ -88,6 +88,18 @@ public interface ITestCase extends IIpsObject {
     public ITestValue[] getTestValues();
     
     /**
+     * Returns all test rule objects wich are related to the given test rule parameter or an empty
+     * array if the test case hasn't got such test rule objects.
+     */
+    public ITestRule[] getTestRule(String testRuleParameter);
+    
+    /**
+     * Returns all test rule objects or an empty
+     * array if the test case hasn't got any test rule objects.
+     */
+    public ITestRule[] getTestRuleObjects();
+    
+    /**
      * Returns all input test objects or an empty array if the test case hasn't got any test
      * input objects.
      */
@@ -118,6 +130,13 @@ public interface ITestCase extends IIpsObject {
     public ITestValue[] getExpectedResultTestValues();
 
     /**
+     * Returns all expected result test rule objects or an empty array if the test case hasn't got
+     * any expected result test rule objects.
+     */
+    public ITestRule[] getExpectedResultTestRules();
+
+    
+    /**
      * Returns all expected result test policy component objects or an empty array if the test case
      * hasn't got any expected result test policy component objetcs.
      */
@@ -128,6 +147,11 @@ public interface ITestCase extends IIpsObject {
      */
     public ITestValue newTestValue();
 
+    /**
+     * Creates a new test rule object.
+     */
+    public ITestRule newTestRule();
+    
     /**
      * Creates a new test policy component object.
      */

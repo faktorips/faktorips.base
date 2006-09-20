@@ -47,6 +47,7 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     //  Wizard pages
     private NewRootParamWizardPage rootParamSelectWizardPage;
     private NewTestParamDetailWizardPage rootParamDetailWizardPage;
+    private NewRootParamFirstWizardPage rootParamFirstWizardPage;
     
     // Model objects
     private ITestCaseType testCaseType;
@@ -63,7 +64,13 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     
     // Indicates if a test policy cmpt type parameter is created by the wizard (true) or a test
     // value parameter (false)
-    boolean isTestPolicyCmptTypeParam = false;
+    private boolean isTestPolicyCmptTypeParam = false;
+    
+    public static final int TEST_POLICY_CMPT_TYPE_PARAMETER = 0;
+    public static final int TEST_VALUE_PARAMETER = 1;
+    public static final int TEST_RULE_PARAMETER = 2;
+    
+    private int kindOfTestParameter = TEST_POLICY_CMPT_TYPE_PARAMETER;
     
     public NewRootParameterWizard(ITestCaseType testCaseType){
         super.setWindowTitle(Messages.NewRootParameterWizard_Title);
@@ -75,10 +82,14 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      */
     public void addPages() {
         super.addPages();
+        
+        rootParamFirstWizardPage = new NewRootParamFirstWizardPage(this);
+        addPage(rootParamFirstWizardPage);
+        
         rootParamSelectWizardPage = new NewRootParamWizardPage(this);
         addPage(rootParamSelectWizardPage);
         
-        rootParamDetailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit);
+        rootParamDetailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit, 3);
         addPage(rootParamDetailWizardPage);
     }
 
@@ -90,12 +101,19 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public IpsPartUIController getController() {
+        return controller;
+    }
+    
+    /**
      * Returns the test case type.
      */
     public ITestCaseType getTestCaseType() {
         return testCaseType;
     }
-
+    
     /**
      * Returns the ui toolkit.
      */
@@ -114,37 +132,68 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * Creates a new test parameter depends on the given datatype. The new test parameter could be a
      * test value parameter or a test policy cmpt type parameter.
      */
-    public ITestParameter newTestParameter(Datatype newDatatype) {
-        if (memento != null)
-            testCaseType.setState(memento);
-        memento = testCaseType.newMemento();
+    public ITestParameter newTestParameter(Datatype datatype) {
+        createMemento();
         
         isTestPolicyCmptTypeParam = false; 
-        if (newDatatype instanceof ValueDatatype){
-            newTestParameter = testCaseType.newInputTestValueParameter();
-        } else if (newDatatype instanceof IPolicyCmptType){
+        if (datatype instanceof ValueDatatype){
+            newTestParameter = testCaseType.newInputTestValueParameter();         
+        } else if (datatype instanceof IPolicyCmptType){
             newTestParameter = testCaseType.newInputTestPolicyCmptTypeParameter();
             // root parameters have always 1 min and 1 max instances
             ((ITestPolicyCmptTypeParameter)newTestParameter).setMinInstances(1);
             ((ITestPolicyCmptTypeParameter)newTestParameter).setMaxInstances(1);
             isTestPolicyCmptTypeParam = true;
-        } else{
-            return null;
+        } else {
+            throw new RuntimeException("Instance of selected object not supported!"); //$NON-NLS-1$
         }
-        newTestParameter.setDatatype(newDatatype.getQualifiedName());
-        newTestParameter.setName(StringUtil.unqualifiedName(newDatatype.getQualifiedName()));
         
-        controller = new IpsPartUIController((IIpsObjectPart)newTestParameter);
-        rootParamSelectWizardPage.connectToModel(controller, newTestParameter);
-        if (isTestPolicyCmptTypeParam)
-            rootParamDetailWizardPage.connectToModel(controller, newTestParameter);
-        controller.updateUI();
+        newTestParameter.setDatatype(datatype.getQualifiedName());
+        newTestParameter.setName(StringUtil.unqualifiedName(datatype.getQualifiedName()));
         
-        getContainer().updateButtons();
+        connectNewParameterToModel();
         
         return newTestParameter;
     }
 
+    /**
+     * Creates a new test rule parameter
+     */
+    public ITestParameter newTestRuleParameter() {
+        createMemento();
+        
+        isTestPolicyCmptTypeParam = false; 
+        newTestParameter = testCaseType.newExpectedResultRuleParameter();
+        
+        connectNewParameterToModel();
+        
+        return newTestParameter;
+    }
+
+    /*
+     * Connects the new test parameter to the model controller
+     */
+    private void connectNewParameterToModel() {
+        controller = new IpsPartUIController((IIpsObjectPart)newTestParameter);
+        rootParamSelectWizardPage.connectToModel(controller, newTestParameter);
+        if (isTestPolicyCmptTypeParam){
+            rootParamDetailWizardPage.connectToModel(controller, newTestParameter);
+        }
+        controller.updateUI();
+        
+        getContainer().updateButtons();
+    }
+    
+    /*
+     * Creates a new memento for the test case type
+     */
+    private void createMemento() {
+        if (memento != null){
+            testCaseType.setState(memento);
+        }
+        memento = testCaseType.newMemento();
+    }
+    
     /**
      * Returns the last wizard page to specify the details of a test policy cmpt type param, only if
      * the selected datatype is kind of a policy cmpt and the current page is the first wizard page.
@@ -153,9 +202,11 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * {@inheritDoc}
      */
     public IWizardPage getNextPage(IWizardPage page) {
-        if (isTestPolicyCmptTypeParam && page.equals(rootParamSelectWizardPage))
+        if (isTestPolicyCmptTypeParam && page.equals(rootParamSelectWizardPage)){
             return rootParamDetailWizardPage;
-        
+        } else if (page.equals(rootParamFirstWizardPage)){
+            return rootParamSelectWizardPage;
+        }
         return null;
     }
 
@@ -163,13 +214,26 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * {@inheritDoc}
      */
     public boolean isPageValid(int pageNo) {
-        if (pageNo < pageDisplayedMax)
+        // special check for the last page, valid if no new test policy cmpt type param is chosen,
+        // because in this case the page is not necessary
+        if (pageNo == 3 && kindOfTestParameter != TEST_POLICY_CMPT_TYPE_PARAMETER) {
             return true;
+        }
         
-        if (newTestParameter == null)
+        // the page is valid if the next page was displayed
+        if (pageNo < pageDisplayedMax){
+            return true;
+        }
+        
+        // if no new test parameter exists, the page is not valid
+        if (newTestParameter == null){
             return false;
+        }
+        
+
         
         try {
+            // if the test parameter is valid then the page is valid
             return newTestParameter.isValid();
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -192,4 +256,31 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         pageDisplayedMax = pageNumber;
     }
 
+    /**
+     * Rezurns the kind of the new test parameter
+     */
+    public int getKindOfTestParameter() {
+        return kindOfTestParameter;
+    }
+
+    /**
+     * Sets the kind of the new test parameter
+     */
+    public void setKindOfTestParameter(int kindOfTestParameter) {
+        this.kindOfTestParameter = kindOfTestParameter;
+    }
+    
+    /**
+     * Resets the state of the wizard, means clear all fields
+     */
+    public void resetWizard() {
+        if (newTestParameter != null){
+            newTestParameter.delete();
+        }
+        
+        rootParamSelectWizardPage.resetPage();
+        rootParamDetailWizardPage.resetPage();
+
+        setMaxPageShown(0);
+    }
 }

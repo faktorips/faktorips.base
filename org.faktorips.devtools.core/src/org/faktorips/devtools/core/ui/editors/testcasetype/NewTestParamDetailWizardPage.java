@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
  * Wizard page to display the details of a test policy cmpt type parameter.<br>
@@ -40,7 +41,6 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  */
 public class NewTestParamDetailWizardPage extends WizardPage implements ValueChangeListener {
     private static final String PAGE_ID = "RootParamDetailWizardPage"; //$NON-NLS-1$
-    private static final int PAGE_NUMBER = 2;
     
     private IBlockedValidationWizard wizard;
     
@@ -50,11 +50,14 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
     
     private UIToolkit uiToolkit;
 
-    public NewTestParamDetailWizardPage(IBlockedValidationWizard wizard, UIToolkit uiToolkit){
+    private int pageNumber = 3;
+
+    public NewTestParamDetailWizardPage(IBlockedValidationWizard wizard, UIToolkit uiToolkit, int pageNumber){
         super(PAGE_ID, Messages.NewTestParamDetailWizardPage_Title, null);
         this.setDescription(Messages.NewTestParamDetailWizardPage_Description);
         this.wizard = wizard;
         this.uiToolkit = uiToolkit;
+        this.pageNumber = pageNumber;
     }
     
     /**
@@ -111,7 +114,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
      */
     private boolean validatePage() throws CoreException {
         setErrorMessage(null);
-        return wizard.isPageValid(PAGE_NUMBER);
+        return wizard.isPageValid(pageNumber);
     }
     
     /**
@@ -133,7 +136,21 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
      * {@inheritDoc}
      */
     public IWizardPage getNextPage() {
-        wizard.setMaxPageShown(PAGE_NUMBER);
+        wizard.setMaxPageShown(pageNumber);
         return super.getNextPage();
+    }
+
+    public void resetPage() {
+        if (wizard.getController() != null) {
+            wizard.getController().remove(editFieldMin);
+            wizard.getController().remove(editFieldMax);
+            wizard.getController().remove(editFieldReqProd);
+        } 
+        editFieldMin.setText(""); //$NON-NLS-1$
+        editFieldMax.setText(""); //$NON-NLS-1$
+        ((Checkbox)editFieldReqProd.getControl()).setChecked(false);
+        editFieldMin.getControl().setEnabled(true);
+        editFieldMax.getControl().setEnabled(true);
+        editFieldReqProd.getControl().setEnabled(true);
     }
 }

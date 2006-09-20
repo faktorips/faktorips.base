@@ -82,6 +82,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             missingTestPolicyCmptRelations.addAll(Arrays.asList(in.getTestPolicyCmptRelationsWithMissingTypeParam()));
             missingTestObjects.addAll(Arrays.asList(in.getTestPolicyCmptsWithMissingTypeParam()));
             missingTestObjects.addAll(Arrays.asList(in.getTestValuesWithMissingTestValueParam()));
+            missingTestObjects.addAll(Arrays.asList(in.getTestRulesWithMissingTestValueParam()));
             missingTestAttributes.addAll(Arrays.asList(in.getTestAttributesWithMissingTestAttributeValue()));
             missingTestAttributeValues.addAll(Arrays.asList(in.getTestAttributeValuesWithMissingTestAttribute()));
         }
@@ -116,7 +117,8 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         
         if (in.getTestPolicyCmptsWithMissingTypeParam().length>0||
             in.getTestPolicyCmptRelationsWithMissingTypeParam().length>0||
-            in.getTestValuesWithMissingTestValueParam().length>0){
+            in.getTestValuesWithMissingTestValueParam().length>0||
+            in.getTestRulesWithMissingTestValueParam().length>0){
             result.add(TestCaseDeltaType.MISSING_TEST_PARAM);
             doNotShowDifferentSortOrder = true;
         }
@@ -131,6 +133,8 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             doNotShowDifferentSortOrder = true;
         }
         
+        // show the different sort order only if no other differents exists,
+        // otherwise the order will be implicit fixed
         if (!doNotShowDifferentSortOrder && in.isDifferentTestParameterOrder()){
             result.add(TestCaseDeltaType.DIFFERENT_SORT_ORDER);
             doNotShowDifferentSortOrder = true;

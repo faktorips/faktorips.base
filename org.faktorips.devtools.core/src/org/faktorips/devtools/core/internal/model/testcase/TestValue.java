@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
@@ -117,7 +118,7 @@ public class TestValue extends TestObject implements ITestValue {
     /**
      * {@inheritDoc}
      */
-    protected String getTestParameterName() {
+    public String getTestParameterName() {
         return testValueParameter;
     } 
     
@@ -130,11 +131,14 @@ public class TestValue extends TestObject implements ITestValue {
         }
 
         ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType();
-        if (testCaseType == null)
+        if (testCaseType == null){
             return null;
-
-        return isInput() ? testCaseType.getInputTestValueParameter(testValueParameter) : testCaseType
-                .getExpectedResultTestValueParameter(testValueParameter);
+        }
+        ITestParameter param = testCaseType.getTestParameterByName(testValueParameter);
+        if (param instanceof ITestValueParameter){
+            return (ITestValueParameter) param;
+        }
+        return null;
     }
     
     /**

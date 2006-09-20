@@ -75,7 +75,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         childParamSelectWizardPage = new NewChildParamWizardPage(this);
         addPage(childParamSelectWizardPage);
 
-        detailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit);
+        detailWizardPage = new NewTestParamDetailWizardPage(this, uiToolkit, 2);
         addPage(detailWizardPage);
     }
 
@@ -86,6 +86,13 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IpsPartUIController getController() {
+        return controller;
+    }
+    
     /**
      * Returns the the test case type the new parameter will be created for.
      */

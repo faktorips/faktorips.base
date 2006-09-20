@@ -28,11 +28,13 @@ import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.util.ArgumentCheck;
 
@@ -48,6 +50,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
 
     // TestCase Side
     private ITestValue[] testValuesWithMissingTestValueParam;
+    private ITestRule[] testRulesWithMissingTestRuleParam;
     private ITestPolicyCmpt[] testPolicyCmptsWithMissingTypeParam;
     private ITestPolicyCmptRelation[] testPolicyCmptRelationsWithMissingTypeParam;
     private ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute;
@@ -77,11 +80,13 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
 
         // test case side
         computeTestValueWithMissingTestParameter();
+        computeTestRuleWithMissingTestParameter();
         testCaseSideObjects = computeTestPolicyCmptStructWithMissingTestParameter();
         
         // test case type side        
         computeTestValueParameterWithMissingTestValue();
         computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(testCaseSideObjects);
+        computeTestRuleSortOrder();
     }
 
     /**
@@ -125,13 +130,47 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         testValueParametersWithMissingTestValue = (ITestValueParameter[])missing.toArray(new ITestValueParameter[0]);
     }
 
+    /*
+     * Computes all missing test values (test case side)
+     */
+    private void computeTestRuleSortOrder() {
+        if (differentTestParameterOrder) {
+            // already different, don't check for futher differences
+            return;
+        }
+        ITestRuleParameter[] params = testCaseType.getTestRuleParameters();
+        List values = Arrays.asList(testCase.getTestRuleObjects());
+        for (int i = 0; i < params.length; i++) {
+            int idxInTestCase = 0;
+            for (Iterator iter = values.iterator(); iter.hasNext();) {
+                ITestRule rule = (ITestRule)iter.next();
+                if (rule.getTestRuleParameter().equals(params[i].getName())) {
+                    // check if the order is equal
+                    checkSortOrder(params[i], rule);
+                    break;
+                 }
+            }
+            idxInTestCase++;
+            if (differentTestParameterOrder){
+                // abort because at least on difference found
+                break;
+            }
+        }
+    }
+    
+    /*
+     * Check the sort order of the root objects
+     */
     private void checkSortOrder(ITestParameter testParameter, ITestObject testObject) {
         if (differentTestParameterOrder)
             // no more check necessary, is already in delta
             return;
+        // compare the sort order of the root objects
+        List testParams = new ArrayList();
+        testParams.addAll(Arrays.asList(testCaseType.getTestParameters()));
+        List testObjects = new ArrayList();
+        testObjects.addAll(Arrays.asList(testCase.getTestObjects()));
         
-        List testParams = Arrays.asList(testCaseType.getTestParameters());
-        List testObjects = Arrays.asList(testCase.getTestObjects());
         int idxInTestCaseType = testParams.indexOf(testParameter);
         int idxInTestCase = testObjects.indexOf(testObject);
         if (idxInTestCase == -1)
@@ -148,8 +187,9 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
      * Check if the child has a different sort order
      */
     private boolean hasChildDifferntSortOrder(ITestPolicyCmpt cmpt) {
-        if (testPolicyCmptChildWithWrongSortOrder.contains(cmpt))
+        if (testPolicyCmptChildWithWrongSortOrder.contains(cmpt)){
             return true;
+        }
         
         return false;
     }
@@ -176,10 +216,10 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                     missingTestPolicyCmptTypeParameter.remove(param);
                     computeTestAttributeWithMissingTestAttributeValue(param, (ITestPolicyCmpt)element, missingTestAttributes); 
                     
-                    if (((ITestPolicyCmpt)element).isRoot())
+                    if (((ITestPolicyCmpt)element).isRoot()){
                         // check if the order is equal
                         checkSortOrder(param, (ITestPolicyCmpt)element);
-                    else{
+                    }else{
                         ITestPolicyCmpt parent = (ITestPolicyCmpt) ((ITestPolicyCmpt)element).getParentPolicyCmpt();
                         if (differentSortOrderForTestPolicyCmpts.contains(parent))
                             continue;
@@ -253,6 +293,24 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                 missing.add(testValues[i]);
         }
         testValuesWithMissingTestValueParam = (ITestValue[])missing.toArray(new ITestValue[0]);
+    }
+    
+    /*
+     * Computes all missing test value parameters (test case type side).
+     */
+    private void computeTestRuleWithMissingTestParameter() throws CoreException {
+        List missing = new ArrayList();
+        ITestRule[] testRules = testCase.getTestRuleObjects();
+        for (int i = 0; i < testRules.length; i++) {
+            ITestParameter testParameter = testCaseType.getTestParameterByName(testRules[i].getTestRuleParameter());
+            if (testParameter == null)
+                // not found by name
+                missing.add(testRules[i]);
+            else if (!(testParameter instanceof ITestRuleParameter))
+                // wrong instanceof
+                missing.add(testRules[i]);
+        }
+        testRulesWithMissingTestRuleParam = (ITestRule[])missing.toArray(new ITestRule[0]);
     }
     
     /*
@@ -330,6 +388,8 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                     }
                     // add the child test policy cmpt, thus the attributes could be checked later
                     allTestPolicyCmpt.add(cmpt);
+                    
+                   // check the sort order
                     if (prevParam != null && isWrongIfTestPolicyCmptRelationSortOrder(prevParam, param)){
                         testPolicyCmptChildWithWrongSortOrder.add(cmpt);
                     }
@@ -386,9 +446,9 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                 && testAttributesWithMissingTestAttributeValue.length == 0
                 && testPolicyCmptTypeParametersWithMissingTestPolicyCmpt.length == 0
                 && testValueParametersWithMissingTestValue.length == 0
+                && testRulesWithMissingTestRuleParam.length == 0
                 && ! differentTestParameterOrder;
     }
-    
     
     /**
      * {@inheritDoc}
@@ -417,6 +477,10 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     
     public ITestValue[] getTestValuesWithMissingTestValueParam() {
         return testValuesWithMissingTestValueParam;
+    }
+    
+    public ITestRule[] getTestRulesWithMissingTestValueParam() {
+        return testRulesWithMissingTestRuleParam;
     }
     
     public ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam() {
