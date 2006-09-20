@@ -56,7 +56,7 @@
 				</fileset>
 				
 			</classpath>
-			<src path="ant_src/"/>
+			<src path="${basedir}/ant_src/"/>
 		</javac>
 
 		<!-- copy necessary resources -->
