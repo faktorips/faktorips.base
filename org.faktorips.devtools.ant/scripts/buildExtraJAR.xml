@@ -12,6 +12,7 @@
 		<property name="plugin.destination" value="${basedir}"/>
 		<property name="build.result.folder" value="${basedir}/ant_tasks"/>
 		<property name="version.suffix" value="_3.1.0"/>
+		<property name="eclipsehome" value="/usr/lib/eclipse-3.1/" />
 	</target>
 
 	<target name="properties" if="eclipse.running">
@@ -29,7 +30,7 @@
 		<javac destdir="${temp.folder}/ant_tasks/ant-tasks.jar.bin" failonerror="true" verbose="true" debug="on">
 			<bootclasspath path="${bootclasspath}"/>
 			<classpath>
-				<dirset dir="${basedir}/..">
+				<dirset dir="${eclipsehome}">
 					<include name="org.eclipse.core.resources/bin"/>
 					<include name="org.eclipse.core.runtime/bin"/>
 					<include name="org.eclipse.equinox.common/bin"/>
@@ -38,7 +39,7 @@
 					<include name="org.eclipse.ant.core/bin"/>
 				</dirset>
 				
-				<fileset dir="/home/senf/Desktop/eclipse32/eclipse/">
+				<fileset dir="${eclipsehome}">
 					<include name="plugins/org.eclipse.core.resources*.jar"/>
 					<include name="plugins/org.eclipse.core.runtime*.jar"/>
 					<include name="plugins/org.eclipse.equinox.common*.jar"/>
