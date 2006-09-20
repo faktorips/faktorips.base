@@ -670,6 +670,7 @@
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.feature.test" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.updatesite" />
 	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.devtools.ant" /> 
+	       <cvs cvsroot="/usr/local/cvsroot/" module="org.faktorips.integrationtest" />
 
 	       <!-- BBV-Projekt ->
 	       <cvs cvsroot="/usr/local/cvsroot/" module="de.bbv.faktorips.devtools" />
