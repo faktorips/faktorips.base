@@ -117,8 +117,8 @@
 	        <cvs command="co ${projectAntDir}" dest="${projectAntDir}" cvsroot="${cvsroot}" quiet="true"/>
 	          
 	        <!-- Call the target that does everything -->
-	        <ant dir="${projectAntDir}/${cvsAntModule}/scripts/" antfile="buildExtraJAR.xml" target="clean"  />
-	        <ant dir="${projectAntDir}/${cvsAntModule}/scripts/" antfile="buildExtraJAR.xml" target="ant_tasks/ant-tasks.jar"  />
+	        <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml"  target="clean"  />
+	        <ant dir="${projectAntDir}/${cvsAntModule}/" antfile="scripts/buildExtraJAR.xml" target="ant_tasks/ant-tasks.jar"  />
 			
 		</target>
 	
@@ -252,7 +252,7 @@
         		<property name="importbuildfile" value="${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml" />
         	
         		<!-- delete workspace -->
-        		<delete>
+        		<delete includeemptydirs="true">
         			<fileset dir="${dir}/environment/workspace/" includes="**/*"/>
         		</delete>
 				<!-- import and build integrationtest sources -->
