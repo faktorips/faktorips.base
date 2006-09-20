@@ -220,7 +220,7 @@
                 <property name="dir" value="eclipsetest/" />
                 
                 <!-- delete all files, excluding the environment-folder -->
-                <delete includeemptydirs="true">
+                <delete includeemptydirs="true" >
                         <fileset dir="${dir}">
                                 <exclude name="environment/**" />
                         </fileset>
@@ -245,7 +245,12 @@
                 <exec executable="/bin/bash" dir="${dir}/environment/" failonerror="true" logError="true">
                         <arg line="runtests all" />
                 </exec>
-               
+	               
+	        	<!-- check if there are errors in testcase-logs -->
+				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
+					<arg line="lookForFailure.pl"/>
+				</exec>
+        	
 				<!-- checkout org.faktorips.integrationtest project -->
         		<cvs command="co org.faktorips.integrationtest" dest="${dir}" cvsroot="${cvsroot}" quiet="true"/>
         		<property name="importbuildfile" value="${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml" />
