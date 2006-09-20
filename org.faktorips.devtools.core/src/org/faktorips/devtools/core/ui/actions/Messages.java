@@ -29,6 +29,9 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
+    public static String AddIpsNatureAction_basePackage_default;
+    public static String AddIpsNatureAction_basePackageName;
+    public static String AddIpsNatureAction_basePackageNameNotValid;
     public static String AddIpsNatureAction_defaultRuntimeIdPrefix;
     public static String AddIpsNatureAction_defaultSourceFolderName;
     public static String AddIpsNatureAction_dialogMessage;

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
@@ -71,6 +72,7 @@ public class AddIpsNatureAction extends ActionDelegate {
     private IStructuredSelection selection = StructuredSelection.EMPTY;
 
     private String sourceFolderName = Messages.AddIpsNatureAction_defaultSourceFolderName;
+    private String basePackageName = Messages.AddIpsNatureAction_basePackage_default;
     private String runtimeIdPrefix = Messages.AddIpsNatureAction_defaultRuntimeIdPrefix;
     private boolean isModelProject = true;
     private boolean isProductDefinitionProject = false;
@@ -141,6 +143,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             addIpsRuntimeLibraries(javaProject);
             IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
             IIpsProjectProperties props = ipsProject.getProperties();
+            props.setRuntimeIdPrefix(runtimeIdPrefix);
             props.setProductDefinitionProject(isProductDefinitionProject);
             props.setModelProject(isModelProject);
             props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
@@ -154,9 +157,9 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
             IpsObjectPath path = new IpsObjectPath();
             path.setOutputDefinedPerSrcFolder(false);
-            path.setBasePackageNameForGeneratedJavaClasses(runtimeIdPrefix);
+            path.setBasePackageNameForGeneratedJavaClasses(basePackageName);
             path.setOutputFolderForGeneratedJavaFiles(javaSrcFolder);
-            path.setBasePackageNameForExtensionJavaClasses(runtimeIdPrefix);
+            path.setBasePackageNameForExtensionJavaClasses(basePackageName);
             path.newSourceFolderEntry(ipsModelFolder);
             ipsProject.setIpsObjectPath(path);
 
@@ -195,6 +198,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         private String errorMessage;
 
         private Text sourceFolderText;
+        private Text basePackageText;
         private Text runtimeIdText;
 
         private Radiobutton modelProjectButton;
@@ -252,22 +256,24 @@ public class AddIpsNatureAction extends ActionDelegate {
             UIToolkit kit = new UIToolkit(null);
             Group composite = kit.createGroup(composite0, SWT.SHADOW_NONE, null);
 
-            RadiobuttonGroup radiobuttonGroup = kit.createRadiobuttonGroup(composite, SWT.SHADOW_IN, Messages.AddIpsNatureAction_ProjectType);
+            RadiobuttonGroup radiobuttonGroup = kit.createRadiobuttonGroup(composite, SWT.SHADOW_IN,
+                    Messages.AddIpsNatureAction_ProjectType);
 
             modelProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_modelProject);
             modelProjectButton.setChecked(isModelProject && !isProductDefinitionProject);
 
-            productDefinitionProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_productDefinitionProject);
+            productDefinitionProjectButton = radiobuttonGroup
+                    .addRadiobutton(Messages.AddIpsNatureAction_productDefinitionProject);
             productDefinitionProjectButton.setChecked(isProductDefinitionProject && !isModelProject);
 
             fullProjectButton = radiobuttonGroup.addRadiobutton(Messages.AddIpsNatureAction_fullProject);
             fullProjectButton.setChecked(isModelProject && isProductDefinitionProject);
 
             kit.createVerticalSpacer(composite, 5);
-            Composite composite2 = kit.createLabelEditColumnComposite(composite);
+            Composite textComposite = kit.createLabelEditColumnComposite(composite);
 
-            kit.createLabel(composite2, Messages.AddIpsNatureAction_sourceFolderName, false);
-            sourceFolderText = kit.createText(composite2, SWT.BORDER);
+            kit.createLabel(textComposite, Messages.AddIpsNatureAction_sourceFolderName, false);
+            sourceFolderText = kit.createText(textComposite, SWT.BORDER);
             sourceFolderText.setText(sourceFolderName);
             sourceFolderText.addModifyListener(new ModifyListener() {
                 public void modifyText(ModifyEvent event) {
@@ -276,8 +282,18 @@ public class AddIpsNatureAction extends ActionDelegate {
             });
             kit.createVerticalSpacer(composite, 5);
 
-            kit.createLabel(composite2, Messages.AddIpsNatureAction_runtimeIdPrefix, false);
-            runtimeIdText = kit.createText(composite2, SWT.BORDER);
+            kit.createLabel(textComposite, Messages.AddIpsNatureAction_basePackageName, false);
+            basePackageText = kit.createText(textComposite, SWT.BORDER);
+            basePackageText.setText(basePackageName);
+            basePackageText.addModifyListener(new ModifyListener() {
+                public void modifyText(ModifyEvent event) {
+                    basePackageModified();
+                }
+            });
+            kit.createVerticalSpacer(composite, 5);
+
+            kit.createLabel(textComposite, Messages.AddIpsNatureAction_runtimeIdPrefix, false);
+            runtimeIdText = kit.createText(textComposite, SWT.BORDER);
             runtimeIdText.setText(runtimeIdPrefix);
 
             errorMessageText = new Text(composite, SWT.READ_ONLY);
@@ -296,6 +312,15 @@ public class AddIpsNatureAction extends ActionDelegate {
         private void sourceFolderModified() {
             validationStatus = IMessageProvider.NONE;
             okButton.setEnabled(validateSourceFolder());
+        }
+
+        /**
+         * Fires validations (variable name first) and updates enabled state for the "Ok" button
+         * accordingly.
+         */
+        private void basePackageModified() {
+            validationStatus = IMessageProvider.NONE;
+            okButton.setEnabled(validateBasePackage());
         }
 
         /**
@@ -321,6 +346,43 @@ public class AddIpsNatureAction extends ActionDelegate {
                 // the source folder name is empty
                 newValidationStatus = IMessageProvider.ERROR;
                 message = Messages.AddIpsNatureAction_ErrorNoSourceFolderName;
+            } else {
+                allowFinish = true;
+            }
+            // overwrite the current validation status / message only if everything is ok (clearing
+            // them)
+            // or if we have a more serious problem than the current one
+            if (validationStatus == IMessageProvider.NONE || newValidationStatus == IMessageProvider.ERROR) {
+                validationStatus = newValidationStatus;
+            }
+            // only set the message here if it is not going to be set in
+            // validateVariableValue to avoid flashing.
+            setMessage(message, validationStatus);
+            return allowFinish;
+        }
+
+        /**
+         * Validates the current variable name, and updates this dialog's message.
+         * 
+         * @return true if the name is valid, false otherwise
+         */
+        private boolean validateBasePackage() {
+            boolean allowFinish = false;
+
+            // if the current validationStatus is ERROR, no additional validation applies
+            if (validationStatus == IMessageProvider.ERROR) {
+                return false;
+            }
+
+            // assumes everything will be ok
+            String message = Messages.AddIpsNatureAction_dialogMessage;
+            int newValidationStatus = IMessageProvider.NONE;
+
+            String basePackageName = basePackageText.getText();
+
+            if (!JavaConventions.validatePackageName(basePackageName).isOK()) {
+                newValidationStatus = IMessageProvider.ERROR;
+                message = Messages.AddIpsNatureAction_basePackageNameNotValid;
             } else {
                 allowFinish = true;
             }
