@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -200,9 +201,14 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         testCaseElm.appendChild(input);
         testCaseElm.appendChild(expectedResult);
         
+        // add test values (input and expected)
         addTestValues(doc, input, testCase.getInputTestValues());
         addTestValues(doc, expectedResult, testCase.getExpectedResultTestValues());
         
+        // add test rules (only expected because rules are always expected)
+        addTestRules(doc, expectedResult, testCase.getExpectedResultTestRules());
+        
+        // add test policy cmpt (input and expected)
         addTestPolicyCmpts(doc, input, testCase.getInputTestPolicyCmpts(), null, true);
         addTestPolicyCmpts(doc, expectedResult, testCase.getExpectedResultTestPolicyCmpts(), null, false);
         
@@ -212,15 +218,35 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /*
      * Add the given test values to the given element. 
      */
-    private void addTestValues(Document doc, Element input, ITestValue[] testValues) throws CoreException {
-        if (testValues == null)
+    private void addTestValues(Document doc, Element element, ITestValue[] testValues) throws CoreException {
+        if (testValues == null){
             return; 
+        }
         for (int i = 0; i < testValues.length; i++) {
-            if (!testValues[i].isValid())
+            if (!testValues[i].isValid()){
                 continue;
-            Element valueElem = XmlUtil.addNewChild(doc, input, testValues[i].getTestValueParameter());
+            }
+            Element valueElem = XmlUtil.addNewChild(doc, element, testValues[i].getTestValueParameter());
             XmlUtil.addNewCDATAorTextChild(doc, valueElem, testValues[i].getValue());
             valueElem.setAttribute("type", "testvalue");
+        }
+    }
+    
+    /*
+     * Add the given test rules to the given element. 
+     */
+    private void addTestRules(Document doc, Element element, ITestRule[] testRules) throws CoreException {
+        if (testRules == null){
+            return; 
+        }
+        for (int i = 0; i < testRules.length; i++) {
+            if (!testRules[i].isValid()){
+                continue;
+            }
+            Element ruleElem = XmlUtil.addNewChild(doc, element, testRules[i].getTestParameterName());
+            ruleElem.setAttribute("type", "testrule");
+            ruleElem.setAttribute("validationRule", testRules[i].getValidationRule());
+            ruleElem.setAttribute("violationType", testRules[i].getViolationType().getId()); 
         }
     }
     
@@ -232,11 +258,13 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             ITestPolicyCmpt[] testPolicyCmpt,
             ITestPolicyCmptRelation relation,
             boolean isInput) throws CoreException {
-        if (testPolicyCmpt == null)
+        if (testPolicyCmpt == null) {
             return;
+        }
         for (int i = 0; i < testPolicyCmpt.length; i++) {
-            if (!testPolicyCmpt[i].isValid())
+            if (!testPolicyCmpt[i].isValid()){
                 continue;
+            }
             Element testPolicyCmptElem = null;
             if (relation != null) {
                 ITestPolicyCmptTypeParameter parameter = relation.findTestPolicyCmptTypeParameter();
@@ -273,12 +301,14 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * Add the given relations to the given element.
      */
     private void addRelations(Document doc, Element parent, ITestPolicyCmptRelation[] relations, boolean isInput) throws CoreException{
-        if (relations == null)
+        if (relations == null){
             return;
+        }
         if (relations.length > 0){
             for(int i = 0; i < relations.length; i++){
-                if (!relations[i].isValid())
+                if (!relations[i].isValid()){
                     continue;
+                }
                 String relationType = "";
                 if (relations[i].isComposition()) {
                     try {
@@ -300,12 +330,13 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * Add the given test attributes to the given element.
      */ 
     private void addTestAttrValues(Document doc, Element testPolicyCmpt, ITestAttributeValue[] testAttrValues, boolean isInput) throws CoreException{
-        if (testAttrValues == null)
+        if (testAttrValues == null){
             return;
+        }
         for (int i = 0; i < testAttrValues.length; i++) {
-            if (!testAttrValues[i].isValid())
+            if (!testAttrValues[i].isValid()){
                 continue;
-            
+            }
             if (testAttrValues[i].isInputAttribute() && isInput || testAttrValues[i].isExpextedResultAttribute() && ! isInput){
                 ITestAttribute testAttribute = testAttrValues[i].findTestAttribute();
                 if (testAttribute == null) {

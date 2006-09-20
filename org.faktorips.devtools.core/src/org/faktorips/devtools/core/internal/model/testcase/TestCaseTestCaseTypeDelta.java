@@ -140,6 +140,10 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         }
         ITestRuleParameter[] params = testCaseType.getTestRuleParameters();
         List values = Arrays.asList(testCase.getTestRuleObjects());
+        if (values.size() == 0){
+            // if no rules exists in the test case then don't do a sort order check
+            return;
+        }
         for (int i = 0; i < params.length; i++) {
             int idxInTestCase = 0;
             for (Iterator iter = values.iterator(); iter.hasNext();) {
@@ -171,6 +175,11 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List testObjects = new ArrayList();
         testObjects.addAll(Arrays.asList(testCase.getTestObjects()));
         
+        if (testCase.getExpectedResultTestRules().length==0){
+            // if no test rule exists cleanup the list before compore the sort order
+            removeTestRulesAndTestRuleParametersFromLists(testParams, testObjects);
+        }
+        
         int idxInTestCaseType = testParams.indexOf(testParameter);
         int idxInTestCase = testObjects.indexOf(testObject);
         if (idxInTestCase == -1)
@@ -180,6 +189,36 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         
         if (idxInTestCaseType != idxInTestCase){
             differentTestParameterOrder = true;
+        }
+    }
+
+    /*
+     * Removes the test rule object or test rule parameter objects from the list.
+     * This method is used to cleanup the list of test objects and test paremeters,
+     * before comporing the sort order, thus a missing test rule in one list doesn't
+     * end in a different sort order
+     */
+    private void removeTestRulesAndTestRuleParametersFromLists(List testParams, List testObjects) {
+        List elementsToRemove = new ArrayList();
+        // remove objects for which the sort order are not supported
+        for (Iterator iter = testParams.iterator(); iter.hasNext();) {
+            ITestParameter element = (ITestParameter)iter.next();
+            if (element instanceof ITestRuleParameter){
+                elementsToRemove.add(element);
+            }
+        }
+        for (Iterator iter = elementsToRemove.iterator(); iter.hasNext();) {
+            testParams.remove(iter.next());
+        }
+        elementsToRemove.clear();
+        for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
+            ITestObject element = (ITestObject)iter.next();
+            if (element instanceof ITestRule){
+                elementsToRemove.add(element);
+            }
+        }
+        for (Iterator iter = elementsToRemove.iterator(); iter.hasNext();) {
+            testObjects.remove(iter.next());
         }
     }
 
