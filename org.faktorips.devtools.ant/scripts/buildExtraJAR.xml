@@ -40,7 +40,7 @@
 				<include name="plugins/org.junit_3.8.1/*.jar"/>
 			</fileset>
 			
-			<fileset dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin" />
+			 <pathelement location="${temp.folder}/ant_tasks/ant-tasks.jar.bin/"/>
 		</path>
 			
 			
