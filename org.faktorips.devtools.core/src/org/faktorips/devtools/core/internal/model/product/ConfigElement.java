@@ -280,6 +280,10 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			throw new CoreException(new IpsStatus(e));
 		}
 
+        valueSet.validate(list);
+        IValueSet modelValueSet = attribute.getValueSet();
+        modelValueSet.validate(list);
+        
 		if (!valueDatatype.isParsable(value)) {
         	String valueInMsg = value;
         	if (value==null) {
@@ -290,21 +294,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			String text = NLS.bind(Messages.ConfigElement_msgValueNotParsable, valueInMsg, valueDatatype.getName());
 			list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this,
 					PROPERTY_VALUE));
-			return;
+            return;
 		}
-			
-		if (StringUtils.isNotEmpty(value)) {
-			valueSet.validate(list);
-			if (list.containsErrorMsg()) {
-				return;
-			}
-			
-			IValueSet modelValueSet = attribute.getValueSet();
-			modelValueSet.validate(list);
-			if (list.containsErrorMsg()) {
-				return;
-			}
+		
+        if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE) {
+            modelValueSet.containsValueSet(valueSet, list, valueSet, null);
+        }
 
+		if (StringUtils.isNotEmpty(value)) {
 			// validate valuset containment. If the type of this element
 			// is PRODUCT_ATTRIBUTE, we do not validate against the
 			// valueset of this element but against the valueset of
@@ -314,9 +311,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			// but the valueset can not be changed for this type of config
 			// element.
 			if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE) {
-				modelValueSet.containsValueSet(valueSet, list, this,
-						PROPERTY_VALUE);
-
 				if (!valueSet.containsValue(value)) {
 					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET,
 									NLS.bind(Messages.ConfigElement_msgValueNotInValueset,

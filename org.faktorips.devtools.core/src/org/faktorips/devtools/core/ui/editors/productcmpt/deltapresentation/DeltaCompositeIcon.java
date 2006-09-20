@@ -63,13 +63,13 @@ public class DeltaCompositeIcon extends CompositeImageDescriptor {
         
         switch (imageFor) {
             case ADD:
-                drawImage(IpsPlugin.getDefault().getImage("AddOverlay.gif").getImageData(), 0, 0); //$NON-NLS-1$
+                drawImage(IpsPlugin.getDefault().getImage("AddOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
                 break;
             case DELETE:
-                drawImage(IpsPlugin.getDefault().getImage("DeleteOverlay.gif").getImageData(), 0, 0); //$NON-NLS-1$
+                drawImage(IpsPlugin.getDefault().getImage("DeleteOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
                 break;
             case MODIFY:
-                drawImage(IpsPlugin.getDefault().getImage("ModifyOverlay.gif").getImageData(), 0, 0); //$NON-NLS-1$
+                drawImage(IpsPlugin.getDefault().getImage("ModifyOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
                 break;
         }
     }

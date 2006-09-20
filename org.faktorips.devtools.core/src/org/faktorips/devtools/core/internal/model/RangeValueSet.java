@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.devtools.core.model.ValueSetType;
-import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -128,7 +127,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * {@inheritDoc}
      */
     public boolean containsValue(String value) {
-        MessageList dummy = new MessageList(); 
+        MessageList dummy = new MessageList();
         return containsValue(value, dummy, null, null);
     }
 
@@ -139,7 +138,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (list == null) {
             throw new NullPointerException("MessageList required."); //$NON-NLS-1$
         }
-        
+
         ValueDatatype datatype = getValueDatatype();
 
         if (datatype == null) {
@@ -151,6 +150,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (!datatype.supportsCompare()) {
             String msg = NLS.bind(Messages.RangeValueSet_msgDatatypeNotComparable, datatype.getQualifiedName());
             addMsg(list, MSGCODE_DATATYPE_NOT_COMPARABLE, msg, invalidObject, invalidProperty);
+            return false;
+        }
+        
+        if (!datatype.isParsable(step)) {
+            String msg = NLS.bind("step {0} can not be parsed by {1}", step, datatype.getQualifiedName());
+            addMsg(list, MSGCODE_STEP_NOT_PARSABLE, msg, invalidObject, invalidProperty);
             return false;
         }
 
@@ -190,7 +195,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (list == null) {
             throw new NullPointerException("MessageList required"); //$NON-NLS-1$
         }
-        
+
         ValueDatatype datatype = getValueDatatype();
         ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
         if (datatype == null || subDatatype == null) {
@@ -225,28 +230,44 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
         String lower = getLowerBound();
         String subLower = subRange.getLowerBound();
-        validateParsable(datatype, lower, list, invalidObject, invalidProperty);
-        validateParsable(datatype, subLower, list, invalidObject, invalidProperty);
-        if (lower != null && subLower != null && !datatype.isNull(lower) && !datatype.isNull(subLower)
-                && datatype.compare(lower, subLower) > 0) {
+        if (validateParsable(datatype, lower, list, invalidObject, invalidProperty)
+                && validateParsable(datatype, subLower, list, invalidObject, invalidProperty)) {
+            if (lower != null && subLower != null && !datatype.isNull(lower) && !datatype.isNull(subLower)
+                    && datatype.compare(lower, subLower) > 0) {
                 String msg = NLS.bind(Messages.Range_msgLowerBoundViolation, getLowerBound(), subRange.getLowerBound());
                 addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty,
                         PROPERTY_LOWERBOUND));
-            isSubset = false;
+                isSubset = false;
+            }
         }
 
         String upper = getUpperBound();
         String subUpper = subRange.getUpperBound();
-        validateParsable(datatype, upper, list, invalidObject, invalidProperty);
-        validateParsable(datatype, subUpper, list, invalidObject, invalidProperty);
-        if (upper != null && subUpper != null && !datatype.isNull(upper) && !datatype.isNull(subUpper)
-                && datatype.compare(upper, subUpper) < 0) {
+        if (validateParsable(datatype, upper, list, invalidObject, invalidProperty)
+                && validateParsable(datatype, subUpper, list, invalidObject, invalidProperty)) {
+            if (upper != null && subUpper != null && !datatype.isNull(upper) && !datatype.isNull(subUpper)
+                    && datatype.compare(upper, subUpper) < 0) {
                 String msg = NLS.bind(Messages.Range_msgUpperBoundViolation, getUpperBound(), subRange.getUpperBound());
                 addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty,
                         PROPERTY_UPPERBOUND));
+                isSubset = false;
+            }
+        }
+        
+        if (!StringUtils.isEmpty(getLowerBound()) && StringUtils.isEmpty(subRange.getLowerBound())) {
+            String[] bindings = {subRange.toShortString(), toShortString(), getLowerBound()};
+            String msg = Messages.bind("Lower bound of range {0} not limited, but lower bound of {1} is {2}.", bindings);
+            addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_LOWERBOUND));
             isSubset = false;
         }
-
+        
+        if (!StringUtils.isEmpty(getUpperBound()) && StringUtils.isEmpty(subRange.getUpperBound())) {
+            String[] bindings = {subRange.toShortString(), toShortString(), getUpperBound()};
+            String msg = Messages.bind("Upper bound of range {0} not limited, but upper bound of {1} is {2}.", bindings);
+            addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty, PROPERTY_UPPERBOUND));
+            isSubset = false;
+        }
+        
         if (subRange.getContainsNull() && !getContainsNull()) {
             String msg = NLS.bind(Messages.RangeValueSet_msgNullNotContained, IpsPlugin.getDefault()
                     .getIpsPreferences().getNullPresentation());
@@ -256,59 +277,50 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
         NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
 
-        if (!matchStep(subRange, numDatatype, list)) {
+        if (!matchStep(subRange, numDatatype, list, invalidObject, invalidProperty)) {
             isSubset = false;
         }
 
         return isSubset;
     }
-    
-    private boolean matchStep(IRangeValueSet other, NumericDatatype datatype, MessageList list) {
-        
+
+    private boolean matchStep(IRangeValueSet other, NumericDatatype datatype, MessageList list, Object invalidObject, String invalidProperty ) {
+
         String subStep = other.getStep();
-        
+
         if (StringUtils.isEmpty(subStep) && !StringUtils.isEmpty(step)) {
             return false;
         }
-        
+
         if (datatype == null) {
-            return true; // no datatype, so we can not decide if matching or not - return true in this case.
+            return true; // no datatype, so we can not decide if matching or not - return true in
+                            // this case.
         }
-        
-        if (!StringUtils.isEmpty(subStep) && !StringUtils.isEmpty(step)) {
+
+        if (datatype.isParsable(subStep) && datatype.isParsable(step) && !StringUtils.isEmpty(subStep) && !StringUtils.isEmpty(step)) {
             if (!datatype.divisibleWithoutRemainder(subStep, step)) {
-                    String msg = NLS.bind(Messages.RangeValueSet_msgStepMismatch, other.toShortString(),
-                            toShortString());
-                    ObjectProperty[] props = new ObjectProperty[2];
-                    props[0] = new ObjectProperty(this, PROPERTY_STEP);
-                    props[1] = new ObjectProperty(other, PROPERTY_STEP);
-                    list.add(new Message(MSGCODE_STEP_MISMATCH, msg, Message.ERROR, props));
+                String msg = NLS.bind(Messages.RangeValueSet_msgStepMismatch, other.toShortString(), toShortString());
+                addMsg(list, MSGCODE_STEP_MISMATCH, msg, invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
                 return false;
             }
-            
-            if (!datatype.divisibleWithoutRemainder(other.getLowerBound(), step)) {
-                    String msg = NLS.bind(Messages.RangeValueSet_msgLowerboundMismatch, other.toShortString(),
-                            toShortString());
-                    ObjectProperty[] props = new ObjectProperty[2];
-                    props[0] = new ObjectProperty(this, PROPERTY_STEP);
-                    props[1] = new ObjectProperty(other, PROPERTY_LOWERBOUND);
-                    list.add(new Message(MSGCODE_LOWERBOUND_MISMATCH, msg, Message.ERROR, props));
+
+            if (datatype.isParsable(other.getLowerBound()) && !StringUtils.isEmpty(other.getLowerBound())&& !datatype.divisibleWithoutRemainder(other.getLowerBound(), step)) {
+                String msg = NLS.bind(Messages.RangeValueSet_msgLowerboundMismatch, other.toShortString(),
+                        toShortString());
+                addMsg(list, MSGCODE_LOWERBOUND_MISMATCH, msg, invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
 
                 return false;
             }
-            
-            if (!datatype.divisibleWithoutRemainder(other.getUpperBound(), step)) {
-                    String msg = NLS.bind(Messages.RangeValueSet_msgUpperboundMismatch, other.toShortString(),
-                            toShortString());
-                    ObjectProperty[] props = new ObjectProperty[2];
-                    props[0] = new ObjectProperty(this, PROPERTY_STEP);
-                    props[1] = new ObjectProperty(other, PROPERTY_UPPERBOUND);
-                    list.add(new Message(MSGCODE_UPPERBOUND_MISMATCH, msg, Message.ERROR, props));
+
+            if (datatype.isParsable(other.getUpperBound()) && !StringUtils.isEmpty(other.getUpperBound()) && !datatype.divisibleWithoutRemainder(other.getUpperBound(), step)) {
+                String msg = NLS.bind(Messages.RangeValueSet_msgUpperboundMismatch, other.toShortString(),
+                        toShortString());
+                addMsg(list, MSGCODE_UPPERBOUND_MISMATCH, msg, invalidObject, getProperty(invalidProperty, PROPERTY_STEP));
 
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -344,10 +356,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
         }
 
-        validateParsable(datatype, getStep(), list, this, PROPERTY_STEP);
         validateParsable(datatype, getLowerBound(), list, this, PROPERTY_LOWERBOUND);
         validateParsable(datatype, getUpperBound(), list, this, PROPERTY_UPPERBOUND);
-
+        boolean stepParsable = validateParsable(datatype, getStep(), list, this, PROPERTY_STEP);
+        
         String lowerValue = getLowerBound();
         String upperValue = getUpperBound();
         if (list.getSeverity() == Message.ERROR) {
@@ -364,7 +376,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
 
         NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
-        if (numDatatype != null && !StringUtils.isEmpty(upperValue) && !StringUtils.isEmpty(lowerValue)
+        if (stepParsable && numDatatype != null
+                && !StringUtils.isEmpty(upperValue) && !StringUtils.isEmpty(lowerValue)
                 && !StringUtils.isEmpty(getStep())) {
             String range = numDatatype.subtract(upperValue, lowerValue);
             if (!numDatatype.divisibleWithoutRemainder(range, step)) {
@@ -387,7 +400,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return null;
     }
 
-    private void validateParsable(ValueDatatype datatype,
+    private boolean validateParsable(ValueDatatype datatype,
             String value,
             MessageList list,
             Object invalidObject,
@@ -395,8 +408,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (!datatype.isParsable(value)) {
             String msg = NLS.bind(Messages.Range_msgPropertyValueNotParsable, new Object[] { property, value,
                     datatype.getName() });
-            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, invalidObject, property));
+            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, property);
+            return false;
         }
+        return true;
     }
 
     /**
