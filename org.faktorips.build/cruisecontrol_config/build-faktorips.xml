@@ -9,10 +9,8 @@
                 <property name="cvsBuildmodule" value="org.faktorips.build" />
                 <property name="projectBuildDir" value="checkout/" />
                 
-                
                 <!-- checkout/update project -->
                 <cvs command="co ${cvsBuildmodule}" dest="${projectBuildDir}" cvsroot="${cvsroot}" quiet="true"/>
-                
         </target>
         
 
@@ -33,7 +31,7 @@
 		<!-- Call the target that does everything -->
                 <ant dir="${projectUtilDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="clean"  />
                 <ant dir="${projectUtilDir}/${cvsUtilmodule}/build/" antfile="build.xml" target="buildjar"  />
-	</target>
+	    </target>
 	
         
         
@@ -111,6 +109,7 @@
 	
 	
 		<target name="devtools.ant" depends="updateBuildTemplate">
+			
 			<property name="cvsAntModule" value="org.faktorips.devtools.ant" />
 			<property name="projectAntDir" value="checkout/" />
 			
@@ -118,8 +117,9 @@
 	        <cvs command="co ${projectAntDir}" dest="${projectAntDir}" cvsroot="${cvsroot}" quiet="true"/>
 	          
 	        <!-- Call the target that does everything -->
-	        <ant dir="${projectAntDir}/${projectAntDir}/scripts/" antfile="buildExtraJAR.xml" target="clean"  />
-	        <ant dir="${projectAntDir}/${projectAntDir}/scripts/" antfile="buildExtraJAR.xml" target="ant_tasks/ant-tasks.jar"  />
+	        <ant dir="${projectAntDir}/${cvsAntModule}/scripts/" antfile="buildExtraJAR.xml" target="clean"  />
+	        <ant dir="${projectAntDir}/${cvsAntModule}/scripts/" antfile="buildExtraJAR.xml" target="ant_tasks/ant-tasks.jar"  />
+			
 		</target>
 	
         
