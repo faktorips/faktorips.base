@@ -24,10 +24,7 @@
 			<include name="plugins/org.junit_3.8.1/*.jar"/>
 		</fileset>
 		
-	
-		<fileset dir="${basedir}">
-			<include name="lib/*.jar" />
-		</fileset>
+
 	</path>
 	
 	
@@ -76,7 +73,9 @@
 	<target name="test" depends="ant_tasks/ant-tasks.jar">
 		<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
     		<formatter type="xml" usefile="true"/>
-    		<classpath refid="path" />
+    		<classpath refid="path">
+    			<fileset dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin" />
+    		</classpath>
     		
     		<!-- put result logfiles into given logdir (passed by cruisecontrol-config.xml in project org.faktorips.eclipsetest -->
 			<batchtest filtertrace="off"  todir="${basedir}/scripts/"> 
