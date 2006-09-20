@@ -37,19 +37,19 @@
         
         
         
-	<target name="valuetypes" depends="updateBuildTemplate">
-		
-		<property name="cvsValuetypesmodule" value="org.faktorips.valuetypes" />
-                <property name="projectValuetypesDir" value="checkout/" />
-		
-                
-                <!-- checkout/update project -->
-                <cvs command="co ${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
-                
-		<!-- Call the target that does everything -->
-                <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"  />
-                <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"  />
-	</target>
+		<target name="valuetypes" depends="updateBuildTemplate">
+			
+			<property name="cvsValuetypesmodule" value="org.faktorips.valuetypes" />
+	                <property name="projectValuetypesDir" value="checkout/" />
+			
+	                
+	                <!-- checkout/update project -->
+	                <cvs command="co ${cvsValuetypesmodule}" dest="${projectValuetypesDir}" cvsroot="${cvsroot}" quiet="true"/>
+	                
+			<!-- Call the target that does everything -->
+	                <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="clean"  />
+	                <ant dir="${projectValuetypesDir}/${cvsValuetypesmodule}/build/" antfile="build.xml" target="buildjar"  />
+		</target>
         
         
         
@@ -335,15 +335,15 @@
                         <arg line="runtests all" />
                 </exec-->
                
-	       <!-- check if there are errors in testcase-logs >
-		<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
-			<arg line="lookForFailure_bbv.pl"/>
-		</exec-->
-
-		<!-- update updatesite>
- 	       <exec executable="/usr/bin/perl" dir="${dir}/de.bbv.faktorips.build/">
-	                <arg line="publishUpdateSite.pl" />
-	       </exec-->
+			    <!-- check if there are errors in testcase-logs >
+				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
+					<arg line="lookForFailure_bbv.pl"/>
+				</exec-->
+		
+				<!-- update updatesite>
+		 	    <exec executable="/usr/bin/perl" dir="${dir}/de.bbv.faktorips.build/">
+			        <arg line="publishUpdateSite.pl" />
+			    </exec-->
 
         </target>
 
