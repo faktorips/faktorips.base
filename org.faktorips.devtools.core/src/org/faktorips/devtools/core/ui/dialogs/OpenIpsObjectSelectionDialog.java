@@ -120,7 +120,7 @@ public class OpenIpsObjectSelectionDialog extends AbstractElementListSelectionDi
     private void createTypeList(Composite contents) {
 
         ExpandableComposite composite = new ExpandableComposite(contents, SWT.NONE);
-        composite.setText("Filter");
+        composite.setText(Messages.OpenIpsObjectSelectionDialog_Filter);
         composite.addExpansionListener(new ExpansionAdapter() {
             public void expansionStateChanged(ExpansionEvent e) {
                 // resizes the application window.
