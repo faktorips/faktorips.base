@@ -255,17 +255,17 @@
         		<cvs command="co org.faktorips.integrationtest" dest="${dir}" cvsroot="${cvsroot}" quiet="true"/>
         		<property name="importbuildfile" value="${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml" />
         	
-        		<!-- delete workspace which will contain the integrationtest-project -->
+        		<!-- empty workspace which will contain the integrationtest-project >
         		<delete includeemptydirs="true">
         			<fileset dir="${dir}/environment/workspace/" includes="**/*"/>
         		</delete>
 
-        		<!-- import and build integrationtest sources via eclipse antRunner (see ../eclipsetest_skel/importProjects.xml)-->
+        		<!- import and build integrationtest sources via eclipse antRunner (see ../eclipsetest_skel/importProjects.xml)>
         		<exec executable="/usr/bin/java" failonerror="false" logError="true">
         			<arg line="-jar  ${dir}/environment/eclipse/startup.jar -data ${dir}/environment/workspace/ -application org.eclipse.ant.core.antRunner -buildfile ${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml -Dsourcedir=${dir}/org.faktorips.integrationtest/" />
         		</exec>
         	
-        		<!-- run org.faktorips.integrationtest tests -->
+        		<!- run org.faktorips.integrationtest tests >
         		<property name="classes" value="${dir}/environment/workspace/org.faktorips.integrationtest/bin/" />
         	    <property name="libdir" value="${dir}/environment/workspace/org.faktorips.integrationtest/lib/" />
 	        	<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
@@ -288,7 +288,7 @@
 		    			</fileset>
 		    		</classpath>
 		    		
-	        		<!-- put result logfiles into given logdir (passed by cruisecontrol-config.xml in project org.faktorips.eclipsetest -->
+	        		<!- put result logfiles into given logdir (passed by cruisecontrol-config.xml in project org.faktorips.eclipsetest >
 					<batchtest filtertrace="off"  todir="${eclipsetest.logdir}"> 
 						<fileset dir="${classes}">
 							<patternset id="test.sources">
@@ -301,7 +301,7 @@
 				</junit>
 
         	
-        	<!-- check if there are errors in testcase-logs -->
+        	<!- check if there are errors in testcase-logs -->
 			<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
 				<arg line="lookForFailure.pl"/>
 			</exec>
