@@ -176,6 +176,9 @@ public class ClassLoaderProvider {
 		if (jarFile==null) {
 			return null;
 		}
+		if(!jarFile.exists()) {
+			return null;
+		}
 		int index = jarFile.getName().lastIndexOf('.');
 		String name =  jarFile.getName();
 		File copy = File.createTempFile(name.substring(0,index-1),name.substring(index));
