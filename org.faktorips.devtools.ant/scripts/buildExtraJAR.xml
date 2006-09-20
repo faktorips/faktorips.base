@@ -57,7 +57,7 @@
 		<delete dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin"/>
 		<mkdir dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin"/>
 		<!-- compile the source code -->
-		<javac destdir="${temp.folder}/ant_tasks/ant-tasks.jar.bin" failonerror="true" verbose="true" debug="on">
+		<javac destdir="${temp.folder}/ant_tasks/ant-tasks.jar.bin" failonerror="true" verbose="false" debug="off">
 			<bootclasspath path="${bootclasspath}"/>
 			<classpath refid="path" />
 			<src path="${basedir}/ant_src/"/>
@@ -80,7 +80,7 @@
     		
     		<!-- put result logfiles into given logdir (passed by cruisecontrol-config.xml in project org.faktorips.eclipsetest -->
 			<batchtest filtertrace="off"  todir="${basedir}/scripts/"> 
-				<fileset dir="${temp.folder}/ant_tasks/ant-tasks.bin">
+				<fileset dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin">
 					<patternset>
 						<exclude name="**/*Abstract*" />
 					    <include name="**/*Test.class"/>
