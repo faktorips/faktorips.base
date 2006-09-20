@@ -2,7 +2,7 @@
 <project name="org.eclipse.core.resources" default="main" basedir="..">
 <!-- THIS BUILDER IS NEEDED FOR LOCAL DEVELOPMENT ONLY -->
 	<property name="bootclasspath" value=""/>
-	<property name="eclipsehome" value="/usr/lib/eclipse3.1/" />
+	<property name="eclipsehome" value="/usr/lib/eclipse-3.1/" />
 	<path id="path">
 		<dirset dir="${eclipsehome}">
 			<include name="org.eclipse.core.resources/bin"/>
