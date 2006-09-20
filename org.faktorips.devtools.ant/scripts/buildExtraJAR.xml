@@ -2,30 +2,7 @@
 <project name="org.eclipse.core.resources" default="main" basedir="..">
 <!-- THIS BUILDER IS NEEDED FOR LOCAL DEVELOPMENT ONLY -->
 	<property name="bootclasspath" value=""/>
-	<property name="eclipsehome" value="/usr/lib/eclipse-3.1/" />
-	<path id="path">
-		<dirset dir="${eclipsehome}">
-			<include name="org.eclipse.core.resources/bin"/>
-			<include name="org.eclipse.core.runtime/bin"/>
-			<include name="org.eclipse.equinox.common/bin"/>
-			<include name="org.eclipse.core.jobs/bin"/>
-			<include name="org.eclipse.osgi/bin"/>
-			<include name="org.eclipse.ant.core/bin"/>
-		</dirset>
-		
-		<fileset dir="${eclipsehome}">
-			<include name="plugins/org.eclipse.core.resources*.jar"/>
-			<include name="plugins/org.eclipse.core.runtime*.jar"/>
-			<include name="plugins/org.eclipse.equinox.common*.jar"/>
-			<include name="plugins/org.eclipse.core.jobs*.jar"/>
-			<include name="plugins/org.eclipse.osgi*.jar"/>
-			<include name="plugins/org.eclipse.ant.core*.jar"/>
-			<include name="plugins/org.eclipse.jdt.core*.jar"/>
-			<include name="plugins/org.junit_3.8.1/*.jar"/>
-		</fileset>
-		
 
-	</path>
 	
 	
 	
@@ -40,6 +17,33 @@
 		<property name="build.result.folder" value="${basedir}/ant_tasks"/>
 		<property name="version.suffix" value="_3.1.0"/>
 		<property name="eclipsehome" value="/usr/lib/eclipse-3.1/" />
+		
+		
+		<path id="path">
+			<dirset dir="${eclipsehome}">
+				<include name="org.eclipse.core.resources/bin"/>
+				<include name="org.eclipse.core.runtime/bin"/>
+				<include name="org.eclipse.equinox.common/bin"/>
+				<include name="org.eclipse.core.jobs/bin"/>
+				<include name="org.eclipse.osgi/bin"/>
+				<include name="org.eclipse.ant.core/bin"/>
+			</dirset>
+			
+			<fileset dir="${eclipsehome}">
+				<include name="plugins/org.eclipse.core.resources*.jar"/>
+				<include name="plugins/org.eclipse.core.runtime*.jar"/>
+				<include name="plugins/org.eclipse.equinox.common*.jar"/>
+				<include name="plugins/org.eclipse.core.jobs*.jar"/>
+				<include name="plugins/org.eclipse.osgi*.jar"/>
+				<include name="plugins/org.eclipse.ant.core*.jar"/>
+				<include name="plugins/org.eclipse.jdt.core*.jar"/>
+				<include name="plugins/org.junit_3.8.1/*.jar"/>
+			</fileset>
+			
+			<fileset dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin" />
+		</path>
+			
+			
 	</target>
 
 	<target name="properties" if="eclipse.running">
@@ -73,9 +77,8 @@
 	<target name="test" depends="ant_tasks/ant-tasks.jar">
 		<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
     		<formatter type="xml" usefile="true"/>
-    		<classpath refid="path">
-    			<fileset dir="${temp.folder}/ant_tasks/ant-tasks.jar.bin" />
-    		</classpath>
+    		<classpath refid="path"/>
+
     		
     		<!-- put result logfiles into given logdir (passed by cruisecontrol-config.xml in project org.faktorips.eclipsetest -->
 			<batchtest filtertrace="off"  todir="${basedir}/scripts/"> 
