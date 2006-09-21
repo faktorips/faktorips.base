@@ -333,7 +333,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     }
 
     private static class ProductRelevantIcon extends CompositeImageDescriptor {
-        private final Point DEFAULT_SIZE = new Point(20, 16);
+        private final Point DEFAULT_SIZE = new Point(16, 16);
         private Image baseImage;
 
         private static Image createProductRelevantImage(Image baseImage) {
