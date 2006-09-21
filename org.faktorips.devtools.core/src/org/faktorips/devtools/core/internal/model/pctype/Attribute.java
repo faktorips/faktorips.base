@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
@@ -24,8 +16,10 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -58,7 +52,7 @@ import org.w3c.dom.NodeList;
 public class Attribute extends IpsObjectPart implements IAttribute {
 
     private static final String TAG_PROPERTY_PARAMETER = "FormulaParameter"; //$NON-NLS-1$
-    
+
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
     private static final String TAG_PARAM_NAME = "name"; //$NON-NLS-1$
     private static final String TAG_PARAM_DATATYPE = "datatype"; //$NON-NLS-1$
@@ -110,9 +104,9 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public boolean isDeleted() {
-    	return deleted;
+        return deleted;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -120,41 +114,42 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         this.name = newName;
         updateSrcFile();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getDatatype() {
-    	if (!overwrites) {
-    		return datatype;
-    	}
-		IAttribute superAttr;
-		try {
-			superAttr = findSupertypeAttribute();
-    		if (superAttr != null) {
-    			return superAttr.getDatatype();
-    		}
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
-		return ""; //$NON-NLS-1$
+        if (!overwrites) {
+            return datatype;
+        }
+        IAttribute superAttr;
+        try {
+            superAttr = findSupertypeAttribute();
+            if (superAttr != null) {
+                return superAttr.getDatatype();
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return ""; //$NON-NLS-1$
     }
-    
+
     /**
-     * Returns the first attribute found with the same name in the supertypes hierarchy or <code>null</code>
-     * if no such attribute exists.
-     * @throws CoreException 
+     * Returns the first attribute found with the same name in the supertypes hierarchy or
+     * <code>null</code> if no such attribute exists.
+     * 
+     * @throws CoreException
      * 
      * @throws CoreException if an error occurs while searching the attribute.
      */
     private IAttribute findSupertypeAttribute() throws CoreException {
-		IPolicyCmptType supertype = getPolicyCmptType().findSupertype();
-		if (supertype == null) {
-			return null;
-		}
-		// use the supertype to searchc because the findAttribute-Method of TypeHierarchy 
-		// searches the given type, too. So we can avoid to find this attribute.
-		return supertype.getSupertypeHierarchy().findAttribute(supertype, name); 
+        IPolicyCmptType supertype = getPolicyCmptType().findSupertype();
+        if (supertype == null) {
+            return null;
+        }
+        // use the supertype to searchc because the findAttribute-Method of TypeHierarchy
+        // searches the given type, too. So we can avoid to find this attribute.
+        return supertype.getSupertypeHierarchy().findAttribute(supertype, name);
     }
 
     /**
@@ -165,7 +160,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         this.datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -186,52 +181,52 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public AttributeType getAttributeType() {
-    	if (!overwrites) {
-    		return attributeType;
-    	}
-		IAttribute superAttr;
-		try {
-			superAttr = findSupertypeAttribute();
-			if (superAttr != null) {
-				return superAttr.getAttributeType();
-			}
-			return AttributeType.CHANGEABLE;
-		} catch (CoreException e) {
-			throw new RuntimeException(e);
-		}
+        if (!overwrites) {
+            return attributeType;
+        }
+        IAttribute superAttr;
+        try {
+            superAttr = findSupertypeAttribute();
+            if (superAttr != null) {
+                return superAttr.getAttributeType();
+            }
+            return AttributeType.CHANGEABLE;
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isChangeable() {
-		return getAttributeType()==AttributeType.CHANGEABLE;
-	}
-    
+        return getAttributeType() == AttributeType.CHANGEABLE;
+    }
+
     /**
      * {@inheritDoc}
      */
-	public boolean isDerivedOrComputed() {
-        return getAttributeType()==AttributeType.DERIVED || getAttributeType()==AttributeType.COMPUTED;
+    public boolean isDerivedOrComputed() {
+        return getAttributeType() == AttributeType.DERIVED || getAttributeType() == AttributeType.COMPUTED;
     }
 
     /**
      * {@inheritDoc}
      */
     public Modifier getModifier() {
-    	if (!overwrites) {
-    		return modifier;
-    	}
-		IAttribute superAttr;
-		try {
-			superAttr = findSupertypeAttribute();
-			if (superAttr != null) {
-				return superAttr.getModifier();
-			}
-		} catch (CoreException e) {
-			throw new RuntimeException(e);
-		}
-		return Modifier.PUBLISHED;
+        if (!overwrites) {
+            return modifier;
+        }
+        IAttribute superAttr;
+        try {
+            superAttr = findSupertypeAttribute();
+            if (superAttr != null) {
+                return superAttr.getModifier();
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+        return Modifier.PUBLISHED;
     }
 
     /**
@@ -247,19 +242,19 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public boolean isProductRelevant() {
-    	if (!overwrites) {
-    		return productRelevant;
-    	}
-		IAttribute superAttr;
-		try {
-			superAttr = findSupertypeAttribute();
-		} catch (CoreException e) {
-			throw new RuntimeException(e);
-		}
-		if (superAttr != null) {
-			return superAttr.isProductRelevant();
-		}
-		return true;
+        if (!overwrites) {
+            return productRelevant;
+        }
+        IAttribute superAttr;
+        try {
+            superAttr = findSupertypeAttribute();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+        if (superAttr != null) {
+            return superAttr.isProductRelevant();
+        }
+        return true;
     }
 
     /**
@@ -298,11 +293,11 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public void setValueSetType(ValueSetType type) {
-    	if (valueSet != null && type == valueSet.getValueSetType()) {
-    		return;
-    	}
-    	valueSet = type.newValueSet(this, getNextPartId());
-    	updateSrcFile();
+        if (valueSet != null && type == valueSet.getValueSetType()) {
+            return;
+        }
+        valueSet = type.newValueSet(this, getNextPartId());
+        updateSrcFile();
     }
 
     /**
@@ -328,10 +323,37 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public Image getImage() {
+        Image baseImage = null;
         if (getModifier() == Modifier.PRIVATE) {
-            return IpsPlugin.getDefault().getImage("AttributePrivate.gif"); //$NON-NLS-1$
+            baseImage = IpsPlugin.getDefault().getImage("AttributePrivate.gif"); //$NON-NLS-1$
         } else {
-            return IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
+            baseImage = IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
+        }
+        return ProductRelevantIcon.createProductRelevantImage(baseImage);
+    }
+
+    private static class ProductRelevantIcon extends CompositeImageDescriptor {
+        private final Point DEFAULT_SIZE = new Point(20, 16);
+        private Image baseImage;
+
+        private static Image createProductRelevantImage(Image baseImage) {
+            return IpsPlugin.getDefault().getImage(new ProductRelevantIcon(baseImage));
+        }
+
+        private ProductRelevantIcon(Image baseImage) {
+            this.baseImage = baseImage;
+        }
+
+        protected void drawCompositeImage(int width, int height) {
+            if (baseImage == null) {
+                return;
+            }
+            drawImage(baseImage.getImageData(), 0, 0);
+            drawImage(IpsPlugin.getDefault().getImage("ProductRelevantOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
+        }
+
+        protected Point getSize() {
+            return DEFAULT_SIZE;
         }
     }
 
@@ -364,22 +386,24 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     protected void validateThis(MessageList result) throws CoreException {
-    	super.validateThis(result);
+        super.validateThis(result);
         IStatus status = JavaConventions.validateFieldName(name);
         if (!status.isOK()) {
-            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msgInvalidAttributeName + name
+                    + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
         if (datatypeObject != null) {
-        	validateDefaultValueAndValueSet(datatypeObject, result);
+            validateDefaultValueAndValueSet(datatypeObject, result);
         } else {
-        	if (!StringUtils.isEmpty(defaultValue)) {
+            if (!StringUtils.isEmpty(defaultValue)) {
                 String text = NLS.bind(Messages.Attribute_msgDefaultNotParsable_UnknownDatatype, defaultValue);
-                result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
-        	}
+                result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
+                        PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
+            }
         }
-        
+
         if (isDerivedOrComputed() && isProductRelevant() && parameters.length == 0) {
             String text = Messages.Attribute_msgNoInputparams;
             result.add(new Message(MSGCODE_NO_INPUT_PARAMETERS, text, Message.WARNING, this)); //$NON-NLS-1$
@@ -389,61 +413,63 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         }
 
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
-        	String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
-        	result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR, this, PROPERTY_PRODUCT_RELEVANT));
+            String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
+            result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,
+                    this, PROPERTY_PRODUCT_RELEVANT));
         }
-        
+
         IAttribute[] allAttributes = getPolicyCmptType().getAttributes();
-		for (int i = 0; i < allAttributes.length; i++) {
-			if (allAttributes[i] != this
-					&& collideNames(allAttributes[i].getName(), name)) {
-				String txt = Messages.Attribute_msgNameCollisionLocal;
-				result.add(new Message(MSGCODE_NAME_COLLISION_LOCAL, txt,
-						Message.ERROR, this, PROPERTY_NAME));
-			}
-		}
-        
+        for (int i = 0; i < allAttributes.length; i++) {
+            if (allAttributes[i] != this && collideNames(allAttributes[i].getName(), name)) {
+                String txt = Messages.Attribute_msgNameCollisionLocal;
+                result.add(new Message(MSGCODE_NAME_COLLISION_LOCAL, txt, Message.ERROR, this, PROPERTY_NAME));
+            }
+        }
+
         IAttribute superAttr = findSupertypeAttribute();
         if (overwrites) {
-        	if (superAttr == null) {
-            	String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
-            	result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
-        	} else {
-            	superAttr.getValueSet().containsValueSet(valueSet, result, valueSet, null);
-        	}
+            if (superAttr == null) {
+                String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
+                result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
+                        PROPERTY_OVERWRITES, PROPERTY_NAME }));
+            } else {
+                superAttr.getValueSet().containsValueSet(valueSet, result, valueSet, null);
+            }
         } else {
             if (superAttr != null) {
-            	IPolicyCmptType type = (IPolicyCmptType)superAttr.getIpsObject();
-            	String text = NLS.bind(Messages.Attribute_msgNameCollision, type!=null?type.getQualifiedName():Messages.Attribute_msgpartUnknown, superAttr.getName());
-            	result.add(new Message(MSGCODE_NAME_COLLISION, text, Message.ERROR, this, new String[] {PROPERTY_OVERWRITES, PROPERTY_NAME}));
+                IPolicyCmptType type = (IPolicyCmptType)superAttr.getIpsObject();
+                String text = NLS.bind(Messages.Attribute_msgNameCollision, type != null ? type.getQualifiedName()
+                        : Messages.Attribute_msgpartUnknown, superAttr.getName());
+                result.add(new Message(MSGCODE_NAME_COLLISION, text, Message.ERROR, this, new String[] {
+                        PROPERTY_OVERWRITES, PROPERTY_NAME }));
             }
         }
     }
-    
+
     private boolean collideNames(String name1, String name2) {
-		if (name1.equals(name2)) {
-			return true;
-		}
+        if (name1.equals(name2)) {
+            return true;
+        }
 
-		if (Math.min(name1.length(), name2.length()) > 1) {
-			if ((name1.substring(1).equals(name2.substring(1)) && name1
-					.substring(0, 1).equalsIgnoreCase(name2.substring(0, 1)))) {
-				return true;
-			}
-		}
+        if (Math.min(name1.length(), name2.length()) > 1) {
+            if ((name1.substring(1).equals(name2.substring(1)) && name1.substring(0, 1).equalsIgnoreCase(
+                    name2.substring(0, 1)))) {
+                return true;
+            }
+        }
 
-		return false;
+        return false;
 
-	}
-    
+    }
+
     private void validateDefaultValueAndValueSet(ValueDatatype valueDatatype, MessageList result) throws CoreException {
         if (!valueDatatype.isParsable(defaultValue)) {
-        	String defaultValueInMsg = defaultValue;
-        	if (defaultValue==null) {
-        		defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        	} else if (defaultValue.equals("")) { //$NON-NLS-1$
-        		defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
-        	}
+            String defaultValueInMsg = defaultValue;
+            if (defaultValue == null) {
+                defaultValueInMsg = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            } else if (defaultValue.equals("")) { //$NON-NLS-1$
+                defaultValueInMsg = Messages.Attribute_msgDefaultValueIsEmptyString;
+            }
             String text = NLS.bind(Messages.Attribute_msgValueTypeMismatch, defaultValueInMsg, getDatatype());
             result.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_DEFAULT_VALUE)); //$NON-NLS-1$
             return;
@@ -451,9 +477,9 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         if (valueSet != null) {
             valueSet.validate(result);
             if (!valueSet.containsValue(defaultValue)) {
-                result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
-                        Message.ERROR, this,
-                        PROPERTY_DEFAULT_VALUE));
+                result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
+                        Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
+                        Message.ERROR, this, PROPERTY_DEFAULT_VALUE));
             }
         }
     }
@@ -464,32 +490,36 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             result.add(new Message(MSGCODE_NO_PARAMETERS_NECCESSARY, text, Message.WARNING, param)); //$NON-NLS-1$
         }
         if (StringUtils.isEmpty(param.getName())) {
-            result.add(new Message(MSGCODE_EMPTY_PARAMETER_NAME, Messages.Attribute_msgEmptyName, Message.ERROR, param, PROPERTY_FORMULAPARAM_NAME)); //$NON-NLS-1$
+            result.add(new Message(MSGCODE_EMPTY_PARAMETER_NAME, Messages.Attribute_msgEmptyName, Message.ERROR, param,
+                    PROPERTY_FORMULAPARAM_NAME)); //$NON-NLS-1$
         } else {
             IStatus status = JavaConventions.validateIdentifier(param.getName());
             if (!status.isOK()) {
-                result.add(new Message(MSGCODE_INVALID_PARAMETER_NAME, Messages.Attribute_msgInvalidParamName, Message.ERROR, param, //$NON-NLS-1$
-                                PROPERTY_FORMULAPARAM_NAME));
+                result.add(new Message(MSGCODE_INVALID_PARAMETER_NAME, Messages.Attribute_msgInvalidParamName,
+                        Message.ERROR, param, //$NON-NLS-1$
+                        PROPERTY_FORMULAPARAM_NAME));
             }
         }
         if (StringUtils.isEmpty(param.getDatatype())) {
-            result.add(new Message(MSGCODE_NO_DATATYPE_FOR_PARAMETER, Messages.Attribute_msgDatatypeEmpty, Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE)); //$NON-NLS-1$
+            result.add(new Message(MSGCODE_NO_DATATYPE_FOR_PARAMETER, Messages.Attribute_msgDatatypeEmpty,
+                    Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE)); //$NON-NLS-1$
         } else {
             Datatype datatypeObject = getIpsProject().findDatatype(param.getDatatype());
             if (datatypeObject == null) {
-                result.add(new Message(MSGCODE_DATATYPE_NOT_FOUND, NLS.bind(Messages.Attribute_msgDatatypeNotFound, param.getDatatype()), //$NON-NLS-1$
-                                Message.ERROR, param,
-                                PROPERTY_FORMULAPARAM_DATATYPE));
+                result.add(new Message(MSGCODE_DATATYPE_NOT_FOUND, NLS.bind(Messages.Attribute_msgDatatypeNotFound,
+                        param.getDatatype()), //$NON-NLS-1$
+                        Message.ERROR, param, PROPERTY_FORMULAPARAM_DATATYPE));
             } else {
-            	if (datatypeObject instanceof ValueDatatype) {
+                if (datatypeObject instanceof ValueDatatype) {
                     try {
-                        result.add(datatypeObject.validate(), new ObjectProperty(param, PROPERTY_FORMULAPARAM_DATATYPE), true);
+                        result.add(datatypeObject.validate(),
+                                new ObjectProperty(param, PROPERTY_FORMULAPARAM_DATATYPE), true);
                     } catch (CoreException e) {
                         throw e;
                     } catch (Exception e) {
                         throw new CoreException(new IpsStatus(e));
                     }
-            	}
+                }
             }
         }
     }
@@ -500,7 +530,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
-   
+
     /**
      * {@inheritDoc}
      */
@@ -510,11 +540,11 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
 
         if (!overwrites) {
-        	// these values are only neccessary if this attribute does not overwrite one.
-        	datatype = element.getAttribute(PROPERTY_DATATYPE);
-        	modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
-        	attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
-        	productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
+            // these values are only neccessary if this attribute does not overwrite one.
+            datatype = element.getAttribute(PROPERTY_DATATYPE);
+            modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
+            attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
+            productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         }
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
 
@@ -534,7 +564,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         }
         parameters = (Parameter[])params.toArray(new Parameter[0]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -542,13 +572,13 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         super.propertiesToXml(element);
         element.setAttribute("name", name); //$NON-NLS-1$
         element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
-        
+
         if (!overwrites) {
-        	// these values are only neccessary if this attribute does not overwrite one.
-        	element.setAttribute(PROPERTY_DATATYPE, datatype);
-        	element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
-        	element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
-        	element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
+            // these values are only neccessary if this attribute does not overwrite one.
+            element.setAttribute(PROPERTY_DATATYPE, datatype);
+            element.setAttribute(PROPERTY_PRODUCT_RELEVANT, "" + productRelevant); //$NON-NLS-1$
+            element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
+            element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         }
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
         Document doc = element.getOwnerDocument();
@@ -559,81 +589,80 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             element.appendChild(newParamElement);
         }
     }
-   
+
     /**
      * {@inheritDoc}
      */
-	public IIpsObjectPart newPart(Class partType) {
-		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
-	}
+    public IIpsObjectPart newPart(Class partType) {
+        throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      */
     protected void reAddPart(IIpsObjectPart part) {
-    	valueSet = (IValueSet)part;
+        valueSet = (IValueSet)part;
     }
-    
-	/**
-	 * {@inheritDoc}
-	 */
+
+    /**
+     * {@inheritDoc}
+     */
     protected IIpsObjectPart newPart(Element xmlTag, int id) {
-    	if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
-    		valueSet = ValueSetType.newValueSet(xmlTag, this, id);
-    		return valueSet;
-    	}
+        if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
+            valueSet = ValueSetType.newValueSet(xmlTag, this, id);
+            return valueSet;
+        }
         return null;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IIpsElement[] getChildren() {
-		if (valueSet != null) {
-			return new IIpsElement[] {valueSet};
-		}
-		else {
-			return new IIpsElement[0];
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsElement[] getChildren() {
+        if (valueSet != null) {
+            return new IIpsElement[] { valueSet };
+        } else {
+            return new IIpsElement[0];
+        }
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ValueDatatype getValueDatatype() {
-		try {
-			Datatype type = findDatatype();
-			if (type instanceof ValueDatatype) {
-				return (ValueDatatype)type;
-			}
-		} catch (CoreException e) {
-			IpsPlugin.log(e);
-		}
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype getValueDatatype() {
+        try {
+            Datatype type = findDatatype();
+            if (type instanceof ValueDatatype) {
+                return (ValueDatatype)type;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean getOverwrites() {
-		return overwrites;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean getOverwrites() {
+        return overwrites;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setOverwrites(boolean overwrites) {
-		boolean old = this.overwrites;
-		this.overwrites = overwrites;
-		valueChanged(old, overwrites);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setOverwrites(boolean overwrites) {
+        boolean old = this.overwrites;
+        this.overwrites = overwrites;
+        valueChanged(old, overwrites);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setValueSetCopy(IValueSet source) {
-		IValueSet oldset = valueSet;
-		valueSet = source.copy(this, getNextPartId());
-		valueChanged(oldset, valueSet);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setValueSetCopy(IValueSet source) {
+        IValueSet oldset = valueSet;
+        valueSet = source.copy(this, getNextPartId());
+        valueChanged(oldset, valueSet);
+    }
 }
