@@ -444,7 +444,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 	 *	}
      * </pre>
      */
-    private void buildHelperMethods(JavaCodeFragmentBuilder codeBuilder){
+    protected void buildHelperMethods(JavaCodeFragmentBuilder codeBuilder){
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("String value = null;");
         body.appendClassName(Node.class);
