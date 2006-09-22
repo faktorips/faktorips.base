@@ -742,4 +742,17 @@
             contentTypeId="org.faktorips.devtools.core.productComponent"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productCmptCompareItemCreator"/>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="productDefinitionTool"
+            name="FaktorIps"/>
+   </extension>
+   <extension
+         id="FaktorIPS"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.faktorips.devtools.core.productDefinitionTool"
+            name="FaktorIPS"/>
+   </extension>
 </plugin>
