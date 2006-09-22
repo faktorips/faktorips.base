@@ -92,6 +92,7 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
       <plugin id="org.eclipse.update.core.win32"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.faktorips.devtools.core"/>
+      <plugin id="org.faktorips.devtools.stdbuilder"/>
       <plugin id="org.faktorips.dtflcommon"/>
       <plugin id="org.faktorips.fl"/>
       <plugin id="org.faktorips.nls.devtools.core.nl1"/>
