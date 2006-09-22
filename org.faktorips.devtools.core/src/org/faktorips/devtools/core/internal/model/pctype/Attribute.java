@@ -96,7 +96,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      */
     public void delete() {
         getPolicyCmptType().removeAttribute(this);
-        updateSrcFile();
+        objectHasChanged();
         deleted = true;
     }
 
@@ -112,7 +112,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      */
     public void setName(String newName) {
         this.name = newName;
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /**
@@ -297,7 +297,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             return;
         }
         valueSet = type.newValueSet(this, getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /**
@@ -329,7 +329,10 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         } else {
             baseImage = IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
         }
-        return ProductRelevantIcon.createProductRelevantImage(baseImage);
+        if (isProductRelevant()) {
+            return ProductRelevantIcon.createProductRelevantImage(baseImage);
+        }
+        return baseImage;
     }
 
     private static class ProductRelevantIcon extends CompositeImageDescriptor {
@@ -379,7 +382,7 @@ public class Attribute extends IpsObjectPart implements IAttribute {
     public void setFormulaParameters(Parameter[] params) {
         parameters = new Parameter[params.length];
         System.arraycopy(params, 0, parameters, 0, params.length);
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /**
