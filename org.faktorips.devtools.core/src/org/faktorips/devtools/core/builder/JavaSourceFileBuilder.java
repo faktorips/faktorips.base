@@ -609,7 +609,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 				InputStream javaFileContents = null;
 				InputStream newContents = null;
 				try {
-					javaFileContents = javaFile.getContents();
+					javaFileContents = javaFile.getContents(true);
 					newContents = transform(ipsSrcFile, formattedContent);
 					merge(javaFile, javaFileContents, newContents, charset);
 					return;
