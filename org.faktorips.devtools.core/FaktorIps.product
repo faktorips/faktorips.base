@@ -22,7 +22,7 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
    <windowImages/>
 
 
-   <launcher>
+   <launcher name="faktorips">
       <solaris/>
       <win useIco="false">
          <bmp/>
