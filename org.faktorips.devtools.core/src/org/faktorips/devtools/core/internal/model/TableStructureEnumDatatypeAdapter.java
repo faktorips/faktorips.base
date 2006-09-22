@@ -232,4 +232,11 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 			IpsPlugin.log(e);
 		}
 	}
+
+    /**
+     * @return the table
+     */
+    public ITableStructure getTable() {
+        return table;
+    }
 }
