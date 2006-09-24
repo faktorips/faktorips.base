@@ -17,20 +17,22 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.w3c.dom.Element;
+
 /**
- * A memento for a source file that stores the contents and the dirty state.
+ * A memento for a source file that stores an old object state (as xml element) and the dirty state.
  * <p>
  * This is an application of the memento pattern.
  */
 public class IIpsSrcFileMemento {
     
     private IIpsSrcFile file;
-    private String contents;
+    private Element state;
     private boolean dirty;
     
-    public IIpsSrcFileMemento(IIpsSrcFile file, String contents, boolean dirty) {
+    public IIpsSrcFileMemento(IIpsSrcFile file, Element state, boolean dirty) {
         this.file = file;
-        this.contents = contents;
+        this.state = state;
         this.dirty = dirty;
     }
     
@@ -38,8 +40,8 @@ public class IIpsSrcFileMemento {
         return file;
     }
 
-    public String getContents() {
-        return contents;
+    public Element getState() {
+        return state;
     }
     
     public boolean isDirty() {

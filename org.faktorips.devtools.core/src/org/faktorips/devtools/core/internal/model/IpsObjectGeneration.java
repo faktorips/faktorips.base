@@ -154,7 +154,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 		int id = this.getId();
 		Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
 		this.initFromXml(source.toXml(doc), new Integer(id));
-		updateSrcFile();
+		objectHasChanged();
 		
 	}
 

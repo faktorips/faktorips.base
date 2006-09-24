@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.StringUtil;
+import org.w3c.dom.Document;
 
 /**
  * Represents an IpsSrcFile with an immutable content. Instances of this IpsSrcFile cannot be accessed 
@@ -39,7 +40,7 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsSrcFileImmutable extends IpsSrcFile {
 
-    private IpsSourceFileContents contents;
+    private IpsSrcFileContent contents;
     private IIpsProject project;
     
 	/**
@@ -78,30 +79,16 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 	}
 	
 	private void setContents(InputStream in) {
-        
 		try {
-            String encoding = project.getXmlFileCharset();
-			String data = StringUtil.readFromInputStream(in, encoding);
-            contents = new IpsSourceFileContents(this, data, encoding);
+            IpsObject ipsObject = (IpsObject)getIpsObjectType().newObject(this);
+            Document doc =IpsPlugin.getDefault().newDocumentBuilder().parse(in);
+            ipsObject.initFromXml(doc.getDocumentElement());
+            contents = new IpsSrcFileContent(ipsObject);
 		} catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus(e));
 		}
 	}
 	
-	/**
-	 * No modification allowed
-	 */
-	public void setContents(String newContents) throws CoreException {
-		// No modification of a remote file
-	}
-
-	/**
-	 * No modification allowed
-	 */
-	void setContentsInternal(String newContents) throws CoreException {
-		// No modification of a remote file
-	}
-
 	/**
 	 * No modification allowed
 	 */

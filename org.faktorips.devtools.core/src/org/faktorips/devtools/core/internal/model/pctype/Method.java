@@ -89,7 +89,7 @@ public class Method extends IpsObjectPart implements IMethod {
      */
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeMethod(this);
-        updateSrcFile();
+        objectHasChanged();
         deleted = true;
     }
 
@@ -112,7 +112,7 @@ public class Method extends IpsObjectPart implements IMethod {
      */
     public void setDatatype(String newDatatype) {
         this.datatype = newDatatype;
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /** 
@@ -150,7 +150,7 @@ public class Method extends IpsObjectPart implements IMethod {
 	 */
 	public IParameter newParameter() {
 		Parameter p = newParameterInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return p;
 	}
 	
@@ -211,7 +211,7 @@ public class Method extends IpsObjectPart implements IMethod {
 	 */
 	public void removeParameter(IParameter param) {
 		if (parameters.remove(param)) {
-			updateSrcFile();
+			objectHasChanged();
 		}
 	}
 	

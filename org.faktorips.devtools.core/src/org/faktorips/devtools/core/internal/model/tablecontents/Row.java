@@ -108,7 +108,7 @@ public class Row extends IpsObjectPart implements IRow {
 	 */
     public void setValue(int column, String newValue) {
     	values.set(column, newValue);
-        updateSrcFile();
+        objectHasChanged();
     }
     
     void newColumn(int insertAfter, String defaultValue) {
@@ -118,7 +118,7 @@ public class Row extends IpsObjectPart implements IRow {
     	else {
     		values.add(defaultValue);
     	}
-        updateSrcFile();
+        objectHasChanged();
     }
     
     void removeColumn(int column) {

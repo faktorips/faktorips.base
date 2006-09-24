@@ -186,7 +186,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	 */
 	public IConfigElement newConfigElement() {
 		IConfigElement newElement = newConfigElementInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return newElement;
 	}
 
@@ -201,7 +201,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 
 	void removeConfigElement(ConfigElement element) {
 		configElements.remove(element);
-		updateSrcFile();
+		objectHasChanged();
 	}
 
 	/**
@@ -242,7 +242,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	public IProductCmptRelation newRelation(String pcTypeRelation) {
 		ProductCmptRelation newRelation = newRelationInternal(getNextPartId());
 		newRelation.setProductCmptTypeRelation(pcTypeRelation);
-		updateSrcFile();
+		objectHasChanged();
 		return newRelation;
 	}
 
@@ -251,7 +251,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		ProductCmptRelation newRelation = newRelationInternal(getNextPartId(),
 				insertBefore);
 		newRelation.setProductCmptTypeRelation(pcTypeRelation);
-		updateSrcFile();
+		objectHasChanged();
 		return newRelation;
 	}
 
@@ -312,12 +312,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		} else {
 			relations.add(index, toMove);
 		}
-		updateSrcFile();
+		objectHasChanged();
 	}
 
 	void removeRelation(ProductCmptRelation relation) {
 		relations.remove(relation);
-		updateSrcFile();
+		objectHasChanged();
 	}
 
 	/*

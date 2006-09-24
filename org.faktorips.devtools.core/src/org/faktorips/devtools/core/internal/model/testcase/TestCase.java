@@ -353,7 +353,7 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     public ITestValue newTestValue() {
         ITestValue v = newTestValueInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return v;
     }
 
@@ -362,7 +362,7 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     public ITestRule newTestRule() {
         ITestRule v = newTestRuleInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return v;
     }
 
@@ -371,7 +371,7 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     public ITestPolicyCmpt newTestPolicyCmpt() {
         ITestPolicyCmpt p = newTestPolicyCmptInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return p;
     }
 
@@ -498,7 +498,7 @@ public class TestCase extends IpsObject implements ITestCase {
         } else {
             remove(testObject);
         }
-        updateSrcFile();
+        objectHasChanged();
     }
 
     //

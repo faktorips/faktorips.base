@@ -10,195 +10,160 @@ Framework classpath:
     file:/D:/eclipse/plugins/org.eclipse.osgi_3.1.2.jar
 Debug options:
     file:/D:/fips-ws/dev/.metadata/.plugins/org.eclipse.pde.core/DependencyGraphTest/.options loaded
-Time to load bundles: 40
-Starting application: 1593
-ModelCache created.
-==== Start setUp ==== 
-ModelCached flushed.
-Before creating A,B,C,D
-=== First statement in runnable to create a,b,c,d === 
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//A.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//A.ipspct/A
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//A.ipspct/A
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//B.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//B.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//B.ipspct/B
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//B.ipspct/B
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//C.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//C.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//C.ipspct/C
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//C.ipspct/C
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//D.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//D.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//D.ipspct/D
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//D.ipspct/D
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-=== Last statement in runnable to create a,b,c,d === 
-After creating A,B,C,D
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-Before saving A,C and init Graph
-=== First statement in runnable to save a,c and create graph === 
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-IpsSrcFile.save() begin: IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-IpsSrcFile.save() finished: IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-IpsSrcFile.save() begin: IpsModel/TestProject/productdef//C.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-IpsSrcFile.save() finished: IpsModel/TestProject/productdef//C.ipspct
-=== Before creating graph === 
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-all: [IpsModel/TestProject/productdef//A.ipspct/A, IpsModel/TestProject/productdef//B.ipspct/B, IpsModel/TestProject/productdef//C.ipspct/C, IpsModel/TestProject/productdef//D.ipspct/D]ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-=== Graph created === 
-=== Last statement in runnable to save a,c and create graph === 
-After saving A,C and init Graph
-==== Beendet setUp ==== 
-==== Start testGetDependants ==== 
-==== Beendet testGetDependants ==== 
-==== Start setUp ==== 
-ModelCached flushed.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//A.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//A.ipspct/A
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//A.ipspct/A
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//A.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//A.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text unchanged.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//B.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//B.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//B.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//B.ipspct/B
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//B.ipspct/B
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//B.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//B.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text unchanged.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//C.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//C.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//C.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//C.ipspct/C
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//C.ipspct/C
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//C.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//C.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text unchanged.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//D.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns null
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//D.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//D.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: null
-IpsSrcFileContents.parse(): Created IpsObject: IpsModel/TestProject/productdef//D.ipspct/D
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//D.ipspct/D
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//D.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//D.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text unchanged.
-Before creating A,B,C,D
-=== First statement in runnable to create a,b,c,d === 
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-=== Last statement in runnable to create a,b,c,d === 
-After creating A,B,C,D
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-Before saving A,C and init Graph
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//A.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//A.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text has changed.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//B.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//B.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//B.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text has changed.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//C.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//C.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//C.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text has changed.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//D.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//D.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//D.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text has changed.
-=== First statement in runnable to save a,c and create graph === 
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: null
-IpsSrcFile.save() begin: IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: null
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: null
-IpsSrcFile.save() finished: IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: null
-IpsSrcFile.save() begin: IpsModel/TestProject/productdef//C.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: null
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: null
-IpsSrcFile.save() finished: IpsModel/TestProject/productdef//C.ipspct
-=== Before creating graph === 
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: null
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//A.ipspct/A
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: null
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//B.ipspct/B
-ModelCache.get() for IpsModel/TestProject/productdef//B.ipspct returns Content of file: IpsModel/TestProject/productdef//B.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: null
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//C.ipspct/C
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: null
-IpsSrcFileContents.parse(): Initialized IpsObject from xml: IpsModel/TestProject/productdef//D.ipspct/D
-ModelCache.get() for IpsModel/TestProject/productdef//D.ipspct returns Content of file: IpsModel/TestProject/productdef//D.ipspct, parse status: true
-all: [IpsModel/TestProject/productdef//A.ipspct/A, IpsModel/TestProject/productdef//B.ipspct/B, IpsModel/TestProject/productdef//C.ipspct/C, IpsModel/TestProject/productdef//D.ipspct/D]=== Graph created === 
-=== Last statement in runnable to save a,c and create graph === 
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//A.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//A.ipspct returns Content of file: IpsModel/TestProject/productdef//A.ipspct, parse status: true
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//A.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//A.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text unchanged.
-IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: IpsModel/TestProject/productdef//C.ipspct
-ModelCache.get() for IpsModel/TestProject/productdef//C.ipspct returns Content of file: IpsModel/TestProject/productdef//C.ipspct, parse status: true
-IpsSrcFile.readContentFromCorrespondingFile IpsModel/TestProject/productdef//C.ipspct
-ModelCache.put() for IpsModel/TestProject/productdef//C.ipspct
-IpsSrcFileContents.setSourceTextInternal(): source text unchanged.
-After saving A,C and init Graph
-==== Beendet setUp ==== 
-==== Start testUpdate ==== 
+Time to load bundles: 30
+Starting application: 1532
+ModelManager created.
+Start setUp()
+ModelManager created.
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=A.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+==== setUp.init: 0
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=B.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=C.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=D.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+==== setUp-before, Anzahl Relations: 0
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+==== setUp-after, Anzahl Relations: 1
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsSrcFileContent.save() begin: IpsSrcFileContent IpsModel/TestProject/productdef//A.ipspct
+IpsSrcFileContent.save() finished. ModStamp=3, IpsSrcFileContent IpsModel/TestProject/productdef//A.ipspct
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsSrcFileContent.save() begin: IpsSrcFileContent IpsModel/TestProject/productdef//C.ipspct
+IpsSrcFileContent.save() finished. ModStamp=3, IpsSrcFileContent IpsModel/TestProject/productdef//C.ipspct
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+all: [IpsModel/TestProject/productdef//A.ipspct/A, IpsModel/TestProject/productdef//B.ipspct/B, IpsModel/TestProject/productdef//C.ipspct/C, IpsModel/TestProject/productdef//D.ipspct/D]IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+==== Anzahl Relations: 1
+Finished setUp()
+Start testGetDependants()
+Finished testGetDependants()
+Start setUp()
+ModelManager created.
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 3, IpsModel/TestProject/productdef//A.ipspct Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//A.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//A.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//A.ipspct, Thead: Worker-5
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 2, IpsModel/TestProject/productdef//B.ipspct Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//B.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//B.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//B.ipspct, Thead: Worker-5
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 3, IpsModel/TestProject/productdef//C.ipspct Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//C.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//C.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//C.ipspct, Thead: Worker-5
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 2, IpsModel/TestProject/productdef//D.ipspct Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): New content created for IpsModel/TestProject/productdef//D.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): About to read content from disk, file=IpsModel/TestProject/productdef//D.ipspct, Thead: Worker-5
+IpsModel.getIpsSrcFileContent(): Content read from disk, file=IpsModel/TestProject/productdef//D.ipspct, Thead: Worker-5
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=A.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+==== setUp.init: 1
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=B.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=C.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - begin: pack=IpsModel/TestProject/productdef/, newFile=D.ipspct, Thead: main
+IpsPackageFragment.createIpsFile - finished: pack=IpsModel/TestProject/productdef/, newFile=D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+==== setUp-before, Anzahl Relations: 1
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+==== setUp-after, Anzahl Relations: 2
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsSrcFileContent.save() begin: IpsSrcFileContent IpsModel/TestProject/productdef//A.ipspct
+IpsSrcFileContent.save() finished. ModStamp=3, IpsSrcFileContent IpsModel/TestProject/productdef//A.ipspct
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsSrcFileContent.save() begin: IpsSrcFileContent IpsModel/TestProject/productdef//C.ipspct
+IpsSrcFileContent.save() finished. ModStamp=3, IpsSrcFileContent IpsModel/TestProject/productdef//C.ipspct
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: main
+all: [IpsModel/TestProject/productdef//A.ipspct/A, IpsModel/TestProject/productdef//B.ipspct/B, IpsModel/TestProject/productdef//C.ipspct/C, IpsModel/TestProject/productdef//D.ipspct/D, IpsModel/TestProject/productdef//A.ipspct/A, IpsModel/TestProject/productdef//B.ipspct/B, IpsModel/TestProject/productdef//C.ipspct/C, IpsModel/TestProject/productdef//D.ipspct/D]IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+==== Anzahl Relations: 2
+Finished setUp()
+==== Anzahl Relations: 2
+Start testUpdate()
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 3, IpsModel/TestProject/productdef//A.ipspct Thead: Worker-3
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: Worker-3
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 2, IpsModel/TestProject/productdef//B.ipspct Thead: Worker-3
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//B.ipspct, Thead: Worker-3
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 3, IpsModel/TestProject/productdef//C.ipspct Thead: Worker-3
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: Worker-3
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 2, IpsModel/TestProject/productdef//D.ipspct Thead: Worker-3
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//D.ipspct, Thead: Worker-3
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsSrcFileContent.save() begin: IpsSrcFileContent IpsModel/TestProject/productdef//A.ipspct
+IpsSrcFileContent.save() finished. ModStamp=4, IpsSrcFileContent IpsModel/TestProject/productdef//A.ipspct
+IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk with modStamp 4, IpsModel/TestProject/productdef//A.ipspct Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+==== Anzahl Relations: 1
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//C.ipspct, Thead: main
+IpsModel.getIpsSrcFileContent(): Content returned from cache, file=IpsModel/TestProject/productdef//A.ipspct, Thead: main

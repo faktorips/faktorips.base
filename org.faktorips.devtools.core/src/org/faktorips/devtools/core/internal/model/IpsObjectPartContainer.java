@@ -125,7 +125,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
         if (!ObjectUtils.equals(value, getExtPropertyValue(propertyId))) { 
             extPropertyValues.put(propertyId, value);
-            updateSrcFile();
+            objectHasChanged();
         }
         property.afterSetValue(this, value);
     }
@@ -133,7 +133,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected final boolean valueChanged(Object oldValue, Object newValue) {
         boolean changed = !ObjectUtils.equals(oldValue, newValue);
         if (changed) {
-            updateSrcFile();
+            objectHasChanged();
         }
         return changed;
     }
@@ -141,7 +141,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected final boolean valueChanged(boolean oldValue, boolean newValue) {
         boolean changed = oldValue != newValue;
         if (changed) {
-            updateSrcFile();
+            objectHasChanged();
         }
         return changed;
     }
@@ -149,15 +149,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected final boolean valueChanged(int oldValue, int newValue) {
         boolean changed = oldValue != newValue;
         if (changed) {
-            updateSrcFile();
+            objectHasChanged();
         }
         return changed;
     }
     
     /**
-     * Updates the source file with the object's state in xml format.
+     * Called when the object's state has changed to inform about this.
      */
-    protected abstract void updateSrcFile();
+    protected abstract void objectHasChanged();
     
     private void checkExtProperty(String propertyId) {
         initExtPropertiesIfNotDoneSoFar();
@@ -473,7 +473,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             throw new IllegalArgumentException("Memento " + memento + " wasn't created by " + this); //$NON-NLS-1$ //$NON-NLS-2$
         }
         initFromXml(((XmlMemento)memento).getState());
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /**

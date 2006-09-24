@@ -436,7 +436,7 @@ public class MoveOperation implements IRunnableWithProgress {
 		if (!pack.exists()) {
 			pack.getRoot().createPackageFragment(pack.getName(), true, monitor);
 		}
-		pack.createIpsFile(targetFile.getName(), source.getContents(), true, monitor);
+		pack.createIpsFile(targetFile.getName(), source.getContentFromCorrespondingFile(), true, monitor);
 	}
 	
 	/**

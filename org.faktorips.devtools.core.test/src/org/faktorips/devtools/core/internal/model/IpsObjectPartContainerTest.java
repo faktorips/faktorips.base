@@ -239,7 +239,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         private String name;
         private int numOfUpdateSrcFileCalls = 0;
         
-        protected void updateSrcFile() {
+        protected void objectHasChanged() {
 			++numOfUpdateSrcFileCalls;
 		}
         

@@ -115,7 +115,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             ((TableContentsGeneration)generations[i]).newColumn(index, defaultValue);
         }
         numOfColumns++;
-        updateSrcFile();
+        objectHasChanged();
 	}
 
     /**
@@ -130,7 +130,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             ((TableContentsGeneration)generations[i]).removeColumn(columnIndex);
         }
         numOfColumns--;
-        updateSrcFile();        
+        objectHasChanged();        
     }
     
     /**

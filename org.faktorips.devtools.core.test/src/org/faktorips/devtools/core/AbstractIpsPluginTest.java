@@ -84,22 +84,31 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	}
 
 	protected void setUp() throws Exception {
-		setAutoBuild(false);
-		IpsPlugin.getDefault().reinitModel();
-		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+	    ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
+        setAutoBuild(false);
+        
+        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				waitForIndexer();
-				IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-						.getProjects();
-				for (int i = 0; i < projects.length; i++) {
-					projects[i].close(null);
-					projects[i].delete(true, true, null);
-				}
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
+                }
+                waitForIndexer();
+                IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+                        .getProjects();
+                for (int i = 0; i < projects.length; i++) {
+                    projects[i].close(null);
+                    projects[i].delete(true, true, null);
+                }
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
+                }
+                IpsPlugin.getDefault().reinitModel(); // also starts the listening process
 			}
 		};
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE,
 				null);
+        
 	}
     
     /**
@@ -275,25 +284,35 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 * 
 	 * @throws CoreException
 	 */
-	protected IIpsObject newIpsObject(IIpsPackageFragmentRoot root,
-			IpsObjectType type, String qualifiedName) throws CoreException {
-		String packName = StringUtil.getPackageName(qualifiedName);
-		String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
-		IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
-		if (!pack.exists()) {
-			pack = root.createPackageFragment(packName, true, null);
-		}
-		IIpsSrcFile file = pack
-				.createIpsFile(type, unqualifiedName, true, null);
-		IIpsObject ipsObject = file.getIpsObject();
-		if (ipsObject instanceof IPolicyCmptType) {
-			((IPolicyCmptType) ipsObject)
-					.setConfigurableByProductCmptType(true);
-			((IPolicyCmptType) ipsObject)
-					.setUnqualifiedProductCmptType(unqualifiedName
-							+ "ProductCmpt");
-		}
-		return ipsObject;
+	protected IIpsObject newIpsObject(
+            final IIpsPackageFragmentRoot root,
+			final IpsObjectType type, 
+            final String qualifiedName) throws CoreException {
+        
+        final String packName = StringUtil.getPackageName(qualifiedName);
+        final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
+        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+            public void run(IProgressMonitor monitor) throws CoreException {
+                IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
+                if (!pack.exists()) {
+                    pack = root.createPackageFragment(packName, true, null);
+                }
+                IIpsSrcFile file = pack
+                        .createIpsFile(type, unqualifiedName, true, null);
+                IIpsObject ipsObject = file.getIpsObject();
+                if (ipsObject instanceof IPolicyCmptType) {
+                    ((IPolicyCmptType) ipsObject)
+                            .setConfigurableByProductCmptType(true);
+                    ((IPolicyCmptType) ipsObject)
+                            .setUnqualifiedProductCmptType(unqualifiedName
+                                    + "ProductCmpt");
+                }
+            }
+        };
+        ResourcesPlugin.getWorkspace().run(runnable, null);
+        IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
+        return pack.getIpsSrcFile(type.getFileName(unqualifiedName)).getIpsObject();
 	}
 
 	/**
@@ -345,8 +364,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 	 */
 	protected IIpsObject newIpsObject(IIpsPackageFragment pack,
 			IpsObjectType type, String unqualifiedName) throws CoreException {
-		IIpsSrcFile file = pack
-				.createIpsFile(type, unqualifiedName, true, null);
+		IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
 		return file.getIpsObject();
 	}
 

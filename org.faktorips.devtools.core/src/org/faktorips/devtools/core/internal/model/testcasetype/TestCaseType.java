@@ -330,7 +330,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestValueParameter newInputTestValueParameter() {
         TestValueParameter param = newTestValueParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.INPUT);
-        updateSrcFile();
+        objectHasChanged();
         return param;
     }
 
@@ -345,7 +345,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestPolicyCmptTypeParameter newInputTestPolicyCmptTypeParameter() {
         TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.INPUT);
-        updateSrcFile();
+        objectHasChanged();
         return param;
     }
 
@@ -359,7 +359,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestValueParameter newExpectedResultValueParameter() {
         TestValueParameter param = newTestValueParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        updateSrcFile();
+        objectHasChanged();
         return param;
     }
 
@@ -369,7 +369,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestPolicyCmptTypeParameter newExpectedResultPolicyCmptTypeParameter() {
         TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        updateSrcFile();
+        objectHasChanged();
         return param;
     }
 
@@ -379,7 +379,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public TestRuleParameter newExpectedResultRuleParameter() {
         TestRuleParameter param = newTestRuleParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        updateSrcFile();
+        objectHasChanged();
         return param;
     }
     
@@ -393,7 +393,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestValueParameter newCombinedValueParameter() {
         TestValueParameter param = newTestValueParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.COMBINED);
-        updateSrcFile();
+        objectHasChanged();
         return param;
     }
 
@@ -403,7 +403,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     public ITestPolicyCmptTypeParameter newCombinedPolicyCmptTypeParameter() {
         TestPolicyCmptTypeParameter param = newTestPolicyCmptTypeParameterInternal(getNextPartId());
         param.setTestParameterType(TestParameterType.COMBINED);
-        updateSrcFile();
+        objectHasChanged();
         return param;
     }
     

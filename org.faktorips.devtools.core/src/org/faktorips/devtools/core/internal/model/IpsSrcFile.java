@@ -17,10 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -31,7 +29,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -40,6 +37,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.StringUtil;
+import org.w3c.dom.Document;
 
 
 /**
@@ -108,20 +106,20 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      * {@inheritDoc}
      */
     public boolean isDirty() {
-        IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
-        if (contents==null) {
+        IpsSrcFileContent content = getContent();
+        if (content==null) {
             return false;
         }
-        return contents.modified();
+        return content.isModified();
     }
     
     /**
      * {@inheritDoc}
      */ 
     public void markAsClean() {
-        IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
-        if (contents!=null) {
-            contents.markAsUnmodified();
+        IpsSrcFileContent content = getContent();
+        if (content!=null) {
+            content.markAsUnmodified();
         }
     }
 
@@ -129,104 +127,52 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      * {@inheritDoc}
      */
     public void discardChanges() {
-    	IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
-    	if (contents!=null) {
-    		contents.setSourceText(null, true);
-    		contents.markAsUnmodified();
-    	}
+        IpsSrcFileContent content = getContent();
+        if (content!=null) {
+            content.discardChanges();
+        }
     }
 
     /** 
      * {@inheritDoc}
      */
     public void save(boolean force, IProgressMonitor monitor) throws CoreException {
-        if (!isDirty()) {
-            return;
+        if (!exists()) {
+            throw new CoreException(new IpsStatus("File does not exist " + this));
         }
-        try {
-        	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFile.save() begin: " + this);
-        	}
-            ByteArrayInputStream is = new ByteArrayInputStream(getContents().getBytes(getEncoding()));
-        	markAsClean();
-            getCorrespondingFile().setContents(is, force, true, monitor);
-            // notify listeners because dirty state has changed!
-            ContentChangeEvent event = new ContentChangeEvent(this);
-            ((IpsModel)getIpsModel()).notifyChangeListeners(event);
-        	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFile.save() finished: " + this);
-        	}
-        } catch (UnsupportedEncodingException e) {
-        	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-        		System.out.println("IpsSrcFile.save() failed: " + this);
-        	}
-            throw new CoreException(new IpsStatus(e));
-        }
-    }
-    
-    /** 
-     * {@inheritDoc}
-     */
-    public String getContents() throws CoreException {
-        return getContentObject().getSourceText();
+        getContent().save(force, monitor);
     }
 
-    /**
-     * {@inheritDoc}
-     */ 
-    public void setContents(String newContents) throws CoreException {
-        getContentObject().setSourceText(newContents, true);
-    }
-    
-    /**
-     * Sets the new contents without enforcing reparsing of the new contents.
-     * Should be used by <code>IpsObjectImpl.updateSrcFile()</code> only.
-     */
-    void setContentsInternal(String newContents) throws CoreException {
-        getContentObject().setSourceText(newContents, false);
-    }
-    
     /** 
      * {@inheritDoc}
      */
     public boolean isContentParsable() throws CoreException {
-    	if (!exists()) {
-    		return false;
-    	}
-        return getContentObject().contentIsParsable();
+        IpsSrcFileContent content = getContent();
+        if (content==null) {
+            return false;
+        }
+        return content.isParsable();
     }
 
     /** 
      * {@inheritDoc}
      */
     public IIpsObject getIpsObject() throws CoreException {
-        return getContentObject().getIpsObject();
-    }
-    
-    private IpsSourceFileContents getContentObject() throws CoreException {
-        IpsSourceFileContents contents = IpsPlugin.getDefault().getManager().getSrcFileContents(this);
-        if (contents!=null && contents.getSourceText()!=null) {
-            return contents;
+        if (!exists()) {
+            throw new CoreException(new IpsStatus("Can't get ips object because file content is not accesible." + this));
         }
-        String source = getContentFromCorrespondingFile();
-        IpsPlugin.getDefault().getManager().putSrcFileContents(this, source, getEncoding());
-        return IpsPlugin.getDefault().getManager().getSrcFileContents(this); 
+        IpsSrcFileContent content = getContent();
+        if (!content.isParsable()) {
+            throw new CoreException(new IpsStatus("Can't get ips object because file content is not parsable." + this));
+        }
+        return content.getIpsObject();
     }
     
     /**
-     * Reads the content from the corresponding file and returns it as string 
-     * The bytes read from disk are transformed into a string with the encoding
-     * defined in the ips project.
-     * 
-     * @throws CoreException if an error occurs while reading the contents.
-     * 
-     * @see org.faktorips.devtools.core.model.IIpsProject#getXmlFileCharset()
+     * {@inheritDoc}
      */
     public String getContentFromCorrespondingFile() throws CoreException {
-    	if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-    		System.out.println("IpsSrcFile.readContentFromCorrespondingFile " + this + " Thread: " + Thread.currentThread().getName());
-    	}
-    	InputStream is = getCorrespondingFile().getContents();
+    	InputStream is = getCorrespondingFile().getContents(true);
         try {
             return StringUtil.readFromInputStream(is, getEncoding());
         } catch (IOException e) {
@@ -238,14 +184,18 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      * {@inheritDoc}
      */
     public IIpsSrcFileMemento newMemento() throws CoreException {
-        return new IIpsSrcFileMemento(this, getContents(), isDirty());
+        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        return new IIpsSrcFileMemento(this, getIpsObject().toXml(doc), isDirty());
     }
     
     /**
      * {@inheritDoc}
      */
     public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
-        getContentObject().updateStateFromMemento(memento);
+        if (!memento.getIpsSrcFile().equals(this)) {
+            throw new CoreException(new IpsStatus(this + ": Memento " + memento + " is from different object.")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        getContent().updateState(memento.getState(), memento.isDirty());
     }
     
     String getEncoding() throws CoreException {
@@ -274,4 +224,8 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
 		return true;
 	}
 
+    private IpsSrcFileContent getContent() {
+        return ((IpsModel)getIpsModel()).getIpsSrcFileContent(this);
+    }
+    
 }

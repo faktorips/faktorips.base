@@ -93,7 +93,7 @@ public abstract class Key extends IpsObjectPart implements IKey {
      */
     public void setKeyItems(String[] itemNames) {
         items = CollectionUtil.toArrayList(itemNames);
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /** 

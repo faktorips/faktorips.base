@@ -73,17 +73,6 @@ public interface IIpsSrcFile extends IIpsElement {
     public void save(boolean force, IProgressMonitor monitor) throws CoreException;
     
     /**
-     * Returns the file's contents.
-     */
-    public String getContents() throws CoreException;
-    
-    /**
-     * Sets the file's new contents. Afterwards the method <code>isDirty()</code>
-     * returns true until the object is saved.
-     */
-    public void setContents(String newContents) throws CoreException;
-    
-    /**
      * Returns true if the content can be parsed and a IpsObject can be created
      * based on the content. Returns false, if the contents can't be parsed
      * (e.g. the XML isn't properly formatted).
@@ -114,4 +103,16 @@ public interface IIpsSrcFile extends IIpsElement {
      * Returns whether this file is mutable or not.
      */
     public boolean isMutable();
+    
+    /**
+     * Reads the content from the corresponding file and returns it as string 
+     * The bytes read from disk are transformed into a string with the encoding
+     * defined in the ips project.
+     * 
+     * @throws CoreException if an error occurs while reading the contents.
+     * 
+     * @see org.faktorips.devtools.core.model.IIpsProject#getXmlFileCharset()
+     */
+    public String getContentFromCorrespondingFile() throws CoreException;
+    
 }

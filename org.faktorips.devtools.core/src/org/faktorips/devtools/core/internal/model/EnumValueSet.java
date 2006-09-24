@@ -149,7 +149,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     public void addValue(String val) {
        	elements.add(val);
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /**
@@ -157,7 +157,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 	 */
     public void removeValue(int index) {
         elements.remove(index);
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /**
@@ -165,7 +165,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 	 */
 	public void removeValue(String value) {
         elements.remove(value);
-        updateSrcFile();
+        objectHasChanged();
 	}
 
     /**

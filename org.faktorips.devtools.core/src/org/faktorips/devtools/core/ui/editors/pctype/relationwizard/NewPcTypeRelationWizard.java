@@ -43,7 +43,7 @@ import org.faktorips.util.memento.Memento;
 /**
  * Relation wizard class.
  */
-public class NewPcTypeRelationWizard extends Wizard {
+public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeListener{
 	private final static int NEW_REVERSE_RELATION = 0;
 	private final static int USE_EXISTING_REVERSE_RELATION = 1;
 	private final static int NONE_REVERSE_RELATION = 2;
@@ -97,11 +97,7 @@ public class NewPcTypeRelationWizard extends Wizard {
         
     	// add listener on model,
 		// if the model changed check if the new relation has to be updated
-		relation.getIpsModel().addChangeListener(new ContentsChangeListener() {
-			public void contentsChanged(ContentChangeEvent event) {
-				updateNewReverseRelationAndRelationContainer(event);
-			}
-		});            
+		relation.getIpsModel().addChangeListener(this);          
 	}
     
     /*
@@ -217,6 +213,7 @@ public class NewPcTypeRelationWizard extends Wizard {
 	 */
 	public boolean performFinish() {
 		try {
+            targetPolicyCmptType.getIpsModel().removeChangeListener(this);
 			boolean saveTargetAutomatically = false;
 			if (targetPolicyCmptType != null && 
 					! targetPolicyCmptType.getIpsSrcFile().equals(relation.getIpsObject().getIpsSrcFile())){
@@ -259,7 +256,8 @@ public class NewPcTypeRelationWizard extends Wizard {
 	 * {@inheritDoc}
 	 */
     public boolean performCancel() {
-    	restoreMementoTargetBeforeChange();    	
+        targetPolicyCmptType.getIpsModel().removeChangeListener(this);
+        restoreMementoTargetBeforeChange();    	
     	return true;
     }
 	
@@ -555,5 +553,12 @@ public class NewPcTypeRelationWizard extends Wizard {
 	 */
     void resetReverseRelationPropertiesPage(){
     	reverseRelationPropertiesPage.reset();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void contentsChanged(ContentChangeEvent event) {
+        updateNewReverseRelationAndRelationContainer(event);
     }
 }

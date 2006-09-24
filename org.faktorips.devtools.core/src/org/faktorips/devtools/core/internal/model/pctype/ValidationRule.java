@@ -96,7 +96,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 */
 	public void delete() {
 		((PolicyCmptType) getIpsObject()).removeRule(this);
-		updateSrcFile();
+		objectHasChanged();
         deleted = true;
     }
 
@@ -141,7 +141,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		for (int i = 0; i < functionNames.length; i++) {
 			functions.add(functionNames[i]);
 		}
-		updateSrcFile();
+		objectHasChanged();
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	public void addBusinessFunction(String functionName) {
 		ArgumentCheck.notNull(functionName);
 		functions.add(functionName);
-		updateSrcFile();
+		objectHasChanged();
 	}
 
 	/**
@@ -165,7 +165,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 */
 	public void removeBusinessFunction(int index) {
 		functions.remove(index);
-		updateSrcFile();
+		objectHasChanged();
 	}
 
 	/**
@@ -396,7 +396,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	public String addValidatedAttribute(String attributeName) {
 		ArgumentCheck.notNull(this, attributeName);
 		validatedAttributes.add(attributeName);
-		updateSrcFile();
+		objectHasChanged();
 		return attributeName;
 	}
 
@@ -413,7 +413,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 */
 	public void removeValidatedAttribute(int index) {
 		validatedAttributes.remove(index);
-		updateSrcFile();
+		objectHasChanged();
 	}
 
 	/**

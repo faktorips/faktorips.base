@@ -92,7 +92,7 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeRelation(this);
-        updateSrcFile();
+        objectHasChanged();
         deleted = true;
     }
 
@@ -486,13 +486,18 @@ public class Relation extends IpsObjectPart implements IRelation {
      * {@inheritDoc}
      */
     public Image getImage() {
+        Image baseImage;
         if (this.type==RelationType.COMPOSITION) {
-            return IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
+            baseImage = IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
+        } else if (this.type==RelationType.REVERSE_COMPOSITION) {
+            baseImage = IpsPlugin.getDefault().getImage("ReverseComposition.gif"); //$NON-NLS-1$
+        } else {
+            baseImage = IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$ 
         }
-        if (this.type==RelationType.REVERSE_COMPOSITION) {
-            return IpsPlugin.getDefault().getImage("ReverseComposition.gif"); //$NON-NLS-1$
+        if (isProductRelevant()) {
+            return ProductRelevantIcon.createProductRelevantImage(baseImage);
         }
-        return IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$
+        return baseImage;
     }
 
     /** 

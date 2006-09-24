@@ -301,7 +301,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 */
 	public IAttribute newAttribute() {
 		Attribute a = newAttributeInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return a;
 	}
 
@@ -359,7 +359,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 */
 	public IMethod newMethod() {
 		IMethod m = newMethodInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return m;
 	}
 
@@ -479,7 +479,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 */
 	public IRelation newRelation() {
 		Relation r = newRelationInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return r;
 	}
 
@@ -513,7 +513,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 	 */
 	public IValidationRule newRule() {
 		IValidationRule r = newRuleInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return r;
 	}
 
@@ -767,57 +767,16 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		if (hierarchy.getSupertype(this) == null) {
 			return;
 		}
-		IMethod[] methods = hierarchy.getAllMethods(hierarchy
-				.getSupertype(this));
+		IMethod[] methods = hierarchy.getAllMethods(hierarchy.getSupertype(this));
 		for (int i = 0; i < methods.length; i++) {
 			if (methods[i].isAbstract()) {
 				if (!isAbstractMethodImplemented(this, methods[i], hierarchy)) {
-					String text = NLS
-							.bind(
-									Messages.PolicyCmptType_msgMustOverrideAbstractMethod,
-									methods[i].getName(), methods[i]
-											.getPolicyCmptType()
-											.getQualifiedName());
-					list
-							.add(new Message(
-									IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD,
-									text, Message.ERROR, this));
-				}
+                    String text = NLS.bind(Messages.PolicyCmptType_msgMustOverrideAbstractMethod, methods[i].getName(),
+                            methods[i].getPolicyCmptType().getQualifiedName());
+                    list.add(new Message(IPolicyCmptType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD, text, Message.ERROR,
+                            this));
+                }
 			}
-		}
-	}
-
-	/**
-	 * Checks if an MSGCODE_SUPERTYPE_NOT_FOUND error in the supertype hirarchy exists. 
-	 * If so, this is reported with a new message with code MSGCODE_INCONSISTENT_TYPE_HIERARCHY 
-	 * in the given list. The message(s) returned by the supertype ar not added.
-	 */
-	private void validateSupertypeHierarchy(TypeHierarchy supertypeHierarchy,
-			MessageList ml) {
-		if (supertypeHierarchy == null) {
-			return;
-		}
-		IPolicyCmptType supertype = supertypeHierarchy.getSupertype(this);
-		if (supertype == null) {
-			return;
-		}
-		try {
-
-			MessageList tmpList = supertype.validate();
-			Message msg = tmpList
-					.getMessageByCode(MSGCODE_INCONSISTENT_TYPE_HIERARCHY);
-			if (msg != null) {
-				ml.add(msg);
-			} else if (tmpList.getMessageByCode(MSGCODE_SUPERTYPE_NOT_FOUND) != null) {
-				ml
-						.add(new Message(
-								MSGCODE_INCONSISTENT_TYPE_HIERARCHY,
-								Messages.PolicyCmptType_msgInconsistentTypeHierarchy,
-								Message.ERROR, this, PROPERTY_SUPERTYPE));
-			}
-
-		} catch (Exception e) {
-			IpsPlugin.log(e);
 		}
 	}
 
@@ -841,6 +800,40 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 		return isAbstractMethodImplemented(supertype, method, hierarchy);
 	}
 
+    /**
+     * Checks if an MSGCODE_SUPERTYPE_NOT_FOUND error in the supertype hirarchy exists. 
+     * If so, this is reported with a new message with code MSGCODE_INCONSISTENT_TYPE_HIERARCHY 
+     * in the given list. The message(s) returned by the supertype ar not added.
+     */
+    private void validateSupertypeHierarchy(TypeHierarchy supertypeHierarchy,
+            MessageList ml) {
+        if (supertypeHierarchy == null) {
+            return;
+        }
+        IPolicyCmptType supertype = supertypeHierarchy.getSupertype(this);
+        if (supertype == null) {
+            return;
+        }
+        try {
+
+            MessageList tmpList = supertype.validate();
+            Message msg = tmpList
+                    .getMessageByCode(MSGCODE_INCONSISTENT_TYPE_HIERARCHY);
+            if (msg != null) {
+                ml.add(msg);
+            } else if (tmpList.getMessageByCode(MSGCODE_SUPERTYPE_NOT_FOUND) != null) {
+                ml
+                        .add(new Message(
+                                MSGCODE_INCONSISTENT_TYPE_HIERARCHY,
+                                Messages.PolicyCmptType_msgInconsistentTypeHierarchy,
+                                Message.ERROR, this, PROPERTY_SUPERTYPE));
+            }
+
+        } catch (Exception e) {
+            IpsPlugin.log(e);
+        }
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */

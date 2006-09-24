@@ -16,10 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -333,31 +331,6 @@ public class Attribute extends IpsObjectPart implements IAttribute {
             return ProductRelevantIcon.createProductRelevantImage(baseImage);
         }
         return baseImage;
-    }
-
-    private static class ProductRelevantIcon extends CompositeImageDescriptor {
-        private final Point DEFAULT_SIZE = new Point(16, 16);
-        private Image baseImage;
-
-        private static Image createProductRelevantImage(Image baseImage) {
-            return IpsPlugin.getDefault().getImage(new ProductRelevantIcon(baseImage));
-        }
-
-        private ProductRelevantIcon(Image baseImage) {
-            this.baseImage = baseImage;
-        }
-
-        protected void drawCompositeImage(int width, int height) {
-            if (baseImage == null) {
-                return;
-            }
-            drawImage(baseImage.getImageData(), 0, 0);
-            drawImage(IpsPlugin.getDefault().getImage("ProductRelevantOverlay.gif").getImageData(), 8, 0); //$NON-NLS-1$
-        }
-
-        protected Point getSize() {
-            return DEFAULT_SIZE;
-        }
     }
 
     /**

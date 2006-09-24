@@ -146,7 +146,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     public IIpsObjectGeneration newGeneration() {
         IpsObjectGeneration generation = newGenerationInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return generation;
     }
     
@@ -168,7 +168,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
         generation.setValidFrom(validFrom);
         
-        updateSrcFile();
+        objectHasChanged();
         return generation;
     }
 
@@ -184,7 +184,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     
     void removeGeneration(IIpsObjectGeneration generation) {
         generations.remove(generation);
-        updateSrcFile();
+        objectHasChanged();
     }
     
     /**

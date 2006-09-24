@@ -85,7 +85,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     public void delete() {
         if (isRoot())
             ((TestCaseType)getIpsObject()).removeTestParameter(this);
-        updateSrcFile();
+        objectHasChanged();
         deleted = true;
     }
 

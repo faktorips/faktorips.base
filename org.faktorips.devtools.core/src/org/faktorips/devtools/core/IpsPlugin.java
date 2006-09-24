@@ -44,7 +44,6 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.IpsModelManager;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -95,7 +94,7 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     private IpsPreferences preferences;
     
-    private IpsModelManager manager;
+    private IpsModel model;
 
     // Contains the ips test runner, which runs ips test and informs registered ips test run listener
     private IIpsTestRunner ipsTestRunner;
@@ -141,8 +140,8 @@ public class IpsPlugin extends AbstractUIPlugin {
         super.start(context);
         preferences = new IpsPreferences(getPreferenceStore());
         docBuilderFactory = DocumentBuilderFactory.newInstance();
-        manager = new IpsModelManager();
-        ((IpsModel)getIpsModel()).startListeningToResourceChanges();
+        model = new IpsModel();
+        model.startListeningToResourceChanges();
     }
 
     /**
@@ -151,7 +150,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public void stop(BundleContext context) throws Exception {
         super.stop(context);
         ((IpsModel)getIpsModel()).stopListeningToResourceChanges();
-        manager = null;
+        model = null;
         if (imageDescriptorRegistry != null) {
             imageDescriptorRegistry.dispose();
         }
@@ -162,9 +161,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * a clean environment.
      */
     public void reinitModel() {
-        ((IpsModel)getIpsModel()).stopListeningToResourceChanges();
-        manager = new IpsModelManager();
-        ((IpsModel)getIpsModel()).startListeningToResourceChanges();
+        model.stopListeningToResourceChanges();
+        model = new IpsModel();
+        model.startListeningToResourceChanges();
     }
     
     /**
@@ -283,16 +282,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the IPS model.
      */
     public IIpsModel getIpsModel() {
-        return getManager().getModel();
+        return model;
     }
 
-    /**
-     * Returns the IpsModelManager single instance.
-     */
-    public final IpsModelManager getManager() {
-        return manager;
-    }
-    
     /**
      * Returns preferences for this plugin.
      */

@@ -239,7 +239,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	 */
 	public ITestAttributeValue newTestAttributeValue() {
 		TestAttributeValue a = newTestAttributeValueInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return a;
 	}
 
@@ -322,7 +322,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	 */
 	public ITestPolicyCmptRelation newTestPolicyCmptRelation() {
 		ITestPolicyCmptRelation r = newTestPcTypeRelationInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return r;
 	}
 	
@@ -387,7 +387,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		}
 		if (foundIdx >= 0){
 			testPolicyCmptRelations.remove(foundIdx);
-			updateSrcFile();
+			objectHasChanged();
 		}
 	}
 
@@ -453,7 +453,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		}else{
 			testPolicyCmptRelations.add(newTestPcTypeRelation);
 		}
-		updateSrcFile();
+		objectHasChanged();
 		return newTestPcTypeRelation;
 	}
 	

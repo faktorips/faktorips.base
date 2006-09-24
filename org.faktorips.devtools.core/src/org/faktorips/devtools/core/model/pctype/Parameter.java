@@ -51,7 +51,7 @@ public class Parameter {
     public void setName(String newName) {
     	// Parameter-Klasse entfaellt demnaechst und wird durch IParameter und die zug. Implementierung ersetzt
     	// Dann wird dieser Hack ueberfluessig
-    	IpsModel model = (IpsModel)IpsPlugin.getDefault().getManager().getModel();
+    	IpsModel model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
     	model.getValidationResultCache().removeStaleData(null);
         name = newName;
     }
@@ -63,7 +63,7 @@ public class Parameter {
     public void setDatatype(String newDatatype) {
     	// Parameter-Klasse entfaellt demnaechst und wird durch IParameter und die zug. Implementierung ersetzt
     	// Dann wird dieser Hack ueberfluessig
-    	IpsModel model = (IpsModel)IpsPlugin.getDefault().getManager().getModel();
+    	IpsModel model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
     	model.getValidationResultCache().removeStaleData(null);
         datatype = newDatatype;
     }

@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.util.StringUtil;
 
 
 /**
@@ -45,6 +45,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
     private IIpsPackageFragmentRoot ipsRootFolder;
     private IIpsPackageFragment ipsFolder;
     private IIpsSrcFile parsableFile; // file with parsable contents
+    private IPolicyCmptType policyCmptType;
     private IIpsSrcFile unparsableFile; // file with unparsable contents
     
     private ContentChangeEvent lastEvent;
@@ -59,16 +60,16 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
         ipsFolder = ipsRootFolder.createPackageFragment("folder", true, null);
         
         parsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "ParsableFile", true, null);
+        policyCmptType = (IPolicyCmptType)parsableFile.getIpsObject();
         unparsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("UnparsableFile"), "blabla", true, null);
+        unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), true, false, null);
     }
 
-    /*
-     * @see PluginTest#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void testContentIsParsable() throws CoreException {
+        assertFalse(unparsableFile.isContentParsable());
+        assertTrue(parsableFile.isContentParsable());
     }
-    
+
     public void testConstructor(){
     	
     	try{
@@ -78,18 +79,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
     	catch(Exception e){
     		//expected to fail
     	}
-    }
-    
-    public void testDiscardChanges_UnparsableContents() throws CoreException {
-        IPolicyCmptType type = newPolicyCmptType(this.ipsProject, "Policy");
-        IIpsSrcFile file = type.getIpsSrcFile();
-        file.save(true, null);
-        String contents = file.getContents();
-        file.setContents("newContents");
-        assertTrue(file.isDirty());
-        file.discardChanges();
-        assertEquals(contents, file.getContents());
-        assertFalse(file.isDirty());
     }
     
     public void testDiscardChanges_ParsableContents() throws CoreException {
@@ -116,15 +105,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
         assertEquals(parsableFile.getName(), file.getName());
     }
     
-    public void testGetContents() throws CoreException {
-        assertEquals("blabla", unparsableFile.getContents());
-    }
-
-    public void testContentIsParsable() throws CoreException {
-        assertFalse(unparsableFile.isContentParsable());
-        assertTrue(parsableFile.isContentParsable());
-    }
-
     public void testGetPdObject() throws CoreException {
         IIpsObject pdObject = parsableFile.getIpsObject();
         assertNotNull(pdObject);
@@ -158,40 +138,26 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
         assertTrue(parsableFile.hasChildren());
     }
     
-    public void testSetContents() throws CoreException {
-        parsableFile.getIpsModel().addChangeListener(this);
-        parsableFile.setContents("new contents");
-        assertEquals("new contents", parsableFile.getContents());
-        assertFalse(parsableFile.isContentParsable());
-        assertTrue(parsableFile.isDirty());
-        assertEquals(parsableFile, lastEvent.getIpsSrcFile());
-    }
-
     public void testSave() throws IOException, CoreException {
-        parsableFile.setContents("new contents with german umlaut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        policyCmptType.newAttribute();
         parsableFile.getIpsModel().addChangeListener(this);
         parsableFile.save(true, null);
-        IFile file = parsableFile.getCorrespondingFile();
-        String contents = StringUtil.readFromInputStream(file.getContents(), ipsProject.getXmlFileCharset());
-        assertEquals("new contents with german umlaut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", contents);
         assertFalse(parsableFile.isDirty());
         assertEquals(parsableFile, lastEvent.getIpsSrcFile());
     }
     
     public void testNewMemento() throws CoreException {
-        parsableFile.setContents("blabla");
+        policyCmptType.newAttribute();
         IIpsSrcFileMemento memento = parsableFile.newMemento();
-        assertEquals("blabla", memento.getContents());
         assertEquals(true, memento.isDirty());
         assertEquals(parsableFile, memento.getIpsSrcFile());
     }
     
     public void testSetMemento() throws CoreException {
-        String contents = parsableFile.getContents();
         IIpsSrcFileMemento memento = parsableFile.newMemento();
-        parsableFile.setContents("blabla");
+        policyCmptType.newAttribute();
         parsableFile.setMemento(memento);
-        assertEquals(contents, parsableFile.getContents());
+        assertEquals(0, policyCmptType.getNumOfAttributes());
         assertFalse(parsableFile.isDirty());
     }
     

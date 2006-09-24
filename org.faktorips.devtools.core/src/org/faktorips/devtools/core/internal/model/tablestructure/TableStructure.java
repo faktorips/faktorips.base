@@ -142,7 +142,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public IColumn newColumn() {
         IColumn newColumn = newColumnInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return newColumn;
     }
     
@@ -153,7 +153,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     public int[] moveColumns(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(columns);
         int[] result = mover.move(indexes, up);
-        updateSrcFile();
+        objectHasChanged();
         return result;
     }
     
@@ -165,7 +165,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     void removeColumn(IColumn column) {
         columns.remove(column);
-        updateSrcFile();
+        objectHasChanged();
     }
     
     int getColumnIndex(IColumn column) {
@@ -215,7 +215,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public IColumnRange newRange() {
         IColumnRange newRange = newColumnRangeInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return newRange;
     }
     
@@ -226,7 +226,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     public int[] moveRanges(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(ranges);
         int[] result = mover.move(indexes, up);
-        updateSrcFile();
+        objectHasChanged();
         return result;
     }
     
@@ -238,7 +238,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     void removeRange(IColumnRange range) {
         ranges.remove(range);
-        updateSrcFile();
+        objectHasChanged();
     }
     
     /**
@@ -279,7 +279,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */ 
     public IUniqueKey newUniqueKey() {
         IUniqueKey newUniqueKey = newUniqueKeyInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return newUniqueKey;
     }
 
@@ -290,7 +290,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     public int[] moveUniqueKeys(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(uniqueKeys);
         int[] result = mover.move(indexes, up);
-        updateSrcFile();
+        objectHasChanged();
         return result;
     }
     
@@ -302,7 +302,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     void removeUniqueKey(IUniqueKey key) {
         uniqueKeys.remove(key);
-        updateSrcFile();
+        objectHasChanged();
     }
     
     /**
@@ -343,7 +343,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */ 
     public IForeignKey newForeignKey() {
         IForeignKey newForeignKey = newForeignKeyInternal(getNextPartId());
-        updateSrcFile();
+        objectHasChanged();
         return newForeignKey;
     }
 
@@ -354,7 +354,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     public int[] moveForeignKeys(int[] indexes, boolean up) {
         ListElementMover mover = new ListElementMover(foreignKeys);
         int[] result = mover.move(indexes, up);
-        updateSrcFile();
+        objectHasChanged();
         return result;
     }
     
@@ -366,7 +366,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     
     void removeForeignKey(IForeignKey key) {
         foreignKeys.remove(key);
-        updateSrcFile();
+        objectHasChanged();
     }
     
     /** 

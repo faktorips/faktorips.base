@@ -142,7 +142,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        updateSrcFile();
+        objectHasChanged();
         deleted = true;
     }
 

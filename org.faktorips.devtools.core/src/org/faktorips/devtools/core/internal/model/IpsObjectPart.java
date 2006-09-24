@@ -100,8 +100,8 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     /**
      * {@inheritDoc}
      */
-    protected void updateSrcFile() {
-        ((IpsObject)getIpsObject()).updateSrcFile();
+    protected void objectHasChanged() {
+        ((IpsObject)getIpsObject()).objectHasChanged();
     }
     
     /** 

@@ -63,7 +63,7 @@ public class Column extends IpsObjectPart implements IColumn {
      */ 
     public void setName(String newName) {
         this.name = newName;
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /**
@@ -87,7 +87,7 @@ public class Column extends IpsObjectPart implements IColumn {
      */
     public void setDatatype(String newDatatype) {
         datatype = newDatatype;
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /** 

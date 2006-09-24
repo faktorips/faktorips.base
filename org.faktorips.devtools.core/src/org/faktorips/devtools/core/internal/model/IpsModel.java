@@ -138,12 +138,18 @@ public class IpsModel extends IpsElement implements IIpsModel,
 
 	// map containing ClassLoaderProviders per IpsProject
 	private Map classLoaderProviderMap = new HashMap();
+    
+    // map containing CachedIpsObjects as values and IpsSrcFiles as keys.
+    private Map ipsObjectsMap = new HashMap(1000);
 
 	// validation result cache
 	private ValidationResultCache validationResultCache = new ValidationResultCache();
 
-	IpsModel() {
+	public IpsModel() {
 		super(null, "IpsModel"); //$NON-NLS-1$
+        if (TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsModel.Constructor(): IpsModel created.");
+        }
 	}
 
 	public void startListeningToResourceChanges() {
@@ -1167,8 +1173,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 
 			if (all) {
 				// because we process the same array with index j as with index
-				// i, index j
-				// can start allways with i+1 without overlook some product
+				// i, index jcan start allways with i+1 without overlooking some product
 				// component combinations.
 				for (int j = i + 1; j < cmptsToCheck.length; j++) {
 					strategyJ = cmptsToCheck[j].getIpsProject()
@@ -1222,7 +1227,55 @@ public class IpsModel extends IpsElement implements IIpsModel,
 					Message.ERROR, objects));
 		}
 	}
-
+    
+    /**
+     * Returns the content for the given ips src file. If the ips source file's
+     * corresponding resource does not exist, the method returns <code>null</code>.
+     */
+    synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
+        if (file==null) {
+            return null;
+        }
+        IFile corrFile = file.getCorrespondingFile();
+        if (corrFile==null || !corrFile.exists()) {
+            return null;
+        }
+        IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
+        long resourceModStamp = file.getCorrespondingResource().getModificationStamp();
+        if (content==null) {
+            content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
+            ipsObjectsMap.put(file, content);
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("IpsModel.getIpsSrcFileContent(): New content created for " +  file
+                        + ", Thead: " + Thread.currentThread().getName());
+            }
+        } else {
+            if (content.getModificationStamp()== resourceModStamp) {
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("IpsModel.getIpsSrcFileContent(): Content returned from cache, file=" +  file
+                            + ", FileModStamp=" + resourceModStamp + ", Thead: " + Thread.currentThread().getName());
+                }
+                return content;
+            }
+        }
+        content.initContentFromFile();
+        return content;
+    }
+    
+    public void ipsSrcFileHasChanged(IpsSrcFile file) {
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsModel.ipsSrcFileHasChanged(): About to broadcast change notifications, file=" +  file
+                    + ", Thead: " + Thread.currentThread().getName());
+        }
+        validationResultCache.removeStaleData(file);
+        ContentChangeEvent event = new ContentChangeEvent(file);
+        notifyChangeListeners(event);
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsModel.ipsSrcFileHasChanged(): Finished broadcasting change notifications, file=" +  file
+                    + ", Thead: " + Thread.currentThread().getName());
+        }
+    }
+    
 	/**
 	 * ResourceDeltaVisitor to update any model objects on resource changes.
 	 */
@@ -1246,26 +1299,21 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				}
 				IpsSrcFile srcFile = (IpsSrcFile) element;
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change on disk: " + srcFile);
+                    System.out.println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " + resource.getModificationStamp() 
+                            + ", " + srcFile + " Thead: " + Thread.currentThread().getName());
+                    ipsSrcFileHasChanged(srcFile);
                 }
-				getValidationResultCache().removeStaleData(srcFile.getIpsObject());
-				if (delta.getKind() == IResourceDelta.REMOVED) {
-				    IpsPlugin.getDefault().getManager().removeSrcFileContents(
-				            srcFile);
-				    return true;
-				}
-				IpsModelManager manager = IpsPlugin.getDefault().getManager();
-				manager.putSrcFileContents(srcFile, srcFile
-				        .getContentFromCorrespondingFile(), srcFile
-				        .getIpsProject().getXmlFileCharset());
 				return true;
 			} catch (Exception e) {
 				IpsPlugin.log(new IpsStatus(
 						"Error updating model objects after resource " //$NON-NLS-1$
 								+ resource + " changed.", e)); //$NON-NLS-1$
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("IpsModel.ResourceDeltaVisitor.visit(): Error updating model objects after resource changed, resource=" + resource);
+                }
 			}
 			return true;
 		}
 	}
-
+    
 }

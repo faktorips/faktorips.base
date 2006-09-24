@@ -192,7 +192,6 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      * {@inheritDoc}
      */
     public IIpsSrcFile getIpsSrcFile(String name) {
-    	
     	IpsObjectType type = IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
     	if(type != null){
     		return new IpsSrcFile(this, name);
@@ -206,7 +205,16 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
         IFile file = folder.getFile(name);
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsPackageFragment.createIpsFile - begin: pack=" + this + ", newFile=" + name 
+                    + ", Thead: " + Thread.currentThread().getName());
+        }
         file.create(source, force, monitor);
+        
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("IpsPackageFragment.createIpsFile - finished: pack=" + this + ", newFile=" + name 
+                    + ", Thead: " + Thread.currentThread().getName());
+        }
         return getIpsSrcFile(name);
     }
 
@@ -215,7 +223,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      */
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor) throws CoreException {
         try {
-	        InputStream is = new ByteArrayInputStream(content.getBytes(StringUtil.CHARSET_UTF8));
+	        InputStream is = new ByteArrayInputStream(content.getBytes(getIpsProject().getXmlFileCharset()));
 	        return createIpsFile(name, is, force, monitor);
         } catch (UnsupportedEncodingException e) {
             throw new CoreException(new IpsStatus(e));

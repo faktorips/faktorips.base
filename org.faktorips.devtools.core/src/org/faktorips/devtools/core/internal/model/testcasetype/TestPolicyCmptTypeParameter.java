@@ -299,7 +299,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	public ITestAttribute newInputTestAttribute() {
 		TestAttribute a = newTestAttributeInternal(getNextPartId());
 		a.setTestAttributeType(TestParameterType.INPUT);
-        updateSrcFile();
+        objectHasChanged();
 		return a;
 	}
 
@@ -309,7 +309,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	public ITestAttribute newExpectedResultTestAttribute() {
 	    TestAttribute a = newTestAttributeInternal(getNextPartId());
 	    a.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
-	    updateSrcFile();
+	    objectHasChanged();
 	    return a;
 	}
 
@@ -327,7 +327,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
 	 */
 	public ITestPolicyCmptTypeParameter newTestPolicyCmptTypeParamChild() {
 		ITestPolicyCmptTypeParameter p = newTestPolicyCmptTypeParamChildInternal(getNextPartId());
-		updateSrcFile();
+		objectHasChanged();
 		return p;
 	}
 

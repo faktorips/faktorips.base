@@ -17,17 +17,13 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import javax.xml.transform.TransformerException;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -116,7 +112,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     public void setDescription(String newDescription) {
         description = newDescription;
-        updateSrcFile();
+        objectHasChanged();
     }
 
     /** 
@@ -127,25 +123,15 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
     
     /**
-     * Updates the source file's (string) content with the object's xml text representation.
+     * Notifies the model about the change.  
      */
-    protected void updateSrcFile() {
-    	IpsModel model = (IpsModel)getIpsModel();
-    	model.getValidationResultCache().removeStaleData(this);
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
-        try {
-            Element element = toXml(doc);
-            String encoding = getIpsProject()==null?"UTF-8":getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
-            String newContents = XmlUtil.nodeToString(element, encoding);
-            ((IpsSrcFile)getParent()).setContentsInternal(newContents);
-        } catch (TransformerException e) {
-            throw new RuntimeException(e); 
-            // This is a programing error, rethrow as runtime exception
-        } catch (CoreException ce) {
-            throw new RuntimeException(ce); 
-            // Can't happen due to io exceptions as the source file's content is 
-            // already loaded. Everything else is a programing error.
+    protected void objectHasChanged() {
+        IpsModel model = (IpsModel)getIpsModel();
+        IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
+        if (content!=null) {
+            content.markAsModified();
         }
+        model.ipsSrcFileHasChanged((IpsSrcFile)getIpsSrcFile());
     }
     
     /**
@@ -183,6 +169,13 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         DescriptionHelper.setDescription(element, description);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public void initFromXml(Element element) {
+        super.initFromXml(element);
+    }
+
     /**
      * Overridden.
      */

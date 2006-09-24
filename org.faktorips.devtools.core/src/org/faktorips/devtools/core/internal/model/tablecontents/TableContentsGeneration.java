@@ -73,7 +73,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     public IRow newRow() {
          IRow newRow = newRowInternal(getNextPartId());
-         updateSrcFile();
+         objectHasChanged();
          return newRow;
     }
     
@@ -85,7 +85,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     
     void removeRow(IRow row) {
         rows.remove(row);
-        updateSrcFile();
+        objectHasChanged();
     }
 
     public void newColumn(int insertAt, String defaultValue) {
@@ -174,6 +174,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     public void clear() {
         rows.clear();
-        updateSrcFile();
+        objectHasChanged();
     }
 }

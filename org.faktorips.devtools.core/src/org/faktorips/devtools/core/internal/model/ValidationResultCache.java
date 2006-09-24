@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.HashMap;
 
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -72,15 +73,15 @@ public class ValidationResultCache {
 	}
 	
 	/**
-	 * Removes the data from the cache that is stale because the given container
-	 * has changed. Does nothing if the given container is <code>null</code>.
+	 * Removes the data from the cache that is stale because the given ips source file
+	 * has changed. Does nothing if the given file is <code>null</code>.
 	 * <p>
-	 * Implementation note: At the moment we clear the whole cache if an object part
-	 * container changes as due to the dependencies between objects the validation 
+	 * Implementation note: At the moment we clear the whole cache if a file
+	 * changes as due to the dependencies between objects the validation 
 	 * result of other objects can also change if one object is changed. We might use
 	 * the exact dependencies between objects to solve this more efficiently.  
 	 */
-	public void removeStaleData(IIpsObjectPartContainer changedContainer) {
+	public void removeStaleData(IIpsSrcFile file) {
 		data.clear();
 	}
 
