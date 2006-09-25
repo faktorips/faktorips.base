@@ -601,17 +601,6 @@
             priority="normal"/>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.faktorips.devtools.core.internal.application.IpsApplication"
-            description="Magnificent Product-Definition-Tool from FaktorZehn GmbH"
-            name="Faktor IPS">
-         <property
-               name="windowImages"
-               value="icons/ArrowDown.gif"/>
-      </product>
-   </extension>
-   <extension
          id="productDefinitionTool"
          name="Faktor IPS"
          point="org.eclipse.core.runtime.applications">
@@ -743,12 +732,6 @@
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productCmptCompareItemCreator"/>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="productDefinitionTool"
-            name="FaktorIps"/>
-   </extension>
-   <extension
          id="FaktorIPS"
          point="org.eclipse.core.runtime.products">
       <product
@@ -757,6 +740,12 @@
          <property
                name="aboutText"
                value="Faktor IPS&#x0A;&#x0A;Version 1.0&#x0A;&#x0A;Copyright (c) 2005,2006 Faktor Zehn GmbH and others. All rights reserved.&#x0A;Visit http://www.faktorzehn.org or http://www.faktorips.org"/>
+         <property
+               name="aboutImage"
+               value="icons/FaktorIpsIcon128.gif"/>
+         <property
+               name="windowImages"
+               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif,icons/FaktorIpsIcon48.gif,icons/FaktorIpsIcon64.gif,icons/FaktorIpsIcon128.gif"/>
       </product>
    </extension>
 </plugin>
