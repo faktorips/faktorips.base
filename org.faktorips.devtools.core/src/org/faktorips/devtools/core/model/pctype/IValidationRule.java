@@ -29,7 +29,7 @@ public interface IValidationRule extends IIpsObjectPart {
 
 	public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
 
-	public final static String PROPERTY_APPLIED_IN_ALL_FUNCTIONS = "appliedInAllBusinessFunctions"; //$NON-NLS-1$
+	public final static String PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS = "appliedForAllBusinessFunctions"; //$NON-NLS-1$
 
 	public final static String PROPERTY_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
 
@@ -125,14 +125,14 @@ public interface IValidationRule extends IIpsObjectPart {
 	public void removeBusinessFunction(int index);
 
 	/**
-	 * Returns true if the rule is applied in all business functions.
+	 * Returns true if the rule is to be applied for all business functions.
 	 */
-	public boolean isAppliedInAllBusinessFunctions();
+	public boolean isAppliedForAllBusinessFunctions();
 
 	/**
-	 * Sets if the rule should be applied in all business functions.
+	 * Sets if the rule should be applied for all business functions.
 	 */
-	public void setAppliedInAllBusinessFunctions(boolean newValue);
+	public void setAppliedForAllBusinessFunctions(boolean newValue);
 
 	/**
 	 * Adds the name of an attribute that is evaluated in the rules condition.

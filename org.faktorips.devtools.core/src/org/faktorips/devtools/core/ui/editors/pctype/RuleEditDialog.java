@@ -20,6 +20,8 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
@@ -34,6 +36,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
@@ -94,6 +98,32 @@ public class RuleEditDialog extends IpsPartEditDialog {
         attributesPage.setControl(createAttributesPage(folder));
         
         createDescriptionTabItem(folder);
+        //the update cycle for changes to model objects is extended so that the gui will be updated due to
+        //model changes. The update cycle gui -> model -> gui is currently not implemented in a super class
+        //but should be considered in the future.
+        //It is necessary here because changes made to the model within the RuleFunctionsControl need to be 
+        //communicated to the gui so that other controls can adjust there current state. 
+        final ContentsChangeListener listener = new ContentsChangeListener(){
+
+            public void contentsChanged(ContentChangeEvent event) {
+                if(!event.getIpsSrcFile().exists()){
+                    return;
+                }
+                if(event.getIpsSrcFile().equals(rule.getIpsObject().getIpsSrcFile())){
+                    RuleEditDialog.this.uiController.updateUI();
+                }
+            }
+        };
+        rule.getIpsModel().addChangeListener(listener);
+        //the listener has to be savely removed from the model after the dialog has been closed otherwise
+        //widget diposed exceptions will rise if changes to the rule object are made afterwards 
+        getShell().addDisposeListener(new DisposeListener(){
+
+            public void widgetDisposed(DisposeEvent e) {
+                rule.getIpsModel().removeChangeListener(listener);
+            }
+            
+        });
         return folder;
     }
     
@@ -150,6 +180,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
         rfControl = new RuleFunctionsControl((IValidationRule)super.getIpsPart(), workArea);
         
         appliedToAllField = new CheckboxField(appliedToAllCheckbox);
+        
         return workArea;
     }
     
@@ -181,7 +212,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
         uiController.add(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
         uiController.add(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
         uiController.add(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
-        uiController.add(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_IN_ALL_FUNCTIONS);
+        uiController.add(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         uiController.add(specifiedInSrcField, rule, IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
     }
     
@@ -195,9 +226,9 @@ public class RuleEditDialog extends IpsPartEditDialog {
             super(pdPart);
         }
         
-        protected MessageList validatePartAndUpdateUI() {
+        public MessageList validatePartAndUpdateUI() {
             MessageList list = super.validatePartAndUpdateUI();
-            rfControl.refresh();
+            rfControl.updateValidationStatus();
             return list;
         }
     }

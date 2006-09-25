@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -105,7 +106,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
-        rule.setAppliedInAllBusinessFunctions(true);
+        rule.setAppliedForAllBusinessFunctions(true);
         rule.initFromXml((Element)doc.getDocumentElement());
         assertEquals(42, rule.getId());
         assertEquals("checkAge", rule.getName());
@@ -113,7 +114,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("ageMissing", rule.getMessageCode());
         assertEquals("messageText", rule.getMessageText());
         assertEquals(MessageSeverity.WARNING, rule.getMessageSeverity());
-        assertFalse(rule.isAppliedInAllBusinessFunctions());
+        assertFalse(rule.isAppliedForAllBusinessFunctions());
         String[] functions = rule.getBusinessFunctions();
         assertEquals(2, functions.length);
         assertEquals("NewOffer", functions[0]);
@@ -129,7 +130,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     public void testToXmlDocument() {
         rule = pcType.newRule(); // => id=1 because it's the second rule
         rule.setName("checkAge");
-        rule.setAppliedInAllBusinessFunctions(true);
+        rule.setAppliedForAllBusinessFunctions(true);
         rule.setDescription("blabla");
         rule.setMessageCode("ageMissing");
         rule.setMessageText("messageText");
@@ -148,7 +149,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("ageMissing", copy.getMessageCode());
         assertEquals("messageText", copy.getMessageText());
         assertEquals(MessageSeverity.WARNING, copy.getMessageSeverity());
-        assertTrue(copy.isAppliedInAllBusinessFunctions());
+        assertTrue(copy.isAppliedForAllBusinessFunctions());
         String[] functions = copy.getBusinessFunctions();
         assertEquals(2, functions.length);
         assertEquals("NewOffer", functions[0]);
@@ -211,6 +212,24 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     }
     
+    public void testValidateBusinessFunctions() throws CoreException{
+        rule.setAppliedForAllBusinessFunctions(true);
+        MessageList msgList = rule.validate();
+        msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        assertTrue(msgList.isEmpty());
+        
+        rule.setAppliedForAllBusinessFunctions(false);
+        msgList = rule.validate();
+        msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        assertFalse(msgList.isEmpty());
+        
+        rule.setAppliedForAllBusinessFunctions(false);
+        rule.addBusinessFunction("function");
+        msgList = rule.validate();
+        msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        assertTrue(msgList.isEmpty());
+        
+    }
     /**
      * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
      */

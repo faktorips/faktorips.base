@@ -410,7 +410,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     		}
     		rule = ((IPolicyCmptType)attribute.getParent()).newRule();
     		rule.addValidatedAttribute(attribute.getName());
-    		rule.setAppliedInAllBusinessFunctions(true);
+    		rule.setAppliedForAllBusinessFunctions(true);
     		rule.setCheckValueAgainstValueSetRule(true);
     		rule.setValidatedAttrSpecifiedInSrc(false);
     		rule.setDescription(Messages.AttributeEditDialog_descriptionContent);

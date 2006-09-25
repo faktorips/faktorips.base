@@ -53,6 +53,9 @@ import org.faktorips.util.message.MessageList;
  * the business functions a rule is applied in.
  */
 public class RuleFunctionsControl extends EditTableControl {
+
+    private final static String IMAGE_COLUMN_VIEWER_PROPERTY = "imageColumn";
+    private final static String VALUE_COLUMN_VIEWER_PROPERTY = "valueColumn";
     
     private IValidationRule rule;
 
@@ -169,6 +172,16 @@ public class RuleFunctionsControl extends EditTableControl {
         return rule.validate().getMessagesFor(wrapper.getFctName());
     }
 
+    /**
+     * Updates the first column of the table. The first column shows images according to the validation
+     * state of the entry in the second column of the same row.
+     */
+    public void updateValidationStatus(){
+        ContentProvider contentProvider = (ContentProvider)getTableViewer().getContentProvider();
+        Object[] elements = contentProvider.getElements(rule);
+        getTableViewer().update(elements, new String[]{IMAGE_COLUMN_VIEWER_PROPERTY});
+    }
+    
 	private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
 		public Image getColumnImage(Object element, int columnIndex) {
 			if (columnIndex!=0) {
@@ -189,6 +202,22 @@ public class RuleFunctionsControl extends EditTableControl {
 		    }
 		    return element.toString();
 		}
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean isLabelProperty(Object element, String property) {
+            if(IMAGE_COLUMN_VIEWER_PROPERTY.equals(property)){
+                return true;
+            }
+            if(VALUE_COLUMN_VIEWER_PROPERTY.equals(property)){
+                return true;
+            }
+            
+            return false;
+        }
+        
+        
 	}
 
     

@@ -61,7 +61,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	// the qualified name of the business functions this rule is used in
 	private ArrayList functions = new ArrayList(0);
 
-	private boolean applyInAll;
+	private boolean appliedForAllBusinessFunction = false;
 
 	private boolean validatedAttrSpecifiedInSrc = false;
 
@@ -188,16 +188,16 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isAppliedInAllBusinessFunctions() {
-		return applyInAll;
+	public boolean isAppliedForAllBusinessFunctions() {
+		return appliedForAllBusinessFunction;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setAppliedInAllBusinessFunctions(boolean newValue) {
-		boolean oldValue = applyInAll;
-		applyInAll = newValue;
+	public void setAppliedForAllBusinessFunctions(boolean newValue) {
+		boolean oldValue = appliedForAllBusinessFunction;
+		appliedForAllBusinessFunction = newValue;
 		valueChanged(oldValue, newValue);
 	}
 
@@ -218,7 +218,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 					list.add(new Message("", text, Message.ERROR, function, //$NON-NLS-1$
 							"name")); //$NON-NLS-1$
 				} else {
-					if (isAppliedInAllBusinessFunctions()) {
+					if (isAppliedForAllBusinessFunctions()) {
 						String text = Messages.ValidationRule_msgIgnored;
 						list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
 								function, "name")); //$NON-NLS-1$
@@ -226,6 +226,12 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 				}
 			}
 		}
+        if(!isAppliedForAllBusinessFunctions() && functions.isEmpty()){
+            String text = "If the validation rule is not applied to all business functions, " +
+                    "at least one business function must be assigned.";
+            list.add(new Message("", text, Message.ERROR, this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)); //$NON-NLS-1$
+            
+        }
 		validateValidatedAttribute(list);
 	}
 
@@ -331,8 +337,8 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		name = element.getAttribute(PROPERTY_NAME);
-		applyInAll = Boolean.valueOf(
-				element.getAttribute(PROPERTY_APPLIED_IN_ALL_FUNCTIONS))
+		appliedForAllBusinessFunction = Boolean.valueOf(
+				element.getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS))
 				.booleanValue();
 		msgCode = element.getAttribute(PROPERTY_MESSAGE_CODE);
 		msgText = element.getAttribute(PROPERTY_MESSAGE_TEXT);
@@ -368,8 +374,8 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	protected void propertiesToXml(Element newElement) {
 		super.propertiesToXml(newElement);
 		newElement.setAttribute(PROPERTY_NAME, name);
-		newElement.setAttribute(PROPERTY_APPLIED_IN_ALL_FUNCTIONS, String
-				.valueOf(applyInAll));
+		newElement.setAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS, String
+				.valueOf(appliedForAllBusinessFunction));
 		newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
 		newElement.setAttribute(PROPERTY_MESSAGE_TEXT, msgText);
 		newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
