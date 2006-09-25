@@ -4,6 +4,7 @@
 <product name="FaktorIPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" useFeatures="false">
 
    <aboutInfo>
+      <image path="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
       <text>
          Faktor IPS
 
@@ -19,15 +20,18 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
    <launcherArgs>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i48="/org.faktorips.devtools.core/icons/FaktorIpsIcon48.gif" i64="/org.faktorips.devtools.core/icons/FaktorIpsIcon64.gif" i128="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
 
 
    <launcher name="faktorips">
+      <linux icon="/org.faktorips.devtools.core/icons/FaktorIpsIcon.xpm"/>
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="/org.faktorips.devtools.core/icons/FaktorIpsIcon.ico"/>
          <bmp/>
       </win>
    </launcher>
+
 
    <plugins>
       <plugin id="org.apache.ant"/>
@@ -39,8 +43,8 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility"/>
-      <plugin id="org.eclipse.core.resources.win32"/>
+      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
+      <plugin id="org.eclipse.core.resources.win32" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility"/>
       <plugin id="org.eclipse.core.variables"/>
@@ -69,7 +73,7 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
       <plugin id="org.eclipse.pde.ui"/>
       <plugin id="org.eclipse.search"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.team.core"/>
       <plugin id="org.eclipse.team.cvs.core"/>
       <plugin id="org.eclipse.team.cvs.ui"/>
@@ -84,18 +88,18 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
       <plugin id="org.eclipse.ui.ide"/>
       <plugin id="org.eclipse.ui.intro"/>
       <plugin id="org.eclipse.ui.views"/>
-      <plugin id="org.eclipse.ui.win32"/>
+      <plugin id="org.eclipse.ui.win32" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
       <plugin id="org.eclipse.update.configurator"/>
       <plugin id="org.eclipse.update.core"/>
-      <plugin id="org.eclipse.update.core.win32"/>
+      <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.faktorips.devtools.core"/>
       <plugin id="org.faktorips.devtools.stdbuilder"/>
       <plugin id="org.faktorips.dtflcommon"/>
       <plugin id="org.faktorips.fl"/>
-      <plugin id="org.faktorips.nls.devtools.core.nl1"/>
+      <plugin id="org.faktorips.nls.devtools.core.nl1" fragment="true"/>
       <plugin id="org.faktorips.runtime"/>
       <plugin id="org.faktorips.util"/>
       <plugin id="org.faktorips.valuetypes"/>
