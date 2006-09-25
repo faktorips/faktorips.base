@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -37,6 +38,12 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann, Peter Erzberger
  */
 public class DependencyGraph {
+    
+    public final static boolean TRACE_DEPENDENCY_GRAPH_MANAGEMENT;
+    
+    static {
+        TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")).booleanValue();
+    }
 
     private Map dependantsForMap;
     private Map dependsOnMap;
@@ -67,7 +74,9 @@ public class DependencyGraph {
         dependsOnMap = new HashMap();
         List allIpsObjects = new ArrayList();
         ipsProject.findAllIpsObjects(allIpsObjects);
-        System.out.print("all: " + allIpsObjects);
+        if(TRACE_DEPENDENCY_GRAPH_MANAGEMENT){
+            System.out.println("all: " + allIpsObjects);
+        }
         for (Iterator it = allIpsObjects.iterator(); it.hasNext();) {
             IIpsObject ipsObject = (IIpsObject)it.next();
             QualifiedNameType[] dependsOn = ipsObject.dependsOn();
