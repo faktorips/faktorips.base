@@ -246,7 +246,7 @@
                         <arg line="runtests all" />
                 </exec>
 	               
-	        	<!-- check if there are errors in testcase-logs >
+	        	<! check if there are errors in testcase-logs >
 				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
 					<arg line="lookForFailure.pl"/>
 				</exec-->
