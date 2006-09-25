@@ -3,6 +3,7 @@
 	
 	<target name="import">
 		<faktorips.import dir="${sourcedir}"/>
+		<eclipse.incrementalBuild project="org.faktorips.integrationtest" />
 	</target>
 
 </project>
