@@ -19,7 +19,10 @@ package org.faktorips.devtools.core.ui.views.attrtable;
 
 
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
@@ -63,8 +66,26 @@ public class AttributesTable extends ViewPart {
         // create column for product-name
         TableColumn col = new TableColumn(table, SWT.LEAD);
         col.setWidth(100);        
-        
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(new IpsResourceChangeListener(tableViewer), IResourceChangeEvent.POST_CHANGE);
+
+        IpsResourceChangeListener resourceListener = new IpsResourceChangeListener(tableViewer){
+            protected IResource[] internalResourceChanged(IResourceChangeEvent event) {
+                // refresh only if resource change does not start a build (buildkind not applicable for this type of event)
+                if (event.getBuildKind() == 0) {
+                    IResource res = null;
+                    for (IResourceDelta deltas[] = event.getDelta().getAffectedChildren(); deltas.length > 0; deltas = deltas[0].getAffectedChildren()) {
+                        res = deltas[0].getResource();
+                        if (res instanceof IFolder && IResourceDelta.ADDED == deltas[0].getKind()) {
+                            break;
+                        }
+                    }
+                    if(res!=null){
+                        return new IResource[]{res};
+                    }
+                }
+                return new IResource[]{};
+            }
+        };
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
     }
 
 	public void setFocus() {

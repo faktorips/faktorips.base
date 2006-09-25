@@ -17,18 +17,16 @@
 
 package org.faktorips.devtools.core.ui.views;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 
-public class IpsResourceChangeListener implements IResourceChangeListener {
+public abstract class IpsResourceChangeListener implements IResourceChangeListener {
 
     /**
      * The viewer to update.
@@ -49,19 +47,9 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
      * Overridden.
      */
     public void resourceChanged(IResourceChangeEvent event) {
-    	if (event.getBuildKind() != 0) {
-    		return;
-    	}
+        IResource[] resources= internalResourceChanged(event);
     	
-    	IResource res = null;
-    	for (IResourceDelta deltas[] = event.getDelta().getAffectedChildren(); deltas.length > 0; deltas = deltas[0].getAffectedChildren()) {
-    		res = deltas[0].getResource();
-    		if (res instanceof IFolder && IResourceDelta.ADDED == deltas[0].getKind()) {
-    			break;
-    		}
-    	}
-    	
-    	MyRunnable runnable = new MyRunnable(res);
+    	MyRunnable runnable = new MyRunnable(resources);
     	
     	if (viewer != null) {
     		Control ctrl = viewer.getControl();
@@ -69,14 +57,18 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
     			ctrl.getDisplay().syncExec(runnable);
     		}
     	}
-    	
-     	
     }
     
+    protected abstract IResource[] internalResourceChanged(IResourceChangeEvent event);
+
+    /**
+     * Refreshes the given IResource in the viewer and selects it afterwards.
+     * 
+     */
     private class MyRunnable implements Runnable {
-    	IResource res;
-    	public MyRunnable(IResource res) {
-    		this.res = res;
+    	IResource[] resources;
+    	public MyRunnable(IResource[] resources) {
+    		this.resources = resources;
     	}
     	
         public void run() {
@@ -84,8 +76,12 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
         		return;
         	}
         	viewer.refresh();
-        	if (res != null) {
+        	for (int i = 0; i < resources.length; i++) {
+                IResource res= resources[i];
         		IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
+                // performs full refresh if element is null
+                viewer.refresh(element);
+                
         		if (element != null) {
         			viewer.setSelection(new StructuredSelection(element), true);
         		}

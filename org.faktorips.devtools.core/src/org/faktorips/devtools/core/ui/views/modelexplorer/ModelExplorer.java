@@ -3,7 +3,9 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.actions.OpenProjectAction;
@@ -187,8 +189,18 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         createFilters(treeViewer);
 
         getSite().setSelectionProvider(treeViewer);
-        resourceListener = new IpsResourceChangeListener(treeViewer);
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
+        resourceListener = new IpsResourceChangeListener(treeViewer){
+            // TODO Optimize refresh: refresh folders if files were added or removed, additionally refresh changed files 
+            protected IResource[] internalResourceChanged(IResourceChangeEvent event) {
+                IResourceDelta delta= event.getDelta();
+                IResource res= delta.getResource();
+                if(res!=null){
+                    return new IResource[]{res};
+                }
+                return new IResource[]{};
+            }
+        };
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
         /*
          * Use the current value of isFlatLayout, which is set by loading the memento/viewState
          * before this method is called
@@ -371,8 +383,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         private IWorkbenchAction rename = ActionFactory.RENAME.create(getSite().getWorkbenchWindow());
         private IWorkbenchAction move = ActionFactory.MOVE.create(getSite().getWorkbenchWindow());
-
-        // private IAction propertiesAction= new PropertyDialogAction(getSite(), treeViewer);
 
         public MenuBuilder() {
             getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(),
