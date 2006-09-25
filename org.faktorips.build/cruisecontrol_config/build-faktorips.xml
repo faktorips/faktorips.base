@@ -289,7 +289,7 @@
 		    		</classpath>
 		    		
 	        		<!-- put result logfiles into given logdir (passed by cruisecontrol-config.xml in project org.faktorips.eclipsetest -->
-					<batchtest filtertrace="off"  todir="{${dir}/environment/results/xml"> 
+					<batchtest filtertrace="off"  todir="${dir}/environment/results/xml"> 
 						<fileset dir="${classes}">
 							<patternset id="test.sources">
 								<exclude name="**/*Abstract*" />
