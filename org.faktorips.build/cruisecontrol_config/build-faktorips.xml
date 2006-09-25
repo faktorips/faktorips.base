@@ -223,10 +223,14 @@
                 <delete includeemptydirs="true" >
                         <fileset dir="${dir}">
                                 <exclude name="environment/**" />
-                        	    <include name="environment/results/xml/" />
                         </fileset>
                 </delete>
-
+				<delete>
+        				<fileset dir="${dir}" >
+                    	    <include name="environment/results/xml/" />
+        				</fileset>
+				</delete>
+                        	
                 <!-- get an up-to-date version of the buildscript -->
                 <cvs command="co org.faktorips.build" dest="${dir}" cvsroot="${cvsroot}" quiet="true" />
 		
