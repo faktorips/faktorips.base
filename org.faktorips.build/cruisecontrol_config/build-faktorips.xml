@@ -225,10 +225,13 @@
                                 <exclude name="environment/**" />
                         </fileset>
                 </delete>
-				<delete>
+				<delete includeemptydirs="true">
         				<fileset dir="${dir}" >
                     	    <include name="environment/results/xml/" />
         				</fileset>
+	    				<fileset dir="${dir}" >
+	                	    <include name="environment/eclipse/org.faktorips*" />
+	    				</fileset>
 				</delete>
                         	
                 <!-- get an up-to-date version of the buildscript -->
