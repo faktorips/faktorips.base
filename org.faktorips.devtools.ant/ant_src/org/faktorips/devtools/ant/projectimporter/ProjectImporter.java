@@ -90,28 +90,28 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-        String[] natures = { "org.faktorips.devtools.core.ipsnature" };
-        if (workspace.validateNatureSet(natures).getSeverity() != IStatus.OK) {
+        // Create
+        IProgressMonitor monitor = new NullProgressMonitor();
 
-            // Create
-            IProgressMonitor monitor = new NullProgressMonitor();
+        try {
+            // get description provieded in .project File
+            InputStream inputStream = new FileInputStream(this.getProjectFile());
+            IProjectDescription description = null;
 
             try {
-                // get description provieded in .project File
-                InputStream inputStream = new FileInputStream(this.getProjectFile());
-                IProjectDescription description = null;
+                description = workspace.loadProjectDescription(inputStream);
+            }
+            catch (Exception e) {
+                throw new BuildException(e);
+            }
+            finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
 
-                try {
-                    description = workspace.loadProjectDescription(inputStream);
-                }
-                catch (Exception e) {
-                    throw new BuildException(e);
-                }
-                finally {
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                }
+            //check if all natures required by the project are present and valid
+            if (workspace.validateNatureSet(description.getNatureIds()).getSeverity() != IStatus.OK) {
 
                 // create new project with name provided in description
                 IProject project = workspace.getRoot().getProject(description.getName());
@@ -134,14 +134,15 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
                 project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 
                 project.close(monitor);
-
             }
-            catch (Exception e) {
-                throw new BuildException(e);
+            else {
+                throw new BuildException("Invalid Nature-Settings: "
+                        + workspace.validateNatureSet(description.getNatureIds()).getMessage());
             }
 
-        }else{
-            throw new BuildException("Invalid Nature-Settings: " + workspace.validateNatureSet(natures).getMessage());
+        }
+        catch (Exception e) {
+            throw new BuildException(e);
         }
 
     }
