@@ -247,15 +247,15 @@
 	            </copy>
 
         	
-                <!-- execute eclipse-plugintests (see ../eclipsetest_skel/test.xml which will be called by the runtests script) >
+                <!-- execute eclipse-plugintests (see ../eclipsetest_skel/test.xml which will be called by the runtests script) -->
                 <exec executable="/bin/bash" dir="${dir}/environment/" failonerror="true" logError="true">
                         <arg line="runtests all" />
                 </exec>
 	               
-	        	<! check if there are errors in testcase-logs >
+	        	<!-- check if there are errors in testcase-logs -->
 				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
 					<arg line="lookForFailure.pl"/>
-				</exec-->
+				</exec>
         	
 				<!-- checkout org.faktorips.integrationtest project -->
         		<cvs command="co org.faktorips.integrationtest" dest="${dir}" cvsroot="${cvsroot}" quiet="true"/>
