@@ -20,7 +20,10 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
    <launcherArgs>
    </launcherArgs>
 
-   <windowImages i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i48="/org.faktorips.devtools.core/icons/FaktorIpsIcon48.gif" i64="/org.faktorips.devtools.core/icons/FaktorIpsIcon64.gif" i128="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
+   <windowImages small="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" large="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i48="/org.faktorips.devtools.core/icons/FaktorIpsIcon48.gif" i64="/org.faktorips.devtools.core/icons/FaktorIpsIcon64.gif" i128="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
+
+   <!-- for Eclipse 3.1, small and large are needed, for Eclipse 3.2 i16 to i128
+   windowImages small="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" large="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i48="/org.faktorips.devtools.core/icons/FaktorIpsIcon48.gif" i64="/org.faktorips.devtools.core/icons/FaktorIpsIcon64.gif" i128="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/-->
 
 
    <launcher name="faktorips">
