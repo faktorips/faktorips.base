@@ -111,7 +111,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
             }
 
             //check if all natures required by the project are present and valid
-            if (workspace.validateNatureSet(description.getNatureIds()).getSeverity() != IStatus.OK) {
+            if (workspace.validateNatureSet(description.getNatureIds()).getSeverity() == IStatus.OK) {
 
                 // create new project with name provided in description
                 IProject project = workspace.getRoot().getProject(description.getName());
