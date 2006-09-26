@@ -229,9 +229,6 @@
         				<fileset dir="${dir}" >
                     	    <include name="environment/results/xml/" />
         				</fileset>
-	    				<fileset dir="${dir}/environment/eclipse/plugins/" >
-	                	    <include name="org.faktorips*" />
-	    				</fileset>
 				</delete>
                         	
                 <!-- get an up-to-date version of the buildscript -->
@@ -251,6 +248,7 @@
 
         	
                 <!-- execute eclipse-plugintests (see ../eclipsetest_skel/test.xml which will be called by the runtests script) -->
+        	    <!-- this will install the feature in a fresh environment/test-eclipse/eclipse -->
                 <exec executable="/bin/bash" dir="${dir}/environment/" failonerror="true" logError="true">
                         <arg line="runtests all" />
                 </exec>
@@ -270,8 +268,8 @@
         		</delete>
 
         		<!-- import and build integrationtest sources via eclipse antRunner (see ../eclipsetest_skel/importProjects.xml) -->
-        		<exec executable="/usr/bin/java" failonerror="false" logError="true">
-        			<arg line="-jar  ${dir}/environment/eclipse/startup.jar -data ${dir}/environment/workspace/ -consolelog -application org.eclipse.ant.core.antRunner -buildfile ${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml -Dsourcedir=${dir}/org.faktorips.integrationtest/" />
+        		<exec executable="/usr/bin/java" failonerror="true" logError="true">
+        			<arg line="-jar  ${dir}/environment/test-eclipse/eclipse/startup.jar -data ${dir}/environment/workspace/ -consolelog -application org.eclipse.ant.core.antRunner -buildfile ${dir}/org.faktorips.build/eclipsetest_skel/importProjects.xml -Dsourcedir=${dir}/org.faktorips.integrationtest/" />
         		</exec>
         	
         		<!-- run org.faktorips.integrationtest tests -->
