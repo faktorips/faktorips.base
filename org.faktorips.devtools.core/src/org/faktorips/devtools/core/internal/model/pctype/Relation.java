@@ -358,7 +358,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IRelation findContainerRelation() throws CoreException {
     	if (StringUtils.isEmpty(containerRelation)) {
@@ -380,12 +380,28 @@ public class Relation extends IpsObjectPart implements IRelation {
     /**
 	 * {@inheritDoc}
 	 */
-	public boolean implementsContainerRelation() throws CoreException {
+	public boolean isContainerRelationImplementation() throws CoreException {
 		return StringUtils.isNotEmpty(containerRelation);
 	}
+    
+	/**
+     * {@inheritDoc}
+     */
+    public boolean isContainerRelationImplementation(IRelation containerRelation) throws CoreException {
+        if (containerRelation==null) {
+            return false;
+        }
+        if (!containerRelation.isReadOnlyContainer()) {
+            throw new CoreException(new IpsStatus("Relation " + containerRelation + " is not a container relation."));
+        }
+        if (!isContainerRelationImplementation()) {
+            return false;
+        }
+        return containerRelation.equals(findContainerRelation());
+    }
 
-	/** 
-     * Overridden.
+    /** 
+     * {@inheritDoc}
      */
     public void setContainerRelation(String newRelation) {
         String oldValue = containerRelation;
@@ -394,14 +410,14 @@ public class Relation extends IpsObjectPart implements IRelation {
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getReverseRelation() {
         return reverseRelation;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void setReverseRelation(String newRelation) {
         String oldValue = this.reverseRelation;
@@ -440,7 +456,7 @@ public class Relation extends IpsObjectPart implements IRelation {
 	 * {@inheritDoc}
 	 */
     public IRelation findReverseRelation() throws CoreException {
-        if ((type.isComposition() || type.isReverseComposition()) && implementsContainerRelation()) {
+        if ((type.isComposition() || type.isReverseComposition()) && isContainerRelationImplementation()) {
         	return findReverseRelationOfImplementationRelation();
         }
     	if (StringUtils.isEmpty(reverseRelation)) {

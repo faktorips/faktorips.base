@@ -72,11 +72,10 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public final static String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "SupertypeHierarchyContainsCycle"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an abstract relation exists in the type's supertype
+     * Validation message code to indicate that a readonly-container relation exists in the type's supertype
      * hierarchy that must be implemented, or the type must also be abstract.
      */
-    public final static String MSGCODE_MUST_IMPLEMENT_ABSTRACT_RELATION = MSGCODE_PREFIX + "MustImplementAbstractRelation"; //$NON-NLS-1$
-    // TODO
+    public final static String MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION = MSGCODE_PREFIX + "MustImplementContainerRelation"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that there exists an error within the type hierarchy of this type.
@@ -436,6 +435,17 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * a relation.
      */
     public int[] moveRelations(int[] indexes, boolean up);
+    
+    /**
+     * Returns the type's relations implementing the given container relation.
+     * Returns an empty array if no such relation exists or containerRelation is <code>null</code>.
+     * 
+     * @param containerRelation the container relation to search implementing relations for
+     * @param seachSupertypeHierarchy if also the type's supertypes should be searched.
+     * 
+     * @throws CoreException if an exception occurs while searching
+     */
+    public IRelation[] findRelationsImplementingContainerRelation(IRelation containerRelation, boolean searchSupertypeHierarchy) throws CoreException;
     
     /**
      * Creates a new supertype hierarchy for the type and returns it.

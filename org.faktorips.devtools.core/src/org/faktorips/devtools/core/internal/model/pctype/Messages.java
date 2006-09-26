@@ -118,7 +118,9 @@ public class Messages extends NLS {
 
 	public static String PolicyCmptType_msgMustOverrideAbstractMethod;
 
-	public static String Attribute_msgDefaultValueIsEmptyString;
+    public static String PolicyCmptType_msgMustImplementContainerRelation;
+
+    public static String Attribute_msgDefaultValueIsEmptyString;
 
 	public static String Relation_msgRevereseCompositionMustHaveMaxCardinality1;
 

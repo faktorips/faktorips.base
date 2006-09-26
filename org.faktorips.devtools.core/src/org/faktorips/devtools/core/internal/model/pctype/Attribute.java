@@ -109,8 +109,9 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public void setName(String newName) {
+        String oldName = name;
         this.name = newName;
-        objectHasChanged();
+        valueChanged(oldName, name);
     }
 
     /**

@@ -247,7 +247,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
                     continue;
                 }
                 generateCodeForRelation(relations[i], fieldsBuilder, methodsBuilder);                
-                if (relations[i].implementsContainerRelation()) {
+                if (relations[i].isContainerRelationImplementation()) {
                     IRelation containerRel = relations[i].findContainerRelation();
                     List implementationRelations = (List)containerRelations.get(containerRel);
                     if (implementationRelations==null) {
