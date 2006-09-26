@@ -132,15 +132,17 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
             project.open(monitor);
             project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-            project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+            //project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 
+            
             IProjectNatureDescriptor descriptor[] = workspace.getNatureDescriptors();
             
             for (int i = 0; i < descriptor.length; i++) {
                 System.out.println(descriptor[i].getNatureId());
             }
             
-            project.close(monitor);
+            
+            //project.close(monitor);
 
         }
         catch (Exception e) {
