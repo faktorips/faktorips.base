@@ -61,8 +61,6 @@ public abstract class IpsObjectEditor extends FormEditor
     // dirty flag
     private boolean dirty = false;
     
-    private boolean active = false;
-    
     /**
      * 
      */
@@ -112,7 +110,7 @@ public abstract class IpsObjectEditor extends FormEditor
         
         site.getPage().addPartListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        setActive(true);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
     
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException{
@@ -163,7 +161,7 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void setActivePage(int pageIndex) {
         super.setActivePage(pageIndex);
@@ -174,7 +172,7 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void pageChange(int newPageIndex) {
         super.pageChange(newPageIndex);
@@ -185,9 +183,6 @@ public abstract class IpsObjectEditor extends FormEditor
      * Refresh the controls on the active page with the data from the model.
      */
     protected void refresh() {
-    	if (!active) {
-    		return;
-    	}
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
         	IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
@@ -196,19 +191,17 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /**
-     *  
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)
+     * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
         if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
             return;
         }
         setDirty(ipsSrcFile.isDirty());
-        
         // no refresh neccessary - this method is only called if this editor is the active one.
         // we only need a refresh here if the content of one field of this editorwill have an 
         // effect on another field in this editor, but this is not the case yet.
+        refresh();
     }
     
     protected void setDirty(boolean newValue) {
@@ -220,15 +213,14 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.ISaveablePart#isDirty()
+     * {@inheritDoc}
      */
     public boolean isDirty() {
         return dirty;
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public void doSave(IProgressMonitor monitor) {
         try {
@@ -240,21 +232,18 @@ public abstract class IpsObjectEditor extends FormEditor
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.ISaveablePart#doSaveAs()
+     * {@inheritDoc}
      */
     public void doSaveAs() {
     }
 
     /** 
-     * Overridden method.
-     * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
+     * {@inheritDoc}
      */
     public boolean isSaveAsAllowed() {
         return false;
     }
 
-    /** 
     /**
      * We have to close the editor if the underlying resource is removed.
      * {@inheritDoc}
@@ -284,7 +273,6 @@ public abstract class IpsObjectEditor extends FormEditor
     	if (part != this) {
     		return;
     	}
-    	setActive(true);
     	refresh();
 	}
 
@@ -336,17 +324,6 @@ public abstract class IpsObjectEditor extends FormEditor
 	/**
 	 * {@inheritDoc}
 	 */
-	public void partDeactivated(IWorkbenchPartReference partRef) {
-		IWorkbenchPart part = partRef.getPart(false);
-    	if (part != this || partRef.getPage().isPartVisible(part)) {
-    		return;
-    	}
-        setActive(false);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public void partHidden(IWorkbenchPartReference partRef) {
         // nothing to do
 	}
@@ -371,25 +348,15 @@ public abstract class IpsObjectEditor extends FormEditor
 	public void partVisible(IWorkbenchPartReference partRef) {
         // nothing to do
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void partDeactivated(IWorkbenchPartReference partRef) {
+        // nothing to do
+    }
 
-	/**
-	 * Activates (if <code>true</code> is given) or deactivates this editor. An active
-	 * editor is for example listening to change events of the IpsModel, an inacitve editor
-	 * does not.
-	 */
-	public void setActive(boolean active) {
-		if (this.active == active) {
-			return;
-		}
-		
-		this.active = active;
-		if (active) {
-	        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);   
-	        setDirty(ipsSrcFile.isDirty());
-	        refresh();
-		} else {
-	        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);    	
-		}
-	}
-
+    public String toString() {
+        return "Editor for " + getIpsSrcFile();
+    }
 }

@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -58,17 +57,10 @@ public abstract class EditDialog extends TitleAreaDialog {
 		setShellStyle(getShellStyle() | SWT.MAX | SWT.RESIZE);
 		this.windowTitle = windowTitle;
 		tabFolderUsed = useTabFolder;
-
 		IWorkbenchPage page = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		if (page == null) {
 			return;
 		}
-		
-		IEditorPart editor = page.getActiveEditor();
-		if (editor instanceof IpsObjectEditor) {
-			parentEditor = (IpsObjectEditor)editor;
-			parentEditor.setActive(false);
-		} 
 	}
 	
 	public void setWindowTitle(String newTitle) {
@@ -137,28 +129,6 @@ public abstract class EditDialog extends TitleAreaDialog {
 	    }
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void buttonPressed(int buttonId) {
-		super.buttonPressed(buttonId);
-    	activateParentEditor();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void handleShellCloseEvent() {
-    	super.handleShellCloseEvent();
-    	activateParentEditor();
-    }
-
-	private void activateParentEditor() {
-		if (parentEditor != null) {
-			parentEditor.setActive(true);
-		}
-	}
-	
 	/**
 	 * Returns the editor which is the parent editor to this one - which means
 	 * that the parent editor contains the control which has opened this editor.
