@@ -136,6 +136,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
                 project.close(monitor);
             }
             else {
+                System.out.println(workspace.validateNatureSet(description.getNatureIds()).getMessage());
                 throw new BuildException("Invalid Nature-Settings: "
                         + workspace.validateNatureSet(description.getNatureIds()).getMessage());
             }
