@@ -27,6 +27,7 @@ import junit.textui.TestRunner;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IProjectNatureDescriptor;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -89,6 +90,15 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        
+        //Print all installed Natures
+        System.out.println("Installed Natures:");
+        IProjectNatureDescriptor descriptor[] = workspace.getNatureDescriptors();
+        
+        for (int i = 0; i < descriptor.length; i++) {
+            System.out.println(descriptor[i].getNatureId());
+        }
+        
 
         // Create
         IProgressMonitor monitor = new NullProgressMonitor();
