@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -122,15 +123,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
             project.open(monitor);
             project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-            //project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-
-            
-            String descriptor[] = project.getDescription().getNatureIds();
-            
-            for (int i = 0; i < descriptor.length; i++) {
-                System.out.println(descriptor[i]);
-            }
-            
+            project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
             
             //project.close(monitor);
 
