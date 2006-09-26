@@ -247,10 +247,10 @@
 	            </copy>
 
         	
-                <!-- execute eclipse-plugintests (see ../eclipsetest_skel/test.xml which will be called by the runtests script) -->
+                <!-- execute eclipse-plugintests (see ../eclipsetest_skel/test.xml which will be called by the runtests script) >
                 <exec executable="/bin/bash" dir="${dir}/environment/" failonerror="true" logError="true">
                         <arg line="runtests all" />
-                </exec>
+                </exec-->
 	               
 	        	<!-- check if there are errors in testcase-logs -->
 				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
