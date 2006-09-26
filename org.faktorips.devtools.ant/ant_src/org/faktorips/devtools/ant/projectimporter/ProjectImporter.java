@@ -90,15 +90,9 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        
-        //Print all installed Natures
+
+        // Print all installed Natures
         System.out.println("Installed Natures:");
-        IProjectNatureDescriptor descriptor[] = workspace.getNatureDescriptors();
-        
-        for (int i = 0; i < descriptor.length; i++) {
-            System.out.println(descriptor[i].getNatureId());
-        }
-        
 
         // Create
         IProgressMonitor monitor = new NullProgressMonitor();
@@ -120,36 +114,33 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
                 }
             }
 
-            //check if all natures required by the project are present and valid
-            if (workspace.validateNatureSet(description.getNatureIds()).getSeverity() == IStatus.OK) {
+            // create new project with name provided in description
+            IProject project = workspace.getRoot().getProject(description.getName());
 
-                // create new project with name provided in description
-                IProject project = workspace.getRoot().getProject(description.getName());
-
-                // check if project already exists in current workspace
-                if (project.exists()) {
-                    throw new BuildException("Project " + project.getName() + " does already exist.");
-                }
-                project.create(description, monitor);
-
-                // copy files
-
-                Copy copyUtil = new Copy();
-                copyUtil.copyDir(this.getDir(), project.getLocation().toString());
-
-                // open and rebuild the project
-
-                project.open(monitor);
-                project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-                project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-
-                project.close(monitor);
+            // check if project already exists in current workspace
+            if (project.exists()) {
+                throw new BuildException("Project " + project.getName() + " does already exist.");
             }
-            else {
-                System.out.println(workspace.validateNatureSet(description.getNatureIds()).getMessage());
-                throw new BuildException("Invalid Nature-Settings: "
-                        + workspace.validateNatureSet(description.getNatureIds()).getMessage());
+            project.create(description, monitor);
+
+            // copy files
+
+            Copy copyUtil = new Copy();
+            copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+
+            // open and rebuild the project
+
+            project.open(monitor);
+            project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+            project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+
+            IProjectNatureDescriptor descriptor[] = workspace.getNatureDescriptors();
+            
+            for (int i = 0; i < descriptor.length; i++) {
+                System.out.println(descriptor[i].getNatureId());
             }
+            
+            project.close(monitor);
 
         }
         catch (Exception e) {
