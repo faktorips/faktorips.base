@@ -2,7 +2,9 @@
 	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.projectimporter.ProjectImporter"/>
 	
 	<target name="import">
+		<echo message="executing faktorips.import now" />
 		<faktorips.import dir="${sourcedir}"/>
+		<echo message="executing eclipse.incrementalBuild now"/>
 		<eclipse.incrementalBuild project="org.faktorips.integrationtest" />
 	</target>
 
