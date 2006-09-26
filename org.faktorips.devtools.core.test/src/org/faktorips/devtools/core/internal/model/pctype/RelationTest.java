@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
@@ -526,5 +527,29 @@ public class RelationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
     }
 
-    
+    public void testIsContainerRelationImplementation() throws CoreException {
+        assertFalse(relation.isContainerRelationImplementation(null));
+
+        IRelation containerRelation = this.pcType.newRelation();
+        containerRelation.setTargetRoleSingular("Target");
+        try {
+            relation.isContainerRelationImplementation(containerRelation);
+            fail();
+        } catch (CoreException e) {
+        }
+        
+        containerRelation.setReadOnlyContainer(true);
+        assertFalse(relation.isContainerRelationImplementation(containerRelation));
+        
+        relation.setContainerRelation(containerRelation.getName());
+        assertTrue(relation.isContainerRelationImplementation(containerRelation));
+        
+        // check if the method returns false if the container relation has the same name but belongs to a 
+        // different type
+        IPolicyCmptType otherType = newPolicyCmptType(this.pcType.getIpsProject(), "OtherType");
+        IRelation otherRelation = otherType.newRelation();
+        otherRelation.setReadOnlyContainer(true);
+        otherRelation.setTargetRoleSingular("Target");
+        assertFalse(relation.isContainerRelationImplementation(otherRelation));
+    }
 }

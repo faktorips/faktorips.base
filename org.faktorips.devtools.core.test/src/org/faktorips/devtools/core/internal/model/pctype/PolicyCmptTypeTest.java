@@ -704,4 +704,102 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         ml = pcType.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME));
     }
+    
+    public void testValidateMustImplementContainerRelation() throws Exception {
+        IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
+        
+        MessageList ml = pcType.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        
+        IRelation container = pcType.newRelation();
+        container.setReadOnlyContainer(true);
+        container.setTargetRoleSingular("Target");
+        container.setTarget(target.getQualifiedName());
+        
+        ml = pcType.validate();
+        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+
+        // type is valid, if it is abstract
+        pcType.setAbstract(true);
+        ml = pcType.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        pcType.setAbstract(false);
+        
+        // implement the container relation in the same type
+        IRelation relation = pcType.newRelation();
+        relation.setReadOnlyContainer(false);
+        relation.setContainerRelation(container.getName());
+        relation.setTarget(target.getQualifiedName());
+        
+        ml = pcType.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        
+        // delete the relation, now same thing for a subtype
+        relation.delete();
+        IPolicyCmptType subtype = newPolicyCmptType(ipsProject, "Subtype");
+        subtype.setSupertype(pcType.getQualifiedName());
+        ml = subtype.validate();
+        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        
+        // type is valid, if it is abstract
+        subtype.setAbstract(true);
+        ml = subtype.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        subtype.setAbstract(false);
+
+        relation = subtype.newRelation();
+        relation.setReadOnlyContainer(false);
+        relation.setContainerRelation(container.getName());
+        relation.setTarget(target.getQualifiedName());
+        
+        ml = subtype.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+    }
+    
+    public void testFindRelationsImplementingContainerRelation() throws CoreException {
+        assertEquals(0, pcType.findRelationsImplementingContainerRelation(null, true).length);
+        
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        pcType.setSupertype(supertype.getQualifiedName());
+        IRelation container = supertype.newRelation();
+        container.setReadOnlyContainer(true);
+        container.setTargetRoleSingular("Target");
+        
+        IRelation[] relations = pcType.findRelationsImplementingContainerRelation(container, true);
+        assertEquals(0, relations.length);
+        
+        IRelation relation0 = pcType.newRelation();
+        relation0.setContainerRelation(container.getName());
+        pcType.newRelation(); // relation1
+        
+        relations = pcType.findRelationsImplementingContainerRelation(container, true);
+        assertEquals(1, relations.length);
+        assertEquals(relation0, relations[0]);
+        
+        relations = pcType.findRelationsImplementingContainerRelation(container, false);
+        assertEquals(1, relations.length);
+        assertEquals(relation0, relations[0]);
+        
+        IRelation relation2 = supertype.newRelation();
+        relation2.setContainerRelation(container.getName());
+        
+        relations = pcType.findRelationsImplementingContainerRelation(container, true);
+        assertEquals(2, relations.length);
+        assertEquals(relation0, relations[0]);
+        assertEquals(relation2, relations[1]);
+        
+        relations = pcType.findRelationsImplementingContainerRelation(container, false);
+        assertEquals(1, relations.length);
+        assertEquals(relation0, relations[0]);
+
+        // test if relations above the container relation aren't found
+        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        IRelation relation3 = supersupertype.newRelation();
+        relation3.setContainerRelation(container.getName());
+        relations = pcType.findRelationsImplementingContainerRelation(container, true);
+        assertEquals(2, relations.length);
+        assertEquals(relation0, relations[0]);
+        assertEquals(relation2, relations[1]);
+    }
 }
