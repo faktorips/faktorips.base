@@ -32,6 +32,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.ant.util.Copy;
 
@@ -49,8 +50,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      * @deprecated Please access via Set/Get Methods
      */
     private String projectDir = "";
- 
-   
+
     /**
      * Sets the ANT-Attribute which describes the location of the Eclipseproject to import.
      * 
@@ -90,55 +90,61 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-        // Create
-        IProgressMonitor monitor = new NullProgressMonitor();
+        String[] natures = { "org.faktorips.devtools.core.ipsnature" };
+        if (workspace.validateNatureSet(natures).getSeverity() != IStatus.OK) {
 
-        try {
-            // get description provieded in .project File
-            InputStream inputStream = new FileInputStream(this.getProjectFile());
-            IProjectDescription description = null;
+            // Create
+            IProgressMonitor monitor = new NullProgressMonitor();
 
             try {
-                description = workspace.loadProjectDescription(inputStream);
+                // get description provieded in .project File
+                InputStream inputStream = new FileInputStream(this.getProjectFile());
+                IProjectDescription description = null;
+
+                try {
+                    description = workspace.loadProjectDescription(inputStream);
+                }
+                catch (Exception e) {
+                    throw new BuildException(e);
+                }
+                finally {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                }
+
+                // create new project with name provided in description
+                IProject project = workspace.getRoot().getProject(description.getName());
+
+                // check if project already exists in current workspace
+                if (project.exists()) {
+                    throw new BuildException("Project " + project.getName() + " does already exist.");
+                }
+                project.create(description, monitor);
+
+                // copy files
+
+                Copy copyUtil = new Copy();
+                copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+
+                // open and rebuild the project
+
+                project.open(monitor);
+                project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+                project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+
+                project.close(monitor);
+
             }
             catch (Exception e) {
                 throw new BuildException(e);
             }
-            finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-            }
 
-            // create new project with name provided in description
-            IProject project = workspace.getRoot().getProject(description.getName());
-
-            // check if project already exists in current workspace
-            if (project.exists()) {
-                throw new BuildException("Project " + project.getName() + " does already exist.");
-            }
-            project.create(description, monitor);
-
-            // copy files
-
-            Copy copyUtil = new Copy();
-            copyUtil.copyDir(this.getDir(), project.getLocation().toString());
-
-            // open and rebuild the project
-
-            project.open(monitor);
-            project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-            project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-
-            project.close(monitor);
-            
-        }
-        catch (Exception e) {
-            throw new BuildException(e);
+        }else{
+            throw new BuildException("Invalid Nature-Settings: " + workspace.validateNatureSet(natures).getMessage());
         }
 
     }
-    
 
     /**
      * Does some Security-Checks on provided Directory-Attribute
@@ -148,7 +154,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
      */
     private void checkDir() throws BuildException {
 
-        if ( this.getDir() == null ||this.getDir().equals("") ) {
+        if (this.getDir() == null || this.getDir().equals("")) {
             throw new BuildException("Please provide the 'dir' attribute.");
         }
 
