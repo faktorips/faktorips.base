@@ -305,6 +305,8 @@
 					</batchtest>
 	        		
 				</junit>
+        	
+        	<echo message="hallo welt, bin mit junit angeblich durch" />
 
         	
         	<!-- check if there are errors in testcase-logs -->
