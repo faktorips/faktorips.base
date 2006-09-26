@@ -229,8 +229,8 @@
         				<fileset dir="${dir}" >
                     	    <include name="environment/results/xml/" />
         				</fileset>
-	    				<fileset dir="${dir}" >
-	                	    <include name="environment/eclipse/org.faktorips*" />
+	    				<fileset dir="${dir}/environment/eclipse/plugins/" >
+	                	    <include name="org.faktorips*" />
 	    				</fileset>
 				</delete>
                         	

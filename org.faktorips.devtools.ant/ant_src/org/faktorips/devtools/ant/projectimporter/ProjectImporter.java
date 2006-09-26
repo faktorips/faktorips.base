@@ -82,8 +82,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-        // Print all installed Natures
-        System.out.println("Installed Natures:");
+
 
         // Create
         IProgressMonitor monitor = new NullProgressMonitor();
