@@ -17,23 +17,14 @@ package org.faktorips.devtools.ant.projectimporter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.textui.TestRunner;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IProjectNatureDescriptor;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.ant.util.Copy;
 
@@ -135,10 +126,10 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
             //project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 
             
-            IProjectNatureDescriptor descriptor[] = workspace.getNatureDescriptors();
+            String descriptor[] = project.getDescription().getNatureIds();
             
             for (int i = 0; i < descriptor.length; i++) {
-                System.out.println(descriptor[i].getNatureId());
+                System.out.println(descriptor[i]);
             }
             
             
