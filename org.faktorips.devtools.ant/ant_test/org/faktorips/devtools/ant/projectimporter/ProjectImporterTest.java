@@ -8,6 +8,7 @@ import java.util.TimeZone;
 import junit.framework.TestCase;
 
 import org.apache.tools.ant.BuildException;
+import org.faktorips.devtools.ant.ProjectImporter;
 
 public class ProjectImporterTest extends TestCase {
 

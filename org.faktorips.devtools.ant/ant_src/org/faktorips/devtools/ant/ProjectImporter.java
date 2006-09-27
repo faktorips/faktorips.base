@@ -12,7 +12,7 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.devtools.ant.projectimporter;
+package org.faktorips.devtools.ant;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,9 +21,7 @@ import java.io.InputStream;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -119,15 +117,10 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
             Copy copyUtil = new Copy();
             copyUtil.copyDir(this.getDir(), project.getLocation().toString());
 
-            // open and rebuild the project
-
             project.open(monitor);
-            project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-            project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
             
-            //project.close(monitor);
-
-        }
+            //build is done via FullBuild-Target seperately
+     }
         catch (Exception e) {
             throw new BuildException(e);
         }
