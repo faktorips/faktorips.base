@@ -32,14 +32,8 @@ public class Messages extends NLS {
     public static String ProductCmptCompareItemCreator_StructureViewer_title;
     public static String ProductCmptCompareViewer_CompareViewer_title;
     public static String ProductCmptCompareItem_Generation;
-    public static String ProductCmptCompareItem_ValidFrom;
-    public static String ProductCmptCompareItem_Relations;
     public static String ProductCmptCompareItem_ProductComponent;
-    public static String ProductCmptCompareItem_Attributes;
-    public static String ProductCmptCompareItem_PolicyComponentType;
-    public static String ProductCmptCompareItem_RuntimeID;
     public static String ProductCmptCompareItem_SourceFile;
-    public static String ProductCmptCompareItem_ValueSet_Value;
     public static String ProductCmptCompareItem_ValueSet;
     public static String ProductCmptCompareItem_AllValues;
     public static String ProductCmptCompareItem_Attribute;

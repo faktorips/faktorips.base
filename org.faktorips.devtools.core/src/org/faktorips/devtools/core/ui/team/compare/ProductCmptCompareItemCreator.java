@@ -144,8 +144,8 @@ public class ProductCmptCompareItemCreator implements IStructureCreator {
     private IStructureComparator getStructureForIpsSrcFile(IIpsSrcFile file) {
         try {
             if(file.getIpsObject() instanceof IProductCmpt){
-                IProductCmpt product = (IProductCmpt) file.getIpsObject();
                 ProductCmptCompareItem root= new ProductCmptCompareItem(null, file);
+                IProductCmpt product = (IProductCmpt) file.getIpsObject();
                 ProductCmptCompareItem ipsObject= new ProductCmptCompareItem(root, product);
                 // Generations of product
                 IIpsObjectGeneration[] gens= product.getGenerations();

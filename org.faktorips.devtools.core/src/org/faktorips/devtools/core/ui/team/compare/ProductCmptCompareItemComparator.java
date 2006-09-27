@@ -49,9 +49,9 @@ public class ProductCmptCompareItemComparator implements Comparator {
         if(o1 instanceof ProductCmptCompareItem && o2 instanceof ProductCmptCompareItem){
             IIpsElement element1= ((ProductCmptCompareItem) o1).getIpsElement();
             IIpsElement element2= ((ProductCmptCompareItem) o2).getIpsElement();
-            // Sort generations by chronographically
+            // Sort generations by generation number (and thus chronographically)
             if(element1 instanceof IProductCmptGeneration && element2 instanceof IProductCmptGeneration){
-                return ((IProductCmptGeneration)element1).getValidFrom().getTime().compareTo(((IProductCmptGeneration)element2).getValidFrom().getTime());
+                return ((IProductCmptGeneration)element1).getGenerationNo()-((IProductCmptGeneration)element2).getGenerationNo();
             }
             // Sort relations by name (qualified name of the target)
             if(element1 instanceof IProductCmptRelation && element2 instanceof IProductCmptRelation){
@@ -64,12 +64,12 @@ public class ProductCmptCompareItemComparator implements Comparator {
                 return ce1.compareTo(ce2);
             }
             // move configElements above relations
-            if(element1 instanceof IProductCmptRelation && element2 instanceof IConfigElement){
-                return 1;
-            }
-            if(element1 instanceof IConfigElement && element2 instanceof IProductCmptRelation){
-                return -1;
-            }
+//            if(element1 instanceof IProductCmptRelation && element2 instanceof IConfigElement){
+//                return 1;
+//            }
+//            if(element1 instanceof IConfigElement && element2 instanceof IProductCmptRelation){
+//                return -1;
+//            }
         }
         return 0;
     }
