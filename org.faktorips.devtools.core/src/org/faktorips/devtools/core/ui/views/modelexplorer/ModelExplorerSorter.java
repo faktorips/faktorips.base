@@ -86,11 +86,9 @@ public class ModelExplorerSorter extends ViewerSorter{
         }
 		
 		// ------- IResource sorting -------
-		// sort IpsProjects and IProjects lexicographically 
+		// sort IpsProjects and IProjects lexicographically (ignoring case)
 		if((o1 instanceof IIpsProject||o1 instanceof IProject) && (o2 instanceof IIpsProject||o2 instanceof IProject)){
-		    String name1= getProjectName(o1).toLowerCase();
-            String name2= getProjectName(o2).toLowerCase();
-			return name1.compareTo(name2);
+			return getProjectName(o1).compareToIgnoreCase(getProjectName(o2));
 		}
 		// Place model-data above other resources
 		if(o1 instanceof IIpsElement && o2 instanceof IResource){
