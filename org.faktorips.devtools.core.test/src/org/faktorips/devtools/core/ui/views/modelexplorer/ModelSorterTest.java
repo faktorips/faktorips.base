@@ -26,7 +26,9 @@ import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
 public class ModelSorterTest extends AbstractIpsPluginTest {
@@ -48,12 +50,22 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
     private IFolder subFolder;
     private IFile file;
 
+    private IProject projectResource1;
+    private IProject projectResource2;
+
+    private IAttribute attr1;
+
+    private IRelation rel;
+
+    private IAttribute attr2;
     
     protected void setUp() throws Exception {
         super.setUp();
         sorter= new ModelExplorerSorter();
-        proj= (IpsProject)newIpsProject("TestProject");
-        proj2= (IpsProject)newIpsProject("ZProject");
+        proj= (IpsProject)newIpsProject("aTestProject");
+        proj2= (IpsProject)newIpsProject("zProject");
+        IIpsProject proj3= (IpsProject)newIpsProject("middleProject");
+        IIpsProject proj4= (IpsProject)newIpsProject("CAPITALProject");
         root= proj.getIpsPackageFragmentRoots()[0];
         packageFragment= root.createPackageFragment("TestPackageFragment", false, null);
         packageFragment2= root.createPackageFragment("ZTestPackageFragment", false, null);
@@ -62,6 +74,12 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         policyCT2 = newPolicyCmptType(proj.getIpsPackageFragmentRoots()[0], "TestPolicy2");
         table= new TableStructure();
 
+        attr1 = policyCT.newAttribute();
+        rel = policyCT.newRelation();
+        attr2 = policyCT.newAttribute();
+        
+        projectResource1 = (IProject) proj3.getCorrespondingResource();
+        projectResource2 = (IProject) proj4.getCorrespondingResource();
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("folder");
         folder.create(true, false, null);
         subFolder = ((IProject)proj.getCorrespondingResource()).getFolder("subfolder");
@@ -76,9 +94,16 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
 	public void testCompareViewerObjectObject() {
 		// Identity should be evaluated as equal
 		assertTrue(sorter.compare(null, proj, proj) == 0);
-		// Projects should be sorted lexicographically
-		assertTrue(sorter.compare(null, proj, proj2) < 0);
-		assertTrue(sorter.compare(null, proj2, proj) > 0);
+		// Projects should be sorted lexicographically (ignoring case)
+        assertTrue(sorter.compare(null, proj, projectResource1) < 0);
+        assertTrue(sorter.compare(null, projectResource2, projectResource1) < 0);
+        assertTrue(sorter.compare(null, projectResource1, proj2) < 0);
+        assertTrue(sorter.compare(null, proj, proj2) < 0);
+        
+        // in policyCmptTypes sort attributes above relations
+        assertTrue(sorter.compare(null, attr1, rel) < 0);
+        assertTrue(sorter.compare(null, attr2, rel) < 0);
+        
         // sort PackageFragments lexicographically
         assertTrue(sorter.compare(null, packageFragment, packageFragment2) < 0);
         assertTrue(sorter.compare(null, packageFragment2, packageFragment) > 0);
