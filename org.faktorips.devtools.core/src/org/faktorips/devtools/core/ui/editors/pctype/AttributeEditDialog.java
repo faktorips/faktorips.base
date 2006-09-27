@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -42,11 +44,12 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.pctype.Modifier;
@@ -55,6 +58,7 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
+import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.ChangeParametersControl;
@@ -87,7 +91,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     private EnumValueField attributeTypeField;
 
     private CheckboxField productRelevantField;
-
+    
     private TextField defaultValueField;
     
     private ValueSetEditControl valueSetEditControl;
@@ -101,7 +105,9 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
      * Checkbox to edit the "overwrites"-Flag of the attribute.
      */
     private CheckboxField overrideField;
-
+    
+    private Checkbox validationRuleAdded;
+    
     /**
      * TextField to link the name input control with the rule name
      */
@@ -157,27 +163,8 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     public AttributeEditDialog(IAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
-        this.rule = findValidationRule();
+        this.rule = attribute.findValueSetRule();
         extFactory = new ExtensionPropertyControlFactory(attribute.getClass());
-    }
-    
-    /*
-     * Returns the default validation rule bound to this attribute or null if no such rule is found.
-     */
-    private IValidationRule findValidationRule() {
-    	IPolicyCmptType type = (IPolicyCmptType)attribute.getParent();
-    	IValidationRule[] rules = type.getRules();
-    	
-    	for (int i = 0; i < rules.length; i++) {
-			String[] attributes = rules[i].getValidatedAttributes();
-			for (int j = 0; j < attributes.length; j++) {
-				if (attributes[j].equals(attribute.getName()) && 
-					rules[i].isCheckValueAgainstValueSetRule()) {
-					return rules[i];
-				}
-			}
-		}
-    	return null;
     }
     
 	/**
@@ -185,7 +172,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 	 */
     protected Composite createWorkArea(Composite parent) throws CoreException {
         folder = (TabFolder)parent;
-
+        
         TabItem page = new TabItem(folder, SWT.NONE);
         page.setText(Messages.AttributeEditDialog_generalTitle);
         page.setControl(createGeneralPage(folder));
@@ -198,9 +185,9 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         page.setText(Messages.AttributeEditDialog_calcParamsTitle);
         page.setControl(createFormulaParametersPage(folder));
 
-        page = new TabItem(folder, SWT.NONE);
-        page.setText(Messages.AttributeEditDialog_validationRuleTitle);
-        page.setControl(createValidationRulePage(folder));
+        final TabItem validationRulePage = new TabItem(folder, SWT.NONE);
+        validationRulePage.setText(Messages.AttributeEditDialog_validationRuleTitle);
+        validationRulePage.setControl(createValidationRulePage(folder));
         if (startWithRulePage) {
         	folder.setSelection(3);
         	ruleNameField.getControl().setFocus();
@@ -217,14 +204,52 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 			}
 		
 			public void widgetSelected(SelectionEvent e) {
-				uiController.updateUI();
-				if (ruleUIController != null) {
-					ruleUIController.updateUI();
-				}
+                updateUIControllers();
 			}
 		});
         
+        final ContentsChangeListener listener = new ContentsChangeListener(){
+
+            public void contentsChanged(ContentChangeEvent event) {
+                if(!event.getIpsSrcFile().exists()){
+                    return;
+                }
+                if(event.getIpsSrcFile().equals(attribute.getIpsObject().getIpsSrcFile())){
+                    updateFieldValidationRuleAdded();
+                }
+            }
+        };
+        attribute.getIpsModel().addChangeListener(listener);
+
+        getShell().addDisposeListener(new DisposeListener(){
+
+            public void widgetDisposed(DisposeEvent e) {
+                attribute.getIpsModel().removeChangeListener(listener);
+            }
+            
+        });
+        //initial update of the checkBox "validationRuleAdded"
+        updateFieldValidationRuleAdded();
         return folder;
+    }
+    
+    private void updateFieldValidationRuleAdded(){
+        if(rule != null){
+            MessageList msgList;
+            try {
+                if(rule.isDeleted()){
+                    MessageCueController.setMessageCue(validationRuleAdded, null);
+                    return;
+                }
+                msgList = rule.validate();
+                msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE);
+                MessageCueController.setMessageCue(validationRuleAdded, msgList);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            return;
+        }
+        MessageCueController.setMessageCue(validationRuleAdded, null);
     }
     
     /**
@@ -335,9 +360,9 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
         Composite checkComposite = uiToolkit.createGridComposite(workArea, 1, true, false);
-        Checkbox active = uiToolkit.createCheckbox(checkComposite, Messages.AttributeEditDialog_labelActivateValidationRule);
-        active.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
-        active.getButton().addSelectionListener(new SelectionListener() {
+        validationRuleAdded = uiToolkit.createCheckbox(checkComposite, Messages.AttributeEditDialog_labelActivateValidationRule);
+        validationRuleAdded.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
+        validationRuleAdded.getButton().addSelectionListener(new SelectionListener() {
 		
 			public void widgetDefaultSelected(SelectionEvent e) {
 				//nothing to do
@@ -385,14 +410,14 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         ruleDependendControls.add(label);
         ruleDependendControls.add(msgText);
         if (rule != null) {
-        	active.setChecked(true);
+        	validationRuleAdded.setChecked(true);
         	enableCheckValueAgainstValueSetRule(true);
         }
         else {
-        	active.setChecked(false);
+        	validationRuleAdded.setChecked(false);
         	enableCheckValueAgainstValueSetRule(false);
         }
-
+        
         return workArea;
     }
 
@@ -408,36 +433,42 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
     			// at creation time, for example.
     			return;
     		}
-    		rule = ((IPolicyCmptType)attribute.getParent()).newRule();
-    		rule.addValidatedAttribute(attribute.getName());
-    		rule.setAppliedForAllBusinessFunctions(true);
-    		rule.setCheckValueAgainstValueSetRule(true);
-    		rule.setValidatedAttrSpecifiedInSrc(false);
+            rule = attribute.createValueSetRule();
     		rule.setDescription(Messages.AttributeEditDialog_descriptionContent);
     		rule.setName(ruleNameField.getText());
 
-    		initRuleUIController();
-    		
-    		ruleUIController.add(ruleNameField, rule, IValidationRule.PROPERTY_NAME);
-    		ruleUIController.add(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
-    		ruleUIController.add(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
-    		ruleUIController.add(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+            if(ruleUIController == null){
+                createRuleUIController();
+            }
     	}
     	else if (rule != null){
-    		ruleUIController.remove(ruleNameField);
-    		ruleUIController.remove(msgCodeField);
-    		ruleUIController.remove(msgTextField);
-    		ruleUIController.remove(msgSeverityField);
-    		ruleUIController = null;
+            deleteRuleUIController();
     		rule.delete();
     		rule = null;
     	}
     }
     
-    private void initRuleUIController() {
-    	if (ruleUIController == null && rule != null) {
-    		ruleUIController = new IpsPartUIController(rule);
-    	}
+    private void deleteRuleUIController(){
+        ruleUIController.remove(ruleNameField);
+        ruleUIController.remove(msgCodeField);
+        ruleUIController.remove(msgTextField);
+        ruleUIController.remove(msgSeverityField);
+        ruleUIController = null;
+    }
+    
+    private void createRuleUIController() {
+		ruleUIController = new IpsPartUIController(rule);
+        ruleUIController.add(ruleNameField, IValidationRule.PROPERTY_NAME);
+        ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
+        ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
+        ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+    }
+    
+    private void updateUIControllers(){
+        uiController.updateUI();
+        if (ruleUIController != null) {
+            ruleUIController.updateUI();
+        }
     }
     
     private void updateValueSetTypes() {
@@ -469,11 +500,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
         uiController.add(overrideField, IAttribute.PROPERTY_OVERWRITES);
 
         if (rule != null) {
-        	initRuleUIController();
-        	ruleUIController.add(ruleNameField, IValidationRule.PROPERTY_NAME);
-        	ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
-        	ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
-        	ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+        	createRuleUIController();
         	ruleUIController.updateUI();
         }
         

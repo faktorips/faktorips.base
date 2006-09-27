@@ -120,6 +120,7 @@ public class ForeignKey extends Key implements IForeignKey {
     public void delete() {
         ((TableStructure)getTableStructure()).removeForeignKey(this);
         deleted = true;
+        objectHasChanged();
     }
 
     /**

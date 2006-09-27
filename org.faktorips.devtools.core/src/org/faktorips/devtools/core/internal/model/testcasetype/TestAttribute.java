@@ -147,8 +147,8 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
      */
     public void delete() {
         ((TestPolicyCmptTypeParameter)getParent()).removeTestAttribute(this);
-        objectHasChanged();
         deleted = true;
+        objectHasChanged();
     }
     
     /**

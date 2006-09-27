@@ -143,6 +143,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	public void delete() {
 		((ProductCmptGeneration) getParent()).removeConfigElement(this);
 		deleted = true;
+        objectHasChanged();
 	}
 
 	/**

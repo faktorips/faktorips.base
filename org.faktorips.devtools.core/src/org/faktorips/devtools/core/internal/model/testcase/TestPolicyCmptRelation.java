@@ -149,8 +149,8 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 */
 	public void delete() {
 		((TestPolicyCmpt) getParent()).removeTestPcTypeRelation(this);
-		objectHasChanged();
 		deleted = true;
+        objectHasChanged();
 	}
 
 	/**

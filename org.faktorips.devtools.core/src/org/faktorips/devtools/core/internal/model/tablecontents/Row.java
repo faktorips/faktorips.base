@@ -71,6 +71,7 @@ public class Row extends IpsObjectPart implements IRow {
     public void delete() {
         ((TableContentsGeneration)getParent()).removeRow(this);
         deleted = true;
+        objectHasChanged();
     }
 
     private boolean deleted = false;

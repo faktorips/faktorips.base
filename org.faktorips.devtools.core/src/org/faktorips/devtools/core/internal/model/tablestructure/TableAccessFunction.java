@@ -32,6 +32,8 @@ public class TableAccessFunction extends IpsObjectPart implements ITableAccessFu
     private String accessedColumn;
     private String type;
     private String[] argTypes = new String[0];
+    private boolean deleted = false;
+
     
     // hides field in supertype. Done to avoid update-events fired on description changes.
     private String description; 
@@ -98,8 +100,6 @@ public class TableAccessFunction extends IpsObjectPart implements ITableAccessFu
     public void delete() {
         deleted = true;
     }
-
-    private boolean deleted = false;
 
     /**
      * {@inheritDoc}

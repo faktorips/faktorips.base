@@ -85,7 +85,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     
     void removeRow(IRow row) {
         rows.remove(row);
-        objectHasChanged();
     }
 
     public void newColumn(int insertAt, String defaultValue) {

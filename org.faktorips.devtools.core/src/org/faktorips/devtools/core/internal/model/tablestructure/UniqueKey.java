@@ -70,6 +70,7 @@ public class UniqueKey extends Key implements IUniqueKey {
     public void delete() {
         ((TableStructure)getTableStructure()).removeUniqueKey(this);
         deleted = true;
+        objectHasChanged();
     }
 
     /**

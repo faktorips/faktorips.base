@@ -92,8 +92,8 @@ public class Relation extends IpsObjectPart implements IRelation {
      */
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeRelation(this);
-        objectHasChanged();
         deleted = true;
+        objectHasChanged();
     }
 
     /**

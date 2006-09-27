@@ -201,7 +201,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 
 	void removeConfigElement(ConfigElement element) {
 		configElements.remove(element);
-		objectHasChanged();
 	}
 
 	/**

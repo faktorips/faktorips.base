@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
@@ -94,8 +95,8 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      */
     public void delete() {
         getPolicyCmptType().removeAttribute(this);
-        objectHasChanged();
         deleted = true;
+        objectHasChanged();
     }
 
     /**
@@ -176,6 +177,50 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         valueChanged(oldType, newType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IValidationRule findValueSetRule() {
+        IValidationRule[] rules = getPolicyCmptType().getRules();
+        
+        for (int i = 0; i < rules.length; i++) {
+            String[] attributes = rules[i].getValidatedAttributes();
+            for (int j = 0; j < attributes.length; j++) {
+                if (attributes[j].equals(getName()) && 
+                    rules[i].isCheckValueAgainstValueSetRule()) {
+                    return rules[i];
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IValidationRule createValueSetRule(){
+        IValidationRule rule = findValueSetRule();
+        if(rule != null){
+            return rule;
+        }
+        rule = getPolicyCmptType().newRule();
+        rule.addValidatedAttribute(getName());
+        rule.setCheckValueAgainstValueSetRule(true);
+        rule.setAppliedForAllBusinessFunctions(true);
+        rule.setValidatedAttrSpecifiedInSrc(false);
+        return rule;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void deleteValueSetRule(){
+        IValidationRule rule = findValueSetRule();
+        if(rule != null){
+            rule.delete();
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */

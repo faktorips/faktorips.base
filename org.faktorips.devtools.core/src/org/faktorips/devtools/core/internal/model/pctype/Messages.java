@@ -153,4 +153,8 @@ public class Messages extends NLS {
 	public static String Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
 
 	public static String Attribute_msgNameCollisionLocal;
+
+    public static String ValidationRule_msgOneBusinessFunction;
+
+    public static String ValidationRule_msgValueSetRule;
 }

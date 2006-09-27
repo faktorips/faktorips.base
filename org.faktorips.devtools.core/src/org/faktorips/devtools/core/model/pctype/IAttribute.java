@@ -169,6 +169,26 @@ public interface IAttribute extends IMember, IValueDatatypeProvider {
     public ValueDatatype findDatatype() throws CoreException;
     
     /**
+     * If this Attribute has a rule that checks against its value set, it is
+     * returned by this method otherwise <code>null</code> will be returned.
+     */
+    public IValidationRule findValueSetRule();
+
+    /**
+     * Creates a IValidationRule for this IAttribute. In the generated code the corresponding rule 
+     * is supposed to validate the value of the corresponding Attribute. There can only exists one
+     * rule of this kind for this attribute. If a rule already exists the call to this method returns
+     * it and doesn't create a new one.
+     */
+    public IValidationRule createValueSetRule();
+
+    /**
+     * Deletes the IValidationRule that is reponsible for checking the value angainst the value set
+     * of this attribute. If no such rule was created for this attribute this method does nothing.
+     */
+    public void deleteValueSetRule();
+    
+    /**
      * Returns the attribute's type.
      */
     public AttributeType getAttributeType();

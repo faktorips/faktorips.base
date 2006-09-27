@@ -89,8 +89,8 @@ public class Method extends IpsObjectPart implements IMethod {
      */
     public void delete() {
         ((PolicyCmptType)getIpsObject()).removeMethod(this);
-        objectHasChanged();
         deleted = true;
+        objectHasChanged();
     }
 
     /**

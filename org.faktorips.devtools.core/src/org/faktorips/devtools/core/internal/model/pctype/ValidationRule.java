@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -61,9 +62,11 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	// the qualified name of the business functions this rule is used in
 	private ArrayList functions = new ArrayList(0);
 
-	private boolean appliedForAllBusinessFunction = false;
+	private boolean appliedForAllBusinessFunction = true;
 
 	private boolean validatedAttrSpecifiedInSrc = false;
+
+    private boolean deleted = false;
 
 	/**
 	 * Flag which is <code>true</code> if this rule is a default rule for validating the value of an attribute
@@ -96,11 +99,9 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 	 */
 	public void delete() {
 		((PolicyCmptType) getIpsObject()).removeRule(this);
-		objectHasChanged();
         deleted = true;
+        objectHasChanged();
     }
-
-    private boolean deleted = false;
 
     /**
      * {@inheritDoc}
@@ -227,14 +228,25 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 			}
 		}
         if(!isAppliedForAllBusinessFunctions() && functions.isEmpty()){
-            String text = "If the validation rule is not applied to all business functions, " +
-                    "at least one business function must be assigned.";
+            String text = Messages.ValidationRule_msgOneBusinessFunction;
             list.add(new Message("", text, Message.ERROR, this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)); //$NON-NLS-1$
-            
         }
 		validateValidatedAttribute(list);
+        validateCheckValueAgainstValueSet(list);
 	}
 
+    private void validateCheckValueAgainstValueSet(MessageList msgList){
+    
+        if(isCheckValueAgainstValueSetRule()){
+            String attributeName = getValidatedAttributeAt(0);
+            IAttribute attribute = getPolicyCmptType().getAttribute(attributeName);
+            if(ValueSetType.ALL_VALUES.equals(attribute.getValueSet().getValueSetType())){
+                String text = Messages.ValidationRule_msgValueSetRule;
+                msgList.add(new Message("", text, Message.ERROR, this, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE)); //$NON-NLS-1$
+            }
+        }
+    }
+    
 	private PolicyCmptType getPolicyCmptType() {
 		return (PolicyCmptType) getIpsObject();
 	}
@@ -345,7 +357,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		msgSeverity = MessageSeverity.getMessageSeverity(element
 				.getAttribute(PROPERTY_MESSAGE_SEVERITY));
 		checkValueAgainstValueSetRule = Boolean.valueOf(
-				element.getAttribute(PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET))
+				element.getAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE))
 				.booleanValue();
 		validatedAttrSpecifiedInSrc = Boolean.valueOf(
 				element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
@@ -380,7 +392,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
 		newElement.setAttribute(PROPERTY_MESSAGE_TEXT, msgText);
 		newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
 		newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(validatedAttrSpecifiedInSrc));
-		newElement.setAttribute(PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET,
+		newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE,
                 String.valueOf(checkValueAgainstValueSetRule));
 		Document doc = newElement.getOwnerDocument();
 		for (int i = 0; i < functions.size(); i++) {

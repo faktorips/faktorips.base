@@ -1052,7 +1052,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     private void buildValidation(JavaCodeFragmentBuilder builder) throws CoreException {
-        createMethodValidateSelf(builder, getPcType().getAttributes());
+        generateMethodValidateSelf(builder, getPcType().getAttributes());
         createMethodValidateDependants(builder);
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
@@ -1118,7 +1118,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             javaDoc, ANNOTATION_GENERATED);
     }
 
-    private void createMethodValidateSelf(JavaCodeFragmentBuilder builder, IAttribute[] attributes)
+    private void generateMethodValidateSelf(JavaCodeFragmentBuilder builder, IAttribute[] attributes)
             throws CoreException {
         /*
          * public void validateSelf(MessageList ml, String businessFunction) { super.validateSelf(ml, businessFunction); }
@@ -1138,13 +1138,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IValidationRule[] rules = getPcType().getRules();
         for (int i = 0; i < rules.length; i++) {
             IValidationRule r = rules[i];
-            body.append("if(!");
-            body.append("execRule");
-            body.append(StringUtils.capitalise(r.getName()));
-            body.append("(ml, businessFunction))");
-            body.appendOpenBracket();
-            body.append(" return false;");
-            body.appendCloseBracket();
+            if(r.validate().isEmpty()){
+                body.append("if(!");
+                body.append(getMethodExpressionExecRule(r, "ml", "businessFunction"));
+                body.append(')');
+                body.appendOpenBracket();
+                body.append(" return false;");
+                body.appendCloseBracket();
+            }
         }
         body.appendln(" return true;");
         // buildValidationValueSet(body, attributes); wegschmeissen ??
@@ -1403,6 +1404,21 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return interfaceBuilder.getMethodNameGetProductCmptGeneration(getProductCmptType()) + "()." + methodName + "()";
     }
     
+    private String getMethodNameExecRule(IValidationRule r){
+        return "execRule" + StringUtils.capitalise(r.getName());
+    }
+    
+    private String getMethodExpressionExecRule(IValidationRule r, String messageList, String businessFunction){
+        StringBuffer buf = new StringBuffer();
+        buf.append(getMethodNameExecRule(r));
+        buf.append('(');
+        buf.append(messageList);
+        buf.append(", ");
+        buf.append(businessFunction);
+        buf.append(")");
+        return  buf.toString();
+    }
+    
     /**
      * Code sample:
      * <pre>
@@ -1426,23 +1442,24 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln();
         String[] businessFunctions = r.getBusinessFunctions();
-        if(businessFunctions.length > 0){
-            body.append("if(");
-            for (int j = 0; j < businessFunctions.length; j++) {
-                body.append("\"");
-                body.append(businessFunctions[j]);
-                body.append("\"");
-                body.append(".equals(");
-                body.append(parameterBusinessFunction);
-                body.append(")");
-                if(j < businessFunctions.length - 1){
-                    body.appendln(" || ");
+        if(!r.isAppliedForAllBusinessFunctions()){
+            if(businessFunctions.length > 0){
+                body.append("if(");
+                for (int j = 0; j < businessFunctions.length; j++) {
+                    body.append("\"");
+                    body.append(businessFunctions[j]);
+                    body.append("\"");
+                    body.append(".equals(");
+                    body.append(parameterBusinessFunction);
+                    body.append(")");
+                    if(j < businessFunctions.length - 1){
+                        body.appendln(" || ");
+                    }
                 }
+                body.append(")");
+                body.appendOpenBracket();
             }
-            body.append(")");
-            body.appendOpenBracket();
         }
-
         body.appendln("//begin-user-code");
         body.append("if(");
         if(r.isCheckValueAgainstValueSetRule()){
@@ -1492,12 +1509,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.appendCloseBracket();
         body.appendln(" return true;");
         body.appendln("//end-user-code");
-        if(businessFunctions.length > 0){
-            body.appendCloseBracket();
-            body.appendln(" return true;");
+        if(!r.isAppliedForAllBusinessFunctions()){
+            if(businessFunctions.length > 0){
+                body.appendCloseBracket();
+                body.appendln(" return true;");
+            }
         }
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
-            "execRule" + StringUtils.capitalise(r.getName()), new String[] { "ml", parameterBusinessFunction },
+            getMethodNameExecRule(r), new String[] { "ml", parameterBusinessFunction },
             new String[] { MessageList.class.getName(), String.class.getName() }, body, javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
     }
 

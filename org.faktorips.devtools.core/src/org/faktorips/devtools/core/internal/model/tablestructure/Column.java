@@ -42,6 +42,9 @@ public class Column extends IpsObjectPart implements IColumn {
     final static String TAG_NAME = "Column"; //$NON-NLS-1$
     
     private String datatype = ""; //$NON-NLS-1$
+    
+    private boolean deleted = false;
+
 
     Column(TableStructure table, int id) {
         super(table, id);
@@ -97,9 +100,8 @@ public class Column extends IpsObjectPart implements IColumn {
     public void delete() {
         getTable().removeColumn(this);
         deleted = true;
+        objectHasChanged();
     }
-
-    private boolean deleted = false;
 
     /**
      * {@inheritDoc}

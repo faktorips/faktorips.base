@@ -43,6 +43,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     private TestIpsObjectPartContainer container;
     private IpsModel model;
+    private boolean deleted = false;
+
+
     
     /*
      * @see TestCase#setUp()
@@ -279,8 +282,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         public void delete() {
             deleted = true;
         }
-
-        private boolean deleted = false;
 
         /**
          * {@inheritDoc}

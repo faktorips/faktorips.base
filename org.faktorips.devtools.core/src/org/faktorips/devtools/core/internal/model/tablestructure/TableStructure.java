@@ -165,7 +165,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     void removeColumn(IColumn column) {
         columns.remove(column);
-        objectHasChanged();
     }
     
     int getColumnIndex(IColumn column) {
@@ -238,7 +237,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     void removeRange(IColumnRange range) {
         ranges.remove(range);
-        objectHasChanged();
     }
     
     /**
@@ -302,7 +300,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     void removeUniqueKey(IUniqueKey key) {
         uniqueKeys.remove(key);
-        objectHasChanged();
     }
     
     /**
@@ -366,7 +363,6 @@ public class TableStructure extends IpsObject implements ITableStructure {
     
     void removeForeignKey(IForeignKey key) {
         foreignKeys.remove(key);
-        objectHasChanged();
     }
     
     /** 

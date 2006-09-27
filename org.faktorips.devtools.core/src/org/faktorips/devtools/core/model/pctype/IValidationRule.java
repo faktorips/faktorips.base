@@ -41,7 +41,7 @@ public interface IValidationRule extends IIpsObjectPart {
 
 	public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
 
-	public final static String PROPERTY_VALIDATES_ATTR_VALUE_AGAINST_VALUESET = "validatesAttrValueAgainstValueSet"; //$NON-NLS-1$
+	public final static String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
 	/**
 	 * Sets the rules name.
 	 */
