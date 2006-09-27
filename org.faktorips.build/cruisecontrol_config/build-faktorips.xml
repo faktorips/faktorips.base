@@ -308,9 +308,6 @@
 	        		
 				</junit>
         	
-        		<echo message="hallo welt, bin mit junit angeblich durch" />
-
-        	
 	        	<!-- check if there are errors in testcase-logs -->
 				<exec executable="/usr/bin/perl" dir="/opt/cc/work/" failonerror="true" outputproperty="failprop">
 					<arg line="lookForFailure.pl"/>
