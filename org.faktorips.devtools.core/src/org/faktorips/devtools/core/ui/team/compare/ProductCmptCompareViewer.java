@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Stefan Widmaier
  */
 public class ProductCmptCompareViewer extends TextMergeViewer {
-    
+
     /**
      * Creates a ProductCmptCompareViewer using a ProductCmptCompareContentProvider as a 
      * content provider.
@@ -54,20 +54,20 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
         for (int i = 0; i < data.length; i++) {
             data[i].setStyle(SWT.NORMAL);
             data[i].setHeight(10);
-        }               
+        }
         JFaceResources.getFontRegistry().put(ProductCmptCompareViewer.class.getName(), data);
     }
-    
+
     /**
      * Adds a <code>ProductCmptLineStyleListener</code> to the given <code>TextViewer</code> for
      * token highlighting.
      * {@inheritDoc}
      */
     protected void configureTextViewer(TextViewer textViewer) {
-        ProductCmptLineStyleListener listener= new ProductCmptLineStyleListener((SourceViewer) textViewer);
+        ProductCmptLineStyleListener listener = new ProductCmptLineStyleListener((SourceViewer)textViewer);
         textViewer.getTextWidget().addLineStyleListener(listener);
     }
-    
+
     /**
      * {@inheritDoc}
      */

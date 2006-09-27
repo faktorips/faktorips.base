@@ -53,23 +53,23 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
  * <code>DiffNode</code> in the result structure represents a difference/change between local and
  * remote product component. By doubleclicking such a node, a text representation of the product
  * components is displayed in the content mergeviewer (parallel scrollable textviewers at the bottom
- * of the compare window). 
+ * of the compare window).
  * 
  * @author Stefan Widmaier
  */
 public class ProductCmptCompareItemCreator implements IStructureCreator {
-    
-    public ProductCmptCompareItemCreator(){
+
+    public ProductCmptCompareItemCreator() {
         super();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getName() {
-        return Messages.ProductCmptCompareItemCreator_StructureViewer_title; 
+        return Messages.ProductCmptCompareItemCreator_StructureViewer_title;
     }
-    
+
     /**
      * Returns a tree of <code>ProductCmptCompareItem</code>s for the given input. This tree is
      * created on the basis of an <code>IIpsSrcFile</code> that might point to a local file or a
@@ -84,17 +84,17 @@ public class ProductCmptCompareItemCreator implements IStructureCreator {
      * reading remote contents via an input stream. {@inheritDoc}
      */
     public IStructureComparator getStructure(Object input) {
-        if(input instanceof ResourceNode){
-            IResource file= ((ResourceNode)input).getResource();
-            IIpsElement element= IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-            if(element instanceof IIpsSrcFile){
+        if (input instanceof ResourceNode) {
+            IResource file = ((ResourceNode)input).getResource();
+            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            if (element instanceof IIpsSrcFile) {
                 return getStructureForIpsSrcFile((IIpsSrcFile)element);
             }
-        }else if(input instanceof IEncodedStreamContentAccessor && input instanceof ITypedElement){
+        } else if (input instanceof IEncodedStreamContentAccessor && input instanceof ITypedElement) {
             try {
-                final IEncodedStreamContentAccessor remoteContent= (IEncodedStreamContentAccessor) input;
-                // FIXME Workaround, change implementation of IpsSrcFileImmutable 
-                IIpsProject project = new IpsProject(){
+                final IEncodedStreamContentAccessor remoteContent = (IEncodedStreamContentAccessor)input;
+                // FIXME Workaround, change implementation of IpsSrcFileImmutable
+                IIpsProject project = new IpsProject() {
                     public String getXmlFileCharset() {
                         try {
                             return remoteContent.getCharset();
@@ -104,60 +104,62 @@ public class ProductCmptCompareItemCreator implements IStructureCreator {
                         return null;
                     }
                 };
-                InputStream is= remoteContent.getContents();
-                String name= ((ITypedElement) input).getName();
+                InputStream is = remoteContent.getContents();
+                String name = ((ITypedElement)input).getName();
                 // FIXME workaround for retrieving filename without using internal classes
-                if(input instanceof ResourceEditionNode){
-                    ResourceEditionNode revision= (ResourceEditionNode) input;
-                    name= revision.getRemoteResource().getName();
+                if (input instanceof ResourceEditionNode) {
+                    ResourceEditionNode revision = (ResourceEditionNode)input;
+                    name = revision.getRemoteResource().getName();
                 }
                 IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable(project, name, is);
                 return getStructureForIpsSrcFile(srcFile);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-        }else if (input instanceof ISynchronizeModelElement) {
-            ISynchronizeModelElement modelElement= (ISynchronizeModelElement) input;
-            IResource res= modelElement.getResource();
-            if(res instanceof IFile){
-                IIpsElement element= IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
-                if(element instanceof IIpsSrcFile){
+        } else if (input instanceof ISynchronizeModelElement) {
+            ISynchronizeModelElement modelElement = (ISynchronizeModelElement)input;
+            IResource res = modelElement.getResource();
+            if (res instanceof IFile) {
+                IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
+                if (element instanceof IIpsSrcFile) {
                     return getStructureForIpsSrcFile((IIpsSrcFile)element);
                 }
             }
-        }else if(input instanceof HistoryItem){
-            IResource res= ((HistoryItem) input).getResource();
-            IIpsElement element= IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
-            if(element instanceof IIpsSrcFile){
+        } else if (input instanceof HistoryItem) {
+            IResource res = ((HistoryItem)input).getResource();
+            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(res);
+            if (element instanceof IIpsSrcFile) {
                 return getStructureForIpsSrcFile((IIpsSrcFile)element);
             }
         }
         return null;
     }
-    
+
     /**
-     * Returns a tree of <code>ProductCmptCompareItem</code>s. Each <code>ProductCmptCompareItem</code>
-     * represents an IpsSrcFile, a ProductCmpt, a Generation, a ConfigElement or a Relation.
+     * Returns a tree of <code>ProductCmptCompareItem</code>s. Each
+     * <code>ProductCmptCompareItem</code> represents an IpsSrcFile, a ProductCmpt, a Generation,
+     * a ConfigElement or a Relation.
+     * 
      * @param file
      * @return
      */
     private IStructureComparator getStructureForIpsSrcFile(IIpsSrcFile file) {
         try {
-            if(file.getIpsObject() instanceof IProductCmpt){
-                ProductCmptCompareItem root= new ProductCmptCompareItem(null, file);
-                IProductCmpt product = (IProductCmpt) file.getIpsObject();
-                ProductCmptCompareItem ipsObject= new ProductCmptCompareItem(root, product);
+            if (file.getIpsObject() instanceof IProductCmpt) {
+                ProductCmptCompareItem root = new ProductCmptCompareItem(null, file);
+                IProductCmpt product = (IProductCmpt)file.getIpsObject();
+                ProductCmptCompareItem ipsObject = new ProductCmptCompareItem(root, product);
                 // Generations of product
-                IIpsObjectGeneration[] gens= product.getGenerations();
+                IIpsObjectGeneration[] gens = product.getGenerations();
                 for (int i = 0; i < gens.length; i++) {
-                    ProductCmptCompareItem generation= new ProductCmptCompareItem(ipsObject, gens[i]);
+                    ProductCmptCompareItem generation = new ProductCmptCompareItem(ipsObject, gens[i]);
                     // configElements for each generation
-                    IConfigElement[] ces= ((IProductCmptGeneration)gens[i]).getConfigElements();
+                    IConfigElement[] ces = ((IProductCmptGeneration)gens[i]).getConfigElements();
                     for (int j = 0; j < ces.length; j++) {
                         new ProductCmptCompareItem(generation, ces[j]);
                     }
                     // relations for each generation
-                    IProductCmptRelation[] rels= ((IProductCmptGeneration)gens[i]).getRelations();
+                    IProductCmptRelation[] rels = ((IProductCmptGeneration)gens[i]).getRelations();
                     for (int j = 0; j < rels.length; j++) {
                         new ProductCmptCompareItem(generation, rels[j]);
                     }
@@ -171,35 +173,33 @@ public class ProductCmptCompareItemCreator implements IStructureCreator {
         }
         return null;
     }
-    
+
     /**
-     * Returns null.
-     * {@inheritDoc}
+     * Returns null. {@inheritDoc}
      */
     public IStructureComparator locate(Object path, Object input) {
         return null;
     }
-    
+
     /**
-     * Returns null if node is not an <code>ProductCmptCompareItem</code>. Otherwise
-     * a string-representation of the given <code>ProductCmptCompareItem</code> is returned.
-     * @see ProductCmptCompareItem#getContentString()
-     * {@inheritDoc}
+     * Returns null if node is not an <code>ProductCmptCompareItem</code>. Otherwise a
+     * string-representation of the given <code>ProductCmptCompareItem</code> is returned.
+     * 
+     * @see ProductCmptCompareItem#getContentString() {@inheritDoc}
      */
     public String getContents(Object node, boolean ignoreWhitespace) {
-        if(node instanceof ProductCmptCompareItem){
-            String content= ((ProductCmptCompareItem) node).getContentString();
-            if(ignoreWhitespace){
+        if (node instanceof ProductCmptCompareItem) {
+            String content = ((ProductCmptCompareItem)node).getContentString();
+            if (ignoreWhitespace) {
                 return content.trim();
             }
             return content;
         }
         return null;
     }
-    
+
     /**
-     * Empty implementation. Nothing to be saved.
-     * {@inheritDoc}
+     * Empty implementation. Nothing to be saved. {@inheritDoc}
      */
     public void save(IStructureComparator node, Object input) {
     }

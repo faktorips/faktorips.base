@@ -29,9 +29,8 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
  * <code>IIpsElement</code>s referenced by each compare item. Sorts
  * <code>IProductCmptGeneration</code>s by their validFrom date,
  * <code>IProductCmptRelation</code>s by their name, which by convention contains the qualified
- * name of the referenced product component. <code>IConfigElement</code>s are sorted by their 
- * PcTypeAttribute, which is at the same time their name. ConfigElements are put above
- * relations.
+ * name of the referenced product component. <code>IConfigElement</code>s are sorted by their
+ * PcTypeAttribute, which is at the same time their name. ConfigElements are put above relations.
  * <p>
  * The sorting of <code>ProductCmptCompareItem</code>s is necessary to ensure that differences in
  * product components (their structures) are consistent with differences in the text representation
@@ -46,30 +45,24 @@ public class ProductCmptCompareItemComparator implements Comparator {
      * {@inheritDoc}
      */
     public int compare(Object o1, Object o2) {
-        if(o1 instanceof ProductCmptCompareItem && o2 instanceof ProductCmptCompareItem){
-            IIpsElement element1= ((ProductCmptCompareItem) o1).getIpsElement();
-            IIpsElement element2= ((ProductCmptCompareItem) o2).getIpsElement();
+        if (o1 instanceof ProductCmptCompareItem && o2 instanceof ProductCmptCompareItem) {
+            IIpsElement element1 = ((ProductCmptCompareItem)o1).getIpsElement();
+            IIpsElement element2 = ((ProductCmptCompareItem)o2).getIpsElement();
             // Sort generations by generation number (and thus chronographically)
-            if(element1 instanceof IProductCmptGeneration && element2 instanceof IProductCmptGeneration){
-                return ((IProductCmptGeneration)element1).getGenerationNo()-((IProductCmptGeneration)element2).getGenerationNo();
+            if (element1 instanceof IProductCmptGeneration && element2 instanceof IProductCmptGeneration) {
+                return ((IProductCmptGeneration)element1).getGenerationNo()
+                        - ((IProductCmptGeneration)element2).getGenerationNo();
             }
             // Sort relations by name (qualified name of the target)
-            if(element1 instanceof IProductCmptRelation && element2 instanceof IProductCmptRelation){
+            if (element1 instanceof IProductCmptRelation && element2 instanceof IProductCmptRelation) {
                 return element1.getName().compareTo(element2.getName());
             }
             // Sort configElements by type (which is at the same time their name)
-            if(element1 instanceof IConfigElement && element2 instanceof IConfigElement){
-                String ce1= ((IConfigElement) element1).getPcTypeAttribute();
-                String ce2= ((IConfigElement) element2).getPcTypeAttribute();
+            if (element1 instanceof IConfigElement && element2 instanceof IConfigElement) {
+                String ce1 = ((IConfigElement)element1).getPcTypeAttribute();
+                String ce2 = ((IConfigElement)element2).getPcTypeAttribute();
                 return ce1.compareTo(ce2);
             }
-            // move configElements above relations
-//            if(element1 instanceof IProductCmptRelation && element2 instanceof IConfigElement){
-//                return 1;
-//            }
-//            if(element1 instanceof IConfigElement && element2 instanceof IProductCmptRelation){
-//                return -1;
-//            }
         }
         return 0;
     }

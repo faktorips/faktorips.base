@@ -54,12 +54,12 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
  * relations defined in each generation are represented by ProductCmptCompareItems. Instances of
  * this class are used to compare the contents (and thus structures) of a product component.
  * <p>
- * As product components are displayed in the compareViewer using a single text format, differences
- * between products are displayed as ranges in the text representation.
- * <p>
- * Each compare item contains a range that defines its position (offset) and length in this text
- * representation. The TextMergeViewer uses this information to display differences in a way similar
- * to the java source compare.
+ * Since product components are displayed in the compareViewer using a simple text format, differences
+ * between products are displayed as ranges in the text representation. The ProductCmptCompareItem
+ * class therefor implements the IDocumentRange Interface. It lets the TextMergeViewer retrieve the
+ * document corresponding to this product component and the (text-)range the compareitem represents
+ * in the document. The TextMergeViewer uses this information to display differences in a way
+ * similar to the java source compare.
  * 
  * @see org.eclipse.compare.contentmergeviewer.IDocumentRange
  * @author Stefan Widmaier

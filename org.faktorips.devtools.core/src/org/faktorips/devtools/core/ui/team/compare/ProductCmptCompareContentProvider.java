@@ -25,33 +25,36 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * Contentprovider for <code>ProductCmptCompareViewer</code>. 
+ * Contentprovider for <code>ProductCmptCompareViewer</code>. Returns images for 
+ * <code>ProductCmptCompareItem</code>s by quering the contained <code>IIpsElement</code>.
+ * The getXXXContent() methods simply return the left, right respectiveley ancestor 
+ * input object referenced by the given input.
  * 
  * @author Stefan Widmaier
  */
 public class ProductCmptCompareContentProvider implements IMergeViewerContentProvider {
 
     private CompareConfiguration config;
-    
-    public ProductCmptCompareContentProvider(CompareConfiguration cc){
-        config= cc;
+
+    public ProductCmptCompareContentProvider(CompareConfiguration cc) {
+        config = cc;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getAncestorLabel(Object input) {
         return config.getAncestorLabel(input);
     }
-    
+
     /**
      * Returns the image of the <code>IIpsElement</code> that is referenced by the ancestor-<code>ProductCmptCompareItem</code>.
      * {@inheritDoc}
      */
     public Image getAncestorImage(Object input) {
-        if(input instanceof ICompareInput){
-            ITypedElement el=((ICompareInput)input).getAncestor();
-            if(el instanceof ProductCmptCompareItem){
+        if (input instanceof ICompareInput) {
+            ITypedElement el = ((ICompareInput)input).getAncestor();
+            if (el instanceof ProductCmptCompareItem) {
                 return ((ProductCmptCompareItem)el).getImage();
             }
         }
@@ -59,14 +62,14 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     }
 
     /**
-     * Returns the ancestor-<code>ProductCmptCompareItem</code> itself. The <code>TextMergeViewer</code> 
-     * can use <code>ProductCmptCompareItem</code>s as <code>IDocumentRange</code>s.
-     * {@inheritDoc}
+     * Returns the ancestor-<code>ProductCmptCompareItem</code> itself. The
+     * <code>TextMergeViewer</code> can use <code>ProductCmptCompareItem</code>s as
+     * <code>IDocumentRange</code>s. {@inheritDoc}
      */
     public Object getAncestorContent(Object input) {
-        if(input instanceof ICompareInput){
-            ITypedElement el=((ICompareInput)input).getAncestor();
-            if(el instanceof ProductCmptCompareItem){
+        if (input instanceof ICompareInput) {
+            ITypedElement el = ((ICompareInput)input).getAncestor();
+            if (el instanceof ProductCmptCompareItem) {
                 return el;
             }
         }
@@ -74,8 +77,7 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     }
 
     /**
-     * Returns false.
-     * {@inheritDoc}
+     * Returns false. {@inheritDoc}
      */
     public boolean showAncestor(Object input) {
         return false;
@@ -89,13 +91,13 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     }
 
     /**
-     * Returns the image of the <code>IIpsElement</code> that is referenced by the left <code>ProductCmptCompareItem</code>.
-     * {@inheritDoc}
+     * Returns the image of the <code>IIpsElement</code> that is referenced by the left
+     * <code>ProductCmptCompareItem</code>. {@inheritDoc}
      */
     public Image getLeftImage(Object input) {
-        if(input instanceof ICompareInput){
-            ITypedElement el=((ICompareInput)input).getLeft();
-            if(el instanceof ProductCmptCompareItem){
+        if (input instanceof ICompareInput) {
+            ITypedElement el = ((ICompareInput)input).getLeft();
+            if (el instanceof ProductCmptCompareItem) {
                 return ((ProductCmptCompareItem)el).getImage();
             }
         }
@@ -103,14 +105,14 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     }
 
     /**
-     * Returns the left <code>ProductCmptCompareItem</code> itself. The <code>TextMergeViewer</code> 
-     * can use <code>ProductCmptCompareItem</code>s as <code>IDocumentRange</code>s.
-     * {@inheritDoc}
+     * Returns the left <code>ProductCmptCompareItem</code> itself. The
+     * <code>TextMergeViewer</code> can use <code>ProductCmptCompareItem</code>s as
+     * <code>IDocumentRange</code>s. {@inheritDoc}
      */
     public Object getLeftContent(Object input) {
-        if(input instanceof ICompareInput){
-            ITypedElement el=((ICompareInput)input).getLeft();
-            if(el instanceof ProductCmptCompareItem){
+        if (input instanceof ICompareInput) {
+            ITypedElement el = ((ICompareInput)input).getLeft();
+            if (el instanceof ProductCmptCompareItem) {
                 return el;
             }
         }
@@ -118,16 +120,14 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     }
 
     /**
-     * Returns false.
-     * {@inheritDoc}
+     * Returns false. {@inheritDoc}
      */
     public boolean isLeftEditable(Object input) {
         return false;
     }
 
     /**
-     * Empty implementation. Nothing to save.
-     * {@inheritDoc}
+     * Empty implementation. Nothing to save. {@inheritDoc}
      */
     public void saveLeftContent(Object input, byte[] bytes) {
     }
@@ -140,13 +140,13 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     }
 
     /**
-     * Returns the image of the <code>IIpsElement</code> that is referenced by the right <code>ProductCmptCompareItem</code>.
-     * {@inheritDoc}
+     * Returns the image of the <code>IIpsElement</code> that is referenced by the right
+     * <code>ProductCmptCompareItem</code>. {@inheritDoc}
      */
     public Image getRightImage(Object input) {
-        if(input instanceof ICompareInput){
-            ITypedElement el=((ICompareInput)input).getRight();
-            if(el instanceof ProductCmptCompareItem){
+        if (input instanceof ICompareInput) {
+            ITypedElement el = ((ICompareInput)input).getRight();
+            if (el instanceof ProductCmptCompareItem) {
                 return ((ProductCmptCompareItem)el).getImage();
             }
         }
@@ -154,45 +154,41 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     }
 
     /**
-     * Returns the right <code>ProductCmptCompareItem</code> itself. The <code>TextMergeViewer</code> 
-     * can use <code>ProductCmptCompareItem</code>s as <code>IDocumentRange</code>s.
-     * {@inheritDoc}
+     * Returns the right <code>ProductCmptCompareItem</code> itself. The
+     * <code>TextMergeViewer</code> can use <code>ProductCmptCompareItem</code>s as
+     * <code>IDocumentRange</code>s. {@inheritDoc}
      */
     public Object getRightContent(Object input) {
-        if(input instanceof ICompareInput){
-            ITypedElement el=((ICompareInput)input).getRight();
-            if(el instanceof ProductCmptCompareItem){
+        if (input instanceof ICompareInput) {
+            ITypedElement el = ((ICompareInput)input).getRight();
+            if (el instanceof ProductCmptCompareItem) {
                 return el;
             }
         }
         return null;
     }
-    
+
     /**
-     * Returns false.
-     * {@inheritDoc}
+     * Returns false. {@inheritDoc}
      */
     public boolean isRightEditable(Object input) {
         return false;
     }
 
     /**
-     * Empty implementation. Nothing to save.
-     * {@inheritDoc}
+     * Empty implementation. Nothing to save. {@inheritDoc}
      */
     public void saveRightContent(Object input, byte[] bytes) {
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public void dispose() {
     }
 
     /**
-     * Empty implementation.
-     * {@inheritDoc}
+     * Empty implementation. {@inheritDoc}
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
     }
