@@ -273,7 +273,7 @@
         		</exec>
         	
         		<!-- run org.faktorips.integrationtest tests -->
-        		<property name="classes" value="${dir}/environment/workspace/org.faktorips.integrationtest/bin/" />
+        		<property name="classes" value="${dir}/environment/workspace/org.faktorips.integrationtest/testbin/" />
         	    <property name="libdir" value="${dir}/environment/workspace/org.faktorips.integrationtest/lib/" />
 
         		<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="withOutAndErr" timeout="10000"  showoutput="yes">
