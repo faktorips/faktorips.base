@@ -52,7 +52,7 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
      * @param content the content of this IpsSrcFile
 	 */
 	public IpsSrcFileImmutable(IIpsProject ipsProject, String name, InputStream content) {
-		super(null, name);
+		super(ipsProject, name);
 		this.project = ipsProject;
 		setContents(content);
 	}
