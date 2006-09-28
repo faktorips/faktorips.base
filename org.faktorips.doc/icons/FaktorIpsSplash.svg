@@ -404,7 +404,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="2.8363636"
      inkscape:cx="249.99791"
-     inkscape:cy="193.20283"
+     inkscape:cy="165"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="500px"
@@ -414,7 +414,8 @@
      inkscape:window-x="-4"
      inkscape:window-y="-4"
      showguides="true"
-     inkscape:guide-bbox="true">
+     inkscape:guide-bbox="true"
+     borderlayer="true">
     <sodipodi:guide
        orientation="horizontal"
        position="78"
@@ -467,6 +468,13 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:white;fill-opacity:1;stroke:white;stroke-width:32;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect12628"
+       width="499.58334"
+       height="330.35257"
+       x="-0.3525641"
+       y="5.6843419e-014" />
     <image
        xlink:href="splashbg.jpg"
        sodipodi:absref="D:\icons\splashbg.jpg"
