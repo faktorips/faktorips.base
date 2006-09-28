@@ -128,7 +128,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * {@inheritDoc}
 	 */
 	public void setProperties(IIpsProjectProperties properties) throws CoreException {
-		((IpsModel)getIpsModel()).setIpsProjectProperties(this, properties);
+		IpsModel model = (IpsModel)getIpsModel();
+        model.setIpsProjectProperties(this, properties);
 		saveProjectProperties(new IpsProjectProperties(this, (IpsProjectProperties)properties));
 	}
 

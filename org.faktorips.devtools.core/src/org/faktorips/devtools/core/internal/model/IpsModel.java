@@ -733,6 +733,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			projectDatatypesMap.remove(ipsProject.getName());
 			projectDatatypeHelpersMap.remove(ipsProject.getName());
 			projectPropertiesMap.remove(ipsProject.getName());
+            validationResultCache.clear();
 			return true;
 		}
 		return false;
