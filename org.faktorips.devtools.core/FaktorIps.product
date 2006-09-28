@@ -22,10 +22,8 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
 
    <windowImages small="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" large="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i48="/org.faktorips.devtools.core/icons/FaktorIpsIcon48.gif" i64="/org.faktorips.devtools.core/icons/FaktorIpsIcon64.gif" i128="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
 
-   <!-- for Eclipse 3.1, small and large are needed, for Eclipse 3.2 i16 to i128
-   windowImages small="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" large="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif" i48="/org.faktorips.devtools.core/icons/FaktorIpsIcon48.gif" i64="/org.faktorips.devtools.core/icons/FaktorIpsIcon64.gif" i128="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/-->
-
-
+   <splash
+      location="org.faktorips.devtools.core" />
    <launcher name="faktorips">
       <linux icon="/org.faktorips.devtools.core/icons/FaktorIpsIcon.xpm"/>
       <solaris/>
@@ -37,28 +35,41 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
 
 
    <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.jcraft.jsch"/>
       <plugin id="org.apache.ant"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.ant.ui"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filebuffers"/>
+      <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.debug.core"/>
       <plugin id="org.eclipse.debug.ui"/>
       <plugin id="org.eclipse.emf.codegen"/>
       <plugin id="org.eclipse.emf.common"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.appserver"/>
       <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.jdt.core"/>
+      <plugin id="org.eclipse.jdt.core.manipulation"/>
       <plugin id="org.eclipse.jdt.debug"/>
       <plugin id="org.eclipse.jdt.debug.ui"/>
       <plugin id="org.eclipse.jdt.junit"/>
@@ -73,6 +84,7 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
       <plugin id="org.eclipse.pde"/>
       <plugin id="org.eclipse.pde.build"/>
       <plugin id="org.eclipse.pde.core"/>
+      <plugin id="org.eclipse.pde.runtime"/>
       <plugin id="org.eclipse.pde.ui"/>
       <plugin id="org.eclipse.search"/>
       <plugin id="org.eclipse.swt"/>
@@ -90,7 +102,10 @@ Visit http://www.faktorzehn.org or http://www.faktorips.org
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.ide"/>
       <plugin id="org.eclipse.ui.intro"/>
+      <plugin id="org.eclipse.ui.navigator"/>
+      <plugin id="org.eclipse.ui.navigator.resources"/>
       <plugin id="org.eclipse.ui.views"/>
+      <plugin id="org.eclipse.ui.views.properties.tabbed"/>
       <plugin id="org.eclipse.ui.win32" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
