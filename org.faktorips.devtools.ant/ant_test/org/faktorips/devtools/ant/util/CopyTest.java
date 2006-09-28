@@ -48,7 +48,7 @@ public class CopyTest extends TestCase {
     }
 
     public void testRecursiveDirCopy() {
-        Copy c = new Copy();
+        RecursiveCopy c = new RecursiveCopy();
 
         try {
             c.copyDir(tmpDir.getAbsolutePath(), tmpDir3.getAbsolutePath());
@@ -66,7 +66,7 @@ public class CopyTest extends TestCase {
 
     public void testCopyFile() {
 
-        Copy c = new Copy();
+        RecursiveCopy c = new RecursiveCopy();
         byte data[] = { '1', '2', '3' };
 
         try {

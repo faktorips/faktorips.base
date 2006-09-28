@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  * 
  * @author Marcel Senf <marcel.senf@faktorzehn.de>
  */
-public class FullWorkspaceBuild extends Task {
+public class FullWorkspaceBuildTask extends Task {
 
     /**
      * Excecutes the Ant-Task {@inheritDoc}

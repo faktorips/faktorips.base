@@ -8,13 +8,13 @@ import java.util.TimeZone;
 import junit.framework.TestCase;
 
 import org.apache.tools.ant.BuildException;
-import org.faktorips.devtools.ant.ProjectImporter;
+import org.faktorips.devtools.ant.ProjectImportTask;
 
 public class ProjectImporterTest extends TestCase {
 
     public void testNullAttribute() {
 
-        ProjectImporter projectimporter = new ProjectImporter();
+        ProjectImportTask projectimporter = new ProjectImportTask();
 
         projectimporter.setDir(null);
 
@@ -32,7 +32,7 @@ public class ProjectImporterTest extends TestCase {
 
     public void testNotExistingDirectory() {
 
-        ProjectImporter projectimporter = new ProjectImporter();
+        ProjectImportTask projectimporter = new ProjectImportTask();
         projectimporter.setDir(this.getTempDirPath());
 
         try {
@@ -46,7 +46,7 @@ public class ProjectImporterTest extends TestCase {
 
     public void testIsNoDirectory() {
 
-        ProjectImporter projectimporter = new ProjectImporter();
+        ProjectImportTask projectimporter = new ProjectImportTask();
         projectimporter.setDir(this.getTempDirPath() + "/file.txt");
 
         File d = new File(this.getTempDirPath());
@@ -71,7 +71,7 @@ public class ProjectImporterTest extends TestCase {
 
     public void testImport() {
         String path = this.getTempDirPath();
-        ProjectImporter projectimporter = new ProjectImporter();
+        ProjectImportTask projectimporter = new ProjectImportTask();
         projectimporter.setDir(path);
 
         // first test import without .project file

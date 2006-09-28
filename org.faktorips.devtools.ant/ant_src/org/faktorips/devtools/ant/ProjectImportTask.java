@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.ant.util.Copy;
+import org.faktorips.devtools.ant.util.RecursiveCopy;
 
 /**
  * Implements a custom Ant-Task, which imports a given Directory to a running Eclipse Workspace as
@@ -33,7 +33,7 @@ import org.faktorips.devtools.ant.util.Copy;
  * 
  * @author Marcel Senf <marcel.senf@faktorzehn.de>
  */
-public class ProjectImporter extends org.apache.tools.ant.Task {
+public class ProjectImportTask extends org.apache.tools.ant.Task {
 
     /**
      * path to project dir file
@@ -81,8 +81,6 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
         // Fetch Workspace
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-
-
         // Create
         IProgressMonitor monitor = new NullProgressMonitor();
 
@@ -114,7 +112,7 @@ public class ProjectImporter extends org.apache.tools.ant.Task {
 
             // copy files
 
-            Copy copyUtil = new Copy();
+            RecursiveCopy copyUtil = new RecursiveCopy();
             copyUtil.copyDir(this.getDir(), project.getLocation().toString());
 
             project.open(monitor);
