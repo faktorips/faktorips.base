@@ -74,6 +74,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
     private boolean javaProjectContainsClassesForDynamicDatatypes = false;
+    private boolean containerRelationIsImplementedRuleEnabled = true;
 
     /**
      * Default constructor.
@@ -293,7 +294,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		projectEl.setAttribute("productDefinitionProject", "" + productDefinitionProject); //$NON-NLS-1$ //$NON-NLS-2$
 		projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
 		projectEl.setAttribute("javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
-		
+		projectEl.setAttribute("containerRelationIsImplementedRuleEnabled", "" + containerRelationIsImplementedRuleEnabled);
+        
         // artefact builder set
         createIpsArtefactBuilderSetDescriptionComment(projectEl);
         Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
@@ -338,6 +340,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue();  //$NON-NLS-1$
+        containerRelationIsImplementedRuleEnabled = Boolean.valueOf(element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue();  //$NON-NLS-1$
         Element generatedCodeEl = XmlUtil.getFirstElement(element, GENERATED_CODE_TAG_NAME);
         if (generatedCodeEl!=null) {
     	    javaSrcLanguage = getLocale(generatedCodeEl.getAttribute("docLanguage")); //$NON-NLS-1$
@@ -491,6 +494,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		this.javaProjectContainsClassesForDynamicDatatypes = newValue;
 	}
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isContainerRelationIsImplementedRuleEnabled() {
+        return containerRelationIsImplementedRuleEnabled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setContainerRelationIsImplementedRuleEnabled(boolean enabled) {
+        containerRelationIsImplementedRuleEnabled = enabled;
+    }
+
     private void createIpsProjectDescriptionComment(Node parentEl) {
         String s = "This xml file contains the properties of the enclosing ips project. It contains the following information:" + SystemUtils.LINE_SEPARATOR 
         + " " + SystemUtils.LINE_SEPARATOR
@@ -518,6 +535,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    modelProject                                       True if this project contains the model or part of it." + SystemUtils.LINE_SEPARATOR
         + "    runtimeIdPrefix                                    " + SystemUtils.LINE_SEPARATOR
         + "    javaProjectContainsClassesForDynamicDatatypes      see discussion above" + SystemUtils.LINE_SEPARATOR
+        + "    containerRelationIsImplementedRuleEnabled          True if FaktorIPS checks if all container relations are implemented in none abstract classes." + SystemUtils.LINE_SEPARATOR
         + "    <IpsArtefactBuilderSet/>                           The generator used. Details below." + SystemUtils.LINE_SEPARATOR
         + "    <GeneratedSourcecode/>                             See details below." + SystemUtils.LINE_SEPARATOR
         + "    <IpsObjectPath/>                                   The object path to search for model and product definition objects. Details below." + SystemUtils.LINE_SEPARATOR

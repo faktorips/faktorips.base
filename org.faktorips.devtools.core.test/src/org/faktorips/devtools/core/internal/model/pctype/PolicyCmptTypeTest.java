@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -718,6 +719,15 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
         ml = pcType.validate();
         assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        
+        // test if the rule is not executed when disabled
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setContainerRelationIsImplementedRuleEnabled(false);
+        ipsProject.setProperties(props);
+        ml = pcType.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        props.setContainerRelationIsImplementedRuleEnabled(true);
+        ipsProject.setProperties(props);
 
         // type is valid, if it is abstract
         pcType.setAbstract(true);

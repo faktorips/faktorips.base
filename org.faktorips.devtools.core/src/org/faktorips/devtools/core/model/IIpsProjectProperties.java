@@ -219,6 +219,19 @@ public interface IIpsProjectProperties {
 	 * @see #isJavaProjectContainsClassesForDynamicDatatypes()
 	 */
 	public void setJavaProjectContainsClassesForDynamicDatatypes(boolean newValue);
+    
+    /**
+     * Returns <code>true</code> if the rule is enabled, otherwise <code>false</code>.
+     * See the message code for the violation of this rule for further details.
+     * 
+     * @see org.faktorips.devtools.core.model.pctype.IPolicyCmptType#MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION
+     */
+    public boolean isContainerRelationIsImplementedRuleEnabled();
+    
+    /**
+     * @see #isContainerRelationIsImplementedRuleEnabled()
+     */
+    public void setContainerRelationIsImplementedRuleEnabled(boolean enabled);
 	
 
 }

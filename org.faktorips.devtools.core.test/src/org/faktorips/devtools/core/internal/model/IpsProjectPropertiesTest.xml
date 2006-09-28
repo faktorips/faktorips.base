@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<IpsProject modelProject="true" productDefinitionProject="true" javaSrcLanguage="it" runtimeIdPrefix="testPrefix" javaProjectContainsClassesForDynamicDatatypes="true"> 
+<IpsProject modelProject="true" 
+            productDefinitionProject="true" 
+            javaSrcLanguage="it" 
+            runtimeIdPrefix="testPrefix" 
+            javaProjectContainsClassesForDynamicDatatypes="true"
+            containerRelationIsImplementedRuleEnabled="true"> 
 	<IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset"/>	
 	<GeneratedSourcecode docLanguage="it" changesInTimeNamingConvention="myConvention"/>
 	<ProductCmptNamingStrategy id="org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy">

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
@@ -694,7 +695,10 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(supertypeHierarchy, list);
-            validateIfAllContainerRelationsAreImplemented(supertypeHierarchy, list);
+            IIpsProjectProperties props = getIpsProject().getProperties();
+            if (props.isContainerRelationIsImplementedRuleEnabled()) {
+                validateIfAllContainerRelationsAreImplemented(supertypeHierarchy, list);
+            }
             IMethod[] methods = getMethods();
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].isAbstract()) {
