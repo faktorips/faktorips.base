@@ -96,7 +96,7 @@ public class JavaNamingConvention {
      * Returns the method name for the method with that the property is read. 
      */
     public String getGetterMethodName(String propertyName, Class datatype) {
-    	if (datatype.equals(Boolean.class) || datatype.equals(Boolean.TYPE)) {
+    	if (datatype.equals(Boolean.TYPE)) {
     		return "is" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
     	}
 		return "get" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
@@ -106,7 +106,7 @@ public class JavaNamingConvention {
      * Returns the method name for the method with that the property is read. 
      */
     public String getGetterMethodName(String propertyName, Datatype datatype) {
-    	if (datatype.equals(Datatype.BOOLEAN) || datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
+    	if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
     		return "is" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
     	}
 		return "get" + StringUtils.capitalise(propertyName); //$NON-NLS-1$
