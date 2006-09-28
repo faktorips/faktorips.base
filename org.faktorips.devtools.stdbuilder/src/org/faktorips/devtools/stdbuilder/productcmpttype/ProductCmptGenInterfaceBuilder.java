@@ -144,7 +144,7 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
      * </pre>
      */
     void generateSignatureGetDefaultValue(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getJavaNamingConvention().getGetterMethodName(getPropertyNameDefaultValue(a), datatypeHelper.getDatatype());
+        String methodName = getMethodNameGetDefaultValue(a, datatypeHelper);
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(),
                 methodName, new String[0], new String[0]);
     }
