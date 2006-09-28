@@ -1,6 +1,6 @@
 <project name="importProjects" default="import">
-	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.ProjectImporter"/>
-	<taskdef name="faktorips.fullBuild" classname="org.faktorips.devtools.ant.FullWorkspaceBuild"/>
+	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.ProjectImportTask"/>
+	<taskdef name="faktorips.fullBuild" classname="org.faktorips.devtools.ant.FullWorkspaceBuildTask"/>
 	
 	<target name="import">
 		<echo message="executing faktorips.import now" />
