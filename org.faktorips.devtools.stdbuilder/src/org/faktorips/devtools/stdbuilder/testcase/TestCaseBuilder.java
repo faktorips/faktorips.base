@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -48,7 +49,6 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  */
 public class TestCaseBuilder extends AbstractArtefactBuilder {
 
-    private PolicyCmptImplClassBuilder policyCmptBuilder;
+    private JavaSourceFileBuilder javaSourceFileBuilder;
     
     /**
      * @param builderSet
@@ -80,8 +80,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Sets the policy component type implementation builder.
      */
-    public void setPolicyCmptBuilder(PolicyCmptImplClassBuilder policyCmptBuilder) {
-        this.policyCmptBuilder = policyCmptBuilder;
+    public void setJavaSourceFileBuilder(JavaSourceFileBuilder javaSourceFileBuilder) {
+        this.javaSourceFileBuilder = javaSourceFileBuilder;
     }
 
     /**
@@ -292,7 +292,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     throw new CoreException(new IpsStatus(NLS.bind(
                             "The policy component type {0} was not found.", productCmpt.getPolicyCmptType())));
                 }
-                testPolicyCmptElem.setAttribute("class", policyCmptBuilder.getQualifiedClassName(pcType));
+                testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(pcType));
             }
         }
     }
