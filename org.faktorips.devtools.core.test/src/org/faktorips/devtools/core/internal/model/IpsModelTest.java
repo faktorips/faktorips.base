@@ -333,6 +333,18 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
         
     }
     
+    public void testClearValidationCache() throws CoreException{
+        IIpsProject project = super.newIpsProject();
+        IPolicyCmptType pcType = super.newPolicyCmptType(project, "TestedType");
+        model.getValidationResultCache().putResult(pcType, new MessageList());
+        
+        assertNotNull(model.getValidationResultCache().getResult(pcType));
+        
+        model.clearValidationCache();
+
+        assertNull(model.getValidationResultCache().getResult(pcType));
+    }
+    
     /** 
      * Overridden method.
      * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)

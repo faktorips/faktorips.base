@@ -73,6 +73,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         try {
             monitor.beginTask("build", 100000); //$NON-NLS-1$
             monitor.subTask(Messages.IpsBuilder_validatingProject);
+            if(kind == IncrementalProjectBuilder.CLEAN_BUILD){
+                getIpsProject().getIpsModel().clearValidationCache();
+            }
             getProject().deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, 0);
             MessageList list = getIpsProject().validate();
             createMarkersFromMessageList(getProject(), list, IpsPlugin.PROBLEM_MARKER);

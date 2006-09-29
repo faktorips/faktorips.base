@@ -1316,5 +1316,14 @@ public class IpsModel extends IpsElement implements IIpsModel,
 			return true;
 		}
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearValidationCache() {
+        getValidationResultCache().removeStaleData(null);
+    }
+    
+    
     
 }

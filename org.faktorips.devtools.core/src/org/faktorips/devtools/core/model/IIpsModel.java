@@ -191,4 +191,9 @@ public interface IIpsModel extends IIpsElement {
 	 * @throws CoreException if an error occurs during search.
 	 */
 	public MessageList checkForDuplicateRuntimeIds(IProductCmpt[] cmptsToCheck) throws CoreException;
+    
+    /**
+     * Clears the validation results for all elements in the workspace.
+     */
+    public void clearValidationCache();
 }
