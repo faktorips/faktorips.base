@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IParameterContainer;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -146,9 +147,10 @@ public class Parameter extends IpsObjectPart implements IParameter {
             result.add(new Message("", Messages.Method_msgNameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
 	        IStatus status = JavaConventions.validateIdentifier(getName());
-	        if (!status.isOK()) {
+	        if (!(status.isOK() && ExprCompiler.isValidIdentifier(getName()))) {
 	            result.add(new Message("", Messages.Method_msgInvalidParameterName, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
 	        }
+            
         }
         if (StringUtils.isEmpty(datatype)) {
             result.add(new Message("", Messages.Method_msgDatatypeEmpty, Message.ERROR, this, PROPERTY_DATATYPE)); //$NON-NLS-1$

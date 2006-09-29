@@ -18,6 +18,7 @@
 package org.faktorips.fl;
 
 import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,8 +75,12 @@ import org.faktorips.fl.operations.SubtractDecimalDecimal;
 import org.faktorips.fl.operations.SubtractIntInt;
 import org.faktorips.fl.operations.SubtractMoneyMoney;
 import org.faktorips.fl.parser.FlParser;
+import org.faktorips.fl.parser.FlParserConstants;
+import org.faktorips.fl.parser.FlParserTokenManager;
+import org.faktorips.fl.parser.JavaCharStream;
 import org.faktorips.fl.parser.ParseException;
 import org.faktorips.fl.parser.SimpleNode;
+import org.faktorips.fl.parser.Token;
 import org.faktorips.fl.parser.TokenMgrError;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
@@ -553,4 +558,20 @@ public class ExprCompiler {
         return datatypeHelperProvider.getDatatypeHelper(type);
     }
 
+    /**
+     * Verifies if the provided string is a valid identifier according to the identifier definition of
+     * the Fl-Parser.
+     */
+    public final static boolean isValidIdentifier(String identifier){
+        JavaCharStream s = new JavaCharStream(new StringReader(identifier));
+        FlParserTokenManager manager = new FlParserTokenManager(s);
+        Token token = manager.getNextToken();
+        if(token.kind == FlParserConstants.IDENTIFIER){
+            if(manager.getNextToken().kind == 0){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
 }

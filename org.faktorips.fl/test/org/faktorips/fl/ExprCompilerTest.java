@@ -262,4 +262,15 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         execAndTestSuccessfull("10.12EUR", Money.valueOf("10.12EUR"), Datatype.MONEY);
         execAndTestSuccessfull("-10.12EUR", Money.valueOf("-10.12EUR"), Datatype.MONEY);
     }
+    
+    public void testIsValidIdentifier(){
+        assertTrue(ExprCompiler.isValidIdentifier("a"));
+        assertTrue(ExprCompiler.isValidIdentifier("a.a"));
+        assertFalse(ExprCompiler.isValidIdentifier("/"));
+        assertFalse(ExprCompiler.isValidIdentifier("true"));
+        assertFalse(ExprCompiler.isValidIdentifier("-a"));
+        assertFalse(ExprCompiler.isValidIdentifier("a-a"));
+        assertFalse(ExprCompiler.isValidIdentifier("9"));
+        assertTrue(ExprCompiler.isValidIdentifier("a9"));
+    }
 }
