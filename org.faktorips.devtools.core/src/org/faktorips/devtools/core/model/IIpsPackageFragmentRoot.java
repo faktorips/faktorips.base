@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -65,10 +66,11 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     
     /**
      * Returns all <code>IResource</code> objects that do not correspond to
-     * IpsPackageFragments contained in this PackageFragmentRoot. Returns an
-     * empty array if no such resources are found.
+     * <code>IIpsPackageFragment</code>s contained in this PackageFragmentRoot. Returns an empty
+     * array if no such resources are found.
+     * @throws CoreException if the members of the corresponding resource cannot be accessed.
      */
-    public Object[] getNonIpsResources() throws CoreException;
+    public IResource[] getNonIpsResources() throws CoreException;
     
     /**
      * Returns the default-package.

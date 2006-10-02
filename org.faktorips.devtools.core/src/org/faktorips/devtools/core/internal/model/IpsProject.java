@@ -318,10 +318,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         return (IIpsPackageFragmentRoot[])roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
     }
+    
     /**
      * {@inheritDoc}
      */
-	public Object[] getNonIpsResources() throws CoreException {
+	public IResource[] getNonIpsResources() throws CoreException {
 		IContainer cont= (IContainer) getCorrespondingResource();
     	List childResources= new ArrayList(); 
         IResource[] children= cont.members();
@@ -330,7 +331,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     			childResources.add(children[i]);
     		}
 		}
-        return childResources.toArray();
+        IResource[] resArray = new IResource[childResources.size()];
+        return (IResource[]) childResources.toArray(resArray);
 	}
 	
 	/**

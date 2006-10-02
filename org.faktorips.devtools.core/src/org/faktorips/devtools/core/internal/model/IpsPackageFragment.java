@@ -103,10 +103,11 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     	System.arraycopy(result, 0, shrink, 0, count);
     	return shrink;
 	}
+    
     /**
      * {@inheritDoc}
      */
-	public Object[] getNonIpsResources() throws CoreException {
+	public IResource[] getNonIpsResources() throws CoreException {
 		IContainer cont= (IContainer) getCorrespondingResource();
     	List childResources= new ArrayList(); 
         IResource[] children= cont.members();
@@ -115,7 +116,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     			childResources.add(children[i]);
     		}
 		}
-        return childResources.toArray();
+        IResource[] resArray = new IResource[childResources.size()];
+        return (IResource[]) childResources.toArray(resArray);
 	}
 	
 	/**

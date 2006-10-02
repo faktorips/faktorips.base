@@ -185,51 +185,47 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
-	 */
-	public IIpsProject[] getIpsProjects() throws CoreException {
+     * Overridden.
+     */
+    public IIpsProject[] getIpsProjects() throws CoreException {
 
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
-		IIpsProject[] ipsProjects = new IIpsProject[projects.length];
-		int counter = 0;
-		for (int i = 0; i < projects.length; i++) {
-			if (projects[i].isOpen()
-					&& projects[i].hasNature(IIpsProject.NATURE_ID)) {
-				ipsProjects[counter] = getIpsProject(projects[i].getName());
-				counter++;
-			}
-		}
-		if (counter == ipsProjects.length) {
-			return ipsProjects;
-		}
-		IIpsProject[] shrinked = new IIpsProject[counter];
-		System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
-		return shrinked;
-	}
+        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        IIpsProject[] ipsProjects = new IIpsProject[projects.length];
+        int counter = 0;
+        for (int i = 0; i < projects.length; i++) {
+            if (projects[i].isOpen() && projects[i].hasNature(IIpsProject.NATURE_ID)) {
+                ipsProjects[counter] = getIpsProject(projects[i].getName());
+                counter++;
+            }
+        }
+        if (counter == ipsProjects.length) {
+            return ipsProjects;
+        }
+        IIpsProject[] shrinked = new IIpsProject[counter];
+        System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
+        return shrinked;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object[] getNonIpsResources() throws CoreException {
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
-		IProject[] nonIpsProjects = new IProject[projects.length];
-		int counter = 0;
-		for (int i = 0; i < projects.length; i++) {
-			if (!projects[i].isOpen()
-					|| !projects[i].hasNature(IIpsProject.NATURE_ID)) {
-				nonIpsProjects[counter] = projects[i];
-				counter++;
-			}
-		}
-		if (counter == nonIpsProjects.length) {
-			return nonIpsProjects;
-		}
-		IProject[] shrinked = new IProject[counter];
-		System.arraycopy(nonIpsProjects, 0, shrinked, 0, shrinked.length);
-		return shrinked;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IResource[] getNonIpsProjects() throws CoreException {
+        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+        IProject[] nonIpsProjects = new IProject[projects.length];
+        int counter = 0;
+        for (int i = 0; i < projects.length; i++) {
+            if (!projects[i].isOpen() || !projects[i].hasNature(IIpsProject.NATURE_ID)) {
+                nonIpsProjects[counter] = projects[i];
+                counter++;
+            }
+        }
+        if (counter == nonIpsProjects.length) {
+            return nonIpsProjects;
+        }
+        IProject[] shrinked = new IProject[counter];
+        System.arraycopy(nonIpsProjects, 0, shrinked, 0, shrinked.length);
+        return shrinked;
+    }
 
 	/**
 	 * Overridden.

@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.model;
 import java.io.InputStream;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,11 +50,12 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException;
 
     /**
-     * Returns all <code>IResource</code> objects that do not correspond to
-     * IpsPackageFragments contained in this PackageFragment. Returns an
-     * empty array if no such resources are found.
+     * Returns all <code>IResource</code>s that do not correspond to
+     * <code>IIpsPackageFragment</code>s contained in this PackageFragment. Returns an empty
+     * array if no such resources are found.
+     * @throws CoreException if the members of the corresponding resource cannot be accessed.
      */
-    public Object[] getNonIpsResources() throws CoreException;
+    public IResource[] getNonIpsResources() throws CoreException;
     
     /**
      * Returns the package fragment root this package fragment belongs to.

@@ -373,7 +373,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         if (inputElement instanceof IIpsModel) {
             try {
                 IIpsModel model = (IIpsModel)inputElement;
-                return concatenate(model.getIpsProjects(), model.getNonIpsResources());
+                return concatenate(model.getIpsProjects(), model.getNonIpsProjects());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return EMPTY_ARRAY;

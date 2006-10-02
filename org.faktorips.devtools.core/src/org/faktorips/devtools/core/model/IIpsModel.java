@@ -33,7 +33,6 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsModel extends IIpsElement {
 
-	public Object[] getNonIpsResources() throws CoreException;
     /**
      * Prefix for all message codes of this class.
      */
@@ -74,6 +73,14 @@ public interface IIpsModel extends IIpsElement {
      * @throws NullPointerException if project is null.
      */
     public IIpsProject getIpsProject(IProject project);
+
+    /**
+     * Returns all <code>IProject</code>s in the workspace, that do not have an
+     * IpsProject nature. Ignores closed projects.
+     * 
+     * @throws CoreException if an exception occurs while accessing project-natures.
+     */
+    public IResource[] getNonIpsProjects() throws CoreException;
     
     /**
      * Returns the IpsElement that corresponds to the indicated resource.

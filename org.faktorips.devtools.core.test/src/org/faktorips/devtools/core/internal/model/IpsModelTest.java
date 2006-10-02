@@ -291,7 +291,7 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
         assertNotNull(javaProject);
         assertNotNull(javaProject2);
         
-        Object[] nonIpsResources= model.getNonIpsResources();
+        Object[] nonIpsResources= model.getNonIpsProjects();
         assertEquals(2, nonIpsResources.length);
         // compare handles (IProject)
         assertEquals(javaProject.getProject(), nonIpsResources[0]);

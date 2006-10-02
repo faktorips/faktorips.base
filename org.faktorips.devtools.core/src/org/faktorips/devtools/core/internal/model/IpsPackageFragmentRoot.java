@@ -139,10 +139,11 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         list.toArray(pdFolders);
         return pdFolders;
     }
+    
     /**
      * {@inheritDoc}
      */
-	public Object[] getNonIpsResources() throws CoreException {
+	public IResource[] getNonIpsResources() throws CoreException {
 		IContainer cont= (IContainer) getCorrespondingResource();
     	List childResources= new ArrayList(); 
         IResource[] children= cont.members();
@@ -151,8 +152,10 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     			childResources.add(children[i]);
     		}
 		}
-        return childResources.toArray();
+        IResource[] resArray = new IResource[childResources.size()];
+        return (IResource[]) childResources.toArray(resArray);
 	}
+    
 	/**
 	 * Returns true if the given IResource is a folder that corresponds to
 	 * an IpsPackageFragment contained in this IpsPackageFragmentRoot, false otherwise.

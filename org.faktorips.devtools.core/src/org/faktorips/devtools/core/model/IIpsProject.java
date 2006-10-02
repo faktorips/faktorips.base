@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.codegen.DatatypeHelper;
@@ -195,9 +196,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * empty array if no such resources are found. <p>
      * This method filters out folders that are output locations of the javaproject
      * corresponding to this <code>IIpsProject</code>. Both default output locations 
-     * of the javaproject and output localtions of classpath entries are examined.
+     * of the javaproject and output locations of classpath entries are examined.
      */
-    public Object[] getNonIpsResources() throws CoreException;
+    public IResource[] getNonIpsResources() throws CoreException;
     
     /**
      * Returns the project's package fragment roots contains source code
