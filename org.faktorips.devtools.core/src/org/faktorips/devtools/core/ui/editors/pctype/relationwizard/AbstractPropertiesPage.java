@@ -108,11 +108,15 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
             
             productRelevantField.getControl().setEnabled(false);
             setProdRelevantEnabled(false);
+            
+            wizard.setFocusIfPageChanged(targetRoleSingularField.getControl());
 		}else{
             setEnableState(propertiesGroup.getChildren(), true);
 			
 			productRelevantField.getControl().setEnabled(true);
 			setProdRelevantEnabled(getCurrentRelation().isProductRelevant());
+			
+			wizard.setFocusIfPageChanged(minCardinalityField.getControl());
 		}
 		return true;
 	}

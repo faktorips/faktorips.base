@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -48,18 +49,18 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	private final static int USE_EXISTING_REVERSE_RELATION = 1;
 	private final static int NONE_REVERSE_RELATION = 2;
 	
-	/** UI controllers */
+	/* UI controllers */
 	private IpsPartUIController uiControllerRelation;
 	private IpsPartUIController uiControllerReverseRelation;
 
 	private UIToolkit uiToolkit = new UIToolkit(null);
 
-	/** Model objects */
+	/* Model objects */
 	private IRelation relation;
 	private IRelation reverseRelation;
 	private IPolicyCmptType targetPolicyCmptType;
 	
-	/** State variables */
+	/* State variables */
 	private Memento mementoTargetBeforeNewRelation;
 	
 	// stores if a new an existing or none reverse relation will be created/used on the target
@@ -76,15 +77,19 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	
 	private boolean isError = false;
 	
-	/** Wizard pages */
+	/* Wizard pages */
 	private ReverseRelationPropertiesPage reverseRelationPropertiesPage;
 	private ErrorPage errorPage;
 	private List pages = new ArrayList();
 	
-	/** Factory to created the extension edit fields */
+	/* Factory to created the extension edit fields */
 	private ExtensionPropertyControlFactory extensionFactory;
     private ExtensionPropertyControlFactory extensionFactoryReverseRelation;
     
+    /* Variables to check the page changed event */
+    private boolean pageChanged = false;
+	private IWizardPage prevPage;
+	
     public NewPcTypeRelationWizard(IRelation relation) {
     	super();
 
@@ -184,16 +189,17 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	public IWizardPage getNextPage(IWizardPage page) {
 		AbstractPcTypeRelationWizardPage nextPage = null;
 
-		if (isError)
+		if (isError) {
 			// in case of an error no next page will be displayed
 			return null;
-		
+		}
+
 		int index = pages.indexOf(page);
-		if (index == pages.size() - 1 || index == -1)
+		if (index == pages.size() - 1 || index == -1) {
 			// last page or page not found
 			return null;
-		nextPage = (AbstractPcTypeRelationWizardPage) pages
-				.get(index + 1);
+		}
+		nextPage = (AbstractPcTypeRelationWizardPage) pages.get(index + 1);
 		while (!nextPage.isPageVisible()) {
 			index++;
 			if (index == pages.size() - 1)
@@ -201,9 +207,38 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 				return null;
 			nextPage = (AbstractPcTypeRelationWizardPage) pages.get(index + 1);
 		}
-
+		
 		return (IWizardPage) nextPage;
 	}
+    
+	/**
+	 * Checks if a page has changed and set the boolean which indicates this event to <code>true</code>.
+	 */
+	public void checkAndStorePageChangeEvent(){
+		if (getContainer() != null){
+			if(prevPage != null && prevPage != getContainer().getCurrentPage()){
+				pageChanged = true;
+			}
+			prevPage = getContainer().getCurrentPage();
+		}
+	}
+	
+	/**
+	 * Sets the focus to the given control if the page has changed.
+	 */
+    public void setFocusIfPageChanged(final Control control){
+    	if (pageChanged){
+    		Runnable r = new Runnable() {
+    	        public void run() {
+    	        	if (getContainer().getShell().getDisplay().isDisposed())
+    	        		return;
+    	    		control.setFocus();
+    	    		pageChanged = false;
+    	        }};
+    	        
+    		getContainer().getShell().getDisplay().syncExec(r);
+    	}
+    }
     
 	/**
 	 * Save changes and check if the source file of the target is dirty,

@@ -46,7 +46,10 @@ abstract class AbstractPcTypeRelationWizardPage extends WizardPage {
 	 */
     public boolean canFlipToNextPage() {
         boolean canFlipToNextPage=false;
-        
+
+        // check if the page has changed
+		wizard.checkAndStorePageChangeEvent();
+		
         if (wizard.isError()){
         	return false;
         }

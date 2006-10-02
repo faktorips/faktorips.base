@@ -81,6 +81,8 @@ public class ReverseRelationPage extends AbstractPcTypeRelationWizardPage {
 	 * {@inheritDoc}
 	 */
 	protected boolean updateControlStatus() {
+		wizard.setFocusIfPageChanged(newReverseRelation);
+		
 		return true;
 	}
 

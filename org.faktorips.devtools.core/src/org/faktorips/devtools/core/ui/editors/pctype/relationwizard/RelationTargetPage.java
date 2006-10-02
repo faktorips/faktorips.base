@@ -157,6 +157,9 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 			
 			isUiInitialized = true;
 		}
+		
+		wizard.setFocusIfPageChanged(targetField.getControl());
+		
 		return true;
 	}
 	

@@ -126,6 +126,9 @@ public class ContainerRelationPage extends AbstractPcTypeRelationWizardPage {
 				return false;
 			}
 		}
+		
+		wizard.setFocusIfPageChanged(containerRelationsField.getControl());
+		
 		return true;
 	}
 }
