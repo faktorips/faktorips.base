@@ -213,7 +213,7 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 */
 	public boolean performFinish() {
 		try {
-            targetPolicyCmptType.getIpsModel().removeChangeListener(this);
+            relation.getIpsModel().removeChangeListener(this);
 			boolean saveTargetAutomatically = false;
 			if (targetPolicyCmptType != null && 
 					! targetPolicyCmptType.getIpsSrcFile().equals(relation.getIpsObject().getIpsSrcFile())){
@@ -256,8 +256,8 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 	 * {@inheritDoc}
 	 */
     public boolean performCancel() {
-        targetPolicyCmptType.getIpsModel().removeChangeListener(this);
-        restoreMementoTargetBeforeChange();    	
+    	relation.getIpsModel().removeChangeListener(this);
+    	restoreMementoTargetBeforeChange();    	
     	return true;
     }
 	
