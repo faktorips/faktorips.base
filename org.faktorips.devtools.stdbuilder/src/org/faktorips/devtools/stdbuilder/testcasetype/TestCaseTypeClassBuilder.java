@@ -55,6 +55,7 @@ import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Generates a Java source file for a test case type.
@@ -149,7 +150,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(), getSuperClassName() , new String[0]);
         buildMemberVariables(codeBuilder, testCaseType);
         buildConstructor(codeBuilder);
-        buildHelperMethods(codeBuilder);
+        buildHelperMethodGetValueFromNode(codeBuilder);
+        buildHelperMethodGetElementsFromNode(codeBuilder);
         buildSuperMethodImplementation(codeBuilder, testCaseType);
         codeBuilder.classEnd();
         
@@ -653,7 +655,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
     
     /*
-     * Generates helper methods.
+     * Generates helper method for getting the value from a node.
      * <p>
      * Example:
      * <p>
@@ -669,7 +671,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
 	 *	}
      * </pre>
      */
-    protected void buildHelperMethods(JavaCodeFragmentBuilder codeBuilder){
+    protected void buildHelperMethodGetValueFromNode(JavaCodeFragmentBuilder codeBuilder){
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("String value = null;");
         body.appendClassName(Node.class);
@@ -683,5 +685,51 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln("return value;");
         codeBuilder.method(Modifier.PUBLIC,  String.class.getName(), "getValueFromNode", new String[]{"elem", "nodeName"}, 
                 new String[]{Element.class.getName(), String.class.getName()}, body, "", ANNOTATION_GENERATED);
+    }
+    
+    /*
+     * Generates helper method for getting specific elements from a node. 
+     * <p>
+     * Example:
+     * <p>
+     * <pre>
+     * private List getElementsFromNode(Element elem, String nodeName, String attributeName, String attributeValue) {
+     *    List result = new ArrayList();
+     *    NodeList nl = elem.getChildNodes();
+     *    for (int i=0, max=nl.getLength(); i<max; i++) {
+     *        if (!(nl.item(i) instanceof Element)) {
+     *            continue;
+     *        }
+     *        Element el = (Element)nl.item(i);
+     *        String typeAttr = el.getAttribute(attributeName);
+     *        if (attributeValue.equals(typeAttr) && el.getNodeName().equals(nodeName)) {
+     *            result.add(el);
+     *        }
+     *    }
+     *    return result;
+     * }
+     */
+    protected void buildHelperMethodGetElementsFromNode(JavaCodeFragmentBuilder codeBuilder){
+        JavaCodeFragment body = new JavaCodeFragment();
+        body.appendClassName(List.class.getName());
+        body.append(" result = new ");
+        body.appendClassName(ArrayList.class.getName());
+        body.appendln("();");
+        body.appendClassName(NodeList.class.getName());
+        body.appendln(" nl = elem.getChildNodes();");
+        body.appendln("for (int i=0, max=nl.getLength(); i<max; i++) {");
+        body.append("if (!(nl.item(i) instanceof ");
+        body.appendClassName(Element.class.getName());
+        body.appendln(")){");
+        body.appendln("continue;");
+        body.appendln("}");
+        body.appendln("Element el = (Element)nl.item(i);");
+        body.appendln("String typeAttr = el.getAttribute(attributeName);");
+        body.appendln("if (attributeValue.equals(typeAttr) && el.getNodeName().equals(nodeName)) {");
+        body.appendln("result.add(el);");
+        body.appendln("}}");
+        body.appendln("return result;");
+        codeBuilder.method(Modifier.PUBLIC,  List.class.getName(), "getElementsFromNode", new String[]{"elem", "nodeName", "attributeName", "attributeValue"}, 
+                new String[]{Element.class.getName(), String.class.getName(), String.class.getName(), String.class.getName()}, body, "", ANNOTATION_GENERATED);
     }
 }
