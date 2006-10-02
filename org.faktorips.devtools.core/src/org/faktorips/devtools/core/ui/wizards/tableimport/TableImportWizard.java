@@ -17,6 +17,7 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -79,7 +80,8 @@ public class TableImportWizard extends Wizard implements IImportWizard {
      */
     public boolean performFinish() {
         try {
-            ISchedulingRule schedulingRule = newContentsPage.getIpsProject().getCorrespondingResource();
+            // use workspace-root as sceduling rule to avoid conflicts...
+            ISchedulingRule schedulingRule = ResourcesPlugin.getWorkspace().getRoot();
             final String filename = filePage.getFilename();
             final AbstractExternalTableFormat format = filePage.getFormat();
             final ITableStructure structure = getTableStructure();

@@ -17,6 +17,7 @@ package org.faktorips.devtools.extsystems.excel;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
@@ -44,7 +45,8 @@ public class DateValueConverter implements IValueConverter {
             date = (Date)externalDataValue;
         }
         else if (externalDataValue instanceof Number) {
-            date = new Date(((Number)externalDataValue).longValue());
+            date = HSSFDateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
+            date = new Date();
         }
         else {
             String msg = NLS.bind(Messages.DateValueConverter_msgConversionErrorExtern,

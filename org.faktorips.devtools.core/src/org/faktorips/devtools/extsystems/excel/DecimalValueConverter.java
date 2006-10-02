@@ -53,8 +53,7 @@ public class DecimalValueConverter implements IValueConverter {
             }
 		} 
         else if (externalDataValue instanceof Number) {
-            double value = ((Number)externalDataValue).doubleValue();
-            return Decimal.valueOf(new BigDecimal(value)).toString();
+            return Decimal.valueOf(new BigDecimal(((Number)externalDataValue).toString())).toString();
         }
         
 		String msg = NLS.bind(Messages.DecimalValueConverter_msgAnotherConversionErrorExtern, externalDataValue.getClass(), getSupportedDatatype().getQualifiedName());
