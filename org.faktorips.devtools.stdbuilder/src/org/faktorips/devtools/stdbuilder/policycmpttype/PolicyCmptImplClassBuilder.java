@@ -267,18 +267,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
+        DatatypeHelper nonPrimitiveDatatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
+
         if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
             if(Modifier.PUBLIC.equals(attribute.getModifier())){
-                interfaceBuilder.generateFieldMaxRangeFor(attribute, datatypeHelper, memberVarsBuilder);
+                interfaceBuilder.generateFieldMaxRangeFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             }
-            generateMethodGetRangeFor(attribute, datatypeHelper, methodsBuilder);
+            generateMethodGetRangeFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
         }
         if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
                 datatypeHelper.getDatatype() instanceof EnumDatatype){
             if(Modifier.PUBLIC.equals(attribute.getModifier())){
-                interfaceBuilder.generateFieldMaxAllowedValuesFor(attribute, datatypeHelper, memberVarsBuilder);
+                interfaceBuilder.generateFieldMaxAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             }
-            generateMethodGetAllowedValuesFor(attribute, datatypeHelper, methodsBuilder);
+            generateMethodGetAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
         }
         generateFieldForAttribute(attribute, datatypeHelper, memberVarsBuilder);
         generateMethodAttributeGetterFromMemberVar(attribute, datatypeHelper, methodsBuilder);

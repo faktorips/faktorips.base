@@ -54,7 +54,6 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.faktorips.valueset.DefaultEnumValueSet;
 import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
@@ -244,6 +243,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
             if(AttributeType.CHANGEABLE.equals(a.getAttributeType())){
                 ValueSetType valueSetType = a.getValueSet().getValueSetType();
                 JavaCodeFragment frag = new JavaCodeFragment();
+                helper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), helper);
                 if(ValueSetType.RANGE.equals(valueSetType)){
                     frag.appendClassName(Range.class);
                     frag.append(" range = ");
@@ -276,11 +276,10 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                     frag.appendln(");");
                     frag.appendCloseBracket();
                     frag.append(getFieldNameAllowedValuesFor(a));
-                    frag.append(" = new ");
-                    frag.appendClassName(DefaultEnumValueSet.class);
-                    frag.append("(enumValues, values.containsNull(), ");
-                    frag.append(helper.nullExpression());
-                    frag.appendln(");");
+                    frag.append(" = ");
+                    frag.append(helper.newEnumValueSetInstance(new JavaCodeFragment("enumValues"), 
+                            new JavaCodeFragment("values.containsNull()")));
+                    frag.appendln(";");
                 }
                 builder.append(frag);
             }
@@ -293,11 +292,9 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     private void generateMethodDoInitReferencesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
         String javaDoc = null;
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
-        
         String[] argNames = new String[]{"relationMap"};
         String[] argTypes = new String[]{Map.class.getName()};
         builder.methodBegin(Modifier.PROTECTED, "void", "doInitReferencesFromXml", argNames, argTypes);
-        
         builder.appendln("super.doInitReferencesFromXml(relationMap);");
         
         // before the first relation we define a temp variable as follows:
@@ -390,17 +387,18 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     protected void generateCodeForChangeableAttribute(IAttribute a, DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateFieldDefaultValue(a, datatypeHelper, memberVarsBuilder);
         generateMethodGetDefaultValue(a, datatypeHelper, methodsBuilder);
-        
-        if(!datatypeHelper.getDatatype().isPrimitive()){
-            if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
-                generateFieldRangeFor(a , datatypeHelper, memberVarsBuilder);
-                generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
-            }
-            else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType()) ||
-                    datatypeHelper.getDatatype() instanceof EnumDatatype){
-                generateFieldAllowedValuesFor(a, memberVarsBuilder);
-                generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
-            }
+
+        //if the datatype is a primitive datatype the datatypehelper will be switched to the helper of the 
+        //wrapper type
+        datatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
+        if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
+            generateFieldRangeFor(a , datatypeHelper, memberVarsBuilder);
+            generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
+        }
+        else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType()) ||
+                datatypeHelper.getDatatype() instanceof EnumDatatype){
+            generateFieldAllowedValuesFor(a, memberVarsBuilder);
+            generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
         }
     }
     

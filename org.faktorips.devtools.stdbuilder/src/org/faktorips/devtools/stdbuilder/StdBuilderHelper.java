@@ -18,7 +18,9 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -47,7 +49,21 @@ public class StdBuilderHelper {
         }
         return javaClasses;
     }
+    
+    /**
+     * This method is supposed to be used for the generation of methods which deal with the range or enum value set for a datatype.
+     * Since for primitive datatypes the range and enum value set classes of the non primitive wrapper types are used. Therefor
+     * this method checks if the provided DatatypeHelper is based on a primitive datatype. If so the according wrapper datatype is retrieved
+     * from the IpsProject and returned. If the datatype is not primitive the provided datatype will be returned.  
+     */
+    public final static DatatypeHelper getDatatypeHelperForValueSet(IIpsProject project, DatatypeHelper helper){
+        if(helper.getDatatype().isPrimitive()){
+            return project.getDatatypeHelper((((ValueDatatype)helper.getDatatype()).getWrapperType()));
+        }
+        return helper;
+    }
 
+    
     private StdBuilderHelper() {
     }
 

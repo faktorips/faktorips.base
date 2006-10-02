@@ -133,7 +133,7 @@ public interface DatatypeHelper {
     public String getRangeJavaClassName();
     
     /**
-     * Returns a <code>JavaCodeFragment</code> with containing the source code to create a new
+     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new
      * instance of a type specific range.
      *  
      * @param lowerBoundExp the lower bound expression of the range. Can be <code>null</code> to indicate that the lower bound is open 
@@ -146,4 +146,21 @@ public interface DatatypeHelper {
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, 
             JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp);
 
+    /**
+     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum value set instance. 
+     *  
+     * @param values the values contained in the enum value set code fragment returned by this method
+     * @param containsNull indicates if <code>null</code> is also contained in the returned enum value set
+     */
+    public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull);
+    
+    /**
+     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum value set instance. 
+     * 
+     * @param collectionExpression a JavaCodeFragment is expected that contains an expression of the type <code>java.util.Collection</code>
+     *          The collection has to contain instances of the datatype of this helper.
+     *              
+     * @param containsNullExpression a JavaCodeFragment is expected that contains an expression of the type <code>boolean</code>
+     */
+    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression, JavaCodeFragment containsNullExpression);
 }

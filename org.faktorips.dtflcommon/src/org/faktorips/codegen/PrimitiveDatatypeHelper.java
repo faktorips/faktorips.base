@@ -30,5 +30,4 @@ public interface PrimitiveDatatypeHelper extends DatatypeHelper {
      * @throws IllegalArgumentException if expression is null.
      */
     public JavaCodeFragment toWrapper(JavaCodeFragment expression);
-
 }

@@ -371,5 +371,4 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
 			Datatype returnType,
 			Datatype[] paramTypes,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
-
 }

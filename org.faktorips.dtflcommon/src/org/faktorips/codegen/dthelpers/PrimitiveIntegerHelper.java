@@ -69,5 +69,5 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("Integer.parseInt(" + expression + ")");
         return fragment;
-	}	
+	}
 }

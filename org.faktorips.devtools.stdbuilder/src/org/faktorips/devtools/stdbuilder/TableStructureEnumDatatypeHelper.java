@@ -18,42 +18,32 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * TODO real implementation
  * 
- * @author Thorsten Guenther
+ * @author Thorsten Guenther, Peter Erzberger
  */
-public class TableStructureEnumDatatypeHelper implements DatatypeHelper {
+public class TableStructureEnumDatatypeHelper extends AbstractDatatypeHelper {
 
-    TableStructureEnumDatatypeAdapter datatype;
-    
     /**
      * 
      */
     public TableStructureEnumDatatypeHelper(TableStructureEnumDatatypeAdapter datatype) {
-        this.datatype = datatype;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Datatype getDatatype() {
-        return datatype;
+        super(datatype);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDatatype(Datatype datatype) {
-        if (!(datatype instanceof TableStructureEnumDatatypeAdapter)) {
-            throw new IllegalArgumentException("Datatype " + datatype + " is not an instance of " + this.datatype.getClass());
-        }
-        this.datatype = (TableStructureEnumDatatypeAdapter)datatype;
+        ArgumentCheck.isInstanceOf(datatype, TableStructureEnumDatatypeAdapter.class);
+        super.setDatatype(datatype);
     }
 
     /**
@@ -99,19 +89,4 @@ public class TableStructureEnumDatatypeHelper implements DatatypeHelper {
     public String getJavaClassName() {
         return "org.faktorips.integrationtest.tables.TableAsEnumTypeDatatype";
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getRangeJavaClassName() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp, JavaCodeFragment upperBoundExp, JavaCodeFragment stepExp, JavaCodeFragment containsNullExp) {
-        return null;
-    }
-
 }

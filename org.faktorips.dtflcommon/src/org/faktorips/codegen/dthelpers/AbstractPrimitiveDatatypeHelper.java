@@ -50,4 +50,18 @@ public abstract class AbstractPrimitiveDatatypeHelper extends AbstractDatatypeHe
     public JavaCodeFragment nullExpression() {
         throw new RuntimeException("Primitive datatype does not support null.");
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection, JavaCodeFragment containsNullExpression) {
+        throw new UnsupportedOperationException("Call the helper of the wrapper type instead.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public JavaCodeFragment newEnumValueSetInstance(String[] values, boolean containsNull) {
+        throw new UnsupportedOperationException("Call the helper of the wrapper type instead.");
+    }
 }

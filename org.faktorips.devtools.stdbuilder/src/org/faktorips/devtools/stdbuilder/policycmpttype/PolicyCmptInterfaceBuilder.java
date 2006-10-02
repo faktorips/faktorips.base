@@ -41,12 +41,12 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
-import org.faktorips.valueset.DefaultEnumValueSet;
 import org.faktorips.valueset.EnumValueSet;
 import org.faktorips.valueset.IntegerRange;
 
@@ -353,13 +353,15 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         
         generateMethodGetPropertyValue(attribute, datatypeHelper, methodsBuilder);
         generateMethodSetPropertyValue(attribute, datatypeHelper, methodsBuilder);
+        DatatypeHelper nonPrimitiveDatatypeHelper = StdBuilderHelper.
+            getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
         if(ValueSetType.RANGE.equals(attribute.getValueSet().getValueSetType())){
-            generateFieldMaxRangeFor(attribute, datatypeHelper, memberVarsBuilder);
-            productCmptGenInterfaceBuilder.generateMethodGetRangeFor(attribute, datatypeHelper, methodsBuilder);
+            generateFieldMaxRangeFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
+            productCmptGenInterfaceBuilder.generateMethodGetRangeFor(attribute, nonPrimitiveDatatypeHelper, methodsBuilder);
         }
         else if(ValueSetType.ENUM.equals(attribute.getValueSet().getValueSetType()) ||
                 datatypeHelper.getDatatype() instanceof EnumDatatype){
-            generateFieldMaxAllowedValuesFor(attribute, datatypeHelper, memberVarsBuilder);
+            generateFieldMaxAllowedValuesFor(attribute, nonPrimitiveDatatypeHelper, memberVarsBuilder);
             productCmptGenInterfaceBuilder.generateMethodGetAllowedValuesFor(
                     attribute, datatypeHelper.getDatatype(), methodsBuilder);
         }
@@ -1010,50 +1012,33 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     public void generateFieldMaxAllowedValuesFor(IAttribute a, DatatypeHelper helper, JavaCodeFragmentBuilder membersBuilder){
         appendLocalizedJavaDoc("FIELD_MAX_ALLOWED_VALUES_FOR", a.getName(), a, membersBuilder);
-        JavaCodeFragment frag = new JavaCodeFragment();
-        frag.append("new ");
-        frag.appendClassName(DefaultEnumValueSet.class);
-        frag.append("(");
-        frag.append("new ");
-        frag.appendClassName(helper.getJavaClassName());
-        frag.append("[] ");
-        frag.appendOpenBracket();
         String[] valueIds = new String[0];
+        boolean containsNull = false;
         if(a.getValueSet() instanceof IEnumValueSet){
             IEnumValueSet set = (IEnumValueSet)a.getValueSet();
-            valueIds = set.getValues();    
+            valueIds = set.getValues();
+            containsNull = set.getContainsNull();
         }
         else if(helper.getDatatype() instanceof EnumDatatype){
             valueIds = ((EnumDatatype)helper.getDatatype()).getAllValueIds(true);
+            containsNull = true;
         }
-        
-        for (int i = 0; i < valueIds.length; i++) {
-            frag.append(helper.newInstance(valueIds[i]));
-            if(i < valueIds.length - 1){
-                frag.append(", ");
-            }
+        else{
+            throw new IllegalArgumentException("This method can only be call with a value for parameter 'a' " +
+                    "that is an IAttibute that bases on an EnumDatatype or contains an EnumValueSet.");
         }
-        frag.appendCloseBracket();
-        frag.append(", ");
-        boolean containsNull = false;
-        //TODO this code has to go into the EnumValueSet class
-        ValueDatatype datatype = (ValueDatatype)helper.getDatatype();
-        for (int i = 0; i < valueIds.length; i++) {
-            if(datatype.isNull(valueIds[i])){
-                containsNull = true;
-                break;
-            }
+        JavaCodeFragment frag = null;
+        if(helper.getDatatype().isPrimitive()){
+            Datatype wrapperType = ((ValueDatatype)helper.getDatatype()).getWrapperType();
+            helper = getIpsSrcFile().getIpsProject().getDatatypeHelper(wrapperType);
+            containsNull = false;
         }
-        frag.append(containsNull);
-        frag.append(", ");
-        frag.append(helper.newInstance(null));
-        frag.appendln(")");
+        frag = helper.newEnumValueSetInstance(valueIds, containsNull);
         membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | 
                 java.lang.reflect.Modifier.FINAL | 
                 java.lang.reflect.Modifier.STATIC, 
                 EnumValueSet.class, 
                 getFieldNameMaxAllowedValuesFor(a), frag);
-
     }
     
     protected void generateFieldGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder attrBuilder){

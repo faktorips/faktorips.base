@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -110,18 +111,17 @@ public class ProductCmptGenInterfaceBuilder extends AbstractProductCmptTypeBuild
         
         //TODO the generateCodeForAttribute method of the abstract builder needs to discriminate against
         //the published modifier
-        if(!datatypeHelper.getDatatype().isPrimitive()){
-           
-           if(datatypeHelper.getDatatype() instanceof EnumDatatype){
-               generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
-           }
-           else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
-               generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
-           }
-           else if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
-               generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
-           }
-        }
+
+       datatypeHelper = StdBuilderHelper.getDatatypeHelperForValueSet(getIpsSrcFile().getIpsProject(), datatypeHelper);
+       if(datatypeHelper.getDatatype() instanceof EnumDatatype){
+           generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
+       }
+       else if(ValueSetType.ENUM.equals(a.getValueSet().getValueSetType())){
+           generateMethodGetAllowedValuesFor(a, datatypeHelper.getDatatype(), methodsBuilder);
+       }
+       else if(ValueSetType.RANGE.equals(a.getValueSet().getValueSetType())){
+           generateMethodGetRangeFor(a, datatypeHelper, methodsBuilder);
+       }
     }
     
     /**
