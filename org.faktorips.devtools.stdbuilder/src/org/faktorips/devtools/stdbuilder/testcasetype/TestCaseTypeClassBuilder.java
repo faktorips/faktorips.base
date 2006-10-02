@@ -18,10 +18,14 @@
 package org.faktorips.devtools.stdbuilder.testcasetype;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -40,7 +44,9 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -70,9 +76,22 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private static final String ASSERT_DUMMY_ACTUAL = "ASSERT_DUMMY_ACTUAL";
     private static final String INPUT_PREFIX = "INPUT_PREFIX";
     private static final String EXPECTED_RESULT_PREFIX = "EXPECTED_RESULT_PREFIX";
-  
+    private static final String RULE_NOT_VIOLATED_PREFIX = "RULE_NOT_VIOLATED_PREFIX";
+    private static final String RULE_VIOLATED_PREFIX = "RULE_VIOLATED_PREFIX";
+    private static final String VIOLATED_CONSTANT_NAME = "VIOLATED_CONSTANT_NAME";
+    private static final String NOT_VIOLATED_CONSTANT_NAME = "NOT_VIOLATED_CONSTANT_NAME";
+    private static final String ASSERT_RULE_METHOD_JAVADOC = "ASSERT_RULE_METHOD_JAVADOC";
+    private static final String ASSERT_FAIL_NO_VIOLATION_EXPECTED = "ASSERT_FAIL_NO_VIOLATION_EXPECTED";
+    private static final String ASSERT_FAIL_VIOLATION_EXPECTED = "ASSERT_FAIL_VIOLATION_EXPECTED";
+    
     private String inputPrefix;
     private String expectedResultPrefix;
+    private String violationTypePrefixViolated;
+    private String violationTypePrefixNotViolated ;
+    private String violatedConstantName;
+    private String notViolatedConstantName ;
+    private String assertFailNoValidationExpected;
+    private String assertFailViolationExpected;
     
     private IIpsProject project;
     private ITestCaseType testCaseType;
@@ -102,8 +121,14 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         super.beforeBuild(ipsSrcFile, status);
         inputPrefix = getLocalizedText(getIpsSrcFile(), INPUT_PREFIX);
         expectedResultPrefix = getLocalizedText(getIpsSrcFile(), EXPECTED_RESULT_PREFIX);   
+        violationTypePrefixViolated = getLocalizedText(getIpsSrcFile(), RULE_VIOLATED_PREFIX);
+        violationTypePrefixNotViolated = getLocalizedText(getIpsSrcFile(), RULE_NOT_VIOLATED_PREFIX);
+        violatedConstantName = getLocalizedText(getIpsSrcFile(), VIOLATED_CONSTANT_NAME);
+        notViolatedConstantName = getLocalizedText(getIpsSrcFile(), NOT_VIOLATED_CONSTANT_NAME);
+        assertFailNoValidationExpected = getLocalizedText(getIpsSrcFile(), ASSERT_FAIL_NO_VIOLATION_EXPECTED);
+        assertFailViolationExpected = getLocalizedText(getIpsSrcFile(), ASSERT_FAIL_VIOLATION_EXPECTED);
         
-        testCaseType = (ITestCaseType) getIpsObject(); 
+        testCaseType = (ITestCaseType)getIpsObject(); 
         project = testCaseType.getIpsProject();
     }
     
@@ -145,9 +170,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * @throws CoreException if an error occurs
      */
     private void buildMemberVariables(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) throws CoreException {
+        buildMemberForTestRuleParameter(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getInputTestValueParameters(), inputPrefix);
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getExpectedResultTestValueParameters(), expectedResultPrefix);
-
+        
         buildMemberForTestPolicyCmptParameter(codeBuilder, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix);
         buildMemberForTestPolicyCmptParameter(codeBuilder, testCaseType.getExpectedResultTestPolicyCmptTypeParameters(), expectedResultPrefix);
     }
@@ -164,14 +190,65 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberForTestValueParameter(JavaCodeFragmentBuilder codeBuilder, ITestValueParameter[] testValueParams, 
             String variablePrefix) throws CoreException {
         for (int i = 0; i < testValueParams.length; i++) {
-            if (!testValueParams[i].isValid())
+            if (!testValueParams[i].isValid()){
                 continue;
+            }
             ITestValueParameter testValueParam = testValueParams[i];
         	DatatypeHelper helper = getCachedDatatypeHelper(testValueParam);
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, helper.getJavaClassName(), 
-                    variablePrefix + org.apache.commons.lang.StringUtils.capitalise(testValueParam.getName()));
+                    variablePrefix + StringUtils.capitalise(testValueParam.getName()));
         }
+    }
+    
+    /*
+     * Generates the code for the member test rule parameter declaration. 
+     * <p> 
+     * Example:
+     * <p>
+     * <pre> 
+     * private List expectedViolated[TestRuleParameter.name];
+     * private List expectedNotViolated[TestRuleParameter.name];
+     * </pre>
+     */
+    private void buildMemberForTestRuleParameter(JavaCodeFragmentBuilder codeBuilder, ITestRuleParameter[] testRuleParams, 
+            String variablePrefix) throws CoreException {
+        if (testRuleParams.length == 0){
+            // only generate variables if rules exists
+            return;
+        }
+        // generate constant variables to indicate violated or not violated failure
+        codeBuilder.javaDoc("", ANNOTATION_GENERATED);
+        codeBuilder.varDeclaration(Modifier.PRIVATE + Modifier.FINAL + Modifier.STATIC, String.class, 
+                violatedConstantName, new JavaCodeFragment("\"violated\""));
+        codeBuilder.javaDoc("", ANNOTATION_GENERATED);
+        codeBuilder.varDeclaration(Modifier.PRIVATE + Modifier.FINAL + Modifier.STATIC, String.class, 
+                notViolatedConstantName, new JavaCodeFragment("\"notViolated\""));
+        
+        for (int i = 0; i < testRuleParams.length; i++) {
+            if (!testRuleParams[i].isValid()){
+                continue;
+            }
+            // create two lists, the list will be filled in the init expected result from xml method
+            //   because the violation type depends on the runtime xml test case
+            // violation type: violated
+            codeBuilder.javaDoc("", ANNOTATION_GENERATED);
+            codeBuilder.varDeclaration(Modifier.PRIVATE, List.class, 
+                    getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated, testRuleParams[i]) );
+            // violation type: not violated
+            codeBuilder.javaDoc("", ANNOTATION_GENERATED);
+            codeBuilder.varDeclaration(Modifier.PRIVATE, List.class, 
+                    getRuleMemberVariableName(variablePrefix, violationTypePrefixNotViolated, testRuleParams[i]));
+        }
+    }
+    
+    /*
+     * Returns the variable name of a rule member variable.<br>
+     * The variablePrefix could be e.g. "input" or "expected result" (but "input" is not supported yet).<br>
+     * The violationTypePrefix could be e.g. "violated" or "not violated".
+     */
+    private String getRuleMemberVariableName(String variablePrefix, String violationTypePrefix, ITestRuleParameter parameter){
+        return variablePrefix + StringUtils.capitalise(violationTypePrefix) + StringUtils.capitalise(parameter.getName());
     }
     
     /*
@@ -211,8 +288,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberForTestPolicyCmptParameter(JavaCodeFragmentBuilder codeBuilder, ITestPolicyCmptTypeParameter[] policyTypeParams, 
             String variablePrefix) throws CoreException {
         for (int i = 0; i < policyTypeParams.length; i++) {
-            if (!policyTypeParams[i].isValid())
+            if (!policyTypeParams[i].isValid()){
                 continue;
+            }
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, getQualifiedNameFromTestPolicyCmptParam(policyTypeParams[i]), 
                     variablePrefix + policyTypeParams[i].getName());
@@ -265,6 +343,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildSuperMethodImplementation(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) throws CoreException {
         buildMethodInitInputFromXml(codeBuilder, testCaseType);
         buildMethodInitExpectedResultFromXml(codeBuilder, testCaseType);
+        buildMethodsForAssertRules(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
         buildMethodExecuteBusinessLogic(codeBuilder, testCaseType);
         buildMethodExecuteAsserts(codeBuilder, testCaseType);
     }
@@ -309,6 +388,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln(MARKER_END_USER_CODE);        
         buildInitForTestPolicyCmptParameter(body, testCaseType.getExpectedResultTestPolicyCmptTypeParameters(), expectedResultPrefix);
         buildInitForTestValueParameter(body, testCaseType.getExpectedResultTestValueParameters(), expectedResultPrefix);
+        buildInitForTestRuleParameter(body, testCaseType.getTestRuleParameters(), expectedResultPrefix);
         buildMethodInit(codeBuilder, "initExpectedResultFromXml", body, javaDoc);
     }
     
@@ -341,8 +421,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         }
         
         for (int i = 0; i < policyTypeParams.length; i++) {
-            if (!policyTypeParams[i].isValid())
+            if (!policyTypeParams[i].isValid()){
                 continue;
+            }
             ITestPolicyCmptTypeParameter policyTypeParam = policyTypeParams[i];
             body.append("childElement = ");
             body.appendClassName(XmlUtil.class);
@@ -376,10 +457,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */    
     private void buildInitForTestValueParameter(JavaCodeFragment body, ITestValueParameter[] valueParams, String variablePrefix) throws CoreException {
         for (int i = 0; i < valueParams.length; i++) {
-            if (!valueParams[i].isValid())
+            if (!valueParams[i].isValid()){
                 continue;
+            }
         	ITestValueParameter policyTypeParam = valueParams[i];
-            body.appendln(variablePrefix + org.apache.commons.lang.StringUtils.capitalise(policyTypeParam.getName()) + " = ");
+            body.appendln(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
             body.appendClassName(dataTypeHelper.getJavaClassName());
             String valueOfMethod = "valueOf";
@@ -387,6 +469,68 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             	valueOfMethod = ((GenericValueDatatype) dataTypeHelper.getDatatype()).getValueOfMethodName();
             }
             body.appendln("." + valueOfMethod + "(getValueFromNode(element, \"" + policyTypeParam.getName() + "\"));");
+        }
+    }
+    
+    /*
+     * Generates the body for the initInputFromXml method.<br>
+     * For each test rule parameter in the given list.
+     * <p> 
+     * Example (one rule):
+     * <p>
+     * <pre>
+     *   erwartetVerletztRegeln = new ArrayList();
+     *   erwartetNichtVerletztRegeln = new ArrayList();
+     *   List rules = getElementsFromNode(element, "Regeln", "testrule");
+     *   for (Iterator iter = rules.iterator(); iter.hasNext();) {
+     *       Element ruleElement = (Element)iter.next();
+     *       String violationType = ruleElement.getAttribute("violationType");
+     *       String messageCode = ruleElement.getAttribute("validationRuleMessageCode");
+     *       if ("violated".equals(violationType)){
+     *           erwartetVerletztRegeln.add(messageCode);
+     *       } else if ("notViolated".equals(violationType)){
+     *           erwartetNichtVerletztRegeln.add(messageCode);
+     *       }
+     *   }
+     * </pre>
+     */
+    private void buildInitForTestRuleParameter(JavaCodeFragment body, ITestRuleParameter[] ruleParams, String variablePrefix) throws CoreException {
+        for (int i = 0; i < ruleParams.length; i++) {
+            if (!ruleParams[i].isValid()){
+                continue;
+            }
+            String rulesVariableNameNotViolated = getRuleMemberVariableName(variablePrefix, violationTypePrefixNotViolated, ruleParams[i]);
+            String rulesVariableNameViolated = getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated, ruleParams[i]);
+            String ruleListName = "rules" + StringUtils.capitalise(ruleParams[i].getName());
+            body.append(rulesVariableNameNotViolated);
+            body.append(" = new ");
+            body.appendClassName(ArrayList.class.getName());
+            body.appendln("();");
+            body.append(rulesVariableNameViolated);
+            body.append(" = new ");
+            body.appendClassName(ArrayList.class.getName());
+            body.appendln("();");
+            body.appendClassName(List.class.getName());
+            body.append(" ");
+            body.append(ruleListName);
+            body.append(" = getElementsFromNode(element, \"");
+            body.append(ruleParams[i].getName());
+            body.appendln("\", \"type\", \"testrule\");");
+            body.append("for (");
+            body.appendClassName(Iterator.class.getName());
+            body.append(" iter = ");
+            body.append(ruleListName);
+            body.appendln(".iterator(); iter.hasNext();){");
+            body.appendClassName(Element.class.getName());
+            body.appendln(" ruleElement = (Element)iter.next();");
+            body.appendln("String violationType = ruleElement.getAttribute(\"violationType\");");
+            body.appendln("String messageCode = ruleElement.getAttribute(\"validationRuleMessageCode\");");
+            body.appendln("if (\"violated\".equals(violationType)){");
+            body.appendln(rulesVariableNameViolated + ".add(messageCode);");
+            body.appendln("} else if (\"notViolated\".equals(violationType)){");
+            body.appendln(rulesVariableNameNotViolated + ".add(messageCode);");
+            body.appendln("}");
+            body.appendln("}");
         }
     }
     
@@ -418,13 +562,94 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * }
      * </pre>
      */
-    private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType){
+    private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) throws CoreException{
         String javaDoc = getLocalizedText(getIpsSrcFile(), EXECUTEASSERTS_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
+        
+        // generate dummy assert with todo remark
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO));
         body.appendln("assertEquals(\"" + getLocalizedText(getIpsSrcFile(), ASSERT_DUMMY_EXPECTED) + "\", \"" + getLocalizedText(getIpsSrcFile(), ASSERT_DUMMY_ACTUAL) + "\", result);");
-        codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[]{"result"}, 
+        
+        codeBuilder.method(Modifier.PRIVATE, "void", "executeAsserts", new String[]{"result"}, 
                 new String[]{IpsTestResult.class.getName()}, body, javaDoc, ANNOTATION_MODIFIABLE);
+    }
+    
+    /*
+     * Generates the methods to execute the assertions of all rules inside the test case.
+     */
+    private void buildMethodsForAssertRules(JavaCodeFragmentBuilder codeBuilder, ITestRuleParameter[] ruleParams, String variablePrefix) throws CoreException {
+        if (ruleParams.length == 0){
+            return;
+        }
+        for (int i = 0; i < ruleParams.length; i++) {
+            if (!ruleParams[i].isValid()){
+                continue;
+            }
+            buildMethodAssertRule(codeBuilder, variablePrefix, ruleParams[i].getName());
+        }
+    }
+    
+    /*
+     * Generates the method to execute the assertion of one rule.<br>
+     * Example:
+     * <p>
+     * <pre>     
+     * public void executeValidationErwartetRegeln(MessageList messageList, IpsTestResult result){
+     *    for (Iterator iter = erwartetVerletzteRegeln.iterator(); iter.hasNext();) {
+     *        String msgCode = (String)iter.next();
+     *        if (messageList.getMessageByCode(msgCode) == null){
+     *            fail(VERLETZT, NICHT_VERLETZT, result, "Regeln", msgCode, "Fehlende Regelverletzung: " + msgCode);
+     *       }
+     *    }
+     *    for (Iterator iter = erwartetNichtVerletzteRegeln.iterator(); iter.hasNext();) {
+     *        String msgCode = (String)iter.next();
+     *        if (messageList.getMessageByCode(msgCode) != null){
+     *            fail(NICHT_VERLETZT, VERLETZT, result, "Regeln", msgCode, "Regelverletzung: " + msgCode + ". Darf nicht verletzt werden.");
+     *        }
+     *    }        
+     * }
+     * </pre>
+     */
+    private void buildMethodAssertRule(JavaCodeFragmentBuilder codeBuilder, String variablePrefix, String ruleName){
+        String ruleContainerNameViolated = variablePrefix + StringUtils.capitalise(violationTypePrefixViolated)
+                + StringUtils.capitalise(ruleName);
+        String ruleContainerNameNotViolated = variablePrefix + StringUtils.capitalise(violationTypePrefixNotViolated)
+                + StringUtils.capitalise(ruleName);
+
+        String methodName = "executeValidation" + StringUtils.capitalise(variablePrefix) + ruleName;
+        String javaDoc = getLocalizedText(getIpsSrcFile(), ASSERT_RULE_METHOD_JAVADOC);
+        JavaCodeFragment body = new JavaCodeFragment();
+
+        String[] ruleListNames = new String[]{ruleContainerNameViolated, ruleContainerNameNotViolated};
+        String[] expectedValues= new String[]{violatedConstantName, notViolatedConstantName};
+        String[] actualValues = new String[]{notViolatedConstantName, violatedConstantName};
+        String[] failureMessages = new String[]{assertFailViolationExpected, assertFailNoValidationExpected};
+        String[] compareOperations = new String[]{" == ", " != "};
+        for (int i = 0; i < ruleListNames.length; i++) {
+            body.append("for (");
+            body.appendClassName(Iterator.class.getName());
+            body.append(" iter = ");
+            body.append(ruleListNames[i]);
+            body.appendln(".iterator(); iter.hasNext();){");
+            body.appendln("String msgCode = (String)iter.next();");
+            body.append("if (messageList.getMessageByCode(msgCode) ");
+            body.append(compareOperations[i]);
+            body.appendln(" null){");
+            body.append("fail(");
+            body.append(expectedValues[i]);
+            body.append(", ");
+            body.append(actualValues[i]);
+            body.append(", result, \"");
+            body.append(ruleName);
+            body.append("\", msgCode, \"");
+            body.append(failureMessages[i]);
+            body.appendln("\" + msgCode);");
+            body.appendln("}}");
+        }
+        
+        codeBuilder.method(Modifier.PRIVATE, "void", methodName, new String[] { "messageList",
+                "result" }, new String[] { MessageList.class.getName(),
+                IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
     }
     
     /*

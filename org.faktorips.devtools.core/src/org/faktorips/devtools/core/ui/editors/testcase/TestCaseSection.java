@@ -62,6 +62,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
@@ -83,6 +84,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
@@ -212,6 +214,25 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         }
     }
 
+    /*
+     * Label provider for validation rules.
+     * Displays as text the name followed by the policy cmpt type which the rule belongs to.
+     */
+    private class ValidationRuleLabelProvider extends DefaultLabelProvider {
+        /**
+         * {@inheritDoc}
+         */
+        public String getText(Object element) {
+            if (!(element instanceof IValidationRule)) {
+                return super.getText(element);
+            } 
+            IValidationRule validationRule = (IValidationRule) element;
+            String nameWithPolicyCmptType = validationRule.getName();
+            nameWithPolicyCmptType += " - " + ((PolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
+            return nameWithPolicyCmptType;
+        }
+    }
+    
     /*
      * Label provider for the test case type relation select dialog.
      */
@@ -1578,7 +1599,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
      */
     private IValidationRule selectValidationRuleByDialog() {
         ElementListSelectionDialog selectDialog = 
-            new ElementListSelectionDialog(getShell(), new DefaultLabelProvider());
+            new ElementListSelectionDialog(getShell(), new ValidationRuleLabelProvider());
         selectDialog.setTitle(Messages.TestCaseSection_SelectDialogValidationRule_Title);
         selectDialog.setMessage(Messages.TestCaseSection_SelectDialogValidationRule_Decription);
         
@@ -1616,19 +1637,39 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 		String failureFormatAttribute= Messages.TestCaseSection_FailureFormat_Attribute;
 		String failureFormatObject= Messages.TestCaseSection_FailureFormat_Object;
         String failureFormatMessage = Messages.TestCaseSection_FailureFormat_Message;
-		if (failureDetails.length>1)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
-		if (failureDetails.length>2)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[2])?failureFormatAttribute:"");		 //$NON-NLS-1$ //$NON-NLS-2$
-		if (failureDetails.length>3)
+		
+        String[] failureDetailsToFormat = new String[failureDetails.length];
+        System.arraycopy(failureDetails, 0, failureDetailsToFormat, 0 , failureDetails.length);
+        
+        failureDetailsToFormat[3] = mapRuleValueTest(failureDetailsToFormat[3]);
+        failureDetailsToFormat[4] = mapRuleValueTest(failureDetailsToFormat[4]);
+        
+        if (failureDetailsToFormat.length>1)
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[1])?failureFormatObject:""); //$NON-NLS-1$ //$NON-NLS-2$
+		if (failureDetailsToFormat.length>2)
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[2])?failureFormatAttribute:"");		 //$NON-NLS-1$ //$NON-NLS-2$
+		if (failureDetailsToFormat.length>3)
 			failureFormat= failureFormat + (failureExpected); //$NON-NLS-1$
-		if (failureDetails.length>4)
+		if (failureDetailsToFormat.length>4)
 			failureFormat= failureFormat + (failureActual); //$NON-NLS-1$
-		if (failureDetails.length>5)
-		    failureFormat= failureFormat + (!"<null>".equals(failureDetails[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
-		return MessageFormat.format(failureFormat, failureDetails); 
+		if (failureDetailsToFormat.length>5)
+		    failureFormat= failureFormat + (!"<null>".equals(failureDetailsToFormat[5])?failureFormatMessage:""); //$NON-NLS-1$ //$NON-NLS-2$
+		return MessageFormat.format(failureFormat, failureDetailsToFormat); 
 	}
 	
+    /*
+     * Maps the rule values id to the corresponding name, if the given string is no id
+     * return the given string without mapping.
+     */
+    private String mapRuleValueTest(String id) {
+        if (id.equals(TestRuleViolationType.VIOLATED.getId())){
+            return TestRuleViolationType.VIOLATED.getName();
+        } else if (id.equals(TestRuleViolationType.NOT_VIOLATED.getId())){
+            return TestRuleViolationType.NOT_VIOLATED.getName();
+        }
+        return id;
+    }
+
     /*
      * Converts the given failure details to one store actual value in expected result detail row.
      */
@@ -2046,6 +2087,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
      * Removes the listener for the ips test runner
      */
     private void removeAllListener() {
+        testCase.getIpsModel().removeChangeListener(this);
         if (runAndStoreExpectedResultListener != null){
             IpsPlugin.getDefault().getIpsTestRunner().removeIpsTestRunListener(runAndStoreExpectedResultListener);
         }

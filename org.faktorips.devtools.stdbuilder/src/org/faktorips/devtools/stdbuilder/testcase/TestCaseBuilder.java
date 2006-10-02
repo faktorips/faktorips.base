@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -243,9 +244,15 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             if (!testRules[i].isValid()){
                 continue;
             }
+            IValidationRule validationRule = testRules[i].findValidationRule();
+            if (validationRule == null){
+                // validation rule not found ignore element
+                continue;
+            }
             Element ruleElem = XmlUtil.addNewChild(doc, element, testRules[i].getTestParameterName());
             ruleElem.setAttribute("type", "testrule");
             ruleElem.setAttribute("validationRule", testRules[i].getValidationRule());
+            ruleElem.setAttribute("validationRuleMessageCode", validationRule.getMessageCode());
             ruleElem.setAttribute("violationType", testRules[i].getViolationType().getId()); 
         }
     }

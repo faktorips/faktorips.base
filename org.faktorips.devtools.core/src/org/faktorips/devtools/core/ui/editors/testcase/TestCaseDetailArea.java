@@ -46,6 +46,7 @@ import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -536,7 +537,19 @@ public class TestCaseDetailArea {
             }
         });
         
-        allEditFields.put(rule.getTestRuleParameter(), editField);
+        String ruleIdentifier = null;
+        try {
+            IValidationRule validationRule = rule.findValidationRule();
+            ruleIdentifier = validationRule==null?null:validationRule.getMessageCode();
+        } catch (CoreException e1) {
+            // ignore exception while seraching the validation rule object
+        }
+        if (ruleIdentifier == null){
+            // validation rule not found use rule name as identifier
+            ruleIdentifier = rule.getValidationRule();
+        }
+        
+        allEditFields.put(rule.getTestRuleParameter() + ruleIdentifier, editField);
         editField2ModelObject.put(editField, rule);
         
         // mark as expected result
@@ -557,10 +570,14 @@ public class TestCaseDetailArea {
      * Return <code>true</code> if the given test object is visible or not <code>false</code>.
      */
 	private boolean isVisibleForContentFilter(TestCaseContentProvider contentProvider, ITestObject testObject) {
-        if (!((testCaseSection.getContentProvider().isInput() && testObject.isInput()) || (testCaseSection
-                .getContentProvider().isExpectedResult() && testObject.isExpectedResult()))
-                && !testCaseSection.getContentProvider().isCombined()) {
-            return false;
+        try {
+            if (!((testCaseSection.getContentProvider().isInput() && testObject.isInput()) || (testCaseSection
+                    .getContentProvider().isExpectedResult() && testObject.isExpectedResult()))
+                    && !testCaseSection.getContentProvider().isCombined()) {
+                return false;
+            }
+        } catch (Exception e) {
+            // ignore exception, display the testObject
         }
         return true;
     }
@@ -662,10 +679,13 @@ public class TestCaseDetailArea {
     private void updateValue(EditField editField, String actualValue) {
         IIpsObjectPart object = (IIpsObjectPart) editField2ModelObject.get(editField);
         if (object != null){
-            if (object instanceof ITestValue){
+            if (object instanceof ITestValue) {
                 ((ITestValue)object).setValue(actualValue);
-            } else if (object instanceof ITestAttributeValue){
+            } else if (object instanceof ITestAttributeValue) {
                 ((ITestAttributeValue)object).setValue(actualValue);
+            } else if (object instanceof ITestRule) {
+                ((ITestRule)object).setViolationType((TestRuleViolationType)TestRuleViolationType.getEnumType()
+                        .getEnumValue(actualValue));
             }
         }
     }

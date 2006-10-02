@@ -175,7 +175,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
             } catch (CoreException e) {
                 // ignored exception, return default image
             }
-            return IpsPlugin.getDefault().getImage("LinkPolicyCmptType.gif"); //$NON-NLS-1$
+            return IpsPlugin.getDefault().getImage("LinkedPolicyCmptType.gif"); //$NON-NLS-1$
         } else {
             try {
                 ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();

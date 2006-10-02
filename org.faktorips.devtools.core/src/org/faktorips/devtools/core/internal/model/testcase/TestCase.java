@@ -791,11 +791,11 @@ public class TestCase extends IpsObject implements ITestCase {
                     return type.equals(defaultType);
 
                 ITestParameter testParameter = testCaseType.getTestParameterByName(testParameterName);
-                if (testParameter == null)
+                if (testParameter == null){
                     return type.equals(defaultType);
-
+                }
                 return isTypeOrDefault(testParameter, type, defaultType);
-            } catch (Exception e) {
+            } catch (CoreException e) {
                 // ignore exceptions
             }
             return false;

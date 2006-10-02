@@ -604,6 +604,7 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
      * {@inheritDoc}
      */
     public void dispose() {
+        testCaseType.getIpsModel().removeChangeListener(this);
         empytImage.dispose();
         super.dispose();
     }

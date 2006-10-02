@@ -219,7 +219,9 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         }
         
         prevDatatypeOrRule = ""; //$NON-NLS-1$
-        editFieldDatatypeOrRule.setText(""); //$NON-NLS-1$
+        if (!editFieldDatatypeOrRule.getControl().isDisposed()){
+            editFieldDatatypeOrRule.setText(""); //$NON-NLS-1$
+        }
         editFieldName.setText(""); //$NON-NLS-1$
         
         contentComposite.dispose();

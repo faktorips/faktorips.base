@@ -249,7 +249,12 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         HashMap name2elements = new HashMap();
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             ITestObject element = (ITestObject)iter.next();
-            name2elements.put(element.getTestParameterName(), element);
+            List existingElements = (List) name2elements.get(element.getTestParameterName());
+            if (existingElements == null){
+                existingElements = new ArrayList(1);
+            }
+            existingElements.add(element);
+            name2elements.put(element.getTestParameterName(), existingElements);
         }
         
         // return the ordered list, the ordered list depends on the test case type,
@@ -266,9 +271,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         if (testCaseType != null){
             ITestParameter[] params = testCaseType.getTestParameters();
             for (int i = 0; i < params.length; i++) {
-                ITestObject testObject = (ITestObject) name2elements.get(params[i].getName());
-                if (testObject != null && ! (params[i] instanceof ITestRuleParameter)){
-                    orderedList.add(testObject);
+                List testObjects = (List) name2elements.get(params[i].getName());
+                if (testObjects != null && ! (params[i] instanceof ITestRuleParameter)){
+                    orderedList.addAll(testObjects);
                 } else if (params[i] instanceof ITestRuleParameter) {
                     if (isCombined() || isExpectedResult()){
                         // test rule objects are not visible if the input filter is chosen
@@ -279,8 +284,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             }
             // add all elements which are not in the test parameter on the end
             for (Iterator iter = name2elements.values().iterator(); iter.hasNext();) {
-                ITestObject element = (ITestObject)iter.next();
-                orderedList.add(element);
+                List elementsWithNoParams = (List)iter.next();
+                orderedList.addAll(elementsWithNoParams);
             }
         } else {
             // ignore the sort order of the test case type if the test case type not exists
