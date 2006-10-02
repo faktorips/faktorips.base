@@ -996,14 +996,26 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         RangeValueSet range = (RangeValueSet)a.getValueSet();
         JavaCodeFragment containsNullFrag = new JavaCodeFragment();
         containsNullFrag.append(range.getContainsNull());
-        JavaCodeFragment frag = helper.newRangeInstance(helper.newInstance(range.getLowerBound()), 
-                helper.newInstance(range.getUpperBound()), helper.newInstance(range.getStep()), 
+        JavaCodeFragment frag = helper.newRangeInstance(
+                createCastExpression(range.getLowerBound(), helper), 
+                createCastExpression(range.getUpperBound(), helper), createCastExpression(range.getStep(), helper), 
                 containsNullFrag);
         membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | 
                                       java.lang.reflect.Modifier.FINAL | 
                                       java.lang.reflect.Modifier.STATIC, 
                                       helper.getRangeJavaClassName(), 
                                       getFieldNameMaxRangeFor(a), frag);
+    }
+    
+    private JavaCodeFragment createCastExpression(String bound, DatatypeHelper helper){
+        JavaCodeFragment frag = new JavaCodeFragment();
+        if(StringUtils.isEmpty(bound)){
+            frag.append('(');
+            frag.appendClassName(helper.getJavaClassName());
+            frag.append(')');
+        }
+        frag.append(helper.newInstance(bound));
+        return frag;
     }
     
     public String getFieldNameMaxAllowedValuesFor(IAttribute a){
