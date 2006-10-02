@@ -26,7 +26,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -128,7 +128,7 @@ public class GeneralInfoSection extends IpsSection {
 	    uiController.add(productCmptTypeNameField, IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE);
 	    uiController.add(configuratedField, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
 	    
-	    extFactory.createControls(c2,toolkit,(IpsObjectPartContainer)pcType);
+	    extFactory.createControls(c2,toolkit,(IIpsObjectPartContainer)pcType);
 	    extFactory.connectToModel(uiController);
 	}
     

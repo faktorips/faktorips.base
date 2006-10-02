@@ -19,8 +19,8 @@ package org.faktorips.devtools.core.ui;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectPartContainerUIController;
 
@@ -46,7 +46,7 @@ public class ExtensionPropertyControlFactory {
 	 * creates the <code>EditFields</code> of extension at <code>where</code> position
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
-			IpsObjectPartContainer ipsObjectPart, String where) {
+            IIpsObjectPartContainer ipsObjectPart, String where) {
 		for (int i = 0; i < extensionProperties.length; i++) {
 			if (extensionProperties[i].getEditedInStandardTextArea().equals(
 					where)
@@ -66,7 +66,7 @@ public class ExtensionPropertyControlFactory {
 	 * the extensions tagged with <code>false</code> 
 	 */
 	public void createControls(Composite workArea, UIToolkit uiToolkit,
-			IpsObjectPartContainer ipsObjectPart) {
+            IIpsObjectPartContainer ipsObjectPart) {
 		for (int i = 0; i < extensionProperties.length; i++) {
 			if ((!extensionProperties[i].getEditedInStandardTextArea().equals(
 					"false")) //$NON-NLS-1$

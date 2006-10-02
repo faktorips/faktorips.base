@@ -43,9 +43,9 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -266,7 +266,7 @@ public class AttributeEditDialog extends IpsPartEditDialog implements ParameterL
 
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)attribute);
+        extFactory.createControls(workArea, uiToolkit, (IIpsObjectPartContainer)attribute);
 
         
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelName);

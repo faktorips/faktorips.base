@@ -20,8 +20,8 @@ package org.faktorips.devtools.core.model.extproperties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -155,7 +155,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * 
      * Overridden Method.
      */
-    public MessageList validate(IpsObjectPartContainer ipsObjectPart, Object value) throws CoreException {
+    public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws CoreException {
 		return null;
 	}
 
@@ -164,7 +164,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * 
      * Overridden Method.
      */
-	public void afterSetValue(IpsObjectPartContainer ipsObjectPart, Object value) {
+	public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
     }
 
     /**
@@ -172,7 +172,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * 
      * Overridden Method.
      */
-    public boolean beforeSetValue(IpsObjectPartContainer ipsObjectPart, Object value) {
+    public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
         return true;
     }
 
@@ -182,7 +182,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * 
      * Overridden IMethod.
      */
-    public EditField newEditField(IpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit) {
+    public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit) {
         Text text = toolkit.createText(extensionArea);
         return new TextField(text);
     }

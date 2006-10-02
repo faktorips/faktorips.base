@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -205,7 +205,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
         // top extensions
-        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)relation, "top"); //$NON-NLS-1$
+        extFactory.createControls(workArea, uiToolkit, (IIpsObjectPartContainer)relation, "top"); //$NON-NLS-1$
                 
         // role singular
         uiToolkit.createFormLabel(workArea, Messages.RelationEditDialog_labelTargetRoleSingular);
@@ -244,7 +244,7 @@ public class RelationEditDialog extends IpsPartEditDialog {
         Text maxCardinalityText = uiToolkit.createText(workArea);
         
         // bottom extensions
-        extFactory.createControls(workArea, uiToolkit, (IpsObjectPartContainer)relation);
+        extFactory.createControls(workArea, uiToolkit, (IIpsObjectPartContainer)relation);
 
         // create fields
         targetRoleSingularField = new TextField(targetRoleSingularText);

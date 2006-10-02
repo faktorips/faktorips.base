@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.message.MessageList;
@@ -121,7 +120,7 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * 
      * @see IpsObjectPartContainer.setExtProperty(Object)
      */
-    public boolean beforeSetValue(IpsObjectPartContainer ipsObjectPart, Object value);
+    public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
 
     /**
      * This method is called after a value was set to a object's extension property.
@@ -132,7 +131,7 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * 
      * @see IpsObjectPartContainer.setExtProperty(Object)
      */
-    public void afterSetValue(IpsObjectPartContainer ipsObjectPart, Object value);
+    public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
 
     /**
      * Validates the property value for the given ips object part.
@@ -145,7 +144,7 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * 
      * @throws CoreException if an error occurs while validating the property.
      */
-    public MessageList validate(IpsObjectPartContainer ipsObjectPart, Object value) throws CoreException;
+    public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws CoreException;
 
     /**
      * Returns <code>true</code> if the property can be edited in the standard area for extension properties,
@@ -173,6 +172,6 @@ public interface IExtensionPropertyDefinition extends Comparable {
      * the control. 
      * @param toolkit The ui toolkit to be used to create the control to ensure a consistent user interface.
      */
-    public EditField newEditField(IpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit);
+    public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit);
     
 }

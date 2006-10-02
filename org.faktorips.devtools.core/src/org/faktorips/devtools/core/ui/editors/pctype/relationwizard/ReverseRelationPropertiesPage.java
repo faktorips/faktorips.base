@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
@@ -442,7 +442,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
      */
     protected void createExtensionFields(Composite parent, UIToolkit uiToolkit, String position) {
         wizard.getExtensionFactoryReverseRelation().createControls(parent, uiToolkit,
-                (IpsObjectPartContainer)getCurrentRelation(), position);
+                (IIpsObjectPartContainer)getCurrentRelation(), position);
     }
     
     /**

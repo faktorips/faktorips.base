@@ -20,9 +20,9 @@ package org.faktorips.devtools.core.ui.editors.pctype.relationwizard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -135,7 +135,7 @@ public class PropertiesPage extends AbstractPropertiesPage {
      * {@inheritDoc}
      */
     protected void createExtensionFields(Composite parent, UIToolkit uiToolkit, String position) {
-        wizard.getExtensionFactory().createControls(parent, uiToolkit, (IpsObjectPartContainer)getCurrentRelation(),
+        wizard.getExtensionFactory().createControls(parent, uiToolkit, (IIpsObjectPartContainer)getCurrentRelation(),
                 position);
     }
 
