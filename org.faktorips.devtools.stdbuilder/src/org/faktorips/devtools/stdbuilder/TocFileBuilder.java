@@ -56,9 +56,9 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBui
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
-import org.faktorips.runtime.TocEntryGeneration;
-import org.faktorips.runtime.TocEntryObject;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.TocEntryGeneration;
+import org.faktorips.runtime.internal.TocEntryObject;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
