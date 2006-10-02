@@ -20,6 +20,8 @@ package org.faktorips.devtools.core.ui.views.testrunner;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -66,8 +68,17 @@ public class FailurePane {
         }
     }
     
-	public FailurePane(Composite parent, ToolBar toolBar) {
+	public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart) {
 		fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+        
+        fTable.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                TableItem[] items = fTable.getSelection();
+                if(items.length>0){
+                    viewPart.setStatusBarMessage(items[0].getText());
+                }
+            }
+        });
         
         // fill the failure trace viewer toolbar
         ToolBarManager failureToolBarmanager= new ToolBarManager(toolBar);

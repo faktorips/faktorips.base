@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
@@ -392,7 +393,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
         ToolBar failureToolBar= new ToolBar(bottom, SWT.FLAT | SWT.WRAP);
         bottom.setTopCenter(failureToolBar);
-		fFailurePane = new FailurePane(bottom, failureToolBar);
+		fFailurePane = new FailurePane(bottom, failureToolBar, this);
 		bottom.setContent(fFailurePane.getComposite()); 
 		
 		fSashForm.setWeights(new int[]{50, 50});
@@ -497,6 +498,13 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 		fStatus= message;
 	}
 	
+    public void setStatusBarMessage(String message){
+        IStatusLineManager statusLineManager =  getViewSite().getActionBars().getStatusLineManager();
+        if (statusLineManager!=null){
+            statusLineManager.setMessage(message);
+        }        
+    }
+    
 	private class TableEntryQueueDrainer implements Runnable {
 		public void run() {
 			while (true) {
