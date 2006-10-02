@@ -520,13 +520,51 @@ public class RelationTest extends AbstractIpsPluginTest {
         relation.setTargetRolePluralProductSide("a");
         relation.setTargetRoleSingularProductSide("b");
         MessageList ml = relation.validate();
-        assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
         
         relation.setTargetRoleSingularProductSide("a");
         ml = relation.validate();
-        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE));
     }
 
+    public void testValidationRelationCanOnlyBeProductRelevantIfTheTargetTypeIs() throws Exception {
+    	// per default both the relation and the target type are product relevant, therefore the msg is not expected
+        MessageList ml = relation.validate();
+        assertNull(ml.getMessageByCode(IRelation.MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TARGET_TYPE_IS));
+       
+        relation.findTarget().setConfigurableByProductCmptType(false);
+        ml = relation.validate();
+        assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TARGET_TYPE_IS));
+       
+    }
+    
+    public void testValidationTargetRolePlural_EqualsTargetRoleSingular() throws Exception {
+    	relation.setTargetRoleSingular("role1");
+    	relation.setTargetRolePlural("role2");
+    	MessageList ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR));
+    	
+    	relation.setTargetRolePlural("role1");
+    	ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR));
+    }
+
+    public void testValidationTargetRolePluralMustBeSet() throws Exception {
+    	relation.setMinCardinality(1);
+    	relation.setMaxCardinality(1);
+    	relation.setTargetRolePlural("");
+    	MessageList ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+    	
+    	relation.setMaxCardinality(2);
+    	ml = relation.validate();
+    	assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+    	
+    	relation.setTargetRolePlural("role1");
+    	ml = relation.validate();
+    	assertNull(ml.getMessageByCode(IRelation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+    }
+    
     public void testIsContainerRelationImplementation() throws CoreException {
         assertFalse(relation.isContainerRelationImplementation(null));
 

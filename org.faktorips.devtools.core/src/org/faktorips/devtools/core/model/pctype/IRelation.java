@@ -68,14 +68,12 @@ public interface IRelation extends IIpsObjectPart {
      * greater than 1.
      */
     public final static String MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET = MSGCODE_PREFIX + "TargetRolePluralMustBeSet"; //$NON-NLS-1$
-    //TODO 
     
     /**
      * Validation message code to indicate that a relation has the same rolename singular and plural
      */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_EQULAS_TARGET_ROLE_SINGULAR = 
+    public final static String MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR = 
         MSGCODE_PREFIX + "TargetRoleSingularEqualsTargetRoleSingular"; //$NON-NLS-1$
-    // TODO
 
     /**
      * Validation message code to indicate that the max cardinality must be at least 1 and it's not.
@@ -121,9 +119,8 @@ public interface IRelation extends IIpsObjectPart {
      * Validation message code to indicate that a relation can only be product relevant
      * if the target type is configurable by product.
      */
-    public final static String MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TARGET_TYPE = 
+    public final static String MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TARGET_TYPE_IS = 
         MSGCODE_PREFIX + "RelationCanOnlyBeProductRelevantIfTheTargetIs"; //$NON-NLS-1$
-    // TODO
 
     /**
      * Validation message code to indicate that a relation marked as product relevant
@@ -143,7 +140,7 @@ public interface IRelation extends IIpsObjectPart {
      * Validation message code to indicate that a relation marked as product relevant
      * has the same target role for singular and plural for the product side.
      */
-    public final static String MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE = 
+    public final static String MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE = 
     	MSGCODE_PREFIX + "TargetRoleSingularProductSideEqualsTargetRoleSingularProductSide"; //$NON-NLS-1$
 
     /**

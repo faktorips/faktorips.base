@@ -392,7 +392,7 @@ public class Relation extends IpsObjectPart implements IRelation {
             return false;
         }
         if (!containerRelation.isReadOnlyContainer()) {
-            throw new CoreException(new IpsStatus("Relation " + containerRelation + " is not a container relation."));
+            throw new CoreException(new IpsStatus(NLS.bind(Messages.Relation_Error_RelationIsNoContainerRelation, "" + containerRelation))); //$NON-NLS-1$
         }
         if (!isContainerRelationImplementation()) {
             return false;
@@ -523,9 +523,9 @@ public class Relation extends IpsObjectPart implements IRelation {
         super.validateThis(list);
         ValidationUtils.checkIpsObjectReference(target, IpsObjectType.POLICY_CMPT_TYPE, "target", this,  //$NON-NLS-1$
         		PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list); //$NON-NLS-1$
-        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, "target role", this, PROPERTY_TARGET_ROLE_SINGULAR,  //$NON-NLS-1$
-        		MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list); //$NON-NLS-1$
-
+        ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, Messages.Relation_msgTargetRoleSingular, this, PROPERTY_TARGET_ROLE_SINGULAR,
+        		MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list);
+        
         if (maxCardinality == 0) {
         	String text = Messages.Relation_msgMaxCardinalityMustBeAtLeast1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1, text, Message.ERROR, this, PROPERTY_MAX_CARDINALITY)); //$NON-NLS-1$
@@ -537,6 +537,23 @@ public class Relation extends IpsObjectPart implements IRelation {
         	list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[]{PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY})); //$NON-NLS-1$
         }
         
+        if (maxCardinality > 1) {
+			ValidationUtils.checkStringPropertyNotEmpty(targetRolePlural,
+					Messages.Relation_msgTargetRolePlural, this, PROPERTY_TARGET_ROLE_PLURAL,
+					MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET, list);
+		}
+        
+		if (StringUtils.isNotEmpty(this.getTargetRolePlural())
+				&& this.getTargetRolePlural().equals(
+						this.getTargetRoleSingular())) {
+			String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
+			list.add(new Message(
+					MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR,
+					text, Message.ERROR, this, new String[] {
+							PROPERTY_TARGET_ROLE_SINGULAR,
+							PROPERTY_TARGET_ROLE_PLURAL }));
+		}
+		
         if (maxCardinality != 1 && this.type == RelationType.REVERSE_COMPOSITION) {
         	String text = Messages.Relation_msgRevereseCompositionMustHaveMaxCardinality1;
         	list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this, new String[] {PROPERTY_MAX_CARDINALITY, PROPERTY_RELATIONTYPE}));
@@ -547,6 +564,18 @@ public class Relation extends IpsObjectPart implements IRelation {
         	list.add(new Message(MSGCODE_REVERSE_COMPOSITION_CANT_BE_MARKED_AS_PRODUCT_RELEVANT, text, Message.ERROR, this, new String[] {PROPERTY_PRODUCT_RELEVANT, PROPERTY_RELATIONTYPE}));
         }
        
+        IPolicyCmptType targetPolicyCmptType = findTarget();
+		if (targetPolicyCmptType != null && 
+				this.type != RelationType.REVERSE_COMPOSITION &&
+				this.isProductRelevant() &&
+				! targetPolicyCmptType.isConfigurableByProductCmptType()) {
+			String text = Messages.Relation_msgRelationCanOnlyProdRelIfTargetTypeIsConfByProduct;
+			list.add(new Message(
+							MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TARGET_TYPE_IS,
+							text, Message.ERROR, this,
+							PROPERTY_PRODUCT_RELEVANT));
+		}
+        
         validateProductSide(list);
         
         IPolicyCmptType type = getPolicyCmptType();
@@ -611,10 +640,10 @@ public class Relation extends IpsObjectPart implements IRelation {
 		} else {
 			if (this.getTargetRolePluralProductSide().equals(
 					this.getTargetRoleSingularProductSide())) {
-				String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
+				String text = Messages.Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePluralProdSide;
 				list
 						.add(new Message(
-								MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQULAS_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
+								MSGCODE_TARGET_ROLE_PLURAL_PRODUCTSIDE_EQUALS_TARGET_ROLE_SINGULAR_PRODUCTSIDE,
 								text,
 								Message.ERROR,
 								this,

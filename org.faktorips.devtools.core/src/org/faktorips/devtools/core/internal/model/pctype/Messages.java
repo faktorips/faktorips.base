@@ -152,9 +152,19 @@ public class Messages extends NLS {
 
 	public static String Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePlural;
 
+	public static String Relation_msgTargetRoleSingularIlleaglySameAsTargetRolePluralProdSide;
+
 	public static String Attribute_msgNameCollisionLocal;
 
     public static String ValidationRule_msgOneBusinessFunction;
 
     public static String ValidationRule_msgValueSetRule;
+    
+    public static String Relation_msgTargetRoleSingular;
+    
+    public static String Relation_msgTargetRolePlural;
+
+	public static String Relation_Error_RelationIsNoContainerRelation;
+
+	public static String Relation_msgRelationCanOnlyProdRelIfTargetTypeIsConfByProduct;
 }

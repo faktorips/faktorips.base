@@ -168,12 +168,9 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRoleSingularField.getText())) {
-                    String targetName = getCurrentRelation().getTarget();
-                    int pos = targetName.lastIndexOf('.');
-                    if (pos!=-1) {
-                        targetName = targetName.substring(pos+1);
-                        targetRoleSingularField.setText(targetName);
-                    }
+                	String targetName = getCurrentRelation().getTarget();
+                	targetName = StringUtil.unqualifiedName(targetName);
+                	targetRoleSingularField.setText(targetName);
                 }
             }
         });
@@ -191,7 +188,9 @@ public abstract class AbstractPropertiesPage extends AbstractPcTypeRelationWizar
         targetRolePluralText.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 if (StringUtils.isEmpty(targetRolePluralField.getText())) {
-                    targetRolePluralField.setText(targetRoleSingularText.getText());
+                	String targetName = getCurrentRelation().getTarget();
+                	targetName = StringUtil.unqualifiedName(targetName);
+                	targetRolePluralField.setText(targetName);
                 }
             }
         });
