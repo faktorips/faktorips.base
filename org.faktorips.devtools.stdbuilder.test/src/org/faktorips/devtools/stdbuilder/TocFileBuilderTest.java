@@ -36,9 +36,9 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.table.TableImplBuilder;
-import org.faktorips.runtime.ReadonlyTableOfContents;
-import org.faktorips.runtime.TocEntryGeneration;
-import org.faktorips.runtime.TocEntryObject;
+import org.faktorips.runtime.internal.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.TocEntryGeneration;
+import org.faktorips.runtime.internal.TocEntryObject;
 import org.w3c.dom.Document;
 
 /**

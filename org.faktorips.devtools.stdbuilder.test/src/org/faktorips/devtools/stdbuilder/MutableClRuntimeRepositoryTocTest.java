@@ -22,9 +22,9 @@ import javax.xml.transform.TransformerException;
 
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.test.XmlAbstractTestCase;
-import org.faktorips.runtime.AbstractReadonlyTableOfContents;
-import org.faktorips.runtime.ReadonlyTableOfContents;
-import org.faktorips.runtime.TocEntryObject;
+import org.faktorips.runtime.internal.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.TocEntryObject;
 import org.w3c.dom.Element;
 
 /**
