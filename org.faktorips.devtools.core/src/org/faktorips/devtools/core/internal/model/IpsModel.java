@@ -216,7 +216,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public IIpsProject createIpsProject(IJavaProject javaProject)
 			throws CoreException {
@@ -235,8 +235,8 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-     * Overridden.
-     */
+     * {@inheritDoc}
+	 */
     public IIpsProject[] getIpsProjects() throws CoreException {
 
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
@@ -278,28 +278,28 @@ public class IpsModel extends IpsElement implements IIpsModel,
     }
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public IIpsModel getIpsModel() {
 		return this;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsProject getIpsProject(String name) {
 		return new IpsProject(this, name);
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsProject getIpsProject(IProject project) {
 		return new IpsProject(this, project.getName());
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public Image getImage() {
 		return IpsPlugin.getDefault().getImage("IpsModel.gif"); //$NON-NLS-1$
@@ -313,14 +313,14 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsElement[] getChildren() throws CoreException {
 		return getIpsProjects();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public IIpsElement getIpsElement(IResource resource) {
 		ArgumentCheck.notNull(resource);
@@ -357,7 +357,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void addChangeListener(ContentsChangeListener listener) {
 		if (changeListeners == null) {
@@ -367,7 +367,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public void removeChangeListener(ContentsChangeListener listener) {
 		if (changeListeners != null) {
@@ -399,14 +399,14 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public boolean equals(Object o) {
 		return o instanceof IIpsModel;
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String toString() {
 		return "IpsModel"; //$NON-NLS-1$
