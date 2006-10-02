@@ -194,8 +194,9 @@ public class AttributesSection extends SimpleIpsPartsSection {
     	private class AttributeLabelProvider extends DefaultLabelProvider {
     	    
             public String getText(Object element) {
+                String text = super.getText(element);
                 IAttribute a = (IAttribute)element;
-                return a.getName() + " : " + a.getDatatype(); //$NON-NLS-1$
+                return text + " : " + a.getDatatype(); //$NON-NLS-1$
             }
     	}
     }

@@ -764,6 +764,21 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         
         ml = subtype.validate();
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+        
+        // now same thing for subtype of subtype
+        relation.delete();
+        IPolicyCmptType subsubtype = newPolicyCmptType(ipsProject, "SubSubtype");
+        subsubtype.setSupertype(subtype.getQualifiedName());
+        ml = subsubtype.validate();
+        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
+
+        relation = subtype.newRelation();
+        relation.setReadOnlyContainer(false);
+        relation.setContainerRelation(container.getName());
+        relation.setTarget(target.getQualifiedName());
+        
+        ml = subtype.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
     }
     
     public void testFindRelationsImplementingContainerRelation() throws CoreException {

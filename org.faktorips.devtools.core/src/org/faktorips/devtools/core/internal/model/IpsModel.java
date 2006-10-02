@@ -129,8 +129,6 @@ public class IpsModel extends IpsElement implements IIpsModel,
 	// IAttribute.
 	private Map typeExtensionPropertiesMap = null; // null as long as they
 
-	// haven't been looked up.
-
 	// map containg all changes in time naming conventions by id.
 	private Map changesOverTimeNamingConventionMap = null;
 

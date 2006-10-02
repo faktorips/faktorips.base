@@ -52,7 +52,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     private String targetRoleSingular = ""; //$NON-NLS-1$
     private String targetRolePlural = ""; //$NON-NLS-1$
     private int minCardinality = 0;
-    private int maxCardinality = 1; //$NON-NLS-1$
+    private int maxCardinality = Integer.MAX_VALUE; 
     private boolean productRelevant = true;
     private String containerRelation = ""; //$NON-NLS-1$
     private String reverseRelation = ""; //$NON-NLS-1$
@@ -60,7 +60,7 @@ public class Relation extends IpsObjectPart implements IRelation {
     private String targetRoleSingularProductSide = ""; //$NON-NLS-1$
     private String targetRolePluralProductSide = ""; //$NON-NLS-1$
     private int minCardinalityProductSide = 0;
-    private int maxCardinalityProductSide = 1;
+    private int maxCardinalityProductSide = Integer.MAX_VALUE;
     private boolean deleted = false;
 
     public Relation(IPolicyCmptType pcType, int id) {
@@ -560,7 +560,7 @@ public class Relation extends IpsObjectPart implements IRelation {
 				}
 		        if (relations[j] != this && !StringUtils.isEmpty(targetRolePlural) && relations[j].getTargetRolePlural().equals(targetRolePlural))  {
 		            String text = Messages.Relation_msgSamePluralRolename;
-		            list.add(new Message(MSGCODE_CONTAINERRELATION_SAME_PLURAL_ROLENAME, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_PLURAL)); //$NON-NLS-1$
+		            list.add(new Message(MSGCODE_SAME_PLURAL_ROLENAME, text, Message.ERROR, this, PROPERTY_TARGET_ROLE_PLURAL)); //$NON-NLS-1$
 		        }
 		        
 		        if (!this.isProductRelevant()) {
@@ -591,7 +591,7 @@ public class Relation extends IpsObjectPart implements IRelation {
 			String text = Messages.Relation_msgRelationCanBeProductRelevantOnlyIfTypeIs;
 			list
 					.add(new Message(
-							MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS,
+							MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TYPE_IS,
 							text, Message.ERROR, this,
 							PROPERTY_PRODUCT_RELEVANT));
 		}

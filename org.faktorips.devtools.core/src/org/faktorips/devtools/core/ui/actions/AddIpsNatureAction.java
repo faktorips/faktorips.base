@@ -425,6 +425,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             if (buttonId == IDialogConstants.OK_ID) {
                 sourceFolderName = sourceFolderText.getText();
                 runtimeIdPrefix = runtimeIdText.getText();
+                basePackageName = basePackageText.getText();
                 isModelProject = modelProjectButton.isChecked() || fullProjectButton.isChecked();
                 isProductDefinitionProject = productDefinitionProjectButton.isChecked()
                         || fullProjectButton.isChecked();

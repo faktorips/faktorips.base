@@ -159,7 +159,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      */
     public IIpsObject getIpsObject() throws CoreException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("Can't get ips object because file content is not accesible." + this));
+            throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this));
         }
         IpsSrcFileContent content = getContent();
         if (!content.isParsable()) {

@@ -796,12 +796,12 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Returns true if the container relations is implemented in the indicated type or one of the
-     * type's supertypes. Helper method for the one above.
+     * Returns true if the container relation is implemented in this type or one of it's
+     * supertypes. Helper method for the one above.
      * 
-     * @param pcType The policy component type where the search for the implementation starts.
      * @param relation A container relation of one the type's supertypes.
      * @param hierarchy The supertype hierarchy where the supertype relation is already resolved.
+     * 
      * @throws CoreException
      */
     private boolean isContainerRelationImplemented(IRelation containerRelation, ITypeHierarchy hierarchy)

@@ -310,11 +310,11 @@ public class RelationTest extends AbstractIpsPluginTest {
     	MessageList ml = new MessageList();
     	
     	ml = relation.validate();
-    	assertNull(ml.getMessageByCode(IRelation.MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS));
+    	assertNull(ml.getMessageByCode(IRelation.MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TYPE_IS));
     	
     	relation.getPolicyCmptType().setConfigurableByProductCmptType(false);
     	ml = relation.validate();
-    	assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_RELATION_CAN_BE_PRODUCT_RELEVANT_ONLY_IF_THE_TYPE_IS));
+    	assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_RELATION_CAN_ONLY_BE_PRODUCT_RELEVANT_IF_THE_TYPE_IS));
     }
     
     public void testValidateContainerRelationNotInSupertype() throws Exception {
@@ -375,11 +375,11 @@ public class RelationTest extends AbstractIpsPluginTest {
 		cRel.setContainerRelation("Coverage");
 
 		ml = cRel.validate();
-		assertNull(ml.getMessageByCode(IRelation.MSGCODE_CONTAINERRELATION_SAME_PLURAL_ROLENAME));
+		assertNull(ml.getMessageByCode(IRelation.MSGCODE_SAME_PLURAL_ROLENAME));
 		
 		relation.setTargetRolePlural(cRel.getTargetRolePlural());
 		ml = cRel.validate();
-		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_CONTAINERRELATION_SAME_PLURAL_ROLENAME));
+		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_SAME_PLURAL_ROLENAME));
 	}
 
 	public void testValidateSameSingularRolename() throws Exception {

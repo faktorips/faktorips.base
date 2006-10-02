@@ -24,6 +24,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -31,7 +32,9 @@ import org.faktorips.fl.FlFunction;
 
 
 /**
- *
+ * Label provider that provides default images and labels (texts) for ips elements.
+ * 
+ * @author Jan Ortmann
  */
 public class DefaultLabelProvider extends LabelProvider {
     
@@ -73,16 +76,23 @@ public class DefaultLabelProvider extends LabelProvider {
         if (!(element instanceof IIpsElement)) {
             return element.toString();
         }
-        IIpsElement pdElement = (IIpsElement)element;
+        IIpsElement ipsElement = (IIpsElement)element;
         if (element instanceof IIpsPackageFragment) {
-            if (pdElement.getName().equals("")) { //$NON-NLS-1$
+            if (ipsElement.getName().equals("")) { //$NON-NLS-1$
                 return "(default package)"; //$NON-NLS-1$
             }
         }
         if (element instanceof IMethod) {
             return getMethodLabel((IMethod)element);
         }
-        return pdElement.getName();
+        if (element instanceof IAttribute) {
+            IAttribute a = (IAttribute)element;
+            if (a.isDerivedOrComputed()) {
+                return "/" + a.getName();
+            }
+            return a.getName();
+        }
+        return ipsElement.getName();
     }
     
     private String getMethodLabel(IMethod method) {
