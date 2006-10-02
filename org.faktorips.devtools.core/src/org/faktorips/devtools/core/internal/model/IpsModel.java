@@ -37,13 +37,16 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -93,6 +96,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		TRACE_MODEL_MANAGEMENT = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue();
 	}
 	
+    // list of model change listeners that are notified about model changes
 	private List changeListeners;
 
 	/*
@@ -158,9 +162,55 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		getWorkspace().removeResourceChangeListener(this);
 	}
 
-	/**
-	 * Overridden.
-	 */
+    /**
+     * {@inheritDoc}
+     */
+    public void runAndQueueChangeEvents(
+            IWorkspaceRunnable action,
+            IProgressMonitor monitor) throws CoreException {
+        
+        runAndQueueChangeEvents(action, getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, monitor);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void runAndQueueChangeEvents(
+            IWorkspaceRunnable action,
+            ISchedulingRule rule,
+            int flags,
+            IProgressMonitor monitor) throws CoreException {
+        
+        if (changeListeners==null) {
+            getWorkspace().run(action, rule, flags, monitor);
+            return; 
+        }
+        List listeners = new ArrayList(changeListeners);
+        final Set changedSrcFiles = new LinkedHashSet();
+        ContentsChangeListener batchListener = new ContentsChangeListener() {
+
+            public void contentsChanged(ContentChangeEvent event) {
+                changedSrcFiles.add(event.getIpsSrcFile());
+            }
+            
+        };
+        changeListeners = null;
+        this.addChangeListener(batchListener);
+        
+        getWorkspace().run(action, rule, flags, monitor);
+
+        // restore change listeners
+        this.removeChangeListener(batchListener);
+        changeListeners = new ArrayList(listeners);
+
+        // notify about changes
+        for (Iterator it = changedSrcFiles.iterator(); it.hasNext();) {
+            IIpsSrcFile file = (IIpsSrcFile)it.next();
+            ContentChangeEvent event = new ContentChangeEvent(file);
+            notifyChangeListeners(event);
+        }
+    }
+    
 	public IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
 	}
@@ -1127,7 +1177,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		}
 		return (IProductCmpt[]) all.toArray(new IProductCmpt[all.size()]);
 	}
-
+    
 	/**
 	 * Check product cmpts for duplicate runtime id.
 	 * 

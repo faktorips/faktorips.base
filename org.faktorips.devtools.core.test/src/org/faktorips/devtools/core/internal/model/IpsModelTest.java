@@ -19,6 +19,8 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -58,10 +60,9 @@ import org.faktorips.util.message.MessageList;
 /**
  *
  */
-public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChangeListener {
+public class IpsModelTest extends AbstractIpsPluginTest {
     
     private IpsModel model;
-    private ContentChangeEvent lastEvent;
     
     // JavaProjects for testGetNonIpsResources()
     private IJavaProject javaProject= null;
@@ -137,19 +138,21 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
     }
     
     public void testAddChangeListener() {
-        model.addChangeListener(this);
+        TestContentsChangeListener listener = new TestContentsChangeListener();
+        model.addChangeListener(listener);
         ContentChangeEvent event = new ContentChangeEvent(null);
-        assertNull(lastEvent);
+        assertNull(listener.lastEvent);
         model.notifyChangeListeners(event);
-        assertEquals(event, lastEvent);
+        assertEquals(event, listener.lastEvent);
     }
 
     public void testRemoveChangeListener() {
-        model.addChangeListener(this);
-        model.removeChangeListener(this);
+        TestContentsChangeListener listener = new TestContentsChangeListener();
+        model.addChangeListener(listener);
+        model.removeChangeListener(listener);
         ContentChangeEvent event = new ContentChangeEvent(null);
         model.notifyChangeListeners(event);
-        assertNull(lastEvent);
+        assertNull(listener.lastEvent);
     }
     
     public void testResourceChanged() throws IOException, CoreException {
@@ -176,14 +179,15 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
     }
     
     public void testGetIpsObjectExtensionProperties() {
+        Class extendedClass = model.getClass();
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
         property.setPropertyId("prop1");
-        property.setExtendedType(this.getClass());
+        property.setExtendedType(extendedClass);
         model.addIpsObjectExtensionProperty(property);
-        IExtensionPropertyDefinition[] props = model.getExtensionPropertyDefinitions(getClass(), false);
+        IExtensionPropertyDefinition[] props = model.getExtensionPropertyDefinitions(extendedClass, false);
         assertEquals(1, props.length);
         assertSame(property, props[0]);
-        props = model.getExtensionPropertyDefinitions(this.getClass(), true);
+        props = model.getExtensionPropertyDefinitions(extendedClass, true);
         assertEquals(1, props.length);
         assertSame(property, props[0]);
         assertEquals(0, model.getExtensionPropertyDefinitions(String.class, true).length);
@@ -191,33 +195,33 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
         // test properties defined on one of the supertypes
         ExtensionPropertyDefinition property2 = new StringExtensionPropertyDefinition();
         property2.setPropertyId("prop2");
-        property2.setExtendedType(this.getClass().getSuperclass());
+        property2.setExtendedType(extendedClass.getSuperclass());
         model.addIpsObjectExtensionProperty(property2);
         ExtensionPropertyDefinition property3 = new StringExtensionPropertyDefinition();
         property3.setPropertyId("prop3");
-        property3.setExtendedType(this.getClass().getSuperclass().getSuperclass());
+        property3.setExtendedType(extendedClass.getSuperclass().getSuperclass());
         model.addIpsObjectExtensionProperty(property3);
         
-        props = model.getExtensionPropertyDefinitions(getClass(), true);
+        props = model.getExtensionPropertyDefinitions(extendedClass, true);
         assertEquals(3, props.length);
         assertSame(property, props[0]);
         assertSame(property2, props[1]);
         assertSame(property3, props[2]);
-        props = model.getExtensionPropertyDefinitions(getClass(), false);
+        props = model.getExtensionPropertyDefinitions(extendedClass, false);
         assertEquals(1, props.length);
 
         // test properties defined in one of the interfaces
         ExtensionPropertyDefinition property4 = new StringExtensionPropertyDefinition();
         property4.setPropertyId("prop4");
-        property4.setExtendedType(ContentsChangeListener.class);
+        property4.setExtendedType(IIpsModel.class);
         model.addIpsObjectExtensionProperty(property4);
-        props = model.getExtensionPropertyDefinitions(this.getClass(), true);
+        props = model.getExtensionPropertyDefinitions(extendedClass, true);
         assertEquals(4, props.length);
         assertSame(property, props[0]);  // first the type's properties
         assertSame(property2, props[1]); // then the supertype's properties
         assertSame(property3, props[2]); // then the supertype's supertype's properties
         assertSame(property4, props[3]); // the the type's interface's properties
-        props = model.getExtensionPropertyDefinitions(getClass(), false);
+        props = model.getExtensionPropertyDefinitions(extendedClass, false);
         assertEquals(1, props.length);
     }
     
@@ -345,11 +349,44 @@ public class IpsModelTest extends AbstractIpsPluginTest implements ContentsChang
         assertNull(model.getValidationResultCache().getResult(pcType));
     }
     
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.model.ContentsChangeListener#contentsChanged(org.faktorips.devtools.core.model.ContentChangeEvent)
-     */
-    public void contentsChanged(ContentChangeEvent event) {
-        lastEvent = event;
+    public void testRunAndQueueChangeEvents() throws CoreException {
+        IIpsProject project = newIpsProject();
+        final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
+        final IPolicyCmptType typeB = newPolicyCmptType(project, "B");
+        
+        IWorkspaceRunnable action = new IWorkspaceRunnable() {
+
+            public void run(IProgressMonitor monitor) throws CoreException {
+                typeA.setDescription("blabla");
+                typeA.setSupertype(typeB.getQualifiedName());
+                typeA.getIpsSrcFile().save(true, monitor);
+                typeB.setDescription("blabla");
+                typeB.getIpsSrcFile().save(true, monitor);
+                typeA.setDescription("New blabla");
+                typeA.getIpsSrcFile().save(true, monitor);
+            }
+            
+        };
+        
+        TestContentsChangeListener listener = new TestContentsChangeListener();
+        model.addChangeListener(listener);
+        model.runAndQueueChangeEvents(action, null);
+        
+        assertEquals(2, listener.changedFiles.size());
+        assertEquals(typeA.getIpsSrcFile(), listener.changedFiles.get(0));
+        assertEquals(typeB.getIpsSrcFile(), listener.changedFiles.get(1));
     }
+    
+    class TestContentsChangeListener implements ContentsChangeListener {
+
+        List changedFiles = new ArrayList();
+        ContentChangeEvent lastEvent;
+        
+        public void contentsChanged(ContentChangeEvent event) {
+            changedFiles.add(event.getIpsSrcFile());
+            lastEvent = event;
+        }
+        
+    };
+    
 }

@@ -20,7 +20,10 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -47,6 +50,34 @@ public interface IIpsModel extends IIpsElement {
      * Returns the workspace.
      */
     public IWorkspace getWorkspace();
+    
+    /**
+     * Runs the given runnable/action as an atomic workspace operation like the <code>run</code> method  
+     * in IWorkspace. All ips source file change events are queued until the action is finished and then broadcastet. 
+     * If an ips source file is change more than one, only one change event is sent.
+     * 
+     * @throws CoreException
+     * 
+     * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.IProgressMonitor)
+     */
+    public void runAndQueueChangeEvents(
+            IWorkspaceRunnable action,
+            IProgressMonitor monitor) throws CoreException;
+    
+    /**
+     * Runs the given runnable/action as an atomic workspace operation like the <code>run</code> method  
+     * in IWorkspace. All ips source file change events are queued until the action is finished and then broadcastet. 
+     * If an ips source file is change more than one, only one change event is sent.
+     * 
+     * @throws CoreException
+     * 
+     * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.jobs.ISchedulingRule, int, org.eclipse.core.runtime.IProgressMonitor)
+     */
+    public void runAndQueueChangeEvents(
+            IWorkspaceRunnable action,
+            ISchedulingRule rule,
+            int flags,
+            IProgressMonitor monitor) throws CoreException;
     
     /**
      * Creates an IpsProject for the given Java project by adding the IPS nature and

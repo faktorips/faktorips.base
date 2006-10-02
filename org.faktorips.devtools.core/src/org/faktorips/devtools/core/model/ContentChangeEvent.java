@@ -34,5 +34,14 @@ public class ContentChangeEvent {
     public IIpsSrcFile getIpsSrcFile() {
         return ipsSrcFile;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "ContentChangeEvent for " + ipsSrcFile;
+    }
+    
+    
     
 }
