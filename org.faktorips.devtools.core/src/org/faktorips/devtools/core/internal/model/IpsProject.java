@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
  *
  * Alle Rechte vorbehalten.
  *
@@ -110,6 +110,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean dependsOn(IIpsProject otherProject) throws CoreException {
+        if (this.equals(otherProject)) {
+            return false;
+        }
+        IIpsProject[] projects = getReferencedIpsProjects();
+        for (int i = 0; i < projects.length; i++) {
+            if (projects[i].equals(otherProject)) {
+                return true;
+            } else {
+                return projects[i].dependsOn(otherProject);
+            }
+        }
+        return false;
+    }
+
     /**
 	 * {@inheritDoc}
 	 */

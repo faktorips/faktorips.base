@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.CycleException;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
  */
 public class TypeHierarchyTest extends AbstractIpsPluginTest {
 
+    private IIpsProject pdProject;
     private IIpsPackageFragmentRoot pdRootFolder;
     private IIpsPackageFragment pdFolder;
     private IIpsSrcFile pdSrcFile;
@@ -48,7 +50,7 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject pdProject = this.newIpsProject("TestProject");
+        pdProject = this.newIpsProject("TestProject");
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
         pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
@@ -76,6 +78,33 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
 
         assertEquals(supertype, hierarchy.getSupertype(pcType));
         assertEquals(0, hierarchy.getSubtypes(pcType).length);
+        
+        // test if it works if the subtypes are in different projects
+        IIpsProject project2 = newIpsProject("Project2");
+        IPolicyCmptType newSubType = newPolicyCmptType(project2, "NewSubType");
+        newSubType.setSupertype(pcType.getQualifiedName());
+        
+        IIpsProject project3 = newIpsProject("Project3");
+        IPolicyCmptType newSubSubType = newPolicyCmptType(project3, "NewSubSubType");
+        newSubSubType.setSupertype(newSubType.getQualifiedName());
+        
+        // no project dependencies => nothing could be found
+        hierarchy = TypeHierarchy.getSubtypeHierarchy(pcType);
+        assertEquals(0, hierarchy.getSubtypes(pcType).length);
+
+        // setup project dependencies
+        IIpsObjectPath path = project2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(pdProject);
+        project2.setIpsObjectPath(path);
+        path = project3.getIpsObjectPath();
+        path.newIpsProjectRefEntry(project2);
+        project3.setIpsObjectPath(path);
+        
+        hierarchy = TypeHierarchy.getSubtypeHierarchy(pcType);
+        assertEquals(1, hierarchy.getSubtypes(pcType).length);
+        assertEquals(newSubType, hierarchy.getSubtypes(pcType)[0]);
+        assertEquals(1, hierarchy.getSubtypes(newSubType).length);
+        assertEquals(newSubSubType, hierarchy.getSubtypes(newSubType)[0]);
     }
 
     public void testIsSubtypeOf() throws Exception {

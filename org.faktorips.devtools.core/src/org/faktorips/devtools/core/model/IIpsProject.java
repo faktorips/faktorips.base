@@ -77,11 +77,25 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IJavaProject getJavaProject();
 
     /**
-     * Returns all ips projects referenced.
+     * Returns all ips projects referenced in the project's ips object path.
      * 
      * @throws CoreException if an error occurs.
+     * 
+     * @see IIpsObjectPath
      */
     public IIpsProject[] getReferencedIpsProjects() throws CoreException ;
+    
+    /**
+     * Returns <code>true</code> if this project depends on the other project,
+     * because it is referenced <strong>directly or indirectly</strong> in the project's object path. 
+     * Returns <code>false</code>, if otherProject is <code>null</code>. Returns <code>false</code>
+     * if otherProject equals this project.
+     * 
+     * @throws CoreException
+     * 
+     * @see IIpsObjectPath
+     */
+    public boolean dependsOn(IIpsProject otherProject) throws CoreException;
     
     /**
      * Returns <code>true</code> if the project can be build / Java sourcecode can be generated.

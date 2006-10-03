@@ -75,6 +75,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * Creates a new type hierachy containing all the given type's subtypes.
      * Supertypes are not resolved.
+     * 
      * @throws CycleException 
      */
     public final static TypeHierarchy getSubtypeHierarchy(IPolicyCmptType pcType) throws CoreException, CycleException {
@@ -93,14 +94,27 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
     
     private final static List findDirectSubtypes(IPolicyCmptType pcType) throws CoreException {
-        IIpsProject project = pcType.getIpsProject();
         List subtypes = new ArrayList();
-        String qName = pcType.getQualifiedName();
-        IIpsObject[] pcTypes = project.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
-        for (int i=0; i<pcTypes.length; i++) {
-            IPolicyCmptType candidate = (IPolicyCmptType)pcTypes[i];
-            if (candidate.getSupertype().equals(qName)) {
-                subtypes.add(candidate);
+        IIpsProject project = pcType.getIpsProject();
+        IIpsProject[] projects = pcType.getIpsModel().getIpsProjects();
+        List searchedProjects = new ArrayList();
+        for (int i = 0; i < projects.length; i++) {
+            if (searchedProjects.contains(projects[i])) {
+                continue;
+            }
+            if (projects[i].equals(project) || projects[i].dependsOn(project)) {
+                IIpsObject[] pcTypes = projects[i].findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
+                for (int j=0; j<pcTypes.length; j++) {
+                    IPolicyCmptType candidate = (IPolicyCmptType)pcTypes[j];
+                    if (!subtypes.contains(candidate) && pcType.equals(candidate.findSupertype()))  {
+                        subtypes.add(candidate);
+                    }
+                }
+                searchedProjects.add(projects[i]);
+                IIpsProject[] refProjects = projects[i].getReferencedIpsProjects();
+                for (int k=0; k<refProjects.length; k++) {
+                    searchedProjects.add(refProjects[k]);
+                }
             }
         }
         return subtypes;
