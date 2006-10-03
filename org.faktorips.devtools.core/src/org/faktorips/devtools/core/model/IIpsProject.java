@@ -101,7 +101,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns <code>true</code> if the project can be build / Java sourcecode can be generated.
      * Returns <code>false</code> otherwise. E. g. if the project's properties file is missing
      * the project can't be build.
-     * TODO rename method to "canBeBuilt()"
      */
     public boolean canBeBuild();
     
