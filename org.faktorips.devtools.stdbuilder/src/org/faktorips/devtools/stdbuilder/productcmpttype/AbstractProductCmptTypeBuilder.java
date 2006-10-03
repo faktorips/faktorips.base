@@ -72,7 +72,7 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
      */
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IPolicyCmptType type = (IPolicyCmptType)ipsSrcFile.getIpsObject();
-        if (type.isConfigurableByProductCmptType()) {
+        if (type.findProductCmptType()!=null) {
             // this condition can't be handled in isBuilderFor() as the isBuilderFor() method
             // is also called in the case the file has been deleted. In this case, the 
             // file's ips object can't be accessed. 

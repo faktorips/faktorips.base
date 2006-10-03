@@ -164,7 +164,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         generateConstructorDefault(builder);
-        if (getPcType().isConfigurableByProductCmptType()) {
+        if (getPcType().findProductCmptType()!=null) {
             generateConstructorWithProductCmptArg(builder);
         }
     }
@@ -175,7 +175,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateOther(JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         generateMethodInitialize(methodsBuilder);
-        if (getPcType().isConfigurableByProductCmptType()) {
+        if (getPcType().findProductCmptType()!=null) {
             generateMethodGetProductCmpt(methodsBuilder);
             generateMethodGetProductCmptGeneration(methodsBuilder);
             generateMethodSetProductCmpt(methodsBuilder);
@@ -1304,7 +1304,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super." + getMethodNameInitialize() + "();");
         }
-        if (!getPcType().isConfigurableByProductCmptType()) {
+        if (getPcType().findProductCmptType()==null) {
             builder.methodEnd();
             return;
         }

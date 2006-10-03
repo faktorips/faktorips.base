@@ -40,6 +40,9 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
+        if (attribute.isProductRelevant() && getPcType().findProductCmptType()==null) {
+            return;
+        }
         AttributeType type = attribute.getAttributeType();
         if (type == AttributeType.CHANGEABLE) {
             generateCodeForChangeableAttribute(attribute, datatypeHelper, memberVarsBuilder, methodsBuilder);
@@ -80,6 +83,10 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     protected void generateCodeForRelation(IRelation relation,
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
+
+        if (relation.isProductRelevant() && getPcType().findProductCmptType()==null) {
+            return;
+        }
         generateCodeForRelationInCommon(relation, fieldsBuilder, methodsBuilder);
         if (relation.is1ToMany()) {
             generateCodeFor1ToManyRelation(relation, fieldsBuilder, methodsBuilder);

@@ -100,7 +100,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
      * If a policy component type contains an derived or computed attribute, the product component
      * generation class must be abstract, as the computation formulas are defined per generation. 
      * 
-     * Overridden.
+     * {@inheritDoc}
      */
     protected int getClassModifier() throws CoreException {
         int modifier = super.getClassModifier();
@@ -127,7 +127,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         String generationAbb = getAbbreviationForGenerationConcept(ipsSrcFile);
@@ -135,14 +135,14 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected boolean generatesInterface() {
         return false;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected String getSuperclass() throws CoreException {
         IProductCmptType supertype = getProductCmptType().findSupertype();
@@ -154,7 +154,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
         // The implementation implements the published interface.
@@ -162,14 +162,14 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void generateTypeJavadoc(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("CLASS", interfaceBuilder.getUnqualifiedClassName(getIpsSrcFile()), getIpsObject(), builder);
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("CONSTRUCTOR", getUnqualifiedClassName(), getIpsObject(), builder);
@@ -184,7 +184,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void generateOtherCode(JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -558,7 +558,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     protected void generateCodeForNoneContainerRelation(IProductCmptTypeRelation relation, JavaCodeFragmentBuilder memberVarsBuilder, JavaCodeFragmentBuilder methodsBuilder) throws Exception {
         if (relation.is1ToMany()) {
