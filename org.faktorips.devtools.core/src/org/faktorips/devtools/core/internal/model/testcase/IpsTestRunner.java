@@ -188,7 +188,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         args[1] = classpathRepositories;
         args[2] = testsuites;
         args[3] = ""; //$NON-NLS-1$
-        // create the string containing the repository packages
+        // create the string containing the additional repository packages
         for (Iterator iter = getAllRepositoryPackagesAsString(ipsProject).iterator(); iter.hasNext();) {
             args[3] += "{" + (String) iter.next() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -643,6 +643,8 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (!force && !checkPrelauchConditions(classpathRepository, testsuite))
             return;
         
+        // first check the heap size, to display an error if there is a wrong value,
+        // this is the last chance to display the error, otherwise the error will only be logged in the background
         testRunnerMaxHeapSize = IpsPlugin.getDefault().getIpsPreferences().getIpsTestRunnerMaxHeapSize();
         if (!StringUtils.isNumeric(testRunnerMaxHeapSize)){
             throw new CoreException(new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize, testRunnerMaxHeapSize)));
