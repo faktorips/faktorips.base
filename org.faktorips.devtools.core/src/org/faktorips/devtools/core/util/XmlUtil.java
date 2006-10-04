@@ -1,10 +1,15 @@
 /***************************************************************************************************
- *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
- * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
- * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
- * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
- * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
+ * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
+ * 
  **************************************************************************************************/
 
 package org.faktorips.devtools.core.util;
@@ -119,11 +124,15 @@ public class XmlUtil {
     public final static void nodeToWriter(Node node, Writer writer, String encoding) throws TransformerException {
         // explicit use of xalan, as we need it's indentation feature
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        try {
+            transformerFactory.setAttribute("indent-number", new Integer(4));
+        } catch (IllegalArgumentException e) {
+            // no problem, we're using a older version
+        }
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
         // both settings are necessary, to accomodate versions in Java 1.4 and 1.5
-        transformerFactory.setAttribute("indent-number", new Integer(4));
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
         DOMSource source = new DOMSource(node);
         StreamResult result = new StreamResult(writer);
@@ -203,20 +212,26 @@ public class XmlUtil {
         Source src = new DOMSource(doc);
         Result res = new StreamResult(file);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        try {
+            transformerFactory.setAttribute("indent-number", new Integer(4));
+        } catch (IllegalArgumentException e) {
+            // no problem, we're using a older version
+        }
         Transformer transformer = transformerFactory.newTransformer();
         transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
-        if (encoding != null)
+        if (encoding != null) {
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding); //$NON-NLS-1$
-        if (doctype != null)
+        }
+        if (doctype != null) {
             transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype);
+        }
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-        if (indentWidth > 0)
+        if (indentWidth > 0) {
             // both settings are necessary, to accomodate versions in Java 1.4 and 1.5
-            transformerFactory.setAttribute("indent-number", new Integer(4));
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indentWidth); //$NON-NLS-1$ //$NON-NLS-2$
-
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indentWidth); //$NON-NLS-1$ //$NON-NLS-2$
+        }
         transformer.transform(src, res);
     }
 
@@ -385,9 +400,9 @@ public class XmlUtil {
      * element must has the following format:
      * 
      * <pre>
-     *  		&lt;Parent&gt;
-     *  			&lt;Property isNull=&quot;false&quot;&gt;42&lt;/Property&gt;
-     *  		&lt;/Parent&gt;
+     *   		&lt;Parent&gt;
+     *   			&lt;Property isNull=&quot;false&quot;&gt;42&lt;/Property&gt;
+     *   		&lt;/Parent&gt;
      * </pre>
      * 
      * @throws NullPointerException if parent or propertyName is <code>null</code> or the parent
