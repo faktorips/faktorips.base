@@ -14,23 +14,18 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -80,8 +75,6 @@ public class TableImportWizard extends Wizard implements IImportWizard {
      */
     public boolean performFinish() {
         try {
-            // use workspace-root as sceduling rule to avoid conflicts...
-            ISchedulingRule schedulingRule = ResourcesPlugin.getWorkspace().getRoot();
             final String filename = filePage.getFilename();
             final AbstractExternalTableFormat format = filePage.getFormat();
             final ITableStructure structure = getTableStructure();
@@ -94,25 +87,23 @@ public class TableImportWizard extends Wizard implements IImportWizard {
                 generation.clear();
             }
 
-            WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
-                protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                        InterruptedException {
-                    MessageList messageList = new MessageList();
-                    IWorkspaceRunnable runnable = format.getImportTableOperation(structure, new Path(filename),
-                            generation, nullRepresentation, messageList);
-                    runnable.run(monitor);
-                    if (!messageList.isEmpty()) {
-                        getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), messageList));
-                    }
-                }
-            };
+            MessageList messageList = new MessageList();
+            IWorkspaceRunnable runnable = format.getImportTableOperation(structure, new Path(filename),
+                    generation, nullRepresentation, messageList);
 
             /*
              * use a ProgressMonitorDialog to display the progress and allow the user to cancel the
              * process - which both is not possible if only getContainer().run() is called.
              */
             ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
-            pmd.run(true, true, operation);
+            pmd.setCancelable(true);
+            pmd.open();
+            IIpsModel model = IpsPlugin.getDefault().getIpsModel(); 
+            model.runAndQueueChangeEvents(runnable, pmd.getProgressMonitor());
+            pmd.close();
+            if (!messageList.isEmpty()) {
+                getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), messageList));
+            }
 
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occured during the import process.", e)); //$NON-NLS-1$
