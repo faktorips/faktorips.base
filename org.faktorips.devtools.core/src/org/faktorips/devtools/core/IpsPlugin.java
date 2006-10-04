@@ -44,6 +44,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -185,7 +186,27 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the image with the indicated name form the <code>icons</code> folder. If no
+     * Returns the image with the indicated name from the <code>icons</code> folder and
+     * overlays it with the product relevant image. If the given image is not found
+     * return the missing image overlayed with the product relevant image.
+     * 
+     * @see IpsPlugin#getImage(String)
+     * 
+     * @param baseImageName The name of the image which will be overlayed with the product relevant image.
+     */
+	public Image getProductRelevantImage(String baseImageName) {
+		String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName;
+		Image image = getImageRegistry().get(overlayedImageName);
+		if (image == null) {
+			ImageDescriptor imageDescriptor = ImageDescriptor
+					.createFromImage(ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName)));
+			getImageRegistry().put(overlayedImageName, imageDescriptor);
+		}
+		return image;
+	}
+	
+    /**
+     * Returns the image with the indicated name from the <code>icons</code> folder. If no
      * image is found and <code>returnNull</code> is true, null is returned. Otherwise
      * (no image found, but <code>returnNull</code> is true), the missing image is returned.
      * 

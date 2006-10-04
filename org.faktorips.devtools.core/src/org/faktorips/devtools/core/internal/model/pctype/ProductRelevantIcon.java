@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.faktorips.devtools.core.IpsPlugin;
 
-class ProductRelevantIcon extends CompositeImageDescriptor {
+public class ProductRelevantIcon extends CompositeImageDescriptor {
     private final Point DEFAULT_SIZE = new Point(16, 16);
     private Image baseImage;
 

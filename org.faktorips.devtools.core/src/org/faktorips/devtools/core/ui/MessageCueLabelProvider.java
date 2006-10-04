@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.ui;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -36,6 +39,8 @@ public class MessageCueLabelProvider extends LabelProvider {
     
     private ILabelProvider baseProvider;
 
+    private static HashMap cachedProblemImageDescriptors = new HashMap();
+    
     /**
      * 
      */
@@ -56,17 +61,31 @@ public class MessageCueLabelProvider extends LabelProvider {
         	return baseProvider.getImage(element);
         }
 
-        Image image = baseProvider.getImage(element);
-		
+        Image baseImage = baseProvider.getImage(element);
+        
         if (list.getSeverity()==Message.NONE) {
-		    return image;
+		    return baseImage;
 		}
         
-		ProblemImageDescriptor descriptor = new ProblemImageDescriptor(image, list.getSeverity());
+        // gets the cached problem descriptor for the base image
+        String key = getKey(baseImage, list.getSeverity());
+        ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
+        if (descriptor == null){
+        	baseProvider.getImage(element);
+        	descriptor = new ProblemImageDescriptor(baseImage, list.getSeverity());
+        	cachedProblemImageDescriptors.put(key, descriptor);
+        }
 		return IpsPlugin.getDefault().getImage(descriptor);
     }
 
-    /**
+    /*
+     * Returns an unique key for the given image and severity compination.
+     */
+    private String getKey(Image image, int severity) {
+		return image.hashCode() + "_" + severity;
+	}
+
+	/**
      * Returns the message list applying to the given element.
 
      * @throws CoreException if an error occurs during the creation of the message list.
@@ -87,4 +106,18 @@ public class MessageCueLabelProvider extends LabelProvider {
         return baseProvider.getText(element);
     }
     
+	/**
+	 * Disposes all images managed by this label provider.
+	 */
+	public void dispose() {
+		for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
+			ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
+			Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
+			if (problemImage != null){
+				problemImage.dispose();
+			}
+		}
+		cachedProblemImageDescriptors.clear();
+		super.dispose();
+	}
 }

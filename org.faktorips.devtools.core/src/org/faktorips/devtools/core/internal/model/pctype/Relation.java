@@ -502,18 +502,19 @@ public class Relation extends IpsObjectPart implements IRelation {
      * {@inheritDoc}
      */
     public Image getImage() {
-        Image baseImage;
+    	String baseImageName = "";
         if (this.type==RelationType.COMPOSITION) {
-            baseImage = IpsPlugin.getDefault().getImage("Composition.gif"); //$NON-NLS-1$
+        	baseImageName = "Composition.gif"; //$NON-NLS-1$
         } else if (this.type==RelationType.REVERSE_COMPOSITION) {
-            baseImage = IpsPlugin.getDefault().getImage("ReverseComposition.gif"); //$NON-NLS-1$
+        	baseImageName = "ReverseComposition.gif"; //$NON-NLS-1$
         } else {
-            baseImage = IpsPlugin.getDefault().getImage("Relation.gif"); //$NON-NLS-1$ 
+        	baseImageName = "Relation.gif"; //$NON-NLS-1$ 
         }
         if (isProductRelevant()) {
-            return ProductRelevantIcon.createProductRelevantImage(baseImage);
+        	return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
+        } else {
+        	return IpsPlugin.getDefault().getImage(baseImageName);
         }
-        return baseImage;
     }
 
     /** 

@@ -367,16 +367,17 @@ public class Attribute extends IpsObjectPart implements IAttribute {
      * {@inheritDoc}
      */
     public Image getImage() {
-        Image baseImage = null;
+        String baseImageName = "";
         if (getModifier() == Modifier.PRIVATE) {
-            baseImage = IpsPlugin.getDefault().getImage("AttributePrivate.gif"); //$NON-NLS-1$
+        	baseImageName = "AttributePrivate.gif"; //$NON-NLS-1$
         } else {
-            baseImage = IpsPlugin.getDefault().getImage("AttributePublic.gif"); //$NON-NLS-1$
+        	baseImageName = "AttributePublic.gif"; //$NON-NLS-1$
         }
         if (isProductRelevant()) {
-            return ProductRelevantIcon.createProductRelevantImage(baseImage);
+            return IpsPlugin.getDefault().getProductRelevantImage(baseImageName);
+        } else {
+        	return IpsPlugin.getDefault().getImage(baseImageName);
         }
-        return baseImage;
     }
 
     /**
