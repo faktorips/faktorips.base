@@ -81,6 +81,13 @@ public class PaymentMode implements NullObjectSupport {
         return this==PaymentMode.NULL;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isNotNull() {
+        return !isNotNull();
+    }
+
     static class PaymentModeNull extends PaymentMode implements NullObject {
 
         PaymentModeNull() {
@@ -88,4 +95,5 @@ public class PaymentMode implements NullObjectSupport {
         }
         
     }
+
 }
