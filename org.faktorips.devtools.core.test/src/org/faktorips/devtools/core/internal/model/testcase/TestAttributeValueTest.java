@@ -71,4 +71,12 @@ public class TestAttributeValueTest  extends AbstractIpsPluginTest {
         assertEquals("attribute2", testAttributeValue.getTestAttribute());
         assertEquals("500", testAttributeValue.getValue());
     }
+    
+    // TODO Joerg: Test Validation
+//    MSGCODE_ATTRIBUTE_NOT_FOUND
+//    MSGCODE_WRONG_TYPE
+//    MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE
+//    MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME
+//    MSGCODE_EXPECTED_OR_COMPUTED_BUT_NOT_EXPECTED_RES
+
 }

@@ -23,6 +23,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -176,6 +177,8 @@ public class TestValue extends TestObject implements ITestValue {
             Message msg = new Message(MSGCODE_TEST_VALUE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
             list.add(msg);
         } else {
+            // validate test parameter aspects will be severity warning
+            
             // validate the test datatype value
             ValueDatatype datatype = param.findValueDatatype();
             if (datatype == null) {
@@ -183,11 +186,10 @@ public class TestValue extends TestObject implements ITestValue {
                 Message msg = new Message(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.WARNING,
                         this, PROPERTY_VALUE);
                 list.add(msg);
-            } else if (!datatype.isParsable(value)) {
-                String text = NLS.bind(Messages.TestValue_ValidateError_ValueIsNoDatatype, value, datatype);
-                Message msg = new Message(MSGCODE_DATATYPEVALUE_NOT_PARSABLE, text, Message.ERROR, this, PROPERTY_VALUE);
-                list.add(msg);
+            } else {
+                ValidationUtils.checkValue(param.getDatatype(), value, this, PROPERTY_VALUE, list);
             }
+            
             // validate the correct type of the test value parameter
             if (param.isCombinedParameter() || (!isInput() && !isExpectedResult())) {
                 String text = NLS.bind(Messages.TestValue_ErrorWrongType, param.getName());

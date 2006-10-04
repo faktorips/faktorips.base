@@ -101,7 +101,9 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 	 * {@inheritDoc}
 	 */
 	public void setTarget(String target) {
-		this.target = target;
+		String oldTarget = this.target;
+        this.target = target;
+        valueChanged(oldTarget, target);
 	}
 
 	/**

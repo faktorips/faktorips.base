@@ -20,11 +20,14 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -33,6 +36,8 @@ import org.w3c.dom.Element;
  */
 public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
 
+    private IIpsProject project;
+    private ITestCase testCase;
     private ITestPolicyCmptRelation testPcTypeRelation;
     
     /*
@@ -40,15 +45,20 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
-        testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("expectedResultParam");
+        ITestPolicyCmptTypeParameter param = testCaseType.newExpectedResultPolicyCmptTypeParameter();
+        param.setName("expectedResultParam");
+        ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
+        paramChild.setName("childParam");
         
-        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        testCase.setTestCaseType(testCaseType.getName());
         
         ITestPolicyCmpt tpc = testCase.newTestPolicyCmpt();
         tpc.setTestPolicyCmptTypeParameter("expectedResultParam");
         testPcTypeRelation = tpc.newTestPolicyCmptRelation();
+        testPcTypeRelation.setTestPolicyCmptTypeParameter("childParam");
     }
     
     public void testInitFromXml() {
@@ -70,4 +80,73 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
         assertEquals("base.target2", testPcTypeRelation.getTarget());
     }
     
+    public void testValidateTestCaseTypeParamNotFound() throws Exception{
+        MessageList ml = testPcTypeRelation.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+
+        testPcTypeRelation.setTestPolicyCmptTypeParameter("x");
+        ml = testPcTypeRelation.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+    }
+
+    public void testValidateAssoziationTargetNotInTestCase() throws Exception{
+        testCase.newTestPolicyCmpt().setName("testPolicyCmptTarget");
+        
+        MessageList ml = testPcTypeRelation.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
+
+        testPcTypeRelation.setTarget("x");
+        ml = testPcTypeRelation.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
+    }
+
+    public void testValidateModelRelationNotFound() throws Exception{
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
+        policyCmptType.newRelation().setTargetRoleSingular("modelRelation");
+        ITestPolicyCmptTypeParameter param = ((ITestPolicyCmpt)testPcTypeRelation.getParent()).findTestPolicyCmptTypeParameter();
+        param.setPolicyCmptType("policyCmptType");
+        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter();
+        paramChild.setRelation("modelRelation");
+
+        MessageList ml = testPcTypeRelation.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
+
+        paramChild.setRelation("x");
+        ml = testPcTypeRelation.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
+    }
+
+    public void testValidateMinInstancesNotReached() throws Exception{
+        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter();
+        paramChild.setMinInstances(1);
+        
+        MessageList ml = testPcTypeRelation.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+
+        paramChild.setMinInstances(2);
+        ml = testPcTypeRelation.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        
+        ITestPolicyCmpt policyCmpt = (ITestPolicyCmpt)testPcTypeRelation.getParent();
+        policyCmpt.newTestPolicyCmptRelation().setTestPolicyCmptTypeParameter("childParam");
+        ml = testPcTypeRelation.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+    }
+
+    public void testValidateMaxInstancesNotReached() throws Exception{
+        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter();
+        paramChild.setMaxInstances(1);
+
+        MessageList ml = testPcTypeRelation.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MAX_INSTANCES_REACHED));
+
+        ITestPolicyCmpt policyCmpt = (ITestPolicyCmpt)testPcTypeRelation.getParent();
+        policyCmpt.newTestPolicyCmptRelation().setTestPolicyCmptTypeParameter("childParam");
+        ml = testPcTypeRelation.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MAX_INSTANCES_REACHED));
+
+        paramChild.setMaxInstances(2);
+        ml = testPcTypeRelation.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MAX_INSTANCES_REACHED));
+    }
 }

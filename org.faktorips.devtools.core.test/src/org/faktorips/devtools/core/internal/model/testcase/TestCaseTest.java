@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -260,5 +261,14 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertEquals(3, dependsOnList.size());
         assertTrue(dependsOnList.contains(prodCmpt1.getQualifiedNameType()));
         assertTrue(dependsOnList.contains(prodCmpt2.getQualifiedNameType()));
+    }
+    
+    public void testValidateTestCaseTypeNotFound() throws Exception{
+        MessageList ml = testCase.validate();
+        assertNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
+
+        testCase.setTestCaseType("x");
+        ml = testCase.validate();
+        assertNotNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
     }
 }

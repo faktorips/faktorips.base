@@ -528,7 +528,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 			    list.add(msg);
 			}
             
-            // validate the minimum instances
+            // validate the minimum instances if no child exists
+            // if childs exists then the instances will be validated in each child
             ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
             for (int i = 0; i < childParams.length; i++) {
                 if(getTestPolicyCmptRelations(childParams[i].getName()).length == 0){
@@ -551,7 +552,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         // check if a product component is not required but the test policy cmpt defines a product cmpt
         if (param != null && StringUtils.isNotEmpty(productCmpt) && !param.isRequiresProductCmpt()){
             String text = NLS.bind(Messages.TestPolicyCmpt_ValidationError_ProductCmptNotRequiredButIsRelatedToProductCmpt, testPolicyCmptType);
-            Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
+            Message msg = new Message(MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
             list.add(msg);
         }
 	}

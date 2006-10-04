@@ -21,11 +21,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -33,7 +37,7 @@ import org.w3c.dom.Element;
  * @author Joerg Ortmann
  */
 public class TestPolicyCmptTest extends AbstractIpsPluginTest {
-
+    private IIpsProject project;
     private ITestPolicyCmpt policyCmptTypeObjectExpected;
     private ITestPolicyCmpt policyCmptTypeObjectInput;
     
@@ -42,7 +46,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         testCaseType.newInputTestPolicyCmptTypeParameter().setName("testValueParameter1");
         testCaseType.newExpectedResultPolicyCmptTypeParameter().setName("testValueParameter2");
@@ -134,4 +138,87 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNotNull(targetChild);
         assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptTypeParameter());
     }    
+    
+    public void testValidateTestCaseTypeParamNotFound() throws Exception{
+        MessageList ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+
+        policyCmptTypeObjectInput.setTestPolicyCmptTypeParameter("x");
+        ml = policyCmptTypeObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+    }
+
+    public void testValidateProductCmptIsRequired() throws Exception{
+        MessageList ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        
+        ITestPolicyCmptTypeParameter param = policyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
+        param.setRequiresProductCmpt(true);
+        ml = policyCmptTypeObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        
+        policyCmptTypeObjectInput.setProductCmpt("x");
+        ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+    }
+    
+    public void testValidatePolicyCmptTypeNotExists() throws Exception {
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
+        ITestPolicyCmptTypeParameter param = policyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
+        param.setPolicyCmptType(policyCmptType.getQualifiedName());
+
+        MessageList ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
+
+        param.setPolicyCmptType("x");
+        ml = policyCmptTypeObjectInput.validate();
+        assertEquals(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, ml.getFirstMessage(
+                Message.WARNING).getCode());
+    }    
+    
+    public void testValidateMinInstancesNotReached() throws Exception{
+        ITestPolicyCmptTypeParameter param = policyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
+        param.setMinInstances(0);
+        
+        MessageList ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+
+        // create mandatory instance child 1 on parameter side and validate
+        ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
+        paramChild.setName("child1");
+        paramChild.setMinInstances(1);
+        ml = policyCmptTypeObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        
+        // create child and validate again
+        ITestPolicyCmptRelation testRelation = policyCmptTypeObjectInput.newTestPolicyCmptRelation();
+        testRelation.setTestPolicyCmptTypeParameter("child1");
+        testRelation.newTargetTestPolicyCmptChild();
+        ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+    }
+
+    public void testValidateProductCmptNotExists() throws Exception{
+        MessageList ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
+
+        policyCmptTypeObjectInput.setProductCmpt("productCmpt");
+        ml = policyCmptTypeObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
+        
+        newProductCmpt(project, "productCmpt");
+        ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
+    }
+
+    public void testValidateProductComponentNotRequired() throws Exception{
+        MessageList ml = policyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
+        
+        ITestPolicyCmptTypeParameter param = policyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
+        param.setRequiresProductCmpt(false);
+        policyCmptTypeObjectInput.setProductCmpt("x");
+        ml = policyCmptTypeObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
+    }
 }

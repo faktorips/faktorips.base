@@ -23,7 +23,10 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -96,5 +99,35 @@ public class TestValueTest extends AbstractIpsPluginTest {
         assertFalse(valueObjectUnknown.isExpectedResult());
         // combined is the default role
         assertTrue(valueObjectUnknown.isCombined());
+    }
+    
+    public void testValidateTestValueParamNotFound() throws Exception{
+        MessageList ml = valueObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
+
+        valueObjectInput.setTestValueParameter("x");
+        ml = valueObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
+    }
+    
+    public void testValidateValueDatatypeNotFound() throws Exception {
+        ITestValueParameter param = valueObjectInput.findTestValueParameter();
+        param.setValueDatatype("String");
+        MessageList ml = valueObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
+
+        // check if the message is a warning, because it will be validated as error in the parameter
+        param.setValueDatatype("x");
+        ml = valueObjectInput.validate();
+        assertEquals(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
+    }
+    
+    public void testValidateWrongType() throws Exception{
+        MessageList ml = valueObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
+        
+        // remark the test if the message will be set couldn't be tested here because setting
+        // a wrong type of the parameter is not possible without getting an argument exception
+        // see TestValueParameter#setTestParameterType
     }
 }

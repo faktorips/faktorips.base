@@ -637,9 +637,10 @@ public class TestCaseDetailArea {
 	 * Clears the detail area.
 	 */
 	public void clearDetailArea() {
-		if (dynamicArea != null)
+		if (dynamicArea != null){
 			dynamicArea.dispose();
-
+        }
+        
 		dynamicArea = toolkit.getFormToolkit().createComposite(detailsArea);
 		dynamicArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		GridLayout detailLayout = new GridLayout(1, true);
