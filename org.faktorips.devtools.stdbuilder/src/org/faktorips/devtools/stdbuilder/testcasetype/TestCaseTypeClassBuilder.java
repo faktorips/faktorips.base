@@ -150,8 +150,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.classBegin(Modifier.PUBLIC, getUnqualifiedClassName(), getSuperClassName() , new String[0]);
         buildMemberVariables(codeBuilder, testCaseType);
         buildConstructor(codeBuilder);
-        buildHelperMethodGetValueFromNode(codeBuilder);
-        buildHelperMethodGetElementsFromNode(codeBuilder);
+        buildHelperMethods(codeBuilder);
         buildSuperMethodImplementation(codeBuilder, testCaseType);
         codeBuilder.classEnd();
         
@@ -652,6 +651,12 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.method(Modifier.PRIVATE, "void", methodName, new String[] { "messageList",
                 "result" }, new String[] { MessageList.class.getName(),
                 IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
+    }
+    
+
+    protected void buildHelperMethods(JavaCodeFragmentBuilder codeBuilder){
+        buildHelperMethodGetValueFromNode(codeBuilder);
+        buildHelperMethodGetElementsFromNode(codeBuilder);
     }
     
     /*
