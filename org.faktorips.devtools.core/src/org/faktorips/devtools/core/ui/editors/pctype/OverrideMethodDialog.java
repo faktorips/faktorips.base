@@ -38,6 +38,9 @@ public class OverrideMethodDialog extends OverrideDialog {
      */
     public OverrideMethodDialog(IPolicyCmptType pcType, Shell parent) {
         super(pcType, parent, new CandidatesContentProvider(pcType));
+        setTitle(Messages.OverrideMethodDialog_title);
+        setEmptyListMessage(Messages.OverrideMethodDialog_msgEmpty);
+        setSelectLabelText(Messages.OverrideMethodDialog_labelSelectMethods);
        	selectAbstractMethods(pcType);
     }
     

@@ -39,6 +39,9 @@ public class OverrideAttributeDialog extends OverrideDialog {
      */
     public OverrideAttributeDialog(IPolicyCmptType pcType, Shell parent) {
         super(pcType, parent, new CandidatesContentProvider(pcType));
+        setTitle(Messages.OverrideAttributeDialog_title);
+        setEmptyListMessage(Messages.OverrideAttributeDialog_labelNoAttributes);
+        setSelectLabelText(Messages.OverrideAttributeDialog_labelSelectAttribute);
        	selectAbstractMethods(pcType);
     }
     

@@ -39,12 +39,12 @@ import org.faktorips.devtools.core.model.pctype.IMember;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
-
 public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
     
 	
     private int width; 
     private int height;
+    private String selectLabelText;
     
     /**
      * Creates a new dialog to select candidates for overwriting.
@@ -54,10 +54,8 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
      */
     public OverrideDialog(IPolicyCmptType pcType, Shell parent, CandidatesContentProvider contentProvider) {
         super(parent, new DefaultLabelProvider(), contentProvider);
-        setTitle(Messages.OverrideMethodDialog_title);
         setSize(80, 30);
         setContainerMode(true);
-        setEmptyListMessage(Messages.OverrideMethodDialog_msgEmpty);
 		setMessage(null);			
         setInput(new Object());
     }
@@ -125,6 +123,10 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
 		return composite;
 	}				
 	
+    protected void setSelectLabelText(String selectLabelText) {
+        this.selectLabelText = selectLabelText;
+    }
+    
 	/*
 	 * @see CheckedTreeSelectionDialog#createTreeViewer(Composite)
 	 */
@@ -133,7 +135,7 @@ public abstract class OverrideDialog extends CheckedTreeSelectionDialog {
 		ViewForm pane= new ViewForm(composite, SWT.BORDER | SWT.FLAT);
 		CLabel label= new CLabel(pane, SWT.NONE);
 		pane.setTopLeft(label);
-		label.setText(Messages.OverrideMethodDialog_labelSelectMethods);
+		label.setText(selectLabelText);
 	
 		CheckboxTreeViewer treeViewer= super.createTreeViewer(pane);
 		pane.setContent(treeViewer.getControl());
