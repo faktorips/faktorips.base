@@ -82,6 +82,9 @@ public class MessageCueLabelProvider extends LabelProvider {
      * Returns an unique key for the given image and severity compination.
      */
     private String getKey(Image image, int severity) {
+    	if (image == null){
+    		return null;
+    	}
 		return image.hashCode() + "_" + severity;
 	}
 
