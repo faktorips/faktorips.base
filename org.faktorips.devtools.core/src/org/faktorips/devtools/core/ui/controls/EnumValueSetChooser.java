@@ -196,8 +196,9 @@ public class EnumValueSetChooser extends ListChooser {
      * {@inheritDoc}
      */
     public MessageList getMessagesFor(String value) {
+        String id = (String)this.id2name.get(value);
         MessageList result = new MessageList();
-        source.containsValue(value, result, target, null);
+        source.containsValue(id, result, target, null);
         return result;
     }
 }
