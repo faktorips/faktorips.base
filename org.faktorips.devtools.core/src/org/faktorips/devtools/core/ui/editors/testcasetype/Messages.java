@@ -65,8 +65,6 @@ public class Messages extends NLS {
     public static String NewChildParamWizardPage_Error_RelationDoesNotExists;
     public static String NewTestParamDetailWizardPage_Title;
     public static String NewTestParamDetailWizardPage_Description;
-    public static String NewRootParamWizardPage_Title;
-    public static String NewRootParamWizardPage_Description;
     public static String NewRootParamWizardPage_Label_Datatype;
     public static String NewRootParamWizardPage_Error_DatatypeDoesNotExists;
     public static String TestCaseTypeSection_Button_NewRootParameter;
@@ -87,4 +85,12 @@ public class Messages extends NLS {
     public static String NewRootParamFirstWizardPage_RadioButton_TestPolicyCmptTypeParameter;
     public static String NewRootParamFirstWizardPage_RadioButton_TestValueParameter;
     public static String NewRootParamFirstWizardPage_RadioButton_TestRuleParameter;
+    public static String NewRootParamFirstWizardPage_GroupLabel;
+    public static String NewRootParamWizardPage_Title_TestPolicyCmptParam;
+    public static String NewRootParamWizardPage_Description_TestPolicyCmptParam;
+    public static String NewRootParamWizardPage_Title_TestValueParam;
+    public static String NewRootParamWizardPage_Description_TestValueParam;
+    public static String NewRootParamWizardPage_Title_TestRuleParam;
+    public static String NewRootParamWizardPage_Description_TestRuleParam;
+    
 }

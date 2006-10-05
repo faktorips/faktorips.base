@@ -283,4 +283,12 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
 
         setMaxPageShown(0);
     }
+    
+    /**
+     * Sets the title and the description of the second wizard page.
+     */
+    public void setTitleAndDescriptionOfSecondPage(String title, String decsription){
+        rootParamSelectWizardPage.setTitle(title);
+        rootParamSelectWizardPage.setDescription(title);
+    }
 }

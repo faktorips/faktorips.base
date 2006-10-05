@@ -64,8 +64,8 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     private Composite contentComposite;
     
     public NewRootParamWizardPage(NewRootParameterWizard wizard){
-        super(PAGE_ID, Messages.NewRootParamWizardPage_Title, null);
-        this.setDescription(Messages.NewRootParamWizardPage_Description);
+        super(PAGE_ID, Messages.NewRootParamWizardPage_Title_TestPolicyCmptParam, null);
+        this.setDescription(Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam);
         this.wizard = wizard;
     }
     

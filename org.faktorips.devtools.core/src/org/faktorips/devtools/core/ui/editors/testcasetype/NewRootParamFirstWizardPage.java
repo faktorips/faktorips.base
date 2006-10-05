@@ -21,6 +21,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -57,14 +58,23 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
             // if no reverse relation is selected then disable next wizard page
             // other wise enable next wizard page
             if (prevSelection != e.getSource()){
+                String title=""; //$NON-NLS-1$
+                String description=""; //$NON-NLS-1$
                 prevSelection = (Button) e.getSource();
                 if (e.getSource() == testValueParameterBtn) {
                     wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_VALUE_PARAMETER);
-                }else if(e.getSource() == testPolicyCmptTypeParameterBtn){
+                    title = Messages.NewRootParamWizardPage_Title_TestValueParam;
+                    title = Messages.NewRootParamWizardPage_Description_TestValueParam;
+                } else if (e.getSource() == testPolicyCmptTypeParameterBtn){
                     wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER);
-                }else if(e.getSource() == testRuleParameterBtn){
+                    title = Messages.NewRootParamWizardPage_Title_TestPolicyCmptParam;
+                    title = Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam;                    
+                } else if (e.getSource() == testRuleParameterBtn){
                     wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_RULE_PARAMETER);
+                    title = Messages.NewRootParamWizardPage_Title_TestRuleParam;
+                    title = Messages.NewRootParamWizardPage_Description_TestRuleParam;                    
                 }
+                wizard.setTitleAndDescriptionOfSecondPage(title, description);
                 wizard.resetWizard();
             }
         }
@@ -89,11 +99,17 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
     public void createControl(Composite parent) {
         UIToolkit uiToolkit = wizard.getUiToolkit();
 
-        Composite c = uiToolkit.createLabelEditColumnComposite(parent);
+        Composite group = uiToolkit.createGroup(parent, Messages.NewRootParamFirstWizardPage_GroupLabel);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 10;
+        layout.marginWidth = 10;
+        group.setLayout(layout);
+        
+        Composite c = uiToolkit.createLabelEditColumnComposite(group);
         
         // create radio buttons
         KindOfTestParamSelectionListener listener = new KindOfTestParamSelectionListener();
-     
+        
         testPolicyCmptTypeParameterBtn = uiToolkit.createRadioButton(c, Messages.NewRootParamFirstWizardPage_RadioButton_TestPolicyCmptTypeParameter);
         testPolicyCmptTypeParameterBtn.addSelectionListener(listener);
         
@@ -110,7 +126,8 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
         // set the default selection
         testPolicyCmptTypeParameterBtn.setSelection(true);
         prevSelection = testPolicyCmptTypeParameterBtn;
-        setControl(c);
+        
+        setControl(group);
 
         setPageComplete(true);
     }
