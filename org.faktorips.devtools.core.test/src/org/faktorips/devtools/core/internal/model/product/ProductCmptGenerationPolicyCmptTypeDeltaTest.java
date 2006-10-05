@@ -239,7 +239,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
         assertTrue(delta.isEmpty());
         
-        // a1=range 10-20, ce1=range 0-10 => mismatch
+        // a1=range 10-20, ce1=range 0-10 => _NO_ mismatch
         a1.setValueSetType(ValueSetType.RANGE);
         valueSet = (IRangeValueSet)a1.getValueSet();
         a1.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -250,7 +250,7 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         valueSet.setLowerBound("0");
         valueSet.setUpperBound("10");
         delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);
-        assertEquals(1, delta.getElementsWithValueSetMismatch().length);
+        assertEquals(0, delta.getElementsWithValueSetMismatch().length);
 
         // a1=range, ce1=allvalues=> mismatch
         a1.setValueSetType(ValueSetType.RANGE);

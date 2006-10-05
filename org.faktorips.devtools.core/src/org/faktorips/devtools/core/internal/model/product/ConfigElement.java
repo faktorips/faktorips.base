@@ -282,8 +282,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		}
 
         valueSet.validate(list);
-        IValueSet modelValueSet = attribute.getValueSet();
-        modelValueSet.validate(list);
         
 		if (!valueDatatype.isParsable(value)) {
         	String valueInMsg = value;
@@ -298,8 +296,15 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
 		}
 		
-        if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE) {
-            modelValueSet.containsValueSet(valueSet, list, valueSet, null);
+        IValueSet modelValueSet = attribute.getValueSet();
+        if (modelValueSet.validate().containsErrorMsg()) {
+            String text = Messages.ConfigElement_msgInvalidAttributeValueset;
+            list.add(new Message(IConfigElement.MSGCODE_UNKNWON_VALUESET, text, Message.WARNING, this, PROPERTY_VALUE));
+            return;
+        }
+
+        if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE && !modelValueSet.containsValueSet(valueSet, list, valueSet, null)) {
+            return;
         }
 
 		if (StringUtils.isNotEmpty(value)) {
@@ -313,16 +318,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 			// element.
 			if (this.type != ConfigElementType.PRODUCT_ATTRIBUTE) {
 				if (!valueSet.containsValue(value)) {
-					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET,
-									NLS.bind(Messages.ConfigElement_msgValueNotInValueset,
-													value), Message.ERROR,
-									this, PROPERTY_VALUE));
+					list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
+                            Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
 				}
 			} else if (!modelValueSet.containsValue(value)) {
-				list.add(new Message(
-						IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
-								Messages.ConfigElement_msgValueNotInValueset,
-								value), Message.ERROR, this, PROPERTY_VALUE));
+				list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
+                        Messages.ConfigElement_msgValueNotInValueset, value), Message.ERROR, this, PROPERTY_VALUE));
 			}
 		}
 	}

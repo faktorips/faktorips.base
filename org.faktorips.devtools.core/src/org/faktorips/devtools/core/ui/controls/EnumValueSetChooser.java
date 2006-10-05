@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Control to select values from one enum value set to be added to another.
@@ -41,7 +42,13 @@ public class EnumValueSetChooser extends ListChooser {
 	 * The value set to modify 
 	 */
 	private IEnumValueSet target;
-	/**
+
+    /**
+     * The value set to get the values from 
+     */
+    private IEnumValueSet source;
+
+    /**
 	 * The controller to notify of changes to the target value set
 	 */
 	private DefaultUIController uiController;
@@ -63,10 +70,11 @@ public class EnumValueSetChooser extends ListChooser {
 			EnumDatatype type,
 			DefaultUIController uiController) {
 		super(parent, toolkit);
-		super.setTargetContent(getTargetValues(target, type));
-		super.setSourceContent(getSourceValues(source, target, type));
 		this.target = target;
+        this.source = source;
 		this.uiController = uiController;
+        super.setTargetContent(getTargetValues(target, type));
+        super.setSourceContent(getSourceValues(source, target, type));
 	}
 
 	/**
@@ -183,4 +191,13 @@ public class EnumValueSetChooser extends ListChooser {
 
 		return (String[]) result.toArray(new String[result.size()]);
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList getMessagesFor(String value) {
+        MessageList result = new MessageList();
+        source.containsValue(value, result, target, null);
+        return result;
+    }
 }

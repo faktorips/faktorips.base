@@ -94,4 +94,6 @@ public class Messages extends NLS {
 
 	public static String ProductCmptRelation_msgInvalidTarget;
 
+    public static String ConfigElement_msgInvalidAttributeValueset;
+
 }

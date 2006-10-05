@@ -66,7 +66,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.NewProductCmptRelationAction;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
-import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
@@ -704,7 +704,7 @@ public class RelationsSection extends IpsSection{
 		return new MessageList();
 	}
 
-	private class MessageService extends TableMessageHoverService {
+	private class MessageService extends TreeMessageHoverService {
 
 		public MessageService(TreeViewer viewer) {
 			super(viewer);

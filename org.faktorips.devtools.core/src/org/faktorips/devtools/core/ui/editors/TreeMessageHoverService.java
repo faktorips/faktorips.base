@@ -17,43 +17,41 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 
 /**
- * Class to show hovers for messages for tables. 
+ * Class to show hovers for trees. 
  */
-public abstract class TableMessageHoverService extends MessageHoverService {
+public abstract class TreeMessageHoverService extends MessageHoverService {
     
-    private TableViewer viewer;
-    private Table table;
+    private Tree tree;
 
-    public TableMessageHoverService(TableViewer viewer) {
-        super(viewer.getTable());
-        this.viewer = viewer;
-        this.table = viewer.getTable();
+    public TreeMessageHoverService(TreeViewer viewer) {
+        super(viewer.getTree());
+        this.tree = viewer.getTree();
     }
 
     /**
      * {@inheritDoc}
      */
     public Object getElementAt(Point point) {
-        TableItem item = table.getItem(point);
+        TreeItem item = tree.getItem(point);
         if (item == null) {
             return null;
         }
-        return viewer.getElementAt(table.indexOf(item));
+        return item.getData();
     }
     
     /**
      * {@inheritDoc}
      */
     public Rectangle getBoundsAt(Point point) {
-        TableItem item = table.getItem(point);
+        TreeItem item = tree.getItem(point);
         if (item == null) {
             return null;
         }

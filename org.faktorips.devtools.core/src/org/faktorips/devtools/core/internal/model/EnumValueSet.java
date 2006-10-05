@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.Messages;
 import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -73,19 +74,19 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     public boolean containsValue(String value, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
-            throw new NullPointerException("MessageList required");
+            throw new NullPointerException("MessageList required"); //$NON-NLS-1$
         }
         
     	ValueDatatype datatype = getValueDatatype();
     	
     	if (datatype == null) {
-            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, invalidProperty);
+            addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
     		return false;
     	}
     	
         if (!datatype.isParsable(value)) {
             String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
-            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, invalidProperty);
+            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
             return false;
         }
         
@@ -95,8 +96,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             	return true;
             }
         }
+        
+        if ((value == null || value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) && getContainsNull()) {
+            return true;
+        }
+
         String text = Messages.EnumValueSet_msgValueNotInEnumeration;
-        addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, invalidProperty);
+        addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
 
         return false;
     }
@@ -106,24 +112,24 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      */
     public boolean containsValueSet(IValueSet subset, MessageList list, Object invalidObject, String invalidProperty) {
         if (list == null) {
-            throw new NullPointerException("MessageList required");
+            throw new NullPointerException("MessageList required"); //$NON-NLS-1$
         }
         
     	ValueDatatype datatype = getValueDatatype();
     	ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
     	if (datatype == null || subDatatype == null) {
-   			addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, invalidProperty);
+   			addMsg(list, Message.WARNING, MSGCODE_UNKNOWN_DATATYPE, Messages.EnumValueSet__msgDatatypeUnknown, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
     		return false;
     	}
     	
     	if (!(subset instanceof EnumValueSet)) {
-   			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset, invalidObject, invalidProperty);
+   			addMsg(list, MSGCODE_TYPE_OF_VALUESET_NOT_MATCHING, Messages.EnumValueSet_msgNotAnEnumValueset, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
     		return false;
     	}
     	
     	if (!datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
     	    String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeMissmatch, subDatatype.getQualifiedName(), datatype.getQualifiedName());
-    	    addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject, invalidProperty);
+    	    addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
     		return false;
     	}
     	
@@ -131,9 +137,16 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     	String[] subsetValues = enumSubset.getValues();
     	
     	boolean contains = true;
+        MessageList dummy = new MessageList();
     	for (int i = 0; i < subsetValues.length && contains; i++) {
-			contains = this.containsValue(subsetValues[i], list, invalidObject, invalidProperty);
+			contains = this.containsValue(subsetValues[i], dummy, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
 		}
+        
+        if (!contains) {
+            String msg = NLS.bind(Messages.EnumValueSet_msgNotSubset, enumSubset.toShortString(), this.toShortString());
+            addMsg(list, MSGCODE_NOT_SUBSET, msg, invalidObject, getProperty(invalidProperty, PROPERTY_VALUES));
+        }
+        
 		return contains;
 	}
 

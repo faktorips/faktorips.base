@@ -104,6 +104,7 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.testcase.TreeViewerExpandStateStorage;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
@@ -1269,7 +1270,7 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
                 }
             }
         });
-        new TableMessageHoverService(treeViewer) {
+        new TreeMessageHoverService(treeViewer) {
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element != null) {
                     return validateElement(element);

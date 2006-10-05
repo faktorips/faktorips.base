@@ -17,46 +17,58 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.List;
 
 
 /**
- * Class to show hovers for messages for tables. 
+ * Class to show hovers for messages for lists. 
  */
-public abstract class TableMessageHoverService extends MessageHoverService {
+public abstract class ListMessageHoverService extends MessageHoverService {
     
-    private TableViewer viewer;
-    private Table table;
+    private List list;
 
-    public TableMessageHoverService(TableViewer viewer) {
-        super(viewer.getTable());
-        this.viewer = viewer;
-        this.table = viewer.getTable();
+    public ListMessageHoverService(List list) {
+        super(list);
+        this.list = list;
     }
 
     /**
      * {@inheritDoc}
      */
     public Object getElementAt(Point point) {
-        TableItem item = table.getItem(point);
-        if (item == null) {
+        int index = getIndexFor(point);
+        if (index == -1) {
             return null;
         }
-        return viewer.getElementAt(table.indexOf(item));
+
+        return list.getItem(index);
     }
     
     /**
      * {@inheritDoc}
      */
     public Rectangle getBoundsAt(Point point) {
-        TableItem item = table.getItem(point);
-        if (item == null) {
+        int index = getIndexFor(point);
+        if (index == -1) {
             return null;
         }
-        return item.getBounds(0);
+        int itemHeight = list.getItemHeight();
+        int topIndex = list.getTopIndex();
+        int downShift = (index - topIndex) * itemHeight;
+        Rectangle result = list.getClientArea();
+        result.y += downShift;
+        result.height = itemHeight;
+        return result;
+    }    
+    
+    private int getIndexFor(Point point) {
+        int index = list.getTopIndex();
+        int height = list.getItemHeight();
+        for (int i = 0; i * height + height < point.y; i++) {
+            index ++;
+        }
+        return index;
     }
 }

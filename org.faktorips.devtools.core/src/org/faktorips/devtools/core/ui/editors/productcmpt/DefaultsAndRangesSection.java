@@ -36,6 +36,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
+import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -176,6 +178,8 @@ public class DefaultsAndRangesSection extends IpsSection {
 	    			toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_values);
 	    			EnumValueSetControl evc = new EnumValueSetControl(rootPane, toolkit, elements[i], this.getShell(), controller);
 	    			evc.setText(valueSet.toShortString());
+                    PreviewTextButtonField ptbf = new PreviewTextButtonField(evc);
+                    controller.add(ptbf, valueSet, IEnumValueSet.PROPERTY_VALUES);
 	    			GridData data = (GridData)evc.getLayoutData();
 	    			data.widthHint = UIToolkit.DEFAULT_WIDTH;
 	    			addFocusControl(evc.getTextControl());

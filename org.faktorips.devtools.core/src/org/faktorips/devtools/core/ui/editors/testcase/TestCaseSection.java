@@ -92,7 +92,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.PdObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.StringUtil;
@@ -815,7 +815,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 				}
 			}
 		});
-        new TableMessageHoverService(treeViewer) {
+        new TreeMessageHoverService(treeViewer) {
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element != null) {
                     return validateElement(element);

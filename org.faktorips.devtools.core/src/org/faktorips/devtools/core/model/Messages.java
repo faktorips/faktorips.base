@@ -117,4 +117,12 @@ public class Messages extends NLS {
 	public static String RangeValueSet_msgStepRangeMismatch;
 
 	public static String RangeValueSet_msgDatatypeNotNumeric;
+
+    public static String RangeValueSet_msgStepNotParsable;
+
+    public static String RangeValueSet_msgLowerboundViolation;
+
+    public static String RangeValueSet_msgUpperboundViolation;
+
+    public static String EnumValueSet_msgNotSubset;
 }

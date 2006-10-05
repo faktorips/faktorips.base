@@ -149,7 +149,21 @@ public abstract class ValueSet extends IpsObjectPart implements IValueSet {
 		return doc.createElement(XML_TAG);
 	}
 
-	// This method is listed here to avoid compilation problems
+    /**
+     * @param original The value to use if available (might be <code>null</code>).
+     * @param alternative The value to use if the original value is <code>null</code>.
+     * 
+     * @return Either the original value (if not <code>null</code>) or the 
+     * alternative string.
+     */
+    protected String getProperty(String original, String alternative) {
+        if (original == null) {
+            return alternative;
+        }
+        return original;
+    }
+
+    // This method is listed here to avoid compilation problems
 	// caused by a visibility conflict between this method and
 	// IpsObjectPart.validate(MessageList).
 	public abstract void validate(MessageList list);
