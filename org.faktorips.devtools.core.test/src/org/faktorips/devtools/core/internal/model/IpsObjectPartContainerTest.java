@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -315,11 +316,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         int afterSetCounter = 0;
         boolean allowValueToBeSet = true;
         
-        public void afterSetValue(IpsObjectPartContainer ipsObjectPart, Object value) {
+        public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
             afterSetCounter++;
         }
 
-        public boolean beforeSetValue(IpsObjectPartContainer ipsObjectPart, Object value) {
+        public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
             beforeSetCounter++;
             return allowValueToBeSet;
         }
