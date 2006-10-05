@@ -617,7 +617,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         String ruleContainerNameNotViolated = variablePrefix + StringUtils.capitalise(violationTypePrefixNotViolated)
                 + StringUtils.capitalise(ruleName);
 
-        String methodName = "executeValidation" + StringUtils.capitalise(variablePrefix) + ruleName;
+        String methodName = "executeAssertsFor" + ruleName;
         String javaDoc = getLocalizedText(getIpsSrcFile(), ASSERT_RULE_METHOD_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
 
@@ -648,7 +648,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln("}}");
         }
         
-        codeBuilder.method(Modifier.PRIVATE, "void", methodName, new String[] { "messageList",
+        codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[] { "messageList",
                 "result" }, new String[] { MessageList.class.getName(),
                 IpsTestResult.class.getName() }, body, javaDoc, ANNOTATION_GENERATED);
     }
