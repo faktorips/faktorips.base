@@ -38,17 +38,20 @@ public class TestRuleViolationType extends DefaultEnumValue {
 
     private final static DefaultEnumType nonDefaultenumType; 
 
+    private String text;
+    
     static {
         enumType = new DefaultEnumType("TestRuleViolationType", TestRuleViolationType.class); //$NON-NLS-1$
-        VIOLATED = new TestRuleViolationType(enumType, "violated", Messages.TestRuleViolationType_Violated); //$NON-NLS-1$
-        NOT_VIOLATED = new TestRuleViolationType(enumType, "notViolated", Messages.TestRuleViolationType_NotViolated); //$NON-NLS-1$
+        VIOLATED = new TestRuleViolationType(enumType, "violated", Messages.TestRuleViolationType_Violated, Messages.TestRuleViolationType_TextViolated); //$NON-NLS-1$
+        NOT_VIOLATED = new TestRuleViolationType(enumType, "notViolated", Messages.TestRuleViolationType_NotViolated, Messages.TestRuleViolationType_TextNotViolated); //$NON-NLS-1$
 
         nonDefaultenumType = new DefaultEnumType("NonDefaultTestRuleViolationType", TestRuleViolationType.class); //$NON-NLS-1$
-        UNKNOWN = new TestRuleViolationType(nonDefaultenumType, "unknown", Messages.TestRuleViolationType_Unknown); //$NON-NLS-1$
+        UNKNOWN = new TestRuleViolationType(nonDefaultenumType, "unknown", Messages.TestRuleViolationType_Unknown, Messages.TestRuleViolationType_Unknown); //$NON-NLS-1$
     }
 
-    public TestRuleViolationType(DefaultEnumType type, String id, String name){
+    public TestRuleViolationType(DefaultEnumType type, String id, String name, String text){
         super(type, id, name);
+        this.text = text;
     }
     
     /**
@@ -65,5 +68,12 @@ public class TestRuleViolationType extends DefaultEnumValue {
      */
     public final static EnumType getEnumType() {
         return enumType;
+    }
+
+    /**
+     * Returns the text representation of the rule violation type.
+     */
+    public String getText() {
+        return text;
     }
 }

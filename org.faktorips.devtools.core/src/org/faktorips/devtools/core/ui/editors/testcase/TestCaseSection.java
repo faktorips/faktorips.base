@@ -1663,9 +1663,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
      */
     private String mapRuleValueTest(String id) {
         if (id.equals(TestRuleViolationType.VIOLATED.getId())){
-            return TestRuleViolationType.VIOLATED.getName();
+            return TestRuleViolationType.VIOLATED.getText();
         } else if (id.equals(TestRuleViolationType.NOT_VIOLATED.getId())){
-            return TestRuleViolationType.NOT_VIOLATED.getName();
+            return TestRuleViolationType.NOT_VIOLATED.getText();
         }
         return id;
     }

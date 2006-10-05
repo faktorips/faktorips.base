@@ -33,4 +33,7 @@ public class Messages {
     public static String TestRuleViolationType_NotViolated;
     public static String TestRuleViolationType_Violated;
     public static String TestRuleViolationType_Unknown;
+    
+    public static String TestRuleViolationType_TextNotViolated;
+    public static String TestRuleViolationType_TextViolated;
 }
