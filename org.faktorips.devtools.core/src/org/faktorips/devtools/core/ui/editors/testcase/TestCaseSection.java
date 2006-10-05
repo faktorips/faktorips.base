@@ -103,7 +103,8 @@ import org.faktorips.util.message.MessageList;
  * Section to show the test case.
  */
 public class TestCaseSection extends IpsSection implements IIpsTestRunListener, ContentsChangeListener {
-	private static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
+	public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
+    public static final String RULESECTION = "RULEECTION"; //$NON-NLS-1$
 	
 	// The treeview which displays all test policy components and test values which are available in this test
 	private TreeViewer treeViewer;
@@ -693,8 +694,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 	 * The selection in the tree changed the given object is selected.
 	 */
 	private void selectionInTreeChanged(IStructuredSelection selection) {
-        if (isTreeRefreshing)
+        if (isTreeRefreshing){
             return;
+        }
         
 		updateButtonEnableState(selection.getFirstElement());		
         
@@ -707,13 +709,23 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
             for (Iterator iterator = selection.iterator(); iterator.hasNext();) {
     			Object domainObject = iterator.next();
     			
-                if (domainObject instanceof ITestValue || domainObject instanceof ITestRule){
+                if (domainObject instanceof ITestValue){
                     objectsToDisplay.add(domainObject);
                 } else if (domainObject instanceof ITestRuleParameter){
                     // show all test rule objects if the corresponding parameter is chosen
                     ITestRule[] testRules = testCase.getTestRule(((ITestRuleParameter)domainObject).getName());
                     for (int i = 0; i < testRules.length; i++) {
                         objectsToDisplay.add(testRules[i]);
+                    }
+                } else if (domainObject instanceof ITestRule){
+                    // in case of a rule selection don't 
+                    // change the detail area if the rule is already displayed (e.g. the root rule node is selected)
+                    // otherwise display only the selected rule
+                    if (prevTestObjects.contains(domainObject)){
+                        objectsToDisplay = prevTestObjects;
+                        continue;
+                    } else {
+                        objectsToDisplay.add(domainObject);
                     }
                 } else {
                     ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpFromDomainObject(domainObject);
@@ -868,31 +880,32 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 	 *                        found section. If <code>false</code> no focus will be moved. 
 	 */
 	void selectInDetailArea(Object selected, boolean withFocusChange){
-		String uniquePath=""; //$NON-NLS-1$
-		testCaseDetailArea.resetSectionColors(form);
-		if(selected instanceof ITestValue || selected instanceof ITestRule){
-			uniquePath = ((ITestObject) selected).getTestParameterName();
-			if (withFocusChange){
-				EditField valueTextCtrl = testCaseDetailArea.getTestValueEditField(uniquePath);
-				if (valueTextCtrl != null){
-					isDoubleClicked = true;
-					valueTextCtrl.getControl().setFocus();
-				}
-			}
-            selectSection(VALUESECTION + uniquePath);
-			return;
-		}else{
-			uniquePath = getUniqueKey(selected);
-		}
-		if (uniquePath.length() > 0 ){
-			if (withFocusChange){
-				EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniquePath);
-				if (firstField != null){
-					firstField.getControl().setFocus();
-				}
-			}
+		String uniquePath = ""; //$NON-NLS-1$
+        testCaseDetailArea.resetSectionColors(form);
+        if (selected instanceof ITestValue) {
+            uniquePath = VALUESECTION + ((ITestValue)selected).getTestParameterName();
+        } else if (selected instanceof ITestRule) {
+            uniquePath = RULESECTION + ((ITestRule)selected).getValidationRule();
+        } else {
+            uniquePath = getUniqueKey(selected);
+        }
+
+        if (withFocusChange) {
+            EditField firstField = testCaseDetailArea.getTestValueEditField(uniquePath);
+            if (firstField != null) {
+                isDoubleClicked = true;
+                firstField.getControl().setFocus();
+            }
+        }
+        if (uniquePath.length() > 0) {
+            if (withFocusChange) {
+                EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniquePath);
+                if (firstField != null) {
+                    firstField.getControl().setFocus();
+                }
+            }
             selectSection(uniquePath);
-		}
+        }
 	}
 
 	/**
@@ -900,6 +913,22 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 	 */
 	String getUniqueKey(Object selected){
 		String uniquePath = ""; //$NON-NLS-1$
+        
+        if ( selected instanceof ITestRule){
+            ITestRule rule = (ITestRule)selected;
+            try {
+                IValidationRule validationRule = rule.findValidationRule();
+                uniquePath = validationRule==null?null:validationRule.getMessageCode();
+            } catch (CoreException e1) {
+                // ignore exception while seraching the validation rule object
+            }
+            if (uniquePath == null){
+                // validation rule not found use rule name as identifier
+                uniquePath = rule.getValidationRule();
+            }
+            return rule.getTestParameterName() + uniquePath;
+        }
+        
 		if (selected instanceof ITestPolicyCmptRelation){
 			ITestPolicyCmptRelation relation = (ITestPolicyCmptRelation) selected;
 			uniquePath = "." + relation.getTestPolicyCmptTypeParameter() + relation.getId(); //$NON-NLS-1$
@@ -915,8 +944,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 				currTestPolicyCmpt = getTestPolicyCmpFromDomainObject(currTestPolicyCmpt.getParent());
 				uniquePath = currTestPolicyCmpt.getName() + "." + uniquePath; //$NON-NLS-1$
 			}
-		}else{
-			uniquePath = currTestPolicyCmpt.getName() + uniquePath;
+		}else{    
+            uniquePath = currTestPolicyCmpt.getName() + uniquePath;
 		}
 		return uniquePath;
 	}
@@ -1445,14 +1474,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
 	}
 	
 	/**
-	 * Selects the given test value in the tree.
+	 * Selects the given test object in the tree.
 	 */
-	void selectTestValueInTree(ITestValue testValue){
+	void selectTestObjectInTree(ITestObject testObject){
 		if (!isDoubleClicked){
-    		selectInDetailArea(testValue, false);
+    		selectInDetailArea(testObject, false);
     		// goto the corresponding value object in the tree
     		Tree tree = treeViewer.getTree();
-        	TreeItem found = searchChildsByLabel(testValue.getTestValueParameter(), tree.getItems());
+            
+        	TreeItem found = searchChildsByLabel(labelProvider.getText(testObject), tree.getItems());
         	if (found != null) {
     			// select the tree entry
     			TreeItem[] select = new TreeItem[1];
@@ -1461,7 +1491,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
     		}
         }else{
         	isDoubleClicked = false;
-        	selectInDetailArea(testValue, true);
+        	selectInDetailArea(testObject, true);
         }
 	}
 

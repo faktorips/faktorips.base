@@ -46,7 +46,6 @@ import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -70,8 +69,6 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
  * @author Joerg Ortmann
  */
 public class TestCaseDetailArea {
-	static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
-
 	// UI toolkit for creating the controls
 	private UIToolkit toolkit;
 	
@@ -112,15 +109,15 @@ public class TestCaseDetailArea {
     private class SectionSelectMouseListener implements MouseListener {
         private ITestPolicyCmpt testPolicyCmptType;
         private ITestPolicyCmptRelation testPolicyCmptTypeRelation;
-        private ITestValue testValue;
+        private ITestObject testObject;
         
         public SectionSelectMouseListener(IIpsObjectPart object){
             if (object instanceof ITestPolicyCmpt) {
                 testPolicyCmptType = (ITestPolicyCmpt)object;
             } else if (object instanceof ITestPolicyCmptRelation){
                 testPolicyCmptTypeRelation = (ITestPolicyCmptRelation) object;
-            } else if (object instanceof ITestValue){
-                testValue = (ITestValue) object;
+            } else if (object instanceof ITestObject){
+                testObject = (ITestObject) object;
             }
         }
         public SectionSelectMouseListener(ITestPolicyCmptRelation testPolicyCmptTypeRelation){
@@ -134,9 +131,9 @@ public class TestCaseDetailArea {
             }else if (testPolicyCmptTypeRelation != null){
                 testCaseSection.selectInTreeByObject(testPolicyCmptTypeRelation, false);
                 testCaseSection.selectInDetailArea(testPolicyCmptTypeRelation, false);
-            }else if (testValue != null){
-                testCaseSection.selectTestValueInTree(testValue);
-                testCaseSection.selectInDetailArea(testValue, false);
+            }else if (testObject != null){
+                testCaseSection.selectTestObjectInTree(testObject);
+                testCaseSection.selectInDetailArea(testObject, false);
             }
         }
         public void mouseDoubleClick(MouseEvent e) {
@@ -454,7 +451,7 @@ public class TestCaseDetailArea {
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         // create separator line
         toolkit.getFormToolkit().createCompositeSeparator(section);
-        sectionControls.put(VALUESECTION + testValue.getTestValueParameter(), section);
+        sectionControls.put(TestCaseSection.VALUESECTION + testValue.getTestValueParameter(), section);
 
         section.addMouseListener(new SectionSelectMouseListener(testValue));
         section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(testValue));
@@ -476,13 +473,14 @@ public class TestCaseDetailArea {
             throw new RuntimeException(e1);
         }
 
-        toolkit.createFormLabel(composite, "Value" + ":"); //$NON-NLS-1$ //$NON-NLS-2$
+        Label label = toolkit.createFormLabel(composite, "Value" + ":"); //$NON-NLS-1$ //$NON-NLS-2$
         final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null);
+        addSectionSelectionListeners(editField, label, testValue);
         uiController.add(editField, ITestValue.PROPERTY_VALUE);
 
         editField.getControl().addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
-                testCaseSection.selectTestValueInTree(testValue);
+                testCaseSection.selectTestObjectInTree(testValue);
             }
         });
 
@@ -518,7 +516,7 @@ public class TestCaseDetailArea {
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         // create separator line
         toolkit.getFormToolkit().createCompositeSeparator(section);
-        sectionControls.put(VALUESECTION + rule.getTestRuleParameter(), section);
+        sectionControls.put(TestCaseSection.RULESECTION + rule.getValidationRule(), section);
         
         section.addMouseListener(new SectionSelectMouseListener(rule));
         section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(rule));
@@ -526,9 +524,10 @@ public class TestCaseDetailArea {
         Composite composite = toolkit.createLabelEditColumnComposite(section);
         section.setClient(composite);
         
-        toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
+        Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
         final EditField editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
                 .getEnumType()), TestRuleViolationType.getEnumType());
+        addSectionSelectionListeners(editField, label, rule);
         uiController.add(editField, ITestRule.PROPERTY_VIOLATED);
         
         editField.getControl().addFocusListener(new FocusAdapter() {
@@ -537,19 +536,7 @@ public class TestCaseDetailArea {
             }
         });
         
-        String ruleIdentifier = null;
-        try {
-            IValidationRule validationRule = rule.findValidationRule();
-            ruleIdentifier = validationRule==null?null:validationRule.getMessageCode();
-        } catch (CoreException e1) {
-            // ignore exception while seraching the validation rule object
-        }
-        if (ruleIdentifier == null){
-            // validation rule not found use rule name as identifier
-            ruleIdentifier = rule.getValidationRule();
-        }
-        
-        allEditFields.put(rule.getTestRuleParameter() + ruleIdentifier, editField);
+        allEditFields.put(testCaseSection.getUniqueKey(rule), editField);
         editField2ModelObject.put(editField, rule);
         
         // mark as expected result
@@ -557,7 +544,7 @@ public class TestCaseDetailArea {
             markAsExpected(editField);
         }
         // mark as failure
-        String failureLastTestRun = (String) failureMessageCache.get(rule.getTestRuleParameter());
+        String failureLastTestRun = (String) failureMessageCache.get(testCaseSection.getUniqueKey(rule));
         if (failureLastTestRun != null){
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureLastTestRun);
         }
