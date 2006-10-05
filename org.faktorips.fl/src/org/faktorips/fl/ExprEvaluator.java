@@ -34,7 +34,7 @@ import bsh.Interpreter;
 public class ExprEvaluator {
 
     // The compiler used to compile the formula into standard Java sourcecode
-    private ExprCompiler compiler_;
+    private ExprCompiler compiler;
 
     /**
      * Constructs a new processor for the given compiler.
@@ -42,7 +42,7 @@ public class ExprEvaluator {
     public ExprEvaluator(ExprCompiler compiler) {
 
         ArgumentCheck.notNull(compiler);
-        compiler_ = compiler;
+        this.compiler = compiler;
 
     }
 
@@ -64,7 +64,7 @@ public class ExprEvaluator {
      * Compiles expression to Java and returns the CompilationResult.
      */
     private JavaCodeFragment compileExpressionToJava(String expression) throws Exception {
-        CompilationResult result = compiler_.compile(expression);
+        CompilationResult result = compiler.compile(expression);
         if (result.failed()) {
             throw new Exception(result.getMessages().toString());
         }
