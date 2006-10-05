@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -330,7 +331,13 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
     	attribute.setDefaultValue("100");
     	ml = attribute.validate();
-    	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        Message msg = ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET);
+    	assertNotNull(msg);
+        assertEquals(Message.WARNING, msg.getSeverity());
+        
+        attribute.setDefaultValue(null);
+        ml = attribute.validate();
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     public void testValidate_noInputParameters() throws Exception {

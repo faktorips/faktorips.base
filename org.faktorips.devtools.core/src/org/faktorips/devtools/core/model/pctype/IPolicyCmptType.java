@@ -138,7 +138,7 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * Returns <code>null</code> if either this type does not refer to a product component type
      * or the product component type can't be found on the project's ips object path.
      * This policy component type does not refer to a product component type if the  
-     * <code>ConfigurableByProductCmptType</code> property is <code>true</code>.
+     * <code>ConfigurableByProductCmptType</code> property is <code>false</code>.
      *
      * @throws CoreException if an error occurs while searching for the type.
      */

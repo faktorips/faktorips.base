@@ -719,21 +719,19 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             String text = Messages.PolicyCmptType_msgNameMissing;
             list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
                     IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+        } else {
+            IStatus status = JavaConventions.validateJavaTypeName(unqalifiedProductCmptType);
+            if (status.getSeverity() == IStatus.ERROR) {
+                String msg = Messages.PolicyCmptType_msgInvalidProductCmptTypeName;
+                list.add(new Message(MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME, msg, Message.ERROR, this,
+                        PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+            }
         }
-
-        IStatus status = JavaConventions.validateJavaTypeName(unqalifiedProductCmptType);
-        if (status.getSeverity() == IStatus.ERROR) {
-            String msg = Messages.PolicyCmptType_msgInvalidProductCmptTypeName;
-            list.add(new Message(MSGCODE_INVALID_PRODUCT_CMPT_TYPE_NAME, msg, Message.ERROR, this,
-                    PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
-        }
-
         if (this.unqalifiedProductCmptType.equals(this.getName())) {
             String msg = Messages.PolicyCmptType_msgNameMissmatch;
             list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH, msg, Message.ERROR, this,
                     IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
         }
-
     }
 
     /**

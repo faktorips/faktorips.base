@@ -441,10 +441,10 @@ public class RelationTest extends AbstractIpsPluginTest {
 		relation.setReverseRelation("test");
 		relation.setReadOnlyContainer(true);
 		MessageList ml = relation.validate();
-		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSERELATION_OF_CONTAINERRELATION_MUST_BE_CONTAINERRELATION_TOO));
+		assertNotNull(ml.getMessageByCode(IRelation.MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER));
 		rel2.setReadOnlyContainer(true);
 		ml = relation.validate();
-		assertNull(ml.getMessageByCode(IRelation.MSGCODE_REVERSERELATION_OF_CONTAINERRELATION_MUST_BE_CONTAINERRELATION_TOO));
+		assertNull(ml.getMessageByCode(IRelation.MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER));
 	}
 
 	public void testValidateReverseCompositionMissmatch() throws Exception {

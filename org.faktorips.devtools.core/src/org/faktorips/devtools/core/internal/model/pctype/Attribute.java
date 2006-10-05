@@ -499,10 +499,10 @@ public class Attribute extends IpsObjectPart implements IAttribute {
         }
         if (valueSet != null) {
             valueSet.validate(result);
-            if (!valueSet.containsValue(defaultValue)) {
+            if (defaultValue!=null && !valueSet.containsValue(defaultValue)) {
                 result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET, NLS.bind(
                         Messages.Attribute_msgDefaultNotInValueset, defaultValue), //$NON-NLS-1$
-                        Message.ERROR, this, PROPERTY_DEFAULT_VALUE));
+                        Message.WARNING, this, PROPERTY_DEFAULT_VALUE));
             }
         }
     }

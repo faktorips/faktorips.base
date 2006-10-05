@@ -200,9 +200,10 @@ public interface IRelation extends IIpsObjectPart {
     public final static String MSGCODE_REVERSERELATION_NOT_SPECIFIED = MSGCODE_PREFIX + "ReverseRelationNotSpecified"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the reverse relation of a container relation must be a container relation too.
+     * Validation message code to indicate that forward and reverse relation must be marked as container relation 
+     * (or not).
      */
-    public final static String MSGCODE_REVERSERELATION_OF_CONTAINERRELATION_MUST_BE_CONTAINERRELATION_TOO = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
+    public final static String MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the reverse relation of a composition must be a reverse composition.

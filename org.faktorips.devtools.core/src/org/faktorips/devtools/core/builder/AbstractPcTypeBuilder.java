@@ -66,10 +66,7 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
      * type is not configurable by a product component type.
      */
     public IProductCmptType getProductCmptType() throws CoreException {
-    	if (getPcType().isConfigurableByProductCmptType()) {
-    		return getPcType().findProductCmptType();
-    	}
-    	return null;
+    	return getPcType().findProductCmptType();
     }
     
     /**
@@ -138,14 +135,6 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
 
         codeBuilder.classEnd();
         return codeBuilder.getFragment();
-    }
-
-    /**
-     * This method can be overridden to check conditions before the actual code generation starts. A
-     * runtime exception should be thrown if the conditions are not fullfilled. This default
-     * implementation is empty.
-     */
-    protected void assertConditionsBeforeGenerating() {
     }
 
     /**

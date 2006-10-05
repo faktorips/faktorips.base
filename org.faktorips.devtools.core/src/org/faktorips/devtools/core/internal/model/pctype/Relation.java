@@ -715,9 +715,9 @@ public class Relation extends IpsObjectPart implements IRelation {
             String text = Messages.Relation_msgReverseRelationNotSpecified;
             list.add(new Message(MSGCODE_REVERSERELATION_NOT_SPECIFIED, text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
         }
-        if (isReadOnlyContainer() && ! reverseRelationObj.isReadOnlyContainer()) {
+        if (isReadOnlyContainer()!=reverseRelationObj.isReadOnlyContainer()) {
             String text = Messages.Relation_msgReverseRelOfContainerRelMustBeContainerRelToo;
-            list.add(new Message(MSGCODE_REVERSERELATION_OF_CONTAINERRELATION_MUST_BE_CONTAINERRELATION_TOO, text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
+            list.add(new Message(MSGCODE_FORWARD_AND_REVERSE_RELATION_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR, this, PROPERTY_REVERSE_RELATION)); //$NON-NLS-1$
         }
         
         if((type.isComposition() && !reverseRelationObj.getRelationType().isReverseComposition())
