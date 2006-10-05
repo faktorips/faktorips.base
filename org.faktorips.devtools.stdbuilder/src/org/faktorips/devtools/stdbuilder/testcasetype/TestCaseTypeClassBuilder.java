@@ -571,7 +571,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln("// TODO " + getLocalizedText(getIpsSrcFile(), ASSERT_TODO));
         body.appendln("assertEquals(\"" + getLocalizedText(getIpsSrcFile(), ASSERT_DUMMY_EXPECTED) + "\", \"" + getLocalizedText(getIpsSrcFile(), ASSERT_DUMMY_ACTUAL) + "\", result);");
         
-        codeBuilder.method(Modifier.PRIVATE, "void", "executeAsserts", new String[]{"result"}, 
+        codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[]{"result"}, 
                 new String[]{IpsTestResult.class.getName()}, body, javaDoc, ANNOTATION_MODIFIABLE);
     }
     
