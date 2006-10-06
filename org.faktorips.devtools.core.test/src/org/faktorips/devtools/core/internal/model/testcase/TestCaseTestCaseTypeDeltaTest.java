@@ -220,7 +220,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         childParam.newInputTestAttribute().setName("InputAttribute1");
         childParam.newInputTestAttribute().setName("InputAttribute2");
         childParam.newExpectedResultTestAttribute().setName("ExpResultAttribute1");
-        // childs are not checked in the delta
+        // missing childs are not checked in the delta
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 2, 0);
         
         // Param1
@@ -232,17 +232,23 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         // Param2
         ITestPolicyCmpt testPolicyCmpt2 = testCase.newTestPolicyCmpt();
         testPolicyCmpt2.setTestPolicyCmptTypeParameter("TestParam2");
+        //   one missing test attribute value and one test policy wrong sort order
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 1, 0, 0, 1);
         testPolicyCmpt2.newTestAttributeValue().setTestAttribute("InputAttribute1");
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
         testPolicyCmpt2.newTestAttributeValue().setTestAttribute("InputAttribute2");
         testPolicyCmpt2.newTestAttributeValue().setTestAttribute("InputAttribute3");
+        //   two missing test attributes and
+        //   one wrong order of test attr (because test attr on same test policy cmpt)
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 2, 0, 0, 0, 0, 0, 1);
         ITestPolicyCmptRelation rel2 = testPolicyCmpt2.newTestPolicyCmptRelation();
         rel2.setTestPolicyCmptTypeParameter("RelationX");
         ITestPolicyCmpt child2 = rel2.newTargetTestPolicyCmptChild();
         child2.setTestPolicyCmptTypeParameter("TestParamChildX");
         child2.newTestAttributeValue().setTestAttribute("TestAttributeX");
+        //   one missing test policy cmpt relation and
+        //   two missing test attributes and 
+        //   one wrong order of test attr (because test attr on same test policy cmpt)
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 0, 0, 0, 1);
         // Child of param1
         ITestPolicyCmptRelation rel1 = testPolicyCmpt1.newTestPolicyCmptRelation();
@@ -250,15 +256,26 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         rel1.setTestPolicyCmptTypeParameter("TestParamChild1");
         ITestPolicyCmpt child1 = rel1.newTargetTestPolicyCmptChild();
         child1.setTestPolicyCmptTypeParameter("TestParamChild1");
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 3, 0, 0, 2);
+        //   one missing test policy cmpt relation and
+        //   two missing test attributes
+        //   three missing test attributes value (the new child TestParamChild1 has three test attributes)
+        //   two wrong order of test attr (one see below and one from the newly
+		//      created TestParamChild1, three missing test attr values but all from
+		//      the same test policy cmpt)
+		assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 3, 0, 0, 2);
         child1.newTestAttributeValue().setTestAttribute("InputAttribute1");
         child1.newTestAttributeValue().setTestAttribute("InputAttribute2");
+        //   see below but two test attibute values are created
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 1, 0, 0, 2);
         child1.newTestAttributeValue().setTestAttribute("ExpResultAttribute1");
+        //   see below but no more missing test attibute values, therefore only on left sort order of test attributes
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 0, 0, 0, 1);
         child1.newTestAttributeValue().setTestAttribute("ExpResultAttributeX");
+        //   one missing test policy cmpt relation and
+        //   three missing test attributes (one more for ExpResultAttributeX)
+        //   two wrong order of test attr (one see below and one from the newly
+		//      created ExpResultAttributeX)
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 3, 0, 0, 0, 0, 0, 2);
-        
         fixAndAssert(testCase.computeDeltaToTestCaseType());
     }
     
@@ -494,7 +511,8 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
                 testValueParametersWithMissingTestValue, testPolicyCmptTypeParametersWithMissingTestPolicyCmpt,
                 testAttributesWithMissingTestAttributeValue, 0, 0, 0);
     }
-    private void assertDeltaContainer(ITestCaseTestCaseTypeDelta delta, int testValuesWithMissingTestValueParam,
+    private void assertDeltaContainer(ITestCaseTestCaseTypeDelta delta, 
+    		int testValuesWithMissingTestValueParam,
             int testPolicyCmptsWithMissingTypeParam,
             int testPolicyCmptRelationsWithMissingTypeParam,
             int testAttributeValuesWithMissingTestAttribute,
