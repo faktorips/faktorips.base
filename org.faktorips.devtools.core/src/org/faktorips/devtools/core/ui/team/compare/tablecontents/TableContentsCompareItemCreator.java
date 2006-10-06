@@ -39,7 +39,7 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
     }
     
     /**
-     * Returns the title of the structureCompare viewer.
+     * Returns the title for the structure-differences viewer.
      * {@inheritDoc}
      */
     public String getName() {
@@ -47,18 +47,17 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
     }
 
     /**
-     * Creates a structure/tree of <code>TableContentsCompareItem</code>s to represent an
-     * <code>ITableContents</code> object from the given <code>IIpsSrcFile</code>. The
+     * Creates a structure/tree of <code>TableContentsCompareItem</code>s from the given
+     * <code>IIpsSrcFile</code> to represent an <code>ITableContents</code> object. The
      * <code>IIpsSrcFile</code>, the <code>ITableContents</code>, its generations and all
      * contained rows are each represented by a <code>TableContentsCompareItem</code>.
      * <p>
-     * The <code>TableContentsCompareItem</code> containing the <code>IIpsSrcFile</code> is the
-     * root of the created structure. It has exactly one child representing (and referencing) the
-     * <code>ITableContents</code> contained in the srcFile. This
-     * <code>TableContentsCompareItem</code> has a child for each generation the
-     * table posesses. Each generation-compareitem contains multiple
-     * <code>TableContentsCompareItem</code>s representing the rows (<code>IRow</code>) of
-     * the table (in the current generation).
+     * The returned <code>TableContentsCompareItem</code> is the root of the created structure and
+     * contains the given <code>IIpsSrcFile</code>. It has exactly one child representing (and
+     * referencing) the <code>ITableContents</code> contained in the srcFile. This
+     * <code>TableContentsCompareItem</code> has a child for each generation the table posesses.
+     * Each generation-compareitem contains multiple <code>TableContentsCompareItem</code>s
+     * representing the rows (<code>IRow</code>) of the table (in the current generation).
      * 
      * {@inheritDoc}
      */
