@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.team.compare;
+package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -27,19 +27,26 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem;
+import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator;
 
-public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest {
+public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
 
     private IStructureCreator structureCreator = new ProductCmptCompareItemCreator();
-    
     private IProductCmptGeneration generation1;
+    private IProductCmptGeneration generation2;
+    private IProductCmptGeneration generation3;
+    private IIpsSrcFile srcFile;
+    private IFile correspondingFile;
     
     private ProductCmptCompareItem compareItemRoot;
-    
+    private IProductCmpt product;
+    private IIpsPackageFragmentRoot root;
     private IConfigElement configElement1;
     private IConfigElement configElement2;
     private IProductCmptRelation relation1;
@@ -48,73 +55,79 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     protected void setUp() throws Exception {
         super.setUp();
         IIpsProject proj= (IpsProject)newIpsProject("TestProject");
-        IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
-        IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
+        root = proj.getIpsPackageFragmentRoots()[0];
+        product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");
-        IProductCmpt productReferenced2 = newProductCmpt(root, "TestProductCmptReferenced2");
         
         GregorianCalendar calendar= new GregorianCalendar();
         generation1 = (IProductCmptGeneration) product.newGeneration(calendar);
         calendar= new GregorianCalendar();
         calendar.add(Calendar.MONTH, 1);
-        product.newGeneration(calendar);
+        generation2 = (IProductCmptGeneration) product.newGeneration(calendar);
         calendar= new GregorianCalendar();
         calendar.add(Calendar.MONTH, 2);
-        product.newGeneration(calendar);
+        generation3 = (IProductCmptGeneration) product.newGeneration(calendar);
 
         configElement1 = generation1.newConfigElement();
         configElement1.setPcTypeAttribute("configElement1");    // set name to ensure sorting order
         configElement2 = generation1.newConfigElement();
         configElement2.setPcTypeAttribute("configElement2");
         relation1 = generation1.newRelation(productReferenced.getQualifiedName());
-        relation2 = generation1.newRelation(productReferenced2.getQualifiedName());
+        relation2 = generation1.newRelation(productReferenced.getQualifiedName());
         
-        IFile correspondingFile = product.getIpsSrcFile().getCorrespondingFile();
+        srcFile = product.getIpsSrcFile();
+        correspondingFile = srcFile.getCorrespondingFile();
 
         compareItemRoot = (ProductCmptCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
-    
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItemComparator.compare(Object, Object)'
-     */
-    public void testCompare() {
-        ProductCmptCompareItemComparator comparator= new ProductCmptCompareItemComparator();
 
+    /*
+     * Test method for 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getStructure(Object)'
+     */
+    public void testGetStructure() {
+        assertEquals(srcFile, compareItemRoot.getIpsElement());
+        
         Object[] children= compareItemRoot.getChildren();
         ProductCmptCompareItem compareItem= (ProductCmptCompareItem) children[0];
+        assertEquals(product, compareItem.getIpsElement());
         
-        // generations
         children= compareItem.getChildren();
         ProductCmptCompareItem compareItemGen1= (ProductCmptCompareItem) children[0];
         ProductCmptCompareItem compareItemGen2= (ProductCmptCompareItem) children[1];
         ProductCmptCompareItem compareItemGen3= (ProductCmptCompareItem) children[2];
         
-        // sort generations by number (gen1.getGenerationNumber()-gen2.getGenerationNumber())
-        assertEquals(-1, comparator.compare(compareItemGen1, compareItemGen2));
-        assertEquals(-1, comparator.compare(compareItemGen2, compareItemGen3));
-        assertEquals(-2, comparator.compare(compareItemGen1, compareItemGen3));
-        assertEquals(2, comparator.compare(compareItemGen3, compareItemGen1));
-        assertEquals(0, comparator.compare(compareItemGen1, compareItemGen1));
-
-        // relations and configElements
+        assertEquals(generation1, compareItemGen1.getIpsElement());
+        assertEquals(generation2, compareItemGen2.getIpsElement());
+        assertEquals(generation3, compareItemGen3.getIpsElement());
+        
         children= compareItemGen1.getChildren();
         ProductCmptCompareItem compareItemConfigElement1= (ProductCmptCompareItem) children[0];
         ProductCmptCompareItem compareItemConfigElement2= (ProductCmptCompareItem) children[1];
         ProductCmptCompareItem compareItemRelation1= (ProductCmptCompareItem) children[2];
         ProductCmptCompareItem compareItemRelation2= (ProductCmptCompareItem) children[3];
+
+        assertEquals(configElement1, compareItemConfigElement1.getIpsElement());
+        assertEquals(configElement2, compareItemConfigElement2.getIpsElement());
+        assertEquals(relation1, compareItemRelation1.getIpsElement());
+        assertEquals(relation2, compareItemRelation2.getIpsElement());
+    }
+
+    /*
+     * Test method for 'org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator.getContents(Object, boolean)'
+     */
+    public void testGetContents() {
+        Object[] children= compareItemRoot.getChildren();
+        ProductCmptCompareItem compareItem= (ProductCmptCompareItem) children[0];
+
+        String contentString= structureCreator.getContents(compareItemRoot, false);
+        assertEquals(compareItemRoot.getContentString(), contentString);
+        contentString= structureCreator.getContents(compareItem, false);
+        assertEquals(compareItem.getContentString(), contentString);
         
-        // sort configElements lexicographically
-        assertEquals(configElement1.getPcTypeAttribute().compareTo(configElement2.getPcTypeAttribute()),
-                comparator.compare(compareItemConfigElement1, compareItemConfigElement2));
-        assertEquals(configElement2.getPcTypeAttribute().compareTo(configElement1.getPcTypeAttribute()),
-                comparator.compare(compareItemConfigElement2, compareItemConfigElement1));
-        
-        // sort relations lexicographically
-        assertEquals(relation1.getName().compareTo(relation2.getName()),
-                comparator.compare(compareItemRelation1, compareItemRelation2));
-        assertEquals(relation2.getName().compareTo(relation1.getName()),
-                comparator.compare(compareItemRelation2, compareItemRelation1));
-        
+        contentString= structureCreator.getContents(compareItemRoot, true);
+        assertTrue(compareItemRoot.getContentStringWithoutWhiteSpace().equals(contentString));
+        contentString= structureCreator.getContents(compareItem, true);
+        assertTrue(compareItem.getContentStringWithoutWhiteSpace().equals(contentString));
     }
 
 }

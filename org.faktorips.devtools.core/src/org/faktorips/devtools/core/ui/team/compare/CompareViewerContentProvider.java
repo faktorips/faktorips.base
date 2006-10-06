@@ -32,11 +32,11 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Stefan Widmaier
  */
-public class ProductCmptCompareContentProvider implements IMergeViewerContentProvider {
+public class CompareViewerContentProvider implements IMergeViewerContentProvider {
 
     private CompareConfiguration config;
 
-    public ProductCmptCompareContentProvider(CompareConfiguration cc) {
+    public CompareViewerContentProvider(CompareConfiguration cc) {
         config = cc;
     }
 
@@ -54,8 +54,8 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     public Image getAncestorImage(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getAncestor();
-            if (el instanceof ProductCmptCompareItem) {
-                return ((ProductCmptCompareItem)el).getImage();
+            if (el instanceof AbstractCompareItem) {
+                return ((AbstractCompareItem)el).getImage();
             }
         }
         return null;
@@ -69,7 +69,7 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     public Object getAncestorContent(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getAncestor();
-            if (el instanceof ProductCmptCompareItem) {
+            if (el instanceof AbstractCompareItem) {
                 return el;
             }
         }
@@ -97,8 +97,8 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     public Image getLeftImage(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getLeft();
-            if (el instanceof ProductCmptCompareItem) {
-                return ((ProductCmptCompareItem)el).getImage();
+            if (el instanceof AbstractCompareItem) {
+                return ((AbstractCompareItem)el).getImage();
             }
         }
         return null;
@@ -112,7 +112,7 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     public Object getLeftContent(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getLeft();
-            if (el instanceof ProductCmptCompareItem) {
+            if (el instanceof AbstractCompareItem) {
                 return el;
             }
         }
@@ -146,8 +146,8 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     public Image getRightImage(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getRight();
-            if (el instanceof ProductCmptCompareItem) {
-                return ((ProductCmptCompareItem)el).getImage();
+            if (el instanceof AbstractCompareItem) {
+                return ((AbstractCompareItem)el).getImage();
             }
         }
         return null;
@@ -161,7 +161,7 @@ public class ProductCmptCompareContentProvider implements IMergeViewerContentPro
     public Object getRightContent(Object input) {
         if (input instanceof ICompareInput) {
             ITypedElement el = ((ICompareInput)input).getRight();
-            if (el instanceof ProductCmptCompareItem) {
+            if (el instanceof AbstractCompareItem) {
                 return el;
             }
         }

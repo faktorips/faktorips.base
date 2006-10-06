@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.team.compare;
+package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import java.util.Comparator;
 
@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
  * product components (their structures) are consistent with differences in the text representation
  * displayed in the <code>ProductCmptCompareViewer</code>.
  * 
- * @see org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItem
+ * @see org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem
  * 
  * @author Stefan Widmaier
  */

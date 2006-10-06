@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.team.compare;
+package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
@@ -26,6 +26,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.ui.team.compare.CompareViewerContentProvider;
+import org.faktorips.devtools.core.ui.team.compare.CompareViewerLineStyleListener;
 
 /**
  * A viewer for comparing productcomponents. Displays the structural differences between the productcomponents in a tree.
@@ -36,14 +38,16 @@ import org.eclipse.swt.widgets.Composite;
 public class ProductCmptCompareViewer extends TextMergeViewer {
 
     /**
-     * Creates a ProductCmptCompareViewer using a ProductCmptCompareContentProvider as a 
-     * content provider.
+     * Creates a <code>ProductCmptCompareViewer</code> using the given parent as parent composite
+     * and the given <code>CompareConfiguration</code>. A
+     * <code>CompareViewerContentProvider</code> is used as a content provider.
+     * 
      * @param parent
      * @param cc
      */
     protected ProductCmptCompareViewer(Composite parent, CompareConfiguration cc) {
         super(parent, cc);
-        setContentProvider(new ProductCmptCompareContentProvider(cc));
+        setContentProvider(new CompareViewerContentProvider(cc));
 
         /* Sets the textfont to be used in this compare viewer. 
          * Cannot be called in configureTextViewer() as the TextMergeViewer sets the font in its 
@@ -55,16 +59,16 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
             data[i].setStyle(SWT.NORMAL);
             data[i].setHeight(10);
         }
-        JFaceResources.getFontRegistry().put(ProductCmptCompareViewer.class.getName(), data);
+        JFaceResources.getFontRegistry().put(getClass().getName(), data);
     }
 
     /**
-     * Adds a <code>ProductCmptLineStyleListener</code> to the given <code>TextViewer</code> for
+     * Adds a <code>CompareViewerLineStyleListener</code> to the given <code>TextViewer</code> for
      * token highlighting.
      * {@inheritDoc}
      */
     protected void configureTextViewer(TextViewer textViewer) {
-        ProductCmptLineStyleListener listener = new ProductCmptLineStyleListener((SourceViewer)textViewer);
+        CompareViewerLineStyleListener listener = new CompareViewerLineStyleListener((SourceViewer)textViewer);
         textViewer.getTextWidget().addLineStyleListener(listener);
     }
 

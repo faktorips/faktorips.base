@@ -15,7 +15,7 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.team.compare;
+package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -23,7 +23,6 @@ import java.util.GregorianCalendar;
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -126,17 +125,6 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     }
 
     /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItem.isRoot()'
-     */
-    public void testIsRoot() {
-        assertTrue(compareItemRoot.isRoot());
-
-        Object[] children= compareItemRoot.getChildren();
-        ProductCmptCompareItem compareItem= (ProductCmptCompareItem) children[0];
-        assertFalse(compareItem.isRoot());
-    }
-
-    /*
      * Test method for 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItem.getParent()'
      */
     public void testGetParent() {
@@ -159,7 +147,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertNotNull(compareItemGen3.getParent());
         assertEquals(compareItem, compareItemGen3.getParent());
         
-        // CompareItemComparator puts Configelements above Relations  
+        // CompareItemComparator sorts Configelements above Relations  
         children= compareItemGen1.getChildren();
         ProductCmptCompareItem compareItemConfigElement1= (ProductCmptCompareItem) children[0];
         ProductCmptCompareItem compareItemConfigElement2= (ProductCmptCompareItem) children[1];
@@ -206,64 +194,4 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(relation1, compareItemRelation1.getIpsElement());
         assertEquals(relation2, compareItemRelation2.getIpsElement());
     }
-
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItem.getDocument()'
-     */
-    public void testGetDocument() {
-        Object[] children= compareItemRoot.getChildren();
-        ProductCmptCompareItem compareItem= (ProductCmptCompareItem) children[0];
-        assertEquals(compareItemRoot.getDocument(), compareItem.getDocument());
-
-        children= compareItem.getChildren();
-        ProductCmptCompareItem compareItemGen1= (ProductCmptCompareItem) children[0];
-        assertEquals(compareItemRoot.getDocument(), compareItemGen1.getDocument());
-        
-        ProductCmptCompareItem compareItemGen2= (ProductCmptCompareItem) children[1];
-        assertEquals(compareItemRoot.getDocument(), compareItemGen2.getDocument());
-        
-        ProductCmptCompareItem compareItemGen3= (ProductCmptCompareItem) children[2];
-        assertEquals(compareItemRoot.getDocument(), compareItemGen3.getDocument());
-    }
-
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItem.getRange()'
-     */
-    public void testGetRange() {
-        // TODO TestGetRange()
-    }
-
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.ProductCmptCompareItem.initDocumentRange()'
-     */
-    public void testInitDocumentRange() throws CoreException {
-        // create artificially unsorted ProductCmpt
-        product= newProductCmpt(root, "TestProductCmptSort");
-        
-        GregorianCalendar calendar= new GregorianCalendar();
-        calendar.add(Calendar.MONTH, 2);
-        generation1 = (IProductCmptGeneration) product.newGeneration(calendar);
-        calendar= new GregorianCalendar();
-        generation2 = (IProductCmptGeneration) product.newGeneration(calendar);
-        calendar= new GregorianCalendar();
-        calendar.add(Calendar.MONTH, 1);
-        generation3 = (IProductCmptGeneration) product.newGeneration(calendar);
-        
-        srcFile = product.getIpsSrcFile();
-        correspondingFile = srcFile.getCorrespondingFile();
-        compareItemRoot = (ProductCmptCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
-        
-        // Sorting of children. The structure is initialized (and sorted) automatically when created.
-        // generations sorted by date
-        Object[] children= compareItemRoot.getChildren();
-        ProductCmptCompareItem compareItem= (ProductCmptCompareItem) children[0];
-        children= compareItem.getChildren();
-        ProductCmptCompareItem compareItemGen1= (ProductCmptCompareItem) children[0];
-        ProductCmptCompareItem compareItemGen2= (ProductCmptCompareItem) children[1];
-        ProductCmptCompareItem compareItemGen3= (ProductCmptCompareItem) children[2];
-        assertEquals(generation2, compareItemGen1.getIpsElement());
-        assertEquals(generation3, compareItemGen2.getIpsElement());
-        assertEquals(generation1, compareItemGen3.getIpsElement());
-    }
-
 }
