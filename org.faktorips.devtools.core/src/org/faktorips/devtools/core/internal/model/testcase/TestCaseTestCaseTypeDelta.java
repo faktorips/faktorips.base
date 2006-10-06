@@ -55,6 +55,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     private ITestPolicyCmptRelation[] testPolicyCmptRelationsWithMissingTypeParam;
     private ITestAttributeValue[] testAttributeValuesWithMissingTestAttribute;
     private ITestPolicyCmpt[] testPolicyCmptWithDifferentSortOrder;
+    private ITestPolicyCmpt[] testPolicyCmptWithDifferentSortOrderTestAttr;
 
     // TestCaseTypeSide
     private ITestValueParameter[] testValueParametersWithMissingTestValue;
@@ -63,11 +64,14 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     
     private boolean differentTestParameterOrder = false;
     
-    // Contains the corresponding test policy cmpt (vale) for the missing test attributs (key)
+    // Contains the corresponding test policy cmpt (value) for the missing test attributs (key)
     private HashMap testAttributes2TestPolicyCmpt = new HashMap();
 
     // Contains test policy cmpt with wrong sort order (childs)
     private List testPolicyCmptChildWithWrongSortOrder = new ArrayList();
+    
+    // Contains test policy cmpt with wrong sort order (attributes)
+    private List testPolicyCmptWithWrongSortOrderAttribute = new ArrayList();
     
     // Contains the test case objects with missing test case type parameter
     private List testCaseSideObjects;
@@ -87,6 +91,9 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         computeTestValueParameterWithMissingTestValue();
         computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(testCaseSideObjects);
         computeTestRuleSortOrder();
+        
+        testPolicyCmptWithDifferentSortOrderTestAttr = (ITestPolicyCmpt[])testPolicyCmptWithWrongSortOrderAttribute
+            .toArray(new ITestPolicyCmpt[0]);
     }
 
     /**
@@ -166,9 +173,11 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
      * Check the sort order of the root objects
      */
     private void checkSortOrder(ITestParameter testParameter, ITestObject testObject) {
-        if (differentTestParameterOrder)
+        if (differentTestParameterOrder){
             // no more check necessary, is already in delta
             return;
+        }
+        
         // compare the sort order of the root objects
         List testParams = new ArrayList();
         testParams.addAll(Arrays.asList(testCaseType.getTestParameters()));
@@ -260,8 +269,9 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                         checkSortOrder(param, (ITestPolicyCmpt)element);
                     }else{
                         ITestPolicyCmpt parent = (ITestPolicyCmpt) ((ITestPolicyCmpt)element).getParentPolicyCmpt();
-                        if (differentSortOrderForTestPolicyCmpts.contains(parent))
+                        if (differentSortOrderForTestPolicyCmpts.contains(parent)){
                             continue;
+                        }
                         
                         if (hasChildDifferntSortOrder((ITestPolicyCmpt)element)){
                             differentTestParameterOrder = true;
@@ -276,7 +286,8 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
                 .toArray(new ITestPolicyCmptTypeParameter[0]);
         testAttributesWithMissingTestAttributeValue = (ITestAttribute[])missingTestAttributes
                 .toArray(new ITestAttribute[0]);
-        testPolicyCmptWithDifferentSortOrder = (ITestPolicyCmpt[]) differentSortOrderForTestPolicyCmpts.toArray(new ITestPolicyCmpt[0]);
+        testPolicyCmptWithDifferentSortOrder = (ITestPolicyCmpt[])differentSortOrderForTestPolicyCmpts
+                .toArray(new ITestPolicyCmpt[0]);
     }
 
     /*
@@ -313,6 +324,8 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             }
             cmptWithMissingTestAttrList.add(cmpt);
             testAttributes2TestPolicyCmpt.put(testAttr, cmptWithMissingTestAttrList);
+            // furthermore indicate a different sort oder of the test attributes
+            addDifferentTestAttributeSortOrder(cmpt);
         }
     }
 
@@ -399,6 +412,30 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             computeTestPolicyCmptRelationStructWithMissingTestParameter(cmpt.getTestPolicyCmptRelations(),
                     missingTestPolicyCmpts, missingTestPolicyCmptRelations, missingTestAttributeValues, allTestPolicyCmpt);
             computeTestAttributeValuesWithMissingTestAttribute(cmpt, missingTestAttributeValues);
+            computeSortOrderOfTestAttributes(cmpt, param);
+        }
+    }
+
+    /*
+     * Computes (compares) the sort order of the test attributes inside the given cmpt with the given param
+     */
+    private void computeSortOrderOfTestAttributes(ITestPolicyCmpt cmpt, ITestPolicyCmptTypeParameter param) {
+        if (testPolicyCmptWithWrongSortOrderAttribute.contains(cmpt)){
+            // don't check, because it was already detected that the test policy cmpt's test attribute values 
+            // are in a different sort order
+            return;
+        }
+        ITestAttributeValue[] testAttrValue = cmpt.getTestAttributeValues();
+        ITestAttribute[] testAttr = param.getTestAttributes();
+        if (testAttrValue.length != testAttr.length){
+            addDifferentTestAttributeSortOrder(cmpt);
+            return;
+        }
+        for (int i = 0; i < testAttr.length; i++) {
+            if (! testAttr[i].getName().equals(testAttrValue[i].getTestAttribute())){
+                addDifferentTestAttributeSortOrder(cmpt);
+                return;                
+            }
         }
     }
 
@@ -470,11 +507,30 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             List missingTestAttributeValue) throws CoreException {
         ITestAttributeValue testAttributeValues[] = cmpt.getTestAttributeValues();
         for (int i = 0; i < testAttributeValues.length; i++) {
-            if (testAttributeValues[i].findTestAttribute() == null)
+            ITestAttribute testAttribute = testAttributeValues[i].findTestAttribute();
+            if (testAttribute == null){
                 missingTestAttributeValue.add(testAttributeValues[i]);
+                // indicate a different sort oder of the test attributes
+                addDifferentTestAttributeSortOrder(cmpt);
+            }
         }
     }
 
+    /*
+     * Adds and indicates the different sort order of test attributes
+     */
+    private void addDifferentTestAttributeSortOrder(ITestPolicyCmpt policyCmpt){
+       if (testPolicyCmptWithWrongSortOrderAttribute.contains(policyCmpt)){
+           return;
+       }
+       testPolicyCmptWithWrongSortOrderAttribute.add(policyCmpt);
+       differentTestParameterOrder = true;
+       
+       // assert that the list which will will be used in the interface is not filled yet,
+       // if true there is a coding error, means wrong execution order of method calls!
+       ArgumentCheck.isTrue(testPolicyCmptWithDifferentSortOrder == null);
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -541,6 +597,10 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     // Missing test case type side objects
     //
     
+    public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrderTestAttr() {
+        return testPolicyCmptWithDifferentSortOrderTestAttr;
+    }
+
     public ITestValueParameter[] getTestValueParametersWithMissingTestValue() {
         return testValueParametersWithMissingTestValue;
     }

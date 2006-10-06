@@ -495,8 +495,33 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             newChildList.addAll(relations);
         }
         testPolicyCmptRelations = newChildList;
+        valueChanged(false, true);
     }
     
+    /**
+     * Fix the sort order of the test attribute values in order to the corresponding test
+     * policy cmpt type parameter test attributes.
+     * 
+     * @throws CoreException in case of an error
+     */
+
+    void fixDifferentTestAttrValueSortOrder() throws CoreException {
+        List newTestAttrValueList = new ArrayList();
+        ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
+        ITestAttribute[] testAttr = param.getTestAttributes();
+        for (int i = 0; i < testAttr.length; i++) {
+            ITestAttributeValue testAttrValue = getTestAttributeValue(testAttr[i].getName());
+            if (testAttrValue == null) {
+                throw new CoreException(
+                        new IpsStatus(
+                                "Couldn't fix the sort order of the test attribute values, because there is a mismatch between test case and its corresponding type!")); //$NON-NLS-1$
+            }
+            newTestAttrValueList.add(testAttrValue);
+        }
+        testAttributeValues = newTestAttrValueList;
+        valueChanged(false, true);
+    }
+
 	/**
 	 * {@inheritDoc}
 	 */

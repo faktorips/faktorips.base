@@ -111,4 +111,10 @@ public interface ITestCaseTestCaseTypeDelta {
      * test policy cmpt type parameter.
      */
     public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrder();
+    
+    /**
+     * Returns the test policy cmpts which have a different sort order of their test attribute
+     * values compared to their corresponding test policy cmpt type parameter.
+     */
+    public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrderTestAttr();
 }

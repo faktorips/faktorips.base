@@ -290,6 +290,12 @@ public class TestCase extends IpsObject implements ITestCase {
             for (int i = 0; i < cmpts.length; i++) {
                 ((TestPolicyCmpt)cmpts[i]).fixDifferentChildSortOrder();
             }
+
+            // order test attributes
+            cmpts = delta.getTestPolicyCmptWithDifferentSortOrderTestAttr();
+            for (int i = 0; i < cmpts.length; i++) {
+                ((TestPolicyCmpt)cmpts[i]).fixDifferentTestAttrValueSortOrder();
+            }
             
             valueChanged(false, true);
         }
