@@ -67,11 +67,11 @@ public class MessageCueLabelProvider extends LabelProvider {
 		    return baseImage;
 		}
         
-        // gets the cached problem descriptor for the base image
+        // get the cached problem descriptor for the base image
         String key = getKey(baseImage, list.getSeverity());
         ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
         if (descriptor == null){
-        	baseProvider.getImage(element);
+            baseImage = baseProvider.getImage(element);
         	descriptor = new ProblemImageDescriptor(baseImage, list.getSeverity());
         	cachedProblemImageDescriptors.put(key, descriptor);
         }
