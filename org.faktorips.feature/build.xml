@@ -5,7 +5,7 @@
 		<property name="feature.temp.folder" value="${basedir}/feature.temp.folder"/>
 		<property name="feature.destination" value="${basedir}"/>
 	</target>
-
+ 
 	<target name="all.plugins" depends="init">
 		<ant antfile="build.xml" dir="../org.faktorips.valuetypes" target="${target}">
 			<property name="arch" value="x86"/>
