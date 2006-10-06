@@ -186,7 +186,7 @@ public class ProductCmptRelationTest extends AbstractIpsPluginTest {
         rel.setTargetRoleSingular("testRelation");
         rel.setTargetRoleSingularProductSide("testRelation");
         
-        IProductCmptRelation relation = generation.newRelation(rel.getTargetRoleSingular());
+        IProductCmptRelation relation = generation.newRelation(rel.getName());
         relation.setTarget(productCmpt.getQualifiedName());
         
         MessageList ml = relation.validate();

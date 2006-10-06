@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
@@ -273,43 +272,15 @@ public class ProductCmptRelation extends IpsObjectPart implements
 		if (target == null || relationType == null) {
 			return false;
 		}
-		
-		boolean valid = false;
-
-		IRelation policyRelation = null;
-		policyRelation = relationType.findPolicyCmptTypeRelation();
-		
-		IPolicyCmptType targetType = target.findPolicyCmptType();
-		if (targetType == null) {
-			return false;
-		}
-		
-		IPolicyCmptType[] targetTypes = targetType.getSupertypeHierarchy().getAllSupertypesInclSelf(targetType);
-		
-		
-		IPolicyCmptType type = null;
-		if (policyRelation != null) {
-			type = policyRelation.findTarget();
-		}
-		if (type != null) {
-			ITypeHierarchy hierarchy = type.getSupertypeHierarchy();
-			
-			IPolicyCmptType[] types = hierarchy.getAllSupertypesInclSelf(type);
-			
-			for (int i = 0; i < types.length && !valid; i++) {
-				for (int j = 0; j < targetTypes.length && !valid; j++) {
-					valid = targetTypes[j].getQualifiedName().equals(types[i].getQualifiedName());
-				}
-			} 
-			
-			hierarchy = type.getSubtypeHierarchy();
-			types = hierarchy.getAllSubtypes(type);
-			for (int i = 0; i < types.length && !valid; i++) {
-				valid = target.getPolicyCmptType().equals(types[i].getQualifiedName()); 
-			} 
-		}
-		
-		return valid;
+        IRelation policyRelation = relationType.findPolicyCmptTypeRelation();
+        if (policyRelation==null) {
+            return false;
+        }
+        IPolicyCmptType actualTargetType = target.findPolicyCmptType();
+        if (actualTargetType==null) {
+            return false;
+        }
+        return actualTargetType.isSubtypeOrSameType(policyRelation.findTarget());
 	}
 	
 	/**

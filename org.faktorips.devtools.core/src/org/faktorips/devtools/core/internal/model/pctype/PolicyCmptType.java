@@ -197,6 +197,33 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         supertype = newSupertype;
         valueChanged(oldSupertype, newSupertype);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSubtypeOf(IPolicyCmptType supertypeCandidate) throws CoreException {
+        if (supertypeCandidate==null) {
+            return false;
+        }
+        IPolicyCmptType supertype = findSupertype();
+        if (supertype==null) {
+            return false;
+        }
+        if (supertypeCandidate.equals(supertype)) {
+            return true;
+        }
+        return supertype.isSubtypeOf(supertypeCandidate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSubtypeOrSameType(IPolicyCmptType candidate) throws CoreException {
+        if (this.equals(candidate)) {
+            return true;
+        }
+        return isSubtypeOf(candidate);
+    }
 
     /**
      * {@inheritDoc}

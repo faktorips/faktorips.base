@@ -258,6 +258,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		return newRelationInternal(getNextPartId());
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	public boolean canCreateValidRelation(IProductCmpt target, IProductCmptTypeRelation relation) throws CoreException {
 		if (relation==null) {
 			return false;

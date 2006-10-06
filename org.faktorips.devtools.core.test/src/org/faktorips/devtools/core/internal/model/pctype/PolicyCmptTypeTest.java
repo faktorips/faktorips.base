@@ -68,6 +68,40 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         pcType.setConfigurableByProductCmptType(false);
     }
     
+    public void testIsSubtype() throws CoreException {
+        assertFalse(pcType.isSubtypeOf(null));
+        
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        assertFalse(pcType.isSubtypeOf(supertype));
+        pcType.setSupertype(supertype.getQualifiedName());
+        assertTrue(pcType.isSubtypeOf(supertype));
+        
+        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
+        assertFalse(pcType.isSubtypeOf(supersupertype));
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        assertTrue(pcType.isSubtypeOf(supersupertype));
+        
+        assertFalse(supertype.isSubtypeOf(pcType));
+    }
+    
+    public void testIsSubtypeOrSameType() throws CoreException {
+        assertFalse(pcType.isSubtypeOrSameType(null));
+        
+        assertTrue(pcType.isSubtypeOrSameType(pcType));
+
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
+        assertFalse(pcType.isSubtypeOrSameType(supertype));
+        pcType.setSupertype(supertype.getQualifiedName());
+        assertTrue(pcType.isSubtypeOrSameType(supertype));
+        
+        IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
+        assertFalse(pcType.isSubtypeOrSameType(supersupertype));
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        assertTrue(pcType.isSubtypeOrSameType(supersupertype));
+        
+        assertFalse(supertype.isSubtypeOf(pcType));
+    }
+
     public void testIsExtensionCompilationUnitGenerated() throws CoreException {
         assertFalse(pcType.isExtensionCompilationUnitGenerated());
         
