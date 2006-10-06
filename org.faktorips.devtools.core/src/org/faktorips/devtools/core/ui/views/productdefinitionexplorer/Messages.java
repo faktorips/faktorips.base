@@ -35,6 +35,9 @@ public class Messages extends NLS {
     public static String ProductExplorer_actionReplace;
     public static String ProductExplorer_actionAdd;
     public static String ProductExplorer_actionShowHistory;
+    public static String ProductExplorer_CompareWithMenu_CompareWith;
+    public static String ProductExplorer_CompareWithMenu_Repository;
+    public static String ProductExplorer_CompareWithMenu_Revision;
 
 
 }

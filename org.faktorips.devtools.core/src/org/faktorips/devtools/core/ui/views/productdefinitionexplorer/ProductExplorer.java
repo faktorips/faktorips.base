@@ -24,6 +24,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -77,18 +78,31 @@ public class ProductExplorer extends ModelExplorer {
     }
     
     private class ProductMenuBuilder extends MenuBuilder{
-        /*
-         * TODO find clean solution for adding specific actions from other plugins without inserting mb-additions
-         */
+        private WrapperAction commit= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCommit, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.commit");//$NON-NLS-2$ //$NON-NLS-1$
+        private WrapperAction update= new WrapperAction(treeViewer, Messages.ProductExplorer_actionUpdate, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.update");//$NON-NLS-2$ //$NON-NLS-1$
+        private WrapperAction replace= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplace, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replace");//$NON-NLS-2$ //$NON-NLS-1$
+        private WrapperAction add= new WrapperAction(treeViewer, Messages.ProductExplorer_actionAdd, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.add");//$NON-NLS-2$ //$NON-NLS-1$
+        private WrapperAction showHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionShowHistory, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory");//$NON-NLS-2$ //$NON-NLS-1$
+                
+        private WrapperAction compareWithRepository= new WrapperAction(treeViewer, Messages.ProductExplorer_CompareWithMenu_Repository, null, "org.eclipse.team.cvs.ui.compareWithRemote");//$NON-NLS-2$ 
+        private WrapperAction compareWithRevision= new WrapperAction(treeViewer, Messages.ProductExplorer_CompareWithMenu_Revision, null, "org.eclipse.team.cvs.ui.compareWithRevision");//$NON-NLS-2$
+//        private WrapperAction compareWithLocalHistory= new WrapperAction(treeViewer, "Local History", null, "org.eclipse.team.cvs.ui.showHistory");
+        
         protected void createAdditionalActions(IMenuManager manager, Object selected) {
             if(!(selected instanceof IProject)){
                 MenuManager teamMenu = new MenuManager(Messages.ProductExplorer_submenuTeam);
-                teamMenu.add(new WrapperAction(treeViewer, Messages.ProductExplorer_actionCommit, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.commit")); //$NON-NLS-2$ //$NON-NLS-1$
-                teamMenu.add(new WrapperAction(treeViewer, Messages.ProductExplorer_actionUpdate, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.update")); //$NON-NLS-2$ //$NON-NLS-1$
-                teamMenu.add(new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplace, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replace")); //$NON-NLS-2$ //$NON-NLS-1$
-                teamMenu.add(new WrapperAction(treeViewer, Messages.ProductExplorer_actionAdd, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.add")); //$NON-NLS-2$ //$NON-NLS-1$
-                teamMenu.add(new WrapperAction(treeViewer, Messages.ProductExplorer_actionShowHistory, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory"));  //$NON-NLS-1$//$NON-NLS-2$
+                teamMenu.add(commit);
+                teamMenu.add(update);
+                teamMenu.add(replace);
+                teamMenu.add(add);
+                teamMenu.add(showHistory);
                 manager.add(teamMenu);
+            }
+            if(selected instanceof IFile || selected instanceof IIpsObject){
+                MenuManager compareMenu = new MenuManager(Messages.ProductExplorer_CompareWithMenu_CompareWith);
+                compareMenu.add(compareWithRepository);
+                compareMenu.add(compareWithRevision);
+                manager.add(compareMenu);
             }
         }
     }
