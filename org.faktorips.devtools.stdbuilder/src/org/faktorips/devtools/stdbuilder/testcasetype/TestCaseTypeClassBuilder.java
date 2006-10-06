@@ -331,7 +331,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         String[] argClassNames = new String[] { "java.lang.String" };
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("super(qualifiedName);");
-        codeBuilder.javaDoc(javaDoc, ANNOTATION_GENERATED);
+        body.appendln(MARKER_BEGIN_USER_CODE);
+        body.appendln(MARKER_END_USER_CODE);
+        codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
         codeBuilder.methodBegin(Modifier.PUBLIC, null, className, 
                 argNames, argClassNames, new String[]{ParserConfigurationException.class.getName()});
         codeBuilder.append(body);
@@ -398,7 +400,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     protected void buildMethodInit(JavaCodeFragmentBuilder codeBuilder, String methodName, JavaCodeFragment body, String javaDoc){
         codeBuilder.method(Modifier.PUBLIC, "void", methodName, new String[]{"element"}, 
-                new String[]{Element.class.getName()}, body, javaDoc, ANNOTATION_GENERATED);
+                new String[]{Element.class.getName()}, body, javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
     }
     
     /*
