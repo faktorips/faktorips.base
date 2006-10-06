@@ -54,7 +54,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.Relation;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -151,6 +155,34 @@ public class RelationsSection extends IpsSection{
 		ArgumentCheck.notNull(generation);
 		this.generation = generation;
 		this.site = site;
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(new ContentsChangeListener() {
+        
+            public void contentsChanged(ContentChangeEvent event) {
+                if (!event.getIpsSrcFile().equals(RelationsSection.this.generation.getIpsObject().getIpsSrcFile())) {
+                    return;
+                }
+                try {
+                    IIpsObject obj = event.getIpsSrcFile().getIpsObject();
+                    if (obj == null || obj.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
+                        return;
+                    }
+                    
+                    IProductCmpt cmpt = (IProductCmpt)obj;
+                    IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(RelationsSection.this.generation.getValidFrom());
+                    if (!RelationsSection.this.generation.equals(gen)) {
+                        return;
+                    }
+                    
+                    fGenerationDirty = true;
+                }
+                catch (CoreException e) {
+                    IpsPlugin.log(e);
+                    fGenerationDirty = true;
+                }
+        
+            }
+        
+        });
 		fGenerationDirty = true;
 		fEnabled = true;
 		initControls();
@@ -287,8 +319,9 @@ public class RelationsSection extends IpsSection{
 	 */
 	protected void performRefresh() {
 		if (fGenerationDirty && treeViewer != null) {
-			treeViewer.setInput(generation);
+            treeViewer.refresh();
 			treeViewer.expandAll();
+            fGenerationDirty = false;
 		}
 		
 		if (selectionChangedListener != null && selectionChangedListener.uiController != null) {
