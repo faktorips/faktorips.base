@@ -54,6 +54,7 @@ public class IpsTestAction extends IpsAction {
         super.setText(Messages.IpsTestCaseAction_name);
         super.setDescription(Messages.IpsTestCaseAction_description);
         super.setToolTipText(Messages.IpsTestCaseAction_tooltip);
+        super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
 	}
 
 	/**
@@ -168,7 +169,7 @@ public class IpsTestAction extends IpsAction {
 			String currElement = (String) iter.next();
 			String prevProject = previousElement.substring(0, previousElement.indexOf(SEPARATOR));
 			if (! currElement.startsWith(prevProject)){
-				MessageDialog.openError(null, Messages.IpsTestAction_titleCantRunTest, Messages.IpsTestAction_msgCantRunTest);
+				MessageDialog.openInformation(null, Messages.IpsTestAction_titleCantRunTest, Messages.IpsTestAction_msgCantRunTest);
 				return false;
 			}
 			previousElement = currElement;

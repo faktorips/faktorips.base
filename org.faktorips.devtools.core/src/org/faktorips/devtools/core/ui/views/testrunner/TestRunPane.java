@@ -97,18 +97,6 @@ public class TestRunPane {
 		return fTable;
 	}
 	
-    /**
-     * Select the failure or error table enty with the given idx.
-     * If there was no failure or error then nothing will selected.
-     */
-    public void selectCurrentFailureOrError(){
-        if (tableFailureItems.size()==0)
-            return;
-        
-        fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
-        showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
-    }
-    
 	/**
 	 * Select the first failure or error table entry.
 	 * If there was no failure or error then nothing will selected.
@@ -117,7 +105,7 @@ public class TestRunPane {
 		if (tableFailureItems.size()==0)
             return;
         
-		fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(0)));
+		fTable.setSelection(fTable.indexOf((TableItem)tableFailureItems.get(0)));
 		showDetailsInFailurePane((TableItem)tableFailureItems.get(0));
 	}
     
@@ -129,10 +117,11 @@ public class TestRunPane {
             return;
         
         currErrorOrFailure ++;
-        if (currErrorOrFailure>(tableFailureItems.size()-1))
+        if (currErrorOrFailure>(tableFailureItems.size()-1)){
             currErrorOrFailure = 0;
+        }
         
-        fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
+        fTable.setSelection(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
         showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
     }
     
@@ -148,7 +137,7 @@ public class TestRunPane {
         if (currErrorOrFailure<0)
             currErrorOrFailure = tableFailureItems.size() -1;
         
-        fTable.select(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
+        fTable.setSelection(fTable.indexOf((TableItem)tableFailureItems.get(currErrorOrFailure)));
         showDetailsInFailurePane((TableItem)tableFailureItems.get(currErrorOrFailure));
     }    
 
@@ -224,6 +213,9 @@ public class TestRunPane {
 		
 		TableItem tableItem = testTableEntry.getTableItem();
 		tableItem.setImage(IpsPlugin.getDefault().getImage("obj16/testrun.gif")); //$NON-NLS-1$
+        
+        // select current item and scroll
+        fTable.setSelection(new TableItem[]{tableItem});
 	}
 	
 	/**
