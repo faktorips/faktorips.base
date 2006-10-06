@@ -198,8 +198,8 @@ public class IpsPlugin extends AbstractUIPlugin {
 		String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName;
 		Image image = getImageRegistry().get(overlayedImageName);
 		if (image == null) {
-			ImageDescriptor imageDescriptor = ImageDescriptor
-					.createFromImage(ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName)));
+		    image = ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName));
+			ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(image);
 			getImageRegistry().put(overlayedImageName, imageDescriptor);
 		}
 		return image;
