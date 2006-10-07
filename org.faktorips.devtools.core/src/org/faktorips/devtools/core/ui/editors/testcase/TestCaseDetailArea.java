@@ -186,7 +186,12 @@ public class TestCaseDetailArea {
      * Returns the edit field which is identified by the given unique key.
      */
     public EditField getEditField(String uniqueKey){
-        return (EditField) allEditFields.get(uniqueKey);
+        EditField editField = (EditField) allEditFields.get(uniqueKey);
+        if (editField == null){
+            // edit field not found, try to get the special edit value field
+            editField = (EditField) allEditFields.get(TestCaseSection.VALUESECTION + uniqueKey);         
+        }
+        return editField;
     }
     
 	/**
@@ -652,9 +657,13 @@ public class TestCaseDetailArea {
         failureMessageCache.put(editFieldUniqueKey, failureMessage);
         failureDetailCache.put(editFieldUniqueKey, failureDetails2);
         EditField editField = (EditField) allEditFields.get(editFieldUniqueKey);
+        if (editField == null){
+            // edit field not found, try to get the special edit value field
+            editField = (EditField) allEditFields.get(TestCaseSection.VALUESECTION + editFieldUniqueKey);            
+        }
         if (editField != null){
             testCaseSection.postSetFailureBackgroundAndToolTip(editField, failureMessage);
-        }
+        } 
     }
 
     /**
@@ -662,6 +671,10 @@ public class TestCaseDetailArea {
      */
     void storeActualValueInExpResult(String editFieldUniqueKey, String actualValue, String message) {
         EditField editField = (EditField) allEditFields.get(editFieldUniqueKey);
+        if (editField == null){
+            // edit field not found, try to get the special edit value field
+            editField = (EditField) allEditFields.get(TestCaseSection.VALUESECTION + editFieldUniqueKey);
+        }
         if (editField != null){
             updateValue(editField, actualValue);
             testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, message);

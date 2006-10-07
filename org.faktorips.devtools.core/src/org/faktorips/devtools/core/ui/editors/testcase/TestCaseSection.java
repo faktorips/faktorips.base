@@ -103,7 +103,7 @@ import org.faktorips.util.message.MessageList;
  * Section to show the test case.
  */
 public class TestCaseSection extends IpsSection implements IIpsTestRunListener, ContentsChangeListener {
-	private static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
+	public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 	
 	// The treeview which displays all test policy components and test values which are available in this test
 	private TreeViewer treeViewer;
