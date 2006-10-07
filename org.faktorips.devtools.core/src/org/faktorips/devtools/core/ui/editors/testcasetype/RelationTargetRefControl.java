@@ -53,7 +53,13 @@ public class RelationTargetRefControl extends PcTypeRefControl {
         if (policyCmptTypeTarget == null)
             return new IIpsObject[0];
         
-        // find all policy component of the given type (incl. subclasses)
+        // find all policy component of the given type (incl. subclasses) (the result could be candidates for the
+        // target policy cmpt type of the relation)
+        // when defining the test case subclasses of the current policy cmpt target could be assigned 
+        // as target for the relations target
+        // Remark: this is a operation in the ui, therefore it is acceptable if the operation takes a long
+        // time, because the user has triggered this operation to chose a policy cmpt from this selection
+        // of policy cmpt types
         ITypeHierarchy subTypeHierarchy = policyCmptTypeTarget.getSubtypeHierarchy();
         IPolicyCmptType[] subTypes = subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
         if (subTypes == null)
@@ -63,6 +69,4 @@ public class RelationTargetRefControl extends PcTypeRefControl {
         policyCmptTypes[subTypes.length] = policyCmptTypeTarget;
         return policyCmptTypes;
     }
-
-    
 }

@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -202,22 +201,24 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
             return null;
         }
         // if this is a root parameter then the relation field is not used
-        if (isRoot())
+        if (isRoot()){
             return null;
+        }
         
         // this is a child parameter therfore a relation should exists
         ITestPolicyCmptTypeParameter parent = (ITestPolicyCmptTypeParameter) getParent();
-        IPolicyCmptType policyCmptType = parent.findPolicyCmptType();
+        IPolicyCmptType pcType = parent.findPolicyCmptType();
         
-        if (policyCmptType != null){
-            ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
-            IRelation[] relations = hierarchy.getAllRelations(policyCmptType);
+        while (pcType != null){
+            IRelation[] relations = pcType.getRelations();
             for (int i = 0; i < relations.length; i++) {
                 if (relations[i].getName().equals(relation)) {
                     return relations[i];
                 }
             }
+            pcType = pcType.findSupertype();
         }
+        
         return null;
     }
 
@@ -558,7 +559,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                         PROPERTY_RELATION); //$NON-NLS-1$
                 list.add(msg);
             } else if (policyCmptTypeFound != null){
-                // check if the relation is specified and policy component type exists
+                // check if the relation is specified and the policy component type exists
                 //   that the policy cmpt type is a possible target of the relation  
                 IPolicyCmptType targetOfRelation = relationFound.findTarget();
                 if (targetOfRelation == null){
@@ -567,23 +568,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                             PROPERTY_RELATION); //$NON-NLS-1$
                     list.add(msg);
                 }else{
-                    // find all policy components of the target of the relation (incl. subclasses)
-                    ITypeHierarchy subTypeHierarchy = targetOfRelation.getSubtypeHierarchy();
-                    IPolicyCmptType[] subTypes = subTypeHierarchy.getAllSubtypes(targetOfRelation);
-                    if (subTypes == null)
-                        subTypes = new IPolicyCmptType[0];
-                    IIpsObject[] policyCmptTypes = new IIpsObject[subTypes.length + 1];
-                    System.arraycopy(subTypes, 0, policyCmptTypes, 0, subTypes.length);
-                    policyCmptTypes[subTypes.length] = targetOfRelation;
-                    boolean allowedType = false;
-                    for (int i = 0; i < policyCmptTypes.length; i++) {
-                        if (policyCmptTypes[i].getQualifiedName().equals(policyCmptTypeFound.getQualifiedName())){
-                            allowedType = true;
-                            break;
-                        }                        
-                    }
-    
-                    if (!allowedType){
+                    if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfRelation)){
                         String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForRelation, policyCmptType, relation);
                         Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION, text, Message.ERROR, this,
                                 PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$

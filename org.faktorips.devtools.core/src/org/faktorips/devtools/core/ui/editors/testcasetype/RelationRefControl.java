@@ -28,7 +28,6 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -83,17 +82,21 @@ public class RelationRefControl extends TextButtonControl {
     }
     
     /**
+     * Returns all relations of the parentPolicyCmptType which are assoziations or forward compositions
      * 
-     * @return
-     * @throws CoreException
+     * @throws CoreException in case of an error
      */
     protected IRelation[] getRelations() throws CoreException {
-        ITypeHierarchy superTypeHierarchy = parentPolicyCmptType.getSupertypeHierarchy();
-        IRelation[] relations = superTypeHierarchy.getAllRelations(parentPolicyCmptType);
-        List relationsToSelect = new ArrayList(relations.length);
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].isAssoziation() || relations[i].isForwardComposition())
-                relationsToSelect.add(relations[i]);
+        List relationsToSelect = new ArrayList();
+        IPolicyCmptType currPolicyCmptType = parentPolicyCmptType;
+        while (currPolicyCmptType != null){
+            IRelation[] relations = currPolicyCmptType.getRelations();
+            for (int i = 0; i < relations.length; i++) {
+                if (relations[i].isAssoziation() || relations[i].isForwardComposition()){
+                    relationsToSelect.add(relations[i]);
+                }
+            }
+            currPolicyCmptType = currPolicyCmptType.findSupertype();
         }
         return (IRelation[]) relationsToSelect.toArray(new IRelation[0]);
     }

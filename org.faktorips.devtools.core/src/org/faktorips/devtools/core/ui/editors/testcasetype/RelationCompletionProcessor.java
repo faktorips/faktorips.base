@@ -22,7 +22,6 @@ import java.util.List;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -52,21 +51,26 @@ public class RelationCompletionProcessor extends AbstractCompletionProcessor {
         setIpsProject(pcType.getIpsProject());
     }
 
-    /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.AbstractCompletionProcessor#doComputeCompletionProposals(java.lang.String, java.util.List)
+    /**
+     * {@inheritDoc}
      */
     protected void doComputeCompletionProposals(String prefix, int documentOffset, List result) throws Exception {
         prefix = prefix.toLowerCase();
-        ITypeHierarchy superTypeHierarchy = pcType.getSupertypeHierarchy();
-        IRelation[] relations = superTypeHierarchy.getAllRelations(pcType);
-        for (int i = 0; i < relations.length; i++) {
-            if (onlyAssoziationOrComposition && !(relations[i].isAssoziation() || relations[i].isForwardComposition()))
-                continue;
 
-            if (relations[i].getName().toLowerCase().startsWith(prefix)) {
-                addToResult(result, relations[i], documentOffset);
+        IPolicyCmptType currentPcType = pcType;
+        while (currentPcType != null){
+            IRelation[] relations = currentPcType.getRelations();
+            for (int i = 0; i < relations.length; i++) {
+                if (onlyAssoziationOrComposition &&
+                    !(relations[i].isAssoziation() || relations[i].isForwardComposition())){
+                    continue;
+                }
+                
+                if (relations[i].getName().toLowerCase().startsWith(prefix)) {
+                    addToResult(result, relations[i], documentOffset);
+                }
             }
+            currentPcType = currentPcType.findSupertype();
         }
     }
     

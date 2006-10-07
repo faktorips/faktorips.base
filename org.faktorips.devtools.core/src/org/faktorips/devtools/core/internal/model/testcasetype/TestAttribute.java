@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
@@ -101,17 +100,17 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         if (StringUtils.isEmpty(attribute)) {
             return null;
         }
-        IPolicyCmptType pctype = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
-        if (pctype == null)
-            return null;
+        IPolicyCmptType pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType();
         
-        ITypeHierarchy hierarchy = pctype.getSupertypeHierarchy();
-		IAttribute[] attributes = hierarchy.getAllAttributes(pctype);
-		for (int i = 0; i < attributes.length; i++) {
-			if (attributes[i].getName().equals(attribute)) {
-				return attributes[i];
-			}
-		}
+        while (pcType != null){
+            IAttribute[] attributes = pcType.getAttributes();
+            for (int i = 0; i < attributes.length; i++) {
+                if (attributes[i].getName().equals(attribute)) {
+                    return attributes[i];
+                }
+            }
+            pcType = pcType.findSupertype();
+        }
         return null;
 	}
 

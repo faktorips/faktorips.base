@@ -20,8 +20,11 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
@@ -33,13 +36,14 @@ import org.w3c.dom.Element;
 public class TestAttributeTest extends AbstractIpsPluginTest {
 
     private ITestAttribute testAttribute;
+    private IIpsProject project;
     
     /*
      * @see AbstractIpsPluginTest#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType )newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         testAttribute = type.newExpectedResultPolicyCmptTypeParameter().newExpectedResultTestAttribute();
     }
@@ -100,5 +104,29 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals("attribute2Name", testAttribute.getName());
         assertTrue(testAttribute.isInputAttribute());
         assertFalse(testAttribute.isExpextedResultAttribute());
+    }
+    
+    public void testFindAttribute() throws Exception{
+        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
+        IAttribute attr1 = policyCmptTypeSuper.newAttribute();
+        attr1.setName("attribute1");
+        IAttribute attr2 = policyCmptTypeSuper.newAttribute();
+        attr2.setName("attribute2");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        IAttribute attr3 = policyCmptType.newAttribute();
+        attr3.setName("attribute3");
+        IAttribute attr4 = policyCmptType.newAttribute();
+        attr4.setName("attribute4");
+        policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
+        
+        ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType("policyCmpt");
+        testAttribute.setAttribute("attribute4");
+        assertEquals(attr4, testAttribute.findAttribute());
+        testAttribute.setAttribute("attribute3");
+        assertEquals(attr3, testAttribute.findAttribute());
+        testAttribute.setAttribute("attribute2");
+        assertEquals(attr2, testAttribute.findAttribute());
+        testAttribute.setAttribute("attribute1");
+        assertEquals(attr1, testAttribute.findAttribute());
     }
 }

@@ -171,7 +171,7 @@ public class RelationTargetPage extends AbstractPcTypeRelationWizardPage  {
 		wizard.getUiControllerRelation().updateUI();
 		
 		if (wizard.isNewReverseRelation() && wizard.getReverseRelation() != null){
-			wizard.getReverseRelation().setRelationType(wizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
+			wizard.getReverseRelation().setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
             wizard.setDefaultsByRelationType(wizard.getReverseRelation());
             wizard.getUiControllerReverseRelation().updateUI();
 		}

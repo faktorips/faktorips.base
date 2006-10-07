@@ -18,11 +18,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -32,10 +35,11 @@ import org.w3c.dom.Element;
 public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
 
     private ITestPolicyCmptTypeParameter policyCmptTypeParameterInput;
-
+    private IIpsProject project;
+    
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         policyCmptTypeParameterInput = type.newInputTestPolicyCmptTypeParameter();
     }
@@ -169,5 +173,79 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         testAttribute1.delete();
         testAttribute3.delete();
         assertEquals(0, policyCmptTypeParameterInput.getTestAttributes().length);
+    }
+    
+    public void testFindRelationTest() throws Exception {
+        IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(project, "policyCmptSuper");
+        IRelation rel1 = policyCmptTypeSuper.newRelation();
+        rel1.setTargetRoleSingular("relation1");
+        IRelation rel2 = policyCmptTypeSuper.newRelation();
+        rel2.setTargetRoleSingular("relation2");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        IRelation rel3 = policyCmptType.newRelation();
+        rel3.setTargetRoleSingular("relation3");
+        IRelation rel4 = policyCmptType.newRelation();
+        rel4.setTargetRoleSingular("relation4");
+        policyCmptType.setSupertype(policyCmptTypeSuper.getQualifiedName());
+        
+        ITestPolicyCmptTypeParameter child = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
+        policyCmptTypeParameterInput.setPolicyCmptType("policyCmpt");
+        
+        child.setRelation("relation1");
+        assertEquals(rel1, child.findRelation());
+        child.setRelation("relation2");
+        assertEquals(rel2, child.findRelation());
+        child.setRelation("relation3");
+        assertEquals(rel3, child.findRelation());
+        child.setRelation("relation4");
+        assertEquals(rel4, child.findRelation());
+    }
+    
+    public void testValidationWrongPolicyCmptTypeOfRelation() throws CoreException{
+        IPolicyCmptType targetPolicyCmptTypeSuperSuper = newPolicyCmptType(project, "targetPolicyCmptSuperSuper");
+        IPolicyCmptType targetPolicyCmptTypeSuper = newPolicyCmptType(project, "targetPolicyCmptSuper");
+        IPolicyCmptType targetPolicyCmptType = newPolicyCmptType(project, "targetPolicyCmpt");
+        targetPolicyCmptTypeSuper.setSupertype(targetPolicyCmptTypeSuperSuper.getQualifiedName());
+        targetPolicyCmptType.setSupertype(targetPolicyCmptTypeSuper.getQualifiedName());
+        
+        IPolicyCmptType sourcePolicyCmptType = newPolicyCmptType(project, "sourcePolicyCmpt");
+        IRelation relation = sourcePolicyCmptType.newRelation();
+        relation.setTargetRoleSingular("relation");
+        relation.setTarget(targetPolicyCmptTypeSuperSuper.getQualifiedName());
+        
+        MessageList ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
+
+        policyCmptTypeParameterInput.setPolicyCmptType(sourcePolicyCmptType.getQualifiedName());
+        ITestPolicyCmptTypeParameter child = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
+        // no target candidate of relation set, therefore msg couldn't be throws
+        child.setRelation(relation.getName());
+        ml = child.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
+        
+        child.setPolicyCmptType(targetPolicyCmptTypeSuperSuper.getQualifiedName());
+        ml = child.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
+        
+        child.setPolicyCmptType(targetPolicyCmptTypeSuper.getQualifiedName());
+        ml = child.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
+        
+        child.setPolicyCmptType(targetPolicyCmptType.getQualifiedName());
+        ml = child.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
+        
+        
+        relation.setTarget(targetPolicyCmptTypeSuper.getQualifiedName());
+        
+        child.setPolicyCmptType(targetPolicyCmptTypeSuperSuper.getQualifiedName());
+        ml = child.validate();
+        // wrong target of relation set 
+        //  relation specifies super but as possible target policy cmpt type super super is set
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
+        
+        child.setPolicyCmptType(targetPolicyCmptType.getQualifiedName());
+        ml = child.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION));
     }
 }

@@ -83,7 +83,6 @@ import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
@@ -1849,16 +1848,20 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
                     Messages.TestCaseTypeSection_ErrorDialog_AttributeChangingTitle, msg);
             return null;
         }
-        
-        ITypeHierarchy superTypeHierarchy = policyCmptType.getSupertypeHierarchy();
-        IAttribute[] attributes = superTypeHierarchy.getAllAttributes(policyCmptType);
-        List attributesInDialog = new ArrayList(attributes.length);
-        // remove product relevant attributes
-        for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].isChangeable() || attributes[i].isDerivedOrComputed()){
-                attributesInDialog.add(attributes[i]);
+
+        // find all attributes of the policy cmpt type
+        List attributesInDialog = new ArrayList();
+        while (policyCmptType != null){
+            IAttribute[] attributes = policyCmptType.getAttributes();
+            for (int i = 0; i < attributes.length; i++) {
+                // add only changeable or derived or computed attributes
+                if (attributes[i].isChangeable() || attributes[i].isDerivedOrComputed()){
+                    attributesInDialog.add(attributes[i]);
+                }
             }
+            policyCmptType = policyCmptType.findSupertype();
         }
+
         selectDialog.setElements(attributesInDialog.toArray(new IAttribute[0]));
         if (selectDialog.open() == Window.OK) {
             if (selectDialog.getResult().length > 0) {

@@ -90,6 +90,19 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
     private boolean pageChanged = false;
 	private IWizardPage prevPage;
 	
+    /**
+     * Returns the corresponding relation type.<br>
+     *  in: ASSOZIATION => out: ASSOZIATION<br>
+     *  in: COMPOSITION => out: REVERSE_COMPOSITION<br>
+     *  in: REVERSE_COMPOSITION => out: COMPOSITION<br>
+     */
+    public static RelationType getCorrespondingRelationType(RelationType sourceRelType){
+        return sourceRelType == null                ? null :
+               sourceRelType.isAssoziation()        ? RelationType.ASSOZIATION :
+               sourceRelType.isReverseComposition() ? RelationType.COMPOSITION :
+               sourceRelType.isComposition()        ? RelationType.REVERSE_COMPOSITION : null;
+    }
+    
     public NewPcTypeRelationWizard(IRelation relation) {
     	super();
 
@@ -499,15 +512,6 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
 		reverseRelationManipulation = NONE_REVERSE_RELATION;
 	}	
 	
-	/**
-	 * Returns the corresponding relation type
-	 */
-	RelationType getCorrespondingRelationType(RelationType sourceRelType){
-		return sourceRelType.isAssoziation()        ? RelationType.ASSOZIATION :
-			   sourceRelType.isReverseComposition() ? RelationType.COMPOSITION :
-			   sourceRelType.isComposition()        ? RelationType.REVERSE_COMPOSITION : null;
-	}
-
 	/** 
 	 * Creates a new ui controller for the given object.
 	 */
@@ -573,9 +577,9 @@ public class NewPcTypeRelationWizard extends Wizard implements ContentsChangeLis
      * Return <code>true</code> if the selected target pc type has relations which can be selected as reverse relation.
      * Return <code>false</code> if no such relations exists.
      */
-    public boolean relationsExists() {
+     boolean relationsExists() {
         try {
-            return (reverseRelationPropertiesPage.getCorrespondingTargetRelations(getRelation(),
+            return (ReverseRelationPropertiesPage.getCorrespondingTargetRelations(getRelation(),
                     getTargetPolicyCmptType()).size() > 0);
         } catch (Exception e) {
         }

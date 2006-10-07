@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.editors.pctype.relationwizard;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.RelationType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -59,7 +59,42 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 	private boolean prevIsExisting;
 	private boolean prevIsNew;
 	
-	private ArrayList existingRelations = new ArrayList();
+    // cached list of existing target relations
+    private List existingRelations = new ArrayList();
+    
+    /**
+     * Returns relations from the target if:<br>
+     * <ul>
+     * <li>the target of the target relation points to the source
+     * <li>the target relation type is the corresponding relation type of the
+     * source (Assoziation=Assoziation, Composition=>ReverseComp,
+     * ReverseComp=>Compostion)
+     * </ul>
+     * If no relation is found on the target then an empty (not null) ArrayList
+     * is returned.
+     * 
+     * @throws CoreException
+     */
+     public static List getCorrespondingTargetRelations(IRelation sourceRelation,
+            IPolicyCmptType target) throws CoreException {
+        ArrayList relationsOfTarget = new ArrayList();
+        IPolicyCmptType currTargetPolicyCmptType = target;
+        while (currTargetPolicyCmptType != null){
+            IRelation[] relations = currTargetPolicyCmptType.getRelations();
+            for (int i = 0; i < relations.length; i++) {
+                // add the relation of the target if it points to the source policy cmpt
+                // and the type is matching to the source relation
+                if (relations[i].getTarget().equals(
+                        sourceRelation.getPolicyCmptType().getQualifiedName())
+                        && relations[i].getRelationType() == NewPcTypeRelationWizard.getCorrespondingRelationType(sourceRelation
+                                .getRelationType())) {
+                    relationsOfTarget.add(relations[i]);
+                }
+            }
+            currTargetPolicyCmptType = currTargetPolicyCmptType.findSupertype();
+        }
+        return relationsOfTarget;
+    }
     
 	public ReverseRelationPropertiesPage(
 			NewPcTypeRelationWizard newPcTypeRelationWizard) {
@@ -192,13 +227,12 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 				wizard.storeMementoTargetBeforeChange();
 				try {
                     // get all existing relations which matches as reverse for the new relation
-					ArrayList targetRelations = (ArrayList) getCorrespondingTargetRelations(
+                    existingRelations = getCorrespondingTargetRelations(
 							wizard.getRelation(), wizard.getTargetPolicyCmptType());
-					if (targetRelations.size() > 0) {
-						String[] names = new String[targetRelations.size()];
-						for (int i = 0; i < targetRelations.size(); i++) {
-							names[i] = (((IRelation) targetRelations.get(i))
-									.getName());
+					if (existingRelations.size() > 0) {
+						String[] names = new String[existingRelations.size()];
+						for (int i = 0; i < existingRelations.size(); i++) {
+							names[i] = (((IRelation) existingRelations.get(i)).getName());
 						}
 						existingRelationsField.getCombo().setItems(names);
 					} else {
@@ -206,7 +240,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 								new String[0]);
 					}
                     // by default select the first relation
-                    if (targetRelations.size() > 0){
+                    if (existingRelations.size() > 0){
                         existingRelationsField.getCombo().select(0);
                     }
 				} catch (CoreException e) {
@@ -295,35 +329,6 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		}
 	}
 
-	/**
-	 * Returns relations from the target if:<br>
-	 * <ul>
-	 * <li>the target of the target relation points to the source
-	 * <li>the target relation type is the corresponding relation type of the
-	 * source (Assoziation=Assoziation, Composition=>ReverseComp,
-	 * ReverseComp=>Compostion)
-	 * </ul>
-	 * If no relation is found on the target then an empty (not null) ArrayList
-	 * is returned.
-	 * 
-	 * @throws CoreException
-	 */
-	 ArrayList getCorrespondingTargetRelations(IRelation sourceRelation,
-			IPolicyCmptType target) throws CoreException {
-		existingRelations = new ArrayList();
-		ITypeHierarchy hierarchy = target.getSupertypeHierarchy();
-		IRelation[] relationsTarget = hierarchy.getAllRelations(target);
-		for (int i = 0; i < relationsTarget.length; i++) {
-			if (relationsTarget[i].getTarget().equals(
-					sourceRelation.getPolicyCmptType().getQualifiedName())
-					&& relationsTarget[i].getRelationType() == wizard.getCorrespondingRelationType(sourceRelation
-							.getRelationType())) {
-				existingRelations.add(relationsTarget[i]);
-			}
-		}
-		return existingRelations;
-	}
-
 	/*
 	 * Create a new reverse relation, i.e. create a new relation on the target policy component type object.
 	 */
@@ -334,7 +339,7 @@ public class ReverseRelationPropertiesPage extends AbstractPropertiesPage {
 		IRelation newReverseRelation = wizard.getTargetPolicyCmptType().newRelation();
 		newReverseRelation.setTarget(wizard.getPolicyCmptTypeQualifiedName());
 		newReverseRelation.setTargetRoleSingular(wizard.getRelation().getPolicyCmptType().getName());
-		newReverseRelation.setRelationType(wizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
+		newReverseRelation.setRelationType(NewPcTypeRelationWizard.getCorrespondingRelationType(wizard.getRelation().getRelationType()));
 		IRelation containerRelation = wizard.getRelation().findContainerRelation();
 		if (containerRelation != null){
 			newReverseRelation.setContainerRelation(containerRelation.getReverseRelation());
