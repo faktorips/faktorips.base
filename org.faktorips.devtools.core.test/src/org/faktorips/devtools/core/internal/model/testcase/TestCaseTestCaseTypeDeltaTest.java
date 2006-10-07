@@ -318,17 +318,60 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         fixAndAssert(delta);
     }
     
+    public void testDifferentSortOrderTestRuleSameRuleParam() throws CoreException{
+        testCaseType.newInputTestValueParameter().setName("Value1");
+        testCaseType.newExpectedResultRuleParameter().setName("1");
+        testCaseType.newInputTestPolicyCmptTypeParameter().setName("PolicyCmpt1");
+        
+        testCase.newTestValue().setTestValueParameter("Value1");
+        ITestRule testRule1 = testCase.newTestRule();
+        testRule1.setTestRuleParameter("1");
+        testRule1.setValidationRule("rule1");
+        ITestRule testRule2 = testCase.newTestRule();
+        testRule2.setTestRuleParameter("1");
+        testRule2.setValidationRule("rule2");
+        ITestRule testRule3 = testCase.newTestRule();
+        testRule3.setTestRuleParameter("1");
+        testRule3.setValidationRule("rule3");
+        testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("PolicyCmpt1");
+        
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        assertFalse(delta.isDifferentTestParameterOrder());
+        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        fixAndAssert(delta);
+    }
+    
     public void testDifferentSortOrderMixed() throws CoreException{
+        testCaseType.newExpectedResultRuleParameter().setName("0");
         testCaseType.newInputTestValueParameter().setName("1");
         testCaseType.newInputTestValueParameter().setName("2");
         testCaseType.newInputTestPolicyCmptTypeParameter().setName("3");
+        testCaseType.newExpectedResultRuleParameter().setName("4");
+
+        testCase.newTestRule().setTestRuleParameter("4");
         testCase.newTestValue().setTestValueParameter("1");
+        ITestRule rule0 = testCase.newTestRule();
+        rule0.setTestRuleParameter("0");
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("3");
         testCase.newTestValue().setTestValueParameter("2");
         ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
         assertTrue(delta.isDifferentTestParameterOrder());
         assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
-        fixAndAssert(delta);    
+        fixAndAssert(delta);
+        
+        rule0.delete();
+        // rules are optional
+        delta = testCase.computeDeltaToTestCaseType();
+        assertFalse(delta.isDifferentTestParameterOrder());
+        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        
+        // readd rule 0 to the end
+        testCase.newTestRule().setTestRuleParameter("0");
+        delta = testCase.computeDeltaToTestCaseType();
+        assertTrue(delta.isDifferentTestParameterOrder());
+        // no specific object is wrong
+        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        fixAndAssert(delta);
     }
     
     public void testEqualSortOrderChilds() throws CoreException{

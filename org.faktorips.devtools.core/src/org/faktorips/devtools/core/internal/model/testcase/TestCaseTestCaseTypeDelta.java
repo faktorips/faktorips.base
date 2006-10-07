@@ -146,14 +146,14 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
             return;
         }
         ITestRuleParameter[] params = testCaseType.getTestRuleParameters();
-        List values = Arrays.asList(testCase.getTestRuleObjects());
-        if (values.size() == 0){
+        List rules = Arrays.asList(testCase.getTestRuleObjects());
+        if (rules.size() == 0){
             // if no rules exists in the test case then don't do a sort order check
             return;
         }
         for (int i = 0; i < params.length; i++) {
             int idxInTestCase = 0;
-            for (Iterator iter = values.iterator(); iter.hasNext();) {
+            for (Iterator iter = rules.iterator(); iter.hasNext();) {
                 ITestRule rule = (ITestRule)iter.next();
                 if (rule.getTestRuleParameter().equals(params[i].getName())) {
                     // check if the order is equal
@@ -184,10 +184,12 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
         List testObjects = new ArrayList();
         testObjects.addAll(Arrays.asList(testCase.getTestObjects()));
         
-        if (testCase.getExpectedResultTestRules().length==0){
-            // if no test rule exists cleanup the list before compore the sort order
-            removeTestRulesAndTestRuleParametersFromLists(testParams, testObjects);
+        // if the test parameter is a rule param and no test objects exsists don't check the order
+        if (testParameter instanceof ITestRuleParameter && testCase.getTestRule(testParameter.getName()).length==0){
+            return;
         }
+        
+        removeTestRulesWithSameParamFromLists(testParams, testObjects);
         
         int idxInTestCaseType = testParams.indexOf(testParameter);
         int idxInTestCase = testObjects.indexOf(testObject);
@@ -202,33 +204,40 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     }
 
     /*
-     * Removes the test rule object or test rule parameter objects from the list.
-     * This method is used to cleanup the list of test objects and test paremeters,
-     * before comporing the sort order, thus a missing test rule in one list doesn't
-     * end in a different sort order
+     * Removes not distinct test rule object (wich have the same test rule parameter from the list)
+     * and removes test rule parameter which have no test rule (test rules are optional)
      */
-    private void removeTestRulesAndTestRuleParametersFromLists(List testParams, List testObjects) {
+    private void removeTestRulesWithSameParamFromLists(List testParams, List testObjects) {
+        // Removes not distinct test rule object (wich have the same test rule parameter from the list)
         List elementsToRemove = new ArrayList();
-        // remove objects for which the sort order are not supported
-        for (Iterator iter = testParams.iterator(); iter.hasNext();) {
-            ITestParameter element = (ITestParameter)iter.next();
-            if (element instanceof ITestRuleParameter){
-                elementsToRemove.add(element);
-            }
-        }
-        for (Iterator iter = elementsToRemove.iterator(); iter.hasNext();) {
-            testParams.remove(iter.next());
-        }
-        elementsToRemove.clear();
+        String prevTestRuleParam = null;
         for (Iterator iter = testObjects.iterator(); iter.hasNext();) {
             ITestObject element = (ITestObject)iter.next();
             if (element instanceof ITestRule){
-                elementsToRemove.add(element);
+                String testRuleParam = ((ITestRule)element).getTestRuleParameter();
+                if (testRuleParam.equals(prevTestRuleParam)){
+                    elementsToRemove.add(element);
+                }
+                prevTestRuleParam = testRuleParam;
             }
         }
         for (Iterator iter = elementsToRemove.iterator(); iter.hasNext();) {
             testObjects.remove(iter.next());
         }
+        
+        // Removes test rule parameter which have no test rule (test rules are optional)
+        elementsToRemove = new ArrayList();
+        for (Iterator iter = testParams.iterator(); iter.hasNext();) {
+            ITestParameter element = (ITestParameter)iter.next();
+            if (element instanceof ITestRuleParameter){
+                if (testCase.getTestRule(element.getName()).length==0){
+                    elementsToRemove.add(element);
+                }
+            }
+        }
+        for (Iterator iter = elementsToRemove.iterator(); iter.hasNext();) {
+            testParams.remove(iter.next());
+        }             
     }
 
     /*

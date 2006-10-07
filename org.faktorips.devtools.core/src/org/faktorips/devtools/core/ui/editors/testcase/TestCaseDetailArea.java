@@ -236,14 +236,16 @@ public class TestCaseDetailArea {
 	 * @throws CoreException 
 	 */
 	private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) throws CoreException {
-		if (testPolicyCmpt == null)
+		if (testPolicyCmpt == null){
 			return;
+        }
+		String uniqueKey = testCaseSection.getUniqueKey(testPolicyCmpt);
         
-        if (!((testCaseSection.getContentProvider().isExpectedResult() && testPolicyCmpt.isExpectedResult()) 
-        || (testCaseSection.getContentProvider().isInput() && testPolicyCmpt.isInput())))
+        if (!((testCaseSection.getContentProvider().isExpectedResult() && testPolicyCmpt.isExpectedResult()) || (testCaseSection
+                .getContentProvider().isInput() && testPolicyCmpt.isInput()))){
             return;
+        }
         
-		String uniquePath = testCaseSection.getUniqueKey(testPolicyCmpt);
 		Section section = toolkit.getFormToolkit().createSection(details, 0);
 		section.setText(testCaseSection.getLabelProvider().getTextForSection(testPolicyCmpt));
 		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -252,7 +254,7 @@ public class TestCaseDetailArea {
 		section.addMouseListener(new SectionSelectMouseListener(testPolicyCmpt));
         section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(testPolicyCmpt));
         
-		sectionControls.put(uniquePath, section);
+		sectionControls.put(uniqueKey, section);
 
 		Composite attributeComposite = toolkit.createLabelEditColumnComposite(section);
 		
@@ -271,7 +273,7 @@ public class TestCaseDetailArea {
 
                 // store the first attribute of each policy cmpt for fast focus setting
                 if (firstEditField) {
-                    firstAttributeEditFields.put(testCaseSection.getUniqueKey(testPolicyCmpt), editField);
+                    firstAttributeEditFields.put(uniqueKey, editField);
                     firstEditField = false;
                 }
             }
@@ -440,6 +442,7 @@ public class TestCaseDetailArea {
 	private void createTestValuesSection(final ITestValue testValue, Composite details) {
         // Create the edit field only if the content provider provides the type of the test value
         // object
+        String uniquePath = testCaseSection.getUniqueKey(testValue);
         if (!isVisibleForContentFilter(testCaseSection.getContentProvider(), testValue)) {
             return;
         }
@@ -451,7 +454,7 @@ public class TestCaseDetailArea {
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         // create separator line
         toolkit.getFormToolkit().createCompositeSeparator(section);
-        sectionControls.put(TestCaseSection.VALUESECTION + testValue.getTestValueParameter(), section);
+        sectionControls.put(uniquePath, section);
 
         section.addMouseListener(new SectionSelectMouseListener(testValue));
         section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(testValue));
@@ -484,7 +487,7 @@ public class TestCaseDetailArea {
             }
         });
 
-        allEditFields.put(testValue.getTestValueParameter(), editField);
+        allEditFields.put(uniquePath, editField);
         editField2ModelObject.put(editField, testValue);
 
         // mark as expected result
@@ -505,6 +508,7 @@ public class TestCaseDetailArea {
      */
     private void createTestRuleSection(final ITestRule rule, Composite borderedComosite) {
         // Create the edit field only if the content provider provides the type of the test value object
+        String uniqueKey = testCaseSection.getUniqueKey(rule);
         if (! isVisibleForContentFilter(testCaseSection.getContentProvider(), rule)){
             return;
         }
@@ -516,7 +520,7 @@ public class TestCaseDetailArea {
         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         // create separator line
         toolkit.getFormToolkit().createCompositeSeparator(section);
-        sectionControls.put(TestCaseSection.RULESECTION + rule.getValidationRule(), section);
+        sectionControls.put(uniqueKey, section);
         
         section.addMouseListener(new SectionSelectMouseListener(rule));
         section.getChildren()[0].addMouseListener(new SectionSelectMouseListener(rule));
@@ -536,7 +540,7 @@ public class TestCaseDetailArea {
             }
         });
         
-        allEditFields.put(testCaseSection.getUniqueKey(rule), editField);
+        allEditFields.put(uniqueKey, editField);
         editField2ModelObject.put(editField, rule);
         
         // mark as expected result

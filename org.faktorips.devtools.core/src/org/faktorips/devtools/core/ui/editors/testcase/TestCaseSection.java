@@ -103,8 +103,7 @@ import org.faktorips.util.message.MessageList;
  * Section to show the test case.
  */
 public class TestCaseSection extends IpsSection implements IIpsTestRunListener, ContentsChangeListener {
-	public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
-    public static final String RULESECTION = "RULEECTION"; //$NON-NLS-1$
+	private static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 	
 	// The treeview which displays all test policy components and test values which are available in this test
 	private TreeViewer treeViewer;
@@ -884,28 +883,30 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         testCaseDetailArea.resetSectionColors(form);
         if (selected instanceof ITestValue) {
             uniquePath = VALUESECTION + ((ITestValue)selected).getTestParameterName();
-        } else if (selected instanceof ITestRule) {
-            uniquePath = RULESECTION + ((ITestRule)selected).getValidationRule();
         } else {
             uniquePath = getUniqueKey(selected);
         }
-
-        if (withFocusChange) {
-            EditField firstField = testCaseDetailArea.getTestValueEditField(uniquePath);
-            if (firstField != null) {
-                isDoubleClicked = true;
-                firstField.getControl().setFocus();
-            }
-        }
-        if (uniquePath.length() > 0) {
+        
+        if (selected instanceof ITestValue || selected instanceof ITestRule) {
             if (withFocusChange) {
-                EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniquePath);
+                EditField firstField = testCaseDetailArea.getTestValueEditField(uniquePath);
                 if (firstField != null) {
+                    isDoubleClicked = true;
                     firstField.getControl().setFocus();
                 }
             }
-            selectSection(uniquePath);
+        } else {
+            // selecte first attribute edit field
+            if (uniquePath.length() > 0) {
+                if (withFocusChange) {
+                    EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniquePath);
+                    if (firstField != null) {
+                        firstField.getControl().setFocus();
+                    }
+                }
+            }
         }
+        selectSection(uniquePath);
 	}
 
 	/**
@@ -927,6 +928,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
                 uniquePath = rule.getValidationRule();
             }
             return rule.getTestParameterName() + uniquePath;
+        } else if (selected instanceof ITestValue) {
+            return TestCaseSection.VALUESECTION + ((ITestValue)selected).getTestValueParameter();
         }
         
 		if (selected instanceof ITestPolicyCmptRelation){
