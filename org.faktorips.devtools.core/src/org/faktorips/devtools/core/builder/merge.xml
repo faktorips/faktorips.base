@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<merge:options xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/options">
+<merge:options
+  xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/options">
+
+<!--
+Currently not activated merge options. The redirect and block options seem only to work when the merge:pull tags use the
+targetMarkup attribute instead of the sourceMarkup attribute. However since these attributes are not documented
+and can only be found in the emf-merge.xml I copy them into this file.
+  indent="  "  
+  braceStyle="matching"  
+  redirect="Gen"
+  block="\s*@\s*generated\s*NOT\s*\n"
+  noImport="\s*//\s*import\s+([\w.*]*)\s*;\s*\n"
+-->
 		
 	<!--
 	    This dictionary pattern defines a regular expression in the "match" attribute and a location where
@@ -38,5 +50,6 @@
         content.  
      -->
     <merge:sweep markup="^gen$" select="Member"/>
+    <merge:sweep markup="^restrained$" select="Member"/>
     
 </merge:options>
