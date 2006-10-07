@@ -1047,6 +1047,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         testRule.setValidationRule(validationRule.getName());
         testRule.setTestRuleParameter(testRuleParameter.getName());
         
+        // sort the test objects to ensure that the test rule is in the correct order
+        try {
+            testCase.sortTestObjects();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+        
         refreshTreeAndDetailArea();
         selectInTreeByObject(testRuleParameter, true);
     }

@@ -282,7 +282,7 @@ public class TestCase extends IpsObject implements ITestCase {
         
         if (delta.isDifferentTestParameterOrder()){
             // fix the order of the root test objects
-            testObjects = getCorrectSortOrderOfRootObjects();
+            sortTestObjects();
             
             // fix childs
             //  order relations in order of the test parameter
@@ -297,7 +297,18 @@ public class TestCase extends IpsObject implements ITestCase {
                 ((TestPolicyCmpt)cmpts[i]).fixDifferentTestAttrValueSortOrder();
             }
             
-            valueChanged(false, true);
+            objectHasChanged();
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void sortTestObjects() throws CoreException {
+        List orderedTestObject = getCorrectSortOrderOfRootObjects();
+        if (orderedTestObject != null){
+            testObjects = orderedTestObject;
+            objectHasChanged();
         }
     }
 
@@ -739,16 +750,6 @@ public class TestCase extends IpsObject implements ITestCase {
     private ITestRule newTestRuleInternal(int id) {
         ITestRule v = new TestRule(this, id);
         testObjects.add(v);
-        // sort the test objects concerning the test parameters
-        List newOrderedTestObjects = null;
-        try {
-            newOrderedTestObjects = getCorrectSortOrderOfRootObjects();
-        } catch (CoreException e) {
-            // ignored exception, don't sort the elements
-        }
-        if (newOrderedTestObjects != null){
-            testObjects = newOrderedTestObjects;
-        }
         return v;
     }
     

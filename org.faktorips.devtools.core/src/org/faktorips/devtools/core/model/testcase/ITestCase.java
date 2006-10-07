@@ -203,4 +203,11 @@ public interface ITestCase extends IIpsObject {
      * @throws CoreException if an error occurs while removing the object.
      */
     public void removeTestObject(ITestObject testObject) throws CoreException;
+    
+    /**
+     * Sorts the test objects concerning the test case type.
+
+     * @throws CoreException if an error occurs while sorting the objects.
+     */
+    public void sortTestObjects() throws CoreException;
 }
