@@ -91,9 +91,11 @@ public class IpsModel extends IpsElement implements IIpsModel,
 		IResourceChangeListener {
 
 	public final static boolean TRACE_MODEL_MANAGEMENT;
+    public final static boolean TRACE_VALIDATION;
 	
 	static {
 		TRACE_MODEL_MANAGEMENT = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/modelmanagement")).booleanValue();
+        TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/validation")).booleanValue();
 	}
 	
     // list of model change listeners that are notified about model changes
@@ -1218,7 +1220,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 
 			if (all) {
 				// because we process the same array with index j as with index
-				// i, index jcan start allways with i+1 without overlooking some product
+				// i, index j can start allways with i+1 without overlooking some product
 				// component combinations.
 				for (int j = i + 1; j < cmptsToCheck.length; j++) {
 					strategyJ = cmptsToCheck[j].getIpsProject()
@@ -1345,7 +1347,7 @@ public class IpsModel extends IpsElement implements IIpsModel,
 				IpsSrcFile srcFile = (IpsSrcFile) element;
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " + resource.getModificationStamp() 
-                            + ", " + srcFile + " Thead: " + Thread.currentThread().getName());
+                            + ", " + srcFile + " Thread: " + Thread.currentThread().getName());
                     ipsSrcFileHasChanged(srcFile);
                 }
 				return true;

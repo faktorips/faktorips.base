@@ -409,13 +409,20 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 	/**
      * {@inheritDoc}
      */
-    public final MessageList validate() throws CoreException {
+    public MessageList validate() throws CoreException {
         IpsModel model = (IpsModel)getIpsModel();
     	ValidationResultCache cache = model.getValidationResultCache();
     	MessageList result = cache.getResult(this);
     	if (result!=null) {
+            if (IpsModel.TRACE_VALIDATION) {
+                System.out.println("Validation of " + this + ": Got result from cache.");
+            }
     		return result;
     	}
+        long start = System.currentTimeMillis();
+        if (IpsModel.TRACE_VALIDATION) {
+            System.out.println("Validation of " + this + ": Started.");
+        }
     	result = new MessageList();
         validateThis(result);
         validateExtensionProperties(result);
@@ -423,6 +430,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         for (int i=0; i<children.length; i++) {
             MessageList childResult = ((IpsObjectPartContainer)children[i]).validate();
             result.add(childResult);
+        }
+        if (IpsModel.TRACE_VALIDATION) {
+            System.out.println("Validation of " + this + ": Finsihed, took " + (System.currentTimeMillis() - start) + "ms.");
         }
         cache.putResult(this, result);
         return result;

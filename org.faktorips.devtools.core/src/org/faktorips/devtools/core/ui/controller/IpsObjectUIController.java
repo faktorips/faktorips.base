@@ -51,15 +51,17 @@ public class IpsObjectUIController extends IpsObjectPartContainerUIController {
             super.add(field, object, propertyName);
         }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public void updateUI() {
         super.updateUI();
         validateObjectAndUpdateUI();
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener#valueChanged(org.faktorips.devtools.core.ui.controls.ContentChangeEvent)
+     * {@inheritDoc}
      */
     public void valueChanged(FieldValueChangedEvent e) {
         super.valueChanged(e);
@@ -67,6 +69,9 @@ public class IpsObjectUIController extends IpsObjectPartContainerUIController {
     }
     
     private void validateObjectAndUpdateUI() {
+        if (mappings.size()==0) {
+            return;
+        }
         try {
             MessageList list = object.validate();    
 	        for (Iterator it=mappings.iterator(); it.hasNext();) {

@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IAllValuesValueSet;
@@ -55,13 +56,15 @@ public class AllValuesValueSet extends ValueSet implements IAllValuesValueSet  {
     /**
      * {@inheritDoc}
      */
+    public MessageList validate() throws CoreException {
+        return new MessageList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void validate(MessageList list) {
-    	ValueDatatype datatype = getValueDatatype();
-        if (datatype==null) {
-            String text = Messages.Range_msgUnknownDatatype;
-            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this));
-            return;
-        }
+        return;
     }
 
     /**
