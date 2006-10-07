@@ -56,6 +56,8 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.PolicyCmptChangedEvent;
+import org.faktorips.runtime.internal.AbstractConfigurablePolicyComponent;
+import org.faktorips.runtime.internal.AbstractConfigurablePolicyComponentPart;
 import org.faktorips.runtime.internal.AbstractPolicyComponent;
 import org.faktorips.runtime.internal.AbstractPolicyComponentPart;
 import org.faktorips.runtime.internal.MethodNames;
@@ -125,16 +127,23 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String getSuperclass() throws CoreException {
-        String javaSupertype = getPcType().isAggregateRoot() ? 
-                AbstractPolicyComponent.class.getName() : AbstractPolicyComponentPart.class.getName();
-        if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
-            IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(
-                getPcType().getSupertype());
+        if (getPcType().hasSupertype()) {
+            IPolicyCmptType supertype = getPcType().findSupertype();
             if (supertype != null) {
-                javaSupertype = getQualifiedClassName(supertype.getIpsSrcFile());
+                return getQualifiedClassName(supertype.getIpsSrcFile());
             }
         }
-        return javaSupertype;
+        if (getPcType().isAggregateRoot()) {
+            if (getPcType().isConfigurableByProductCmptType()) {
+                return AbstractConfigurablePolicyComponent.class.getName(); 
+            } else {
+                return AbstractPolicyComponent.class.getName();
+            }
+        } 
+        if (getPcType().isConfigurableByProductCmptType()) {
+            return AbstractConfigurablePolicyComponentPart.class.getName(); 
+        } 
+        return AbstractPolicyComponentPart.class.getName();
     }
 
     /**
@@ -194,10 +203,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     protected void generateGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_MODIFIABLE);
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
         String todoText = getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO");
+        methodsBuilder.appendln(JavaSourceFileBuilder.MARKER_BEGIN_USER_CODE);
         methodsBuilder.appendln("return null; // " + getJavaNamingConvention().getToDoMarker() + " " + todoText);
+        methodsBuilder.appendln(JavaSourceFileBuilder.MARKER_END_USER_CODE);
         methodsBuilder.methodEnd();
     }
     

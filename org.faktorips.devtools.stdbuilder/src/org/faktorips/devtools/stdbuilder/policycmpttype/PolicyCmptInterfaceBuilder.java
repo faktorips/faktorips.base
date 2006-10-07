@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
+import org.faktorips.runtime.IConfigurablePolicyComponent;
 import org.faktorips.runtime.IPolicyComponent;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -109,12 +110,14 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      * {@inheritDoc}
      */
     protected String[] getExtendedInterfaces() throws CoreException {
-        String javaSupertype = IPolicyComponent.class.getName();
-        if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
-            IPolicyCmptType supertype = getPcType().getIpsProject().findPolicyCmptType(getPcType().getSupertype());
-            javaSupertype = supertype == null ? javaSupertype : getQualifiedClassName(supertype.getIpsSrcFile());
+        IPolicyCmptType type = getPcType();
+        if (type.hasSupertype()) {
+            return new String[]{getQualifiedClassName(type.findSupertype())};
         }
-        return new String[] { javaSupertype };
+        if (type.isConfigurableByProductCmptType()) {
+            return new String[]{IConfigurablePolicyComponent.class.getName()};
+        }
+        return new String[]{IPolicyComponent.class.getName()};
     }
 
     /**

@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
-import org.faktorips.runtime.IPolicyComponent;
+import org.faktorips.runtime.IConfigurablePolicyComponent;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -191,7 +191,7 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
      */
     private void generateMethodCreatePolicyCmptBase(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        methodsBuilder.signature(Modifier.PUBLIC, IPolicyComponent.class.getName(), MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
+        methodsBuilder.signature(Modifier.PUBLIC, IConfigurablePolicyComponent.class.getName(), MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
         methodsBuilder.openBracket();
         methodsBuilder.appendln("return " + interfaceBuilder.getMethodNameCreatePolicyCmpt(getPolicyCmptType()) + "();");
         methodsBuilder.closeBracket();
