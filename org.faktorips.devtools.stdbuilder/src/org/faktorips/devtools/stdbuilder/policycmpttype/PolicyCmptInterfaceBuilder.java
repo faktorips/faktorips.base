@@ -111,8 +111,12 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected String[] getExtendedInterfaces() throws CoreException {
         IPolicyCmptType type = getPcType();
+        IPolicyCmptType supertype = null;
         if (type.hasSupertype()) {
-            return new String[]{getQualifiedClassName(type.findSupertype())};
+        	supertype = type.findSupertype();
+        }
+        if (supertype != null) {
+            return new String[]{getQualifiedClassName(supertype)};
         }
         if (type.isConfigurableByProductCmptType()) {
             return new String[]{IConfigurablePolicyComponent.class.getName()};
