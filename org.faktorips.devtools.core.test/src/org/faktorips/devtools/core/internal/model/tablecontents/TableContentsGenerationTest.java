@@ -60,11 +60,13 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         table.newColumn(null);
         IRow row0 = generation.newRow();
         assertEquals(0, row0.getId());
+        assertEquals(0, row0.getRowNumber());
         assertEquals("", row0.getValue(0));
         assertEquals("", row0.getValue(1));
         
         IRow row1 = generation.newRow();
         assertEquals(1, row1.getId());
+        assertEquals(1, row1.getRowNumber());
     }
     
     public void testNewColumn() {
@@ -116,6 +118,16 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
     }
 
     public void testNewPart() {
+        // test rownumber init within newPart()
+        IRow row0 = (IRow) generation.newPart(IRow.class);
+        assertEquals(0, row0.getId());
+        assertEquals(0, row0.getRowNumber());
+
+        IRow row1 = (IRow) generation.newPart(IRow.class);
+        assertEquals(1, row1.getId());
+        assertEquals(1, row1.getRowNumber());
+        
+        
     	try {
     		assertTrue(generation.newPart(IRow.class) instanceof IRow);
     		

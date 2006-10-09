@@ -72,19 +72,39 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      * @see org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration#newRow()
      */
     public IRow newRow() {
-         IRow newRow = newRowInternal(getNextPartId());
-         objectHasChanged();
-         return newRow;
-    }
-    
-    private Row newRowInternal(int id) {
-        Row newRow = new Row(this, id);
-        rows.add(newRow);
+        IRow newRow = newRowInternal(getNextPartId());
+        objectHasChanged();
         return newRow;
     }
     
+    /**
+     * Creates a new row and inserts it into the list of rows. The rownumber of the
+     * new row is its index in the list (respectively the number of rows before the insertion).
+     * @param id
+     * @return
+     */
+    private Row newRowInternal(int id) {
+        int nextRowNumber= getNumOfRows();
+        Row newRow = new Row(this, id);
+        rows.add(newRow);
+        newRow.setRowNumber(nextRowNumber);
+        return newRow;
+    }
+    
+    /**
+     * Removes the given row from the list of rows and updates the rownumbers of all following rows.
+     * @param row
+     */
     void removeRow(IRow row) {
-        rows.remove(row);
+        int delIndex= rows.indexOf(row);
+        if(delIndex != -1){
+            rows.remove(delIndex);
+            // update rownumbers after delete
+            for(int i=delIndex; i<rows.size(); i++){
+                Row updateRow= (Row) rows.get(i);
+                updateRow.setRowNumber(i);
+            }
+        }
     }
 
     public void newColumn(int insertAt, String defaultValue) {

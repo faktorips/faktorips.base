@@ -36,6 +36,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
     private ITableContents table; 
     private ITableContentsGeneration generation;
     private Row row;
+    private Row row2;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -46,6 +47,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         table.newColumn(null);
         table.newColumn(null);
         row = (Row)generation.newRow();
+        row2 = (Row)generation.newRow();
         ipsSrcFile = table.getIpsSrcFile();
     }
     
@@ -64,9 +66,16 @@ public class RowImplTest extends AbstractIpsPluginTest {
     }
 
     public void testRemove() {
+        // Rownumbers before delete
+        assertEquals(0, row.getRowNumber());
+        assertEquals(1, row2.getRowNumber());
+        
         row.delete();
-        assertEquals(0, generation.getNumOfRows());
+        assertEquals(1, generation.getNumOfRows());
         assertTrue(ipsSrcFile.isDirty());
+
+        // Rownumber after delete
+        assertEquals(0, row2.getRowNumber());
     }
 
     public void testToXml() {

@@ -44,6 +44,8 @@ public class Row extends IpsObjectPart implements IRow {
     final static String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
     
     private ArrayList values;
+    
+    private int rowNumber= 0;
 
     Row(TableContentsGeneration parent, int rowNum) {
         super(parent, rowNum);
@@ -94,7 +96,16 @@ public class Row extends IpsObjectPart implements IRow {
 	 * {@inheritDoc}
 	 */
     public int getRowNumber() {
-        return getId();
+        return rowNumber;
+    }
+    
+    /**
+     * Sets the rownumber of this row. To keep row numbers up to date the tableContents object 
+     * calls this method every time the list of rows changes.
+     * @param rowNumber
+     */
+    void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
     }
     
 	/**
@@ -241,4 +252,5 @@ public class Row extends IpsObjectPart implements IRow {
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+	
 }
