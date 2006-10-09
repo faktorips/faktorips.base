@@ -49,6 +49,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest implements ContentsChan
     }
     
     public void testGetQualifiedName() throws CoreException {
+        fail();
         assertEquals("pack.TestProduct", ipsObject.getQualifiedName());
         IIpsPackageFragment defaultFolder = rootFolder.getIpsPackageFragment("");
         IIpsSrcFile file = defaultFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestProduct", true, null);
