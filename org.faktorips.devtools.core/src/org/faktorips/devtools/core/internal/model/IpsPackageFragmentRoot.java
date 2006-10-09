@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
 
@@ -302,25 +301,20 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     public void findProductCmpts(String pcTypeName, boolean includeSubtypes, List result) throws CoreException {
         List allCmpts = new ArrayList(100);
         IPolicyCmptType pcType = null;
-        ITypeHierarchy hierarchy = null;
         if (includeSubtypes && pcTypeName!=null) {
             pcType = getIpsProject().findPolicyCmptType(pcTypeName);
-            if (pcType!=null) {
-                hierarchy = pcType.getSubtypeHierarchy();
-            }
         }
         findIpsObjects(IpsObjectType.PRODUCT_CMPT, allCmpts);
         for (Iterator it=allCmpts.iterator(); it.hasNext(); ) {
             IProductCmpt each = (IProductCmpt)it.next();
             if (pcTypeName==null || pcTypeName.equals(each.getPolicyCmptType())) {
                 result.add(each);
-            } else if (hierarchy!=null) {
+            } else {
                 IPolicyCmptType eachPcType = getIpsProject().findPolicyCmptType(each.getPolicyCmptType());
-                if (hierarchy.isSubtypeOf(eachPcType, pcType)) {
+                if (eachPcType.isSubtypeOf(pcType)) {
                     result.add(each);
                 }
             }
         }
     }
-    
 }
