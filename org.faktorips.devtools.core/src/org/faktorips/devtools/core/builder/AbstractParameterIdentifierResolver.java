@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
@@ -161,6 +162,10 @@ public abstract class AbstractParameterIdentifierResolver implements
 	private CompilationResult compilePcTypeAttributeIdentifier(Parameter param,
 			IPolicyCmptType pcType, String attributeName, Locale locale) {
 
+        if (StringUtils.isEmpty(attributeName)) {
+            return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, Messages.AbstractParameterIdentifierResolver_msgAttributeMissing));
+        }
+        
 		IAttribute attribute = null;
 		try {
 			attribute = pcType.getSupertypeHierarchy().findAttribute(pcType,
