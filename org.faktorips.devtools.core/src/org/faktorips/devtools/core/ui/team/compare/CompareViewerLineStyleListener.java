@@ -80,6 +80,8 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
                 .compile(org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableContents);
         linePatternList.add(tablePattern);
         highlightColorMap.put(tablePattern, ipsObjectHighlight);
+        Pattern tableStructurePattern = Pattern.compile(org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableStructure);
+        linePatternList.add(tableStructurePattern);
 
         // patterns for all ipsObjects
         Pattern generationPattern = Pattern

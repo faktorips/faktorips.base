@@ -73,7 +73,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             ITableContents table= (ITableContents) row.getIpsObject();
             int[] columnWidths= getColumnWidths();
             
-            String rowNumber= row.getName()+COLON_BLANK;
+            String rowNumber= row.getRowNumber()+COLON_BLANK;
             sb.append(rowNumber);
             sb.append(getNeededTabs(columnWidths[0], rowNumber));
             for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
