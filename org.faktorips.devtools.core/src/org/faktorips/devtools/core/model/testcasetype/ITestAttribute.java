@@ -63,7 +63,7 @@ public interface ITestAttribute extends IIpsObjectPart {
     /**
      * Validation message code to indicate that computed or derived attributes have type expected result.
      */
-    public final static String MSGCODE_EXPECTED_OR_COMPUTED_BUT_NOT_EXPECTED_RES = MSGCODE_PREFIX + "ExpectedOrComputedButNotExpectedRes"; //$NON-NLS-1$
+    public final static String MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES = MSGCODE_PREFIX + "ExpectedOrComputedButNotExpectedRes"; //$NON-NLS-1$
     
     /**
      * Sets the attribute's name.

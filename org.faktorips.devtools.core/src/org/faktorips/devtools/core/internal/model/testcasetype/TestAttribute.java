@@ -126,9 +126,11 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
      */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
-        name = element.getAttribute(PROPERTY_NAME);
-		attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
+        setName(element.getAttribute(PROPERTY_NAME));
+		setAttribute(element.getAttribute(PROPERTY_ATTRIBUTE));
+        TestParameterType oldType = type;
 		type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE));
+        valueChanged(oldType, type);
 	}
 
     /**
@@ -260,7 +262,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
         if (modelAttribute != null){
             if (modelAttribute.isDerivedOrComputed() && type != TestParameterType.EXPECTED_RESULT){
                 String text = NLS.bind(Messages.TestAttribute_ValidationError_WrongParameterTypeIfDerivedOrComputed, type.getName());
-                Message msg = new Message(MSGCODE_EXPECTED_OR_COMPUTED_BUT_NOT_EXPECTED_RES, text, Message.ERROR, this,
+                Message msg = new Message(MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES, text, Message.ERROR, this,
                         PROPERTY_TEST_ATTRIBUTE_TYPE);
                 messageList.add(msg);
             }

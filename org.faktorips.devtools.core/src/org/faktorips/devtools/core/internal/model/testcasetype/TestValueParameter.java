@@ -125,7 +125,7 @@ public class TestValueParameter extends TestParameter implements
      */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
-		datatype = element.getAttribute(PROPERTY_VALUEDATATYPE);
+		setDatatype(element.getAttribute(PROPERTY_VALUEDATATYPE));
 	}
 
     /**

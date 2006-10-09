@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -86,5 +87,16 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         assertFalse(ruleInput.isInputParameter());
         assertTrue(ruleInput.isExpextedResultParameter());
         assertFalse(ruleInput.isCombinedParameter());
+    }
+    
+    public void testValidateWrongType() throws Exception{
+        MessageList ml = ruleInput.validate();
+        assertNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
+
+        Element docEl = getTestDocument().getDocumentElement();
+        Element paramEl = XmlUtil.getElement(docEl, "RuleParameter", 2);
+        ruleInput.initFromXml(paramEl);
+        ml = ruleInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
     }
 }

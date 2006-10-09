@@ -9,5 +9,7 @@
 	
 	<RuleParameter name="rule2" validationRule="validationRule2" testParameterType="expectedResult" expected="false">
 	</RuleParameter>
-				
+
+	<RuleParameter name="rule3" validationRule="validationRule3" testParameterType="input" expected="false">
+	</RuleParameter>				
 </testcases>

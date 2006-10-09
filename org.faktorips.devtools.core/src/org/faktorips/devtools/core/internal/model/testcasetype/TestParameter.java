@@ -115,8 +115,10 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        name = element.getAttribute(PROPERTY_NAME);
+        setName(element.getAttribute(PROPERTY_NAME));
+        TestParameterType oldType = type;
         type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_PARAMETER_TYPE));
+        valueChanged(oldType, type);
     }
 
     /**
@@ -168,10 +170,11 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         super.validateThis(list);
     
         // check for duplicate test parameter names
-        ITestParameter[] testParameter = null;
+        ITestParameter[] testParameters = null;
         if (isRoot()) {
-            testParameter = ((ITestCaseType)getParent()).getTestParameters();
+            testParameters = ((ITestCaseType)getParent()).getTestParameters();
         } else {
+            // get all elements on the same level (all childrens of the parent object)
             IIpsElement[] childrenOfParent = ((ITestParameter)getParent()).getChildren();
             List testParameterChildrenOfParent = new ArrayList(childrenOfParent.length);
             for (int i = 0; i < childrenOfParent.length; i++) {
@@ -179,12 +182,12 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
                     testParameterChildrenOfParent.add(childrenOfParent[i]);
                 }
             }
-            testParameter = (ITestParameter[]) testParameterChildrenOfParent.toArray(new ITestParameter[0]);
+            testParameters = (ITestParameter[]) testParameterChildrenOfParent.toArray(new ITestParameter[0]);
         }
 
-        if (testParameter != null){
-            for (int i = 0; i < testParameter.length; i++) {
-                if (testParameter[i] != this && testParameter[i].getName().equals(name)) {
+        if (testParameters != null){
+            for (int i = 0; i < testParameters.length; i++) {
+                if (testParameters[i] != this && testParameters[i].getName().equals(name)) {
                     String text = NLS.bind(Messages.TestParameter_ValidationError_DuplicateName, name);
                     Message msg = new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
                     list.add(msg);

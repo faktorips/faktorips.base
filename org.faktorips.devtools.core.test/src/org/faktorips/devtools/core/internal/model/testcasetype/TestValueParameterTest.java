@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -57,7 +58,7 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         assertEquals("newSumInsured1", valueParamInput.getName());
         assertTrue(valueParamInput.isInputParameter());
         assertFalse(valueParamInput.isExpextedResultParameter());
-        assertFalse(valueParamInput.isCombinedParameter());        
+        assertFalse(valueParamInput.isCombinedParameter());  
     }
     
     public void testToXml() {
@@ -76,5 +77,26 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         assertTrue(valueParamInput.isInputParameter());
         assertFalse(valueParamInput.isExpextedResultParameter());
         assertFalse(valueParamInput.isCombinedParameter());
+    }
+
+    public void testValidateWrongType() throws Exception{
+        MessageList ml = valueParamInput.validate();
+        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
+
+        Element docEl = getTestDocument().getDocumentElement();
+        Element paramEl = XmlUtil.getElement(docEl, "ValueParameter", 3);
+        valueParamInput.initFromXml(paramEl);
+        ml = valueParamInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
+    }
+    
+    public void testValidateValueDatatypeNotFound() throws Exception {
+        valueParamInput.setDatatype("String");
+        MessageList ml = valueParamInput.validate();
+        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
+
+        valueParamInput.setDatatype("x");
+        ml = valueParamInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
     }
 }
