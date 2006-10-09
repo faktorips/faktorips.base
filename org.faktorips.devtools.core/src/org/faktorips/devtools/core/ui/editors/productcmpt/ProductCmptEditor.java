@@ -19,7 +19,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
@@ -268,22 +270,14 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		boolean fix = result == ProductCmptDeltaDialog.OK;
 		if (fix) {
 			IIpsModel model = getProductCmpt().getIpsModel();
-			model.removeChangeListener(ProductCmptEditor.this);
-			try {
-				for (int i = 0; i < generations.length; i++) {
-					try {
-						generations[i].fixDifferences(deltas[i]);
-					} catch (CoreException e) {
-						IpsPlugin.log(e);
-					}
-				}
-				setDirty(getIpsSrcFile().isDirty());
-				refreshStructure();
-				super.refresh();
-				getContainer().update();
-			} finally {
-				model.addChangeListener(ProductCmptEditor.this);
-			}
+            
+            try {
+                model.runAndQueueChangeEvents(new DifferenceFixer(generations, deltas), null);
+                super.refresh();
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
 		}
 		else {
 			dontFixDifferencesBetweenAttributeAndConfigElement = true;
@@ -615,4 +609,31 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 			}
 		}
 	}
+    
+    private class DifferenceFixer implements IWorkspaceRunnable {
+        IProductCmptGeneration[] generations;
+        IProductCmptGenerationPolicyCmptTypeDelta[] deltas;
+        
+        public DifferenceFixer(IProductCmptGeneration[] generations, IProductCmptGenerationPolicyCmptTypeDelta[] deltas) {
+            this.generations = generations;
+            this.deltas = deltas;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public void run(IProgressMonitor monitor) throws CoreException {
+            for (int i = 0; i < generations.length; i++) {
+                try {
+                    generations[i].fixDifferences(deltas[i]);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+            setDirty(getIpsSrcFile().isDirty());
+            refreshStructure();
+            getContainer().update();
+        }
+        
+    }
 }
