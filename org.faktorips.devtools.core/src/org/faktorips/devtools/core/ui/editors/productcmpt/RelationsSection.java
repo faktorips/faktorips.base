@@ -346,32 +346,20 @@ public class RelationsSection extends IpsSection{
 
 	/**
 	 * Creates a new relation which connects the currently displayed generation
-	 * with the given target. The max cardinality for the new relation is set to
-	 * the max cardinality of the given type.
-	 * 
-	 * @param target
-	 *            The target for the new relation.
-	 * @param relation
-	 *            The type of the new relation.
-	 */
-	private IProductCmptRelation newRelation(String target, IProductCmptTypeRelation relation) {
-		IProductCmptRelation prodRelation = generation.newRelation(relation
-				.getName());
-		prodRelation.setTarget(target);
-		prodRelation.setMaxCardinality(1);
-		prodRelation.setMinCardinality(relation.getMinCardinality());
-		return prodRelation;
-	}
-
-	/**
-	 * Creates a new relation which connects the currently displayed generation
 	 * with the given target. The new relation is placed before the the given
 	 * one.
 	 */
 	private IProductCmptRelation newRelation(String target, IProductCmptTypeRelation relation,
 			IProductCmptRelation insertBefore) {
-		IProductCmptRelation prodRelation = generation.newRelation(relation
-				.getName(), insertBefore);
+        
+        IProductCmptRelation prodRelation = null;
+        
+        if (insertBefore != null) {
+            prodRelation = generation.newRelation(relation.getName(), insertBefore);
+        }
+        else {
+            prodRelation = generation.newRelation(relation.getName());
+        }
 		prodRelation.setTarget(target);
 		prodRelation.setMaxCardinality(1);
 		prodRelation.setMinCardinality(relation.getMinCardinality());
@@ -472,6 +460,8 @@ public class RelationsSection extends IpsSection{
 					return;
 				}
 				
+                boolean accept = false;
+                
 				for (int i = 0; i < filenames.length; i++) {
 					IFile file = getFile(filenames[i]);
 					try {
@@ -492,16 +482,21 @@ public class RelationsSection extends IpsSection{
 						}
 
 						if (generation.canCreateValidRelation(target, relation)) {
-							event.detail = oldDetail;
-						} 
-						else {
-							event.detail = DND.DROP_NONE;
-						}
+						    accept = true;
+                        }
 					} catch (CoreException e) {
 						IpsPlugin.log(e);
-						event.detail = DND.DROP_NONE;
 					}
 				}
+
+                if (accept == true) {
+                    // we can create at least on of the requested Relations - so we accept the drop
+				    event.detail = oldDetail;
+				} 
+				else {
+				    event.detail = DND.DROP_NONE;
+				}
+
 			}
 			else if (!(toMove != null && insertAt instanceof IProductCmptRelation)) {
 				event.detail = DND.DROP_NONE;
@@ -597,7 +592,7 @@ public class RelationsSection extends IpsSection{
 			try {
 				IProductCmpt cmpt = getProductCmpt(file);
 				if (cmpt != null) {
-					insert(cmpt.getQualifiedName(), insertAt);
+					insert(cmpt, insertAt);
 				}
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
@@ -617,19 +612,26 @@ public class RelationsSection extends IpsSection{
 		 *            means the new relation has the same product component
 		 *            relation type as the given one or is of the given type).
 		 */
-		private void insert(String target, Object insertAt) {
-			try {
-				if (insertAt instanceof IProductCmptTypeRelation) {
-					newRelation(target, ((IProductCmptTypeRelation) insertAt));
-				} else if (insertAt instanceof IProductCmptRelation) {
-					newRelation(target, ((IProductCmptRelation) insertAt)
-							.findProductCmptTypeRelation(),
-							(IProductCmptRelation) insertAt);
-				}
-			} catch (CoreException e) {
-				IpsPlugin.log(e);
-			}
-		}
+		private void insert(IProductCmpt cmpt, Object insertAt) {
+            String target = cmpt.getQualifiedName();
+            IProductCmptTypeRelation relationType = null;
+            IProductCmptRelation insertBefore = null;
+            try {
+                if (insertAt instanceof IProductCmptTypeRelation) {
+                    relationType = (IProductCmptTypeRelation)insertAt;
+                }
+                else if (insertAt instanceof IProductCmptRelation) {
+                    relationType = ((IProductCmptRelation)insertAt).findProductCmptTypeRelation();
+                    insertBefore = (IProductCmptRelation)insertAt;
+                }
+                if (generation.canCreateValidRelation(cmpt, relationType)) {
+                    newRelation(target, relationType, insertBefore);
+                }
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
 	}
 
 	/**
