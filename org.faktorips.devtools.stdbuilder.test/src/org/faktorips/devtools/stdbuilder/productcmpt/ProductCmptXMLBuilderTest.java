@@ -64,6 +64,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         assertFalse(type.validate().containsErrorMsg());
         IRelation rel = type.newRelation();
         rel.setTargetRoleSingular("relation");
+        rel.setTargetRolePlural("rells");
         rel.setTarget(type.getQualifiedName());
         rel.setTargetRolePluralProductSide("rels");
         rel.setTargetRoleSingularProductSide("relation");
