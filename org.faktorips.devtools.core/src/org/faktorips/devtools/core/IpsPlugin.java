@@ -500,17 +500,18 @@ public class IpsPlugin extends AbstractUIPlugin {
         try {
             IWorkbench workbench= IpsPlugin.getDefault().getWorkbench();
             IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
-            /* For known filetypes always use the registered editor, and NOT the editor specified
-             * by preferences/file-associations. This endures that ipsobjects are always opened in
-             * their editor and never in an xml-editor (which might be the default editor).
+            /* For known filetypes always use the registered editor, NOT the editor specified
+             * by the preferences/file-associations. This ensures that, when calling this method, IpsObjects
+             * are always opened in their IpsObjectEditor and never in an xml-editor 
+             * (which might be the default editor for the given file).
              */ 
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(fileToEdit.getName());
             if(editor!=null & editorInput!=null){
                 workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
             }else{
                 /* For unknown files let IDE open the corresponding editor.
-                 * This function asks the preferences/file-associations for an editor (default editor) and if 
-                 * none is found guesses the filetype by looking at the content of a file.
+                 * This function searches the preferences/file-associations for an editor (default editor) and if 
+                 * none is found guesses the filetype by looking at the contents of the given file.
                  */
                 IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
             }
