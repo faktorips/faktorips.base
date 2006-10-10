@@ -167,6 +167,9 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements ContentsCha
     public void contentsChanged(ContentChangeEvent event) {
         lastEvent = event;
     }
-    
+
+    public void testIsHistoric() {
+        assertFalse(parsableFile.isHistoric());
+    }
 
 }
