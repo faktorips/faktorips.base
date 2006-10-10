@@ -490,6 +490,9 @@ public class IpsPlugin extends AbstractUIPlugin {
      * the workbench opens the default editor as defined in the preferences/file-associations. 
      * If none is specified the workbench guesses the filetype by looking at the file's content 
      * and opens the corresponding editor.
+     * <p>
+     * <code>IFile</code>s containing <code>IpsSrcFiles</code>s and thus <code>IpsObject</code>s 
+     * are always opened in the corresponding IpsObjectEditor.
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
      * @param fileToEdit
      */
@@ -510,7 +513,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                 workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
             }else{
                 /* For unknown files let IDE open the corresponding editor.
-                 * This function searches the preferences/file-associations for an editor (default editor) and if 
+                 * This method searches the preferences/file-associations for an editor (default editor) and if 
                  * none is found guesses the filetype by looking at the contents of the given file.
                  */
                 IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
