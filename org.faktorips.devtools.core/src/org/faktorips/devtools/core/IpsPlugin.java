@@ -38,9 +38,12 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -484,8 +487,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Opens the file referenced by the given IFile in an editor. The type of editor to be opened
      * is derived from the file-extension using the editor-registry. If no entry is existent, 
-     * the workbench guesses the filetype by looking at the file's content and opens the corresponding
-     * editor.
+     * the workbench opens the default editor as defined in the preferences/file-associations. 
+     * If none is specified the workbench guesses the filetype by looking at the file's content 
+     * and opens the corresponding editor.
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
      * @param fileToEdit
      */
@@ -495,7 +499,21 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         try {
             IWorkbench workbench= IpsPlugin.getDefault().getWorkbench();
-            IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
+            IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
+            /* For known filetypes always use the registered editor, and NOT the editor specified
+             * by preferences/file-associations. This endures that ipsobjects are always opened in
+             * their editor and never in an xml-editor (which might be the default editor).
+             */ 
+            IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(fileToEdit.getName());
+            if(editor!=null & editorInput!=null){
+                workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
+            }else{
+                /* For unknown files let IDE open the corresponding editor.
+                 * This function asks the preferences/file-associations for an editor (default editor) and if 
+                 * none is found guesses the filetype by looking at the content of a file.
+                 */
+                IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
+            }
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
