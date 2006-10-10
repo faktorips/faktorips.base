@@ -466,12 +466,19 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         	ITestValueParameter policyTypeParam = valueParams[i];
             body.appendln(variablePrefix + StringUtils.capitalise(policyTypeParam.getName()) + " = ");
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
-            body.appendClassName(dataTypeHelper.getJavaClassName());
-            String valueOfMethod = "valueOf";
-            if (dataTypeHelper.getDatatype() instanceof GenericValueDatatype){
-            	valueOfMethod = ((GenericValueDatatype) dataTypeHelper.getDatatype()).getValueOfMethodName();
+            
+            if (dataTypeHelper.getDatatype().isPrimitive()) {
+                body.append(dataTypeHelper.newInstanceFromExpression("getValueFromNode(element, \"" + policyTypeParam.getName() + "\")"));
+                body.appendln(";");
             }
-            body.appendln("." + valueOfMethod + "(getValueFromNode(element, \"" + policyTypeParam.getName() + "\"));");
+            else {
+                body.appendClassName(dataTypeHelper.getJavaClassName());
+                String valueOfMethod = "valueOf";
+                if (dataTypeHelper.getDatatype() instanceof GenericValueDatatype){
+                    valueOfMethod = ((GenericValueDatatype) dataTypeHelper.getDatatype()).getValueOfMethodName();
+                }
+                body.appendln("." + valueOfMethod + "(getValueFromNode(element, \"" + policyTypeParam.getName() + "\"));");
+            }
         }
     }
     
