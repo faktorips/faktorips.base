@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  * Generic action wrapping action delegates defined by other plugins.
  * 
  * @author Thorsten Guenther
+ * @author Stefan Widmaier
  */
 public class WrapperAction extends IpsAction {
 
@@ -38,7 +39,13 @@ public class WrapperAction extends IpsAction {
 	private IViewActionDelegate wrappedActionDelegate = null;
 
 	/**
-	 * Creates a new wrapper action for the given ids
+	 * Creates a new wrapper action for the given ids. The WrapperAction therefor searches action definitions
+     * of extensions/plugins to retrieve the classname of the actual action.
+     * <p>
+     * First all actionset definitions are searched for the given actionset id and action id. Secondly all
+     * popup menu definitions are searched for the given action id, the actionset id is ignored in this case.
+     * <p>
+     * The found classname is used to instanciate the requested delegate action.
 	 * 
 	 * @param selectionProvider The provider to get the selection from to let the wrapped action work on.
 	 * @param actionSetId The id of the action set to get the action from.
@@ -50,6 +57,7 @@ public class WrapperAction extends IpsAction {
 
 		String className = null;
         IExtensionRegistry registry = Platform.getExtensionRegistry();
+        // search actionsets for action definitions
         IConfigurationElement[] elems = registry.getConfigurationElementsFor("org.eclipse.ui.actionSets"); //$NON-NLS-1$
         for (int i = 0; i < elems.length; i++) {
         	if (elems[i].getName().equals("actionSet") && elems[i].getAttribute("id").equals(actionSetId)) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -61,7 +69,27 @@ public class WrapperAction extends IpsAction {
 					}
 				}
         	}
+            if(className!=null){
+                break;
+            }
 		}
+        
+        if(className==null){
+            // search popupmenu defs for action definitions
+            IConfigurationElement[] popupElements = registry.getConfigurationElementsFor("org.eclipse.ui.popupMenus"); //$NON-NLS-1$
+            for (int i = 0; i < popupElements.length; i++) {
+                IConfigurationElement[] actionElements = popupElements[i].getChildren("action"); //$NON-NLS-1$
+                for (int k = 0; k < actionElements.length; k++) {
+                    if (actionElements[k].getAttribute("id").equals(actionId)) { //$NON-NLS-1$
+                        className = actionElements[k].getAttribute("class"); //$NON-NLS-1$
+                        break;
+                    }
+                }
+                if(className!=null){
+                    break;
+                }
+            }
+        }
         
         if (className != null) {
         	try {
@@ -80,6 +108,7 @@ public class WrapperAction extends IpsAction {
 	}
 
 	/** 
+     * Sets the selection of the wrapped action and runs it.
 	 * {@inheritDoc}
 	 */
 	public void run(IStructuredSelection selection) {
