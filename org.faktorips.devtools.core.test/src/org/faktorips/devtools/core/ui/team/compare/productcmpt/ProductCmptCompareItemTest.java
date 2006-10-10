@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ValueSetType;
+import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -70,6 +72,8 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         configElement1.setPcTypeAttribute("configElement1");    // set name to ensure sorting order
         configElement2 = generation1.newConfigElement();
         configElement2.setPcTypeAttribute("configElement2");
+        configElement2.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        configElement2.setValueSetType(ValueSetType.ENUM);
         relation1 = generation1.newRelation(productReferenced.getQualifiedName());
         relation2 = generation1.newRelation(productReferenced.getQualifiedName());
         
