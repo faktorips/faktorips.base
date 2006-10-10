@@ -227,5 +227,12 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     private IpsSrcFileContent getContent() {
         return ((IpsModel)getIpsModel()).getIpsSrcFileContent(this);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isHistoric() {
+        return false;
+    }
     
 }

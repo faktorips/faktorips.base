@@ -107,7 +107,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     public IProject getProject() {
-        return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
+        return ResourcesPlugin.getWorkspace().getRoot().getProject(getName());
     }
     
     /**

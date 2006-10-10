@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsObject;
-import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.util.StringUtil;
@@ -40,8 +39,7 @@ import org.w3c.dom.Document;
  */
 public class IpsSrcFileImmutable extends IpsSrcFile {
 
-    private IpsSrcFileContent contents;
-    private IIpsProject project;
+    private IpsObject ipsObject;
     
 	/**
 	 * Create a new IpsSrcFileImmutable with a content based on the provided InputStream. The content of this
@@ -51,13 +49,19 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 	 * @param name the name of this IpsSrcFile
      * @param content the content of this IpsSrcFile
 	 */
-	public IpsSrcFileImmutable(IIpsProject ipsProject, String name, InputStream content) {
-		super(ipsProject, name);
-		this.project = ipsProject;
+	public IpsSrcFileImmutable(String name, InputStream content) {
+		super(new IpsProject(IpsPlugin.getDefault().getIpsModel(), "IpsSrcFileImmutableIpsProject"), name);
 		setContents(content);
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	public boolean isHistoric() {
+        return true;
+    }
+
+    /**
      * Returns null.
 	 */
 	public IFile getCorrespondingFile() {
@@ -80,10 +84,9 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 	
 	private void setContents(InputStream in) {
 		try {
-            IpsObject ipsObject = (IpsObject)getIpsObjectType().newObject(this);
+            ipsObject = (IpsObject)getIpsObjectType().newObject(this);
             Document doc =IpsPlugin.getDefault().newDocumentBuilder().parse(in);
             ipsObject.initFromXml(doc.getDocumentElement());
-            contents = new IpsSrcFileContent(ipsObject);
 		} catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus(e));
 		}
@@ -110,13 +113,6 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
         return IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
 	}
 
-	/**
-     * {@inheritDoc}
-     */
-    public IIpsProject getIpsProject() {
-        return project;
-    }
-
     /**
 	 * {@inheritDoc}
 	 */
@@ -128,6 +124,6 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
      * {@inheritDoc}
      */
     public IIpsObject getIpsObject() throws CoreException {
-        return contents.getIpsObject();
+        return ipsObject;
     }
 }

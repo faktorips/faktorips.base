@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -137,20 +136,7 @@ public abstract class IpsObjectEditor extends FormEditor
     			return;
     		}
     		String name = path.lastSegment().substring(0, nameIndex) + extension;
-    		path = path.removeLastSegments(1).append(name);
-    		
-    		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-    		while (!file.exists() && path.segmentCount() > 0) {
-    			path = path.removeFirstSegments(1);
-        		file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-    		}
-
-    		if (!file.exists()) {
-    			return;
-    		}
-//TODO pk: work in progress 2006-09-07
-    		IIpsElement el = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-            ipsSrcFile = new IpsSrcFileImmutable(el.getIpsProject(), name, storage.getContents());
+            ipsSrcFile = new IpsSrcFileImmutable(name, storage.getContents());
     		
     	} catch (CoreException e) {
     		throw new PartInitException(e.getStatus());

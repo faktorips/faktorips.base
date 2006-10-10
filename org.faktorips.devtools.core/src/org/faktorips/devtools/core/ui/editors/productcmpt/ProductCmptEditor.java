@@ -126,7 +126,10 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		try {
 			if (isSrcFileUsable()) {
 				IProductCmpt cmpt = (ProductCmpt)getIpsObject();
-				if (cmpt.findProductCmptType() == null && !IpsPlugin.getDefault().isTestMode()) {
+                //TODO needs to be changed when the isHistorical() method is available on IpsSrcFile
+				if (cmpt.findProductCmptType() == null && 
+                    !IpsPlugin.getDefault().isTestMode() &&
+                    !cmpt.getIpsSrcFile().isHistoric()) {
 					String msg = NLS.bind(Messages.ProductCmptEditor_msgTemplateNotFound, cmpt.getPolicyCmptType());
 					SetTemplateDialog dialog = new SetTemplateDialog(cmpt, getSite().getShell(), msg);
 					int button = dialog.open();

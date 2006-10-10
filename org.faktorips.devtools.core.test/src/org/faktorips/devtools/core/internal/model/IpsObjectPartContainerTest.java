@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
@@ -30,8 +31,11 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
+import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -236,6 +240,37 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             fail();
         } catch(IllegalArgumentException e) {
         }
+    }
+    
+    /**
+     * Test method for IpsObjectPartContainer#validate(). Tests wether the validation is performed on <code>IpsObjectPartContainer</code>s
+     * contained in historic <code>IIpsSrcFile</code>s.
+     * @throws CoreException 
+     */
+    public void testValidate() throws CoreException{
+        // create srcfile with contents
+        IIpsProject proj= (IpsProject)newIpsProject("TestProject");
+        IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
+        IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
+        IProductCmptGeneration generation= (IProductCmptGeneration) product.newGeneration();
+        generation.newConfigElement();
+        generation.newRelation("");
+        
+        // validate
+        MessageList messages= product.getIpsSrcFile().getIpsObject().validate();
+        assertNotNull(messages);
+        assertFalse(messages.isEmpty());
+        assertNotNull(messages.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
+
+        // save contents
+        product.getIpsSrcFile().save(true, null);
+        
+        // load data with immutable srcfile (historic srcfile) that should not be validated
+        IFile file= product.getIpsSrcFile().getCorrespondingFile();
+        IpsSrcFileImmutable srcFileImmutable= new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
+        MessageList messagesImmutable= srcFileImmutable.getIpsObject().validate();
+        assertNotNull(messagesImmutable);
+        assertTrue(messagesImmutable.isEmpty());
     }
 
     class TestIpsObjectPartContainer extends IpsObjectPart {

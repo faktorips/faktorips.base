@@ -80,17 +80,6 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
         } else if (input instanceof IEncodedStreamContentAccessor && input instanceof ITypedElement) {
             try {
                 final IEncodedStreamContentAccessor remoteContent = (IEncodedStreamContentAccessor)input;
-                // FIXME Workaround, change implementation of IpsSrcFileImmutable
-                IIpsProject project = new IpsProject() {
-                    public String getXmlFileCharset() {
-                        try {
-                            return remoteContent.getCharset();
-                        } catch (CoreException e) {
-                            IpsPlugin.log(e);
-                        }
-                        return null;
-                    }
-                };
                 InputStream is = remoteContent.getContents();
                 String name = ((ITypedElement)input).getName();
                 // FIXME workaround for retrieving filename without using internal classes
@@ -98,7 +87,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
                     ResourceEditionNode revision = (ResourceEditionNode)input;
                     name = revision.getRemoteResource().getName();
                 }
-                IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable(project, name, is);
+                IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable(name, is);
                 return getStructureForIpsSrcFile(srcFile);
             } catch (CoreException e) {
                 IpsPlugin.log(e);

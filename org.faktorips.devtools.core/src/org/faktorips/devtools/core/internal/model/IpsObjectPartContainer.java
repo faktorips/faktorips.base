@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
@@ -410,20 +411,24 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * {@inheritDoc}
      */
     public MessageList validate() throws CoreException {
+        if(isHistoricPartContainer()){
+            return new MessageList();
+        }
+        
         IpsModel model = (IpsModel)getIpsModel();
-    	ValidationResultCache cache = model.getValidationResultCache();
-    	MessageList result = cache.getResult(this);
-    	if (result!=null) {
+        ValidationResultCache cache = model.getValidationResultCache();
+        MessageList result = cache.getResult(this);
+        if (result!=null) {
             if (IpsModel.TRACE_VALIDATION) {
                 System.out.println("Validation of " + this + ": Got result from cache.");
             }
-    		return result;
-    	}
+            return result;
+        }
         long start = System.currentTimeMillis();
         if (IpsModel.TRACE_VALIDATION) {
             System.out.println("Validation of " + this + ": Started.");
         }
-    	result = new MessageList();
+        result = new MessageList();
         validateThis(result);
         validateExtensionProperties(result);
         IIpsElement[] children = getChildren();
@@ -437,6 +442,23 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         cache.putResult(this, result);
         return result;
     }
+    
+    /**
+     * Returns true if this <code>IpsObjectPartContainer</code> is part of an <code>IIpsSrcFile</code>
+     * that is marked as historic. If no srcfile can be found, false is returned.
+     * @return True only if the parent srcfile is historic, false otherwise.
+     */
+    private boolean isHistoricPartContainer() {
+        IIpsElement container= this;
+        while(container != null){
+            if(container instanceof IIpsSrcFile &&
+               ((IIpsSrcFile) container).isHistoric()){
+                return true;
+            }
+            container= container.getParent();
+        }
+        return false;
+    }    
     
     /**
      * Validates the object and reports invalid states by adding 
