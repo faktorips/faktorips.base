@@ -41,6 +41,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
@@ -89,8 +91,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public void init(IViewSite site) throws PartInitException {
     	super.init(site);
-    	
-    	site.getActionBars().getToolBarManager().add(new Action() { //$NON-NLS-1$
+
+        Action refreshAction= new Action() { //$NON-NLS-1$
 
     		public ImageDescriptor getImageDescriptor() {
     			return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
@@ -104,7 +106,12 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 			public String getToolTipText() {
 				return Messages.ProductStructureExplorer_tooltipRefreshContents;
 			}
-		});
+		};
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+        IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
+        retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
+        retargetAction.setToolTipText(refreshAction.getToolTipText());
+        getViewSite().getActionBars().getToolBarManager().add(retargetAction);
 
     	site.getActionBars().getToolBarManager().add(new Action("", Action.AS_CHECK_BOX) { //$NON-NLS-1$
 
