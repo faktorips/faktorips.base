@@ -65,7 +65,14 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     protected static final String TAB = "\t"; //$NON-NLS-1$
     protected static final String COMMA = ","; //$NON-NLS-1$
     protected static final String DASH = "-"; //$NON-NLS-1$
-
+    
+    /**
+     * String that contains the word "generation", localized and/or configured by the
+     * <code>ChangesOverTimeNamingConvention</code>. Since <code>AbstractCompareItem</code>s do
+     * not change over time, an initialization in the constructor is sufficient.
+     */
+    protected String changingNamingConventionGenerationString;
+    
     /**
      * The parent of this <code>AbstractCompareItem</code>. May be null if this CompareItem is
      * root.
@@ -145,6 +152,8 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
         } else {
             isRoot = true;
         }
+        changingNamingConventionGenerationString= 
+            IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
     }
 
     /**

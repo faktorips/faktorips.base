@@ -25,12 +25,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.faktorips.devtools.core.internal.model.AllValuesValueSet;
-import org.faktorips.devtools.core.internal.model.EnumValueSet;
-import org.faktorips.devtools.core.internal.model.RangeValueSet;
+import org.faktorips.devtools.core.model.IAllValuesValueSet;
+import org.faktorips.devtools.core.model.IEnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IRangeValueSet;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
@@ -230,7 +230,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
                 String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
-                sb.append(validFromSimple).append(TAB).append(Messages.ProductCmptCompareItem_Generation).append(COLON_BLANK);
+                sb.append(validFromSimple).append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
                 sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
                 sb.append(validFromSimple).append(TAB).append(TAB)
                         .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
@@ -265,9 +265,9 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
     private StringBuffer getValueSetContent(IConfigElement ce) {
         StringBuffer sb = new StringBuffer();
         IValueSet set = ce.getValueSet();
-        if (set instanceof EnumValueSet) {
+        if (set instanceof IEnumValueSet) {
             sb.append("["); //$NON-NLS-1$
-            String[] values = ((EnumValueSet)set).getValues();
+            String[] values = ((IEnumValueSet)set).getValues();
             for (int i = 0; i < values.length; i++) {
                 sb.append(values[i]);
                 if (i < values.length - 1) {
@@ -275,17 +275,19 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
                 }
             }
             sb.append("]"); //$NON-NLS-1$
-        } else if (set instanceof RangeValueSet) {
-            RangeValueSet rangeSet = (RangeValueSet)set;
+        } else if (set instanceof IRangeValueSet) {
+            IRangeValueSet rangeSet = (IRangeValueSet)set;
             sb.append("["); //$NON-NLS-1$
             sb.append(rangeSet.getUpperBound());
             sb.append(".."); //$NON-NLS-1$
             sb.append(rangeSet.getLowerBound());
             sb.append("]"); //$NON-NLS-1$
-        } else if (set instanceof AllValuesValueSet) {
+        } else if (set instanceof IAllValuesValueSet) {
             sb.append("["); //$NON-NLS-1$
             sb.append(Messages.ProductCmptCompareItem_AllValues);
             sb.append("]"); //$NON-NLS-1$
+        } else{
+//            sb.append("ValueSet not found: "+set);
         }
         return sb;
     }
@@ -306,7 +308,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
                         ce.getName()).append(QUOTE);
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_Generation).append(COLON_BLANK).append(QUOTE).append(
+                sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE).append(
                         gen.getName()).append(QUOTE);
             } else if (getIpsElement() instanceof IProductCmpt) {
                 IProductCmpt product = (IProductCmpt)getIpsElement();

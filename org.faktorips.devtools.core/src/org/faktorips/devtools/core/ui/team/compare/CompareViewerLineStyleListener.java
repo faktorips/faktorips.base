@@ -84,8 +84,8 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
         linePatternList.add(tableStructurePattern);
 
         // patterns for all ipsObjects
-        Pattern generationPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.team.compare.productcmpt.Messages.ProductCmptCompareItem_Generation);
+        String generationString= IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+        Pattern generationPattern = Pattern.compile(generationString);
         linePatternList.add(generationPattern);
         highlightColorMap.put(generationPattern, generationHighlight);
         Pattern validFromPattern = Pattern

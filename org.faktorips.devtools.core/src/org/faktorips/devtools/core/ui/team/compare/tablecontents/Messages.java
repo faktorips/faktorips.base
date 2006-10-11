@@ -32,7 +32,6 @@ public class Messages extends NLS {
     public static String TableContentsCompareItem_TableStructure;
     public static String TableContentsCompareItem_SrcFile;
     public static String TableContentsCompareItem_Row;
-    public static String TableContentsCompareItem_Generation;
     public static String TableContentsCompareItem_TableContents;
     public static String TableContentsCompareViewer_TableContentsCompare;
     public static String TableContentsCompareItemCreator_TableContentsStructureCompare;
