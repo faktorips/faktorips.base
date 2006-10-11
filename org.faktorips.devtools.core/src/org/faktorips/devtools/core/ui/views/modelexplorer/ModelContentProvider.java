@@ -219,8 +219,7 @@ public class ModelContentProvider implements ITreeContentProvider {
             return filteredFragments.toArray();
         } else {
             // display the default package only if it contains files 
-            // TODO display defaultPackage only if it contains productCmpts
-            // display products in defaultpackage, files in root
+            // display productcmptss in defaultpackage, files in root
             Object[] children = root.getIpsDefaultPackageFragment().getIpsChildPackageFragments();
             if (hasChildren(root.getIpsDefaultPackageFragment())) {
                 return concatenate(new Object[] { root.getIpsDefaultPackageFragment() }, children);

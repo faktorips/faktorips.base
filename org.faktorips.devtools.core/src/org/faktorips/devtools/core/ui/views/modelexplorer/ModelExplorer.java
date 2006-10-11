@@ -17,7 +17,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,7 +32,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.CloseResourceAction;
@@ -57,6 +55,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.ui.actions.ExpandCollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
@@ -158,18 +157,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         return new ModelContentProvider(config, isFlatLayout);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void init(IViewSite site) throws PartInitException {
-        super.init(site);
-        IWorkbenchAction action = ActionFactory.REFRESH.create(site.getWorkbenchWindow());
-        site.getActionBars()
-                .setGlobalActionHandler(ActionFactory.REFRESH.getId(), new ModelExplorerRefreshAction(site));
-        action.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("Refresh.gif")); //$NON-NLS-1$
-        site.getActionBars().getToolBarManager().add(action);
-    }
-
     public void createPartControl(Composite parent) {
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
@@ -209,6 +196,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         createMenu();
         createContextMenu();
+        createToolBar();
     }
 
     protected void createFilters(TreeViewer tree) {
@@ -246,6 +234,16 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
+    }
+    
+    private void createToolBar(){
+        getViewSite().getActionBars()
+                .setGlobalActionHandler(ActionFactory.REFRESH.getId(), new RefreshAction(getViewSite()));
+        IWorkbenchAction action = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
+        action.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("Refresh.gif")); //$NON-NLS-1$
+        action.setToolTipText(Messages.ModelExplorer_Toolbar_Refresh);
+        getViewSite().getActionBars().getToolBarManager().add(action);
+        getViewSite().getActionBars().getToolBarManager().add(new ExpandCollapseAllAction(treeViewer));
     }
 
     public void setFocus() {
@@ -354,24 +352,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
         return false;
-    }
-
-    /**
-     * Action for the ModelExplorer specific refreshButton.
-     */
-    private class ModelExplorerRefreshAction extends RefreshAction {
-        ModelExplorerRefreshAction(IWorkbenchPartSite site) {
-            super(site);
-        }
-
-        public void run() {
-            super.run();
-            treeViewer.refresh();
-        }
-
-        public ImageDescriptor getImageDescriptor() {
-            return IpsPlugin.getDefault().getImageDescriptor("Refresh.gif"); //$NON-NLS-1$
-        }
     }
 
     protected class MenuBuilder implements IMenuListener {
