@@ -9,7 +9,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.actions.OpenProjectAction;
-import org.eclipse.jdt.ui.actions.RefreshAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -75,6 +74,7 @@ import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.RenameAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
+import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
 import org.faktorips.devtools.core.ui.views.IpsResourceChangeListener;
@@ -237,12 +237,13 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     }
     
     private void createToolBar(){
+        Action refreshAction= new TreeViewerRefreshAction(getSite());
         getViewSite().getActionBars()
-                .setGlobalActionHandler(ActionFactory.REFRESH.getId(), new RefreshAction(getViewSite()));
-        IWorkbenchAction action = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
-        action.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("Refresh.gif")); //$NON-NLS-1$
-        action.setToolTipText(Messages.ModelExplorer_Toolbar_Refresh);
-        getViewSite().getActionBars().getToolBarManager().add(action);
+                .setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+        IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
+        retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
+        retargetAction.setToolTipText(refreshAction.getToolTipText());
+        getViewSite().getActionBars().getToolBarManager().add(retargetAction);
         getViewSite().getActionBars().getToolBarManager().add(new ExpandCollapseAllAction(treeViewer));
     }
 
@@ -526,7 +527,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
     }
-
+    
     private class LayoutAction extends Action implements IAction {
         private boolean isFlatLayout;
         private ModelExplorer modelExplorer;

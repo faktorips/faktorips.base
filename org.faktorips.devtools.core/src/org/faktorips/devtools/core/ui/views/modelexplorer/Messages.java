@@ -39,5 +39,4 @@ public class Messages extends NLS {
 	public static String ModelExplorer_errorTitle;
 	public static String ModelExplorer_defaultPackageLabel;
 	public static String ModelExplorer_nonIpsProjectLabel;
-    public static String ModelExplorer_Toolbar_Refresh;
 }
