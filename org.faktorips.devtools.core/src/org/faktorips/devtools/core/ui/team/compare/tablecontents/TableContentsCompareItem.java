@@ -100,7 +100,9 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * Calculates the number of tabs needed to align the next value with its column.
+     * Calculates the number of tabs needed to fill the column up with tabs, or in other words to
+     * align the next value with its column.
+     * 
      * @param widthInTabs The width of the column in tabs.
      * @param value The value of this table cell.
      * @return the number of tabs needed to reach the next column.
@@ -158,6 +160,58 @@ public class TableContentsCompareItem extends AbstractCompareItem {
         }
         super.init();
     }
+    
+    /**
+     * Introduces a special compare for compareItems representing rows. Returns true only if both
+     * compareitems contain <code>IRow</code> objects and if both rows have the same rownumber and
+     * if both rows (tables) have the same number of columns and if the two values for every column
+     * equal each other. Returns false otherwise.
+     * <p>
+     * If the compareitems do not contain rows, equals() returns the same value as the
+     * equals() method in <code>AbstractCompareItem</code>.
+     * 
+     * @see AbstractCompareItem#equals(Object) {@inheritDoc}
+     */
+    public boolean equals(Object o) {
+        if(o instanceof TableContentsCompareItem){
+            if(getIpsElement() instanceof IRow && ((TableContentsCompareItem)o).getIpsElement() instanceof IRow){
+                IRow row= (IRow)getIpsElement();
+                IRow otherRow= (IRow) ((TableContentsCompareItem)o).getIpsElement();
+                ITableContents table= (ITableContents) row.getIpsObject();
+                ITableContents otherTable= (ITableContents) otherRow.getIpsObject();
+                if(table.getNumOfColumns()!=otherTable.getNumOfColumns() || row.getRowNumber() != otherRow.getRowNumber()){
+                    return false;
+                }
+                for(int i=0; i<table.getNumOfColumns(); i++){
+                    if(!row.getValue(i).equals(otherRow.getValue(i))){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return super.equals(o);
+    }
+    /**
+     * If this compareItem contains an <code>IRow</code> as IpsElement, hashCode() returns the sum
+     * of the hashcodes of all row-values plus the hashcode of the rownumber (as a string).
+     * Otherwise returns the same value as hashCode() in <code>AbstractCompareItem</code>.
+     * {@inheritDoc}
+     */
+    public int hashCode() {
+        if(getIpsElement() instanceof IRow){
+            IRow row= (IRow)getIpsElement();
+            ITableContents table= (ITableContents) row.getIpsObject();
+            int hashCode= 0;
+            hashCode+= String.valueOf(row.getRowNumber()).hashCode();
+            for (int i = 0; i < table.getNumOfColumns(); i++) {
+                hashCode += row.getValue(i).hashCode();
+            }   
+            return hashCode;
+        }else{
+            return super.hashCode();
+        }
+    }
 
     /**
      * Calculates the widths of all columns in tabs by searching for the longest (String) value in
@@ -191,14 +245,17 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     /**
      * Returns at least one tab more than needed to fit the given stringlength.
      * <p>
-     * Example: tablength is 4
+     * Example: tabwidth is 4
      * <ul>
      * <li>length is 7 -> returns 3 (2 tabs to fit 7 characters + 1 additional tab)</li>
      * <li>length is 8 -> returns 3 (2 tabs to fit 8 characters exactly + 1 additional tab)</li>
      * <li>length is 9 -> returns 4 (3 tabs to fit 9 characters + 1 additional tab)</li>
      * <ul>
+     * 
      * @param length
-     * @return
+     * @return Tabs needed to fit this string and create space between columns.
+     * 
+     * @see TableContentsCompareViewer#TAB_WIDTH
      */
     private int getColumnTabWidthForLength(int stringLength){
         int tabs= stringLength/TableContentsCompareViewer.TAB_WIDTH + 1;

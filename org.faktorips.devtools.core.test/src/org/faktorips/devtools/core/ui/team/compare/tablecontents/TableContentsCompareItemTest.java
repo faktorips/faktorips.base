@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
@@ -110,6 +111,145 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         assertEquals("ipstablecontents", compareItemRoot.getType());
     }
 
+    public void testEqualsObject() throws CoreException{
+        // set Row values of default Table
+        row1.setValue(0, "65");
+        row1.setValue(1, "69");
+        row1.setValue(2, "E69");
+        compareItemRoot= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
+
+        // create new table (and row) to avoid that both compareitems reference the same row instance
+        ITableContents table2 = (ITableContents) newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
+        table2.newColumn("1");
+        table2.newColumn("2");
+        table2.newColumn("3");
+        GregorianCalendar calendar= new GregorianCalendar();
+        ITableContentsGeneration generation2 = (ITableContentsGeneration) table2.newGeneration(calendar);
+        IRow row2 = generation2.newRow();
+        row2.setValue(0, "6");
+        row2.setValue(1, "569");
+        row2.setValue(2, "E69");
+        IRow row2b= generation2.newRow();
+        generation2.newRow();
+        generation2.newRow();
+        IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
+        IFile correspondingFile2 = srcFile2.getCorrespondingFile();
+        TableContentsCompareItem compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        
+        TableContentsCompareItem tableItem1= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
+        TableContentsCompareItem genItem1= (TableContentsCompareItem) tableItem1.getChildren()[0];
+        TableContentsCompareItem rowItem1= (TableContentsCompareItem) genItem1.getChildren()[0];
+        TableContentsCompareItem tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        TableContentsCompareItem genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        // rows equal in contentString (ignored whitespace) but not in content
+        assertEquals(rowItem1.getContentStringWithoutWhiteSpace(), rowItem2.getContentStringWithoutWhiteSpace());
+        assertFalse(rowItem1.equals(rowItem2));
+
+        // fill row (different rownumber) with same contents
+        row2b.setValue(0, "65");
+        row2b.setValue(1, "69");
+        row2b.setValue(2, "E69");
+        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[1]; // second row (row2b)
+        // compare rows with same content and differing rownumber
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
+        assertFalse(rowItem1.equals(rowItem2));
+        
+        // change contents
+        row2.setValue(0, "x");
+        row2.setValue(1, "xx");
+        row2.setValue(2, "xXx");
+        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        // compare rows with differing content
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
+        assertFalse(rowItem1.equals(rowItem2));
+
+        // add column
+        table2.newColumn("4");
+        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        // compare rows with differing columnNumber
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
+        assertFalse(rowItem1.equals(rowItem2));
+    }
+    
+    public void testHashCode() throws CoreException{
+        // set Row values of default Table
+        row1.setValue(0, "65");
+        row1.setValue(1, "69");
+        row1.setValue(2, "E69");
+        compareItemRoot= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
+
+        // create new table (and row) to avoid that both compareitems reference the same row instance
+        ITableContents table2 = (ITableContents) newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
+        table2.newColumn("1");
+        table2.newColumn("2");
+        table2.newColumn("3");
+        GregorianCalendar calendar= new GregorianCalendar();
+        ITableContentsGeneration generation2 = (ITableContentsGeneration) table2.newGeneration(calendar);
+        IRow row2 = generation2.newRow();
+        row2.setValue(0, "6");
+        row2.setValue(1, "569");
+        row2.setValue(2, "E69");
+        IRow row2b= generation2.newRow();
+        generation2.newRow();
+        generation2.newRow();
+        IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
+        IFile correspondingFile2 = srcFile2.getCorrespondingFile();
+        TableContentsCompareItem compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        
+        TableContentsCompareItem tableItem1= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
+        TableContentsCompareItem genItem1= (TableContentsCompareItem) tableItem1.getChildren()[0];
+        TableContentsCompareItem rowItem1= (TableContentsCompareItem) genItem1.getChildren()[0];
+        TableContentsCompareItem tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        TableContentsCompareItem genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        TableContentsCompareItem rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        // rows equal in contentString (ignored whitespace) but not in content
+        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2.getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
+
+        // fill row (different rownumber) with same contents
+        row2b.setValue(0, "65");
+        row2b.setValue(1, "69");
+        row2b.setValue(2, "E69");
+        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[1]; // second row (row2b)
+        // compare rows with same content and differing rownumber
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode()==rowItem2.getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
+        
+        // change contents
+        row2.setValue(0, "x");
+        row2.setValue(1, "xx");
+        row2.setValue(2, "xXx");
+        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        // compare rows with differing content
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode()==rowItem2.getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
+
+        // add column
+        table2.newColumn("4");
+        compareItemRoot2= (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile2));
+        tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
+        genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
+        rowItem2= (TableContentsCompareItem) genItem2.getChildren()[0];
+        // compare rows with differing columnNumber
+        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode()==rowItem2.getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
+    }
     
     
     
