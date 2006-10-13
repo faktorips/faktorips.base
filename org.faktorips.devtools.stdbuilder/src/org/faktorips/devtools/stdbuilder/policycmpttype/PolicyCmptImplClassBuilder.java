@@ -463,6 +463,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     protected void generateListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String event, String fieldName) {
+    	generateListenerSupport(methodsBuilder, event, fieldName, null);
+	}
+    
+    protected void generateListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String event, String fieldName, String paramName) {
     	if (GENERATE_CHANGE_LISTENER_SUPPORT) {
             methodsBuilder.appendln("if (changeListeners!=null) {");
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
@@ -471,6 +475,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(event);
             methodsBuilder.append(", ");
             methodsBuilder.appendQuoted(fieldName);
+            if(paramName != null) {
+            	methodsBuilder.append(", ");
+            	methodsBuilder.append(paramName);
+            }
             methodsBuilder.appendln("));");
             methodsBuilder.appendln("}");
         }
@@ -833,11 +841,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             String targetClass = interfaceBuilder.getQualifiedClassName(relation.findTarget());
             methodsBuilder.append(generateCodeToSynchronizeReverseRelation(paramName, targetClass, relation, reverseRelation));
         }
-        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_ADDED" , fieldname);
+        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_ADDED" , fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
-    /**
+    
+
+	/**
      * Code sample:
      * <pre>
      * [Javadoc]
@@ -913,7 +923,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         } else {
             methodsBuilder.append(';');
         }
-        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_REMOVED", fieldname);
+        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_REMOVED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
@@ -969,7 +979,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodsBuilder.append(generateCodeToSynchronizeReverseRelation(fieldname, 
                     getQualifiedClassName(target), relation, reverseRelation));
         }
-        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_CHANGED", fieldname);
+        generateListenerSupport(methodsBuilder, "PolicyCmptChangedEvent.PROPERTY_CHILD_CHANGED", fieldname, paramName);
         methodsBuilder.closeBracket();
     }
     
