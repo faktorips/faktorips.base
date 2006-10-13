@@ -39,7 +39,7 @@ public class MessageCueLabelProvider extends LabelProvider {
     
     private ILabelProvider baseProvider;
 
-    private static HashMap cachedProblemImageDescriptors = new HashMap();
+    private HashMap cachedProblemImageDescriptors = new HashMap();
     
     /**
      * 
