@@ -127,7 +127,7 @@ public class TestCaseTransformer {
                         ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
                         if (param != null){
                             // param.setTestParameterRole(TestParameterRole.COMBINED)){
-                            // FIXME Joerg: role pruefen
+                            // TODO Joerg: role pruefen
                             parseTestPolicyCmptChilds(elem, testPolicyCmpt, isInput);
                         }
                     }

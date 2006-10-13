@@ -96,4 +96,22 @@ public class Messages extends NLS {
 
     public static String ConfigElement_msgInvalidAttributeValueset;
 
+    public static String FormulaTestInputValue_CoreException_WrongIdentifierForParameter;
+
+    public static String FormulaTestInputValue_CoreException_AttributeOfParameterNotFound;
+
+    public static String FormulaTestInputValue_ValidationMessage_NoValueGivenForFormulaTestInputValue;
+
+    public static String FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound;
+
+    public static String FormulaTestInputValue_ValidationMessage_UnsupportedDatatype;
+
+    public static String ConfigElement_msgFormulaTestCaseNotAllowedIfTypeOfConfigElemIs;
+
+    public static String FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured;
+
+    public static String FormulaTestCase_ValidationMessage_DuplicateFormulaTestCaseName;
+
+    public static String FormulaTestCase_ValidationMessage_MismatchBetweenFormulaInputValuesAndIdentifierInFormula;
+
 }

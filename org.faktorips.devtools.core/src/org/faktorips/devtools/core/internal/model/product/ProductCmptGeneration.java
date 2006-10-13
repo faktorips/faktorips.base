@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
@@ -123,6 +124,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			IAttribute a = elements[i].findPcTypeAttribute();
 			if (elements[i].getType() == ConfigElementType.FORMULA) {
 				elements[i].setValue(""); //$NON-NLS-1$
+                // if the config element is no longer a formula delete all existing formula test cases 
+                IFormulaTestCase[] formulaTest = elements[i].getFormulaTestCases();
+                for (int j = 0; j < formulaTest.length; j++) {
+                    formulaTest[j].delete();
+                }                
 			}
 			elements[i].setType(a.getConfigElementType());
 		}

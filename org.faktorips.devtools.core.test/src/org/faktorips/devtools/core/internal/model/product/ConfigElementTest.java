@@ -38,8 +38,10 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.util.message.Message;
@@ -318,7 +320,20 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     	assertEquals(0, ml.getNoOfMessages());
     }
 
- 
+    public void testValidate_WrongTypeForFormulaTests() throws Exception{
+        configElement.setType(ConfigElementType.FORMULA);
+        configElement.newFormulaTestCase().setName("formulaTest1");
+        MessageList ml = configElement.validate();
+        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_WRONG_TYPE_FOR_FORMULA_TESTS)); 
+        
+        configElement.setType(ConfigElementType.POLICY_ATTRIBUTE);
+        ml = configElement.validate();
+        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_WRONG_TYPE_FOR_FORMULA_TESTS)); 
+        
+        configElement.setType(ConfigElementType.PRODUCT_ATTRIBUTE);
+        ml = configElement.validate();
+        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_WRONG_TYPE_FOR_FORMULA_TESTS));         
+    }
     
     public void testSetValue() {
         configElement.setValue("newValue");
@@ -333,6 +348,10 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertEquals(ConfigElementType.PRODUCT_ATTRIBUTE, configElement.getType());
         assertEquals("rate", configElement.getPcTypeAttribute());
         assertEquals("1.5", configElement.getValue());
+        
+        // check formula test
+        assertEquals(1, configElement.getFormulaTestCases().length);
+        assertNotNull(configElement.getFormulaTestCase("formulaTest1"));
     }
 
     /*
@@ -355,7 +374,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertEquals("22", ((IRangeValueSet)newCfgElement.getValueSet()).getLowerBound());
         assertEquals("33", ((IRangeValueSet)newCfgElement.getValueSet()).getUpperBound());
         assertEquals("4", ((IRangeValueSet)newCfgElement.getValueSet()).getStep());
-
+        
         cfgElement.setValueSetType(ValueSetType.ENUM);
         EnumValueSet enumValueSet = (EnumValueSet)cfgElement.getValueSet();
         enumValueSet.addValue("one");
@@ -376,11 +395,19 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         
         assertNull(newCfgElement.getValue());
         
+        // formula test
+        cfgElement = generation.newConfigElement();
+        cfgElement.setType(ConfigElementType.FORMULA);
+        cfgElement.newFormulaTestCase().setName("formulaTest1");
+        xmlElement = cfgElement.toXml(getTestDocument());
 
+        newCfgElement = generation.newConfigElement();
+        newCfgElement.initFromXml(xmlElement);
+        assertEquals("formulaTest1", newCfgElement.getFormulaTestCases()[0].getName());
     }
 
     /**
-     * Tests for the correct type of excetion to be thrown - no part of any type could ever be created.
+     * Tests for the correct type of exception to be thrown - no part of any type could ever be created.
      */
     public void testNewPart() {
     	try {
@@ -389,6 +416,93 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    public void testFormulaNewDeleteTest() throws Exception {
+        // tests for creating and deleting of the formula test case
+        assertEquals(0, configElement.getFormulaTestCases().length);
+        
+        configElement.setType(ConfigElementType.FORMULA);
+        IFormulaTestCase formulaTest1 = configElement.newFormulaTestCase();
+        IFormulaTestCase formulaTest2 = configElement.newFormulaTestCase();
+        formulaTest1.setName("formulaTest1");
+        formulaTest2.setName("formulaTest2");
+        
+        assertEquals(formulaTest1, configElement.getFormulaTestCase(formulaTest1.getName()));
+        assertEquals(formulaTest2, configElement.getFormulaTestCase(formulaTest2.getName()));
+        assertEquals(2, configElement.getFormulaTestCases().length);
+        
+        formulaTest1.delete();
+        formulaTest2.delete();
+        assertEquals(0, configElement.getFormulaTestCases().length);
+        assertNull(configElement.getFormulaTestCase(formulaTest1.getName()));
+    }
+    
+    public void testGetIdentifierUsedInFormula() throws CoreException {
+        IPolicyCmptType pcTypeInput = newPolicyCmptType(project, "policyCmptTypeInput");
+        IAttribute attributeInput = pcTypeInput.newAttribute();
+        attributeInput.setName("attributeInput1");
+        attributeInput = pcTypeInput.newAttribute();
+        attributeInput.setName("attributeInput2");
+        attributeInput.setAttributeType(AttributeType.CHANGEABLE);
+        attributeInput.setDatatype(Datatype.INTEGER.getQualifiedName());
+        
+        IPolicyCmptType pcType = newPolicyCmptType(project, "policyCmptType1");
+        IAttribute attribute = pcType.newAttribute();
+        attribute.setName("attribute1");
+        attribute.setAttributeType(AttributeType.COMPUTED);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        Parameter[] params = new Parameter[3];
+        params[0] = new Parameter(0, "param1", Datatype.INTEGER.getQualifiedName());
+        params[1] = new Parameter(1, "param2", Datatype.INTEGER.getQualifiedName());
+        params[2] = new Parameter(2, "policyInputX", pcTypeInput.getQualifiedName());
+        
+        attribute.setFormulaParameters(params);
+        
+        ((IProductCmptGeneration)configElement.getParent()).getProductCmpt().setPolicyCmptType(pcType.getQualifiedName());
+        configElement.setType(ConfigElementType.FORMULA);
+        configElement.setPcTypeAttribute(attribute.getName());
+        configElement.setValue("param1 * param2 * 2 * policyInputX.attributeInput1");
+        
+        String[] identifierInFormula = configElement.getIdentifierUsedInFormula();
+        assertEquals(3, identifierInFormula.length);
+        assertEquals("param1", identifierInFormula[0]);
+        assertEquals("param2", identifierInFormula[1]);
+        assertEquals("policyInputX.attributeInput1", identifierInFormula[2]);
+        
+        configElement.setValue("param1+param2*2+policyInputX.attributeInput1");
+        identifierInFormula = configElement.getIdentifierUsedInFormula();
+        assertEquals(3, identifierInFormula.length);
+        assertEquals("param1", identifierInFormula[0]);
+        assertEquals("param2", identifierInFormula[1]);
+        assertEquals("policyInputX.attributeInput1", identifierInFormula[2]);        
+        
+        configElement.setValue("param1x+Xparam2*2+policyInputX.attributeInput1");
+        identifierInFormula = configElement.getIdentifierUsedInFormula();
+        assertEquals(1, identifierInFormula.length);
+        assertEquals("policyInputX.attributeInput1", identifierInFormula[0]);         
+
+    }
+    
+    public void testMoveFormulaTestCases(){
+        configElement.setType(ConfigElementType.FORMULA);
+        IFormulaTestCase ftc0 = configElement.newFormulaTestCase();
+        IFormulaTestCase ftc1 = configElement.newFormulaTestCase();
+        IFormulaTestCase ftc2 = configElement.newFormulaTestCase();
+        IFormulaTestCase ftc3 = configElement.newFormulaTestCase();
+        configElement.moveFormulaTestCases(new int[]{1, 3}, true);
+        IFormulaTestCase[] ftcs = configElement.getFormulaTestCases();
+        assertEquals(ftc1, ftcs[0]);
+        assertEquals(ftc0, ftcs[1]);
+        assertEquals(ftc3, ftcs[2]);
+        assertEquals(ftc2, ftcs[3]);
+        
+        configElement.moveFormulaTestCases(new int[]{0, 2}, false);
+        ftcs = configElement.getFormulaTestCases();
+        assertEquals(ftc0, ftcs[0]);
+        assertEquals(ftc1, ftcs[1]);
+        assertEquals(ftc2, ftcs[2]);
+        assertEquals(ftc3, ftcs[3]);        
     }
     
     private class InvalidDatatype implements ValueDatatype {

@@ -180,4 +180,58 @@ public class Messages extends NLS {
 
     public static String ProductAttributesSection_labelValidTo;
 
+    public static String FormulaTestInputValuesControl_ButtonLabel_Store;
+
+    public static String FormulaTestInputValuesControl_ButtonLabel_Clear;
+
+    public static String FormulaTestInputValuesControl_DefaultFormulaTestCaseName;
+
+    public static String FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Title;
+
+    public static String FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Text;
+
+    public static String FormulaTestInputValuesControl_TableFormulaTestInputValues_Column_Parameter;
+
+    public static String FormulaTestInputValuesControl_TableFormulaTestInputValues_Column_Value;
+
+    public static String FormulaTestInputValuesControl_Label_Result;
+
+    public static String FormulaEditDialog_GroupLabel_FormulaTestInput;
+
+    public static String FormulaEditDialog_TabText_FormulaTestCases;
+
+    public static String FormulaTestCaseControl_GroupLabel_TestCases;
+
+    public static String FormulaTestCaseControl_Button_ExecuteAll;
+
+    public static String FormulaTestCaseControl_Button_Delete;
+
+    public static String FormulaTestCaseControl_Button_Update;
+
+    public static String FormulaTestCaseControl_Button_Up;
+
+    public static String FormulaTestCaseControl_Button_Down;
+
+    public static String FormulaTestCaseControl_GroupLabel_TestInput;
+
+    public static String FormulaTestCaseControl_TableTestCases_Column_Name;
+
+    public static String FormulaTestCaseControl_TableTestCases_ColumnExpectedResult;
+
+    public static String FormulaTestCaseControl_TableTestCases_Column_ActualResult;
+
+    public static String FormulaTestCaseControl_TestFailureMessage_ExpectedButWas;
+
+    public static String FormulaTestCaseControl_TestError_NoExpectedResultGiven;
+
+    public static String FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula;
+
+    public static String FormulaTestCaseControl_InformationDialogUpdateInputValues_Title;
+
+    public static String FormulaTestCaseControl_InformationDialogUpdateInputValues_NewValueParams;
+
+    public static String FormulaTestCaseControl_InformationDialogUpdateInputValues_DeletedValueParams;
+
+    public static String FormulaTestCaseControl_InformationDialogUpdateInputValues_TextTop;
+
 }

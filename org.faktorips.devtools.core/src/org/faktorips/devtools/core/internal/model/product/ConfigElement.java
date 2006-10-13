@@ -17,6 +17,10 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -38,14 +42,18 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -66,6 +74,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 	private String value = ""; //$NON-NLS-1$
 
+    private List formulaTestCases = new ArrayList(0);
+    
 	private boolean deleted = false;
 
 	public ConfigElement(ProductCmptGeneration parent, int id) {
@@ -211,14 +221,21 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		if (attribute == null) {
 			String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, getProductCmpt().getPolicyCmptType());
 			list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_VALUE));
-			return;
-		}
-		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
-				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
-			validateValue(attribute, list);
 		} else {
-			validateFormula(attribute, list);
-		}
+    		if (attribute.getAttributeType() == AttributeType.CHANGEABLE
+    				|| attribute.getAttributeType() == AttributeType.CONSTANT) {
+    			validateValue(attribute, list);
+    		} else {
+    			validateFormula(attribute, list);
+    		}
+        }
+
+        // validate that formula tests are only allowed if the type of the config element is formula
+        if (formulaTestCases.size() > 0 && type != ConfigElementType.FORMULA) {
+            String text = NLS.bind(Messages.ConfigElement_msgFormulaTestCaseNotAllowedIfTypeOfConfigElemIs, type);
+            list.add(new Message(IConfigElement.MSGCODE_WRONG_TYPE_FOR_FORMULA_TESTS, text, Message.ERROR, this,
+                    PROPERTY_TYPE));
+        }
 	}
 
 	private void validateFormula(IAttribute attribute, MessageList list)
@@ -386,8 +403,22 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     /**
      * {@inheritDoc}
      */
+    protected void reinitPartCollections() {
+        formulaTestCases = new ArrayList();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     protected void reAddPart(IIpsObjectPart part) {
-    	valueSet = (IValueSet)part;
+        if (part instanceof IValueSet) {
+            valueSet = (IValueSet)part;
+            return;
+        } else if (part instanceof IFormulaTestCase){
+            formulaTestCases.add(part);
+            return;
+        }
+        throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
     
     /**
@@ -425,23 +456,29 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 	 * {@inheritDoc}
 	 */
 	public IIpsElement[] getChildren() {
-		if (valueSet != null) {
-			return new IIpsElement[] {valueSet};
+        List childrenList = new ArrayList((valueSet!=null?1:0) + formulaTestCases.size());
+        if (valueSet != null) {
+            childrenList.add(valueSet);
 		}
-		else {
-			return new IIpsElement[0];
-		}
+        childrenList.addAll(formulaTestCases);
+        return (IIpsElement[]) childrenList.toArray(new IIpsElement[0]);
     }
 	
 	/**
 	 * {@inheritDoc}
 	 */
     protected IIpsObjectPart newPart(Element partEl, int id) {
-    	if (partEl.getNodeName().equals(ValueSet.XML_TAG)) {
+        String xmlTagName = partEl.getNodeName();
+    	if (ValueSet.XML_TAG.equals(xmlTagName)) {
     		valueSet = ValueSetType.newValueSet(partEl, this, id);
     		return valueSet;
-    	}
-        return null;
+    	} else if (FormulaTestCase.TAG_NAME.equals(xmlTagName)){
+    	    return newFormulaTestInternal(id);
+        } else if (PROPERTY_VALUE.equalsIgnoreCase(xmlTagName)){
+            // ignore value nodes, will be parsed in the this#initPropertiesFromXml method
+            return null;
+        }
+        throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
     }
 
 	/**
@@ -460,4 +497,109 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
 		return null;
 	}
+    
+
+    /**
+     * {@inheritDoc}
+     */
+    public IFormulaTestCase newFormulaTestCase() {
+        ArgumentCheck.isTrue(getType() == ConfigElementType.FORMULA);
+        IFormulaTestCase f = newFormulaTestInternal(getNextPartId());
+        objectHasChanged();
+        return f;
+    }
+    
+    /*
+     * Creates a new formula test without updating the source file.
+     */
+    private IFormulaTestCase newFormulaTestInternal(int nextPartId) {
+        IFormulaTestCase f = new FormulaTestCase(this, nextPartId);
+        formulaTestCases.add(f);
+        return f;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IFormulaTestCase getFormulaTestCase(String name) {
+        for (Iterator it = formulaTestCases.iterator(); it.hasNext();) {
+            IFormulaTestCase f = (IFormulaTestCase) it.next();
+            if (f.getName().equals(name)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IFormulaTestCase[] getFormulaTestCases() {
+        return (IFormulaTestCase[]) formulaTestCases.toArray(new IFormulaTestCase[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeFormulaTestCase(IFormulaTestCase formulaTest) {
+        if (formulaTestCases.contains(formulaTest)){
+            formulaTestCases.remove(formulaTest);
+            objectHasChanged();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveFormulaTestCases(int[] indexes, boolean up) {
+        ListElementMover mover = new ListElementMover(formulaTestCases);
+        int[] newIdxs = mover.move(indexes, up);
+        valueChanged(indexes, newIdxs);
+        return newIdxs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getIdentifierUsedInFormula() throws CoreException {
+        List result = new ArrayList();
+        if (!ConfigElementType.FORMULA.equals(type)){
+            return new String[0];
+        }
+        
+        IAttribute attribute = findPcTypeAttribute();
+        if (attribute == null){
+            return new String[0];
+        }
+        
+        Parameter[] formulaParameters = attribute.getFormulaParameters();
+        for (int i = 0; i < formulaParameters.length; i++) {
+            Datatype datatype = getIpsProject().findDatatype(formulaParameters[i].getDatatype());
+            if (datatype instanceof IPolicyCmptType) {
+                // if the datatype specifies a policy cmpt type add all identifiets of all attributes
+                IPolicyCmptType pcType = (IPolicyCmptType) datatype;
+                IAttribute[] attributes = pcType.getAttributes();
+                for (int j = 0; j < attributes.length; j++) {
+                    result.add(formulaParameters[i].getName() + "." + attributes[j].getName()); //$NON-NLS-1$
+                }
+            } else {
+                result.add(formulaParameters[i].getName());
+            }
+        }
+        
+        // return only identifier which are in the formula
+        List cleanedResult = new ArrayList();
+        for (Iterator iter = result.iterator(); iter.hasNext();) {
+            String identifier = (String)iter.next();
+            // check if the identifier is given in the formula, use reg exp to check if the
+            // identifier is in the formula and no character is on the beginning or end of the
+            // identifier
+            String identifiedInValue = (" " + value + " ").replaceAll(".*[^a-zA-Z]" + identifier + "[^a-zA-Z].*", identifier); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            if (identifiedInValue.equals(identifier)) {
+                cleanedResult.add(identifier);
+            }
+        }
+        
+        return (String[]) cleanedResult.toArray(new String[0]);
+    }
 }

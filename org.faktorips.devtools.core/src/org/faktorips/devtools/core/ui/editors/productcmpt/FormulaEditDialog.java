@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -26,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -35,6 +38,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.IConfigElement;
+import org.faktorips.devtools.core.model.product.IFormulaTestCase;
+import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -44,12 +49,14 @@ import org.faktorips.devtools.core.ui.editors.pctype.ParameterInfo;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 
 /**
  *
  */
 public class FormulaEditDialog extends IpsPartEditDialog {
+    private static final String UI_FORMULA_TEST_CASE_NAME = "UIFormulaTest"; //$NON-NLS-1$
     
     // the formula configuration element being edited
     private IConfigElement configElement;
@@ -63,7 +70,13 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     // edit fields
     private TextField formulaField;
     
-    /**
+    // the formula test cases composite displayed on the formula test case page
+    private FormulaTestCaseControl formulaTestCaseControl;
+
+    // the table to display the formula test case, to preview the result of the editing formula
+    private FormulaTestInputValuesControl formulaDummyTestInputValuesControl;
+    
+    /*
      * Flag indicating that this dialog is only a view (which does not allow to 
      * modify its contents).
      */
@@ -97,7 +110,6 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         this.configElement = configElement;
         attribute = configElement.findPcTypeAttribute();
         this.viewOnly = viewOnly;
-        
     }
 
     /**
@@ -107,22 +119,106 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         IpsPartUIController controller = new IpsPartUIController(part) {
 
 			protected MessageList validatePartAndUpdateUI() {
-				MessageList messages = super.validatePartAndUpdateUI();
-				if(!messages.isEmpty()){
-					Message firstMessage = messages.getMessage(0);
-					setMessage(firstMessage.getText(),  getJFaceMessageType(firstMessage.getSeverity()));	
-				}
-				else{
-					setMessage(""); //$NON-NLS-1$
-				}
-				return messages;
+			    MessageList messages = super.validatePartAndUpdateUI();
+				return validateAndUpdateDialogUI(messages);
 			}
-        	
         };
         return controller;
     }
+
+    /*
+     * Validates and updates the dialog
+     */
+    private MessageList validateAndUpdateDialogUI(MessageList messages) {       
+        MessageList relevantMessages = new MessageList();
+        try {
+            if (getContents() != null) {
+                // set redraw false, thus changes while redrawing the ui are not visible to the user,
+                // this avoids flickering of the dialog
+                getContents().setRedraw(false);
+            }
+            
+            if (messages.getNoOfMessages() > 0) {
+                // get only message wich are not for the dummy formula test case (getTransientFormulaTestCases)
+                for (Iterator iter = messages.iterator(); iter.hasNext();) {
+                    Message msg = (Message)iter.next();
+                    if (isNotMessageForDummyFormulaTestCase(msg)){
+                        relevantMessages.add(msg);
+                    }                
+                }
+                if (!relevantMessages.isEmpty()) {
+                    Message firstMessage = relevantMessages.getMessage(0);
+                    setMessage(firstMessage.getText(), getJFaceMessageType(firstMessage.getSeverity()));
+                } else {
+                    setMessage(""); //$NON-NLS-1$
+                }
+            } else {
+                setMessage(""); //$NON-NLS-1$
+            }
+            updateUiFormulaTestCaseTab();
+            updateUiPreviewFormulaResult();
+        } finally {
+            if (getContents() != null) {
+                getContents().setRedraw(true);
+            }
+        }
+        return relevantMessages;
+    }
     
-    /** 
+    /**
+     * Returns <code>true</code> if the message is no message which is direcly related to the
+     * dummy formula test case.
+     */
+    private boolean isNotMessageForDummyFormulaTestCase(Message msg) {
+        ObjectProperty[] props = msg.getInvalidObjectProperties();
+        for (int i = 0; i < props.length; i++) {
+            if (props[i].getObject() instanceof IFormulaTestInputValue) {
+                IFormulaTestInputValue inputValue = (IFormulaTestInputValue)props[i].getObject();
+                if (inputValue.getParent().equals(getTransientFormulaTestCases())) {
+                    return false;
+                }
+            } else if (props[i].getObject() instanceof IFormulaTestCase) {
+                if (props[i].getObject().equals(getTransientFormulaTestCases())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /*
+     * Updates the formula test case tab.
+     */
+    private void updateUiFormulaTestCaseTab() {
+        formulaTestCaseControl.storeFormulaTestCases(getPersistentFormulaTestCases());
+    }
+
+    /*
+     * Returns all relevant formula test cases which will be displayed in the formula test case tab.
+     * Note the formula test case displayed on the first page (used as preview the formula result), is a 
+     * none persistent formula test case, because it will be deleted if closing this dialog and will be recreated
+     * if opening the dialog, therefore it will not be returned by this method (see UI_FORMULA_TEST_CASE_NAME this
+     * is the name of this "dummy" formula test case.
+     */
+    private List getPersistentFormulaTestCases(){
+        List persitentFormulaTestCases = new ArrayList();
+        IFormulaTestCase[] ftc = configElement.getFormulaTestCases();
+        for (int i = 0; i < ftc.length; i++) {
+            if (! ftc[i].getName().equals(UI_FORMULA_TEST_CASE_NAME)){
+                persitentFormulaTestCases.add(ftc[i]);
+            }
+        }
+        return persitentFormulaTestCases;
+    }
+    
+    /*
+     * Returns the transient formula test case which is used to preview the formula result on the first page.
+     */
+    private IFormulaTestCase getTransientFormulaTestCases(){
+        return configElement.getFormulaTestCase(UI_FORMULA_TEST_CASE_NAME);
+    }
+    
+    /**
      * {@inheritDoc}
      */
     protected Composite createWorkArea(Composite parent) throws CoreException {
@@ -135,6 +231,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         createDescriptionTabItem(folder);
         super.setEnabledDescription(!viewOnly);
 
+        createFormulaTestCasesTab(folder);
+        
         return folder;
     }
     
@@ -168,12 +266,47 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        
         formulaText.setEnabled(!viewOnly);
         
         // create fields
         formulaField = new TextField(formulaText);
 
+        // create the formula input composite
+        Group formulaTestGroup = uiToolkit.createGroup(c, Messages.FormulaEditDialog_GroupLabel_FormulaTestInput);
+        formulaDummyTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestGroup, uiToolkit, uiController);
+        formulaDummyTestInputValuesControl.setCanCalulateResult(true);
+        formulaDummyTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(true);
+        formulaDummyTestInputValuesControl.setCanStoreExpectedResult(true);
+        formulaDummyTestInputValuesControl.initControl();
+        
         return c;
+    }
+
+    /*
+     * If necessary updates the ui formula test case to calculate a preview result and execute it if the formula is valid.
+     */
+    private void updateUiPreviewFormulaResult(){
+        try {
+            String[] parameterIdentifiers = configElement.getIdentifierUsedInFormula();
+            IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
+            if (formulaTestCase == null){
+                formulaTestCase = configElement.newFormulaTestCase();
+                formulaTestCase.setName(UI_FORMULA_TEST_CASE_NAME);
+            }
+            if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers)){
+                // only if the parameter have changes repack the table of input values
+                formulaDummyTestInputValuesControl.storeFormulaTestCase(formulaTestCase);
+            }
+            
+            try {
+                formulaDummyTestInputValuesControl.calculateFormulaIfValid();
+            } catch (Throwable t) {
+                setMessage(t.getLocalizedMessage(), IMessageProvider.ERROR);
+            }
+        } catch (Exception ex) {
+            IpsPlugin.logAndShowErrorDialog(ex);
+        }
     }
     
     private int getJFaceMessageType(int severity){
@@ -208,5 +341,28 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     protected String buildTitle() {
     	return attribute.getName() + " - " + attribute.getDatatype(); //$NON-NLS-1$
     }
+
+    protected void okPressed() {
+        // delete dummy formula test case for testing the formel on the first editor page
+        IFormulaTestCase formulaTestCase = getTransientFormulaTestCases();
+        if (formulaTestCase != null){
+            formulaTestCase.delete();
+        }
+        super.okPressed();
+    }
     
+    /*
+     * Create the tab to displaying and editing all formula test cases for the config items formula.
+     */
+    private TabItem createFormulaTestCasesTab(TabFolder folder) {
+        Composite c = createTabItemComposite(folder, 1, false);
+
+        formulaTestCaseControl = new FormulaTestCaseControl(c, uiToolkit, uiController, configElement);
+        formulaTestCaseControl.storeFormulaTestCases(getPersistentFormulaTestCases());
+        
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(Messages.FormulaEditDialog_TabText_FormulaTestCases);
+        item.setControl(c);
+        return item;
+    }
 }

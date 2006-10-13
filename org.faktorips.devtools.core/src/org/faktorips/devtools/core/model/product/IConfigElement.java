@@ -36,7 +36,7 @@ import org.faktorips.util.message.MessageList;
  * All product components based on that policy component have a matching
  * product attribute that stores the concrete interest rate value.  
  */
-public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider {
+public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider  {
     
 	public final static String PROPERTY_TYPE = "type"; //$NON-NLS-1$
     public final static String PROPERTY_PCTYPE_ATTRIBUTE = "pcTypeAttribute"; //$NON-NLS-1$
@@ -96,6 +96,11 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider {
      * Validation message code to indicate that the value-set of the attribute is invalid.
      */
     public final static String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the type is not formula but formula test exists.
+     */
+    public final static String MSGCODE_WRONG_TYPE_FOR_FORMULA_TESTS = MSGCODE_PREFIX + "WrongTypeForFormulaTests"; //$NON-NLS-1$
     
     /**
      * Returns the product component generation this config element belongs to.
@@ -191,4 +196,48 @@ public interface IConfigElement extends IIpsObjectPart, IValueDatatypeProvider {
 	 */
 	public void setValueSetCopy(IValueSet source);
     
+    /**
+     * Returns all formula test cases.
+     */
+    public IFormulaTestCase[] getFormulaTestCases();
+
+    /**
+     * Returns the formula test case identified by the given name. Return <code>null</code> if no such
+     * element exists.
+     */
+    public IFormulaTestCase getFormulaTestCase(String name);
+    
+    /**
+     * Creates and returns a new formula test case.
+     */
+    public IFormulaTestCase newFormulaTestCase();
+
+    /**
+     * Removes the given formula test case from the list of formula test cases.
+     */
+    public void removeFormulaTestCase(IFormulaTestCase formulaTest);    
+    
+    /**
+     * Returns all identifier which are used in the formula. Returns an empty string array if no
+     * identifier was found in formula or the config element is no formula type or the attribute - which
+     * specifies the formula interface - wasn't found.
+     * 
+     * @throws CoreException If an error occurs while searching the corresponding attribute.
+     */
+    public String[] getIdentifierUsedInFormula() throws CoreException;
+
+    /**
+     * Moves the formula test case identified by the indexes up or down by one position. If
+     * one of the indexes is 0 (the first element), nothing is moved up. If one of the indexes is
+     * the number of elements - 1 (the last element) nothing moved down
+     * 
+     * @param indexes The indexes identifying the input value.
+     * @param up <code>true</code>, to move up, <false> to move them down.
+     * 
+     * @return The new indexes of the moved input values.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify an input value.
+     */
+    public int[] moveFormulaTestCases(int[] indexes, boolean up);
 }

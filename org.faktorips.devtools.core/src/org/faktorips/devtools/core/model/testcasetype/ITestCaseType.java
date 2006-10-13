@@ -174,19 +174,17 @@ public interface ITestCaseType extends IIpsObject {
     public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name); 
     
     /**
-     * Moves the test parameter identified by the indexes up or down by one position.
-     * If one of the indexes is 0 (the first test parameter), nothing is moved up. 
-     * If one of the indexes is the number of attributes - 1 (the last test attribute)
-     * nothing moved down
-     * @param indexes   The indexes identifying the test parameter.
-     * @param up        <code>true</code>, to move up, 
-     * <false> to move them down.
+     * Moves the test parameter identified by the indexes up or down by one position. If one of the
+     * indexes is 0 (the first test parameter), nothing is moved up. If one of the indexes is the
+     * number of parameters - 1 (the last test parameter) nothing moved down
+     * 
+     * @param indexes The indexes identifying the test parameter.
+     * @param up <code>true</code>, to move up, <false> to move them down.
      * 
      * @return The new indexes of the moved test parameter.
      * 
      * @throws NullPointerException if indexes is null.
-     * @throws IndexOutOfBoundsException if one of the indexes does not identify
-     * an attribute.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify a test parameter.
      */
     public int[] moveTestParameters(int[] indexes, boolean up);
     

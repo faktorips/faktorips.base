@@ -1233,10 +1233,10 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         detailsArea.setLayout(detailLayout);
     }
     
-    /**
+    /*
      * Performs and returns validation messages on the given element.
      */
-    MessageList validateElement(Object element) throws CoreException{
+    private MessageList validateElement(Object element) throws CoreException{
         MessageList messageList = new MessageList();
         // validate element
         if (element instanceof IIpsObjectPartContainer){
