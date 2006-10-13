@@ -72,7 +72,7 @@ import org.faktorips.runtime.test.SocketIpsTestRunner;
  */
 public class IpsTestRunner implements IIpsTestRunner { 
     
-    private static final int ACCEPT_TIMEOUT = 1500;
+    private static final int ACCEPT_TIMEOUT = 5000;
     
 	private int port;
     private IIpsProject ipsProject;    
