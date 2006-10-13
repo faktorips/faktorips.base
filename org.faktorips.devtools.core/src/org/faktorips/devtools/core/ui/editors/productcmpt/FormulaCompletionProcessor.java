@@ -143,7 +143,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         String name = param.getName();
         String displayText = name + " - " + param.getDatatype(); //$NON-NLS-1$
         CompletionProposal proposal = new CompletionProposal(
-                name, replacementOffset, 0, replacementOffset + name.length(),  
+                name, replacementOffset, replacementLength, replacementOffset + name.length(),  
                 new DefaultLabelProvider().getImage(param), displayText, null, null);
         result.add(proposal);
     }
