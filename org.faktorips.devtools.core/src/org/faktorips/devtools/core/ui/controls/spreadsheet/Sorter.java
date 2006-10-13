@@ -83,8 +83,8 @@ public class Sorter extends ViewerSorter
 		}
 		
 		// sort the values.		
-		Object v1 = control.getCellValue(e1, externalColumnIndex - 1);
-		Object v2 = control.getCellValue(e2, externalColumnIndex - 1);
+		Object v1 = control.getCellValue(e1, externalColumnIndex);
+		Object v2 = control.getCellValue(e2, externalColumnIndex);
 			
 		return order * comparator.compare(v1, v2);
 	}
