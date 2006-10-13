@@ -196,11 +196,14 @@ public class IpsTestRunner implements IIpsTestRunner {
         vmConfig.setProgramArguments(args);
 
         // sets the max heap size of the test runner virtual machine
-        if (testRunnerMaxHeapSize.length()>0)
+        if (StringUtils.isEmpty(testRunnerMaxHeapSize)){
+            // set the default size to 64
+            testRunnerMaxHeapSize = "64"; //$NON-NLS-1$
+        }
+        if (testRunnerMaxHeapSize.length()>0){
             testRunnerMaxHeapSize = "-Xmx" + testRunnerMaxHeapSize + "m"; //$NON-NLS-1$ //$NON-NLS-2$
-        
-        if (testRunnerMaxHeapSize.length()>0)
             vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSize});
+        } 
         
         launch= new Launch(null, ILaunchManager.RUN_MODE, null);
         testStartTime = System.currentTimeMillis();
