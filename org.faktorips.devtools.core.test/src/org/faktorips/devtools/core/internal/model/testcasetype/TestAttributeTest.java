@@ -154,6 +154,10 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element attributeEl = XmlUtil.getElement(docEl, "TestAttribute", 3);
         testAttribute.initFromXml(attributeEl);
+        // force revalidation of object
+        String attribute = testAttribute.getAttribute();
+        testAttribute.setAttribute(attribute + "_new");
+        testAttribute.setAttribute(attribute);
         ml = testAttribute.validate();
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
     }
