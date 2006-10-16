@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -415,6 +416,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
     
     private class KeyItemLabelProvider extends DefaultLabelProvider {
         
+        private HashMap cachedProblemImageDescriptors = new HashMap();
+        
         public Image getImage(Object element) {
             String item = (String)element;
             key.getTableStructure().getColumn(item);
@@ -435,9 +438,38 @@ public class KeyEditDialog extends IpsPartEditDialog {
             if (list.getSeverity()==Message.NONE) {
     		    return image;
     		}
-    		ProblemImageDescriptor descriptor = new ProblemImageDescriptor(image, list.getSeverity());
+            // get the cached problem descriptor for the base image
+            String key = getKey(image, list.getSeverity());
+            ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
+            if (descriptor == null && image != null){
+                descriptor = new ProblemImageDescriptor(image, list.getSeverity());
+                cachedProblemImageDescriptors.put(key, descriptor);
+            }            
     		return IpsPlugin.getDefault().getImage(descriptor);
         }
+
+        public void dispose() {
+            for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
+                ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
+                Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
+                if (problemImage != null){
+                    problemImage.dispose();
+                }
+            }
+            cachedProblemImageDescriptors.clear();   
+            super.dispose();
+        }
         
+        /*
+         * Returns an unique key for the given image and severity compination.
+         */
+        private String getKey(Image image, int severity) {
+            if (image == null){
+                return null;
+            }
+            return image.hashCode() + "_" + severity; //$NON-NLS-1$
+        }        
     }
+    
+    
 }

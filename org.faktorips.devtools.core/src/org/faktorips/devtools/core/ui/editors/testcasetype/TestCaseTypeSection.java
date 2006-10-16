@@ -119,6 +119,8 @@ import org.faktorips.values.EnumValue;
 public class TestCaseTypeSection extends IpsSection implements ContentsChangeListener {
     private Image empytImage;
     
+    private HashMap cachedProblemImageDescriptors = new HashMap();
+    
     // The editing test case type
     private ITestCaseType testCaseType;
     
@@ -537,11 +539,30 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         }
     }
 
+    /*
+     * Returns the image for the given message list (e.g. if there is an error return a problem image)
+     */
     private Image getImageForMsgList(Image defaultImage, MessageList msgList) {
-        ProblemImageDescriptor descriptor = new ProblemImageDescriptor(defaultImage, msgList.getSeverity());
+        // get the cached problem descriptor for the base image
+        String key = getKey(defaultImage, msgList.getSeverity());
+        ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
+        if (descriptor == null && defaultImage != null){
+            descriptor = new ProblemImageDescriptor(defaultImage, msgList.getSeverity());
+            cachedProblemImageDescriptors.put(key, descriptor);
+        }
         return IpsPlugin.getDefault().getImage(descriptor);
-    }
-
+    } 
+    
+    /*
+     * Returns an unique key for the given image and severity compination.
+     */
+    private String getKey(Image image, int severity) {
+        if (image == null){
+            return null;
+        }
+        return image.hashCode() + "_" + severity; //$NON-NLS-1$
+    }   
+    
     /*
      * Expansion section listener class to select the section if expand or collapsed
      */
@@ -606,6 +627,16 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
     public void dispose() {
         testCaseType.getIpsModel().removeChangeListener(this);
         empytImage.dispose();
+        
+        for (Iterator iter = cachedProblemImageDescriptors.values().iterator(); iter.hasNext();) {
+            ProblemImageDescriptor problemImageDescriptor = (ProblemImageDescriptor)iter.next();
+            Image problemImage = IpsPlugin.getDefault().getImage(problemImageDescriptor);
+            if (problemImage != null){
+                problemImage.dispose();
+            }
+        }
+        cachedProblemImageDescriptors.clear(); 
+        
         super.dispose();
     }
     
