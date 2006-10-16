@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
@@ -77,7 +78,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             sb.append(rowNumber);
             sb.append(getNeededTabs(columnWidths[0], rowNumber));
             for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
-                String value= row.getValue(colCounter);
+                String value= getRowValueAt(row, colCounter);
                 sb.append(value);
                 sb.append(getNeededTabs(columnWidths[colCounter+1], value));
             }
@@ -104,7 +105,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * align the next value with its column.
      * 
      * @param widthInTabs The width of the column in tabs.
-     * @param value The value of this table cell.
+     * @param value The value of this table cell. Must not be null.
      * @return the number of tabs needed to reach the next column.
      */
     private StringBuffer getNeededTabs(int widthInTabs, String value) {
@@ -183,7 +184,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
                     return false;
                 }
                 for(int i=0; i<table.getNumOfColumns(); i++){
-                    if(!row.getValue(i).equals(otherRow.getValue(i))){
+                    if(!getRowValueAt(row, i).equals(getRowValueAt(otherRow, i))){
                         return false;
                     }
                 }
@@ -205,7 +206,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             int hashCode= 0;
             hashCode+= String.valueOf(row.getRowNumber()).hashCode();
             for (int i = 0; i < table.getNumOfColumns(); i++) {
-                hashCode += row.getValue(i).hashCode();
+                hashCode += getRowValueAt(row, i).hashCode();
             }   
             return hashCode;
         }else{
@@ -232,7 +233,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             for(int colCounter=0; colCounter<table.getNumOfColumns(); colCounter++){
                 int maxWidth= 0;
                 for (int rowCounter = 0; rowCounter < rows.length; rowCounter++) {
-                    maxWidth= Math.max(maxWidth, rows[rowCounter].getValue(colCounter).length());
+                    maxWidth= Math.max(maxWidth, getRowValueAt(rows[rowCounter], colCounter).length());
                 }
                 columnWidthsInTabs[colCounter+1]= getColumnTabWidthForLength(maxWidth);
             }
@@ -276,5 +277,23 @@ public class TableContentsCompareItem extends AbstractCompareItem {
         }else{
             return ((TableContentsCompareItem)getParent()).getColumnWidths();
         }
+    }
+    
+    /**
+     * Returns the value at the given column index in the given row. If the value retrieved from the
+     * row is null the NULL-representation string (defined by the IpsPreferences) is returned. This
+     * method thus never returns <code>null</code>.
+     * 
+     * @param row The row a value should be retrieved from.
+     * @param index The column index the value should be retrieved from inside the row.
+     * @return The value at the given index in the given row or the NULL-representation string
+     *         (defined by the IpsPreferences) if the row returned <code>null</code> as value.
+     */
+    private String getRowValueAt(IRow row, int index){
+        String value= row.getValue(index);
+        if(value==null){
+            value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        }
+        return value;
     }
 }
