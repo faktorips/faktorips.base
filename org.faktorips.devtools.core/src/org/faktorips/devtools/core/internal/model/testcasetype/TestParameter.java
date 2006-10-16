@@ -115,10 +115,8 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        setName(element.getAttribute(PROPERTY_NAME));
-        TestParameterType oldType = type;
+        name = element.getAttribute(PROPERTY_NAME);
         type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_PARAMETER_TYPE));
-        valueChanged(oldType, type);
     }
 
     /**

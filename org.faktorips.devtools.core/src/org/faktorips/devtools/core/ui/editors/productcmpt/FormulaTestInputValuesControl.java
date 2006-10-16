@@ -27,11 +27,8 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.osgi.util.NLS;
@@ -392,19 +389,6 @@ public class FormulaTestInputValuesControl extends Composite {
      * Adds the listener to the formula test input value table
      */
     private void hookTableListener() {
-        formulaInputTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            Object prevSelection = null;
-            public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection){
-                    Object selObject = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                    if (selObject != prevSelection){
-                        prevSelection = selObject;
-                        postEditFormulaTestInputValue((IFormulaTestInputValue)selObject);
-                    }
-                }
-            }
-        });
-        
         new TableMessageHoverService(formulaInputTableViewer) {
             protected MessageList getMessagesFor(Object element) throws CoreException {
                 if (element != null) {

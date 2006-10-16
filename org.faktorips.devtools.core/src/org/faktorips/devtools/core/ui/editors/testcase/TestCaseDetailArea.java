@@ -481,7 +481,7 @@ public class TestCaseDetailArea {
             throw new RuntimeException(e1);
         }
 
-        Label label = toolkit.createFormLabel(composite, "Value" + ":"); //$NON-NLS-1$ //$NON-NLS-2$
+        Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
         final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null);
         addSectionSelectionListeners(editField, label, testValue);
         uiController.add(editField, ITestValue.PROPERTY_VALUE);

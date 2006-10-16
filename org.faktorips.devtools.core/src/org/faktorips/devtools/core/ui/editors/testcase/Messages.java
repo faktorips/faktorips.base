@@ -82,4 +82,5 @@ public class Messages extends NLS {
     public static String TestCaseSection_SelectDialogValidationRule_Title;
     public static String TestCaseSection_SelectDialogValidationRule_Decription;
     public static String TestCaseDetailArea_Label_Violation;
+    public static String TestCaseDetailArea_Label_Value;
 }

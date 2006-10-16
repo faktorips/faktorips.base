@@ -126,11 +126,9 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
      */
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
-        setName(element.getAttribute(PROPERTY_NAME));
-		setAttribute(element.getAttribute(PROPERTY_ATTRIBUTE));
-        TestParameterType oldType = type;
+        name = element.getAttribute(PROPERTY_NAME);
+		attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
 		type = TestParameterType.getTestParameterType(element.getAttribute(PROPERTY_TEST_ATTRIBUTE_TYPE));
-        valueChanged(oldType, type);
 	}
 
     /**

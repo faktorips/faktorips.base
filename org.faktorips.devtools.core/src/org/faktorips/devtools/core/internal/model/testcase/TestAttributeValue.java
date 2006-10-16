@@ -128,7 +128,11 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		testAttribute = element.getAttribute(PROPERTY_ATTRIBUTE);
-		value = ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALUE);
+		value = ValueToXmlHelper.getValueFromElement(element, "Value");
+        if (value == null){
+            // TODO Joerg: Workaround for existing test cases
+            value = ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALUE);
+        }        
 	}
 
     /**
@@ -137,7 +141,7 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_ATTRIBUTE, testAttribute);
-		ValueToXmlHelper.addValueToElement(value, element, PROPERTY_VALUE);
+		ValueToXmlHelper.addValueToElement(value, element, "Value");
 	}  
 	
     /** 

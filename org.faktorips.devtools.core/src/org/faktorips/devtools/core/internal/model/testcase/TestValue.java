@@ -73,7 +73,11 @@ public class TestValue extends TestObject implements ITestValue {
 	protected void initPropertiesFromXml(Element element, Integer id) {
 		super.initPropertiesFromXml(element, id);
 		testValueParameter = element.getAttribute(PROPERTY_VALUE_PARAMETER);
-		value = ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALUE);
+		value = ValueToXmlHelper.getValueFromElement(element, "Value"); //$NON-NLS-1$
+        if (value == null){
+            // TODO Joerg: Workaround for existing test cases
+            value = ValueToXmlHelper.getValueFromElement(element, PROPERTY_VALUE);
+        }
 	}
 
     /**
@@ -82,7 +86,7 @@ public class TestValue extends TestObject implements ITestValue {
 	protected void propertiesToXml(Element element) {
 		super.propertiesToXml(element);
 		element.setAttribute(PROPERTY_VALUE_PARAMETER, testValueParameter);
-		ValueToXmlHelper.addValueToElement(value, element, PROPERTY_VALUE);
+		ValueToXmlHelper.addValueToElement(value, element, "Value"); //$NON-NLS-1$
 	}
 
     /**
