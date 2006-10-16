@@ -174,7 +174,6 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_FORMULA_PARAMETER_NOT_FOUND));
 
         params = new Parameter[1];
-        // FIXME Joerg: depends on doesn't work if param1 is used
         params[0] = new Parameter(0, "param3", Datatype.PRIMITIVE_BOOLEAN.getQualifiedName());
         attribute.setFormulaParameters(params);
         formulaTestInputValue.setIdentifier("param3");

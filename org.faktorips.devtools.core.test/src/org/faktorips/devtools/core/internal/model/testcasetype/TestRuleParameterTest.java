@@ -95,6 +95,10 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
 
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "RuleParameter", 2);
+        // force object change to revalidate the object
+        String name = ruleInput.getName();
+        ruleInput.setName("x");
+        ruleInput.setName(name);
         ruleInput.initFromXml(paramEl);
         ml = ruleInput.validate();
         assertNotNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));

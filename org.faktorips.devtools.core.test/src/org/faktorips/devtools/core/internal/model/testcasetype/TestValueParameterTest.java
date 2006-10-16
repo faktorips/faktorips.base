@@ -85,6 +85,10 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
 
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "ValueParameter", 3);
+        // force object change to revalidate the object
+        String name = valueParamInput.getName();
+        valueParamInput.setName("x");
+        valueParamInput.setName(name);
         valueParamInput.initFromXml(paramEl);
         ml = valueParamInput.validate();
         assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
