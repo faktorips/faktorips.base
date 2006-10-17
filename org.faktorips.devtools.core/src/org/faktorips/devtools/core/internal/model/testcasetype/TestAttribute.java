@@ -243,7 +243,7 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
             messageList.add(msg);
         }
         
-        // check for duplicate test attribute names
+        // check for duplicate test attribute names and types
         TestPolicyCmptTypeParameter typeParam = (TestPolicyCmptTypeParameter)getParent();
         ITestAttribute testAttributes[] = typeParam.getTestAttributes();
         for (int i = 0; i < testAttributes.length; i++) {
@@ -251,6 +251,12 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
                 String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, name);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
                         PROPERTY_NAME);
+                messageList.add(msg);
+                break;
+            } else if (testAttributes[i] != this && testAttributes[i].getAttribute().equals(attribute) && testAttributes[i].getTestAttributeType() == type){
+                String text = NLS.bind(Messages.TestAttribute_ValidationError_DuplicateAttributeAndType, attribute, type.getName());
+                Message msg = new Message(MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE, text, Message.ERROR, this,
+                        PROPERTY_ATTRIBUTE);
                 messageList.add(msg);
                 break;
             }

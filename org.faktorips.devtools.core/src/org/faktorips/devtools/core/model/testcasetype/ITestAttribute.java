@@ -66,6 +66,12 @@ public interface ITestAttribute extends IIpsObjectPart {
     public final static String MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES = MSGCODE_PREFIX + "ExpectedOrComputedButNotExpectedRes"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the attribute and the attribute type is already given.<br>
+     * E.g. The attribute "a" could be added as input and expected result but not as input twice.
+     */
+    public final static String MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE = MSGCODE_PREFIX + "DuplicateAttributeAndType"; //$NON-NLS-1$
+    
+    /**
      * Sets the attribute's name.
      */
     public void setName(String newName);

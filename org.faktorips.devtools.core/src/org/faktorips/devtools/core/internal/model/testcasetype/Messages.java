@@ -56,4 +56,5 @@ public class Messages extends NLS {
     public static String TestParameter_ValidateError_InvalidTestParamName;
     public static String TestRuleParameter_ValidationError_WrongParameterType;
     public static String TestAttribute_ValidationError_WrongParameterTypeIfDerivedOrComputed;
+    public static String TestAttribute_ValidationError_DuplicateAttributeAndType;
 }

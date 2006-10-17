@@ -238,6 +238,22 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate();
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES));
-    
     }
+    
+    public void testValidateDuplicateAttributeType() throws Exception{
+        testAttribute.setName("a");
+        testAttribute.setAttribute("attribute1");
+
+        ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter) testAttribute.getParent();
+        ITestAttribute testAttribute2 = param.newExpectedResultTestAttribute();
+        testAttribute2.setName("b");
+        testAttribute2.setAttribute("attribute1");
+
+        MessageList ml = testAttribute.validate();
+        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+        
+        testAttribute2.setAttribute("attribute2");
+        ml = testAttribute.validate();
+        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+    }    
 }
