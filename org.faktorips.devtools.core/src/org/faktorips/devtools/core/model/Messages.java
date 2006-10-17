@@ -125,4 +125,8 @@ public class Messages extends NLS {
     public static String RangeValueSet_msgUpperboundViolation;
 
     public static String EnumValueSet_msgNotSubset;
+
+	public static String IpsObjectType_nameTestCaseType;
+
+	public static String IpsObjectType_nameTestCase;
 }
