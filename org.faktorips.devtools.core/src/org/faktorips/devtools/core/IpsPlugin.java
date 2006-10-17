@@ -198,7 +198,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @param baseImageName The name of the image which will be overlayed with the product relevant image.
      */
 	public Image getProductRelevantImage(String baseImageName) {
-		String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName;
+		String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName; //$NON-NLS-1$
 		Image image = getImageRegistry().get(overlayedImageName);
 		if (image == null) {
 		    image = ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName));

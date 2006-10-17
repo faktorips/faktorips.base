@@ -263,6 +263,59 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         assertTrue(dependsOnList.contains(prodCmpt2.getQualifiedNameType()));
     }
     
+    public void testGenerateUniqueNameForTestPolicyCmpt(){
+        // test for root parameters
+        ITestPolicyCmpt param1 = testCase.newTestPolicyCmpt();
+        param1.setName(testCase.generateUniqueNameForTestPolicyCmpt(param1, "Test"));
+        assertEquals("Test", param1.getName());
+        
+        ITestPolicyCmpt param2 = testCase.newTestPolicyCmpt();
+        param2.setName(testCase.generateUniqueNameForTestPolicyCmpt(param2, "Test"));
+        assertEquals("Test (2)", param2.getName());
+
+        ITestPolicyCmpt param3 = testCase.newTestPolicyCmpt();
+        param3.setName(testCase.generateUniqueNameForTestPolicyCmpt(param3, "Test"));
+        assertEquals("Test (3)", param3.getName());
+        
+        param2.delete();
+        
+        ITestPolicyCmpt param4 = testCase.newTestPolicyCmpt();
+        param4.setName(testCase.generateUniqueNameForTestPolicyCmpt(param4, "Test"));
+        assertEquals("Test (2)", param4.getName());
+        
+        ITestPolicyCmpt param5 = testCase.newTestPolicyCmpt();
+        param5.setName(testCase.generateUniqueNameForTestPolicyCmpt(param5, "Test"));
+        assertEquals("Test (4)", param5.getName());
+        
+        // test for child parameters
+        ITestPolicyCmptRelation relation =  param1.newTestPolicyCmptRelation();
+        ITestPolicyCmpt child = relation.newTargetTestPolicyCmptChild();
+        child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
+        assertEquals("Test", child.getName());
+        
+        relation =  param1.newTestPolicyCmptRelation();
+        ITestPolicyCmpt child2 = relation.newTargetTestPolicyCmptChild();
+        child2.setName(testCase.generateUniqueNameForTestPolicyCmpt(child2, "Test"));
+        assertEquals("Test (2)", child2.getName());
+        
+        relation =  param1.newTestPolicyCmptRelation();
+        child = relation.newTargetTestPolicyCmptChild();
+        child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
+        assertEquals("Test (3)", child.getName());
+        
+        child2.delete();
+        
+        relation =  param1.newTestPolicyCmptRelation();
+        child = relation.newTargetTestPolicyCmptChild();
+        child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
+        assertEquals("Test (2)", child.getName());
+        
+        relation =  param1.newTestPolicyCmptRelation();
+        child = relation.newTargetTestPolicyCmptChild();
+        child.setName(testCase.generateUniqueNameForTestPolicyCmpt(child, "Test"));
+        assertEquals("Test (4)", child.getName());        
+    }
+    
     public void testValidateTestCaseTypeNotFound() throws Exception{
         MessageList ml = testCase.validate();
         assertNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));

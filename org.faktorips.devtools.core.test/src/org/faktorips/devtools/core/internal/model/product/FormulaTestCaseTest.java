@@ -183,20 +183,25 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         
         IFormulaTestCase ftc1 = configElement.newFormulaTestCase();
         ftc1.setName(ftc1.generateUniqueNameForFormulaTestCase("Test"));
-        assertEquals("Test (1)", ftc1.getName());
+        assertEquals("Test (2)", ftc1.getName());
         
         IFormulaTestCase ftcNew = configElement.newFormulaTestCase();
+        ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
+        assertEquals("Test (3)", ftcNew.getName());
+        
+        ftcNew = configElement.newFormulaTestCase();
+        ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
+        assertEquals("Test (4)", ftcNew.getName());
+        
+        ftc1.setName("X");
+        ftcNew = configElement.newFormulaTestCase();
         ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
         assertEquals("Test (2)", ftcNew.getName());
         
         ftcNew = configElement.newFormulaTestCase();
         ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
-        assertEquals("Test (3)", ftcNew.getName());
+        assertEquals("Test (5)", ftcNew.getName());
         
-        ftc1.setName("X");
-        configElement.newFormulaTestCase();
-        ftcNew.setName(ftcNew.generateUniqueNameForFormulaTestCase("Test"));
-        assertEquals("Test (1)", ftcNew.getName());
     }
     
     public void testValidate_DuplicateName() throws CoreException{

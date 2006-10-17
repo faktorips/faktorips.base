@@ -48,4 +48,6 @@ public class Messages extends NLS {
 	public static String TestCaseTransformer_Error_ImportPackageEqualsTargetPackage;
 	public static String TestCaseTransformer_Error_Skip_Because_ImportPackageEqualsTargetPackage;
     public static String TestCaseTransformer_Error_TestCaseType_Not_Found;
+    public static String TestCaseTransformer_Error_WrongTypeOfTestPolicyCmpt;
+    public static String TestCaseTransformer_Error_TestAttributeNotExists;
 }

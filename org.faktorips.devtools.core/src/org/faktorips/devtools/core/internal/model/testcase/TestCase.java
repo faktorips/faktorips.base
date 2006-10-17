@@ -209,7 +209,7 @@ public class TestCase extends IpsObject implements ITestCase {
         if (testCaseType != null) {
             return new TestCaseTestCaseTypeDelta(this, testCaseType);
         }
-        return null;
+        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestCaseTypeNotFound, testCaseType)));
     }
 
     /**
@@ -402,7 +402,7 @@ public class TestCase extends IpsObject implements ITestCase {
     public ITestObject[] getTestObjects() {
         List foundTestObjects = getTestObjects(null, null, null);
         if (foundTestObjects.size() == 0)
-            return null;
+            return new ITestObject[0];
 
         return (ITestObject[]) foundTestObjects.toArray(new ITestObject[0]);
     }    
@@ -699,6 +699,7 @@ public class TestCase extends IpsObject implements ITestCase {
                 if (newUniqueLabel.equals(cmpt.getName()) && ! cmpt.equals(newTestPolicyCmpt) ) {
                     idx++;
                     newUniqueLabel = uniqueLabel + " (" + idx + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    i = -1;
                 }
             }
         } else {

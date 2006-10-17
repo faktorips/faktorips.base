@@ -20,7 +20,10 @@ package org.faktorips.devtools.core.ui.wizards.testcase.transform;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
@@ -103,9 +106,20 @@ public class TransformRuntimeTestCaseWizard extends Wizard implements IImportWiz
 	 */
 	public boolean performFinish() {
 		try {
-			TestCaseTransformer transformer = new TestCaseTransformer();
+			final TestCaseTransformer transformer = new TestCaseTransformer();
 			transformer.startTestRunnerJob(selectionSource, targetIpsPackageFragment, 
 					testCaseTypeName, newTestCaseNameExtension);
+            
+            WorkspaceJob job = transformer.getJob();
+            if (job != null){
+                job.addJobChangeListener(new JobChangeAdapter() {
+                    public void done(IJobChangeEvent event) {
+                        if (transformer.getLastException() != null) {
+                            IpsPlugin.log(transformer.getLastException());
+                        }
+                    }
+                });
+            }
 		} catch (Exception e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}

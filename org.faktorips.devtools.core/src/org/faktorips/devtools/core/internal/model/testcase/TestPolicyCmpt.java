@@ -121,7 +121,22 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 		throw new RuntimeException("Could not create part for tag name: " + xmlTagName); //$NON-NLS-1$
 	}	
 
-	/**
+
+    /**
+     * {@inheritDoc}
+     */
+	public void delete() {
+        if (isRoot()){
+            super.delete();
+        } else {
+            // non root test policy cmpt, thus the parent is a relation
+            // deleting of the relation will also delete this object which is the child of the relation
+            ITestPolicyCmptRelation rel = (ITestPolicyCmptRelation)getParent();
+            rel.delete();
+        }
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public String getTestPolicyCmptTypeParameter() {

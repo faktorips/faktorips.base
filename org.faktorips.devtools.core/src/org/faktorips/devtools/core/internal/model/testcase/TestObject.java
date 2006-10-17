@@ -138,7 +138,11 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
      */
     public void delete() {
         try {
-            ((TestCase)getParent()).removeTestObject(this);
+            if (isRoot()){
+                ((TestCase)getParent()).removeTestObject(this);
+            } else {
+                throw new RuntimeException("Can't delete non root objects!"); //$NON-NLS-1$
+            }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

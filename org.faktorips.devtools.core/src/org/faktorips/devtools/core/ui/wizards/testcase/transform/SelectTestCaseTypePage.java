@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.wizards.testcase.transform;
 
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Wizard page to select the test case type and optional the name extension 
@@ -48,7 +50,7 @@ public class SelectTestCaseTypePage extends WizardPage {
     
     private Composite prevTestCaseTypeComposite;
     
-    private Composite content;
+    private Composite parentOfSuperPcTypeComposite;
     
 	public SelectTestCaseTypePage(TransformRuntimeTestCaseWizard wizard) {
 		super(PAGE_ID, Messages.TransformWizard_SelectTestCaseType_title, null);
@@ -62,7 +64,7 @@ public class SelectTestCaseTypePage extends WizardPage {
 	public void createControl(Composite parent) {
 		UIToolkit uiToolkit = wizard.getUiToolkit();
         
-		content = uiToolkit.createComposite(parent);
+		Composite content = uiToolkit.createComposite(parent);
 		content.setLayout(new GridLayout(1, false));
 		content.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -73,9 +75,14 @@ public class SelectTestCaseTypePage extends WizardPage {
 		layout.marginWidth = 0;
 		testCaseTypeComposite.setLayout(layout);
 			
-		createTestCaseTypeControl();
 		
         Composite editFields = uiToolkit.createLabelEditColumnComposite(content);
+        uiToolkit.createFormLabel(editFields, Messages.TransformWizard_SelectTestCaseType_TestCaseTypeLabel);
+        
+        parentOfSuperPcTypeComposite = uiToolkit.createComposite(editFields);
+        parentOfSuperPcTypeComposite.setLayout(uiToolkit.createNoMarginGridLayout(1, false));
+        parentOfSuperPcTypeComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+        createTestCaseTypeCtrl(parentOfSuperPcTypeComposite);
 
         uiToolkit.createLabel(editFields, Messages.TransformWizard_SelectTestCaseType_ExtensionLabel);
         extensionField = new TextField(uiToolkit.createText(editFields));
@@ -95,33 +102,38 @@ public class SelectTestCaseTypePage extends WizardPage {
 	 * the target package fragment from the previous page.
 	 */
 	void createTestCaseTypeControl(){
-		UIToolkit uiToolkit = wizard.getUiToolkit();
-
-		if (prevTestCaseTypeComposite != null)
+	    ArgumentCheck.notNull(parentOfSuperPcTypeComposite);
+        
+		if (prevTestCaseTypeComposite != null){
 			prevTestCaseTypeComposite.dispose();
+        }
 		
-		Composite editFields = uiToolkit.createLabelEditColumnComposite(testCaseTypeComposite);
-		prevTestCaseTypeComposite = editFields;
-		
-		IIpsPackageFragment targetIpsPackageFragment = wizard.getTargetIpsPackageFragment();
-    	if (wizard.getTargetIpsPackageFragment()!= null){
-    		uiToolkit.createFormLabel(editFields, Messages.TransformWizard_SelectTestCaseType_TestCaseTypeLabel);
-    		TestCaseTypeRefControl superTypeControl = 
-        		uiToolkit.createTestCaseTypeRefControl(targetIpsPackageFragment.getIpsProject(), editFields);
-        	supertypeField = new TextButtonField(superTypeControl);
-        	supertypeField.addChangeListener(new ValueChangeListener(){
-    		    public void valueChanged(FieldValueChangedEvent e) {
-    		    	wizard.setTestCaseTypeName((String) e.field.getValue());
-    		    }
-    		});
-        	superTypeControl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        	superTypeControl.getTextControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    	}
-    	content.pack();
-    	editFields.pack();
-    	content.getParent().layout();
+        prevTestCaseTypeComposite = createTestCaseTypeCtrl(parentOfSuperPcTypeComposite);
+
+        parentOfSuperPcTypeComposite.getParent().pack();
+        parentOfSuperPcTypeComposite.getParent().getParent().layout();             
 	}
 	
+    private Composite createTestCaseTypeCtrl(Composite parent){
+        UIToolkit uiToolkit = wizard.getUiToolkit();
+        IIpsPackageFragment targetIpsPackageFragment = wizard.getTargetIpsPackageFragment();
+        if (wizard.getTargetIpsPackageFragment()!= null){
+            TestCaseTypeRefControl superTypeControl = 
+                uiToolkit.createTestCaseTypeRefControl(targetIpsPackageFragment.getIpsProject(), parent);
+
+            supertypeField = new TextButtonField(superTypeControl);
+            supertypeField.addChangeListener(new ValueChangeListener(){
+                public void valueChanged(FieldValueChangedEvent e) {
+                    wizard.setTestCaseTypeName((String) e.field.getValue());
+                }
+            });
+            superTypeControl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            superTypeControl.getTextControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            return superTypeControl;
+        }
+        return null;
+    }
+    
 	/**
 	 * Sets an error message or remove current error message.
 	 */

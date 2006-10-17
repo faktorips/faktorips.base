@@ -405,7 +405,14 @@ public class TestCaseDetailArea {
 	            public void focusLost(FocusEvent e) {
 	            }
 	        });
-			Label label = toolkit.createLabel(hyperlinkArea, " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currRelation.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
+            String hyperLinkPath = " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currRelation.getTarget()) + " ) "; //$NON-NLS-1$ //$NON-NLS-2$
+			String hyperLinklabel = hyperLinkPath; //$NON-NLS-1$
+            if (hyperLinklabel.length()>60){
+                hyperLinklabel = hyperLinkPath.substring(0, 27);
+                hyperLinklabel += "..."; //$NON-NLS-1$
+                hyperLinklabel += hyperLinkPath.substring(hyperLinkPath.length() - 30);
+            }
+            Label label = toolkit.createLabel(hyperlinkArea, hyperLinklabel); 
             addSectionSelectionListeners(null, label, currRelation);
         } else {
 			// target not found in current test case

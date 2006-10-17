@@ -44,12 +44,16 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
+import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -64,8 +68,104 @@ import org.w3c.dom.NodeList;
  */
 public class TestCaseTransformer {
     
+    private TransformerJob job;
+
     private ITestCaseType type;
+
+    private Exception lastException;
     
+    private int importedTestCase;
+
+    /*
+     * Job class to run the transformation.
+     */
+    private class TransformerJob extends WorkspaceJob {
+        IStructuredSelection selection;
+        IIpsPackageFragment targtePackage; 
+        String testCaseTypeName;
+        String nameExtension;
+        
+        public TransformerJob(IStructuredSelection selection, 
+                IIpsPackageFragment targtePackage, String testCaseTypeName, String nameExtension){
+            super(Messages.TestCaseTransformer_Job_Title);
+            this.selection = selection;
+            this.targtePackage = targtePackage;
+            this.testCaseTypeName = testCaseTypeName;
+            this.nameExtension = nameExtension;
+        }
+        
+        public IStatus runInWorkspace(IProgressMonitor monitor) {
+            try {
+                for (Iterator iter = selection.iterator(); iter.hasNext();) {
+                    Object selObj = (Object) iter.next();
+                    IIpsPackageFragmentRoot root = targtePackage.getRoot();
+                    if (selObj instanceof IFile){
+                        transformFile((IFile) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension);
+                    } else if (selObj instanceof IFolder){
+                        transformFolder((IFolder) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
+                    } else if (selObj instanceof IPackageFragment){
+                        if (targtePackage.equals((IPackageFragment) selObj))
+                            throw new CoreException(new IpsStatus(Messages.TestCaseTransformer_Error_ImportPackageEqualsTargetPackage));
+
+                        transformFolder((IFolder) ((IPackageFragment) selObj).getCorrespondingResource(), root, 
+                                targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
+                    } else if (selObj instanceof IPackageFragmentRoot){
+                        if (root.equals((IPackageFragmentRoot) selObj))
+                            throw new CoreException(new IpsStatus(Messages.TestCaseTransformer_Error_ImportPackageEqualsTargetPackage));
+
+                        transformFolder((IFolder) ((IPackageFragmentRoot) selObj).getCorrespondingResource(), root, 
+                                targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
+                    } else if (selObj instanceof IJavaProject){
+                        IJavaProject project = (IJavaProject) selObj;
+                        IPackageFragmentRoot[] roots = project.getAllPackageFragmentRoots();
+                        for (int i = 0; i < roots.length; i++) {
+                            if (root.equals(roots[i])){
+                                IpsPlugin.log(new IpsStatus(
+                                        NLS.bind(Messages.TestCaseTransformer_Error_Skip_Because_ImportPackageEqualsTargetPackage, roots[i].getElementName())));
+                                continue;
+                            }
+                            transformFolder((IFolder) roots[i].getCorrespondingResource(), root, 
+                                    targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
+                        }
+                    } else if (selObj instanceof IProject){
+                        IResource[] members = ((IProject) selObj).members();
+                        for (int i = 0; i < members.length; i++) {
+                            if (members[i] instanceof IFile)
+                                transformFile((IFile) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension);
+                            else if (members[i] instanceof IFolder)
+                                transformFolder((IFolder) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                lastException = e;
+                return Status.CANCEL_STATUS;
+            }
+            return Status.OK_STATUS;
+        }
+    }    
+
+    /**
+     * Returns the job which performs the transformation.
+     */
+    public TransformerJob getJob() {
+        return job;
+    }
+
+    /**
+     * Gets the count of imported test cases.
+     */
+    public int getImportedTestCase() {
+        return importedTestCase;
+    }
+
+    /**
+     * Returns the last exception if there was one.
+     */
+    public Exception getLastException() {
+        return lastException;
+    }
+
     /**
      * Creates and returns a test case object from the given runetime test case xml file.
      * 
@@ -83,6 +183,13 @@ public class TestCaseTransformer {
             nameExtension = ""; //$NON-NLS-1$
         }
         
+        Document doc = XmlUtil.getDocument(file.getContents());
+        Element elem = XmlUtil.getFirstElement(doc, "TestCase"); //$NON-NLS-1$
+        if (elem == null){
+            // test case node not found, this file is no test case
+            return null;
+        }
+        
         String testCaseName = file.getName().substring(0, 
                 file.getName().indexOf(file.getFileExtension()) - 1) + nameExtension;
         
@@ -92,14 +199,17 @@ public class TestCaseTransformer {
         }
         
         ITestCase newTestCase = createNewTestCase(root, targetPackageName, testCaseName);
-        newTestCase.setTestCaseType(testCaseTypeName);
-        Document doc = XmlUtil.getDocument(file.getContents());
-        
-        Element elem = XmlUtil.getFirstElement(doc, "TestCase"); //$NON-NLS-1$
+        newTestCase.setTestCaseType(testCaseTypeName);        
         
         initTestPolicyCmpts(XmlUtil.getFirstElement(elem, "Input"), newTestCase, true); //$NON-NLS-1$
         initTestPolicyCmpts(XmlUtil.getFirstElement(elem, "ExpectedResult"), newTestCase, false); //$NON-NLS-1$
         
+        // fix differences, e.g. different sort order which couldn't be determined from the runtime xml
+        // (because the input and expected result are in different parent nodes, therfore the objects will be imported in this
+        // wrong sort order)
+        ITestCaseTestCaseTypeDelta delta = newTestCase.computeDeltaToTestCaseType();
+        newTestCase.fixDifferences(delta);
+
         newTestCase.getIpsSrcFile().save(true, null);
         
         return newTestCase;
@@ -112,6 +222,8 @@ public class TestCaseTransformer {
                 Element elem = (Element) nl.item(i);
                 if ("testvalue".equals(elem.getAttribute("type"))){ //$NON-NLS-1$ //$NON-NLS-2$
                     parseTestValue(elem, testCase.newTestValue());
+                } else if ("testrule".equals(elem.getAttribute("type"))){ //$NON-NLS-1$ //$NON-NLS-2$
+                    parseTestRule(elem, testCase.newTestRule());
                 } else {
                     String testPolicyCmptName = elem.getNodeName();
                     ITestPolicyCmpt testPolicyCmpt = null;
@@ -119,15 +231,28 @@ public class TestCaseTransformer {
                     for (int j = 0; j < pcs.length; j++) {
                         if (pcs[j].getTestPolicyCmptTypeParameter().equals(testPolicyCmptName)){
                             testPolicyCmpt = pcs[j];
+                            break;
                         }
                     }
                     if (testPolicyCmpt == null){
+                        // new test policy cmpt
                         parseTestPolicyCmpt(elem, testCase.newTestPolicyCmpt(), isInput);
                     } else {
+                        // the element was already parsed, e.g. this could be the expecpected result attribute for an already imported test policy cmpt
                         ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter();
                         if (param != null){
-                            // param.setTestParameterRole(TestParameterRole.COMBINED)){
-                            // TODO Joerg: role pruefen
+                            if (isInput && param.getTestParameterType().equals(TestParameterType.INPUT) && 
+                                    (!isInput && param.isInputParameter() || (isInput && param
+                                    .isExpextedResultParameter()))) {
+                                // the runtime xml contains and input or expected policy cmpt,
+                                // but the corresponding test parameter doesn't specifies such type
+                                // here!
+                                throw new CoreException(new IpsStatus(NLS.bind(
+                                        Messages.TestCaseTransformer_Error_WrongTypeOfTestPolicyCmpt,
+                                        new String[] {
+                                                getTestParameterTypeName(isInput),
+                                                testPolicyCmptName, param.getTestParameterType().toString() })));
+                            }
                             parseTestPolicyCmptChilds(elem, testPolicyCmpt, isInput);
                         }
                     }
@@ -141,6 +266,13 @@ public class TestCaseTransformer {
         testValue.setTestValueParameter(element.getNodeName());
     }
     
+    private void parseTestRule(Element element, ITestRule testRule){
+        testRule.setValidationRule(element.getAttribute("validationRule")); //$NON-NLS-1$
+        TestRuleViolationType violationType = TestRuleViolationType.getTestRuleViolationType(element.getAttribute("violationType")); //$NON-NLS-1$
+        testRule.setViolationType(violationType);
+        testRule.setTestRuleParameter(element.getNodeName());
+    }
+    
     private void parseTestPolicyCmpt(Element element, ITestPolicyCmpt testPolicyCmpt, boolean isInput) throws CoreException{
         // init test policy component
         String policyCmpt = element.getNodeName();
@@ -150,8 +282,7 @@ public class TestCaseTransformer {
         	testPolicyCmpt.setProductCmpt(productCmpt);
             
             ITestCase testCase = testPolicyCmpt.getTestCase();
-            if (testCase!=null)
-            	uniqueLabel = testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);
+            uniqueLabel = testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, uniqueLabel);
             testPolicyCmpt.setName(uniqueLabel);
         }else{
             testPolicyCmpt.setName(policyCmpt);
@@ -161,6 +292,24 @@ public class TestCaseTransformer {
         parseTestPolicyCmptChilds(element, testPolicyCmpt, isInput);
     }
 
+    private String getTestAttributeName(ITestPolicyCmpt testPolicyCmpt, String attributeName, boolean isInput)
+            throws CoreException {
+        // try to find the name of attribute in the test case type
+        String testAttributeName = ""; //$NON-NLS-1$
+        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+        ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
+        for (int j = 0; j < testAttributes.length; j++) {
+            if (testAttributes[j].getAttribute().equals(attributeName)) {
+                if (testAttributes[j].getTestAttributeType() == TestParameterType.INPUT && isInput
+                        || testAttributes[j].getTestAttributeType() == TestParameterType.EXPECTED_RESULT && !isInput) {
+                    testAttributeName = testAttributes[j].getName();
+                    break;
+                }
+            }
+        }
+        return testAttributeName;
+    }
+    
     private void parseTestPolicyCmptChilds(Element element, ITestPolicyCmpt testPolicyCmpt, boolean isInput) throws CoreException {
         // read childs
         NodeList nl = element.getChildNodes();
@@ -172,7 +321,13 @@ public class TestCaseTransformer {
                     IpsPlugin.log(new IpsStatus(Messages.TestCaseTransformer_Error_NoTypeAttributeSpecified));
                 } else if (child.getAttribute("type").equals("property")){ //$NON-NLS-1$ //$NON-NLS-2$
                     ITestAttributeValue testAttrValue = testPolicyCmpt.newTestAttributeValue();
-                    testAttrValue.setTestAttribute(child.getNodeName());
+                    String testAttributeName = getTestAttributeName(testPolicyCmpt, child.getNodeName(), isInput);
+                    if (StringUtils.isEmpty(testAttributeName)) {
+                        throw new CoreException(new IpsStatus(NLS.bind(
+                                Messages.TestCaseTransformer_Error_TestAttributeNotExists, child
+                                        .getNodeName(), getTestParameterTypeName(isInput))));
+                    }
+                    testAttrValue.setTestAttribute(testAttributeName);
                     if (XmlUtil.getTextNode(child) != null) {
                         testAttrValue.setValue(XmlUtil.getTextNode(child).getData());
                     }
@@ -249,94 +404,29 @@ public class TestCaseTransformer {
 	private void transformFile(IFile file, IIpsPackageFragmentRoot root, String packageName, String testCaseTypeName, String nameExtension) throws CoreException {
 		if (! file.getFileExtension().equals("xml")) //$NON-NLS-1$
 			return;
-		
-		TestCaseTransformer testCaseTransformer = new TestCaseTransformer();
 		try {
-			testCaseTransformer.createTestCaseFromRuntimeXml(file, testCaseTypeName, root, packageName, nameExtension);
+            createTestCaseFromRuntimeXml(file, testCaseTypeName, root, packageName, nameExtension);
+            importedTestCase ++;
 		} catch (Exception e) {
 			throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseTransformer_Error_Unknown, file.getName()), e)); //$NON-NLS-2$
 		}
 	}
 
-
-	
 	/**
 	 * Starts the job to transform runtime test cases from the given selection.
 	 */
 	public void startTestRunnerJob(IStructuredSelection selection, 
 			IIpsPackageFragment targetPackage, String testCaseTypeName, String nameExtension){
-		TransformerJob job = new TransformerJob(selection, targetPackage, testCaseTypeName, nameExtension);
+        lastException = null;
+        importedTestCase = 0;
+		job = new TransformerJob(selection, targetPackage, testCaseTypeName, nameExtension);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		job.setRule(workspace.getRoot());
 		job.schedule();	
 	}
-	
-	/*
-	 * Job class to run the transformation.
-	 */
-	private class TransformerJob extends WorkspaceJob {
-		IStructuredSelection selection;
-		IIpsPackageFragment targtePackage; 
-		String testCaseTypeName;
-		String nameExtension;
-		
-		public TransformerJob(IStructuredSelection selection, 
-				IIpsPackageFragment targtePackage, String testCaseTypeName, String nameExtension){
-			super(Messages.TestCaseTransformer_Job_Title);
-			this.selection = selection;
-			this.targtePackage = targtePackage;
-			this.testCaseTypeName = testCaseTypeName;
-			this.nameExtension = nameExtension;
-		}
-		
-		public IStatus runInWorkspace(IProgressMonitor monitor) {
-			try {
-				for (Iterator iter = selection.iterator(); iter.hasNext();) {
-					Object selObj = (Object) iter.next();
-					IIpsPackageFragmentRoot root = targtePackage.getRoot();
-					if (selObj instanceof IFile){
-						transformFile((IFile) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension);
-					} else if (selObj instanceof IFolder){
-						transformFolder((IFolder) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
-					} else if (selObj instanceof IPackageFragment){
-						if (targtePackage.equals((IPackageFragment) selObj))
-							throw new CoreException(new IpsStatus(Messages.TestCaseTransformer_Error_ImportPackageEqualsTargetPackage));
-
-						transformFolder((IFolder) ((IPackageFragment) selObj).getCorrespondingResource(), root, 
-								targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
-					} else if (selObj instanceof IPackageFragmentRoot){
-						if (root.equals((IPackageFragmentRoot) selObj))
-							throw new CoreException(new IpsStatus(Messages.TestCaseTransformer_Error_ImportPackageEqualsTargetPackage));
-
-						transformFolder((IFolder) ((IPackageFragmentRoot) selObj).getCorrespondingResource(), root, 
-								targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
-					} else if (selObj instanceof IJavaProject){
-						IJavaProject project = (IJavaProject) selObj;
-						IPackageFragmentRoot[] roots = project.getAllPackageFragmentRoots();
-						for (int i = 0; i < roots.length; i++) {
-							if (root.equals(roots[i])){
-								IpsPlugin.log(new IpsStatus(
-										NLS.bind(Messages.TestCaseTransformer_Error_Skip_Because_ImportPackageEqualsTargetPackage, roots[i].getElementName())));
-								continue;
-							}
-							transformFolder((IFolder) roots[i].getCorrespondingResource(), root, 
-									targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
-						}
-					} else if (selObj instanceof IProject){
-						IResource[] members = ((IProject) selObj).members();
-						for (int i = 0; i < members.length; i++) {
-							if (members[i] instanceof IFile)
-								transformFile((IFile) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension);
-							else if (members[i] instanceof IFolder)
-								transformFolder((IFolder) selObj, root, targtePackage.getName(), testCaseTypeName, nameExtension, ""); //$NON-NLS-1$
-						}
-					}
-				}
-			} catch (Exception e) {
-				IpsPlugin.log(e);
-				return Status.CANCEL_STATUS;
-			}
-			return Status.OK_STATUS;
-		}
-	}    
+    
+    private String getTestParameterTypeName(boolean isInput){
+        return isInput ? TestParameterType.INPUT.toString()
+                : TestParameterType.EXPECTED_RESULT.toString();
+    }    
 }

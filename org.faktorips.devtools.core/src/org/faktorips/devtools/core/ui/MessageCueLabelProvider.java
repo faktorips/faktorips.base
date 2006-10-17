@@ -84,7 +84,7 @@ public class MessageCueLabelProvider extends LabelProvider {
     	if (image == null){
     		return null;
     	}
-		return image.hashCode() + "_" + severity;
+		return image.hashCode() + "_" + severity; //$NON-NLS-1$
 	}
 
 	/**

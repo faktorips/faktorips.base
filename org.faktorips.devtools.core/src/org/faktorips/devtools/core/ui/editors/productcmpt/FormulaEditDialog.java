@@ -228,10 +228,10 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         firstPage.setText(Messages.FormulaEditDialog_Formula);
         firstPage.setControl(createFirstPage(folder));
         
+        createFormulaTestCasesTab(folder);
+        
         createDescriptionTabItem(folder);
         super.setEnabledDescription(!viewOnly);
-
-        createFormulaTestCasesTab(folder);
         
         return folder;
     }
@@ -278,6 +278,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         formulaDummyTestInputValuesControl.setCanCalulateResult(true);
         formulaDummyTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(true);
         formulaDummyTestInputValuesControl.setCanStoreExpectedResult(true);
+        formulaDummyTestInputValuesControl.setViewOnly(viewOnly);
         formulaDummyTestInputValuesControl.initControl();
         
         return c;
@@ -354,15 +355,18 @@ public class FormulaEditDialog extends IpsPartEditDialog {
     /*
      * Create the tab to displaying and editing all formula test cases for the config items formula.
      */
-    private TabItem createFormulaTestCasesTab(TabFolder folder) {
+    private void createFormulaTestCasesTab(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
 
         formulaTestCaseControl = new FormulaTestCaseControl(c, uiToolkit, uiController, configElement);
+        formulaTestCaseControl.setViewOnly(viewOnly);
+        formulaTestCaseControl.setConfigElem(configElement);
+        formulaTestCaseControl.initControl();
         formulaTestCaseControl.storeFormulaTestCases(getPersistentFormulaTestCases());
         
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.FormulaEditDialog_TabText_FormulaTestCases);
         item.setControl(c);
-        return item;
+        
     }
 }

@@ -107,6 +107,9 @@ public class FormulaTestCaseControl extends Composite {
     /* The formula test cases which are displayed in the table */
     private List formulaTestCases = new ArrayList();
 
+    /* The config element the displayed formula test cases belongs to */ 
+    private IConfigElement configElement;
+    
     /* Contains the table viewer to display and edit the formula test cases */
     private TableViewer formulaTestCaseTableViewer;
     
@@ -131,6 +134,9 @@ public class FormulaTestCaseControl extends Composite {
     /* Contains the colors for the test status */
     private Color failureColor;
     private Color okColor;
+    
+    /* Indicates if the control is in read only state */
+    private boolean viewOnly;
     
     /*
      * Key Adapater class to move up or down to the next or prev column if an arrow key or return is pressed
@@ -321,8 +327,6 @@ public class FormulaTestCaseControl extends Composite {
         //   colors are taken from the JUnit test runner to show a corporate identify for test support
         failureColor = new Color(getDisplay(), 159, 63, 63);
         okColor = new Color(getDisplay(), 95, 191, 95);
-        
-        initControl();
     }
 
     /**
@@ -346,6 +350,13 @@ public class FormulaTestCaseControl extends Composite {
         okColor.dispose();
         
         super.dispose();
+    }
+
+    /**
+     * Sets the config Element.
+     */
+    public void setConfigElem(IConfigElement configElement){
+        this.configElement = configElement;
     }
     
     /**
@@ -375,8 +386,17 @@ public class FormulaTestCaseControl extends Composite {
         }
     }
 
-    /*
-     * Creates the compoiste's controls.
+    /**
+     * Sets if this control is only for read only viewing <code>true</code>, otherwise <code>false</code>.
+     */
+    public void setViewOnly(boolean viewOnly) {
+        this.viewOnly = viewOnly;
+    }
+    
+    /**
+     * Creates the compoiste's controls. This method has to be called by this
+     * controls client, after the control has been configured via the appropiate
+     * setter method, e.g. <code>setViewOnly(boolean viewOnly)</code>
      */
     public void initControl() {
         setLayout(uiToolkit.createNoMarginGridLayout(1, false));
@@ -406,6 +426,19 @@ public class FormulaTestCaseControl extends Composite {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });  
+
+        if (configElement != null){
+            Button btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestCaseControl_Button_New);
+            btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+            btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
+                public void widgetSelected(SelectionEvent e) {
+                    newClicked();
+                }
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+            });  
+            btnNewFormulaTestCase.setEnabled(!viewOnly);
+        }
         
         uiToolkit.createVerticalSpacer(btns, 5);
         uiToolkit.createHorizonzalLine(btns);
@@ -467,9 +500,35 @@ public class FormulaTestCaseControl extends Composite {
         formulaTestInputValuesControl.setCanCalulateResult(true);
         formulaTestInputValuesControl.setCanStoreExpectedResult(false);
         formulaTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(false);
+        formulaTestInputValuesControl.setViewOnly(viewOnly);
         formulaTestInputValuesControl.initControl();
+        
     }
-    
+
+    /*
+     * Creates a new formula test case.
+     */
+    private void newClicked() {
+        ArgumentCheck.notNull(configElement);
+        IFormulaTestCase newFormulaTestCase = configElement.newFormulaTestCase();
+        String name = newFormulaTestCase.generateUniqueNameForFormulaTestCase(Messages.FormulaTestInputValuesControl_DefaultFormulaTestCaseName);
+        newFormulaTestCase.setName(name);
+        try {
+            String[] identifiers = configElement.getIdentifierUsedInFormula();
+            for (int i = 0; i < identifiers.length; i++) {
+                IFormulaTestInputValue newInputValue = newFormulaTestCase.newFormulaTestInputValue();
+                newInputValue.setIdentifier(identifiers[i]);
+            }
+            if (uiController != null) {
+                uiController.updateUI();
+            }
+            
+            formulaTestCaseTableViewer.setSelection(new StructuredSelection(newFormulaTestCase));
+        } catch (Exception e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+
     /*
      * Moves the given formula test case up or down
      */
@@ -560,7 +619,7 @@ public class FormulaTestCaseControl extends Composite {
         }
         String messageNewParameter = NLS.bind(Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_NewValueParams, newParams);
         String messageDelParameter = NLS.bind(Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_DeletedValueParams, delParams);
-        String messageForChangeInfoDialog = Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_TextTop + (idsInFormula.size() > 0 ? messageNewParameter : "") //$NON-NLS-2$
+        String messageForChangeInfoDialog = Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_TextTop + (idsInFormula.size() > 0 ? messageNewParameter : "") //$NON-NLS-2$ //$NON-NLS-1$
                 + (idsInFormula.size() > 0 && idsInTestCase.size() > 0 ? "\n" : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + (idsInTestCase.size() > 0 ? messageDelParameter : ""); //$NON-NLS-1$
         return messageForChangeInfoDialog;
@@ -689,26 +748,28 @@ public class FormulaTestCaseControl extends Composite {
         formulaTestCaseTableViewer.setContentProvider (new ArrayContentProvider());
         formulaTestCaseTableViewer.setLabelProvider (new FormulaTestCaseTblLabelProvider());
         
-        // create the cell editor
-        TextCellEditor textCellEditorExpResult = new TextCellEditor(table);
-        textCellEditorExpResult.getControl().addKeyListener(new KeyColumnAdapter(IDX_COLUMN_EXPECTED_RESULT));
-        
-        // create the cell editor
-        TextCellEditor textCellEditorName = new TextCellEditor(table);
-        textCellEditorName.getControl().addKeyListener(new KeyColumnAdapter(IDX_COLUMN_NAME));
-        
-        // create cell editors
+        if (!viewOnly){
+            // create the cell editor
+            TextCellEditor textCellEditorExpResult = new TextCellEditor(table);
+            textCellEditorExpResult.getControl().addKeyListener(new KeyColumnAdapter(IDX_COLUMN_EXPECTED_RESULT));
+            
+            // create the cell editor
+            TextCellEditor textCellEditorName = new TextCellEditor(table);
+            textCellEditorName.getControl().addKeyListener(new KeyColumnAdapter(IDX_COLUMN_NAME));
+            
+            // create cell editors
+            formulaTestCaseTableViewer.setCellEditors(new CellEditor[] { 
+                    null, 
+                    textCellEditorName, 
+                    textCellEditorExpResult, 
+                    null });
+            formulaTestCaseTableViewer.setCellModifier(new FormulaTestCaseCellModifier());
+        }
         formulaTestCaseTableViewer.setColumnProperties(new String[] { 
                 PROPERTY_SELECTED, 
                 IFormulaTestCase.PROPERTY_NAME, 
                 IFormulaTestCase.PROPERTY_EXPECTED_RESULT, 
                 PROPERTY_ACTUAL_RESULT });
-        formulaTestCaseTableViewer.setCellEditors(new CellEditor[] { 
-                null, 
-                textCellEditorName, 
-                textCellEditorExpResult, 
-                null });
-        formulaTestCaseTableViewer.setCellModifier(new FormulaTestCaseCellModifier());
         
         hookFormulaTestCaseTableListener();     
         
@@ -785,18 +846,6 @@ public class FormulaTestCaseControl extends Composite {
      * Method to indicate that the selection in the formula test case table has changed
      */
     protected void selectionFormulaTestCaseChanged(IFormulaTestCase selectedFormulaTestCase) {
-        if (selectedFormulaTestCase == null){
-            btnDeleteFormulaTestCase.setEnabled(false);
-            btnMoveFormulaTestCaseUp.setEnabled(false);
-            btnMoveFormulaTestCaseDown.setEnabled(false);
-            btnUpdateFormulaTestCase.setEnabled(false);            
-            return;
-        }
-        btnDeleteFormulaTestCase.setEnabled(true);
-        btnMoveFormulaTestCaseUp.setEnabled(true);
-        btnMoveFormulaTestCaseDown.setEnabled(true);
-        updateStatusOfUpdateButton(selectedFormulaTestCase);
-        
         try{
             getShell().setRedraw(false);
             formulaTestInputValuesControl.storeFormulaTestCase(selectedFormulaTestCase);
@@ -804,6 +853,19 @@ public class FormulaTestCaseControl extends Composite {
             getShell().setRedraw(true);
         }
         formulaTestInputValuesControl.calculateFormulaIfValid();
+
+        if (selectedFormulaTestCase == null || viewOnly){
+            btnDeleteFormulaTestCase.setEnabled(false);
+            btnMoveFormulaTestCaseUp.setEnabled(false);
+            btnMoveFormulaTestCaseDown.setEnabled(false);
+            btnUpdateFormulaTestCase.setEnabled(false);            
+            return;
+        }
+        
+        btnDeleteFormulaTestCase.setEnabled(true);
+        btnMoveFormulaTestCaseUp.setEnabled(true);
+        btnMoveFormulaTestCaseDown.setEnabled(true);
+        updateStatusOfUpdateButton(selectedFormulaTestCase);
     }
 
     /*

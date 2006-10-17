@@ -334,11 +334,12 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         IConfigElement parent = (IConfigElement) getParent();
         String uniqueName = nameProposal;
 
-        int idx = 1;
+        int idx = 2;
         IFormulaTestCase[] ftcs = parent.getFormulaTestCases();
         for (int i = 0; i < ftcs.length; i++) {
             if (! (ftcs[i] == this) && ftcs[i].getName().equals(uniqueName)){
                 uniqueName = nameProposal + " (" + idx++ + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                i = -1;
             }
         }
         return uniqueName;

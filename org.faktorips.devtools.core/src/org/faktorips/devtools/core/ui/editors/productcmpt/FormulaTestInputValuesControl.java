@@ -79,6 +79,8 @@ public class FormulaTestInputValuesControl extends Composite {
     
     /* Label to display the result of the formula */
     private Label formulaResult;
+
+    private Button btnNewFormulaTestCase;
     
     /* The formula test case which will be displayed and edit by this composite */ 
     private IFormulaTestCase formulaTestCase;
@@ -103,6 +105,9 @@ public class FormulaTestInputValuesControl extends Composite {
     
     /* Contains the last calculated result */
     private Object lastCalculatedResult = null;
+    
+    /* Indicates if the control is in read only state */
+    private boolean viewOnly;
     
     /*
      * Cell Modifier for the formula test input value
@@ -229,6 +234,14 @@ public class FormulaTestInputValuesControl extends Composite {
     }
 
     /**
+     * Sets if the control is for read only view <code>true</code> or not <code>false</code>.
+     */
+    public void setViewOnly(boolean viewOnly) {
+        // the preview calculation is always allowed
+        this.viewOnly = viewOnly;
+    }    
+    
+    /**
      * Returns the last calculated result or <code>null</code> if the formula couldn't or wasn't executed.
      */
     public Object getLastCalculatedResult() {
@@ -264,7 +277,7 @@ public class FormulaTestInputValuesControl extends Composite {
         btns.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         
         if (canStoreFormulaTestCaseAsNewFormulaTestCase){
-            Button btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Store);
+            btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Store);
             btnNewFormulaTestCase.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
             btnNewFormulaTestCase.addSelectionListener(new SelectionListener() {
                 public void widgetSelected(SelectionEvent e) {
@@ -273,6 +286,8 @@ public class FormulaTestInputValuesControl extends Composite {
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });            
+
+             btnNewFormulaTestCase.setEnabled(!viewOnly);
         }
         
         Button btnClearInputValues = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Clear);
@@ -284,11 +299,15 @@ public class FormulaTestInputValuesControl extends Composite {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
-        
+        // the clear btn is enabled is not view only or if this is the control which can store the input as
+        // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
+        btnClearInputValues.setEnabled(!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase);
+            
         // create the label to display the formula result
         formulaResult = uiToolkit.createLabel(formulaTestArea, ""); //$NON-NLS-1$
         formulaResult.setFont(JFaceResources.getBannerFont());
         calculateFormulaIfValid();
+        
     }
     
     /*
@@ -361,22 +380,26 @@ public class FormulaTestInputValuesControl extends Composite {
         formulaInputTableViewer.setLabelProvider (new FormulaTestInputValueTblLabelProvider());
         
         // create the cell editor
-        TextCellEditor textCellEditor = new TextCellEditor(table);
-        textCellEditor.getControl().addKeyListener(new KeyAdapter(){
-            public void keyPressed(KeyEvent e) {
-                int selIdx = formulaInputTableViewer.getTable().getSelectionIndex();
-                int keyCode = e.keyCode;
-                keyCode = (keyCode == SWT.KEYPAD_CR || keyCode == SWT.CR) ? SWT.ARROW_DOWN:keyCode;
-                if (keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_UP){
-                    selIdx = selIdx + (keyCode == SWT.ARROW_DOWN?1:-1);
-                    Object nextObject = formulaInputTableViewer.getElementAt(selIdx);
-                    postEditFormulaTestInputValue((IFormulaTestInputValue)nextObject);
+        if (!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase){
+            // the table is modifiedable if not view only or if this is the control which can store the input as
+            // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
+            TextCellEditor textCellEditor = new TextCellEditor(table);
+            textCellEditor.getControl().addKeyListener(new KeyAdapter(){
+                public void keyPressed(KeyEvent e) {
+                    int selIdx = formulaInputTableViewer.getTable().getSelectionIndex();
+                    int keyCode = e.keyCode;
+                    keyCode = (keyCode == SWT.KEYPAD_CR || keyCode == SWT.CR) ? SWT.ARROW_DOWN:keyCode;
+                    if (keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_UP){
+                        selIdx = selIdx + (keyCode == SWT.ARROW_DOWN?1:-1);
+                        Object nextObject = formulaInputTableViewer.getElementAt(selIdx);
+                        postEditFormulaTestInputValue((IFormulaTestInputValue)nextObject);
+                    }
                 }
-            }
-        });
-        
-        formulaInputTableViewer.setCellEditors(new CellEditor[] { null, null, textCellEditor });
-        formulaInputTableViewer.setCellModifier(new FormulaTestInputValueCellModifier());
+            });
+            
+            formulaInputTableViewer.setCellEditors(new CellEditor[] { null, null, textCellEditor });
+            formulaInputTableViewer.setCellModifier(new FormulaTestInputValueCellModifier());
+        }
         formulaInputTableViewer.setColumnProperties(new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
                 IFormulaTestInputValue.PROPERTY_VALUE });
 
@@ -408,7 +431,7 @@ public class FormulaTestInputValuesControl extends Composite {
         } else {
             formulaInputTableViewer.setInput(new ArrayList());
             if (formulaResult != null){
-                formulaResult.setText("");
+                formulaResult.setText(""); //$NON-NLS-1$
             }
         }
         
@@ -512,5 +535,5 @@ public class FormulaTestInputValuesControl extends Composite {
             return null;
         }
         return image.hashCode() + "_" + severity; //$NON-NLS-1$
-    }    
+    }
 }

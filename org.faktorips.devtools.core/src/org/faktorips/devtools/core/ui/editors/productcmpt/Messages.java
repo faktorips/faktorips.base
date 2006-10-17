@@ -234,4 +234,6 @@ public class Messages extends NLS {
 
     public static String FormulaTestCaseControl_InformationDialogUpdateInputValues_TextTop;
 
+    public static String FormulaTestCaseControl_Button_New;
+
 }
