@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.TestEnumType;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -33,6 +35,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.Modifier;
+import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -57,7 +60,6 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 		attr.setModifier(Modifier.PUBLISHED);
 		attr.setName("a");
 		compiler = new ExprCompiler();
-		//the compiler is not further considered in this test case. It is just neccessary to obey to the constructor requirements
 		processor = new FormulaCompletionProcessor(attr, ipsProject, compiler);
 	}
 	
@@ -136,4 +138,22 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertEquals(1, results.size());
     }
     
+    public void testDoComputeCompletionProposalsForParam() throws Exception {
+        Parameter param = new Parameter(0, "abcparam", Datatype.DECIMAL.getQualifiedName());
+        
+        Document document = new Document("a");
+        ArrayList results = new ArrayList();
+        
+        PolicyCmptType type = newPolicyCmptType(ipsProject, "type");
+        IAttribute attr = type.newAttribute();
+        attr.setAttributeType(AttributeType.COMPUTED);
+        attr.setFormulaParameters(new Parameter[] {param});
+        processor = new FormulaCompletionProcessor(attr, ipsProject, compiler);
+        
+        processor.doComputeCompletionProposals("a", 1, results);
+        CompletionProposal proposal = (CompletionProposal)results.get(0);
+        proposal.apply(document);
+        assertEquals("abcparam", document.get());
+    }
+
 }
