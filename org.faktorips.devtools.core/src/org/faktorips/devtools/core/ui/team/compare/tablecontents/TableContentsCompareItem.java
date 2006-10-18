@@ -74,9 +74,12 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             ITableContents table= (ITableContents) row.getIpsObject();
             int[] columnWidths= getColumnWidths();
             
-            String rowNumber= row.getRowNumber()+COLON_BLANK;
-            sb.append(rowNumber);
-            sb.append(getNeededTabs(columnWidths[0], rowNumber));
+            /* Do not display Rownumber at the start of the line since textcompare/RangeDifferencing
+             * needs to recognize rows of equal content, even if they have a different rownumber.
+             */
+//            String rowNumber= row.getRowNumber()+COLON_BLANK;
+//            sb.append(rowNumber);
+//            sb.append(getNeededTabs(columnWidths[0], rowNumber));
             for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
                 String value= getRowValueAt(row, colCounter);
                 sb.append(value);
@@ -124,7 +127,8 @@ public class TableContentsCompareItem extends AbstractCompareItem {
         StringBuffer sb= new StringBuffer();
         if(getIpsElement() instanceof IRow){
             IRow row = (IRow)getIpsElement();
-            sb.append(Messages.TableContentsCompareItem_Row).append(COLON_BLANK).append(row.getRowNumber());
+            // translate 0 based index to 1 based row number
+            sb.append(Messages.TableContentsCompareItem_Row).append(COLON_BLANK).append(row.getRowNumber()+1);
         }else if(getIpsElement() instanceof IIpsObjectGeneration){
             IIpsObjectGeneration gen= (IIpsObjectGeneration) getIpsElement();
             sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE).append(dateFormat.format(gen.getValidFrom().getTime())).append(QUOTE);
@@ -180,7 +184,8 @@ public class TableContentsCompareItem extends AbstractCompareItem {
                 IRow otherRow= (IRow) ((TableContentsCompareItem)o).getIpsElement();
                 ITableContents table= (ITableContents) row.getIpsObject();
                 ITableContents otherTable= (ITableContents) otherRow.getIpsObject();
-                if(table.getNumOfColumns()!=otherTable.getNumOfColumns() || row.getRowNumber() != otherRow.getRowNumber()){
+                // also compare IDs of rows (not rownumbers) 
+                if(table.getNumOfColumns()!=otherTable.getNumOfColumns() || !row.getName().equals(otherRow.getName())){
                     return false;
                 }
                 for(int i=0; i<table.getNumOfColumns(); i++){
@@ -204,7 +209,8 @@ public class TableContentsCompareItem extends AbstractCompareItem {
             IRow row= (IRow)getIpsElement();
             ITableContents table= (ITableContents) row.getIpsObject();
             int hashCode= 0;
-            hashCode+= String.valueOf(row.getRowNumber()).hashCode();
+            // use IDs of rows in hashcode 
+            hashCode+= row.getName().hashCode(); // use ID 
             for (int i = 0; i < table.getNumOfColumns(); i++) {
                 hashCode += getRowValueAt(row, i).hashCode();
             }   
@@ -244,7 +250,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     }
     
     /**
-     * Returns at least one tab more than needed to fit the given stringlength.
+     * Returns the number of tabs needed to fit the given stringlength plus one.
      * <p>
      * Example: tabwidth is 4
      * <ul>
@@ -285,12 +291,12 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * method thus never returns <code>null</code>.
      * 
      * @param row The row a value should be retrieved from.
-     * @param index The column index the value should be retrieved from inside the row.
+     * @param columnIndex The column index the value should be retrieved from inside the row.
      * @return The value at the given index in the given row or the NULL-representation string
-     *         (defined by the IpsPreferences) if the row returned <code>null</code> as value.
+     *         (defined by the IpsPreferences) if the row returned <code>null</code> as a value.
      */
-    private String getRowValueAt(IRow row, int index){
-        String value= row.getValue(index);
+    private String getRowValueAt(IRow row, int columnIndex){
+        String value= row.getValue(columnIndex);
         if(value==null){
             value= IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }

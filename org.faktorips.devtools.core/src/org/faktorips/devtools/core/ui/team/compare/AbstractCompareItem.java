@@ -223,15 +223,14 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     }
 
     /**
+     * This method is <em>not</em> called when comparing <code>AbstractCompareItem</code>s. The
+     * standard implementation of the <code>Differencer</code> calls this method to compare the
+     * leafs of structures by their content. The <code>StructureDiffViewer</code> (which is used
+     * in this compare viewer) subclasses <code>Differencer</code> and lets it use the
+     * <code>AbstractCompareItemCreator</code> method <code>getContents()</code> for comparing
+     * contents.
+     * <p>
      * Returns null.
-     * <p>
-     * Used for by the compare-engine (Differencer) to guess the filecontents in order to open the
-     * appropriate ContentMergeViewer. In case of product components the ContentMergeViewer is
-     * identified using the file extension (ipsproduct). In case of table contents the ContentMergeViewer is
-     * identified using the file extension (ipstablecontents).
-     * <p>
-     * For compare operations the compare class retrieves the contents of this item via the
-     * StructureCreator.
      * 
      * @see ProductCmptCompareItemCreator#getContents(Object, boolean) {@inheritDoc}
      */
@@ -249,6 +248,7 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
     public String getContentString() {
         return contentString;
     }
+    
     /**
      * Returns the contentString of this <code>AbstractCompareItem</code> without its whitespace.
      * @see #getContentString()

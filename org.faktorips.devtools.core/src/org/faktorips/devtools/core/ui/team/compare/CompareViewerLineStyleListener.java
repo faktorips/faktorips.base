@@ -54,12 +54,15 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * Pattern for recognizing separators between generations (single line starting with "-")
      */
     private Pattern genSeparatorPattern = Pattern.compile("-");
+    
     /**
-     * Pattern for recognizing row numbers e.g. "3:".
+     * List of patterns to be applied to lines in getStylesForRestOfLine().
      */
-    private Pattern genRowNumberPattern = Pattern.compile("[0-9]+:");
-
     protected List linePatternList = new ArrayList();
+    /**
+     * Maps patterns to specific highlight colors and thus defines a colour for specific tokens 
+     * should in which the should be displayed. 
+     */
     private Map highlightColorMap = new HashMap();
 
     public CompareViewerLineStyleListener(SourceViewer viewer) {
@@ -108,7 +111,6 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
         List styleList = new ArrayList();
 
         styleList.addAll(getStylesForLineStart(lineText, lineOffset));
-        styleList.addAll(getStylesForLine(lineText, lineOffset));
         styleList.addAll(getStylesForRestOfLine(lineText, lineOffset));
 
         StyleRange[] styleArray = new StyleRange[styleList.size()];
@@ -145,28 +147,6 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     }
 
     /**
-     * Returns a list containing <code>StyleRanges</code> for tokens in the given linetext. Only
-     * those tokens are colored/highlighted by the returned styles.
-     * <p>
-     * This implementation highlights rownumbers (for tablecontents) with a bold font (without color
-     * changes). Thus only one style is returned per line.
-     * 
-     * @param lineText
-     * @param lineOffset
-     * @return
-     */
-    protected List getStylesForLine(String lineText, int lineOffset) {
-        List styleList = new ArrayList();
-        Matcher genRowNumberMatcher = genRowNumberPattern.matcher(lineText);
-        if (genRowNumberMatcher.find()) {
-            int start = genRowNumberMatcher.start();
-            int end = genRowNumberMatcher.end();
-            styleList.add(new StyleRange(lineOffset + start, end - start, null, null, SWT.BOLD));
-        }
-        return styleList;
-    }
-
-    /**
      * Returns a list of styles containing one or no <code>StyleRange</code> that hightlights the
      * found token and the following text in the given line. All token matches are highlighted with
      * bold font and an optional color.
@@ -182,8 +162,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
             Matcher matcher = pattern.matcher(lineText);
             if (matcher.find()) {
                 int start = matcher.start();
-                Color highlight = (Color)highlightColorMap.get(pattern); // if null, default
-                                                                            // foreground is used
+                Color highlight = (Color)highlightColorMap.get(pattern); // if null, default foreground is used
                 styleList.add(new StyleRange(lineOffset + start, lineText.length() - start, highlight,
                         null, SWT.BOLD));
                 break;

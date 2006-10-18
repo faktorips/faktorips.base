@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 import java.util.GregorianCalendar;
 
 import org.eclipse.compare.ResourceNode;
+import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -146,7 +147,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(rowItem1.getContentStringWithoutWhiteSpace(), rowItem2.getContentStringWithoutWhiteSpace());
         assertFalse(rowItem1.equals(rowItem2));
 
-        // fill row (different rownumber) with same contents
+        // fill row (different ID) with same contents
         row2b.setValue(0, "65");
         row2b.setValue(1, "69");
         row2b.setValue(2, "E69");
@@ -155,7 +156,8 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
         rowItem2= (TableContentsCompareItem) genItem2.getChildren()[1]; // second row (row2b)
         // compare rows with same content and differing rownumber
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().equals(rowItem2.getContentStringWithoutWhiteSpace()));
+        assertEquals(rowItem1.getContentStringWithoutWhiteSpace(), rowItem2.getContentStringWithoutWhiteSpace());
+        assertFalse(rowItem1.getIpsElement().getName().equals(rowItem2.getIpsElement().getName()));
         assertFalse(rowItem1.equals(rowItem2));
         
         // change contents
@@ -224,8 +226,9 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         tableItem2= (TableContentsCompareItem) compareItemRoot2.getChildren()[0];
         genItem2= (TableContentsCompareItem) tableItem2.getChildren()[0];
         rowItem2= (TableContentsCompareItem) genItem2.getChildren()[1]; // second row (row2b)
-        // compare rows with same content and differing rownumber
-        assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode()==rowItem2.getContentStringWithoutWhiteSpace().hashCode());
+        // compare rows with same content and different ID
+        assertEquals(rowItem1.getContentStringWithoutWhiteSpace().hashCode(), rowItem2.getContentStringWithoutWhiteSpace().hashCode());
+        assertFalse(rowItem1.getIpsElement().getName().equals(rowItem2.getIpsElement().getName()));
         assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
         
         // change contents
@@ -249,6 +252,10 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         // compare rows with differing columnNumber
         assertFalse(rowItem1.getContentStringWithoutWhiteSpace().hashCode()==rowItem2.getContentStringWithoutWhiteSpace().hashCode());
         assertFalse(rowItem1.hashCode()==rowItem2.hashCode());
+        
+        
+        Differencer differencer= new Differencer();
+        differencer.findDifferences(false, null, null, null, compareItemRoot2, compareItemRoot);
     }
     
     

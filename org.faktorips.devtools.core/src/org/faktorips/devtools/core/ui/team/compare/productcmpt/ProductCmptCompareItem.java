@@ -216,17 +216,17 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
                         .getTime());
                 sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
             } else if (getIpsElement() instanceof IConfigElement) {
-                IConfigElement ce = (IConfigElement)getIpsElement();
+                IConfigElement configElement = (IConfigElement)getIpsElement();
                 String validFromSimple = simpleDateFormat
-                        .format(ce.getProductCmptGeneration().getValidFrom().getTime());
-                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(ce.getName()).append(NEWLINE);
+                        .format(configElement.getProductCmptGeneration().getValidFrom().getTime());
+                sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
                 sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
                         .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
                         .append(BLANK);
-                sb.append(ce.getValue()).append(NEWLINE);
+                sb.append(configElement.getValue()).append(NEWLINE);
                 sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
                         .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
-                sb.append(getValueSetContent(ce));
+                sb.append(getValueSetContent(configElement));
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
                 String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
@@ -262,9 +262,9 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
      * <code>RangeValueSet</code> is represented by its upper and lower bound ("[1..7]"). A
      * <code>AllValuesValueSet</code> is represented by "[all values]".
      */
-    private StringBuffer getValueSetContent(IConfigElement ce) {
+    private StringBuffer getValueSetContent(IConfigElement configElement) {
         StringBuffer sb = new StringBuffer();
-        IValueSet set = ce.getValueSet();
+        IValueSet set = configElement.getValueSet();
         if (set instanceof IEnumValueSet) {
             sb.append("["); //$NON-NLS-1$
             String[] values = ((IEnumValueSet)set).getValues();
@@ -287,6 +287,9 @@ public class ProductCmptCompareItem extends AbstractCompareItem{
             sb.append(Messages.ProductCmptCompareItem_AllValues);
             sb.append("]"); //$NON-NLS-1$
         } else{
+//            sb.append("["); //$NON-NLS-1$
+//            sb.append(Messages.ProductCmptCompareItem_AllValues);
+//            sb.append("]"); //$NON-NLS-1$
 //            sb.append("ValueSet not found: "+set);
         }
         return sb;

@@ -19,7 +19,6 @@ package org.faktorips.devtools.core.ui.team.compare;
 
 import java.io.InputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.compare.HistoryItem;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
@@ -32,12 +31,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.internal.ccvs.ui.ResourceEditionNode;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.IpsSrcFileImmutable;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem;
 
 /**
  * Creates a structure/tree of AbstractCompareItems that is used for comparing IpsObjects.
@@ -130,7 +126,9 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * string-representation of the given <code>AbstractCompareItem</code> is returned.
      * <p>
      * This method is called by the compareframework for byte-wise comparison of CompareItems (@see
-     * org.eclipse.compare.structuremergeviewer.Differencer);
+     * org.eclipse.compare.structuremergeviewer.Differencer). It ist NOT used for text comparision 
+     * (RangeDifferencing) in <code>TextMergeViewer</code>, where the document contained in 
+     * compareItems is used.
      * 
      * @see AbstractCompareItem#getContentString()
      * @see AbstractCompareItem#getContentStringWithoutWhiteSpace() {@inheritDoc}

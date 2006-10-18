@@ -77,19 +77,6 @@ public class AbstractCompareItemTest extends AbstractIpsPluginTest {
         // initialized compareItem
         compareItemRoot = (TableContentsCompareItem) structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
-    
-    /*
-     * Test method for 'org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem.hashCode()'
-     */
-    public void testHashCode() {
-        TableContentsCompareItem tableItem= (TableContentsCompareItem) compareItemRoot.getChildren()[0];
-        TableContentsCompareItem genItem= (TableContentsCompareItem) tableItem.getChildren()[0];
-        TableContentsCompareItem rowItem= (TableContentsCompareItem) genItem.getChildren()[0];
-        assertEquals(compareItemRoot.getContentStringWithoutWhiteSpace().hashCode(), compareItemRoot.hashCode());
-        assertEquals(tableItem.getContentStringWithoutWhiteSpace().hashCode(), tableItem.hashCode());
-        assertEquals(genItem.getContentStringWithoutWhiteSpace().hashCode(), genItem.hashCode());
-        assertEquals(rowItem.getContentStringWithoutWhiteSpace().hashCode(), rowItem.hashCode());
-    }
 
 
 
