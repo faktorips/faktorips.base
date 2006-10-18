@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature.test"
       label="org.faktorips.feature.test"
-      version="0.9.38">
+      version="1.0.0">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -37,12 +37,12 @@
          id="org.faktorips.devtools.stdbuilder.test"
          download-size="0"
          install-size="0"
-         version="0.9.38"/>
+         version="1.0.0"/>
 
    <plugin
          id="org.faktorips.devtools.core.test"
          download-size="0"
          install-size="0"
-         version="0.9.38"/>
+         version="1.0.0"/>
 
 </feature>
