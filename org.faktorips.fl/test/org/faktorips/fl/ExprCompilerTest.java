@@ -273,4 +273,11 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertFalse(ExprCompiler.isValidIdentifier("9"));
         assertTrue(ExprCompiler.isValidIdentifier("a9"));
     }
+    
+    public void testSemicolonAtEnd() {
+        CompilationResult result = compiler.compile("1");
+        assertTrue(result.successfull());
+        result = compiler.compile("1;a");
+        assertFalse(result.successfull());
+    }
 }

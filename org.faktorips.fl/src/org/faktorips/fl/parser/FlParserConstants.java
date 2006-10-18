@@ -39,7 +39,6 @@ public interface FlParserConstants {
     "<LETTER_OR_UNDERSCORE_OR_DOT>",
     "<DIGIT>",
     "<DATE_IDENTIFIER>",
-    "\";\"",
     "\"=\"",
     "\"!=\"",
     "\"<\"",
@@ -53,6 +52,7 @@ public interface FlParserConstants {
     "\"!\"",
     "\"(\"",
     "\")\"",
+    "\";\"",
   };
 
 }

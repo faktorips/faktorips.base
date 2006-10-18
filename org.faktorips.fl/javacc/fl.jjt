@@ -108,7 +108,7 @@ TOKEN:
 SimpleNode start() #Start:
 {}
 {
-    expr() (<EOF> | ";")
+    expr() (<EOF>)
     { return jjtThis; }
 }
 

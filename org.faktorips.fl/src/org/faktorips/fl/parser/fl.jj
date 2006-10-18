@@ -114,7 +114,7 @@ SimpleNode start()       :
 {/*@bgen(jjtree) Start */
     try {
 /*@egen*/
-    expr() (<EOF> | ";")/*@bgen(jjtree)*/
+    expr() (<EOF>)/*@bgen(jjtree)*/
     {
       jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
