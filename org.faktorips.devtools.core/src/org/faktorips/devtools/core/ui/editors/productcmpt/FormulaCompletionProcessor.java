@@ -159,7 +159,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
             }
         });
         for (int i=0; i<functions.length; i++) {
-            if (functions[i].getName().startsWith(prefix)) {
+            if (functions[i].getName().toLowerCase().startsWith(prefix.toLowerCase())) {
                 addFunctionToResult(result, functions[i], replacementOffset, prefix.length());
             }
         }
