@@ -67,6 +67,10 @@ import org.faktorips.fl.operations.MultiplyIntegerMoney;
 import org.faktorips.fl.operations.MultiplyMoneyDecimal;
 import org.faktorips.fl.operations.NotEqualsDecimalDecimal;
 import org.faktorips.fl.operations.NotEqualsMoneyMoney;
+import org.faktorips.fl.operations.ParenthesisDecimal;
+import org.faktorips.fl.operations.ParenthesisInt;
+import org.faktorips.fl.operations.ParenthesisMoney;
+import org.faktorips.fl.operations.ParenthesisString;
 import org.faktorips.fl.operations.PlusDecimal;
 import org.faktorips.fl.operations.PlusInteger;
 import org.faktorips.fl.operations.PlusMoney;
@@ -273,6 +277,12 @@ public class ExprCompiler {
         // not equals operation
         register(new NotEqualsDecimalDecimal());
         register(new NotEqualsMoneyMoney());
+        
+        // parenthesis operation
+        register(new ParenthesisInt());
+        register(new ParenthesisDecimal());
+        register(new ParenthesisMoney());
+        register(new ParenthesisString());
     }
 
     /**

@@ -193,9 +193,7 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTParenthesisNode, java.lang.Object)
      */
     public Object visit(ASTParenthesisNode node, Object data) {
-		SimpleNode argNode = (SimpleNode) node.jjtGetChild(0);
-		CompilationResultImpl result = (CompilationResultImpl) argNode.jjtAccept(this, data);
-		return result;
+        return generateUnaryOperation("()", node, data);
     }
 
     /** 
