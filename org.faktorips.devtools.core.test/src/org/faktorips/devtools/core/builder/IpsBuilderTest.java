@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
@@ -127,6 +128,13 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         c.setSupertype(b.getQualifiedName());
 
         TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
+        IIpsProjectProperties props = projectB.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        projectB.setProperties(props);
+        props = projectC.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        projectC.setProperties(props);
+        
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
         projectB.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -148,6 +156,20 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(buildObjects.contains(a));
         assertTrue(buildObjects.contains(b));
         assertTrue(buildObjects.contains(c));
+        
+        builder.clear();
+        attrA = a.newAttribute();
+        attrA.setName("attrB");
+        attrA.setAttributeType(AttributeType.CHANGEABLE);
+        attrA.setDatatype("String");
+        a.getIpsSrcFile().save(true, null);
+        
+        ((IpsProject)projectC).getIpsProjectPropertiesFile().delete(true, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+
+        assertTrue(buildObjects.contains(a));
+        assertTrue(buildObjects.contains(b));
+        assertFalse(buildObjects.contains(c));
     }
 
     private IIpsProject createSubProject(IIpsProject superProject, String projectName) throws CoreException {
@@ -169,6 +191,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         project.setProperties(props);
+        
         return builder;
     }
 
@@ -230,7 +253,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         c.getIpsSrcFile().getCorrespondingResource().delete(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
     }
-
+    
     private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
 
         /**

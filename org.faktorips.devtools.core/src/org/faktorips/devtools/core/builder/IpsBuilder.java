@@ -394,15 +394,21 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return dependants.length;
     }
 
-    private int collectDependantForDependantProjects(QualifiedNameType root, 
-                                                     IProject project, 
-                                                     Set alreadyBuildProjects, 
-                                                     Map buildCandidatesForProjectMap) 
-        throws CoreException {
-        
+    private int collectDependantForDependantProjects(QualifiedNameType root,
+            IProject project,
+            Set alreadyBuildProjects,
+            Map buildCandidatesForProjectMap) throws CoreException {
         int numberOfCandidates = 0;
+        
         IpsModel model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
-        DependencyGraph graph = model.getDependencyGraph(model.getIpsProject(project));
+        IIpsProject ipsProject = model.getIpsProject(project);
+        
+        // build object of dependant projects only if the dependant project can be build...
+        if (!ipsProject.canBeBuild()) {
+            return numberOfCandidates;
+        }
+        
+        DependencyGraph graph = model.getDependencyGraph(ipsProject);
         if (graph == null) {
             return numberOfCandidates;
         }
