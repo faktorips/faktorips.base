@@ -167,4 +167,6 @@ public class Messages extends NLS {
 	public static String Relation_Error_RelationIsNoContainerRelation;
 
 	public static String Relation_msgRelationCanOnlyProdRelIfTargetTypeIsConfByProduct;
+
+    public static String ValidationRule_msgNoNewlineAllowed;
 }

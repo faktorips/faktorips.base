@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -240,5 +241,15 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    public void testValidateMessageText() throws Exception {
+        rule.setMessageText("Messagetext " + SystemUtils.LINE_SEPARATOR + " bla bla");
+        MessageList ml = rule.validate();
+        assertNotNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
+        
+        rule.setMessageText("Messagetext  bla bla");
+        ml = rule.validate();
+        assertNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
     }
 }

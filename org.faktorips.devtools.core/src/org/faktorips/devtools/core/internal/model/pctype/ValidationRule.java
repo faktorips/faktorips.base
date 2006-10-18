@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
@@ -231,6 +232,11 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
             String text = Messages.ValidationRule_msgOneBusinessFunction;
             list.add(new Message("", text, Message.ERROR, this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)); //$NON-NLS-1$
         }
+        
+        if (msgText.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
+            list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, Messages.ValidationRule_msgNoNewlineAllowed, Message.ERROR, this, IValidationRule.PROPERTY_MESSAGE_TEXT));
+        }
+        
 		validateValidatedAttribute(list);
         validateCheckValueAgainstValueSet(list);
 	}

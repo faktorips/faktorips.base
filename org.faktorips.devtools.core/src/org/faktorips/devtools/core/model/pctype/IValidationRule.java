@@ -42,7 +42,18 @@ public interface IValidationRule extends IIpsObjectPart {
 	public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
 
 	public final static String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
-	/**
+
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the message text contains a newline.
+     */
+    public final static String MSGCODE_NO_NEWLINE = MSGCODE_PREFIX + "NoNewlineAllowed"; //$NON-NLS-1$
+
+    /**
 	 * Sets the rules name.
 	 */
 	public void setName(String newName);
