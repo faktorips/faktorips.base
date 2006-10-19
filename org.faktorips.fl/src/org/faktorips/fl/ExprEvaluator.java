@@ -46,6 +46,9 @@ public class ExprEvaluator {
 
     }
 
+    /**
+     * Evaluates and returns the result of the given expression.
+     */
     public Object evaluate(String expression) throws Exception {
         // compiles the expression to Java sourcecode
         JavaCodeFragment fragment = compileExpressionToJava(expression);
@@ -59,6 +62,19 @@ public class ExprEvaluator {
         // execute the expression.
         return i.eval(sb.toString());
     }
+    
+    /**
+     * Evaluates and return the result of the given java code fragment
+     */
+    public Object evaluate(JavaCodeFragment javaCodeFragment) throws Exception {
+        Interpreter i = new Interpreter(); // Construct an interpreter
+        
+        StringBuffer sb = new StringBuffer();
+        sb.append(javaCodeFragment);
+
+        // execute the expression.
+        return i.eval(sb.toString());
+    }    
 
     /**
      * Compiles expression to Java and returns the CompilationResult.
