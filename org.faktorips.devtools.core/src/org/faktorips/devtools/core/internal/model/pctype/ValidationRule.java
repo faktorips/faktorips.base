@@ -234,7 +234,7 @@ public class ValidationRule extends IpsObjectPart implements IValidationRule {
         }
         
 
-        if (SystemUtils.LINE_SEPARATOR != null && msgText.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
+        if (SystemUtils.LINE_SEPARATOR != null && SystemUtils.LINE_SEPARATOR.length() > 0 && msgText.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
             list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, Messages.ValidationRule_msgNoNewlineAllowed, Message.ERROR, this, IValidationRule.PROPERTY_MESSAGE_TEXT));
         }
         
