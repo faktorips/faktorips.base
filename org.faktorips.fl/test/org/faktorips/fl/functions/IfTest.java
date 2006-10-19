@@ -78,5 +78,10 @@ public class IfTest extends FunctionAbstractTest {
         execAndTestSuccessfull("IF(1=2; \"a\"; \"b\")", "b", Datatype.STRING);
     }
     
-    
+    public void testCombinations() throws Exception {
+        execAndTestSuccessfull("IF(1=1; 2; 3) + 1", new Integer(3), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=1; 2.1 + 1; 3) + 2", Decimal.valueOf("5.1"), Datatype.DECIMAL);
+        execAndTestSuccessfull("IF(1=1; 2; 3) + 10 + IF(1=2; 2; 3) ", new Integer(15), Datatype.INTEGER);
+        execAndTestSuccessfull("IF(1=1; IF(1=2; 2; 30); 3) + 1", new Integer(31), Datatype.INTEGER);
+    }
 }

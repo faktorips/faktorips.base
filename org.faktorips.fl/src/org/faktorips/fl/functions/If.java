@@ -69,11 +69,13 @@ public class If extends AbstractFlFunction {
         }
         
         JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.append("(");
         fragment.append(argResults[0].getCodeFragment());
         fragment.append('?');
         fragment.append(argResults[1].getCodeFragment());
         fragment.append(':');
         fragment.append(argResults[2].getCodeFragment());
+        fragment.append(")");
         
         CompilationResultImpl result = new CompilationResultImpl(fragment, argResults[1].getDatatype());
         result.addMessages(argResults[0].getMessages());
