@@ -582,6 +582,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_STRUCTURE, result);
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result);
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE_TYPE, result);
     }
     
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
