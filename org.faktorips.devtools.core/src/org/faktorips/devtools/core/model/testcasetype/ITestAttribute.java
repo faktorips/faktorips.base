@@ -60,11 +60,12 @@ public interface ITestAttribute extends IIpsObjectPart {
      */
     public final static String MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "DuplicateTestAttributeName"; //$NON-NLS-1$
 
-    /**
-     * Validation message code to indicate that computed or derived attributes have type expected result.
-     */
-    public final static String MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES = MSGCODE_PREFIX + "ExpectedOrComputedButNotExpectedRes"; //$NON-NLS-1$
-    
+//  TODO Joerg: remove if not necessary
+//    /**
+//     * Validation message code to indicate that computed or derived attributes have type expected result.
+//     */
+//    public final static String MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES = MSGCODE_PREFIX + "ExpectedOrComputedButNotExpectedRes"; //$NON-NLS-1$
+//    
     /**
      * Validation message code to indicate that the attribute and the attribute type is already given.<br>
      * E.g. The attribute "a" could be added as input and expected result but not as input twice.
