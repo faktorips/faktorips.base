@@ -60,6 +60,9 @@ public abstract class IpsObjectEditor extends FormEditor
     // dirty flag
     private boolean dirty = false;
     
+    /** Activates or deactivates the refreshing of this editor */
+    private boolean active = false;
+    
     /**
      * 
      */
@@ -109,7 +112,10 @@ public abstract class IpsObjectEditor extends FormEditor
         
         site.getPage().addPartListener(this);
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        // TODO remark: disabled because of performance problems
+		// IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        
+        setActive(true);
     }
     
     private void initFromStorageEditorInput(IStorageEditorInput input) throws PartInitException{
@@ -166,9 +172,13 @@ public abstract class IpsObjectEditor extends FormEditor
     }
     
     /**
-     * Refresh the controls on the active page with the data from the model.
+     * Refresh the controls on the active page with the data from the model.<br>
+     * Calls to this refresh method are ignored if the activate attribute is set to <code>false</code>.
      */
     protected void refresh() {
+    	if (!active) {
+    		return;
+    	}    	
         IEditorPart editor = getActivePageInstance();
         if (editor instanceof IpsObjectEditorPage) {
         	IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
@@ -187,7 +197,9 @@ public abstract class IpsObjectEditor extends FormEditor
         // no refresh neccessary - this method is only called if this editor is the active one.
         // we only need a refresh here if the content of one field of this editorwill have an 
         // effect on another field in this editor, but this is not the case yet.
-        refresh();
+
+        // TODO remark: disabled because of performance problems
+        //refresh();
     }
     
     protected void setDirty(boolean newValue) {
@@ -259,6 +271,7 @@ public abstract class IpsObjectEditor extends FormEditor
     	if (part != this) {
     		return;
     	}
+    	setActive(true);
     	refresh();
 	}
 
@@ -339,10 +352,32 @@ public abstract class IpsObjectEditor extends FormEditor
      * {@inheritDoc}
      */
     public void partDeactivated(IWorkbenchPartReference partRef) {
-        // nothing to do
+		IWorkbenchPart part = partRef.getPart(false);
+    	if (part != this || partRef.getPage().isPartVisible(part)) {
+    		return;
+    	}
+        setActive(false);
     }
 
     public String toString() {
         return "Editor for " + getIpsSrcFile();
     }
+
+	/**
+	 * @see IpsObjectEditor#active
+	 */
+	public void setActive(boolean active) {
+		if (this.active == active) {
+			return;
+		}
+		
+		this.active = active;
+		if (active) {
+	        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);   
+	        setDirty(ipsSrcFile.isDirty());
+	        refresh();
+		} else {
+	        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);    	
+		}
+	}
 }
