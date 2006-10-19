@@ -131,44 +131,34 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     private MessageList validateAndUpdateDialogUI(MessageList messages) {       
         MessageList relevantMessages = new MessageList();
-        try {
-            if (getContents() != null) {
-                // set redraw false, thus changes while redrawing the ui are not visible to the user,
-                // this avoids flickering of the dialog
-                getContents().setRedraw(false);
-            }
-            
-            if (messages.getNoOfMessages() > 0) {
-                // get only message wich are not for the dummy formula test case (getTransientFormulaTestCases)
-                for (Iterator iter = messages.iterator(); iter.hasNext();) {
-                    Message msg = (Message)iter.next();
-                    if (isNotMessageForDummyFormulaTestCase(msg)){
-                        relevantMessages.add(msg);
-                    }                
-                }
-                if (!relevantMessages.isEmpty()) {
-                    Message firstMessage = relevantMessages.getMessage(0);
-                    setMessage(firstMessage.getText(), getJFaceMessageType(firstMessage.getSeverity()));
-                } else {
-                    setMessage(""); //$NON-NLS-1$
-                }
-            } else {
-                setMessage(""); //$NON-NLS-1$
-            }
-            updateUiFormulaTestCaseTab();
-            updateUiPreviewFormulaResult();
-        } finally {
-            if (getContents() != null) {
-                getContents().setRedraw(true);
-            }
-        }
-        return relevantMessages;
+		if (messages.getNoOfMessages() > 0) {
+			// get only message wich are not for the dummy formula test case
+			// (getTransientFormulaTestCases)
+			for (Iterator iter = messages.iterator(); iter.hasNext();) {
+				Message msg = (Message) iter.next();
+				if (isNotMessageForDummyFormulaTestCase(msg)) {
+					relevantMessages.add(msg);
+				}
+			}
+			if (!relevantMessages.isEmpty()) {
+				Message firstMessage = relevantMessages.getMessage(0);
+				setMessage(firstMessage.getText(),
+						getJFaceMessageType(firstMessage.getSeverity()));
+			} else {
+				setMessage(""); //$NON-NLS-1$
+			}
+		} else {
+			setMessage(""); //$NON-NLS-1$
+		}
+		updateUiFormulaTestCaseTab();
+		updateUiPreviewFormulaResult();
+		return relevantMessages;
     }
     
     /**
-     * Returns <code>true</code> if the message is no message which is direcly related to the
-     * dummy formula test case.
-     */
+	 * Returns <code>true</code> if the message is no message which is direcly
+	 * related to the dummy formula test case.
+	 */
     private boolean isNotMessageForDummyFormulaTestCase(Message msg) {
         ObjectProperty[] props = msg.getInvalidObjectProperties();
         for (int i = 0; i < props.length; i++) {
