@@ -1575,7 +1575,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      */
     private void generateMethodInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
         builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.class, MethodNames.INIT_PROPERTIES_FROM_XML, new String[]{"propMap"}, new Class[]{HashMap.class});
         builder.append("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap);");
         IAttribute[] attributes = getPolicyCmptType().getAttributes();
@@ -1597,6 +1597,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             builder.appendln(";");
             builder.appendln("}");
         }
+        builder.appendln(MARKER_BEGIN_USER_CODE);
+        builder.appendln(MARKER_END_USER_CODE);
         builder.methodEnd();
     }
     

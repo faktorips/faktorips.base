@@ -262,14 +262,15 @@ public class TestAttribute extends IpsObjectPart implements ITestAttribute {
             }
         }
         
-        // check that a derived or computed test attribute must have the expected result type
-        if (modelAttribute != null){
-            if (modelAttribute.isDerivedOrComputed() && type != TestParameterType.EXPECTED_RESULT){
-                String text = NLS.bind(Messages.TestAttribute_ValidationError_WrongParameterTypeIfDerivedOrComputed, type.getName());
-                Message msg = new Message(MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES, text, Message.ERROR, this,
-                        PROPERTY_TEST_ATTRIBUTE_TYPE);
-                messageList.add(msg);
-            }
-        }
+// TODO Joerg: remove if not necessary
+//        // check that a derived or computed test attribute must have the expected result type
+//        if (modelAttribute != null){
+//            if (modelAttribute.isDerivedOrComputed() && type != TestParameterType.EXPECTED_RESULT){
+//                String text = NLS.bind(Messages.TestAttribute_ValidationError_WrongParameterTypeIfDerivedOrComputed, type.getName());
+//                Message msg = new Message(MSGCODE_DERIVED_OR_COMPUTED_BUT_NOT_EXPECTED_RES, text, Message.ERROR, this,
+//                        PROPERTY_TEST_ATTRIBUTE_TYPE);
+//                messageList.add(msg);
+//            }
+//        }
     }
 }
