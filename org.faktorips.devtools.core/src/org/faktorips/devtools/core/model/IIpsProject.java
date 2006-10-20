@@ -409,7 +409,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If no
      * IpsArtefactBuilderSet is active for this project an <code>EmptyBuilderSet</code> is returned.
      */
-    public IIpsArtefactBuilderSet getArtefactBuilderSet() throws CoreException;
+    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet();
+
+    /**
+     * Reinitializes the <code>IpsProject</code>s <code>IpsArtefactBuilderSet</code>.
+     * 
+     * @throws CoreException when an exception arises during reinitialization
+     */
+    public void reinitializeIpsArtefactBuilderSet() throws CoreException;
     
     /**
      * Returns the runtime id prefix configured for this project.

@@ -50,6 +50,11 @@ and can only be found in the emf-merge.xml I copy them into this file.
         content.  
      -->
     <merge:sweep markup="^gen$" select="Member"/>
-    <merge:sweep markup="^restrained$" select="Member"/>
+    
+    <!--
+    	Currently disabled because of problems with methods that have been generated in the first place and get 
+    	swept away because	of a model validation error. 
+    -->
+    <!-- merge:sweep markup="^restrained$" select="Member"/-->
     
 </merge:options>

@@ -196,7 +196,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 				.getExpressionLanguageFunctionsLanguage()));
 		compiler.add(new TableFunctionsResolver(getIpsProject()));
 		IIpsArtefactBuilderSet builderSet = getIpsProject()
-				.getArtefactBuilderSet();
+				.getIpsArtefactBuilderSet();
 		IAttribute a = findPcTypeAttribute();
 		if (a == null) {
 			return compiler;

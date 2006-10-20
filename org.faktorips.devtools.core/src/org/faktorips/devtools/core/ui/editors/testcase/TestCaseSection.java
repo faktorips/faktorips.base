@@ -1283,7 +1283,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         if (packageFragment == null)
             return null;
         IIpsPackageFragmentRoot root = packageFragment.getRoot();
-        IIpsArtefactBuilderSet builderSet = root.getIpsProject().getArtefactBuilderSet();
+        IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
         return builderSet.getTocFilePackageName(root);        
     }
     

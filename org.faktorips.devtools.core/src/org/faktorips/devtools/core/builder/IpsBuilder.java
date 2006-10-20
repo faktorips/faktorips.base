@@ -107,11 +107,17 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
             // reinitialize the builders of the current builder set if an error
             // occurs
-            reinitBuilderSets(buildStatus);
+            getIpsProject().reinitializeIpsArtefactBuilderSet();
             throw new CoreException(buildStatus);
             
         } catch(OperationCanceledException e){
-            reinitBuilderSets(buildStatus);
+            getIpsProject().reinitializeIpsArtefactBuilderSet();
+        }
+        catch(CoreException e){
+            throw e;
+        }
+        catch(Exception e){
+            throw new CoreException(new IpsStatus(e));
         }
         finally {
             monitor.done();
@@ -119,14 +125,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return getProject().getReferencedProjects();
     }
 
-    private void reinitBuilderSets(MultiStatus buildStatus){
-        try {
-            IIpsArtefactBuilderSet builderSet = getIpsProject().getArtefactBuilderSet();
-            builderSet.initialize();
-        } catch (Exception e) {
-            buildStatus.add(new IpsStatus(Messages.IpsBuilder_msgErrorExceptionDuringBuild));
-        }
-    }
     
     private void applyBuildCommand(MultiStatus buildStatus, BuildCommand command, IProgressMonitor monitor) throws CoreException {
         // Despite the fact that generating is disabled in the faktor ips
@@ -136,7 +134,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         if (!IpsPlugin.getDefault().getIpsPreferences().getEnableGenerating()) {
             return;
         }
-        IIpsArtefactBuilderSet currentBuilderSet = getIpsProject().getArtefactBuilderSet();
+        IIpsArtefactBuilderSet currentBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
         IIpsArtefactBuilder[] artefactBuilders = currentBuilderSet.getArtefactBuilders();
         for (int i = 0; i < artefactBuilders.length; i++) {
             try {
@@ -231,7 +229,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * {@inheritDoc}
      */
     protected void clean(IProgressMonitor monitor) throws CoreException {
-        getIpsProject().getArtefactBuilderSet().clean();
+        getIpsProject().getIpsArtefactBuilderSet().clean();
     }
 
     private void removeEmptyFolders(IFolder parent, boolean removeThisParent) throws CoreException {

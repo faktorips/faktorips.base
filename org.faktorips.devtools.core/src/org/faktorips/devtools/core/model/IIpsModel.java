@@ -81,7 +81,7 @@ public interface IIpsModel extends IIpsElement {
     
     /**
      * Creates an IpsProject for the given Java project by adding the IPS nature and
-     * creating (an empty) the .ipsproject file.
+     * creating (an empty) .ipsproject file.
      * 
      * @throws NullPointerException if javaProjecct is <code>null</code>.
      * @throws CoreException if an error occurs while creating the ips project.
@@ -140,16 +140,6 @@ public interface IIpsModel extends IIpsElement {
      * @throws CoreException
      */
     public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException;
-    
-    /**
-     * Returns all IpsArtefactBuilderSets that have been assigned to this model. 
-     */
-    public IIpsArtefactBuilderSet[] getAvailableArtefactBuilderSets();
-    
-    /**
-     * Sets the available artefact builder sets of this model.
-     */
-    public void setAvailableArtefactBuilderSets(IIpsArtefactBuilderSet[] sets);
     
     /**
      * Returns the extension properties for the given type. Returns an empty array

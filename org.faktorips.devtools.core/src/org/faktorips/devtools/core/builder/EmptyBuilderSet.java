@@ -24,6 +24,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
@@ -92,12 +93,6 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void initialize() throws CoreException {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
 		return null; 
 	}
@@ -136,6 +131,21 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 	public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
 		return null;
 	}
-	
-	
+    
+    /**
+     * @return the string <i>emptyBuilderSet</i>
+     */
+    public String getId() {
+        return "emptyBuilderSet";
+    }
+
+    /**
+     * Calls to this method are ignored. The getId() method always returns <i>emptyBuilderSet</i>
+     */
+    public void setId(String id) {
+        
+    }
+
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+    }
 }

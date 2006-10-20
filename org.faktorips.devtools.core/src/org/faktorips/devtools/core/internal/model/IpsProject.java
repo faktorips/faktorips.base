@@ -462,7 +462,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     public void configure() throws CoreException {
         IProjectDescription description = getProject().getDescription();
-        ICommand command = getPdBuildCommand();
+        ICommand command = getIpsBuildCommand();
         if (command == null) {
             // Add a product definition build command to the build spec
             ICommand newBuildCommand = description.newCommand();
@@ -487,7 +487,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * Finds the specific command for product definition builder.
      */
-    private ICommand getPdBuildCommand() throws CoreException {
+    private ICommand getIpsBuildCommand() throws CoreException {
         ICommand[] commands = getProject().getDescription().getBuildSpec();
         for (int i = 0; i < commands.length; ++i) {
             if (commands[i].getBuilderName().equals(IpsBuilder.BUILDER_ID)) {
@@ -583,7 +583,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TABLE_CONTENTS, result);
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.BUSINESS_FUNCTION, result);
         getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE, result);
-        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE_TYPE, result);
+        getIpsObjectPathInternal().findIpsObjects(this, IpsObjectType.TEST_CASE_TYPE, result);        
     }
     
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
@@ -794,11 +794,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         	return new ArrayOfValueDatatypeHelper(datatype);
         }
         if (datatype instanceof TableStructureEnumDatatypeAdapter) {
-        	try {
-				return getArtefactBuilderSet().getDatatypeHelperForTableBasedEnum((TableStructureEnumDatatypeAdapter)datatype);
-			} catch (CoreException e) {
-				throw new RuntimeException(e);
-			}
+            return getIpsArtefactBuilderSet().getDatatypeHelperForTableBasedEnum((TableStructureEnumDatatypeAdapter)datatype);
         }
         DatatypeHelper helper = ((IpsModel)getIpsModel()).getDatatypeHelper(this,
             (ValueDatatype)datatype);
@@ -921,8 +917,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-    public IIpsArtefactBuilderSet getArtefactBuilderSet() throws CoreException {
-        return ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this);
+    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet() {
+        return ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void reinitializeIpsArtefactBuilderSet() throws CoreException {
+        ((IpsModel)getIpsModel()).getIpsArtefactBuilderSet(this, true);
     }
 
     /**
@@ -1048,6 +1051,4 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	public ClassLoaderProvider getClassLoaderProviderForJavaProject() {
 		return ((IpsModel)getIpsModel()).getClassLoaderProvider(this);
 	}
-
-
 }

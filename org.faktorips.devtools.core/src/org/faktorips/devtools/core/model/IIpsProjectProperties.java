@@ -65,6 +65,16 @@ public interface IIpsProjectProperties {
 	 */
 	public void setBuilderSetId(String id);
 
+    /**
+     * Returns the IpsProject specific configuration of the IIpsArtefactBuilderSet.
+     */
+    public IIpsArtefactBuilderSetConfig getBuilderSetConfig();
+
+    /**
+     * Sets the IpsProjects specific configuration of the IIpsArtefactBuilderSet.
+     */
+    public void setBuilderSetConfig(IIpsArtefactBuilderSetConfig config);
+    
 	/**
 	 * Returns the objct path to lookup objets.
 	 */

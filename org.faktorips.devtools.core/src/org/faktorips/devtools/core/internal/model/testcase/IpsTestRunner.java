@@ -524,7 +524,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      private void getRepositoryPackages(IIpsProject ipsProject, List repositoryPackages) throws CoreException {
          IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
          for (int i = 0; i < ipsRoots.length; i++) {
-             IIpsArtefactBuilderSet builderSet = ipsProject.getArtefactBuilderSet();
+             IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
              IFile tocFile = builderSet.getRuntimeRepositoryTocFile(ipsRoots[i]);
              if (tocFile != null && tocFile.exists()){
                  String repositoryPck = builderSet.getTocFilePackageName(ipsRoots[i]);

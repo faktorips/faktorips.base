@@ -146,8 +146,13 @@ public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
 	/**
 	 * Initializes this set. Creation of IpsArtefactBuilders has to go here
 	 * instead of the constructor of the set implementation.
+     * 
+     * @param config the configuration for this builder set instance. The configuration
+     *          for a builder set instance is defined in the .ipsproject file of an
+     *          ips project. 
+     * @see IIpsArtefactBuilderSetConfig class description
 	 */
-	public void initialize() throws CoreException;
+	public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException;
 	
 	/**
 	 * The call to the clean method of the IpsBuilder by the eclipse framework is delegate to this

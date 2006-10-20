@@ -25,10 +25,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.internal.model.product.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.product.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -69,6 +71,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
 	private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
 	private String builderSetId = ""; //$NON-NLS-1$
+    private IIpsArtefactBuilderSetConfig builderSetConfig = new IpsArtefactBuilderSetConfig();
 	private IIpsObjectPath path = new IpsObjectPath();
 	private String[] predefinedDatatypesUsed = new String[0];
     private DynamicValueDatatype[] definedDatatypes = new DynamicValueDatatype[0]; 
@@ -118,12 +121,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 	}
 	
 	private void validateBuilderSetId(IIpsProject ipsProject, MessageList list) {
-		IIpsArtefactBuilderSet[] sets = ipsProject.getIpsModel().getAvailableArtefactBuilderSets();
-		for (int i = 0; i < sets.length; i++) {
-			if (sets[i].getId().equals(builderSetId)) {
-				return;
-			}
-		}
+		IIpsArtefactBuilderSet set = ipsProject.getIpsArtefactBuilderSet();
+        if(!(set instanceof EmptyBuilderSet)){
+            return;
+        }
 		String text = Messages.IpsProjectProperties_msgUnknownBuilderSetId + builderSetId;
 		Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_BUILDER_SET_ID, text, Message.ERROR, this, IIpsProjectProperties.PROPERTY_BUILDER_SET_ID);
 		list.add(msg);
@@ -355,12 +356,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         } else {
         	builderSetId = ""; //$NON-NLS-1$
         }
-        initProductCmptNamingStrategyFromXml(ipsProject, XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
-        if(artefactEl != null) {
-            builderSetId = artefactEl.getAttribute("id"); //$NON-NLS-1$
-        } else {
-        	builderSetId = ""; //$NON-NLS-1$
+        Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl, IIpsArtefactBuilderSetConfig.XML_ELEMENT);
+        if(artefactConfigEl != null){
+            builderSetConfig = IpsArtefactBuilderSetConfig.createFromXml(artefactConfigEl);
         }
+        initProductCmptNamingStrategyFromXml(ipsProject, XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
         Element pathEl = XmlUtil.getFirstElement(element, IpsObjectPath.XML_TAG_NAME);
         if (pathEl != null) {
             path = IpsObjectPath.createFromXml(ipsProject, pathEl);
@@ -646,6 +646,21 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
         Comment comment = doc.createComment(indentedText.toString());
         parent.appendChild(comment);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsArtefactBuilderSetConfig getBuilderSetConfig() {
+        return builderSetConfig;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setBuilderSetConfig(IIpsArtefactBuilderSetConfig config) {
+        ArgumentCheck.notNull(config);
+        builderSetConfig = config;
     }
     
 }
