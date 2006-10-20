@@ -68,7 +68,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
     }
 
     private IJavaPackageStructure getPackageStructure() throws CoreException {
-        return (IJavaPackageStructure)project.getArtefactBuilderSet();
+        return (IJavaPackageStructure)project.getIpsArtefactBuilderSet();
     }
 
     public void testDelete() throws CoreException {

@@ -54,7 +54,7 @@ public class TableImplBuilderTest extends AbstractIpsPluginTest {
     }
     
     private TableImplBuilder getTableImpleBuilder() throws CoreException{
-        IIpsArtefactBuilder[] builders = project.getArtefactBuilderSet().getArtefactBuilders();
+        IIpsArtefactBuilder[] builders = project.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {
             if(builders[i].getClass() == TableImplBuilder.class){
                 return (TableImplBuilder)builders[i];

@@ -26,12 +26,14 @@ import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
@@ -143,15 +145,23 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
-     * Instantiates the artefact builders for this set.
+     * Instantiates the artefact builders for this set. The following configuration properties of the
+     * provided IIpsArtefactBuilderSetConfig are considered by this builder set.
+     * 
+     * Property: generateChangeListener, type=boolean, values = ("true", "false")
+     * 
      */
-    public void initialize() throws CoreException {
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
 
+        //configuration properties
+        Boolean generateChangeListener = config.getBooleanPropertyValue(BasePolicyCmptTypeBuilder.CONFIG_PROPERTY_GENERATE_CHANGELISTENER);
+        
+        
         // create policy component type builders
         PolicyCmptImplClassBuilder policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(
-                this, KIND_POLICY_CMPT_IMPL);
+                this, KIND_POLICY_CMPT_IMPL, generateChangeListener);
         policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(
-                this, KIND_POLICY_CMPT_INTERFACE);
+                this, KIND_POLICY_CMPT_INTERFACE, generateChangeListener);
         
         
         // create product component type builders
@@ -268,6 +278,4 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
         return new TableStructureEnumDatatypeHelper(datatype);
     }
-    
-    
 }

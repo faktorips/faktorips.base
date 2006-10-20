@@ -20,9 +20,9 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -88,8 +88,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     public void testRemoveResource() throws CoreException {
         TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
-        ipsProject.getIpsModel().setAvailableArtefactBuilderSets(
-                new IIpsArtefactBuilderSet[] { new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder }) });
+
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject,
+                new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder }));
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         ipsProject.setProperties(props);
@@ -103,8 +104,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     public void testClean() throws Exception {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[0]);
-        ipsProject.getIpsModel().setAvailableArtefactBuilderSets(
-                new IIpsArtefactBuilderSet[] {builderSet });
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, builderSet);
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         ipsProject.setProperties(props);
@@ -128,12 +128,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         c.setSupertype(b.getQualifiedName());
 
         TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
-        IIpsProjectProperties props = projectB.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        projectB.setProperties(props);
-        props = projectC.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        projectC.setProperties(props);
+        //the project needs to have its own builder set otherwise the project is considered
+        //invalid since there is no builder set found for the builder set id defined in the
+        //project properties
+        createTestBuilderForProject(projectB);
+        createTestBuilderForProject(projectC);
         
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
@@ -186,8 +185,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private TestDependencyIpsArtefactBuilder createTestBuilderForProject(IIpsProject project) throws CoreException {
         TestDependencyIpsArtefactBuilder builder = new TestDependencyIpsArtefactBuilder();
-        project.getIpsModel().setAvailableArtefactBuilderSets(
-                new IIpsArtefactBuilderSet[] { new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder }) });
+        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSet(project, 
+                new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder }));
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         project.setProperties(props);

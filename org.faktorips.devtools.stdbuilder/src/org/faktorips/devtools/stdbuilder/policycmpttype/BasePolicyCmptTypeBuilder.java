@@ -26,12 +26,24 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
-    protected final static boolean GENERATE_CHANGE_LISTENER_SUPPORT = false;
+    /**
+     * Configuration property that is supposed to be used to read a configuration value from
+     * the IIpsArtefactBuilderSetConfig object provided by the initialize method of an
+     * IIpsArtefactBuilderSet instance.
+     */
+    public final static String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener";
     
-    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
+    private boolean changeListenerSupportActive;
+    
+    public BasePolicyCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet, Boolean isChangeListenerSupportActive) {
         super(builderSet, kindId, stringsSet);
+        this.changeListenerSupportActive = isChangeListenerSupportActive != null ? isChangeListenerSupportActive.booleanValue() : false;
     }
 
+    public boolean isChangeListenerSupportActive(){
+        return changeListenerSupportActive;
+    }
+    
     /**
      * {@inheritDoc}
      */

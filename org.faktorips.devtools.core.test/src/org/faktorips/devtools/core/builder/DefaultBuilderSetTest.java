@@ -23,6 +23,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
@@ -75,12 +76,6 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 			return null;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void initialize() throws CoreException {
-		}
-
         public void clean() throws CoreException {
             
         }
@@ -94,6 +89,9 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
         public DatatypeHelper getDatatypeHelperForTableBasedEnum(TableStructureEnumDatatypeAdapter datatype) {
             return null;
+        }
+
+        public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
         }
         
 	}

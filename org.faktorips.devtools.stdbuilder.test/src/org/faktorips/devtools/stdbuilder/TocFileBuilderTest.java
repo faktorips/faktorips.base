@@ -61,7 +61,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = project.getProperties();
         props.setJavaSrcLanguage(Locale.GERMAN);
         project.setProperties(props);
-        builderSet = (StandardBuilderSet)project.getArtefactBuilderSet();
+        builderSet = (StandardBuilderSet)project.getIpsArtefactBuilderSet();
         tableImplBuilder = (TableImplBuilder)builderSet.getBuilder(TableImplBuilder.class);
         tocFileBuilder = (TocFileBuilder)builderSet.getBuilder(TocFileBuilder.class);
     }
@@ -137,7 +137,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         // now build
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFile tocFile = project.getArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
         assertTrue(tocFile.exists());
         assertEquals(project.getXmlFileCharset(), tocFile.getCharset());
         
@@ -210,7 +210,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         // now make a full build
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFile tocFile = project.getArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
         assertTrue(tocFile.exists());
         long modStamp = tocFile.getModificationStamp();
         

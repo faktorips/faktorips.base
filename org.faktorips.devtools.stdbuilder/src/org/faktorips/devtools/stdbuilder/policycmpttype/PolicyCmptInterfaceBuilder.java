@@ -57,8 +57,8 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
 
-    public PolicyCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class));
+    public PolicyCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId, Boolean changeListenerSupportActive) {
+        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class), changeListenerSupportActive);
         setMergeEnabled(true);
     }
 

@@ -55,12 +55,12 @@ public class ParameterIdentifierResolverTest extends AbstractIpsPluginTest {
         attribute = pcType.newAttribute();
         attribute.setName("tax");
         attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
-        resolver = ipsProject.getArtefactBuilderSet().getFlParameterIdentifierResolver();
+        resolver = ipsProject.getIpsArtefactBuilderSet().getFlParameterIdentifierResolver();
         resolver.setIpsProject(ipsProject);
     }
 
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
-        IIpsArtefactBuilder[] builders = ipsProject.getArtefactBuilderSet().getArtefactBuilders();
+        IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (int i = 0; i < builders.length; i++) {
             if (((JavaSourceFileBuilder)builders[i]).getKindId().equals(StandardBuilderSet.KIND_POLICY_CMPT_INTERFACE)) {
                 return (PolicyCmptInterfaceBuilder)builders[i];

@@ -24,6 +24,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.internal.model.TableStructureEnumDatatypeAdapter;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IParameterIdentifierResolver;
@@ -68,9 +69,6 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
 
     public String getLabel() {
         return getId();
-    }
-
-    public void initialize() throws CoreException {
     }
 
     public boolean isSupportTableAccess() {
@@ -130,5 +128,8 @@ public class TestIpsArtefactBuilderSet implements IIpsArtefactBuilderSet {
      */
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
         return null;
+    }
+
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
     }
 }

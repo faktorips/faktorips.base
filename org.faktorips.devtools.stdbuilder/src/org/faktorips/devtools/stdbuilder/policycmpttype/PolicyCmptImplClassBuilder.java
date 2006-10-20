@@ -80,8 +80,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
-    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
+    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId, Boolean changeListenerSupportActive) {
+        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class), changeListenerSupportActive);
         setMergeEnabled(true);
     }
 
@@ -467,7 +467,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 	}
     
     protected void generateListenerSupport(JavaCodeFragmentBuilder methodsBuilder, String event, String fieldName, String paramName) {
-    	if (GENERATE_CHANGE_LISTENER_SUPPORT) {
+    	if (isChangeListenerSupportActive()) {
             methodsBuilder.appendln("if (changeListeners!=null) {");
             methodsBuilder.append(MethodNames.NOTIFIY_CHANGE_LISTENERS + "(new ");
             methodsBuilder.appendClassName(PolicyCmptChangedEvent.class);
