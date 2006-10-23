@@ -42,6 +42,11 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Jan Ortmann
  */
+// IMPORTANT: in the test methods the test builder set has to be set to the model after the
+// properties have been set otherwise the builder set will be removed since the setProperties method
+// causes a clean to the builder set map of the ips model. Hence when the model is requested
+// for the builder set it will look registered builder sets at the extension point and
+// won't find the test builder set
 public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     protected IIpsProject ipsProject;
@@ -89,11 +94,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     public void testRemoveResource() throws CoreException {
         TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject,
-                new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder }));
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         ipsProject.setProperties(props);
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, new TestIpsArtefactBuilderSet(
+                new IIpsArtefactBuilder[] { builder }));
+
         IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         assertTrue(builder.buildCalled);
@@ -103,11 +109,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     public void testClean() throws Exception {
-        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[0]);
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, builderSet);
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         ipsProject.setProperties(props);
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[0]);
+        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSet(ipsProject, builderSet);
         ipsProject.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, new NullProgressMonitor());
         assertTrue(builderSet.cleanCalled);
     }
@@ -128,12 +134,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         c.setSupertype(b.getQualifiedName());
 
         TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject);
-        //the project needs to have its own builder set otherwise the project is considered
-        //invalid since there is no builder set found for the builder set id defined in the
-        //project properties
+        // the project needs to have its own builder set otherwise the project is considered
+        // invalid since there is no builder set found for the builder set id defined in the
+        // project properties
         createTestBuilderForProject(projectB);
         createTestBuilderForProject(projectC);
-        
+
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
         projectB.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -155,14 +161,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(buildObjects.contains(a));
         assertTrue(buildObjects.contains(b));
         assertTrue(buildObjects.contains(c));
-        
+
         builder.clear();
         attrA = a.newAttribute();
         attrA.setName("attrB");
         attrA.setAttributeType(AttributeType.CHANGEABLE);
         attrA.setDatatype("String");
         a.getIpsSrcFile().save(true, null);
-        
+
         ((IpsProject)projectC).getIpsProjectPropertiesFile().delete(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
 
@@ -184,13 +190,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     private TestDependencyIpsArtefactBuilder createTestBuilderForProject(IIpsProject project) throws CoreException {
-        TestDependencyIpsArtefactBuilder builder = new TestDependencyIpsArtefactBuilder();
-        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSet(project, 
-                new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder }));
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         project.setProperties(props);
-        
+        TestDependencyIpsArtefactBuilder builder = new TestDependencyIpsArtefactBuilder();
+        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSet(project, new TestIpsArtefactBuilderSet(
+                new IIpsArtefactBuilder[] { builder }));
         return builder;
     }
 
@@ -252,7 +257,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         c.getIpsSrcFile().getCorrespondingResource().delete(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
     }
-    
+
     private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
 
         /**

@@ -311,7 +311,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    private void updateMarkers(IIpsObject object) throws CoreException {
+    private void updateMarkers(MultiStatus buildStatus, IIpsObject object) {
         if (object == null) {
             return;
         }
@@ -319,9 +319,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         if (!resource.exists()) {
             return;
         }
-        resource.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-        MessageList list = object.validate();
-        createMarkersFromMessageList(resource, list, IMarker.PROBLEM);
+        try {
+            resource.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+            MessageList list = object.validate();
+            createMarkersFromMessageList(resource, list, IMarker.PROBLEM);
+        } catch (Exception e) {
+            buildStatus.add(new IpsStatus("An exception occured during marker updating", e));
+        }
+
     }
 
     private void createMarkersFromMessageList(IResource resource, MessageList list, String markerType)
@@ -359,7 +364,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         }
         IIpsObject ipsObject = file.getIpsObject();
         applyBuildCommand(buildStatus, new BuildArtefactBuildCommand(file), monitor);
-        updateMarkers(ipsObject);
+        updateMarkers(buildStatus, ipsObject);
         return ipsObject;
     }
 
