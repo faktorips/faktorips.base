@@ -184,7 +184,7 @@ public class ProductCmptPage extends IpsObjectPage {
     	IIpsProject project = getIpsProject();
     	if (project != null) {
     		try {
-				return project.getProductCmptNamingStratgey();
+				return project.getProductCmptNamingStrategy();
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}

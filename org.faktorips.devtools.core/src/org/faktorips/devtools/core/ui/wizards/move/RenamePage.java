@@ -91,7 +91,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 		this.renameObject = renameObject;
 	
 		try {
-			namingStrategy = renameObject.getIpsProject().getProductCmptNamingStratgey();
+			namingStrategy = renameObject.getIpsProject().getProductCmptNamingStrategy();
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}

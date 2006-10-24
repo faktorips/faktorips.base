@@ -441,7 +441,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the stratgey used to name product components. This method never returns
      * <code>null</code>.
      */
-    public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException;
+    public IProductCmptNamingStrategy getProductCmptNamingStrategy() throws CoreException;
     
     /**
      * Adds a new DynamicValueDataType to the Project at runtime

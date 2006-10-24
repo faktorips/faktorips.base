@@ -77,7 +77,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 * {@inheritDoc}
 	 */
 	public IProductCmptKind findProductCmptKind() throws CoreException {
-		IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStratgey();
+		IProductCmptNamingStrategy stratgey = getIpsProject().getProductCmptNamingStrategy();
 		String kindName = stratgey.getKindId(getName());
 		return new ProductCmptKind(kindName, getIpsProject().getRuntimeIdPrefix() + kindName);
 	}
@@ -87,7 +87,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 	 */
 	public String getVersionId() throws CoreException {
 		try {
-			return getIpsProject().getProductCmptNamingStratgey().getVersionId(getName());
+			return getIpsProject().getProductCmptNamingStrategy().getVersionId(getName());
 		} catch (IllegalArgumentException e) {
 			throw new CoreException(new IpsStatus("Can't get version id for " + this, e)); //$NON-NLS-1$
 		}
@@ -156,7 +156,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 				throw new CoreException(new IpsStatus("Error during validate of policy component type", e)); //$NON-NLS-1$
 			}
         }
-        MessageList list2 = getIpsProject().getProductCmptNamingStratgey().validate(getName());
+        MessageList list2 = getIpsProject().getProductCmptNamingStrategy().validate(getName());
         list.add(list2);
         
         list2 = getIpsModel().checkForDuplicateRuntimeIds(new IProductCmpt[] {this});

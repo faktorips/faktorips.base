@@ -986,7 +986,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	/**
 	 * {@inheritDoc}
 	 */
-	public IProductCmptNamingStrategy getProductCmptNamingStratgey() throws CoreException {
+	public IProductCmptNamingStrategy getProductCmptNamingStrategy() throws CoreException {
 		return getPropertiesInternal().getProductCmptNamingStrategy();
 	}
 

@@ -145,7 +145,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
                 + validFrom.get(GregorianCalendar.YEAR)
                 + (month<10?"0"+month:""+month)
                 + (date<10?"0"+date:""+date);
-        name = generation.getIpsProject().getProductCmptNamingStratgey().getJavaClassIdentifier(name);
+        name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
         return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
     

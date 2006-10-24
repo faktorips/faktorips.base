@@ -83,7 +83,7 @@ public class IpsDeepCopyAction extends IpsAction {
 			
 			IProductCmptNamingStrategy ns = null;
 			try {
-				ns = root.getIpsProject().getProductCmptNamingStratgey();
+				ns = root.getIpsProject().getProductCmptNamingStrategy();
 			} catch (CoreException e1) {
 				IpsPlugin.log(e1);
 			}

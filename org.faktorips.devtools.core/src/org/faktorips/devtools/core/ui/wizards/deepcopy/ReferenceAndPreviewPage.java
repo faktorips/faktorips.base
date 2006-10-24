@@ -168,7 +168,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 		setPageComplete(false);
 		this.errorElements = new Hashtable();
 		try {
-			this.namingStrategy = structure.getRoot().getProductCmpt().getIpsProject().getProductCmptNamingStratgey();
+			this.namingStrategy = structure.getRoot().getProductCmpt().getIpsProject().getProductCmptNamingStrategy();
 		} catch (CoreException e) {
 			IpsPlugin.log(e);
 		}
