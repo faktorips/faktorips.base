@@ -159,7 +159,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 * {@inheritDoc}
 	 */
 	public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+        System.out.println("vor initJControlModel");
+        System.out.flush();
 		initJControlModel(project);
+        System.out.println("nach initJControlModel");
+        System.out.flush();
 	}
 
 	/**
