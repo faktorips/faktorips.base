@@ -49,35 +49,42 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getName() {
 		return name;
 	}
 	
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
     public String getQualifiedName() {
         return name;
     }
     
     /** 
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isPrimitive() {
         return false;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isValueDatatype() {
         return true;
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public Datatype getWrapperType() {
         return null;
@@ -88,21 +95,21 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String getJavaClassName() {
 		return clazz.getName();
 	}
 
 	/**
-	 * Overridden.
+	 * {@inheritDoc}
 	 */
 	public String valueToString(Object value) {
 		return value.toString();
 	}
 	
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isNull(String valueString) {
         Object value = getValue(valueString);
@@ -121,7 +128,7 @@ public abstract class ValueClassDatatype extends AbstractDatatype implements Val
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public boolean isParsable(String value) {
         try {

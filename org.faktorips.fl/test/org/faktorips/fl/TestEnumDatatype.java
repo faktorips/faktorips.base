@@ -51,6 +51,13 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
     /**
      * {@inheritDoc}
      */
+    public String getDefaultValue() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getValueName(String id) {
         return id;
     }

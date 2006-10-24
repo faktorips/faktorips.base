@@ -23,40 +23,42 @@ package org.faktorips.datatype;
 public class PrimitiveBooleanDatatype extends AbstractPrimitiveDatatype {
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getName()
+     * {@inheritDoc}
      */
     public String getName() {
         return "boolean";
     }
     
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getQualifiedName()
+     * {@inheritDoc}
      */
     public String getQualifiedName() {
         return "boolean";
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        return Boolean.FALSE.toString();
+    }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getWrapperType()
+     * {@inheritDoc}
      */
     public Datatype getWrapperType() {
         return Datatype.BOOLEAN;
     }
 	
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getJavaClassName()
+     * {@inheritDoc}
      */
     public String getJavaClassName() {
         return "boolean";
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getValue(java.lang.String)
+     * {@inheritDoc}
      */
     public Object getValue(String value) {
         return Boolean.valueOf(value);

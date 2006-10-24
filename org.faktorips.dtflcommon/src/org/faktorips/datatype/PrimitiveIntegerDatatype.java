@@ -23,40 +23,42 @@ package org.faktorips.datatype;
 public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implements NumericDatatype {
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getName()
+     * {@inheritDoc}
      */
     public String getName() {
         return "int";
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getQualifiedName()
+     * {@inheritDoc}
      */
     public String getQualifiedName() {
         return "int";
     }
 
     /**
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getWrapperType()
+     * {@inheritDoc}
      */
     public Datatype getWrapperType() {
         return Datatype.INTEGER;
     }
     
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getJavaClassName()
+     * {@inheritDoc}
      */
     public String getJavaClassName() {
         return "int";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        return "0";
+    }
+
     /** 
-     * Overridden method.
-     * @see org.faktorips.datatype.Datatype#getValue(java.lang.String)
+     * {@inheritDoc}
      */
     public Object getValue(String value) {
         return Integer.valueOf(value);

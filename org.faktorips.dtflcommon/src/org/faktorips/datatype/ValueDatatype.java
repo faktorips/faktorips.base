@@ -44,6 +44,17 @@ public interface ValueDatatype extends Datatype {
 	public boolean isNull(String value);
     
     /**
+     * Returns the datatype's default value. For datatypes representing objects the method returns <code>null</code>.
+     * For datatypes representing Java primitives the Java default value is returned, e.g. 0 for int.
+     * 
+     * @throws UnsupportedOperationException if this datatype is the Datatype Void.
+     * 
+     * @see Void
+     */
+    public String getDefaultValue();
+    
+    
+    /**
      * @return <code>true</code> if this datatype is able to compare two values.
      */
     public boolean supportsCompare();

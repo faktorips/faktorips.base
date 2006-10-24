@@ -88,7 +88,14 @@ public class TableStructureEnumDatatypeAdapter extends AbstractDatatype implemen
 		return false;
 	}
 
-	/**
+    /**
+     * {@inheritDoc}
+     */
+	public String getDefaultValue() {
+        return null;
+    }
+
+    /**
 	 * Not supported
 	 */
 	public String getValueName(String id) {

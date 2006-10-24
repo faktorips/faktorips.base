@@ -535,7 +535,11 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 			return "InvalidDatatype";
 		}
 
-		public boolean isVoid() {
+		public String getDefaultValue() {
+            return null;
+        }
+
+        public boolean isVoid() {
 			return false;
 		}
 

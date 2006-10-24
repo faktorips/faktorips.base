@@ -366,6 +366,13 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 		}
 
 		/**
+         * {@inheritDoc}
+		 */
+		public String getDefaultValue() {
+            return null;
+        }
+
+        /**
 		 * {@inheritDoc}
 		 */
 		public String getQualifiedName() {

@@ -68,9 +68,16 @@ public class Void extends AbstractDatatype implements ValueDatatype {
 	public String getJavaClassName() {
 		return "void";
 	}
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        throw new UnsupportedOperationException("Can't get a default value for Datatype void.");
+    }
+    
 	public Object getValue(String value) {
-		return null;
+        throw new UnsupportedOperationException("Can't get a value for Datatype void.");
 	}
 
 	public String valueToXmlString(Object value) {
@@ -82,18 +89,6 @@ public class Void extends AbstractDatatype implements ValueDatatype {
      */
     public String valueToString(Object value) {
         return "void";
-    }
-
-    /** 
-     * {@inheritDoc}
-     */
-    public Object[] getValues(String[] values) {
-        Void [] elements = new Void[values.length];
-        for (int i = 0; i < elements.length; i++) {
-            elements[i]= (Void)getValue(values[i]);
-            
-        }
-        return elements;
     }
 
     /** 

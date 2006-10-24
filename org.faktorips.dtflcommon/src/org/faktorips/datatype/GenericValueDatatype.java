@@ -61,6 +61,13 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        return null;
+    }
+
+    /**
      * Returns the class represented by this datatype. If the class can't be found, 
      * <code>null</code> is returned. In this case the <code>validate()</code> method
      * returns a message list containing an error message.

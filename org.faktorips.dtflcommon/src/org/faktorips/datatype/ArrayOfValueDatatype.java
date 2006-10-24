@@ -107,9 +107,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     }
     
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#getName()
+     * {@inheritDoc}
      */
     public String getName() {
         StringBuffer buffer = new StringBuffer(datatype.getName());
@@ -120,9 +118,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#getQualifiedName()
+     * {@inheritDoc}
      */
     public String getQualifiedName() {
         StringBuffer buffer = new StringBuffer(datatype.getQualifiedName());
@@ -133,27 +129,29 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#isPrimitive()
+     * {@inheritDoc}
      */
     public boolean isPrimitive() {
         return false;
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#isValueDatatype()
+     * {@inheritDoc}
+     */
+    public String getDefaultValue() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public boolean isValueDatatype() {
         return true;
     }
 
     /**
-     * Overridden Method.
-     *
-     * @see org.faktorips.datatype.Datatype#getJavaClassName()
+     * {@inheritDoc}
      */
     public String getJavaClassName() {
         StringBuffer buffer = new StringBuffer(datatype.getJavaClassName());
@@ -218,6 +216,9 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("The datatype " + datatype.getQualifiedName() + " does not support comparison for values.");
@@ -226,6 +227,9 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return ((ValueDatatype)datatype).compare(valueA, valueB);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean areValuesEqual(String valueA, String valueB) {
         if (datatype.isValueDatatype()) {
             return ((ValueDatatype)datatype).areValuesEqual(valueA, valueB);
