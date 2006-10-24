@@ -153,6 +153,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 */
 	public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
 		model = null;
+        System.out.println("afterBuildProcess in Builder "+this.getName()+"; modell=null ");
 	}
 
 	/**
