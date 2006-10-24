@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
@@ -59,6 +60,7 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.TocEntryGeneration;
 import org.faktorips.runtime.internal.TocEntryObject;
+import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -83,6 +85,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     private TableImplBuilder tableImplClassBuilder;
     private TestCaseTypeClassBuilder testCaseTypeClassBuilder;
     private TestCaseBuilder testCaseBuilder;
+    private FormulaTestBuilder formulaTestBuilder;
     
     public TocFileBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet);
@@ -112,6 +115,11 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         this.testCaseBuilder = testCaseBuilder;
     }
 
+
+    public void setFormulaTestBuilder(FormulaTestBuilder formulaTestBuilder) {
+        this.formulaTestBuilder = formulaTestBuilder;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -285,6 +293,21 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             TocEntryObject entry;
             object = ipsSrcFile.getIpsObject();
             if (object.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+                // add entry for formula test, the formula test depends on the product cmpt 
+                // source file, thus it will be implicit created or deleted here
+                entry = createFormulaTestTocEntry((IProductCmpt)object);
+                if (entry != null){
+                    // a new formula toc entry was created
+                    getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
+                } else {
+                    // no entry for formula tests created,
+                    // delete previous created toc entries for formula tests,
+                    // this is the case e.g. if the type of the config element changed to a
+                    // non formula type
+                    removeFormulaTestEntry(ipsSrcFile);
+                }
+                
+                // add entry for product cmpt
                 entry = createTocEntry((IProductCmpt)object);
             } else if (object.getIpsObjectType().equals(IpsObjectType.TABLE_CONTENTS)) {
                 entry = createTocEntry((ITableContents)object);
@@ -337,6 +360,57 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         return entry;
     }
 
+    /**
+     * Creates a toc entry for the given formula test.
+     */
+    private TocEntryObject createFormulaTestTocEntry(IProductCmpt productCmpt) throws CoreException {
+        if (!productCmpt.containsFormulaTest()){
+            // only build toc entry if at least one formula is specified
+            return null;
+        }
+        IPolicyCmptType pcType = productCmpt.findPolicyCmptType();
+        if (pcType == null) {
+            return null;
+        }
+        
+        String xmlResourceName = formulaTestBuilder.getXmlResourcePath(productCmpt);
+        String qualifiedName = formulaTestBuilder.getFormulaTestQualifiedName(productCmpt);
+
+        // generate the object id, the objectId for this element will be the package root name concatenated with the qualified name 
+        String packageRootName = productCmpt.getIpsSrcFile().getIpsObject().getIpsPackageFragment().getRoot().getName();
+        String objectId = packageRootName + "." + productCmpt.getQualifiedName();
+        objectId = objectId.replace('.', '/') + "." + IpsObjectType.PRODUCT_CMPT.getFileExtension();
+        
+        TocEntryObject entry = TocEntryObject.createFormulaTestTocEntry(
+                objectId, 
+                qualifiedName,
+                productCmpt.findProductCmptKind().getRuntimeId(),
+                productCmpt.getVersionId(),
+                xmlResourceName,
+                IpsFormulaTestCase.class.getName());
+        
+        IIpsObjectGeneration[] generations = productCmpt.getGenerations();
+        TocEntryGeneration[] genEntries = new TocEntryGeneration[generations.length];
+        for (int i = 0; i < generations.length; i++) {
+            DateTime validFrom = DateTime.createDateOnly(generations[i].getValidFrom());
+            genEntries[i] = new TocEntryGeneration(entry, validFrom, IpsFormulaTestCase.class.getName(), xmlResourceName); 
+        }
+        entry.setGenerationEntries(genEntries);
+        return entry;
+    }
+    
+    /*
+     * Removes the toc file and deletes the runtime content of the formula test.
+     * Do nothing if the given scr file doesn't contains a formula test case.
+     */
+    private void removeFormulaTestEntry(IIpsSrcFile ipsSrcFile) throws CoreException {
+        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+        if (getToc(ipsSrcFile).getTestCaseTocEntryByQName(ipsObject.getQualifiedName()) != null){
+            getToc(ipsSrcFile).removeEntry(ipsObject.getQualifiedName());
+            formulaTestBuilder.delete(ipsSrcFile);
+        }
+    }
+    
     public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {
         ITableStructure tableStructure = tableContents.findTableStructure();
         if (tableStructure == null) {
@@ -372,7 +446,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             xmlResourceName, testCaseTypeName);
         return entry;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -380,5 +454,4 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         MutableClRuntimeRepositoryToc toc = getToc(ipsSrcFile.getIpsPackageFragment().getRoot());
         toc.removeEntry(ipsSrcFile.getQualifiedNameType().getName());
     }
-    
 }

@@ -236,4 +236,8 @@ public class Messages extends NLS {
 
     public static String FormulaTestCaseControl_Button_New;
 
+    public static String FormulaTestInputValuesControl_Error_ExecutingFormula;
+
+    public static String FormulaTestCaseControl_ToolTip_BtnUpdate;
+
 }

@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,9 +45,19 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.core.model.ISourceLocator;
+import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
+import org.eclipse.debug.core.sourcelookup.ISourceContainer;
+import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
+import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
@@ -148,16 +159,18 @@ public class IpsTestRunner implements IIpsTestRunner {
     public IIpsProject getIpsProject(){
     	 return ipsProject;
     }
-    
+
     /**
-     * Run the given ips test in a new VM.
-     * 
-     * @param classpathRepository The name of the repository in the classpath which contains 
-     *                            the to be tested testsuite.
-     * @param testsuite The name of the testsuite which will be executed.
-     * @throws CoreException If an error occured.
+     * {@inheritDoc}
      */
     public void run(String classpathRepositories, String testsuites) throws CoreException {
+        run(classpathRepositories, testsuites, ILaunchManager.RUN_MODE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void run(String classpathRepositories, String testsuites, String mode) throws CoreException {
     	this.classpathRepositories= classpathRepositories;
     	this.testsuites = testsuites;
     	
@@ -172,7 +185,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         
         if (vmInstall == null)
             return;
-        IVMRunner vmRunner = vmInstall.getVMRunner(ILaunchManager.RUN_MODE);
+        IVMRunner vmRunner = vmInstall.getVMRunner(mode);
         if (vmRunner == null)
             return;
 
@@ -205,13 +218,80 @@ public class IpsTestRunner implements IIpsTestRunner {
             vmConfig.setVMArguments(new String[]{testRunnerMaxHeapSize});
         } 
         
-        launch= new Launch(null, ILaunchManager.RUN_MODE, null);
+        ILaunchConfiguration launchConfiguration = null;
+        if (mode != ILaunchManager.RUN_MODE){
+            launchConfiguration = createConfiguration();
+        }
+        
+        launch= new Launch(launchConfiguration, mode, null);
+        if (launchConfiguration != null){
+            setDefaultSourceLocator(launch, launchConfiguration);
+        }
         testStartTime = System.currentTimeMillis();
         vmRunner.run(vmConfig, launch, null);
         DebugPlugin.getDefault().getLaunchManager().addLaunch(launch);
         connect();
     }
 
+    /*
+     * Creates a dummy non persistent lauch configuration
+     */
+    private ILaunchConfiguration createConfiguration() throws CoreException {
+        ILaunchConfigurationType configType = getWorkbenchLaunchConfigType();
+        ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, "IpsTestRunner");  //$NON-NLS-1$
+        return wc;
+    }
+    
+    /*
+     * Returns the config type of the lauch configuration
+     */
+    private ILaunchConfigurationType getWorkbenchLaunchConfigType() {
+        ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
+        return lm.getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);  
+    }   
+
+    /*
+     * Sets the default source locator.
+     * The source container will evaluated as follows:
+     * a) all source container from the given project
+     * b) all source container from the workspace
+     * c) all sources attached to the libraries in the classpath
+     */
+    private void setDefaultSourceLocator(ILaunch launch, ILaunchConfiguration configuration) throws CoreException {
+        // set default source locator if none specified
+        if (launch.getSourceLocator() == null) {
+            
+            ISourceLocator locator = getLaunchManager().newSourceLocator(configuration.getType().getSourceLocatorId());
+            AbstractSourceLookupDirector sld = (AbstractSourceLookupDirector)locator;
+            sld.initializeDefaults(configuration); 
+            
+            // get source container from the project
+            ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject(), true);
+            List sourceContainer = new ArrayList(Arrays.asList(sc.getSourceContainers()));
+            
+            // get source container from the workspace
+            sc = new WorkspaceSourceContainer();
+            sourceContainer.addAll(Arrays.asList(sc.getSourceContainers()));
+
+            // get source container from the classpath
+            List classpaths = new ArrayList();
+            classpaths.addAll(Arrays.asList(JavaRuntime.computeUnresolvedRuntimeClasspath(ipsProject.getJavaProject())));
+            IRuntimeClasspathEntry[] entries = new IRuntimeClasspathEntry[classpaths.size()];
+            classpaths.toArray(entries);
+            IRuntimeClasspathEntry[] resolved = JavaRuntime.resolveSourceLookupPath(entries, configuration);
+            ISourceContainer[] sourceContainers = JavaRuntime.getSourceContainers(resolved);
+            
+            sourceContainer.addAll(Arrays.asList(sourceContainers));
+            sld.setSourceContainers((ISourceContainer[]) sourceContainer.toArray(new ISourceContainer[sourceContainer.size()]));
+            
+            launch.setSourceLocator(locator);
+        }
+    }
+    
+    private ILaunchManager getLaunchManager() {
+        return DebugPlugin.getDefault().getLaunchManager();
+    }
+    
     /**
      * Returns the max heap size for the test runner, should be passed as program argument
      * "-ipstestrunner.xmx <size>" (e.g. "-ipstestrunner.xmx 512M")
@@ -230,7 +310,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /*
      * Ask for saving dirty editors, and wait for builders.
      */
-    private boolean checkPrelauchConditions(final String classpathRepository, final String testsuite) {
+    private boolean checkPrelauchConditions(final String classpathRepository, final String testsuite, final String mode) {
         try {
             // ask for saving dirty editors
             if (!saveAllEditors(true))
@@ -276,7 +356,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
                         if (!monitor.isCanceled()) {
                             try {
-                                startTestRunnerJob(classpathRepository, testsuite, true);
+                                startTestRunnerJob(classpathRepository, testsuite, true, mode);
                             } catch (CoreException e) {
                                 IpsPlugin.log(e);
                             }                    
@@ -635,15 +715,22 @@ public class IpsTestRunner implements IIpsTestRunner {
      * {@inheritDoc}
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testsuite) throws CoreException{
-        startTestRunnerJob(classpathRepository, testsuite, false);
+        startTestRunnerJob(classpathRepository, testsuite, false, null);
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public void startTestRunnerJob(String classpathRepository, String testsuite, String mode) throws CoreException{
+        startTestRunnerJob(classpathRepository, testsuite, false, mode);
+    }
     
     /**
      * Starts the test runner.
      */
-    private void startTestRunnerJob(String classpathRepository, String testsuite, boolean force) throws CoreException{
+    private void startTestRunnerJob(String classpathRepository, String testsuite, boolean force, String mode) throws CoreException{
         // check for dirty editors and wait for builders
-        if (!force && !checkPrelauchConditions(classpathRepository, testsuite))
+        if (!force && !checkPrelauchConditions(classpathRepository, testsuite, mode))
             return;
         
         // first check the heap size, to display an error if there is a wrong value,
@@ -653,7 +740,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             throw new CoreException(new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize, testRunnerMaxHeapSize)));
         }
         
-        job = new TestRunnerJob(this, classpathRepository, testsuite);
+        job = new TestRunnerJob(this, classpathRepository, testsuite, mode);
 
         job.addJobChangeListener(new JobChangeAdapter() {
             public void done(IJobChangeEvent event) {
@@ -673,12 +760,14 @@ public class IpsTestRunner implements IIpsTestRunner {
 		private IIpsTestRunner testRunner;
 		private String classpathRepository;
 		private String testsuite;
-
-        public TestRunnerJob(IIpsTestRunner testRunner, String classpathRepository, String testsuite) {
+		private String mode;
+        
+        public TestRunnerJob(IIpsTestRunner testRunner, String classpathRepository, String testsuite, String mode) {
 			super(Messages.IpsTestRunner_Job_Name);
 			this.testRunner = testRunner;
 			this.classpathRepository = classpathRepository;
 			this.testsuite = testsuite;
+            this.mode = mode;
 		}
 		
 		public IStatus runInWorkspace(IProgressMonitor monitor) {
@@ -686,7 +775,11 @@ public class IpsTestRunner implements IIpsTestRunner {
                 testRunnerMonitor = monitor;
                 
                 if (!monitor.isCanceled()) {
-                    testRunner.run(classpathRepository, testsuite);
+                    if (mode != null){
+                        testRunner.run(classpathRepository, testsuite, mode);
+                    } else {
+                        testRunner.run(classpathRepository, testsuite);
+                    }
                 }
 			} catch (CoreException e) {
 				IpsPlugin.log(e);

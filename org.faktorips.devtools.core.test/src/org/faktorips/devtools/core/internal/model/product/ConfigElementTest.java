@@ -438,6 +438,18 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(configElement.getFormulaTestCase(formulaTest1.getName()));
     }
     
+    public void testContainsFormulaTest() throws Exception {
+        configElement.setType(ConfigElementType.FORMULA);
+        assertFalse(configElement.getProductCmpt().containsFormulaTest());
+        
+        IFormulaTestCase formulaTest1 = configElement.newFormulaTestCase();
+        formulaTest1.setName("formulaTest1");
+        assertTrue(configElement.getProductCmpt().containsFormulaTest());
+        
+        formulaTest1.delete();
+        assertFalse(configElement.getProductCmpt().containsFormulaTest());
+    }
+    
     public void testGetIdentifierUsedInFormula() throws CoreException {
         IPolicyCmptType pcTypeInput = newPolicyCmptType(project, "policyCmptTypeInput");
         IAttribute attributeInput = pcTypeInput.newAttribute();

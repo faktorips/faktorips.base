@@ -39,7 +39,20 @@ public interface IIpsTestRunner {
      * @throws CoreException if an error occured.
      */
 	public void run(String classpathRepository, String testsuite) throws CoreException;
-	
+
+    /**
+     * Run the given ips test in the given mode.
+     * 
+     * @param classpathRepository the name of the repository in the classpath which contains 
+     *                            the to be tested testsuite.
+     * @param testsuite the name of the testsuite which will be executed.
+     * 
+     * @param mode The mode to run the test with (run, debug) @see ILaunchManager#DEBUG_MODE/RUN_MODE
+     * 
+     * @throws CoreException if an error occured.
+     */
+    public void run(String classpathRepository, String testsuite, String mode) throws CoreException;
+    
     /**
      * Terminates the currently lauched test run process.
      * 
@@ -81,4 +94,15 @@ public interface IIpsTestRunner {
 	 * @throws CoreException if an error occured.
 	 */
 	public void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
+
+    /**
+     * Starts a new job for running tests.
+     * 
+     * @param classpathRepository the repository where the test are selected from
+     * @param testPackage the package including the tests
+     * @param mode The mode to run the test whith @see org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
+     * 
+     * @throws CoreException if an error occured.
+     */
+    public void startTestRunnerJob(String classpathRepository, String testPackage, String mode) throws CoreException;
 }

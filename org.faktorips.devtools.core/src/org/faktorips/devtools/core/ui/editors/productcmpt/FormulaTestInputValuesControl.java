@@ -41,10 +41,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -78,7 +78,7 @@ public class FormulaTestInputValuesControl extends Composite {
     private TableViewer formulaInputTableViewer;;
     
     /* Label to display the result of the formula */
-    private Label formulaResult;
+    private Text formulaResult;
 
     private Button btnNewFormulaTestCase;
     
@@ -253,6 +253,7 @@ public class FormulaTestInputValuesControl extends Composite {
      */
     public void storeFormulaTestCase(IFormulaTestCase formulaTestCase) {
         this.formulaTestCase = formulaTestCase;
+        formulaResult.setText(""); //$NON-NLS-1$
         repackAndResfreshParamInputTable();
     }
 
@@ -304,10 +305,10 @@ public class FormulaTestInputValuesControl extends Composite {
         btnClearInputValues.setEnabled(!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase);
             
         // create the label to display the formula result
-        formulaResult = uiToolkit.createLabel(formulaTestArea, ""); //$NON-NLS-1$
+        formulaResult = uiToolkit.createText(formulaTestArea); //$NON-NLS-1$
+        formulaResult.setEditable(false);
         formulaResult.setFont(JFaceResources.getBannerFont());
         calculateFormulaIfValid();
-        
     }
     
     /*
@@ -392,6 +393,7 @@ public class FormulaTestInputValuesControl extends Composite {
                     if (keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_UP){
                         selIdx = selIdx + (keyCode == SWT.ARROW_DOWN?1:-1);
                         Object nextObject = formulaInputTableViewer.getElementAt(selIdx);
+                        e.doit= false;
                         postEditFormulaTestInputValue((IFormulaTestInputValue)nextObject);
                     }
                 }
@@ -467,21 +469,24 @@ public class FormulaTestInputValuesControl extends Composite {
                 return;
             }
             
+            formulaResult.setText(""); //$NON-NLS-1$
+
             ml = formulaTestCase.validate();
-            if (formulaTestCase == null || ml.getNoOfMessages() > 0) {
-                formulaResult.setText(""); //$NON-NLS-1$
+            // don't calculate preview if there are messages, e.g. warnings because of missing values
+            if (ml.getNoOfMessages() > 0) {
                 return;
             }
             Object result = formulaTestCase.execute();
             lastCalculatedResult = result;
             formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Label_Result, result));
             if (storeExpectedResult){
-                formulaTestCase.setExpectedResult(result.toString());
+                formulaTestCase.setExpectedResult(result==null?null:result.toString());
             }
         } catch (ParseException e){
+            formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Label_Result, ""+null)); //$NON-NLS-1$
             formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula, e.getLocalizedMessage()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Label_Result, Messages.FormulaTestInputValuesControl_Error_ExecutingFormula));
         }
     }
     

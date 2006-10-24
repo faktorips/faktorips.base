@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.stdbuilder.formulatest.FormulaTestBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.BasePolicyCmptTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
@@ -191,7 +192,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         
         // test case builder
         TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
-        
+
+        // formula test builder
+        FormulaTestBuilder formulaTestBuilder = new FormulaTestBuilder(this);
+
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
         
@@ -236,7 +240,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setTableImplBuilder(tableImplBuilder);
         tocFileBuilder.setTestCaseTypeClassBuilder(testCaseTypeClassBuilder);
         tocFileBuilder.setTestCaseBuilder(testCaseBuilder);
-
+        tocFileBuilder.setFormulaTestBuilder(formulaTestBuilder);
+        
         builders = new IIpsArtefactBuilder[] { 
                 tableImplBuilder, 
                 tableRowBuilder,
@@ -251,6 +256,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 productCmptContentCopyBuilder,
                 testCaseTypeClassBuilder,
                 testCaseBuilder,
+                formulaTestBuilder,
                 tocFileBuilder };
     }
     

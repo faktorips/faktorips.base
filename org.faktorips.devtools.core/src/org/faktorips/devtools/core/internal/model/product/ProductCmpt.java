@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
@@ -187,6 +188,24 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         return false;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean containsFormulaTest() {
+        IIpsObjectGeneration[] generations = getGenerations();
+        for (int i=0; i<generations.length; i++) {
+            if (((ProductCmptGeneration)generations[i]).containsFormula()) {
+                IConfigElement[] cfs = ((ProductCmptGeneration)generations[i]).getConfigElements();
+                for (int j = 0; j < cfs.length; j++) {
+                    if (cfs[j].getFormulaTestCases().length > 0){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }    
 
     /**
      * Overridden.

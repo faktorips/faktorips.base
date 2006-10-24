@@ -107,4 +107,6 @@ public class Messages extends NLS {
     public static String ExpandCollapseAllAction_Expand_Description;
     public static String ExpandCollapseAllAction_Collapse_Description;
     public static String TreeViewerRefreshAction_TooltipText;
+    public static String IpsTestAction_RunMessageDialogNoTestsFound_Title;
+    public static String IpsTestAction_RunMessageDialogNoTestsFound_Text;
 }

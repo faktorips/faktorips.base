@@ -31,7 +31,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.core,
  org.eclipse.ui.views,
  org.eclipse.compare,
- org.eclipse.team.cvs.core
+ org.eclipse.team.cvs.core,
+ org.eclipse.debug.ui
 Eclipse-AutoStart: true
 Export-Package: org.apache.poi.ddf,
  org.apache.poi.dev,

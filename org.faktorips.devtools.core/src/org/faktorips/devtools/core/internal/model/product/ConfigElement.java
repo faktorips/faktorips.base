@@ -211,7 +211,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 		compiler.setIdentifierResolver(resolver);
 		return compiler;
 	}
-
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -600,6 +600,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             }
         }
         
-        return (String[]) cleanedResult.toArray(new String[0]);
+        return (String[]) cleanedResult.toArray(new String[cleanedResult.size()]);
     }
 }

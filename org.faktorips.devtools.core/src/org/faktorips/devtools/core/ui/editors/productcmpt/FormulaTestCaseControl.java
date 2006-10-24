@@ -489,6 +489,8 @@ public class FormulaTestCaseControl extends Composite {
             public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
+        btnUpdateFormulaTestCase
+                .setToolTipText(Messages.FormulaTestCaseControl_ToolTip_BtnUpdate);
         
         // create the formula test detail table, to display and editing the formula test input values
         compositeUiController = new CompositeUIController();
@@ -496,7 +498,8 @@ public class FormulaTestCaseControl extends Composite {
         compositeUiController.add(createDummyUIController(null));        
         
         Group formulaTestInputGroup = uiToolkit.createGroup(this, Messages.FormulaTestCaseControl_GroupLabel_TestInput);
-        formulaTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestInputGroup, uiToolkit, compositeUiController);
+        formulaTestInputValuesControl = new FormulaTestInputValuesControl(formulaTestInputGroup, uiToolkit,
+                compositeUiController);
         formulaTestInputValuesControl.setCanCalulateResult(true);
         formulaTestInputValuesControl.setCanStoreExpectedResult(false);
         formulaTestInputValuesControl.setCanStoreFormulaTestCaseAsNewFormulaTestCase(false);
@@ -560,7 +563,8 @@ public class FormulaTestCaseControl extends Composite {
             if (selElement.addOrDeleteFormulaTestInputValues(configElem.getIdentifierUsedInFormula())) {
                 // there were changes, thus trigger that the input value table will be refreshed
                 selectionFormulaTestCaseChanged(selElement);
-                MessageDialog.openInformation(getShell(), Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_Title,
+                MessageDialog.openInformation(getShell(),
+                        Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_Title,
                         messageForChangeInfoDialog);
             }
             MessageList mlConfigElement = configElem.validate();
@@ -617,9 +621,12 @@ public class FormulaTestCaseControl extends Composite {
             delParams += delParams.length() > 0 ? ", " : ""; //$NON-NLS-1$ //$NON-NLS-2$
             delParams += iter.next();
         }
-        String messageNewParameter = NLS.bind(Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_NewValueParams, newParams);
-        String messageDelParameter = NLS.bind(Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_DeletedValueParams, delParams);
-        String messageForChangeInfoDialog = Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_TextTop + (idsInFormula.size() > 0 ? messageNewParameter : "") //$NON-NLS-2$ //$NON-NLS-1$
+        String messageNewParameter = NLS.bind(
+                Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_NewValueParams, newParams);
+        String messageDelParameter = NLS.bind(
+                Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_DeletedValueParams, delParams);
+        String messageForChangeInfoDialog = Messages.FormulaTestCaseControl_InformationDialogUpdateInputValues_TextTop
+                + (idsInFormula.size() > 0 ? messageNewParameter : "") //$NON-NLS-1$
                 + (idsInFormula.size() > 0 && idsInTestCase.size() > 0 ? "\n" : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + (idsInTestCase.size() > 0 ? messageDelParameter : ""); //$NON-NLS-1$
         return messageForChangeInfoDialog;
@@ -699,8 +706,9 @@ public class FormulaTestCaseControl extends Composite {
      */
     private IFormulaTestCase getSelectedFormulaTestCase(){
         ISelection selection = formulaTestCaseTableViewer.getSelection();
-        if (selection instanceof IStructuredSelection){
-            IFormulaTestCase selectedFromulaTestCase = (IFormulaTestCase) ((IStructuredSelection)selection).getFirstElement();
+        if (selection instanceof IStructuredSelection) {
+            IFormulaTestCase selectedFromulaTestCase = (IFormulaTestCase)((IStructuredSelection)selection)
+                    .getFirstElement();
             return selectedFromulaTestCase;
         }
         return null;
@@ -817,19 +825,21 @@ public class FormulaTestCaseControl extends Composite {
                 if (element != null) {
                     MessageList ml = validateElement(element);
                     IFormulaTestCase ftc = (IFormulaTestCase)element;
-                    if (getFormulaTestCaseTestStatus(ftc) == TEST_FAILURE){
+                    if (getFormulaTestCaseTestStatus(ftc) == TEST_FAILURE) {
                         Object actualResult = getActualResult(ftc);
-                        String actualResultStr = actualResult==null? "":actualResult.toString(); //$NON-NLS-1$
-                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, ftc.getExpectedResult(), actualResultStr);
+                        String actualResultStr = actualResult == null ? "" : actualResult.toString(); //$NON-NLS-1$
+                        String text = NLS.bind(Messages.FormulaTestCaseControl_TestFailureMessage_ExpectedButWas, ftc
+                                .getExpectedResult(), actualResultStr);
                         Message msg = new Message("NONE", text, Message.INFO, this, PROPERTY_ACTUAL_RESULT); //$NON-NLS-1$
                         ml.add(msg);
-                    } else if (getFormulaTestCaseTestStatus(ftc) == TEST_ERROR){
+                    } else if (getFormulaTestCaseTestStatus(ftc) == TEST_ERROR) {
                         String message = getMessage(ftc);
-                        if (StringUtils.isNotEmpty(message) && StringUtils.isNotEmpty(ftc.getExpectedResult())){
-                            // the expected result is not empty, but there is an error (message), display the error
+                        if (StringUtils.isNotEmpty(message) && StringUtils.isNotEmpty(ftc.getExpectedResult())) {
+                            // the expected result is not empty, but there is an error (message),
+                            // display the error
                             Message msg = new Message("NONE", message, Message.INFO, this, PROPERTY_ACTUAL_RESULT); //$NON-NLS-1$
                             ml.add(msg);
-                        } else if (StringUtils.isEmpty(ftc.getExpectedResult())){
+                        } else if (StringUtils.isEmpty(ftc.getExpectedResult())) {
                             String text = Messages.FormulaTestCaseControl_TestError_NoExpectedResultGiven;
                             Message msg = new Message("NONE", text, Message.INFO, this, PROPERTY_ACTUAL_RESULT); //$NON-NLS-1$
                             ml.add(msg);
@@ -852,7 +862,6 @@ public class FormulaTestCaseControl extends Composite {
         } finally {
             getShell().setRedraw(true);
         }
-        formulaTestInputValuesControl.calculateFormulaIfValid();
 
         if (selectedFormulaTestCase == null || viewOnly){
             btnDeleteFormulaTestCase.setEnabled(false);

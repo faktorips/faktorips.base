@@ -285,16 +285,11 @@ public class FormulaEditDialog extends IpsPartEditDialog {
                 formulaTestCase = configElement.newFormulaTestCase();
                 formulaTestCase.setName(UI_FORMULA_TEST_CASE_NAME);
             }
-            if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers)){
+            if (formulaTestCase.addOrDeleteFormulaTestInputValues(parameterIdentifiers) || formulaTestCase.getFormulaTestInputValues().length == 0){
                 // only if the parameter have changes repack the table of input values
                 formulaDummyTestInputValuesControl.storeFormulaTestCase(formulaTestCase);
             }
-            
-            try {
-                formulaDummyTestInputValuesControl.calculateFormulaIfValid();
-            } catch (Throwable t) {
-                setMessage(t.getLocalizedMessage(), IMessageProvider.ERROR);
-            }
+            formulaDummyTestInputValuesControl.calculateFormulaIfValid();
         } catch (Exception ex) {
             IpsPlugin.logAndShowErrorDialog(ex);
         }

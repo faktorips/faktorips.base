@@ -23,18 +23,26 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
@@ -46,6 +54,9 @@ import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
  */
 public class IpsTestAction extends IpsAction {
 	private static final String SEPARATOR = "#|#"; //$NON-NLS-1$
+    
+    private String mode;
+    
 	/**
 	 * @param selectionProvider
 	 */
@@ -57,6 +68,65 @@ public class IpsTestAction extends IpsAction {
         super.setImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
 	}
 
+    public IpsTestAction(ISelectionProvider selectionProvider, String mode){
+        super(selectionProvider);
+        this.mode = mode;
+    }
+    
+    /*
+     * Adds all test path elements depending on the given object
+     */
+    private IIpsPackageFragmentRoot addPathElementFromObject(List pathElements, Object object) throws CoreException{
+        IIpsPackageFragmentRoot root = null;
+        if (object instanceof IIpsPackageFragmentRoot) {
+            root = (IIpsPackageFragmentRoot) object;
+            if (root.exists()){
+                IIpsProject project = root.getIpsProject();
+                String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);
+                if (tocFilePackage != null){
+                    pathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + ""); //$NON-NLS-1$
+                }
+            } else {
+                root = null;
+            }
+        } else if (object instanceof IIpsPackageFragment) {
+            IIpsPackageFragment child = (IIpsPackageFragment) object;
+            root = (IIpsPackageFragmentRoot) child.getRoot();
+            IIpsProject project = root.getIpsProject();
+            pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root)+ SEPARATOR + child.getName());
+        } else if (object instanceof ITestCase) {
+            ITestCase testCase = (ITestCase) object;
+            root = testCase.getIpsPackageFragment().getRoot();
+            IIpsProject project = root.getIpsProject();
+            pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + testCase.getQualifiedName());
+        } else if (object instanceof IIpsProject) {
+            root = ipsProjectSelected((IIpsProject) object, pathElements);
+        } else if (object instanceof IJavaProject) {
+            // e.g. if selected from the standard package explorer
+            IJavaProject javaProject = (IJavaProject) object;
+            IProject project = javaProject.getProject();
+            if (project.hasNature(IIpsProject.NATURE_ID)){
+                IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
+                root = ipsProjectSelected(ipsProject, pathElements);
+            }
+        } else if (object instanceof IProductCmpt){
+            IProductCmpt productCmpt = (IProductCmpt) object;
+            root = productCmpt.getIpsPackageFragment().getRoot();
+            IIpsProject project = root.getIpsProject();
+            pathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + productCmpt.getQualifiedName());
+        } else if (object instanceof IJavaElement) {
+            IIpsElement ipsElem = IpsPlugin.getDefault().getIpsModel().getIpsElement(((IJavaElement)object).getResource());
+            root = addPathElementFromObject(pathElements, ipsElem);
+        } else if (object instanceof IResource){
+            IIpsElement ipsElem = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)object);
+            root = addPathElementFromObject(pathElements, ipsElem);
+        } else if (object instanceof IIpsSrcFile){
+            IIpsObject ipsObject = ((IIpsSrcFile)object).getIpsObject();
+            root = addPathElementFromObject(pathElements, ipsObject);
+        }
+        return root;
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -64,50 +134,38 @@ public class IpsTestAction extends IpsAction {
 		try {
 			List selectedElements = selection.toList();
 			List selectedPathElements = new ArrayList(1);
+            
             // Contains the root of the selected element, only one root is necessary to
             // obtain the java project for the test runner, if more elements selected
             // the root of the last selected entry will be used
 			IIpsPackageFragmentRoot root = null;
 
+            // evaluate the test path depending on the selection to run the test
 			for (Iterator iter = selectedElements.iterator(); iter.hasNext();) {
 				Object element = iter.next();
-				if (element instanceof IIpsPackageFragmentRoot) {
-					root = (IIpsPackageFragmentRoot) element;
-					IIpsProject project = root.getIpsProject();
-                    String tocFilePackage = getRepPckNameFromPckFrgmtRoot(root);
-                    if (tocFilePackage != null)
-                        selectedPathElements.add(project.getName() + SEPARATOR + tocFilePackage + SEPARATOR + ""); //$NON-NLS-1$
-				} else if (element instanceof IIpsPackageFragment) {
-					IIpsPackageFragment child = (IIpsPackageFragment) element;
-					root = (IIpsPackageFragmentRoot) child.getRoot();
-					IIpsProject project = root.getIpsProject();
-					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root)+ SEPARATOR + child.getName());
-				} else if (element instanceof ITestCase) {
-					ITestCase testCase = (ITestCase) element;
-					root = testCase.getIpsPackageFragment().getRoot();
-					IIpsProject project = root.getIpsProject();
-					selectedPathElements.add(project.getName() + SEPARATOR + getRepPckNameFromPckFrgmtRoot(root) + SEPARATOR + testCase.getQualifiedName());
-				} else if (element instanceof IIpsProject) {
-					root = ipsProjectSelected((IIpsProject) element, selectedPathElements);
-				} else if (element instanceof IJavaProject) {
-					// e.g. if selected from the standard package explorer
-					IJavaProject javaProject = (IJavaProject) element;
-					IProject project = javaProject.getProject();
-					if (project.hasNature(IIpsProject.NATURE_ID)){
-						IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
-						root = ipsProjectSelected(ipsProject, selectedPathElements);
-					}
-				}
-			}
-			
-			if (root!=null){
-				selectedPathElements = removeDuplicatEntries(selectedPathElements);
-                if (assertSelectedElemsInSameProject(selectedPathElements)) {
-                    // get the ips project from the first root, currently it is not possible
-                    // to select more than one root from different projects (means different java projects)
-                    runTest(selectedPathElements, root.getIpsProject());
+                if (element instanceof StructuredSelection){
+                    for (Iterator iterator = ((StructuredSelection)element).iterator(); iterator.hasNext();) {
+                        Object selStructObj = (Object)iterator.next();
+                        root = addPathElementFromObject(selectedPathElements, selStructObj);
+                    }
+                } else {
+                    root = addPathElementFromObject(selectedPathElements, element);
                 }
 			}
+
+            if (root == null || selectedPathElements.size() == 0) {
+                MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
+                        Messages.IpsTestAction_RunMessageDialogNoTestsFound_Title,
+                        Messages.IpsTestAction_RunMessageDialogNoTestsFound_Text);
+            } else if (root != null) {
+                selectedPathElements = removeDuplicatEntries(selectedPathElements);
+                if (assertSelectedElemsInSameProject(selectedPathElements)) {
+                    // get the ips project from the first root, currently it is not possible
+                    // to select more than one root from different projects (means different java
+                    // projects)
+                    runTest(selectedPathElements, root.getIpsProject());
+                }
+            }
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 			return;
@@ -213,7 +271,7 @@ public class IpsTestAction extends IpsAction {
 			// run the test
 			IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
 			testRunner.setIpsProject(ipsProject);
-			testRunner.startTestRunnerJob(testRootsString, testPackagesString);
+			testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode);
 		}
 	}
     

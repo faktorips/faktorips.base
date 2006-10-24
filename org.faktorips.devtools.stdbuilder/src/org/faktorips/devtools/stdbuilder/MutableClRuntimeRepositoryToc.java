@@ -120,6 +120,19 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
             return true;
         }
         
+        if (entry.isFormulaTestTocEntry()) {
+            TocEntryObject currentEntry = (TocEntryObject)testCaseNameTocEntryMap.get(entry.getIpsObjectId());
+            if(entry.equals(currentEntry)){
+                return false;
+            }
+            // formula test a kind of test cases therefore the same entry map will be used
+            // the formula test will be stored with the qualified name as key, only so it could be
+            // removed if a product cmpt will be removed
+            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), entry);
+            ++modificationStamp;
+            return true;
+        }
+        
         throw new IllegalArgumentException("Unknown toc entry type " + entry);
 	}
 	
@@ -136,7 +149,9 @@ public class MutableClRuntimeRepositoryToc extends ReadonlyTableOfContents{
         if (removed != null) {
             pcIdTocEntryMap.remove(removed.getIpsObjectId());
             pcNameTocEntryMap.remove(removed.getIpsObjectQualifiedName());
-            
+            // remove formula test, based on product cmpt, the objectId of the product cmpt is the
+            // identifier for the test case object
+            testCaseNameTocEntryMap.remove(objectId);            
             ++modificationStamp;
             return true;
         }

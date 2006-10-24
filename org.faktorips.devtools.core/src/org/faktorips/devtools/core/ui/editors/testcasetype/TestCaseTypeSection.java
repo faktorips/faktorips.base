@@ -39,7 +39,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -482,7 +481,7 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
     /*
      * Label provider for the attribute table
      */
-    private class TestAttributeTblLabelProvider extends LabelProvider implements ITableLabelProvider{
+    private class TestAttributeTblLabelProvider extends DefaultLabelProvider implements ITableLabelProvider{
         public Image getColumnImage(Object element, int columnIndex) {
             Image defaultImage = null;
             try {
@@ -522,6 +521,14 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
                 ITestAttribute testAttribute = (ITestAttribute) element;
                 switch (columnIndex) {
                     case 0:
+                        try {
+                            IAttribute attr = testAttribute.findAttribute();
+                            if (attr != null){
+                                return super.getText(attr);
+                            }
+                        } catch (CoreException e) {
+                            // ignore exception diplay attributes name stored in test parameter
+                        }
                         return testAttribute.getAttribute();
                     case 1:
                         return testAttribute.getName();

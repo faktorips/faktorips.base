@@ -18,13 +18,13 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -32,7 +32,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeLabelProvider implements ILabelProvider {  
+public class TestCaseTypeLabelProvider extends DefaultLabelProvider {  
     /**
 	 * {@inheritDoc}
 	 */
@@ -74,13 +74,14 @@ public class TestCaseTypeLabelProvider implements ILabelProvider {
             ITestParameter testParam = (ITestParameter)element;
             return testParam.getName() + getTypeExtension(testParam.getTestParameterType());
         } else if (element instanceof ITestAttribute) {
+            String text = super.getText(element);
             ITestAttribute testAttribute = (ITestAttribute)element;
             String extension = ""; //$NON-NLS-1$
             if (StringUtils.isNotEmpty(testAttribute.getAttribute())
                     && !testAttribute.getAttribute().equals(testAttribute.getName())) {
                 extension = " : " + testAttribute.getAttribute(); //$NON-NLS-1$
             }
-            return StringUtils.capitalise(testAttribute.getName()) + extension
+            return text + extension
                     + getTypeExtension(testAttribute.getTestAttributeType());
         } else if (element instanceof TestCaseTypeTreeRootElement) {
             return ((TestCaseTypeTreeRootElement)element).getText();

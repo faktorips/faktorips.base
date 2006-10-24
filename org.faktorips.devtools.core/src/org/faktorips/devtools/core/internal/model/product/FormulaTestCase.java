@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.fl.DefaultIdentifierResolver;
+import org.faktorips.fl.ExcelFunctionsResolver;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.ExprEvaluator;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -157,17 +159,19 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
         return IpsPlugin.getDefault().getImage("Formula.gif"); //$NON-NLS-1$
     }
     
-    /**
-     * {@inheritDoc}
+    /*
+     * Returns the expression compiler used to compile the formula preview result.
      */
-    public Object execute() throws Exception {
-        // compile the formular and execute it with the stored values
-        String formula = ((IConfigElement) getParent()).getValue();
-        
+    private ExprCompiler getPreviewExprCompiler() throws CoreException {
         ExprCompiler compiler = new ExprCompiler();
-        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        
+        compiler.add(new ExcelFunctionsResolver(getIpsProject().getExpressionLanguageFunctionsLanguage()));
+        compiler.add(new TableFunctionsFormulaTestResolver(getIpsProject(), this));
+
         IFormulaTestInputValue[] input = getFormulaTestInputValues();
+        if (input.length == 0){
+            return compiler;
+        }
+        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         for (int i = 0; i < input.length; i++) {
             String storedValue = input[i].getValue();
             // get the datatype and the helper for generating the code fragment of the formula
@@ -181,9 +185,31 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             resolver.register(input[i].getIdentifier(), dataTypeHelper.newInstance(storedValue), datatype);
         }
         compiler.setIdentifierResolver(resolver);
+        
+        return compiler;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Object execute() throws Exception {
+        // compile the formular and execute it with the stored values
+        IConfigElement configElement = (IConfigElement) getParent();
+        String formula = configElement.getValue();
+        
+        ExprCompiler compiler = getPreviewExprCompiler();
         ExprEvaluator processor = new ExprEvaluator(compiler);
         
         return processor.evaluate(formula);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Object execute(JavaCodeFragment javaCodeFragment) throws Exception {
+        ExprCompiler compiler = new ExprCompiler();
+        ExprEvaluator processor = new ExprEvaluator(compiler);
+        return processor.evaluate(javaCodeFragment);
     }
     
     /**

@@ -151,7 +151,7 @@ public class FormulasSection extends IpsSection {
 			toolkit.createFormLabel(rootPane, StringUtils
 					.capitalise(elements[i].getName()));
 			FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit,
-					elements[i], this.getShell());
+					elements[i], this.getShell(), this);
 			ctrl.add(new TextField(evc.getTextControl()), elements[i],
 					ConfigElement.PROPERTY_VALUE);
 			addFocusControl(evc.getTextControl());

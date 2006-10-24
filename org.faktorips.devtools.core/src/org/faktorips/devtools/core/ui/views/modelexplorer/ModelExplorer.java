@@ -495,9 +495,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
 
         protected void createTestCaseAction(IMenuManager manager, Object selected) {
-            if (config.isAllowedIpsElementType(ITestCase.class)) {
+            if (config.isAllowedIpsElementType(ITestCase.class) || config.isAllowedIpsElementType(IProductCmpt.class)) {
                 if (selected instanceof IIpsPackageFragment || selected instanceof IIpsPackageFragmentRoot
-                        || selected instanceof IIpsProject || selected instanceof ITestCase) {
+                        || selected instanceof IIpsProject || selected instanceof ITestCase || selected instanceof IProductCmpt) {
                     manager.add(new IpsTestAction(treeViewer));
                 }
             }

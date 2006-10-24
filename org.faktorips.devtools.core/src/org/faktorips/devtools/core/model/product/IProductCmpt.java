@@ -117,6 +117,12 @@ public interface IProductCmpt extends ITimedIpsObject {
     public boolean containsFormula();
     
     /**
+     * Returns <code>true</code> if any of the generations contain at least one formula with at
+     * least one formula test case. Returns <code>false</code> otherwise.
+     */
+    public boolean containsFormulaTest();
+    
+    /**
      * Returns the product component structure representing the structure defined by relations. 
      * The relations are evaluated for the date defined by the user-set working date. The 
      * structure is rootet at this product.

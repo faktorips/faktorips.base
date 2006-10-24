@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.productcmpt.FormulaEditDialog;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
  * Control to edit the value of an formula. A textfeld followed by a button is provided.
@@ -34,19 +36,27 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.FormulaEditDialog;
  */
 public class FormulaEditControl extends TextButtonControl {
 
-	IConfigElement configElement;
-	Shell shell;
-	
-	public FormulaEditControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell) {
-		super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
-		this.configElement = configElement;
-		this.shell = shell;
-	}
+	private IConfigElement configElement;
+	private Shell shell;
+	private IpsSection parentSection;
+    
+	public FormulaEditControl(Composite parent, UIToolkit toolkit, IConfigElement configElement, Shell shell,
+            IpsSection parentSection) {
+        super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
+        this.configElement = configElement;
+        this.shell = shell;
+        this.parentSection = parentSection;
+    }
 	
 	protected void buttonClicked() {
 		try {
             EditDialog dialog = new FormulaEditDialog(configElement, shell, !super.getTextControl().isEnabled());
-            dialog.open();
+            if (dialog.open()==Window.OK) {
+                if (parentSection != null){
+                    parentSection.refresh();
+                }
+            }
+            
 		} catch (CoreException e) {
 			IpsPlugin.logAndShowErrorDialog(e);
 		}

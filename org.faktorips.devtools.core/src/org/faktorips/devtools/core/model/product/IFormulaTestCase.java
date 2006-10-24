@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model.product;
 
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.product.FormulaTestInputValue;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
@@ -77,6 +78,13 @@ public interface IFormulaTestCase extends IIpsObjectPart {
      * @throws Exception If an error occurs while evaluating the result
      */
     public Object execute() throws Exception;
+    
+    /**
+     * Executes the given expression (java code fragment)  and returns the result.
+     * 
+     * @throws Exception If an error occurs while evaluating the result
+     */
+    public Object execute(JavaCodeFragment javaCodeFragment) throws Exception;
     
     /**
      * Adds a new formula test input value.
