@@ -164,10 +164,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException {
+        if (ipsProject == null){System.out.println("ipsproject ist null");}
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
+        if (srcRoots == null){System.out.println("srcRoots ist null");}
         for (int i = 0; i < srcRoots.length; i++) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoots[i];
+            if (root == null){System.out.println("root ist null");}
             Long oldModStamp = (Long)packFrgmtRootTocModStamps.get(root);
+            if (oldModStamp == null){System.out.println("oldModStamp ist null");}
             if (oldModStamp.longValue() != getToc(root).getModificationStamp()) {
                 saveToc(root);
             }
