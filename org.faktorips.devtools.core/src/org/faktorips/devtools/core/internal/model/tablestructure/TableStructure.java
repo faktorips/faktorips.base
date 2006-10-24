@@ -395,10 +395,15 @@ public class TableStructure extends IpsObject implements ITableStructure {
             return new ITableAccessFunction[0];
         }
         List functions = new ArrayList();
-        IUniqueKey key = getUniqueKeys()[0];
-        IColumn[] columns = getColumnsNotInKey(key);
-        for (int i = 0; i < columns.length; i++) {
-            functions.add(createFunction(i, key, columns[i]));
+        IUniqueKey[] keys = getUniqueKeys();
+        // add functions for each key and column which is not in the key
+        for (int i = 0; i < keys.length; i++) {
+            IUniqueKey key = keys[i];
+            IColumn[] columns = getColumnsNotInKey(key);
+            for (int j = 0; j < columns.length; j++) {
+                // add function for each column which is not included in the key
+                functions.add(createFunction(j, key, columns[j]));
+            }
         }
         return (ITableAccessFunction[])functions.toArray(new ITableAccessFunction[functions.size()]);
     }
