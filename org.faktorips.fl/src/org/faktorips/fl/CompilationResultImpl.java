@@ -17,7 +17,9 @@
 
 package org.faktorips.fl;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -55,6 +57,7 @@ public class CompilationResultImpl implements CompilationResult {
     private JavaCodeFragment codeFragment;
     private MessageList messages;
     private Datatype datatype;
+    private Set identifiersUsed;
     
     /**
      * Creates a CompilationResult that contains the given sourcecode fragment
@@ -101,6 +104,14 @@ public class CompilationResultImpl implements CompilationResult {
     public void add(CompilationResult result) {
         codeFragment.append(result.getCodeFragment());
         messages.add(result.getMessages());
+        Set otherIdenifiers = ((CompilationResultImpl)result).identifiersUsed;
+        if (otherIdenifiers==null) {
+            return;
+        }
+        if (identifiersUsed==null) {
+            identifiersUsed = new HashSet(2);
+        }
+        identifiersUsed.addAll(otherIdenifiers);
     }
     
     /**
@@ -155,23 +166,68 @@ public class CompilationResultImpl implements CompilationResult {
     public void addMessages(MessageList list) {
         messages.add(list);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getIdentifiersUsed() {
+        if (identifiersUsed==null) {
+            return new String[0];
+        }
+        return (String[])identifiersUsed.toArray(new String[identifiersUsed.size()]);
+    }
+    
+    /**
+     * Adds the identifier to the ones being used in the formula. If the result already
+     * contains such an identifier, the identifier is not added a second time.
+     */
+    public void addIdentifierUsed(String identifier) {
+        if (identifiersUsed==null) {
+            identifiersUsed = new HashSet(2);
+        }
+        identifiersUsed.add(identifier);
+    }
+    
+    public Set getIdentifiersUsedAsSet() {
+        return identifiersUsed;
+    }
+    
+    public void addIdentifiersUsed(Set identifiers) {
+        if (identifiersUsed==null) {
+            if (identifiers!=null) {
+                identifiersUsed = new HashSet(identifiers);
+            }
+            return;
+        } 
+        if (identifiers!=null) {
+            identifiersUsed.addAll(identifiers);
+        }
+    }
+    
+    public boolean isUsedAsIdentifier(String candidate) {
+        if (identifiersUsed==null) {
+            return false;
+        }
+        return identifiersUsed.contains(candidate);
+    }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.CompilationResult#successfull()
+     * {@inheritDoc}
      */
     public boolean successfull() {
         return !messages.containsErrorMsg();
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.CompilationResult#failed()
+     * {@inheritDoc}
      */
     public boolean failed() {
         return messages.containsErrorMsg();
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public boolean equals(Object o) {
         if (!(o instanceof CompilationResult)) {
             return false;
@@ -182,6 +238,9 @@ public class CompilationResultImpl implements CompilationResult {
         	&& this.messages.equals(other.getMessages());
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return "Datatype: " + (datatype==null?"null":datatype.toString()) //$NON-NLS-1$ //$NON-NLS-2$
                 + SystemUtils.LINE_SEPARATOR + messages.toString() + codeFragment.toString();  

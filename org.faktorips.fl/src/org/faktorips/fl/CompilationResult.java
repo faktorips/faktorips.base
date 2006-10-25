@@ -46,6 +46,17 @@ public interface CompilationResult {
     public MessageList getMessages();
     
     /**
+     * Returns the identifiers that are used in the formula. Returns an empty list if the
+     * formula does not contain any identifiers.
+     */
+    public String[] getIdentifiersUsed();
+    
+    /**
+     * Returns <code>true</code> if the given candidate identifier is used as identifier.
+     */
+    public boolean isUsedAsIdentifier(String candidateIdentifier);
+    
+    /**
      * Returns true if the compilation was successfull, otherwise false.
      */
     public boolean successfull();

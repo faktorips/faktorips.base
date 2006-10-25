@@ -481,10 +481,10 @@ public class ExprCompiler {
             return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
         }
         // parse ok, generate the sourcecode via the visitor visiting the parse tree
-        CompilationResult result;
+        CompilationResultImpl result;
         try {
             ParseTreeVisitor visitor = new ParseTreeVisitor(this);
-            result = (CompilationResult)rootNode.jjtAccept(visitor, null);
+            result = (CompilationResultImpl)rootNode.jjtAccept(visitor, null);
         } catch (Exception e) {
             return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings
                     .getString(INTERNAL_ERROR, locale)));
@@ -500,8 +500,10 @@ public class ExprCompiler {
             // convert primitive to wrapper object
             JavaCodeFragment converted = CodeGenUtil.convertPrimitiveToWrapper(resultType, result
                     .getCodeFragment());
-            return new CompilationResultImpl(converted, ((ValueDatatype)resultType)
+            CompilationResultImpl finalResult = new CompilationResultImpl(converted, ((ValueDatatype)resultType)
                     .getWrapperType());
+            finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
+            return finalResult;
         } catch (Exception e) {
             return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings
                     .getString(INTERNAL_ERROR, locale)));

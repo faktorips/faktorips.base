@@ -17,6 +17,8 @@
 
 package org.faktorips.fl;
 
+import java.util.HashSet;
+
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.Datatype;
@@ -27,6 +29,78 @@ import org.faktorips.util.message.Message;
  */
 public class CompilationResultImplTest extends TestCase {
 
+    public void testGetIdentifiersUsed() {
+        CompilationResultImpl result = new CompilationResultImpl();
+        assertEquals(0, result.getIdentifiersUsed().length);
+
+        result.addIdentifierUsed("a");
+        assertEquals(1, result.getIdentifiersUsed().length);
+        
+        result.addIdentifierUsed("b");
+        assertEquals(2, result.getIdentifiersUsed().length);
+        assertEquals("a", result.getIdentifiersUsed()[0]);
+        assertEquals("b", result.getIdentifiersUsed()[1]);
+    }
+    
+    public void testIsUsedAsIdentifier() {
+        CompilationResultImpl result = new CompilationResultImpl();
+        assertFalse(result.isUsedAsIdentifier("a"));
+
+        result.addIdentifierUsed("a");
+        assertTrue(result.isUsedAsIdentifier("a"));
+        
+        assertFalse(result.isUsedAsIdentifier(null));
+    }
+    
+    public void testAddIdentifiersUsed() {
+        CompilationResultImpl result = new CompilationResultImpl();
+        result.addIdentifiersUsed(null);
+        assertEquals(0, result.getIdentifiersUsed().length);
+
+        HashSet set = new HashSet();
+        set.add("a");
+        set.add("b");
+        result.addIdentifiersUsed(set);
+        assertEquals(2, result.getIdentifiersUsed().length);
+        assertEquals("a", result.getIdentifiersUsed()[0]);
+        assertEquals("b", result.getIdentifiersUsed()[1]);
+
+        result.addIdentifiersUsed(null);
+        assertEquals(2, result.getIdentifiersUsed().length);
+        assertEquals("a", result.getIdentifiersUsed()[0]);
+        assertEquals("b", result.getIdentifiersUsed()[1]);
+    }
+    
+    public void testAdd() {
+        CompilationResultImpl result1 = new CompilationResultImpl();
+        
+        CompilationResultImpl result2 = new CompilationResultImpl();
+        result1.add(result2);
+        assertEquals(0, result1.getIdentifiersUsed().length);
+        
+        result2.addIdentifierUsed("a");
+        result2.addIdentifierUsed("b");
+        result1.add(result2);
+        assertEquals(2, result1.getIdentifiersUsed().length);
+        assertEquals("a", result1.getIdentifiersUsed()[0]);
+        assertEquals("b", result1.getIdentifiersUsed()[1]);
+
+        // result with no addition identifier
+        result2 = new CompilationResultImpl();
+        result1.add(result2);
+        assertEquals(2, result1.getIdentifiersUsed().length);
+        assertEquals("a", result1.getIdentifiersUsed()[0]);
+        assertEquals("b", result1.getIdentifiersUsed()[1]);
+        
+        // duplicates shouldn't be added
+        result1.addIdentifierUsed("a");
+        assertEquals(2, result1.getIdentifiersUsed().length);
+        assertEquals("a", result1.getIdentifiersUsed()[0]);
+        assertEquals("b", result1.getIdentifiersUsed()[1]);
+        
+        
+    }
+    
     public void testSuccessfullFailed() {
         CompilationResultImpl result = new CompilationResultImpl("blabla", Datatype.STRING);
         assertTrue(result.successfull());

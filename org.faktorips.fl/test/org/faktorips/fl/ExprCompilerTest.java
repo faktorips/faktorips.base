@@ -280,4 +280,25 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         result = compiler.compile("1;a");
         assertFalse(result.successfull());
     }
+    
+    public void testUsedIdentifiers() {
+        compiler.setIdentifierResolver(new IdentifierResolver() {
+
+            public CompilationResult compile(String identifier, Locale locale) {
+                return new CompilationResultImpl(identifier, Datatype.INTEGER);
+            }
+            
+        });
+        CompilationResult result = compiler.compile("1");
+        assertEquals(0, result.getIdentifiersUsed().length);
+
+        result = compiler.compile("a + 1");
+        assertEquals(1, result.getIdentifiersUsed().length);
+        assertEquals("a", result.getIdentifiersUsed()[0]);
+        
+        result = compiler.compile("a + b");
+        assertEquals(2, result.getIdentifiersUsed().length);
+        assertEquals("a", result.getIdentifiersUsed()[0]);
+        assertEquals("b", result.getIdentifiersUsed()[1]);
+    }
 }

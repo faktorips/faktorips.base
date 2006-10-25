@@ -201,8 +201,10 @@ class ParseTreeVisitor implements FlParserVisitor {
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTIdentifierNode, java.lang.Object)
      */
     public Object visit(ASTIdentifierNode node, Object data) {
-        String value = node.getLastToken().toString();
-        return compiler.getIdentifierResolver().compile(value, compiler.getLocale());
+        String identifier = node.getLastToken().toString();
+        CompilationResultImpl result = (CompilationResultImpl)compiler.getIdentifierResolver().compile(identifier, compiler.getLocale());
+        result.addIdentifierUsed(identifier); // note: add methd does not create duplicates
+        return result;
     }
 
     /** 
@@ -416,9 +418,10 @@ class ParseTreeVisitor implements FlParserVisitor {
             if (!lhsResult.getDatatype().equals(operation.getLhsDatatype()) 
                     && (!(operation.getLhsDatatype() instanceof AnyDatatype)) ) {
                 JavaCodeFragment convertedLhs = compiler.getConversionCodeGenerator().
-            	getConversionCode(lhsResult.getDatatype(), operation.getLhsDatatype(), lhsResult.getCodeFragment()); 
+            	    getConversionCode(lhsResult.getDatatype(), operation.getLhsDatatype(), lhsResult.getCodeFragment()); 
                 convertedLhsResult = new CompilationResultImpl(convertedLhs, operation.getLhsDatatype());
                 convertedLhsResult.addMessages(lhsResult.getMessages());
+                convertedLhsResult.addIdentifiersUsed(lhsResult.getIdentifiersUsedAsSet());
             }
             CompilationResultImpl convertedRhsResult = rhsResult;
             if (!rhsResult.getDatatype().equals(operation.getRhsDatatype())
@@ -427,6 +430,7 @@ class ParseTreeVisitor implements FlParserVisitor {
 	        		getConversionCode(rhsResult.getDatatype(), operation.getRhsDatatype(), rhsResult.getCodeFragment());
 	            convertedRhsResult = new CompilationResultImpl(convertedRhs, operation.getRhsDatatype());
 	            convertedRhsResult.addMessages(rhsResult.getMessages());
+                convertedRhsResult.addIdentifiersUsed(rhsResult.getIdentifiersUsedAsSet());
             }
             return operation.generate(convertedLhsResult, convertedRhsResult);
         }
