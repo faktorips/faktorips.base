@@ -1488,6 +1488,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if(r.isCheckValueAgainstValueSetRule()){
             IAttribute attr = getPcType().getAttribute(r.getValidatedAttributeAt(0));
             Datatype attrDatatype = attr.findDatatype();
+            body.append('!');
             if(attr.getValueSet().getValueSetType().equals(ValueSetType.ENUM)){
                 body.append(productCmptGenInterfaceBuilder.getMethodNameGetAllowedValuesFor(attr, attr.findDatatype()));
                 
