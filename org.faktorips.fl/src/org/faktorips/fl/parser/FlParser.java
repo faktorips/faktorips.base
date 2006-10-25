@@ -878,10 +878,7 @@ public class FlParser/*@bgen(jjtree)*/implements FlParserTreeConstants, FlParser
 
   static private final class LookaheadSuccess extends java.lang.Error {
 
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = 7983723331108918459L; }
+    private static final long serialVersionUID = 1L; }
   final private LookaheadSuccess jj_ls = new LookaheadSuccess();
   final private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {

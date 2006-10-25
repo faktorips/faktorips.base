@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.util.message.MessageList;
 
 import junit.framework.TestCase;
 
@@ -53,4 +54,21 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         assertFalse(result.successfull());
     }
     
+    public void testParserWithUmlaut(){
+        compiler = new ExprCompiler();
+        Locale.setDefault(Locale.ENGLISH);
+        compiler.setLocale(Locale.ENGLISH);
+        DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
+        resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ä", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ü", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ü", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ö", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ö", new JavaCodeFragment("a"), Datatype.INTEGER);
+        compiler.setIdentifierResolver(resolver);
+
+        CompilationResult result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
+        MessageList msgList = result.getMessages();
+        assertTrue(msgList.isEmpty());
+    }
 }

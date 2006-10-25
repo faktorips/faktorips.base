@@ -123,6 +123,9 @@ static final long[] jjbitVec0 = {
 static final long[] jjbitVec2 = {
    0x0L, 0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL
 };
+static final long[] jjbitVec3 = {
+   0x0L, 0x0L, 0x0L, 0x1040801010408010L
+};
 private final int jjMoveNfa_0(int startState, int curPos)
 {
    int startsAt = 0;
@@ -731,6 +734,14 @@ private final int jjMoveNfa_0(int startState, int curPos)
          {
             switch(jjstateSet[--i])
             {
+               case 0:
+               case 10:
+                  if (!jjCanMove_1(hiByte, i1, i2, l1, l2))
+                     break;
+                  if (kind > 15)
+                     kind = 15;
+                  jjCheckNAddTwoStates(10, 11);
+                  break;
                case 1:
                   if (jjCanMove_0(hiByte, i1, i2, l1, l2))
                      jjAddStates(39, 41);
@@ -747,6 +758,24 @@ private final int jjMoveNfa_0(int startState, int curPos)
                case 50:
                   if (jjCanMove_0(hiByte, i1, i2, l1, l2))
                      jjCheckNAddTwoStates(50, 48);
+                  break;
+               case 75:
+                  if (!jjCanMove_1(hiByte, i1, i2, l1, l2))
+                     break;
+                  if (kind > 12)
+                     kind = 12;
+                  jjstateSet[jjnewStateCnt++] = 76;
+                  break;
+               case 76:
+                  if (!jjCanMove_1(hiByte, i1, i2, l1, l2))
+                     break;
+                  if (kind > 12)
+                     kind = 12;
+                  jjstateSet[jjnewStateCnt++] = 77;
+                  break;
+               case 77:
+                  if (jjCanMove_1(hiByte, i1, i2, l1, l2) && kind > 12)
+                     kind = 12;
                   break;
                default : break;
             }
@@ -782,6 +811,16 @@ private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, lo
       default : 
          if ((jjbitVec0[i1] & l1) != 0L)
             return true;
+         return false;
+   }
+}
+private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, long l2)
+{
+   switch(hiByte)
+   {
+      case 0:
+         return ((jjbitVec3[i2] & l2) != 0L);
+      default : 
          return false;
    }
 }

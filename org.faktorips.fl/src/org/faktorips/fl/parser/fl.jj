@@ -79,7 +79,7 @@ TOKEN:
     |
     <MONEY_LITERAL: (<INTEGER_LITERAL> | <DECIMAL_LITERAL>) <LETTER> (<LETTER>)? (<LETTER>)?> 
     |
-    <#LETTER: ["a"-"z","A"-"Z"] >
+    <#LETTER: ["a"-"z","A"-"Z","\u00e4","\u00c4","\u00f6","\u00d6","\u00cf","\u00dc"] >
     |
     <NULL_LITERAL: "null" | "NULL" >
 
@@ -93,7 +93,7 @@ TOKEN:
 {
     < IDENTIFIER: <LETTER_OR_UNDERSCORE_OR_DOT> (<LETTER_OR_UNDERSCORE_OR_DOT>|<DIGIT>|<DATE_IDENTIFIER>)* >
     |
-    < #LETTER_OR_UNDERSCORE_OR_DOT: ["_",".","a"-"z","A"-"Z"] >
+    < #LETTER_OR_UNDERSCORE_OR_DOT: ["_",".","a"-"z","A"-"Z","\u00e4","\u00c4","\u00f6","\u00d6","\u00cf","\u00dc"] >
     |
     < #DIGIT: ["0"-"9"] >
     |
