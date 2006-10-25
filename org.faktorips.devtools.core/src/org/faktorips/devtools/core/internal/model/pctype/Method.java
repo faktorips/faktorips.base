@@ -119,12 +119,7 @@ public class Method extends IpsObjectPart implements IMethod {
      * {@inheritDoc}
      */
     public Image getImage() {
-        Image image;
-        if (modifier==Modifier.PRIVATE) {
-            image = IpsPlugin.getDefault().getImage("MethodPrivate.gif");     //$NON-NLS-1$
-        } else {
-            image = IpsPlugin.getDefault().getImage("MethodPublic.gif"); //$NON-NLS-1$
-        }
+        Image image = IpsPlugin.getDefault().getImage("MethodPublic.gif"); //$NON-NLS-1$
         if (!isAbstract()) {
             return image;
         }

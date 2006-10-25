@@ -46,7 +46,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.Modifier;
 import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -1030,7 +1029,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     private void getOverrideCandidates(IPolicyCmptType type, boolean onlyAbstractMethods, List candidates) {
         IMethod[] supertypeMethods = type.getMethods();
         for (int i = 0; i < supertypeMethods.length; i++) {
-            if (supertypeMethods[i].getModifier() != Modifier.PRIVATE && !hasSameMethod(supertypeMethods[i])) {
+            if (!hasSameMethod(supertypeMethods[i])) {
                 if (!onlyAbstractMethods || supertypeMethods[i].isAbstract()) {
                     // candidate found, but it might be already in the list
                     if (!sameMethodAlreadyInCandidateList(supertypeMethods[i], candidates)) {
