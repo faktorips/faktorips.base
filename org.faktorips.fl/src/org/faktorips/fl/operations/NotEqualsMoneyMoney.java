@@ -32,8 +32,7 @@ public class NotEqualsMoneyMoney extends AbstractBinaryOperation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl, org.faktorips.fl.CompilationResultImpl)
+     * {@inheritDoc}
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
@@ -46,6 +45,8 @@ public class NotEqualsMoneyMoney extends AbstractBinaryOperation {
         CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.PRIMITIVE_BOOLEAN);
         result.addMessages(lhs.getMessages());
         result.addMessages(rhs.getMessages());
+        result.addIdentifiersUsed(lhs.getIdentifiersUsedAsSet());
+        result.addIdentifiersUsed(rhs.getIdentifiersUsedAsSet());
         return result;
     }
 

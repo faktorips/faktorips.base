@@ -42,9 +42,8 @@ public class MinusPrimitiveInt extends AbstractUnaryOperation {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append('-');
         fragment.append(arg.getCodeFragment());
-        CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.PRIMITIVE_INT);
-        result.addMessages(arg.getMessages());
-        return result;
+        arg.setJavaCodeFragment(fragment);
+        return arg;
     }
 
 }

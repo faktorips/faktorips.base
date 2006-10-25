@@ -36,7 +36,7 @@ public class MultiplyIntInt extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(" * "); //$NON-NLS-1$
+        lhs.addCodeFragment(" * "); //$NON-NLS-1$
         lhs.add(rhs);
         return lhs;
     }

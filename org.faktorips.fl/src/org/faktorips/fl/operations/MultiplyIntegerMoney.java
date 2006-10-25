@@ -17,7 +17,6 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
 
@@ -29,18 +28,13 @@ public class MultiplyIntegerMoney extends AbstractBinaryOperation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl, org.faktorips.fl.CompilationResultImpl)
+     * {@inheritDoc}
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
-        JavaCodeFragment fragment = rhs.getCodeFragment();
-        fragment.append(".multiply("); //$NON-NLS-1$
-        fragment.append(lhs.getCodeFragment());
-        fragment.append(")"); //$NON-NLS-1$
-        CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.MONEY);
-        result.addMessages(lhs.getMessages());
-        result.addMessages(rhs.getMessages());
-        return result;
+        rhs.addCodeFragment(".multiply("); //$NON-NLS-1$
+        rhs.add(lhs);
+        rhs.addCodeFragment(")"); //$NON-NLS-1$
+        return rhs;
     }
 
 }

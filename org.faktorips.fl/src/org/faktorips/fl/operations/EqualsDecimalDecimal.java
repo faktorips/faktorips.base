@@ -36,7 +36,7 @@ public class EqualsDecimalDecimal extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        lhs.getCodeFragment().append(".equalsIgnoreScale("); //$NON-NLS-1$
+        lhs.getCodeFragment().append(".equals("); //$NON-NLS-1$
         lhs.add(rhs);
         lhs.getCodeFragment().append(')');
         lhs.setDatatype(Datatype.PRIMITIVE_BOOLEAN);

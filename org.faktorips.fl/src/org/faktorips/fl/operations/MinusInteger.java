@@ -45,9 +45,8 @@ public class MinusInteger extends AbstractUnaryOperation {
         fragment.append("==null?null:new Integer(-1 * "); //$NON-NLS-1$
         fragment.append(arg.getCodeFragment());
         fragment.append(".intValue()))"); //$NON-NLS-1$
-        CompilationResultImpl result = new CompilationResultImpl(fragment, Datatype.INTEGER);
-        result.addMessages(arg.getMessages());
-        return result;
+        arg.setJavaCodeFragment(fragment);
+        return arg;
     }
 
 }

@@ -17,7 +17,6 @@
 
 package org.faktorips.fl.operations;
 
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
 
@@ -37,15 +36,11 @@ public class AddIntegerDecimal extends AbstractBinaryOperation {
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append('(');
-        fragment.append(lhs.getCodeFragment());
-        fragment.append("==null?null:"); //$NON-NLS-1$
-        fragment.append(rhs.getCodeFragment());
-        fragment.append(".add("); //$NON-NLS-1$
-        fragment.append(lhs.getCodeFragment());
-        fragment.append("))"); //$NON-NLS-1$
-        return new CompilationResultImpl(fragment, Datatype.DECIMAL);
+
+        rhs.addCodeFragment(".add(");
+        rhs.add(lhs);
+        rhs.addCodeFragment(")");
+        return rhs;
     }
 
 }

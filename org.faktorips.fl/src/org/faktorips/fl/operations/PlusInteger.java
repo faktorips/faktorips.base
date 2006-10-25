@@ -31,8 +31,7 @@ public class PlusInteger extends AbstractUnaryOperation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.UnaryOperation#generate(org.faktorips.fl.CompilationResultImpl)
+     * {@inheritDoc}
      */
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;

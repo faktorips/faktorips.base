@@ -60,9 +60,22 @@ public class CompilationResultImpl implements CompilationResult {
     private Set identifiersUsed;
     
     /**
+     * Creates a CompilationResult with the given parameters.
+     */
+    public CompilationResultImpl(
+            JavaCodeFragment sourcecode, 
+            Datatype datatype,
+            MessageList messages,
+            Set identifiers) {
+        this.codeFragment = sourcecode;
+        this.datatype = datatype;
+        this.messages = messages;
+        this.identifiersUsed = identifiers;
+    }
+    
+    /**
      * Creates a CompilationResult that contains the given sourcecode fragment
      * and datatype.
-     * @throws IllegalArgumentException if either sourcecode or datatype is null.
      */
     public CompilationResultImpl(JavaCodeFragment sourcecode, Datatype datatype) {
         this.codeFragment = sourcecode;
@@ -122,9 +135,23 @@ public class CompilationResultImpl implements CompilationResult {
     }
     
     /**
+     * Sets the code fragment.
+     */
+    public void setJavaCodeFragment(JavaCodeFragment code) {
+        this.codeFragment = code;
+    }
+    
+    /**
      * Adds the code fragment to the result ones.
      */
     public void addCodeFragment(JavaCodeFragment code) {
+       codeFragment.append(code); 
+    }
+    
+    /**
+     * Adds the code fragment to the result ones.
+     */
+    public void addCodeFragment(String code) {
        codeFragment.append(code); 
     }
 

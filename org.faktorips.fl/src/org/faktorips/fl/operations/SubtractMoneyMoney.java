@@ -31,8 +31,7 @@ public class SubtractMoneyMoney extends AbstractBinaryOperation {
     }
 
     /** 
-     * Overridden method.
-     * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResultImpl, org.faktorips.fl.CompilationResultImpl)
+     * {@inheritDoc}
      */
     public CompilationResultImpl generate(CompilationResultImpl lhs,
             CompilationResultImpl rhs) {
