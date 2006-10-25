@@ -71,7 +71,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertEquals(42, method.getId());
         assertEquals("calcPremium", method.getName());
         assertEquals("Money", method.getDatatype());
-        assertEquals(Modifier.PRIVATE, method.getModifier());
+        assertEquals(Modifier.PUBLIC, method.getModifier());
         assertTrue(method.isAbstract());
         IParameter[] params = method.getParameters();
         assertEquals(2, params.length);
@@ -90,7 +90,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     public void testToXmlDocument() {
         method = pcType.newMethod(); // => id=1, because it's the second method
         method.setName("getAge");
-        method.setModifier(Modifier.PRIVATE);
+        method.setModifier(Modifier.PUBLIC);
         method.setDatatype("Decimal");
         method.setAbstract(true);
         IParameter param0 = method.newParameter();
@@ -108,7 +108,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertEquals(1, copy.getId());
         assertEquals("getAge", copy.getName());
         assertEquals("Decimal", copy.getDatatype());
-        assertEquals(Modifier.PRIVATE, copy.getModifier());
+        assertEquals(Modifier.PUBLIC, copy.getModifier());
         assertTrue(copy.isAbstract());
         assertEquals(2, copyParams.length);
         assertEquals("p0", copyParams[0].getName());

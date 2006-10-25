@@ -32,10 +32,6 @@ public class Util {
      */
     public final static int getJavaModifier(Modifier modifier) {
 
-        if (Modifier.PRIVATE.equals(modifier)) {
-            return java.lang.reflect.Modifier.PRIVATE;
-        }
-
         if (Modifier.PUBLIC.equals(modifier)) {
             return java.lang.reflect.Modifier.PUBLIC;
         }

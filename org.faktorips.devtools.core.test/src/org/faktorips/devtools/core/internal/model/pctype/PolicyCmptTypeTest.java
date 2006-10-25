@@ -434,10 +434,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         m5.setName("calc");
         m5.setAbstract(true);        m5.newParameter("Money", "p1");
         
-        IMethod m6 = supersupertype.newMethod();
-        m6.setModifier(Modifier.PRIVATE);
-        m6.setName("getPremium");
-        
         IMethod[] candidates = pcType.findOverrideMethodCandidates(false);
         assertEquals(2, candidates.length);
         assertEquals(m3, candidates[0]);
@@ -445,7 +441,6 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         // notes: 
         // m2 is not a candidate because it is already overriden by m1
         // m4 is not a candidate because it is the same as m3
-        // m6 is not a candidate because it is private
         
         // only abstract methods
         candidates = pcType.findOverrideMethodCandidates(true);

@@ -5,7 +5,7 @@
 -->
 <TestData>
 
-	<Method id="42" name="calcPremium" datatype="Money" modifier="private" abstract="true">
+	<Method id="42" name="calcPremium" datatype="Money" modifier="public" abstract="true">
 		<Parameter name="p1" datatype="Money"/>
 		<Parameter name="p2" datatype="Decimal"/>
 	</Method>
