@@ -58,12 +58,12 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
     public void testParserWithUmlaut() throws UnsupportedEncodingException{
         compiler = new ExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ä", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("ü", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ü", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("ö", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("Ö", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register(new String("ä".getBytes("UTF-8"), "UTF-8"), new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register(new String("Ä".getBytes("UTF-8"), "UTF-8"), new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register(new String("ü".getBytes("UTF-8"), "UTF-8"), new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register(new String("Ü".getBytes("UTF-8"), "UTF-8"), new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register(new String("ö".getBytes("UTF-8"), "UTF-8"), new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register(new String("Ö".getBytes("UTF-8"), "UTF-8"), new JavaCodeFragment("a"), Datatype.INTEGER);
         compiler.setIdentifierResolver(resolver);
 
         CompilationResult result;
