@@ -56,8 +56,6 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
     
     public void testParserWithUmlaut(){
         compiler = new ExprCompiler();
-        Locale.setDefault(Locale.ENGLISH);
-        compiler.setLocale(Locale.ENGLISH);
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);
         resolver.register("Ä", new JavaCodeFragment("a"), Datatype.INTEGER);
@@ -69,8 +67,6 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
 
         CompilationResult result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
         MessageList msgList = result.getMessages();
-        if (! msgList.isEmpty()){
-            fail(msgList.getText());
-        }
+        assertTrue(msgList.isEmpty());
     }
 }
