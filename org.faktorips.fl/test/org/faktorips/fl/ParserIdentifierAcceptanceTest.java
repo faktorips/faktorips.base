@@ -69,6 +69,8 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
 
         CompilationResult result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
         MessageList msgList = result.getMessages();
-        assertTrue(msgList.isEmpty());
+        if (! msgList.isEmpty()){
+            fail(msgList.getText());
+        }
     }
 }
