@@ -10,6 +10,7 @@ options {
 		STATIC = false;
 		VISITOR = true;
 		JAVA_UNICODE_ESCAPE = true;
+		UNICODE_INPUT = true;
 		NODE_USES_PARSER = true;
 }
 
