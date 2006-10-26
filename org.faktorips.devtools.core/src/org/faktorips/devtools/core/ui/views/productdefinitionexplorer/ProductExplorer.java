@@ -22,9 +22,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -78,32 +79,107 @@ public class ProductExplorer extends ModelExplorer {
     }
     
     private class ProductMenuBuilder extends MenuBuilder{
-        private WrapperAction commit= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCommit, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.commit");//$NON-NLS-2$ //$NON-NLS-1$
-        private WrapperAction update= new WrapperAction(treeViewer, Messages.ProductExplorer_actionUpdate, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.update");//$NON-NLS-2$ //$NON-NLS-1$
-        private WrapperAction replace= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplace, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replace");//$NON-NLS-2$ //$NON-NLS-1$
-        private WrapperAction add= new WrapperAction(treeViewer, Messages.ProductExplorer_actionAdd, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.add");//$NON-NLS-2$ //$NON-NLS-1$
-        private WrapperAction showHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionShowHistory, "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory");//$NON-NLS-2$ //$NON-NLS-1$
-                
-        private WrapperAction compareWithRepository= new WrapperAction(treeViewer, Messages.ProductExplorer_CompareWithMenu_Repository, null, "org.eclipse.team.cvs.ui.compareWithRemote");//$NON-NLS-2$ 
-        private WrapperAction compareWithRevision= new WrapperAction(treeViewer, Messages.ProductExplorer_CompareWithMenu_Revision, null, "org.eclipse.team.cvs.ui.compareWithRevision");//$NON-NLS-2$
-//        private WrapperAction compareWithLocalHistory= new WrapperAction(treeViewer, "Local History", null, "org.eclipse.team.cvs.ui.showHistory");
+        private WrapperAction team_sync= new WrapperAction(treeViewer, Messages.ProductExplorer_actionSync_label
+                , Messages.ProductExplorer_actionSync_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.sync"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction team_commit= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCommit_label
+                , Messages.ProductExplorer_actionCommit_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.commit"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction team_update= new WrapperAction(treeViewer, Messages.ProductExplorer_actionUpdate_label
+                , Messages.ProductExplorer_actionUpdate_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.update"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        private WrapperAction team_tag= new WrapperAction(treeViewer, Messages.ProductExplorer_actionTag_label
+                , Messages.ProductExplorer_actionTag_tooltip, "TagAction.gif" //$NON-NLS-1$
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.tag"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction team_branch= new WrapperAction(treeViewer, Messages.ProductExplorer_actionBranch_label
+                , Messages.ProductExplorer_actionBranch_tooltip, "BranchAction.gif" //$NON-NLS-1$
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.branch"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction team_switchBranch= new WrapperAction(treeViewer, Messages.ProductExplorer_actionSwitchBranch_label
+                , Messages.ProductExplorer_actionSwitchBranch_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.updateSwitch"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction team_showResourceHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionShowResourceHistory_label
+                , Messages.ProductExplorer_actionShowResourceHistory_tooltip, "ShowResourceHistoryAction.gif" //$NON-NLS-1$
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory"); //$NON-NLS-1$ //$NON-NLS-2$
         
-        protected void createAdditionalActions(IMenuManager manager, Object selected) {
-            if(!(selected instanceof IProject)){
-                MenuManager teamMenu = new MenuManager(Messages.ProductExplorer_submenuTeam);
-                teamMenu.add(commit);
-                teamMenu.add(update);
-                teamMenu.add(replace);
-                teamMenu.add(add);
-                teamMenu.add(showHistory);
-                manager.add(teamMenu);
+        private WrapperAction team_restoreFromRepository= new WrapperAction(treeViewer, Messages.ProductExplorer_actionRestoreFromRepositoryAction_label
+                , Messages.ProductExplorer_actionRestoreFromRepositoryAction_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.ccvs.ui.restoreFromRepository"); //$NON-NLS-1$ //$NON-NLS-2$
+        
+
+        private WrapperAction compareWith_latest= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithLatest_label
+                , Messages.ProductExplorer_actionCompareWithLatest_label
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithRemote"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction compareWith_branch= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithBranch_label
+                , Messages.ProductExplorer_actionCompareWithBranch_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithTag"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction compareWith_eachOther= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithEachOther_label
+                , Messages.ProductExplorer_actionCompareWithEachOther_tooltip
+                , null, "compareWithEachOther"); //$NON-NLS-1$ 
+        private WrapperAction compareWith_revision= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithRevision_label
+                , Messages.ProductExplorer_actionCompareWithRevision_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithRevision"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction compareWith_localHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionCompareWithLocalHistory_label
+                , Messages.ProductExplorer_actionCompareWithLocalHistory_tooltip
+                , null, "compareWithHistory"); //$NON-NLS-1$
+        
+
+        private WrapperAction replaceWith_latest= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplaceWithLatest_label
+                , Messages.ProductExplorer_actionReplaceWithLatest_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replace"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction replaceWith_branch= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplaceWithBranch_label
+                , Messages.ProductExplorer_actionReplaceWithBranch_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replaceWithTag"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction replaceWith_revision= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplaceWithRevision_label
+                , Messages.ProductExplorer_actionReplaceWithRevision_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replaceWithRevision"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction replaceWith_previousFromLocalHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplaceWithPreviousFromLocalHistory_label
+                , Messages.ProductExplorer_actionReplaceWithPreviousFromLocalHistory_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "replaceWithPreviousFromHistory"); //$NON-NLS-1$ //$NON-NLS-2$
+        private WrapperAction replaceWith_localHistory= new WrapperAction(treeViewer, Messages.ProductExplorer_actionReplaceWithLocalHistory_label
+                , Messages.ProductExplorer_actionReplaceWithLocalHistory_tooltip
+                , "org.eclipse.team.cvs.ui.CVSActionSet", "replaceFromHistory"); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
+            Object selected= structuredSelection.getFirstElement();
+            MenuManager teamMenu = new MenuManager(Messages.ProductExplorer_subMenuTeam);
+            if(config.representsProject(selected)){
+                teamMenu.add(team_sync);
+                teamMenu.add(team_commit);
+                teamMenu.add(team_update);
+                teamMenu.add(new Separator());
+                teamMenu.add(team_tag);
+                teamMenu.add(team_branch);
+                teamMenu.add(team_switchBranch);
             }
-            if(selected instanceof IFile || selected instanceof IIpsObject){
-                MenuManager compareMenu = new MenuManager(Messages.ProductExplorer_CompareWithMenu_CompareWith);
-                compareMenu.add(compareWithRepository);
-                compareMenu.add(compareWithRevision);
-                manager.add(compareMenu);
+            if(config.representsFile(selected)){
+                teamMenu.add(team_showResourceHistory);
             }
+            teamMenu.add(new Separator());
+            teamMenu.add(team_restoreFromRepository);
+            manager.add(teamMenu);
+            
+            MenuManager compareMenu = new MenuManager(Messages.ProductExplorer_subMenuCompareWith);
+            compareMenu.add(compareWith_latest);
+            compareMenu.add(compareWith_branch);
+            // Activate compare with each other only if exactly two elements are selected.
+            compareWith_eachOther.setEnabled(structuredSelection.size()==2);
+            compareMenu.add(compareWith_eachOther);
+            if(config.representsFile(selected)){
+                compareMenu.add(compareWith_revision);
+                compareMenu.add(compareWith_localHistory);
+            }
+            manager.add(compareMenu);
+            
+            MenuManager replaceMenu = new MenuManager(Messages.ProductExplorer_subMenuReplaceWith);
+            replaceMenu.add(replaceWith_latest);
+            replaceMenu.add(replaceWith_branch);
+            if(config.representsFile(selected)){
+                replaceMenu.add(replaceWith_revision);
+                replaceMenu.add(replaceWith_previousFromLocalHistory);
+                replaceMenu.add(replaceWith_localHistory);
+            }
+            manager.add(replaceMenu);
         }
     }
 }

@@ -28,16 +28,48 @@ public class Messages extends NLS {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
+
+    public static String ProductExplorer_subMenuTeam;
+    public static String ProductExplorer_subMenuCompareWith;
+    public static String ProductExplorer_subMenuReplaceWith;
     
-    public static String ProductExplorer_submenuTeam;
-    public static String ProductExplorer_actionCommit;
-    public static String ProductExplorer_actionUpdate;
-    public static String ProductExplorer_actionReplace;
-    public static String ProductExplorer_actionAdd;
-    public static String ProductExplorer_actionShowHistory;
-    public static String ProductExplorer_CompareWithMenu_CompareWith;
-    public static String ProductExplorer_CompareWithMenu_Repository;
-    public static String ProductExplorer_CompareWithMenu_Revision;
+    public static String ProductExplorer_actionSync_label;
+    public static String ProductExplorer_actionSync_tooltip;
+    public static String ProductExplorer_actionCommit_label;
+    public static String ProductExplorer_actionCommit_tooltip;
+    public static String ProductExplorer_actionUpdate_label;
+    public static String ProductExplorer_actionUpdate_tooltip;
+    public static String ProductExplorer_actionTag_label;
+    public static String ProductExplorer_actionTag_tooltip;
+    public static String ProductExplorer_actionBranch_label;
+    public static String ProductExplorer_actionBranch_tooltip;
+    public static String ProductExplorer_actionSwitchBranch_label;
+    public static String ProductExplorer_actionSwitchBranch_tooltip;
+    public static String ProductExplorer_actionShowResourceHistory_label;
+    public static String ProductExplorer_actionShowResourceHistory_tooltip;
+    public static String ProductExplorer_actionRestoreFromRepositoryAction_label;
+    public static String ProductExplorer_actionRestoreFromRepositoryAction_tooltip;
+    
+    public static String ProductExplorer_actionCompareWithLatest_label;
+    public static String ProductExplorer_actionCompareWithLatest_tooltip;
+    public static String ProductExplorer_actionCompareWithBranch_label;
+    public static String ProductExplorer_actionCompareWithBranch_tooltip;
+    public static String ProductExplorer_actionCompareWithEachOther_label;
+    public static String ProductExplorer_actionCompareWithEachOther_tooltip;
+    public static String ProductExplorer_actionCompareWithRevision_label;
+    public static String ProductExplorer_actionCompareWithRevision_tooltip;
+    public static String ProductExplorer_actionCompareWithLocalHistory_label;
+    public static String ProductExplorer_actionCompareWithLocalHistory_tooltip;
 
-
+    public static String ProductExplorer_actionReplaceWithLatest_label;
+    public static String ProductExplorer_actionReplaceWithLatest_tooltip;
+    public static String ProductExplorer_actionReplaceWithBranch_label;
+    public static String ProductExplorer_actionReplaceWithBranch_tooltip;
+    public static String ProductExplorer_actionReplaceWithRevision_label;
+    public static String ProductExplorer_actionReplaceWithRevision_tooltip;
+    public static String ProductExplorer_actionReplaceWithPreviousFromLocalHistory_label;
+    public static String ProductExplorer_actionReplaceWithPreviousFromLocalHistory_tooltip;
+    public static String ProductExplorer_actionReplaceWithLocalHistory_label;
+    public static String ProductExplorer_actionReplaceWithLocalHistory_tooltip;
+    
 }

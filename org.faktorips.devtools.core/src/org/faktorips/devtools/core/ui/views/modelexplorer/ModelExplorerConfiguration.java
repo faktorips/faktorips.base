@@ -20,6 +20,10 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -116,4 +120,30 @@ public class ModelExplorerConfiguration {
 		}
 		return false;
 	}
+
+    /**
+     * Returns true if the given object is of type <code>IProject</code> or
+     * <code>IIpsProject</code>, false otherwise.
+     */
+    public boolean representsProject(Object item) {
+        return item instanceof IIpsProject || item instanceof IProject;
+    }
+
+    /**
+     * Returns true if the given object is of type <code>IFolder</code>,
+     * <code>IIpsPackageFragmentRoot</code> or <code>IIpsPackageFragment</code>, false
+     * otherwise.
+     */
+    public boolean representsFolder(Object item) {
+        return item instanceof IIpsPackageFragment || item instanceof IIpsPackageFragmentRoot
+                || item instanceof IFolder;
+    }
+
+    /**
+     * Returns true if the given object is of type <code>IProject</code> or
+     * <code>IIpsProject</code>, false otherwise.
+     */
+    public boolean representsFile(Object item) {
+        return item instanceof IIpsObject || item instanceof IFile;
+    }
 }
