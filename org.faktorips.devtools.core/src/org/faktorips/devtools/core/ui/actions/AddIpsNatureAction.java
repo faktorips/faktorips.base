@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -150,6 +151,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(
                     " ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
             props.setProductCmptNamingStrategy(namingStrategy);
+            props.setMinRequiredVersionNumber("org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"));
             ipsProject.setProperties(props);
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(sourceFolderName);
             if (!ipsModelFolder.exists()) {

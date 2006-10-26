@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.devtools.core;
 
@@ -53,6 +45,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -72,21 +65,21 @@ public class IpsPlugin extends AbstractUIPlugin {
     public final static String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
 
     public final static String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
-    
+
     private boolean testMode = false;
-    private ITestAnswerProvider testAnswerProvider; 
+    private ITestAnswerProvider testAnswerProvider;
 
     /**
-     * Returns the full extension id. This is the plugin's id plus the plugin
-     * relative extension id separated by a dot.
+     * Returns the full extension id. This is the plugin's id plus the plugin relative extension id
+     * separated by a dot.
      * 
      * @throws NullPointerException if pluginRelativeEnxtensionId is <code>null</code>.
      */
     public final static String getFullExtensionId(String pluginRelativeEnxtensionId) {
-    	ArgumentCheck.notNull(pluginRelativeEnxtensionId);
-		return PLUGIN_ID + '.' + pluginRelativeEnxtensionId;
-	}
-	
+        ArgumentCheck.notNull(pluginRelativeEnxtensionId);
+        return PLUGIN_ID + '.' + pluginRelativeEnxtensionId;
+    }
+
     // The shared instance.
     private static IpsPlugin plugin;
 
@@ -97,31 +90,34 @@ public class IpsPlugin extends AbstractUIPlugin {
     private DocumentBuilderFactory docBuilderFactory;
 
     private IpsPreferences preferences;
-    
+
     private IpsModel model;
 
-    // Contains the ips test runner, which runs ips test and informs registered ips test run listener
+    // Contains the ips test runner, which runs ips test and informs registered ips test run
+    // listener
     private IIpsTestRunner ipsTestRunner;
-    
+
     /**
      * All available external table formats
      */
     private AbstractExternalTableFormat[] externalTableFormats;
-    
+
+    /**
+     * All available feature version managers
+     */
+    private IIpsFeatureVersionManager[] featureVersionManagers;
+
     // Factories for creating controls depending on the datatype
     private ValueDatatypeControlFactory[] controlFactories = new ValueDatatypeControlFactory[] {
-    	new BooleanControlFactory(),
-    	new EnumDatatypeControlFactory(),
-    	new DefaultControlFactory()
-    };
-    
+            new BooleanControlFactory(), new EnumDatatypeControlFactory(), new DefaultControlFactory() };
+
     /**
      * Returns the shared instance.
      */
     public static IpsPlugin getDefault() {
         return plugin;
     }
-    
+
     /**
      * The constructor.
      */
@@ -159,23 +155,23 @@ public class IpsPlugin extends AbstractUIPlugin {
             imageDescriptorRegistry.dispose();
         }
     }
-    
+
     /**
-     * Reinits the model (so all data in the cache is cleared). Should only be called in test cases to ensure
-     * a clean environment.
+     * Reinits the model (so all data in the cache is cleared). Should only be called in test cases
+     * to ensure a clean environment.
      */
     public void reinitModel() {
         model.stopListeningToResourceChanges();
         model = new IpsModel();
         model.startListeningToResourceChanges();
     }
-    
+
     /**
      * Returns the plugin's version identifier.
      */
     public PluginVersionIdentifier getVersionIdentifier() {
-        String version = (String) getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
-        return new PluginVersionIdentifier(version); 
+        String version = (String)getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
+        return new PluginVersionIdentifier(version);
     }
 
     /**
@@ -185,44 +181,45 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @param name The image name, e.g. <code>IpsProject.gif</code>
      */
     public Image getImage(String name) {
-    	return getImage(name, false);
+        return getImage(name, false);
     }
 
     /**
-     * Returns the image with the indicated name from the <code>icons</code> folder and
-     * overlays it with the product relevant image. If the given image is not found
-     * return the missing image overlayed with the product relevant image.
+     * Returns the image with the indicated name from the <code>icons</code> folder and overlays
+     * it with the product relevant image. If the given image is not found return the missing image
+     * overlayed with the product relevant image.
      * 
      * @see IpsPlugin#getImage(String)
      * 
-     * @param baseImageName The name of the image which will be overlayed with the product relevant image.
+     * @param baseImageName The name of the image which will be overlayed with the product relevant
+     *            image.
      */
-	public Image getProductRelevantImage(String baseImageName) {
-		String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName; //$NON-NLS-1$
-		Image image = getImageRegistry().get(overlayedImageName);
-		if (image == null) {
-		    image = ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName));
-			ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(image);
-			getImageRegistry().put(overlayedImageName, imageDescriptor);
-		}
-		return image;
-	}
-	
+    public Image getProductRelevantImage(String baseImageName) {
+        String overlayedImageName = "ProductRelevantOverlay.gif_" + baseImageName; //$NON-NLS-1$
+        Image image = getImageRegistry().get(overlayedImageName);
+        if (image == null) {
+            image = ProductRelevantIcon.createProductRelevantImage(getImage(baseImageName));
+            ImageDescriptor imageDescriptor = ImageDescriptor.createFromImage(image);
+            getImageRegistry().put(overlayedImageName, imageDescriptor);
+        }
+        return image;
+    }
+
     /**
-     * Returns the image with the indicated name from the <code>icons</code> folder. If no
-     * image is found and <code>returnNull</code> is true, null is returned. Otherwise
-     * (no image found, but <code>returnNull</code> is true), the missing image is returned.
+     * Returns the image with the indicated name from the <code>icons</code> folder. If no image
+     * is found and <code>returnNull</code> is true, null is returned. Otherwise (no image found,
+     * but <code>returnNull</code> is true), the missing image is returned.
      * 
      * @param name The name of the image.
      * @param returnNull <code>true</code> to get null as return value if the image is not found,
-     * <code>false</code> to get the missing image in this case.
+     *            <code>false</code> to get the missing image in this case.
      */
     public Image getImage(String name, boolean returnNull) {
         Image image = getImageRegistry().get(name);
         if (image == null) {
             URL url = getBundle().getEntry("icons/" + name); //$NON-NLS-1$
             if (url == null && returnNull) {
-            	return null;
+                return null;
             }
             ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
             getImageRegistry().put(name, descriptor);
@@ -230,7 +227,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         return image;
     }
-    
+
     public Image getImage(ImageDescriptor descriptor) {
         return getImageDescriptorRegistry().get(descriptor);
     }
@@ -269,7 +266,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public final static void logAndShowErrorDialog(IStatus status) {
         plugin.getLog().log(status);
         ErrorDialog.openError(Display.getCurrent().getActiveShell(), Messages.IpsPlugin_titleErrorDialog,
-            Messages.IpsPlugin_msgUnexpectedError, status);
+                Messages.IpsPlugin_msgUnexpectedError, status);
     }
 
     /**
@@ -296,7 +293,8 @@ public class IpsPlugin extends AbstractUIPlugin {
     public DocumentBuilder newDocumentBuilder() {
         try {
             return docBuilderFactory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
+        }
+        catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
 
@@ -313,7 +311,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns preferences for this plugin.
      */
     public IpsPreferences getIpsPreferences() {
-    	return preferences;
+        return preferences;
     }
 
     /**
@@ -322,19 +320,18 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Activate or deactivate test mode.
      */
     public void setTestMode(boolean testMode) {
-    	this.testMode = testMode;
+        this.testMode = testMode;
     }
 
     /**
      * <strong>FOR INTNERNAL TEST USE ONLY.</strong>
      * <p>
-     * Returns <code>true</code> when test mode is active. If so,
-     * the method getTestAnswerProvider must not return null 
-     * (which means that setTestAnswerProvider has to be called
-     * with a non-null value).
+     * Returns <code>true</code> when test mode is active. If so, the method getTestAnswerProvider
+     * must not return null (which means that setTestAnswerProvider has to be called with a non-null
+     * value).
      */
     public boolean isTestMode() {
-    	return testMode;
+        return testMode;
     }
 
     /**
@@ -343,7 +340,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the answer provider for testing purpose.
      */
     public ITestAnswerProvider getTestAnswerProvider() {
-    	return testAnswerProvider;
+        return testAnswerProvider;
     }
 
     /**
@@ -352,174 +349,229 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns the answer provider for testing purpose.
      */
     public void setTestAnswerProvider(ITestAnswerProvider testAnswerProvider) {
-    	this.testAnswerProvider = testAnswerProvider;
+        this.testAnswerProvider = testAnswerProvider;
     }
-    
+
     /**
-     * Returns the locale used by the localization. The returned locale is not
-     * the locale the localization <strong>should</strong> use, it is the locale
-     * the localization <strong>can</strong> use. That means if the default locale
-     * this plugin runs is for example de_DE, but no language pack for german is installed,
-     * the localization uses the english language, and this method will return the
-     * Locale for "en".
+     * Returns the locale used by the localization. The returned locale is not the locale the
+     * localization <strong>should</strong> use, it is the locale the localization <strong>can</strong>
+     * use. That means if the default locale this plugin runs is for example de_DE, but no language
+     * pack for german is installed, the localization uses the english language, and this method
+     * will return the Locale for "en".
      */
     public Locale getUsedLanguagePackLocale() {
-    	Locale retValue = new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry, Messages.IpsPlugin_languagePackVariant);
-    	return retValue;
+        Locale retValue = new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry,
+                Messages.IpsPlugin_languagePackVariant);
+        return retValue;
     }
-    
+
     /**
      * Returns a control factory that can create controls (and edit fields) for the given datatype.
      * 
      * @throws RuntimeException if no factory is found for the given datatype.
      */
     public ValueDatatypeControlFactory getValueDatatypeControlFactory(ValueDatatype datatype) {
-    	ValueDatatypeControlFactory[] factories = getValueDatatypeControlFactories();
-    	for (int i = 0; i < factories.length; i++) {
-			if (factories[i].isFactoryFor(datatype)) {
-				return factories[i];
-			}
-		}
-    	throw new RuntimeException(Messages.IpsPlugin_errorNoDatatypeControlFactoryFound + datatype);
+        ValueDatatypeControlFactory[] factories = getValueDatatypeControlFactories();
+        for (int i = 0; i < factories.length; i++) {
+            if (factories[i].isFactoryFor(datatype)) {
+                return factories[i];
+            }
+        }
+        throw new RuntimeException(Messages.IpsPlugin_errorNoDatatypeControlFactoryFound + datatype);
     }
-    
+
     /**
-     * Returns all controls factories. 
+     * Returns all controls factories.
      */
     // TODO control factories sollten ueber einen extension point definiert sein und geladen werden.
     private ValueDatatypeControlFactory[] getValueDatatypeControlFactories() {
-    	return controlFactories;
+        return controlFactories;
     }
-    
+
     /**
      * Returns the ips test runner.
      */
-    public IIpsTestRunner getIpsTestRunner(){
-    	if (ipsTestRunner == null)
-    		ipsTestRunner = IpsTestRunner.getDefault();
-    	
-    	return ipsTestRunner;
+    public IIpsTestRunner getIpsTestRunner() {
+        if (ipsTestRunner == null)
+            ipsTestRunner = IpsTestRunner.getDefault();
+
+        return ipsTestRunner;
     }
-    
+
     /**
      * @return An array of all available external table formats.
      */
     public AbstractExternalTableFormat[] getExternalTableFormats() {
-    	if (externalTableFormats == null) {
-    		initExternalTableFormats();
-    	}
-    	return externalTableFormats;
+        if (externalTableFormats == null) {
+            initExternalTableFormats();
+        }
+        return externalTableFormats;
     }
-    
+
     /**
      * Initialize the array of all available table formats
      */
     private void initExternalTableFormats() {
-    	IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
-    	List result = new ArrayList();
-    	for (int i = 0; i < elements.length; i++) {
-			try {
-				AbstractExternalTableFormat format = (AbstractExternalTableFormat)elements[i].createExecutableExtension("class"); //$NON-NLS-1$
-				initExternalTableFormat(format, elements[i]);
-				result.add(format);
-			} catch (CoreException e) {
-				log(e);
-			}
-		}
-    	externalTableFormats = (AbstractExternalTableFormat[])result.toArray(new AbstractExternalTableFormat[result.size()]);
+        IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                "org.faktorips.devtools.core.externalTableFormat"); //$NON-NLS-1$
+        List result = new ArrayList();
+        for (int i = 0; i < elements.length; i++) {
+            try {
+                AbstractExternalTableFormat format = (AbstractExternalTableFormat)elements[i]
+                        .createExecutableExtension("class"); //$NON-NLS-1$
+                initExternalTableFormat(format, elements[i]);
+                result.add(format);
+            }
+            catch (CoreException e) {
+                log(e);
+            }
+        }
+        externalTableFormats = (AbstractExternalTableFormat[])result.toArray(new AbstractExternalTableFormat[result
+                .size()]);
     }
 
-	/**
-	 * Initialize the given format (fill with values provided by the given formatElement and 
-	 * with <code>IValueConverter</code>s configured in other extension points.
-	 * 
-	 * @param format The external table format to initialize.
-	 * @param formatElement The configuration element which defines the given external table format.
-	 */
-	private void initExternalTableFormat(AbstractExternalTableFormat format, IConfigurationElement formatElement) {
-		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID, "externalValueConverter"); //$NON-NLS-1$
-		IExtension[] extensions = point.getExtensions();
-		
-		format.setName(formatElement.getAttribute("name")); //$NON-NLS-1$
-		format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
-		
-		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] elements = extensions[i].getConfigurationElements();
-			boolean found = false;
-			for (int j = 0; j < elements.length && !found; j++) {
-				found = elements[j].getAttribute("id").equals(formatElement.getAttribute("id")); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
-			}
+    /**
+     * Initialize the given format (fill with values provided by the given formatElement and with
+     * <code>IValueConverter</code>s configured in other extension points.
+     * 
+     * @param format The external table format to initialize.
+     * @param formatElement The configuration element which defines the given external table format.
+     */
+    private void initExternalTableFormat(AbstractExternalTableFormat format, IConfigurationElement formatElement) {
+        IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
+                "externalValueConverter"); //$NON-NLS-1$
+        IExtension[] extensions = point.getExtensions();
 
-			for (int j = 0; j < elements.length && found; j++) {
-				if (elements[j].getName().equals("externalValueConverter")) { //$NON-NLS-1$
-					try {
-						format.addValueConverter((IValueConverter)elements[j]
-								.createExecutableExtension("class")); //$NON-NLS-1$
-					} catch (CoreException e) {
-						IpsPlugin.log(e);
-					}
-				}
-			}
+        format.setName(formatElement.getAttribute("name")); //$NON-NLS-1$
+        format.setDefaultExtension(formatElement.getAttribute("defaultExtension")); //$NON-NLS-1$
 
-		}
-	}
-    
-	/**
-     * Opens an editor for the IpsObject contained in the given IpsSrcFile.  
+        for (int i = 0; i < extensions.length; i++) {
+            IConfigurationElement[] elements = extensions[i].getConfigurationElements();
+            boolean found = false;
+            for (int j = 0; j < elements.length && !found; j++) {
+                found = elements[j].getAttribute("id").equals(formatElement.getAttribute("id")); //$NON-NLS-1$ //$NON-NLS-2$ $NON-NLS-2$
+            }
+
+            for (int j = 0; j < elements.length && found; j++) {
+                if (elements[j].getName().equals("externalValueConverter")) { //$NON-NLS-1$
+                    try {
+                        format.addValueConverter((IValueConverter)elements[j].createExecutableExtension("class")); //$NON-NLS-1$
+                    }
+                    catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Opens an editor for the IpsObject contained in the given IpsSrcFile.
+     * 
      * @param srcFile
-	 */
-    public void openEditor(IIpsSrcFile srcFile){
-        if(srcFile==null){
+     */
+    public void openEditor(IIpsSrcFile srcFile) {
+        if (srcFile == null) {
             return;
         }
         openEditor(srcFile.getCorrespondingFile());
     }
+
     /**
-     * Opens the given IpsObject in its editor.  
+     * Opens the given IpsObject in its editor.
+     * 
      * @param srcFile
      */
-    public void openEditor(IIpsObject ipsObject){
-        if(ipsObject==null){
+    public void openEditor(IIpsObject ipsObject) {
+        if (ipsObject == null) {
             return;
         }
         openEditor(ipsObject.getIpsSrcFile());
     }
+
     /**
-     * Opens the file referenced by the given IFile in an editor. The type of editor to be opened
-     * is derived from the file-extension using the editor-registry. If no entry is existent, 
-     * the workbench opens the default editor as defined in the preferences/file-associations. 
-     * If none is specified the workbench guesses the filetype by looking at the file's content 
-     * and opens the corresponding editor.
+     * Opens the file referenced by the given IFile in an editor. The type of editor to be opened is
+     * derived from the file-extension using the editor-registry. If no entry is existent, the
+     * workbench opens the default editor as defined in the preferences/file-associations. If none
+     * is specified the workbench guesses the filetype by looking at the file's content and opens
+     * the corresponding editor.
      * <p>
-     * <code>IFile</code>s containing <code>IpsSrcFiles</code>s and thus <code>IpsObject</code>s 
-     * are always opened in the corresponding IpsObjectEditor.
+     * <code>IFile</code>s containing <code>IpsSrcFiles</code>s and thus
+     * <code>IpsObject</code>s are always opened in the corresponding IpsObjectEditor.
+     * 
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
      * @param fileToEdit
      */
-    public void openEditor(IFile fileToEdit){
-        if(fileToEdit==null){
+    public void openEditor(IFile fileToEdit) {
+        if (fileToEdit == null) {
             return;
         }
         try {
-            IWorkbench workbench= IpsPlugin.getDefault().getWorkbench();
+            IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
             IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
-            /* For known filetypes always use the registered editor, NOT the editor specified
-             * by the preferences/file-associations. This ensures that, when calling this method, IpsObjects
-             * are always opened in their IpsObjectEditor and never in an xml-editor 
+            /*
+             * For known filetypes always use the registered editor, NOT the editor specified by the
+             * preferences/file-associations. This ensures that, when calling this method,
+             * IpsObjects are always opened in their IpsObjectEditor and never in an xml-editor
              * (which might be the default editor for the given file).
-             */ 
+             */
             IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(fileToEdit.getName());
-            if(editor!=null & editorInput!=null){
+            if (editor != null & editorInput != null) {
                 workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
-            }else{
-                /* For unknown files let IDE open the corresponding editor.
-                 * This method searches the preferences/file-associations for an editor (default editor) and if 
-                 * none is found guesses the filetype by looking at the contents of the given file.
+            }
+            else {
+                /*
+                 * For unknown files let IDE open the corresponding editor. This method searches the
+                 * preferences/file-associations for an editor (default editor) and if none is found
+                 * guesses the filetype by looking at the contents of the given file.
                  */
                 IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), fileToEdit, true, true);
             }
-        } catch (PartInitException e) {
+        }
+        catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+    }
+
+    /**
+     * @return All installed ips feature version managers.
+     */
+    public IIpsFeatureVersionManager[] getInstalledIpsFeatureVersionManagers() {
+        if (featureVersionManagers == null) {
+            IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                    "org.faktorips.devtools.core.faktorIpsFeatureVersionManager"); //$NON-NLS-1$
+            List result = new ArrayList();
+            for (int i = 0; i < elements.length; i++) {
+                try {
+                    IIpsFeatureVersionManager manager = (IIpsFeatureVersionManager)elements[i]
+                            .createExecutableExtension("class"); //$NON-NLS-1$
+                    manager.setFeatureId(elements[i].getAttribute("featureId")); //$NON-NLS-1$
+                    result.add(manager);
+                }
+                catch (CoreException e) {
+                    log(e);
+                }
+            }
+            featureVersionManagers = (IIpsFeatureVersionManager[])result.toArray(new IIpsFeatureVersionManager[result
+                    .size()]);
+        }
+
+        return featureVersionManagers;
+    }
+
+    /**
+     * @param featureId The id of the feature the manager has to be returned.
+     * @return The manager for the feature with the given id or <code>null</code> if no manager
+     *         was found.
+     */
+    public IIpsFeatureVersionManager getIpsFeatureVersionManager(String featureId) {
+        IIpsFeatureVersionManager[] managers = getInstalledIpsFeatureVersionManagers();
+        for (int i = 0; i < managers.length; i++) {
+            if (managers[i].getFeatureId().equals(featureId)) {
+                return managers[i];
+            }
+        }
+        return null;
     }
 }

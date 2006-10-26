@@ -62,4 +62,12 @@ public class Messages extends NLS {
 
     public static String IpsObjectGeneration_msgInvalidFromDate;
 
+    public static String IpsProject_msgNoFeatureManager;
+
+    public static String IpsProject_msgVersionTooLow;
+
+    public static String IpsProject_msgCompatible;
+
+    public static String IpsProject_msgIncompatibleVersions;
+
 }

@@ -243,5 +243,24 @@ public interface IIpsProjectProperties {
      */
     public void setContainerRelationIsImplementedRuleEnabled(boolean enabled);
 	
+    /**
+     * @return The ids of all required features.
+     */
+    public String[] getRequiredIpsFeatureIds();
+    
+    /**
+     * @param featureId The id of the feature the min version has to be returned
+     * @return The version number for the given feature id or <code>null</code>, if no entry is found for the given feature id.
+     */
+    public String getMinRequiredVersionNumber(String featureId);
+    
+    /**
+     * Set the min version for the given feature id. If the feature id was not used before, a new entry with the given 
+     * feature id is created.
+     * 
+     * @param featureId The id of the required feature.
+     * @param version The minimum version number for this feature.
+     */
+    public void setMinRequiredVersionNumber(String featureId, String version);
 
 }

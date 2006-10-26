@@ -42,6 +42,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
@@ -79,6 +80,7 @@ import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.product.IRuntimeIdStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -188,7 +190,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         boolean firstComment = true;
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
-            if (token.indexOf("<!--")!=-1) {
+            if (token.indexOf("<!--")!=-1) { //$NON-NLS-1$
                 if (firstComment) {
                     firstComment = false;
                 } else {
@@ -1040,12 +1042,40 @@ public class IpsProject extends IpsElement implements IIpsProject {
 			result.add(msg);
 			return result;
 		}
+        
+        validateRequiredFeatures(result, props);
+        
 		MessageList list = props.validate(this);
 		result.add(list);
 		return result;
 	}
 
-	/**
+    private void validateRequiredFeatures(MessageList ml, IpsProjectProperties props) {
+        String features[] = props.getRequiredIpsFeatureIds();
+        
+        for (int i = 0; i < features.length; i++) {
+            IIpsFeatureVersionManager manager = IpsPlugin.getDefault().getIpsFeatureVersionManager(features[i]);
+            if (manager == null) {
+                String msg = NLS.bind(Messages.IpsProject_msgNoFeatureManager, features[i]);
+                ml.add(new Message(MSGCODE_NO_VERSIONMANAGER, msg, Message.ERROR, this));
+                continue;
+            }
+            String minVersion = props.getMinRequiredVersionNumber(features[i]);
+            if (manager.compareToCurrentVersion(minVersion) > 0 && !manager.isCurrentVersionCompatibleWith(minVersion)) {
+                    String[] params = {manager.getCurrentVersion(), minVersion, features[i]};
+                    String msg = NLS.bind(Messages.IpsProject_msgVersionTooLow, params);
+                    ml.add(new Message(MSGCODE_VERSION_TOO_LOW, msg, Message.ERROR, this));
+            }
+            
+            if (manager.compareToCurrentVersion(minVersion) < 0 && !manager.isCurrentVersionCompatibleWith(minVersion)) {
+                String[] params = {manager.getCurrentVersion(), minVersion, features[i]};
+                String msg = NLS.bind(Messages.IpsProject_msgIncompatibleVersions, params);
+                ml.add(new Message(MSGCODE_INCOMPATIBLE_VERSIONS, msg, Message.ERROR, this));
+            }
+        }
+    }
+
+    /**
 	 * Returns the ClassLoaderProvider for the Java project that belongs to this ips project.
 	 */
 	public ClassLoaderProvider getClassLoaderProviderForJavaProject() {

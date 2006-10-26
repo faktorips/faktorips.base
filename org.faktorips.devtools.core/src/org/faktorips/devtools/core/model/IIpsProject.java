@@ -63,8 +63,28 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Validation message code to indicate that the project's property file's contents is
      * not parsable.
+      */
+     public final static String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that no version manager was installed for a required feature
      */
-    public final static String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
+    public final static String MSGCODE_NO_VERSIONMANAGER = MSGCODE_PREFIX + "NoVersionManager"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the version of the required feature is too low.
+     */
+    public final static String MSGCODE_VERSION_TOO_LOW = MSGCODE_PREFIX + "VersionTooLow"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the version of the required feature is only compatible
+     */
+    public final static String MSGCODE_COMPATIBLE_VERSIONS = MSGCODE_PREFIX + "CompatibleVersions"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the version of the required feature is *not* compatible
+     */
+    public final static String MSGCODE_INCOMPATIBLE_VERSIONS = MSGCODE_PREFIX + "IncompatibleVersions"; //$NON-NLS-1$
     
     /**
      * Returns the corresponding platform project.
