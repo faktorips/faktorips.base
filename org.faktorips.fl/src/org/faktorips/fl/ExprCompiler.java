@@ -19,7 +19,6 @@ package org.faktorips.fl;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -512,12 +511,7 @@ public class ExprCompiler {
     }
 
     private SimpleNode parse(String expr) throws ParseException {
-        try {
-            parser.ReInit(new ByteArrayInputStream(expr.getBytes("UTF-8")));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-            
-        }
+            parser.ReInit(new StringReader(expr));
         return parser.start();
     }
 

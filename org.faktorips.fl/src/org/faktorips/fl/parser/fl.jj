@@ -7,7 +7,8 @@
 options {                                            // generate a class for each node
 		IGNORE_CASE = true; 
 		STATIC = false;                   
-		JAVA_UNICODE_ESCAPE = true;                            
+		JAVA_UNICODE_ESCAPE = true;
+		UNICODE_INPUT = true;                            
 }
 
 
@@ -80,6 +81,7 @@ TOKEN:
     <MONEY_LITERAL: (<INTEGER_LITERAL> | <DECIMAL_LITERAL>) <LETTER> (<LETTER>)? (<LETTER>)?> 
     |
     <#LETTER: ["a"-"z","A"-"Z","\u00e4","\u00c4","\u00f6","\u00d6","\u00cf","\u00dc"] >
+//			<#LETTER: ["a"-"z","A"-"Z","\u00c3\u00a4","\u00c3\u201e","\u00c3\u00bc","\u00c3\u0153","\u00c3\u00b6","\u00c3\u2013"] >
     |
     <NULL_LITERAL: "null" | "NULL" >
 

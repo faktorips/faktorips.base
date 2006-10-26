@@ -12,9 +12,7 @@ package org.faktorips.fl.parser;
  */
 public class ParseException extends Exception {
 
-    private static final long serialVersionUID = 8056481961710831698L;
-
-/**
+  /**
    * This constructor is used by the method "generateParseException"
    * in the generated parser.  Calling this constructor generates
    * a new object of this type with the fields "currentToken",

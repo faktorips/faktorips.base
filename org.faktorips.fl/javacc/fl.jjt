@@ -81,6 +81,7 @@ TOKEN:
     <MONEY_LITERAL: (<INTEGER_LITERAL> | <DECIMAL_LITERAL>) <LETTER> (<LETTER>)? (<LETTER>)?> 
     |
     <#LETTER: ["a"-"z","A"-"Z","\u00e4","\u00c4","\u00f6","\u00d6","\u00cf","\u00dc"] >
+//			<#LETTER: ["a"-"z","A"-"Z","ä","Ä","ü","Ü","ö","Ö"] >
     |
     <NULL_LITERAL: "null" | "NULL" >
 
