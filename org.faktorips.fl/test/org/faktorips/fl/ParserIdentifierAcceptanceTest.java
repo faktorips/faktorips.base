@@ -17,6 +17,7 @@
 
 package org.faktorips.fl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
@@ -54,7 +55,7 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         assertFalse(result.successfull());
     }
     
-    public void testParserWithUmlaut(){
+    public void testParserWithUmlaut() throws UnsupportedEncodingException{
         compiler = new ExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
         resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);
@@ -65,8 +66,9 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         resolver.register("Ö", new JavaCodeFragment("a"), Datatype.INTEGER);
         compiler.setIdentifierResolver(resolver);
 
-        CompilationResult result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
-        MessageList msgList = result.getMessages();
-        assertTrue(msgList.isEmpty());
+        CompilationResult result;
+            result = compiler.compile(new String("1 + ä + Ä + ü + Ü + ö + Ö".getBytes("UTF-8"), "UTF-8"));
+            MessageList msgList = result.getMessages();
+            assertTrue(msgList.isEmpty());
     }
 }
