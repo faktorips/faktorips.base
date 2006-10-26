@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -71,4 +73,13 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
 		return createEditField(toolkit, parent, datatype, valueSet).getControl();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex) {
+        if (valueSet instanceof IEnumValueSet) {
+            return new ComboBoxCellEditor(parent, ((IEnumValueSet)valueSet).getValues());
+        }
+        throw new RuntimeException("Not supported values set " + valueSet.getClass().getName());
+    }
 }

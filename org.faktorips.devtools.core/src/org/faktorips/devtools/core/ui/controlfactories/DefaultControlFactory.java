@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -71,4 +73,10 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 		return createEditField(toolkit, parent, datatype, valueSet).getControl();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex) {
+        return new TextCellEditor(parent);
+    }
 }

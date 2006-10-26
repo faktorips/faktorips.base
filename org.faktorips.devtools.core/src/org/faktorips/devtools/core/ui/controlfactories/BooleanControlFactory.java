@@ -17,6 +17,8 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -62,6 +64,13 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 		return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), "Yes", "No");
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex) {
+        return new ComboBoxCellEditor(parent, new String[]{"Yes", "No"});
+    }
+    
 	/**
 	 * Inner class of the enhanced combo field control.
 	 * 

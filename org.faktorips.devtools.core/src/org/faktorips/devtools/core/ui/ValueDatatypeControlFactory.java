@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
@@ -63,4 +64,14 @@ public abstract class ValueDatatypeControlFactory {
 	 * @param valueSet An optional valueset. 
 	 */
 	public abstract Control createControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype, ValueSet valueSet);
+    
+    /**
+     * Creates a cell editor that allows to edit a value of the value datatype
+     * this is a factory for.
+     * 
+     * @param parent The parent composite.
+     * @param valueSet An optional valueset.  
+     * @param columnIndex The index of the column.  
+     */
+    public abstract CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex);
 }
