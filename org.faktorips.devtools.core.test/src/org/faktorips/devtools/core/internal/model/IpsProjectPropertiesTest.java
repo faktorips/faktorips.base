@@ -76,6 +76,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		path.newSourceFolderEntry(ipsProject.getProject().getFolder("model"));
 		props.setIpsObjectPath(path);
 		props.setPredefinedDatatypesUsed(new String[]{"Integer", "Boolean"});
+        props.setMinRequiredVersionNumber("featureId", "versionNumber");
+        
+        
 		Element projectEl = props.toXml(newDocument());
 
 		props = new IpsProjectProperties();
@@ -101,6 +104,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertEquals(2, datatypes.length);
 		assertEquals("Integer", datatypes[0]);
 		assertEquals("Boolean", datatypes[1]);
+        assertEquals("versionNumber", props.getMinRequiredVersionNumber("featureId"));
 	}
 	
 	public void testAddDefinedDatatype() {
@@ -166,6 +170,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(dynTypes[0] instanceof DynamicEnumDatatype);
         assertEquals("PaymentMode", dynTypes[1].getQualifiedName());
         assertTrue(!(dynTypes[1] instanceof DynamicEnumDatatype));
+        
+        assertEquals("min.Version", props.getMinRequiredVersionNumber("required.id"));
+        assertEquals(2, props.getRequiredIpsFeatureIds().length);
 	}
 	
 	public void testGetLocale() {
@@ -175,5 +182,4 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertEquals(new Locale("de", "DE", "variantA"), IpsProjectProperties.getLocale("de_DE_variantA"));
 		
 	}
-
 }

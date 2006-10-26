@@ -6,6 +6,10 @@
             runtimeIdPrefix="testPrefix" 
             javaProjectContainsClassesForDynamicDatatypes="true"
             containerRelationIsImplementedRuleEnabled="true"> 
+    <RequiredIpsFeatures>
+        <RequiredIpsFeature id="required.id" minVersion="min.Version"/>
+        <RequiredIpsFeature id="another.id" minVersion="min.Version.2"/>
+    </RequiredIpsFeatures>
 	<IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset"/>	
 	<GeneratedSourcecode docLanguage="it" changesInTimeNamingConvention="myConvention"/>
 	<ProductCmptNamingStrategy id="org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy">

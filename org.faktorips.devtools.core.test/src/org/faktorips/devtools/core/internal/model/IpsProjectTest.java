@@ -619,4 +619,30 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(project3.dependsOn(ipsProject));
         assertTrue(project3.dependsOn(baseProject));
     }
+    
+    public void testValidateRequiredFeatures() throws CoreException {
+        MessageList ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+        IIpsProjectProperties props = ipsProject.getProperties();
+        IpsProjectProperties propsOrig = new IpsProjectProperties(ipsProject, (IpsProjectProperties)props);
+        props.setMinRequiredVersionNumber("unknown-feature", "1.0.0");
+        ipsProject.setProperties(props);
+        
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+        
+        props = new IpsProjectProperties(ipsProject, propsOrig);
+        props.setMinRequiredVersionNumber("org.faktorips.feature", "0.0.0");
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INCOMPATIBLE_VERSIONS));
+        
+        props = new IpsProjectProperties(ipsProject, propsOrig);
+        props.setMinRequiredVersionNumber("org.faktorips.feature", "999999.0.0");
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));      
+    }
 }
