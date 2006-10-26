@@ -153,18 +153,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 	 */
 	public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
 		model = null;
-        System.out.println("afterBuildProcess in Builder "+this.getName()+"; modell=null ");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
-        System.out.println("vor initJControlModel");
-        System.out.flush();
 		initJControlModel(project);
-        System.out.println("nach initJControlModel");
-        System.out.flush();
 	}
 
 	/**
@@ -610,32 +605,17 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 			String charset = ipsSrcFile.getIpsProject().getProject()
 					.getDefaultCharset();
+			String javaFileContentsStr = getJavaFileContents(javaFile, charset);
 			if (isMergeEnabled()) {
-				InputStream javaFileContents = null;
-				InputStream newContents = null;
-				try {
-					javaFileContents = javaFile.getContents(true);
-					newContents = transform(ipsSrcFile, formattedContent);
-					merge(javaFile, javaFileContents, newContents, charset);
-					return;
-				} finally {
-					closeStream(javaFileContents);
-					closeStream(newContents);
-				}
+				merge(javaFile, javaFileContentsStr, formattedContent, charset);
+				return;
 			}
 
 			// if merging is not activated and the content of the file is
-			// identical compared to the generated and formatted
+			// equal compared to the generated and formatted
 			// content then the new content is not written to the file
-			try {
-				if (formattedContent.equals(StringUtil.readFromInputStream(
-						javaFile.getContents(), charset))) {
-					return;
-				}
-			} catch (IOException e) {
-				throw new CoreException(new IpsStatus(
-						"An exception occured while trying to read the content of the file: " //$NON-NLS-1$
-								+ javaFile.getName(), e));
+			if (formattedContent.equals(javaFileContentsStr)) {
+				return;
 			}
 		}
 
@@ -643,6 +623,20 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 				false, null);
 	}
 
+    private String getJavaFileContents(IFile javaFile, String charset) throws CoreException{
+        InputStream javaFileContents = null;
+        try {
+            javaFileContents = javaFile.getContents(true);
+            return StringUtil.readFromInputStream(javaFileContents, charset);
+        } catch(IOException e){
+            throw new CoreException(new IpsStatus("An exception ocurred while trying to read the contents of the java file " +
+                    javaFile, e));
+        }
+        finally {
+            closeStream(javaFileContents);
+        }
+    }
+    
 	private void closeStream(InputStream is) {
 		if (is != null) {
 			try {
@@ -778,17 +772,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		return model;
 	}
 	
-	private void merge(IFile javaFile, InputStream oldContent,
-			InputStream newContent, String charset) throws CoreException {
+	private void merge(IFile javaFile, String oldContent,
+			String newContent, String charset) throws CoreException {
 
 		JMerger merger = new JMerger();
 		merger.setControlModel(getJControlModel());
-		merger.setSourceCompilationUnit(merger
-				.createCompilationUnitForInputStream(newContent));
-		merger.setTargetCompilationUnit(merger
-				.createCompilationUnitForInputStream(oldContent));
-		String targetContentsBeforeMerge = merger
-				.getTargetCompilationUnitContents();
+		merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
+		merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
+		String targetContentsBeforeMerge = merger.getTargetCompilationUnitContents();
 		merger.merge();
 		try {
 			String targetContents = merger.getTargetCompilationUnitContents();
@@ -806,8 +797,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
 	private ByteArrayInputStream transform(IIpsSrcFile ipsSrcFile,
 			String content) throws CoreException {
-		String charset = ipsSrcFile.getIpsProject().getProject()
-				.getDefaultCharset();
+		String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
 		try {
 			return new ByteArrayInputStream(content.getBytes(charset));
 		} catch (UnsupportedEncodingException e) {
