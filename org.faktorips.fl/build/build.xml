@@ -73,7 +73,7 @@
 		<mkdir dir="${parser_src}" />
 		<jjtree javacchome="${javacchome}" target="../javacc/fl.jjt" outputdirectory="${parser_src}" 
 		        nodepackage="org.faktorips.fl.parser"/>
-		<echoproperties destfile="C:/temp/properties.txt" failonerror="true"></echoproperties>
+
 		<javacc javacchome="${javacchome}" target="${parser_src}/fl.jj" outputdirectory="${parser_src}"
 			     />
 		
