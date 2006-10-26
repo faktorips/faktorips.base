@@ -45,7 +45,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     private ITableContents tableContents;
     private ITableStructure tableStructure;
     
-    private ModelExplorerConfiguration configTypes;
+    private ModelExplorerConfiguration config;
 
     private IFolder folder;
 
@@ -67,7 +67,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         tableContents = (ITableContents) newIpsObject(root.getIpsDefaultPackageFragment(), IpsObjectType.TABLE_CONTENTS, "TestTableContents");
         tableStructure = (ITableStructure) newIpsObject(root.getIpsDefaultPackageFragment(), IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
         
-        configTypes = new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmpt.class,
+        config = new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmpt.class,
                         IAttribute.class, IRelation.class }, new Class[]{IFolder.class});
 
         folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
@@ -81,47 +81,75 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(IIpsElement)'
      */
     public void testIsAllowedIpsElement() {
-        assertTrue(configTypes.isAllowedIpsElement(proj));
-        assertTrue(configTypes.isAllowedIpsElement(root));
-        assertTrue(configTypes.isAllowedIpsElement(defaultPackage));
-        assertTrue(configTypes.isAllowedIpsElement(pcType));
-        assertTrue(configTypes.isAllowedIpsElement(prodCmpt));
-        assertTrue(configTypes.isAllowedIpsElement(attribute));
-        assertTrue(configTypes.isAllowedIpsElement(relation));
-        assertFalse(configTypes.isAllowedIpsElement(tableContents));
-        assertFalse(configTypes.isAllowedIpsElement(tableStructure));
+        assertTrue(config.isAllowedIpsElement(proj));
+        assertTrue(config.isAllowedIpsElement(root));
+        assertTrue(config.isAllowedIpsElement(defaultPackage));
+        assertTrue(config.isAllowedIpsElement(pcType));
+        assertTrue(config.isAllowedIpsElement(prodCmpt));
+        assertTrue(config.isAllowedIpsElement(attribute));
+        assertTrue(config.isAllowedIpsElement(relation));
+        assertFalse(config.isAllowedIpsElement(tableContents));
+        assertFalse(config.isAllowedIpsElement(tableStructure));
     }
 
     /*
      * Test method for 'org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration.isAllowedIpsElementType(Class)'
      */
     public void testIsAllowedIpsElementType() {
-        assertTrue(configTypes.isAllowedIpsElementType(proj.getClass()));
-        assertTrue(configTypes.isAllowedIpsElementType(root.getClass()));
-        assertTrue(configTypes.isAllowedIpsElementType(defaultPackage.getClass()));
-        assertTrue(configTypes.isAllowedIpsElementType(pcType.getClass()));
-        assertTrue(configTypes.isAllowedIpsElementType(prodCmpt.getClass()));
-        assertTrue(configTypes.isAllowedIpsElementType(attribute.getClass()));
-        assertTrue(configTypes.isAllowedIpsElementType(relation.getClass()));
-        assertFalse(configTypes.isAllowedIpsElementType(tableContents.getClass()));
-        assertFalse(configTypes.isAllowedIpsElementType(tableStructure.getClass()));
+        assertTrue(config.isAllowedIpsElementType(proj.getClass()));
+        assertTrue(config.isAllowedIpsElementType(root.getClass()));
+        assertTrue(config.isAllowedIpsElementType(defaultPackage.getClass()));
+        assertTrue(config.isAllowedIpsElementType(pcType.getClass()));
+        assertTrue(config.isAllowedIpsElementType(prodCmpt.getClass()));
+        assertTrue(config.isAllowedIpsElementType(attribute.getClass()));
+        assertTrue(config.isAllowedIpsElementType(relation.getClass()));
+        assertFalse(config.isAllowedIpsElementType(tableContents.getClass()));
+        assertFalse(config.isAllowedIpsElementType(tableStructure.getClass()));
     }
     public void testIsAllowedResource(){
-        assertTrue(configTypes.isAllowedResource(folder));
-        assertFalse(configTypes.isAllowedResource(file));
+        assertTrue(config.isAllowedResource(folder));
+        assertFalse(config.isAllowedResource(file));
 
-        assertFalse(configTypes.isAllowedResource(proj));
-        assertFalse(configTypes.isAllowedResource(root));
-        assertFalse(configTypes.isAllowedResource(defaultPackage));
+        assertFalse(config.isAllowedResource(proj));
+        assertFalse(config.isAllowedResource(root));
+        assertFalse(config.isAllowedResource(defaultPackage));
     }
     public void testIsAllowedResourceType(){
-        assertTrue(configTypes.isAllowedResourceType(folder.getClass()));
-        assertFalse(configTypes.isAllowedResourceType(file.getClass()));
-        assertFalse(configTypes.isAllowedResourceType(IProject.class));
+        assertTrue(config.isAllowedResourceType(folder.getClass()));
+        assertFalse(config.isAllowedResourceType(file.getClass()));
+        assertFalse(config.isAllowedResourceType(proj.getCorrespondingResource().getClass()));
         
-        assertFalse(configTypes.isAllowedResourceType(proj.getClass()));
-        assertFalse(configTypes.isAllowedResourceType(root.getClass()));
-        assertFalse(configTypes.isAllowedResourceType(defaultPackage.getClass()));
+        assertFalse(config.isAllowedResourceType(proj.getClass()));
+        assertFalse(config.isAllowedResourceType(root.getClass()));
+        assertFalse(config.isAllowedResourceType(defaultPackage.getClass()));
+    }
+    
+    public void testRepresentsProject(){
+        assertTrue(config.representsProject(proj));
+        assertTrue(config.representsProject(proj.getCorrespondingResource()));
+        assertFalse(config.representsProject(folder));
+        assertFalse(config.representsProject(root));
+        assertFalse(config.representsProject(defaultPackage));
+        assertFalse(config.representsProject(file));
+        assertFalse(config.representsProject(pcType));
     }
 
+    public void testRepresentsFolder(){
+        assertFalse(config.representsFolder(proj));
+        assertFalse(config.representsFolder(proj.getCorrespondingResource()));
+        assertTrue(config.representsFolder(folder));
+        assertTrue(config.representsFolder(root));
+        assertTrue(config.representsFolder(defaultPackage));
+        assertFalse(config.representsFolder(file));
+        assertFalse(config.representsFolder(pcType));
+    }
+    public void testRepresentsFile(){
+        assertFalse(config.representsFile(proj));
+        assertFalse(config.representsFile(proj.getCorrespondingResource()));
+        assertFalse(config.representsFile(folder));
+        assertFalse(config.representsFile(root));
+        assertFalse(config.representsFile(defaultPackage));
+        assertTrue(config.representsFile(file));
+        assertTrue(config.representsFile(pcType));
+    }
 }
