@@ -59,15 +59,15 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         Locale.setDefault(Locale.ENGLISH);
         compiler.setLocale(Locale.ENGLISH);
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
-        resolver.register("a", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("a", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("a", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("a", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("a", new JavaCodeFragment("a"), Datatype.INTEGER);
-        resolver.register("a", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ä", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ä", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ü", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ü", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("ö", new JavaCodeFragment("a"), Datatype.INTEGER);
+        resolver.register("Ö", new JavaCodeFragment("a"), Datatype.INTEGER);
         compiler.setIdentifierResolver(resolver);
 
-        CompilationResult result = compiler.compile("1 + a + a + a + a + a + a");
+        CompilationResult result = compiler.compile("1 + ä + Ä + ü + Ü + ö + Ö");
         MessageList msgList = result.getMessages();
         if (! msgList.isEmpty()){
             fail(msgList.getText());
