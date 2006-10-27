@@ -223,6 +223,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         for (int i = 0; i < relations.length; i++) {
             IRelation r = relations[i];
             if (r.isValid() && r.isForwardComposition() && !r.isReadOnlyContainer()) {
+                IPolicyCmptType target = r.findTarget();
+                if (!target.isConfigurableByProductCmptType()) {
+                    continue;
+                }
                 methodsBuilder.appendln();
                 String field = getFieldNameForRelation(r);
                 if (r.is1ToMany()) {
