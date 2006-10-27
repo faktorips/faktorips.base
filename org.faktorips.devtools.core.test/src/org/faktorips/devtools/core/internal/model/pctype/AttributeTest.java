@@ -414,7 +414,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
     
     public void testOverwrites() throws Exception {
-    	IPolicyCmptType supersupertype = newPolicyCmptType(project, "super.SuperSuperType");
+    	IPolicyCmptType supersupertype = newPolicyCmptType(project, "sup.SuperSuperType");
     	IAttribute supersuperAttr = supersupertype.newAttribute();
     	supersuperAttr.setDatatype("superDatatype");
     	supersuperAttr.setProductRelevant(false);
@@ -440,7 +440,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	assertTrue(attribute.getModifier() == supersuperAttr.getModifier());
     	assertTrue(attribute.getAttributeType() == supersuperAttr.getAttributeType());
 
-    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
+    	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
     	pcType.setSupertype(supertype.getQualifiedName());
     	supertype.setSupertype(supersupertype.getQualifiedName());
     	
@@ -465,7 +465,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     	ml = attribute.validate();
     	assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     	
-    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
+    	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
     	IAttribute superAttr = supertype.newAttribute();
     	superAttr.setName("name");
     	pcType.setSupertype(supertype.getQualifiedName());
@@ -475,7 +475,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     public void testValidate_nameCollision() throws Exception {
-    	IPolicyCmptType supertype = newPolicyCmptType(project, "super.SuperType");
+    	IPolicyCmptType supertype = newPolicyCmptType(project, "sup.SuperType");
     	IAttribute superAttr = supertype.newAttribute();
     	superAttr.setName("name");
     	pcType.setSupertype(supertype.getQualifiedName());    	
