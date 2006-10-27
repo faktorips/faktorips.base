@@ -117,11 +117,6 @@ private final void jjCheckNAddStates(int start, int end)
       jjCheckNAdd(jjnextStates[start]);
    } while (start++ != end);
 }
-private final void jjCheckNAddStates(int start)
-{
-   jjCheckNAdd(jjnextStates[start]);
-   jjCheckNAdd(jjnextStates[start + 1]);
-}
 static final long[] jjbitVec0 = {
    0xfffffffffffffffeL, 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL
 };
@@ -133,12 +128,11 @@ static final long[] jjbitVec3 = {
 };
 private final int jjMoveNfa_0(int startState, int curPos)
 {
-   int[] nextStates;
    int startsAt = 0;
    jjnewStateCnt = 109;
    int i = 1;
    jjstateSet[0] = startState;
-   int j, kind = 0x7fffffff;
+   int kind = 0x7fffffff;
    for (;;)
    {
       if (++jjround == 0x7fffffff)
@@ -907,8 +901,6 @@ int jjmatchedKind;
 
 public Token getNextToken() 
 {
-  int kind;
-  Token specialToken = null;
   Token matchedToken;
   int curPos = 0;
 

@@ -773,7 +773,6 @@ public class FlParser/*@bgen(jjtree)*/implements FlParserTreeConstants, FlParser
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   public boolean lookingAhead = false;
-  private boolean jj_semLA;
   private int jj_gen;
   final private int[] jj_la1 = new int[15];
   static private int[] jj_la1_0;
@@ -877,7 +876,9 @@ public class FlParser/*@bgen(jjtree)*/implements FlParserTreeConstants, FlParser
     throw generateParseException();
   }
 
-  static private final class LookaheadSuccess extends java.lang.Error { }
+  static private final class LookaheadSuccess extends java.lang.Error {
+
+    private static final long serialVersionUID = 1L; }
   final private LookaheadSuccess jj_ls = new LookaheadSuccess();
   final private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {

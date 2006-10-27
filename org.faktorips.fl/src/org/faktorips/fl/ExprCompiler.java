@@ -1,19 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- *
- * Alle Rechte vorbehalten.
- *
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
- * Konfigurationen, etc.) duerfen nur unter den Bedingungen der 
- * Faktor-Zehn-Community Lizenzvereinbarung - Version 0.1 (vor Gruendung Community) 
- * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- *   http://www.faktorips.org/legal/cl-v01.html
- * eingesehen werden kann.
- *
- * Mitwirkende:
- *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de
- *
- *******************************************************************************/
+/***************************************************************************************************
+ *  * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.  *  * Alle Rechte vorbehalten.  *  *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,  * Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der  * Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community)  * genutzt werden, die Bestandteil der Auslieferung ist und auch
+ * unter  *   http://www.faktorips.org/legal/cl-v01.html  * eingesehen werden kann.  *  *
+ * Mitwirkende:  *   Faktor Zehn GmbH - initial API and implementation - http://www.faktorzehn.de  *  
+ **************************************************************************************************/
 
 package org.faktorips.fl;
 
@@ -116,7 +108,7 @@ public class ExprCompiler {
     public final static String SYNTAX_ERROR = PREFIX + "SyntaxError"; //$NON-NLS-1$
 
     /**
-     * The expression has a lexical error. 
+     * The expression has a lexical error.
      */
     public final static String LEXICAL_ERROR = PREFIX + "LexicalError"; //$NON-NLS-1$
 
@@ -146,7 +138,7 @@ public class ExprCompiler {
      * The expression contains a function call to a function with wrong argument types.
      */
     public final static String WRONG_ARGUMENT_TYPES = PREFIX + "WrongArgumentTypes"; //$NON-NLS-1$
-    
+
     /**
      * The expresseion contains a literal that is identified by the parser as a money literal that
      * doesn't have a valid currency.
@@ -187,7 +179,7 @@ public class ExprCompiler {
     private boolean ensureResultIsObject = true;
 
     private DatatypeHelperProvider datatypeHelperProvider = new DefaultDatatypeHelperProvider();
-    
+
     /**
      * Creates a new compiler. Messages returned by the compiler are generated using the default
      * locale.
@@ -273,11 +265,11 @@ public class ExprCompiler {
         register(new EqualsMoneyMoney());
         register(new EqualsStringString());
         register(new EqualsObjectDatatype(AnyDatatype.INSTANCE));
-        
+
         // not equals operation
         register(new NotEqualsDecimalDecimal());
         register(new NotEqualsMoneyMoney());
-        
+
         // parenthesis operation
         register(new ParenthesisInt());
         register(new ParenthesisDecimal());
@@ -474,10 +466,10 @@ public class ExprCompiler {
         } catch (ParseException pe) {
             return parseExceptionToResult(pe);
         } catch (Exception pe) {
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings
-                    .getString(INTERNAL_ERROR, locale)));
+            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings.getString(
+                    INTERNAL_ERROR, locale)));
         } catch (TokenMgrError e) {
-            String text = localizedStrings.getString(LEXICAL_ERROR, locale, new String[]{e.getMessage()});
+            String text = localizedStrings.getString(LEXICAL_ERROR, locale, new String[] { e.getMessage() });
             return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
         }
         // parse ok, generate the sourcecode via the visitor visiting the parse tree
@@ -486,8 +478,8 @@ public class ExprCompiler {
             ParseTreeVisitor visitor = new ParseTreeVisitor(this);
             result = (CompilationResultImpl)rootNode.jjtAccept(visitor, null);
         } catch (Exception e) {
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings
-                    .getString(INTERNAL_ERROR, locale)));
+            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings.getString(
+                    INTERNAL_ERROR, locale)));
         }
         if (result.failed()) {
             return result;
@@ -498,20 +490,19 @@ public class ExprCompiler {
                 return result;
             }
             // convert primitive to wrapper object
-            JavaCodeFragment converted = CodeGenUtil.convertPrimitiveToWrapper(resultType, result
-                    .getCodeFragment());
+            JavaCodeFragment converted = CodeGenUtil.convertPrimitiveToWrapper(resultType, result.getCodeFragment());
             CompilationResultImpl finalResult = new CompilationResultImpl(converted, ((ValueDatatype)resultType)
                     .getWrapperType());
             finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
             return finalResult;
         } catch (Exception e) {
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings
-                    .getString(INTERNAL_ERROR, locale)));
+            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings.getString(
+                    INTERNAL_ERROR, locale)));
         }
     }
 
     private SimpleNode parse(String expr) throws ParseException {
-            parser.ReInit(new StringReader(expr));
+        parser.ReInit(new StringReader(expr));
         return parser.start();
     }
 
@@ -521,10 +512,9 @@ public class ExprCompiler {
             expected += e.tokenImage[e.expectedTokenSequences[i][0]] + " "; //$NON-NLS-1$
         }
         Object[] replacements = new Object[] { e.currentToken.next.toString(),
-                new Integer(e.currentToken.next.beginLine),
-                new Integer(e.currentToken.next.beginColumn), expected };
-        return new CompilationResultImpl(Message.newError(SYNTAX_ERROR, localizedStrings.getString(
-            SYNTAX_ERROR, locale, replacements)));
+                new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };
+        return new CompilationResultImpl(Message.newError(SYNTAX_ERROR, localizedStrings.getString(SYNTAX_ERROR,
+                locale, replacements)));
     }
 
     BinaryOperation[] getBinaryOperations(String operator) {
@@ -532,8 +522,7 @@ public class ExprCompiler {
         if (operatorOperations == null) {
             return new BinaryOperation[0];
         }
-        return (BinaryOperation[])operatorOperations.toArray(new BinaryOperation[operatorOperations
-                .size()]);
+        return (BinaryOperation[])operatorOperations.toArray(new BinaryOperation[operatorOperations.size()]);
     }
 
     UnaryOperation[] getUnaryOperations(String operator) {
@@ -541,8 +530,7 @@ public class ExprCompiler {
         if (operatorOperations == null) {
             return new UnaryOperation[0];
         }
-        return (UnaryOperation[])operatorOperations.toArray(new UnaryOperation[operatorOperations
-                .size()]);
+        return (UnaryOperation[])operatorOperations.toArray(new UnaryOperation[operatorOperations.size()]);
     }
 
     /**
@@ -560,26 +548,26 @@ public class ExprCompiler {
     }
 
     /**
-     * Returns the code generation helper for the given type or <code>null</code>
-     * if no helper is available.
+     * Returns the code generation helper for the given type or <code>null</code> if no helper is
+     * available.
      */
     public DatatypeHelper getDatatypeHelper(Datatype type) {
-        if (datatypeHelperProvider==null || type==null) {
+        if (datatypeHelperProvider == null || type == null) {
             return null;
         }
         return datatypeHelperProvider.getDatatypeHelper(type);
     }
 
     /**
-     * Verifies if the provided string is a valid identifier according to the identifier definition of
-     * the Fl-Parser.
+     * Verifies if the provided string is a valid identifier according to the identifier definition
+     * of the Fl-Parser.
      */
-    public final static boolean isValidIdentifier(String identifier){
+    public final static boolean isValidIdentifier(String identifier) {
         JavaCharStream s = new JavaCharStream(new StringReader(identifier));
         FlParserTokenManager manager = new FlParserTokenManager(s);
         Token token = manager.getNextToken();
-        if(token.kind == FlParserConstants.IDENTIFIER){
-            if(manager.getNextToken().kind == 0){
+        if (token.kind == FlParserConstants.IDENTIFIER) {
+            if (manager.getNextToken().kind == 0) {
                 return true;
             }
             return false;
