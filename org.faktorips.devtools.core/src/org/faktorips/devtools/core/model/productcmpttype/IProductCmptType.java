@@ -30,6 +30,11 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
  */
 public interface IProductCmptType extends IIpsObject {
 
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "PRODUCTCMPTTYPE-"; //$NON-NLS-1$
+    
 	/**
 	 * Returns <code>true</code> if the type is abstract, <code>false</code> otherwise.
 	 */

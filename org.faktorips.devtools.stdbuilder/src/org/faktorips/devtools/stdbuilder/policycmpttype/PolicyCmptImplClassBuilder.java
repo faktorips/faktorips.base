@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -188,9 +189,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodGetProductCmpt(methodsBuilder);
             generateMethodGetProductCmptGeneration(methodsBuilder);
             generateMethodSetProductCmpt(methodsBuilder);
+            generateMethodEffectiveFromHasChanged(methodsBuilder);
         }
         if (getPcType().isAggregateRoot()) {
-            generateGetEffectiveFromAsCalendar(methodsBuilder);
+            generateMethodGetEffectiveFromAsCalendar(methodsBuilder);
         } else {
             if (!getPcType().isAbstract()) {
                 generateMethodGetParent(methodsBuilder);
@@ -202,13 +204,46 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         generateMethodCreateUnresolvedReference(methodsBuilder);
     }
     
-    protected void generateGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateMethodGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
         String todoText = getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO");
         methodsBuilder.appendln(JavaSourceFileBuilder.MARKER_BEGIN_USER_CODE);
         methodsBuilder.appendln("return null; // " + getJavaNamingConvention().getToDoMarker() + " " + todoText);
         methodsBuilder.appendln(JavaSourceFileBuilder.MARKER_END_USER_CODE);
+        methodsBuilder.methodEnd();
+    }
+    
+    protected void generateMethodEffectiveFromHasChanged(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Void.class, MethodNames.EFFECTIVE_FROM_HAS_CHANGED, new String[0], new Class[0]);
+        methodsBuilder.appendln("super." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
+
+        IRelation[] relations = getPolicyCmptType().getRelations();
+        for (int i = 0; i < relations.length; i++) {
+            IRelation r = relations[i];
+            if (r.isValid() && r.isForwardComposition() && !r.isReadOnlyContainer()) {
+                methodsBuilder.appendln();
+                String field = getFieldNameForRelation(r);
+                if (r.is1ToMany()) {
+                    methodsBuilder.append("for (");
+                    methodsBuilder.appendClassName(Iterator.class);
+                    methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");
+                    methodsBuilder.appendClassName(AbstractConfigurablePolicyComponent.class);
+                    methodsBuilder.append(" child = (");
+                    methodsBuilder.appendClassName(AbstractConfigurablePolicyComponent.class);
+                    methodsBuilder.append(")it.next();");
+                    methodsBuilder.append("child." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
+                    methodsBuilder.append("}");
+                } else {
+                    methodsBuilder.append("if (" + field + "!=null) {");
+                    methodsBuilder.append("((");
+                    methodsBuilder.appendClassName(AbstractConfigurablePolicyComponent.class);
+                    methodsBuilder.append(")" + field + ")." + MethodNames.EFFECTIVE_FROM_HAS_CHANGED + "();");
+                    methodsBuilder.append("}");
+                }
+            }
+        }
         methodsBuilder.methodEnd();
     }
     

@@ -61,15 +61,20 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest {
 
 	public void testFindSupertype() throws CoreException {
 		assertNull(productCmptType.findSupertype());
-		policyCmptType.setSupertype("unknownSupertype");
+		
+        policyCmptType.setSupertype("unknownSupertype");
 		assertNull(productCmptType.findSupertype());
 		
-		IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Policy");
-		superPolicyCmptType.setUnqualifiedProductCmptType("Product");
-		policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
-		policyCmptType.setUnqualifiedProductCmptType("Product");
+		IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "Policy");
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+		superPolicyCmptType.setUnqualifiedProductCmptType("");
+        assertNull(productCmptType.findSupertype());
+        
+        superPolicyCmptType.setUnqualifiedProductCmptType("Product");
 		assertEquals(superPolicyCmptType.findProductCmptType(), productCmptType.findSupertype());
-		
+        
+        superPolicyCmptType.setConfigurableByProductCmptType(false);
+        assertNull(productCmptType.findSupertype());
 	}
 	
 	/*

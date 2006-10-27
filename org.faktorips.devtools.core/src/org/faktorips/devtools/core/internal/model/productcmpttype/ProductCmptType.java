@@ -86,6 +86,12 @@ public class ProductCmptType implements IProductCmptType {
 		if (superPolicyCmptType==null) {
 			return null;
 		}
+        if (!superPolicyCmptType.isConfigurableByProductCmptType()) {
+            return null;
+        }
+        if (StringUtils.isEmpty(superPolicyCmptType.getUnqualifiedProductCmptType())) {
+            return null;
+        }
 		return new ProductCmptType((PolicyCmptType)superPolicyCmptType);
 	}
 

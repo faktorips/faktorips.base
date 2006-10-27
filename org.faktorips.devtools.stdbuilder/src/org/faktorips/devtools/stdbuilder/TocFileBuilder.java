@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.IProductCmptKind;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -337,7 +338,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (pcType == null) {
             return null;
         }
-        
+        IProductCmptKind kind = productCmpt.findProductCmptKind();
+        if (kind==null) {
+            return null;
+        }
+        if (pcType.findProductCmptType()==null) {
+            return null;
+        }
         String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY, productCmpt.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml";
         TocEntryObject entry = TocEntryObject.createProductCmptTocEntry(

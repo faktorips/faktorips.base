@@ -70,10 +70,7 @@ public abstract class AbstractParameterIdentifierResolver implements
 	}
 
 	/**
-	 * Overridden method.
-	 * 
-	 * @see org.faktorips.fl.IdentifierResolver#compile(java.lang.String,
-	 *      java.util.Locale)
+     * {@inheritDoc}
 	 */
 	public CompilationResult compile(String identifier, Locale locale) {
 

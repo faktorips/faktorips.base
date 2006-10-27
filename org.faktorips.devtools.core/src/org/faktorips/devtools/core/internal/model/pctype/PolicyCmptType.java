@@ -24,7 +24,6 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -840,27 +839,31 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * is reported with a new message with code MSGCODE_INCONSISTENT_TYPE_HIERARCHY in the given
      * list. The message(s) returned by the supertype ar not added.
      */
-    private void validateSupertypeHierarchy(TypeHierarchy supertypeHierarchy, MessageList ml) {
+    private void validateSupertypeHierarchy(TypeHierarchy supertypeHierarchy, MessageList ml) throws CoreException {
         if (supertypeHierarchy == null) {
             return;
         }
         IPolicyCmptType supertype = supertypeHierarchy.getSupertype(this);
         if (supertype == null) {
-            return;
+            return; 
         }
         try {
-
             MessageList tmpList = supertype.validate();
-            Message msg = tmpList.getMessageByCode(MSGCODE_INCONSISTENT_TYPE_HIERARCHY);
-            if (msg != null) {
-                ml.add(msg);
-            } else if (tmpList.getMessageByCode(MSGCODE_SUPERTYPE_NOT_FOUND) != null) {
-                ml.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY,
-                        Messages.PolicyCmptType_msgInconsistentTypeHierarchy, Message.ERROR, this, PROPERTY_SUPERTYPE));
+            for (int i=0; i<tmpList.getNoOfMessages(); i++) {
+                Message msg = tmpList.getMessage(i);
+                if (msg.getCode().equals(MSGCODE_INCONSISTENT_TYPE_HIERARCHY)
+                        || msg.getCode().equals(MSGCODE_SUPERTYPE_NOT_FOUND)
+                        || msg.getCode().equals(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING)
+                        || msg.getCode().equals(MSGCODE_CYCLE_IN_TYPE_HIERARCHY)) {
+                    ml.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY,
+                            Messages.PolicyCmptType_msgInconsistentTypeHierarchy, Message.ERROR, this, PROPERTY_SUPERTYPE));
+                    
+                }
             }
-
+        } catch (CoreException ce) {
+            throw ce;
         } catch (Exception e) {
-            IpsPlugin.log(e);
+            throw new CoreException(new IpsStatus(e));
         }
     }
 

@@ -89,15 +89,15 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     	MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that this policy component type is defined configurable by 
-     * product, but the product cmpt type name is not set.
+     * Validation message code to indicate that this policy component type is defined as configurable by 
+     * product, but the product component type name is not set.
      */
     public final static String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING = 
     	MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined configurable by 
-     * product, but the product cmpt type name is not set.
+     * product and the product type name is the same as this type's name.
      */
     public final static String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH = 
     	MSGCODE_PREFIX + "ProductCmptTypeNameMissmatch"; //$NON-NLS-1$
