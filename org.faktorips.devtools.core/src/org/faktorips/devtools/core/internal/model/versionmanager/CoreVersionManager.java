@@ -71,7 +71,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
      * {@inheritDoc}
      */
     public String getFeatureId() {
-        return "org.faktorips.feature";
+        return "org.faktorips.feature"; //$NON-NLS-1$
     }
 
     /**
@@ -79,7 +79,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
      */
     public String getCurrentVersion() {
         if (version == null) {
-            version = (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version");
+            version = (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return version;
     }
@@ -136,7 +136,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
             String version = projectToMigrate.getProperties().getMinRequiredVersionNumber(getFeatureId());
             while (compareToCurrentVersion(version) < 0) {
                 String underscoreVersion = version.replace('.', '_');
-                Class clazz = Class.forName("org.faktorips.devtools.core.internal.model.versionmanager.Migration_" + underscoreVersion, true, loader);
+                Class clazz = Class.forName("org.faktorips.devtools.core.internal.model.versionmanager.Migration_" + underscoreVersion, true, loader); //$NON-NLS-1$
                 Constructor constructor = clazz.getConstructor(new Class[] {IIpsProject.class, String.class});
                 migrationOperation = (AbstractMigrationOperation)constructor.newInstance(new Object[] {projectToMigrate, getFeatureId()});
                 operations.add(migrationOperation);

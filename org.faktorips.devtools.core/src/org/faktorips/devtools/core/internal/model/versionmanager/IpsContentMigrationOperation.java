@@ -72,7 +72,7 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
                     IEditorReference[] editors = pages[j].getEditorReferences();
                     for (int k = 0; k < editors.length; k++) {
                         if (editors[k].isDirty()) {
-                            throw new CoreException(new IpsStatus("Can not migrate if unsaved changes exist."));
+                            throw new CoreException(new IpsStatus("Can not migrate if unsaved changes exist.")); //$NON-NLS-1$
                         }
                     }
                 }
@@ -93,7 +93,7 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
             monitor.worked(1);
         }
         
-        monitor.subTask("Save changes");
+        monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
         ArrayList result = new ArrayList();
         projectToMigrate.findAllIpsObjects(result);
         for (int i = 0; i < result.size(); i++) {

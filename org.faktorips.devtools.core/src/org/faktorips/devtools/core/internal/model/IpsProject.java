@@ -1062,7 +1062,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
             catch (CoreException e) {
                IpsPlugin.log(e);
-               String msg = NLS.bind("The migration information for this project related to the feature {0} is invalid.", managers[i].getFeatureId());
+               String msg = NLS.bind(Messages.IpsProject_msgInvalidMigrationInformation, managers[i].getFeatureId());
                result.add(new Message(MSGCODE_INVALID_MIGRATION_INFORMATION, msg, Message.ERROR, this));
             }
         }

@@ -70,4 +70,6 @@ public class Messages extends NLS {
 
     public static String IpsProject_msgIncompatibleVersions;
 
+    public static String IpsProject_msgInvalidMigrationInformation;
+
 }
