@@ -23,7 +23,8 @@ import org.faktorips.util.message.MessageList;
 /**
  * Naming conventions for the various ips elements. This is a separate class as it is sometimes
  * neccessary to check if a name is valid before an object is created for example in wizards to a create a new object. 
- * Therefore we can't use a class method. Static methods are also not an option as we have to work against the published interface.
+ * Therefore we can't use a method of the designated class. The naming conventions are defined per project, so
+ * that they can be configured in the project.
  * 
  * @author Jan Ortmann
  */
