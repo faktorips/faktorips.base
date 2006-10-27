@@ -629,7 +629,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.appendln("for (int i=0; i<result.length; i++) {");
         methodsBuilder.appendln("result[i] = (");
         methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append(")getRepository().getProductComponent(");
+        methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
         methodsBuilder.append(fieldName);
         methodsBuilder.appendln("[i]);");
         methodsBuilder.appendln("}");
@@ -694,7 +694,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append(")getRepository().getProductComponent(");
+        methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
         methodsBuilder.append(fieldName);
         methodsBuilder.append("[index]);");
         methodsBuilder.closeBracket();
@@ -737,7 +737,7 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         methodsBuilder.openBracket();
         methodsBuilder.append("return (");
         methodsBuilder.appendClassName(targetClass);
-        methodsBuilder.append(")getRepository().getProductComponent(");
+        methodsBuilder.append(")getRepository()." + MethodNames.GET_EXISTING_PRODUCT_COMPONENT + "(");
         methodsBuilder.append(fieldName);
         methodsBuilder.append(");");
         methodsBuilder.closeBracket();
