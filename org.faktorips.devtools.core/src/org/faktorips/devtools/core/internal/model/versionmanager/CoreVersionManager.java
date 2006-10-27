@@ -19,10 +19,16 @@ package org.faktorips.devtools.core.internal.model.versionmanager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Properties;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.versionmanager.AbstractMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.osgi.framework.Version;
 
@@ -45,6 +51,15 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
 
     private String version;
     private Properties compatibleVersions;
+
+    // the classloader to be used if the migration-operations are loaded. This is only used 
+    // for tests...
+    private ClassLoader loader;
+    
+    public CoreVersionManager() {
+        super();
+        loader = getClass().getClassLoader();
+    }
     
     /**
      * {@inheritDoc}
@@ -106,4 +121,32 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
         return outer.compareTo(inner);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+        
+        if (IpsPlugin.getDefault().isTestMode()) {
+            loader = (ClassLoader)IpsPlugin.getDefault().getTestAnswerProvider().getAnswer();
+        }
+        
+        ArrayList operations = new ArrayList();
+        try {
+            AbstractMigrationOperation migrationOperation = null;
+            String version = projectToMigrate.getProperties().getMinRequiredVersionNumber(getFeatureId());
+            while (compareToCurrentVersion(version) < 0) {
+                String underscoreVersion = version.replace('.', '_');
+                Class clazz = Class.forName("org.faktorips.devtools.core.internal.model.versionmanager.Migration_" + underscoreVersion, true, loader);
+                Constructor constructor = clazz.getConstructor(new Class[] {IIpsProject.class, String.class});
+                migrationOperation = (AbstractMigrationOperation)constructor.newInstance(new Object[] {projectToMigrate, getFeatureId()});
+                operations.add(migrationOperation);
+                version = migrationOperation.getTargetVersion();
+            } 
+        }
+        catch (Exception e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+        
+        return (AbstractMigrationOperation[])operations.toArray(new AbstractMigrationOperation[operations.size()]);
+    }
 }

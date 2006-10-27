@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -87,12 +88,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
 	public IpsProjectProperties() {
 		super();
+        setInitialMinRequiredVersionNumbers();
 	}
 
     /**
      * Copy constructor.
      */
 	public IpsProjectProperties(IIpsProject ipsProject, IpsProjectProperties props) {
+        setInitialMinRequiredVersionNumbers();
 		Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
 		Element el = props.toXml(doc);
 		initFromXml(ipsProject, el);
@@ -400,7 +403,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     private void initRequiredFeatures(Element el) {
         requiredFeatures = new Hashtable();
-
+        setInitialMinRequiredVersionNumbers();
         if (el == null) {
             return;
         }
@@ -738,6 +741,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      */
     public void setMinRequiredVersionNumber(String featureId, String version) {
         requiredFeatures.put(featureId, version);
+    }
+    
+    private void setInitialMinRequiredVersionNumbers() {
+        IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
+        for (int i = 0; i < managers.length; i++) {
+            setMinRequiredVersionNumber(managers[i].getFeatureId(), managers[i].getCurrentVersion());
+        }
+        
     }
     
 }

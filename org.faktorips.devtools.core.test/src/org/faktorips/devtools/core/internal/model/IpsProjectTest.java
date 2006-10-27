@@ -630,19 +630,31 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         
         ml = ipsProject.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
-        
-        props = new IpsProjectProperties(ipsProject, propsOrig);
-        props.setMinRequiredVersionNumber("org.faktorips.feature", "0.0.0");
-        ipsProject.setProperties(props);
+
+        ipsProject.setProperties(propsOrig);
+        setVersion("0.0.0");
         ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INCOMPATIBLE_VERSIONS));
         
-        props = new IpsProjectProperties(ipsProject, propsOrig);
-        props.setMinRequiredVersionNumber("org.faktorips.feature", "999999.0.0");
-        ipsProject.setProperties(props);
+        setVersion("999999.0.0");
         ml = ipsProject.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));      
+    }
+    
+    public void testValidateMissingMigration() throws Exception {
+        MessageList ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
+        
+        setVersion("0.0.3");
+        ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
+    }
+    
+    private void setVersion(String version) throws CoreException {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setMinRequiredVersionNumber("org.faktorips.feature", version);
+        ipsProject.setProperties(props);
     }
 }

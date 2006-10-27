@@ -1043,12 +1043,30 @@ public class IpsProject extends IpsElement implements IIpsProject {
 			return result;
 		}
         
-        validateRequiredFeatures(result, props);
+        MessageList list = props.validate(this);
+        result.add(list);
+        if (list.containsErrorMsg()) {
+            return result;
+        }
         
-		MessageList list = props.validate(this);
-		result.add(list);
+        validateRequiredFeatures(result, props);
+        validateMigration(result, props);
 		return result;
 	}
+
+    private void validateMigration(MessageList result, IpsProjectProperties props) {
+        IIpsFeatureVersionManager[] managers = IpsPlugin.getDefault().getIpsFeatureVersionManagers();
+        for (int i = 0; i < managers.length; i++) {
+            try {
+                managers[i].getMigrationOperations(this);
+            }
+            catch (CoreException e) {
+               IpsPlugin.log(e);
+               String msg = NLS.bind("The migration information for this project related to the feature {0} is invalid.", managers[i].getFeatureId());
+               result.add(new Message(MSGCODE_INVALID_MIGRATION_INFORMATION, msg, Message.ERROR, this));
+            }
+        }
+    }
 
     private void validateRequiredFeatures(MessageList ml, IpsProjectProperties props) {
         String features[] = props.getRequiredIpsFeatureIds();

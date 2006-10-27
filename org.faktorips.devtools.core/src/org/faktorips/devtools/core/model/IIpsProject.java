@@ -87,6 +87,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public final static String MSGCODE_INCOMPATIBLE_VERSIONS = MSGCODE_PREFIX + "IncompatibleVersions"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the migration information for this project for a feature is 
+     * invalid.
+     */
+    public final static String MSGCODE_INVALID_MIGRATION_INFORMATION = MSGCODE_PREFIX + "InvalidMigrationInformation"; //$NON-NLS-1$
+    
+    /**
      * Returns the corresponding platform project.
      */
     public IProject getProject();

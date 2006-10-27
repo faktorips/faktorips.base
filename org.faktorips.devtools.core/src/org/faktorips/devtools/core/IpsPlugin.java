@@ -41,10 +41,13 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
+import org.faktorips.devtools.core.internal.model.versionmanager.IpsContentMigrationOperation;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
@@ -537,7 +540,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * @return All installed ips feature version managers.
      */
-    public IIpsFeatureVersionManager[] getInstalledIpsFeatureVersionManagers() {
+    public IIpsFeatureVersionManager[] getIpsFeatureVersionManagers() {
         if (featureVersionManagers == null) {
             IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
                     "org.faktorips.devtools.core.faktorIpsFeatureVersionManager"); //$NON-NLS-1$
@@ -566,12 +569,29 @@ public class IpsPlugin extends AbstractUIPlugin {
      *         was found.
      */
     public IIpsFeatureVersionManager getIpsFeatureVersionManager(String featureId) {
-        IIpsFeatureVersionManager[] managers = getInstalledIpsFeatureVersionManagers();
+        IIpsFeatureVersionManager[] managers = getIpsFeatureVersionManagers();
         for (int i = 0; i < managers.length; i++) {
             if (managers[i].getFeatureId().equals(featureId)) {
                 return managers[i];
             }
         }
         return null;
+    }
+    
+    /**
+     * @param projectToMigrate The project the migration operation should be returned for.
+     * @return A migration operation migrating the content of the given IpsProject to match the
+     *         needs of the current version of FaktorIps.
+     * @throws CoreException
+     */
+    public AbstractIpsContentMigrationOperation getMigrationOperation(IIpsProject projectToMigrate)
+            throws CoreException {
+        
+        IIpsFeatureVersionManager[] managers = getIpsFeatureVersionManagers();
+        IpsContentMigrationOperation operation = new IpsContentMigrationOperation(projectToMigrate);
+        for (int i = 0; i < managers.length; i++) {
+            operation.addMigrationPath(managers[i].getMigrationOperations(projectToMigrate));
+        }
+        return operation;
     }
 }
