@@ -742,7 +742,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 		model = new JControlModel(getJMergeDefaultConfigDocument().getDocumentElement());
 	}
 
-	private org.w3c.dom.Document getJMergeDefaultConfigDocument(){
+	private org.w3c.dom.Document getJMergeDefaultConfigDocument() throws CoreException{
 		InputStream is = null;
 		try {
 			StringBuffer mergeFile = new StringBuffer();
@@ -753,7 +753,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 					.getResource(mergeFile.toString()).getContent();
 			return XmlUtil.getDocument(is);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new CoreException(new IpsStatus(e));
 		} finally {
 			closeStream(is);
 		}
