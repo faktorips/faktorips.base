@@ -142,23 +142,20 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         
         generateGetGenerationMethod(methodsBuilder);
         if (!getProductCmptType().isAbstract()) {
-            generateMethodCreatePolicyCmpt(methodsBuilder);
+            generateFactoryMethodsForPolicyCmptType(getPolicyCmptType(), methodsBuilder);
             generateMethodCreatePolicyCmptBase(methodsBuilder);
         }
     }
     
-    private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_GENERATION", getIpsObject(), methodsBuilder);
-        interfaceBuilder.generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
-        methodsBuilder.openBracket();
-        methodsBuilder.append("return (");
-        methodsBuilder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
-        methodsBuilder.append(")getRepository().getProductComponentGeneration(");
-        methodsBuilder.append(MethodNames.GET_PRODUCT_COMPONENT_ID);
-        methodsBuilder.append("(), ");
-        methodsBuilder.append(interfaceBuilder.getVarNameEffectiveDate(getIpsObject()));
-        methodsBuilder.append(");");
-        methodsBuilder.closeBracket();
+    private void generateFactoryMethodsForPolicyCmptType(IPolicyCmptType returnedTypeInSignature, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        if (!returnedTypeInSignature.isAbstract()) {
+            generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
+        }
+        IPolicyCmptType supertype = returnedTypeInSignature.findSupertype();
+        if (supertype!=null) {
+            generateFactoryMethodsForPolicyCmptType(supertype, methodsBuilder);
+        }
+            
     }
     
     /**
@@ -170,9 +167,9 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
      * }
      * </pre>
      */
-    private void generateMethodCreatePolicyCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateMethodCreatePolicyCmpt(IPolicyCmptType returnedTypeInSignature, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        interfaceBuilder.generateSignatureCreatePolicyCmpt(getPolicyCmptType(), methodsBuilder);
+        interfaceBuilder.generateSignatureCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return new ");
         methodsBuilder.appendClassName(policyCmptImplClassBuilder.getQualifiedClassName(getPolicyCmptType()));
@@ -197,6 +194,20 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         methodsBuilder.closeBracket();
     }
 
+    private void generateGetGenerationMethod(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+        appendLocalizedJavaDoc("METHOD_GET_GENERATION", getIpsObject(), methodsBuilder);
+        interfaceBuilder.generateSignatureGetGeneration(getProductCmptType(), methodsBuilder);
+        methodsBuilder.openBracket();
+        methodsBuilder.append("return (");
+        methodsBuilder.appendClassName(productCmptGenInterfaceBuilder.getQualifiedClassName(getIpsSrcFile()));
+        methodsBuilder.append(")getRepository().getProductComponentGeneration(");
+        methodsBuilder.append(MethodNames.GET_PRODUCT_COMPONENT_ID);
+        methodsBuilder.append("(), ");
+        methodsBuilder.append(interfaceBuilder.getVarNameEffectiveDate(getIpsObject()));
+        methodsBuilder.append(");");
+        methodsBuilder.closeBracket();
+    }
+    
     /**
      * {@inheritDoc}
      */
