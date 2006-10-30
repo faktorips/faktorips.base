@@ -69,7 +69,7 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         root= proj.getIpsPackageFragmentRoots()[0];
         packageFragment= root.createPackageFragment("TestPackageFragment", false, null);
         packageFragment2= root.createPackageFragment("ZTestPackageFragment", false, null);
-        defaultPackage= root.getIpsDefaultPackageFragment();
+        defaultPackage= root.getDefaultIpsPackageFragment();
         policyCT = newPolicyCmptType(proj.getIpsPackageFragmentRoots()[0], "TestPolicy");
         policyCT2 = newPolicyCmptType(proj.getIpsPackageFragmentRoots()[0], "TestPolicy2");
         table= new TableStructure();

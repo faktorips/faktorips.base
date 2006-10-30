@@ -116,10 +116,10 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 			target = (IIpsPackageFragment)dropTarget;
 		}
         else if (dropTarget instanceof IIpsPackageFragmentRoot) {
-            target = ((IIpsPackageFragmentRoot)dropTarget).getIpsDefaultPackageFragment();
+            target = ((IIpsPackageFragmentRoot)dropTarget).getDefaultIpsPackageFragment();
         }
         else if (dropTarget instanceof IIpsProject) {
-            target = ((IIpsProject)dropTarget).getIpsPackageFragmentRoots()[0].getIpsDefaultPackageFragment();
+            target = ((IIpsProject)dropTarget).getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment();
         }
 		return target;
 	}

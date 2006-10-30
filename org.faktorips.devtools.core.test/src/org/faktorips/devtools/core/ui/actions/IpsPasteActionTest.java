@@ -82,9 +82,9 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         IpsCopyAction copyAction = new IpsCopyAction(new TestSelectionProvider(pack), IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell());
         pasteAction = new IpsPasteAction(new TestSelectionProvider(root), IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell());
         copyAction.run();
-        assertEquals(1, root.getIpsDefaultPackageFragment().getIpsChildPackageFragments().length);
+        assertEquals(1, root.getDefaultIpsPackageFragment().getChildIpsPackageFragments().length);
         pasteAction.run();
-        assertEquals(2, root.getIpsDefaultPackageFragment().getIpsChildPackageFragments().length);
+        assertEquals(2, root.getDefaultIpsPackageFragment().getChildIpsPackageFragments().length);
     }
     
     private class TestSelectionProvider implements ISelectionProvider {

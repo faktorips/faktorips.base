@@ -96,7 +96,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         // Content of proj
         root= proj.getIpsPackageFragmentRoots()[0];
         emptyRoot= prodDefProj.getIpsPackageFragmentRoots()[0];
-        defaultPackage = root.getIpsDefaultPackageFragment();
+        defaultPackage = root.getDefaultIpsPackageFragment();
         subPackage= root.createPackageFragment("subpackage", true, null);
         modelPackage= root.createPackageFragment("subpackage.model", true, null);
         productPackage= root.createPackageFragment("subpackage.product", true, null);
@@ -125,7 +125,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         
         // contents of modelProj
         modelRoot= modelProj.getIpsPackageFragmentRoots()[0];
-        modelDefaultPackage = modelRoot.getIpsDefaultPackageFragment();
+        modelDefaultPackage = modelRoot.getDefaultIpsPackageFragment();
         
     }
 

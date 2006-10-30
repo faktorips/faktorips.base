@@ -115,6 +115,18 @@
                tooltip="Open IPS Object">
          </action>
       </actionSet>
+      <actionSet
+            id="org.faktorips.devtools.actions.StandardActionSet"
+            label="%org.faktorips.devtools.actions.StandardActionSet"
+            visible="true">
+         <action
+               class="org.faktorips.devtools.core.ui.wizards.ipspackage.OpenNewIpsPackageWizardAction"
+               icon="icons/NewIpsPackageFragment.gif"
+               id="org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction"
+               label="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction"
+               toolbarPath="org.faktorips.devtools"
+               tooltip="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.tooltip"/>
+      </actionSet>
    </extension>
    
    <extension
@@ -167,6 +179,7 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
          <actionSet
                id="org.faktorips.devtools.actions.ModelingActionSet">
          </actionSet>
@@ -390,6 +403,15 @@
     	   <description>Creates a new Test Case Type</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard"
+            icon="icons/NewIpsPackageFragment.gif"
+            id="newIpsPackageWizard"
+            name="New IPS Package">
+         <description/>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
     </extension>
 
     <extension
@@ -662,6 +684,7 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
+         <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
          <actionSet id="org.faktorips.devtools.actions.ProductDefinitionActionSet"/>
          <view
                closeable="true"

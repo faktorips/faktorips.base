@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -94,6 +95,7 @@ import org.w3c.dom.Element;
 public class IpsProject extends IpsElement implements IIpsProject {
 
 	private IRuntimeIdStrategy runtimeIdStrategy = null;
+    private IIpsProjectNamingConventions namingConventions = null;
 	
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -322,7 +324,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name) {
-        return new IpsPackageFragmentRoot(this, name);
+        try {
+            if(!getNamingConventions().validateIpsPackageName(name).containsErrorMsg()){
+                return new IpsPackageFragmentRoot(this, name);
+            }
+        }
+        catch (CoreException e) {
+            // nothing to do, return null
+        }
+        return null;
     }
 
     /**
@@ -405,7 +415,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * {@inheritDoc}
      */
     public boolean exists() {
-        return getCorrespondingResource().exists();
+        if(!getCorrespondingResource().exists()){
+            return false;
+        }
+        IProject project = getProject();
+        try {
+            String[] natures = project.getDescription().getNatureIds();
+            for (int i = 0; i < natures.length; i++) {
+                if(natures[i].equals(IIpsProject.NATURE_ID)){
+                    return true;
+                }
+            }
+        } catch (CoreException e) {
+            // if we can't get the project nature, the project is not in a state we would consider full existance
+            return false;
+        }
+        return false;
     }
 
     /**
@@ -1099,4 +1124,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	public ClassLoaderProvider getClassLoaderProviderForJavaProject() {
 		return ((IpsModel)getIpsModel()).getClassLoaderProvider(this);
 	}
+
+    public IIpsProjectNamingConventions getNamingConventions() {
+        if(namingConventions==null){
+            namingConventions = new DefaultIpsProjectNamingConventions();
+        }
+        return namingConventions;
+    }
 }

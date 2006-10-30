@@ -77,7 +77,7 @@ public class IpsPasteAction extends IpsAction {
         } else if (selected instanceof IIpsProject) {
             paste(((IIpsProject)selected).getProject());
         } else if (selected instanceof IIpsPackageFragmentRoot) {
-            paste(((IIpsPackageFragmentRoot)selected).getIpsDefaultPackageFragment());
+            paste(((IIpsPackageFragmentRoot)selected).getDefaultIpsPackageFragment());
         } else if (selected instanceof IIpsPackageFragment) {
             paste((IIpsPackageFragment)selected);
         } else if (selected instanceof IContainer) {

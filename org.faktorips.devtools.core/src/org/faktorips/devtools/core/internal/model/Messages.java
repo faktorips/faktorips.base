@@ -34,7 +34,11 @@ public class Messages extends NLS {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public static String ValidationUtils_msgObjectDoesNotExist;
+	public static String DefaultIpsProjectNamingConventions_error;
+
+    public static String DefaultIpsProjectNamingConventions_warning;
+
+    public static String ValidationUtils_msgObjectDoesNotExist;
 
 	public static String ValidationUtils_msgDatatypeDoesNotExist;
 

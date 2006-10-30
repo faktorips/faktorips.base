@@ -59,13 +59,13 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         proj = newIpsProject("Testprojekt");
         
         root = proj.getIpsPackageFragmentRoots()[0];
-        defaultPackage = root.getIpsDefaultPackageFragment();
+        defaultPackage = root.getDefaultIpsPackageFragment();
         pcType = newPolicyCmptType(root, "TestPCType");
         attribute = pcType.newAttribute();
         relation = pcType.newRelation();
         prodCmpt = newProductCmpt(root, "TestProdCmpt");
-        tableContents = (ITableContents) newIpsObject(root.getIpsDefaultPackageFragment(), IpsObjectType.TABLE_CONTENTS, "TestTableContents");
-        tableStructure = (ITableStructure) newIpsObject(root.getIpsDefaultPackageFragment(), IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
+        tableContents = (ITableContents) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS, "TestTableContents");
+        tableStructure = (ITableStructure) newIpsObject(root.getDefaultIpsPackageFragment(), IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
         
         config = new ModelExplorerConfiguration(new Class[] { IPolicyCmptType.class, IProductCmpt.class,
                         IAttribute.class, IRelation.class }, new Class[]{IFolder.class});

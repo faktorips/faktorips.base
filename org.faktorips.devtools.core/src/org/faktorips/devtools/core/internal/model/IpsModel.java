@@ -336,6 +336,20 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsPackageFragment ipsFolder = root.getIpsPackageFragment(folderName.toString());
         return ipsFolder.getIpsSrcFile(resource.getName());
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsElement findIpsElement(IResource resource) {
+        if(resource==null){
+            return null;
+        }
+        IIpsElement element = getIpsElement(resource);
+        if(element != null && element.exists()){
+            return element;
+        }
+        return null;
+    }
 
     /**
      * {@inheritDoc}

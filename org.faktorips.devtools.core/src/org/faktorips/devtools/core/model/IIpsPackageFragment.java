@@ -47,7 +47,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Returns all packagfragments which are contained in this one.
      * @throws CoreException 
      */
-    public IIpsPackageFragment[] getIpsChildPackageFragments() throws CoreException;
+    public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
 
     /**
      * Returns all <code>IResource</code>s that do not correspond to
@@ -160,6 +160,25 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * </ul>
      */
     public IIpsSrcFile createIpsFileFromTemplate(String name, IIpsObject template, GregorianCalendar date, boolean force, IProgressMonitor monitor) throws CoreException;
+
+    /**
+     * Creates a IpsPackageFragment below this one
+     * with the indicated name.
+     * 
+     * @param name the sub-package name
+     * @param force a flag controlling how to deal with resources that
+     *    are not in sync with the local file system
+     * @param monitor the given progress monitor
+     * 
+     * @throws CoreException if the element could not be created. Reasons include:
+     * <ul>
+     * <li> This folder does not exist</li>
+     * <li> A <code>CoreException</code> occurred while creating an underlying resource
+     * <li> This root folder is read only
+     * <li> The name is not a valid package name
+     * </ul>
+     */
+    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) throws CoreException;
     
     /**
      * Returns the (unqualified) name of the corresponding folder in the file system.

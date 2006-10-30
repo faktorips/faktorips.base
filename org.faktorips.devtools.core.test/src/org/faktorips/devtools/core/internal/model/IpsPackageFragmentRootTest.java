@@ -221,7 +221,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
     
     public void testGetIpsDefaultPackageFragment() {
-    	IIpsPackageFragment def = this.ipsRoot.getIpsDefaultPackageFragment();
+    	IIpsPackageFragment def = this.ipsRoot.getDefaultIpsPackageFragment();
     	assertEquals(def.getName(), "");
     }
 

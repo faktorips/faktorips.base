@@ -122,7 +122,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     	IProductCmpt source = content.getStandardVehicle();
     	
-    	IIpsSrcFile target = source.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.new.package").getIpsSrcFile(source.getName() + ".ipsproduct");
+    	IIpsSrcFile target = source.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack").getIpsSrcFile(source.getName() + ".ipsproduct");
     	String targetName = target.getIpsPackageFragment().getName() + "." + source.getName();
         
     	assertFalse(target.exists());
@@ -184,7 +184,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	
    		new MoveOperation(new IIpsElement[] {file.getIpsObject()}, new String[] {"table"}).run(null);
    		
-   		IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getRoot().getIpsDefaultPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
+   		IIpsSrcFile target = content.getStandardVehicle().getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
    		assertTrue(target.exists());
    		assertFalse(file.exists());
     }
@@ -212,7 +212,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	assertTrue(pack.exists());
     	assertTrue(file.exists());
     	
-        int count = pack.getParentIpsPackageFragment().getIpsChildPackageFragments().length;
+        int count = pack.getParentIpsPackageFragment().getChildIpsPackageFragments().length;
         
     	new MoveOperation(new IIpsElement[] {pack}, new String[] {"test.renamedPackage"}).run(null);
     	
@@ -223,7 +223,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     	file = ((IFolder)pack.getCorrespondingResource()).getFile("test.unknown");
     	assertTrue(pack.exists());
     	assertTrue(file.exists());
-        assertEquals(count, pack.getParentIpsPackageFragment().getIpsChildPackageFragments().length);
+        assertEquals(count, pack.getParentIpsPackageFragment().getChildIpsPackageFragments().length);
         
     }
     

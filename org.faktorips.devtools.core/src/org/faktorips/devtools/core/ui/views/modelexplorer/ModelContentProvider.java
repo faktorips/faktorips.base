@@ -212,7 +212,7 @@ public class ModelContentProvider implements ITreeContentProvider {
             // packagefragments from being hidden in the view)
             List filteredFragments = new ArrayList();
             for (int i = 0; i < fragments.length; i++) {
-                if (hasChildren(fragments[i]) || fragments[i].getIpsChildPackageFragments().length == 0) {
+                if (hasChildren(fragments[i]) || fragments[i].getChildIpsPackageFragments().length == 0) {
                     filteredFragments.add(fragments[i]);
                 }
             }
@@ -220,9 +220,9 @@ public class ModelContentProvider implements ITreeContentProvider {
         } else {
             // display the default package only if it contains files 
             // display productcmptss in defaultpackage, files in root
-            Object[] children = root.getIpsDefaultPackageFragment().getIpsChildPackageFragments();
-            if (hasChildren(root.getIpsDefaultPackageFragment())) {
-                return concatenate(new Object[] { root.getIpsDefaultPackageFragment() }, children);
+            Object[] children = root.getDefaultIpsPackageFragment().getChildIpsPackageFragments();
+            if (hasChildren(root.getDefaultIpsPackageFragment())) {
+                return concatenate(new Object[] { root.getDefaultIpsPackageFragment() }, children);
             } else {
                 return children;
             }
@@ -255,7 +255,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreException {
         // in hierarchical layout display childpackagefragments as children
         if (!isFlatLayout) {
-            return fragment.getIpsChildPackageFragments();
+            return fragment.getChildIpsPackageFragments();
         } else {
             return EMPTY_ARRAY;
         }

@@ -32,11 +32,11 @@ public class ModelLabelProvider implements ILabelProvider {
 
 	public Image getImage(Object element) {
 		if(element instanceof IIpsElement){
-			if (element instanceof IIpsPackageFragment) {
+			/*if (element instanceof IIpsPackageFragment) {
 				return IpsPlugin.getDefault().getImage("folder_open.gif"); //$NON-NLS-1$
-			} else{
+			} else{*/
 				return ((IIpsElement) element).getImage();
-			}
+			//}
 		}else if(element instanceof IResource){
 	        IWorkbenchAdapter adapter= null;
 	        if (element instanceof IAdaptable) {

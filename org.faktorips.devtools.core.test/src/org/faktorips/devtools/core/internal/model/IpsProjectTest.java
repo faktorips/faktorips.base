@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -656,5 +657,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setMinRequiredVersionNumber("org.faktorips.feature", version);
         ipsProject.setProperties(props);
+    }
+    
+    public void testGetNamingConventions() throws CoreException{
+        IIpsProjectNamingConventions namingConventions = ipsProject.getNamingConventions();
+        assertTrue(namingConventions instanceof DefaultIpsProjectNamingConventions);
+        assertFalse(namingConventions.validateIpsPackageName("testPackage").containsErrorMsg());
+        assertTrue(namingConventions.validateIpsPackageName("1").containsErrorMsg());
     }
 }

@@ -55,7 +55,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         super.setUp();
         proj= newIpsProject("TestProject");
         root= proj.getIpsPackageFragmentRoots()[0];
-        defaultPackage= root.getIpsDefaultPackageFragment();
+        defaultPackage= root.getDefaultIpsPackageFragment();
         subPackage= root.createPackageFragment("subpackage", true, null);
         subsubPackage= root.createPackageFragment("subpackage.subsubpackage", true, null);
         empty= root.createPackageFragment("subpackage.subsubpackage.emptypackage", true, null);
@@ -93,7 +93,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         img= polCmptType.getImage();
         assertTrue(img==flatProvider.getImage(polCmptType));
         assertTrue(img==hierarchyProvider.getImage(polCmptType));
-        img= IpsPlugin.getDefault().getImage("folder_open.gif");
+        img= subPackage.getImage();
         assertEquals(flatProvider.getImage(subPackage), img);
         assertTrue(img==hierarchyProvider.getImage(subPackage));
         

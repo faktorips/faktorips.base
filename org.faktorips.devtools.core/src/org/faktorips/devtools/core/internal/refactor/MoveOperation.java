@@ -357,7 +357,7 @@ public class MoveOperation implements IRunnableWithProgress {
 		
 		for (int i = 0; i < members.length; i++) {
 			if (members[i].getType() == IResource.FOLDER) {
-				getRelativeFileNames(path + "." + members[i].getName(), (IFolder)members[i], result); //$NON-NLS-1$
+				getRelativeFileNames(path.length()>0?(path + "." + members[i].getName()):members[i].getName(), (IFolder)members[i], result); //$NON-NLS-1$
 			}
 			else if (members[i].getType() == IResource.FILE) {
 				result.add(new String[] {path, members[i].getName()});
@@ -552,7 +552,7 @@ public class MoveOperation implements IRunnableWithProgress {
 					throw new CoreException(status);
 				}
 				checkSources(pack.getChildren());
-				checkSources(pack.getIpsChildPackageFragments());
+				checkSources(pack.getChildIpsPackageFragments());
 			}
 			else if (toTest instanceof ITableContents) {
 				ITableContents table = (ITableContents)toTest;

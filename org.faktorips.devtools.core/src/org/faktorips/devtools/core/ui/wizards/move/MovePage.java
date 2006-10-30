@@ -212,7 +212,7 @@ public class MovePage extends WizardPage implements ModifyListener {
 				}
 				try {
 					return ((IIpsPackageFragment) parentElement)
-							.getIpsChildPackageFragments();
+							.getChildIpsPackageFragments();
 				} catch (CoreException e) {
 					IpsPlugin.log(e);
 				}
@@ -249,10 +249,10 @@ public class MovePage extends WizardPage implements ModifyListener {
 
 					for (int i = 0; i < roots.length; i++) {
 						IIpsPackageFragment def = roots[i]
-								.getIpsDefaultPackageFragment();
+								.getDefaultIpsPackageFragment();
 						result.add(def);
 						result.addAll(Arrays.asList(def
-								.getIpsChildPackageFragments()));
+								.getChildIpsPackageFragments()));
 					}
 					return result.toArray();
 

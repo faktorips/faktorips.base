@@ -30,6 +30,9 @@ import org.faktorips.util.message.MessageList;
  */
 public interface IIpsProjectNamingConventions {
 
+    public static final String DISCOURAGED_NAME = "DISCOURAGED_NAME";
+    public static final String INVALID_NAME = "INVALID_NAME";
+    
     /**
      * Validates if the given name is a valid for ips packages.
      * 

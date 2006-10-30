@@ -109,4 +109,5 @@ public class Messages extends NLS {
     public static String TreeViewerRefreshAction_TooltipText;
     public static String IpsTestAction_RunMessageDialogNoTestsFound_Title;
     public static String IpsTestAction_RunMessageDialogNoTestsFound_Text;
+    public static String NewIpsPacketAction_name;
 }

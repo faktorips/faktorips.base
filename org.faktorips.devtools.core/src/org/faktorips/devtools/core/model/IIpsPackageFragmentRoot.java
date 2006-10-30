@@ -75,7 +75,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     /**
      * Returns the default-package.
      */
-    public IIpsPackageFragment getIpsDefaultPackageFragment();
+    public IIpsPackageFragment getDefaultIpsPackageFragment();
     
     /**
      * Creates the IPS package fragment with the indicated name. Note that if the name

@@ -483,5 +483,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Validates the project and returns the result as list of messages.
      */
     public MessageList validate() throws CoreException;
+
+    /**
+     * Returns the naming conventions used for this project.
+     */
+    public IIpsProjectNamingConventions getNamingConventions();
     
 }

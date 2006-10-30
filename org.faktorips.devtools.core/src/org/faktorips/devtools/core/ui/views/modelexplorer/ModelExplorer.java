@@ -67,6 +67,7 @@ import org.faktorips.devtools.core.ui.actions.ModelExplorerDeleteAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
 import org.faktorips.devtools.core.ui.actions.NewFileResourceAction;
 import org.faktorips.devtools.core.ui.actions.NewFolderAction;
+import org.faktorips.devtools.core.ui.actions.NewIpsPacketAction;
 import org.faktorips.devtools.core.ui.actions.NewPolicyComponentTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewProductComponentAction;
 import org.faktorips.devtools.core.ui.actions.NewTableContentAction;
@@ -134,7 +135,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     private ModelLabelProvider labelProvider = new ModelLabelProvider();;
 
     private IpsResourceChangeListener resourceListener;
-    
+
     protected ModelExplorerConfiguration config;
     /**
      * Flag that indicates whether the current layout style is flat (true) or hierarchical (false).
@@ -144,7 +145,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
     public ModelExplorer() {
         super();
         config = createConfig();
-        contentProvider= createContentProvider();
+        contentProvider = createContentProvider();
     }
 
     protected ModelExplorerConfiguration createConfig() {
@@ -152,8 +153,8 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 IProductCmpt.class, ITableContents.class, IAttribute.class, IRelation.class, ITestCase.class,
                 ITestCaseType.class }, new Class[] { IFolder.class, IFile.class, IProject.class });
     }
-    
-    protected ModelContentProvider createContentProvider(){
+
+    protected ModelContentProvider createContentProvider() {
         return new ModelContentProvider(config, isFlatLayout);
     }
 
@@ -169,22 +170,24 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new ModelExplorerDropListener());
 
-        IDecoratorManager decoManager= IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
+        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
+        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager
+                .getLabelDecorator());
         treeViewer.setLabelProvider(decoProvider);
 
         createFilters(treeViewer);
 
         getSite().setSelectionProvider(treeViewer);
-        resourceListener = new IpsResourceChangeListener(treeViewer){
-            // TODO Optimize refresh: refresh folders if files were added or removed, additionally refresh changed files 
+        resourceListener = new IpsResourceChangeListener(treeViewer) {
+            // TODO Optimize refresh: refresh folders if files were added or removed, additionally
+            // refresh changed files
             protected IResource[] internalResourceChanged(IResourceChangeEvent event) {
-                IResourceDelta delta= event.getDelta();
-                IResource res= delta.getResource();
-                if(res!=null){
-                    return new IResource[]{res};
+                IResourceDelta delta = event.getDelta();
+                IResource res = delta.getResource();
+                if (res != null) {
+                    return new IResource[] { res };
                 }
-                return new IResource[]{};
+                return new IResource[] {};
             }
         };
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
@@ -235,11 +238,10 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
     }
-    
-    private void createToolBar(){
-        Action refreshAction= new TreeViewerRefreshAction(getSite());
-        getViewSite().getActionBars()
-                .setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+
+    private void createToolBar() {
+        Action refreshAction = new TreeViewerRefreshAction(getSite());
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
         IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
         retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
         retargetAction.setToolTipText(refreshAction.getToolTipText());
@@ -343,8 +345,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             return true;
         } else if (node instanceof IFile) {
             try {
-                IIpsSrcFile file = (IIpsSrcFile)IpsPlugin.getDefault().getIpsModel().getIpsElement(
-                        (IFile)node);
+                IIpsSrcFile file = (IIpsSrcFile)IpsPlugin.getDefault().getIpsModel().getIpsElement((IFile)node);
                 IIpsObject obj = file.getIpsObject();
                 treeViewer.setSelection(new StructuredSelection(obj), true);
                 return true;
@@ -407,7 +408,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(new Separator());
             createPropertiesActions(manager, selected);
         }
-        
+
         protected void createEditActions(IMenuManager manager, Object selected) {
             if (selected instanceof IIpsObject || selected instanceof IFile || selected instanceof IRelation
                     || selected instanceof IAttribute) {
@@ -417,12 +418,12 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
         protected void createNewMenu(IMenuManager manager, Object selected) {
             MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew);
-            if (selected instanceof IFolder) {
+            if ((selected instanceof IFolder) || (selected instanceof IIpsProject)) {
                 newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
                 newMenu.add(new NewFileResourceAction(getSite().getShell(), treeViewer));
             }
-            if (selected instanceof IIpsElement) {
-                newMenu.add(new NewFolderAction(getSite().getShell(), treeViewer));
+            if ((selected instanceof IIpsElement) && !(selected instanceof IIpsProject)) {
+                newMenu.add(new NewIpsPacketAction(getSite().getShell(), treeViewer));
                 newMenu.add(new NewFileResourceAction(getSite().getShell(), treeViewer));
                 if (config.isAllowedIpsElementType(IProductCmpt.class)) {
                     newMenu.add(new NewProductComponentAction(getSite().getWorkbenchWindow()));
@@ -497,14 +498,16 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         protected void createTestCaseAction(IMenuManager manager, Object selected) {
             if (config.isAllowedIpsElementType(ITestCase.class) || config.isAllowedIpsElementType(IProductCmpt.class)) {
                 if (selected instanceof IIpsPackageFragment || selected instanceof IIpsPackageFragmentRoot
-                        || selected instanceof IIpsProject || selected instanceof ITestCase || selected instanceof IProductCmpt) {
+                        || selected instanceof IIpsProject || selected instanceof ITestCase
+                        || selected instanceof IProductCmpt) {
                     manager.add(new IpsTestAction(treeViewer));
                 }
             }
         }
 
         protected void createRefactorMenu(IMenuManager manager, Object selected) {
-            if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile | selected instanceof IFolder ) {
+            if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile
+                    | selected instanceof IFolder) {
                 MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor);
                 subMm.add(rename);
                 subMm.add(move);
@@ -527,7 +530,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
     }
-    
+
     private class LayoutAction extends Action implements IAction {
         private boolean isFlatLayout;
         private ModelExplorer modelExplorer;

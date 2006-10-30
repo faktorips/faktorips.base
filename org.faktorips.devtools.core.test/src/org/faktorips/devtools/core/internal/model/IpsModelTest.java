@@ -136,6 +136,29 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsSrcFile srcFile = pdFolderB.getIpsSrcFile(filename);
         assertEquals(srcFile, model.getIpsElement(file));
     }
+
+    public void testFindIpsElement() throws CoreException {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        assertEquals(model, model.getIpsElement(root));
+        
+        IProject project = root.getProject("TestProject");
+        IIpsProject pdProject = model.getIpsProject("TestProject");
+        assertNull(model.findIpsElement(project));
+        
+        pdProject = this.newIpsProject("TestIpsProject");
+        project = pdProject.getProject();
+        assertEquals(pdProject, model.findIpsElement(project));
+        
+        IFolder rootFolder = project.getFolder("productdef");
+        IIpsPackageFragmentRoot pdRootFolder = pdProject.getIpsPackageFragmentRoot("productdef");
+        assertEquals(pdRootFolder, model.findIpsElement(rootFolder));
+        
+        IFolder folderA = rootFolder.getFolder("a");
+        IIpsPackageFragment pdFolderA = pdRootFolder.getIpsPackageFragment("a");
+        assertNull(model.findIpsElement(folderA));
+        folderA.create(true, true, null);
+        assertEquals(pdFolderA, model.findIpsElement(folderA));
+    }
     
     public void testAddChangeListener() {
         TestContentsChangeListener listener = new TestContentsChangeListener();

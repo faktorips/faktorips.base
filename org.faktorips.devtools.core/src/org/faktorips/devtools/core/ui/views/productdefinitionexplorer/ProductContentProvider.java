@@ -51,15 +51,15 @@ public class ProductContentProvider extends ModelContentProvider {
                     filteredElements.addAll(Arrays.asList(getFileContent(fragments[i])));
                     continue;
                 }
-                if (hasChildren(fragments[i]) || fragments[i].getIpsChildPackageFragments().length == 0) {
+                if (hasChildren(fragments[i]) || fragments[i].getChildIpsPackageFragments().length == 0) {
                     filteredElements.add(fragments[i]);
                 }
             }
             return filteredElements.toArray();
         } else {
-            IIpsPackageFragment defaultPackage= root.getIpsDefaultPackageFragment();
-            Object[] childPackages = defaultPackage.getIpsChildPackageFragments();
-            if (hasChildren(root.getIpsDefaultPackageFragment())) {
+            IIpsPackageFragment defaultPackage= root.getDefaultIpsPackageFragment();
+            Object[] childPackages = defaultPackage.getChildIpsPackageFragments();
+            if (hasChildren(root.getDefaultIpsPackageFragment())) {
                 return concatenate(childPackages, getFileContent(defaultPackage));
             } else {
                 return childPackages;
