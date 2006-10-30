@@ -25,7 +25,34 @@ import org.faktorips.devtools.core.model.IIpsProject;
 public interface IIpsFeatureVersionManager {
 
     /**
-     * Set the id of the feature this is a version manager for.
+     * Set the id of this manager. This method is used by the framework to initialize this manager
+     * and <strong>must not be called by clients</strong>.
+     * 
+     * @param id The new id for this manager
+     */
+    public void setId(String id);
+
+    /**
+     * @return The id of this manager.
+     */
+    public String getId();
+
+    /**
+     * Set the id of the predecessor-manager. This method is used by the framework to initialize
+     * this manager and <strong>must not be called by clients</strong>.
+     * 
+     * @param predecessorId The id of the predecessor of this manager.
+     */
+    public void setPredecessorId(String predecessorId);
+
+    /**
+     * @return The id of the predecessor for this manager.
+     */
+    public String getPredecessorId();
+
+    /**
+     * Set the id of the feature this is a version manager for. This method is used by the framework
+     * to initialize this manager and <strong>must not be called by clients</strong>.
      * 
      * @param featureId The feature id.
      */

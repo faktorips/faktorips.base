@@ -810,7 +810,9 @@
          point="org.faktorips.devtools.core.faktorIpsFeatureVersionManager">
       <faktorIpsFeatureVersionManager
             class="org.faktorips.devtools.core.internal.model.versionmanager.CoreVersionManager"
-            featureId="org.faktorips.feature"/>
+            featureId="org.faktorips.feature"
+            id="org.faktorips.feature.manager"
+            basedOnFeatureManager=""/>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">

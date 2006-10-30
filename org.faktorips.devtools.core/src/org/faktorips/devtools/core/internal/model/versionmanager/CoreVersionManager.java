@@ -17,11 +17,8 @@
 
 package org.faktorips.devtools.core.internal.model.versionmanager;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -35,22 +32,16 @@ import org.osgi.framework.Version;
 /**
  * Version manager for the core-feature of FaktorIps. 
  * 
- * The information about the compatibility of a version of the feature is stored in files named
- * "compatiblity.&lt;version&gt;".
- * <p>
- * &lt;version&gt; is the version of the feature the compatibility is for, 0.9.38 for example.
- * <p>
- * The content of the file is a plain list of all versions of the feature the version namend in the 
- * filenam is compatible to. Each version has to be seperated by a newline. 
- * <p>
- * The files are handled as properties-files, so be aware of the encoding.  
+ * This manager is based on classes named org.faktorips.devtools.core.internal.model.versionmanager.Migration_&lt;version&gt;.
+ * version is the version-number the migration-class can migrate.  
  * 
  * @author Thorsten Guenther
  */
 public class CoreVersionManager implements IIpsFeatureVersionManager {
-
+    
     private String version;
-    private Properties compatibleVersions;
+    private String id;
+    private String predecessorId;
 
     // the classloader to be used if the migration-operations are loaded. This is only used 
     // for tests...
@@ -96,20 +87,20 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
             return true;
         }
         
-        if (compatibleVersions == null) {
-            InputStream in = getClass().getClassLoader().getResourceAsStream("org/faktorips/devtools/core/internal/model/versionmanager/compatibility." + getCurrentVersion()); //$NON-NLS-1$
-            compatibleVersions = new Properties();
-            if (in != null) {
-                try {
-                    compatibleVersions.load(in);
-                }
-                catch (IOException e) {
-                    IpsPlugin.log(e);
+        try {
+            AbstractMigrationOperation[] operations = getMigrationOperations(null, otherVersion);
+            for (int i = 0; i < operations.length; i++) {
+                if (!operations[i].isEmpty()) {
+                    return false;
                 }
             }
+            return true;
         }
-
-        return compatibleVersions.get(otherVersion) != null;
+        catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+        
     }
     
     /**
@@ -125,6 +116,14 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
      * {@inheritDoc}
      */
     public AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) throws CoreException {
+        String version = projectToMigrate.getProperties().getMinRequiredVersionNumber(getFeatureId());
+        return getMigrationOperations(projectToMigrate, version);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    private AbstractMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate, String versionToStart) throws CoreException {
         
         if (IpsPlugin.getDefault().isTestMode()) {
             loader = (ClassLoader)IpsPlugin.getDefault().getTestAnswerProvider().getAnswer();
@@ -133,7 +132,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
         ArrayList operations = new ArrayList();
         try {
             AbstractMigrationOperation migrationOperation = null;
-            String version = projectToMigrate.getProperties().getMinRequiredVersionNumber(getFeatureId());
+            String version = versionToStart;
             while (compareToCurrentVersion(version) < 0) {
                 String underscoreVersion = version.replace('.', '_');
                 Class clazz = Class.forName("org.faktorips.devtools.core.internal.model.versionmanager.Migration_" + underscoreVersion, true, loader); //$NON-NLS-1$
@@ -149,4 +148,33 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
         
         return (AbstractMigrationOperation[])operations.toArray(new AbstractMigrationOperation[operations.size()]);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setPredecessorId(String predecessorId) {
+        this.predecessorId = predecessorId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPredecessorId() {
+        return predecessorId;
+    }
+
 }

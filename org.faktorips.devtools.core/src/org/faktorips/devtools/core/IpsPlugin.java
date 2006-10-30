@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -550,6 +551,8 @@ public class IpsPlugin extends AbstractUIPlugin {
                     IIpsFeatureVersionManager manager = (IIpsFeatureVersionManager)elements[i]
                             .createExecutableExtension("class"); //$NON-NLS-1$
                     manager.setFeatureId(elements[i].getAttribute("featureId")); //$NON-NLS-1$
+                    manager.setId(elements[i].getAttribute("id")); //$NON-NLS-1$
+                    manager.setPredecessorId(elements[i].getAttribute("basedOnFeatureManager")); //$NON-NLS-1$
                     result.add(manager);
                 }
                 catch (CoreException e) {
@@ -587,11 +590,25 @@ public class IpsPlugin extends AbstractUIPlugin {
     public AbstractIpsContentMigrationOperation getMigrationOperation(IIpsProject projectToMigrate)
             throws CoreException {
         
+        
         IIpsFeatureVersionManager[] managers = getIpsFeatureVersionManagers();
+        if (isTestMode()) {
+            Object obj = getTestAnswerProvider().getAnswer();
+            if (obj instanceof IIpsFeatureVersionManager[]) {
+                managers = (IIpsFeatureVersionManager[])obj;
+            }
+        }
+
+        // sort the managers to match the required order given by the basedOnFeatureManager-property
+        // of the extension-point.
+        IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
+        managers = sorter.sortForMigartionOrder(managers);
+        
         IpsContentMigrationOperation operation = new IpsContentMigrationOperation(projectToMigrate);
         for (int i = 0; i < managers.length; i++) {
             operation.addMigrationPath(managers[i].getMigrationOperations(projectToMigrate));
         }
         return operation;
     }
+    
 }
