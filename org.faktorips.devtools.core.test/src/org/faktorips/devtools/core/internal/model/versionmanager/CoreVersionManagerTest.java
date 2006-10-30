@@ -85,6 +85,12 @@ public class CoreVersionManagerTest  extends AbstractIpsPluginTest {
         
     }
     
+    public void testIsCurrentVersionCompatibleWith() {
+        CoreVersionManager cvm = new CoreVersionManager();
+        assertFalse(cvm.isCurrentVersionCompatibleWith("0.0.0"));
+        assertTrue(cvm.isCurrentVersionCompatibleWith("0.0.1"));        
+    }
+    
     private void setMinVersion(String version) throws CoreException {
         IIpsProjectProperties props = project.getProperties();
         props.setMinRequiredVersionNumber("org.faktorips.feature", version);
