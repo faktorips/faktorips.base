@@ -115,6 +115,7 @@ public class IpsContentMigrationOperation extends AbstractIpsContentMigrationOpe
         StringBuffer description = new StringBuffer();
         for (int i = 0; i < operations.size(); i++) {
             AbstractMigrationOperation operation = (AbstractMigrationOperation)operations.get(i);
+            description.append("-> ").append(operation.getTargetVersion()).append(SystemUtils.LINE_SEPARATOR);
             description.append(operation.getDescription()).append(SystemUtils.LINE_SEPARATOR);
         }
         return description.toString();
