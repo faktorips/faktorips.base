@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.pctype.IMethod;
 import org.faktorips.devtools.core.model.pctype.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Parameter;
@@ -1142,7 +1143,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     public boolean hasNullObject() {
         return false;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITableStructureUsage[] getTableStructureUsages() {
+        // TODO Joerg
+        return null;
+    }
+
     class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private boolean root = true;

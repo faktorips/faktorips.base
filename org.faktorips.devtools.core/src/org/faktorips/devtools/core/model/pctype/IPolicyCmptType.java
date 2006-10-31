@@ -117,6 +117,13 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     	MSGCODE_PREFIX + "InvalidProductCmptTypeName"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that table structures can only be used if the type is product
+     * relevant.
+     */ 
+    public final static String MSGCODE_TABLE_STRUCTURES_CAN_ONLY_BE_USED_IF_THE_TYPE_IS_PRODUCT_RELEVANT =
+        MSGCODE_PREFIX + "TableStructuresCanOnlyBeUsedIfTheTypeIsProductRelevant";
+    
+    /**
      * Returns <code>true</code> if this class has a corresponding product component type,
      * otherwise <code>false</code>.
      */
@@ -461,6 +468,12 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      */
     public IRelation[] findRelationsImplementingContainerRelation(IRelation containerRelation, boolean searchSupertypeHierarchy) throws CoreException;
     
+    /**
+     * Returns the type's table structure usages or an empty list if the type does not
+     * contain any.
+     */
+    public ITableStructureUsage[] getTableStructureUsages();
+
     /**
      * Creates a new supertype hierarchy for the type and returns it.
      */

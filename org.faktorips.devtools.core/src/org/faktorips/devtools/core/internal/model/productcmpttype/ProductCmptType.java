@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.memento.Memento;
@@ -385,6 +386,14 @@ public class ProductCmptType implements IProductCmptType {
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITableStructureUsage[] getTableStructureUsages() {
+        // TODO Joerg
+        return null;
+    }
 	
 	
 }

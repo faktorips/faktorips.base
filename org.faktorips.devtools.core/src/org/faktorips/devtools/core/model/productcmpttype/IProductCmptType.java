@@ -64,7 +64,7 @@ public interface IProductCmptType extends IIpsObject {
 	public IProductCmptType findSupertype() throws CoreException;
 	
 	/**
-	 * Returns the relations defined for this type or an empty array is no relation
+	 * Returns the attributes defined for this type or an empty array is no relation
 	 * is defined. Note that computed or derived attributes are not returned as these 
 	 * correspond to methods on the product side.
 	 */
@@ -86,5 +86,11 @@ public interface IProductCmptType extends IIpsObject {
      * @throws NullPointerException if name is <code>null</code>.
      */
 	public IProductCmptTypeRelation getRelation(String relationName);
+    
+    /**
+     * Returns the table structure usages defined for this type or an empty array is no usage
+     * is defined. 
+     */
+    public ITableStructureUsage[] getTableStructureUsages();
 	
 }
