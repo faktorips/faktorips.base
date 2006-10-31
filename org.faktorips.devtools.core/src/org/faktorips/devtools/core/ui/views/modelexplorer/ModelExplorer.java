@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.ui.actions.IpsDeleteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPasteAction;
 import org.faktorips.devtools.core.ui.actions.IpsPropertiesAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
+import org.faktorips.devtools.core.ui.actions.MigrateProjectAction;
 import org.faktorips.devtools.core.ui.actions.ModelExplorerDeleteAction;
 import org.faktorips.devtools.core.ui.actions.MoveAction;
 import org.faktorips.devtools.core.ui.actions.NewFileResourceAction;
@@ -400,7 +401,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(new Separator());
             createObjectInfoActions(manager, selected);
             manager.add(new Separator());
-            createProjectActions(manager, selected);
+            createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
             manager.add(new Separator());
             createTestCaseAction(manager, selected);
             createRefactorMenu(manager, selected);
@@ -471,10 +472,18 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
-        protected void createProjectActions(IMenuManager manager, Object selected) {
+        protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
             if (selected instanceof IIpsElement) {
                 if (selected instanceof IIpsProject) {
                     manager.add(openCloseAction((IProject)((IIpsProject)selected).getCorrespondingResource()));
+                    try {
+                        if (!IpsPlugin.getDefault().getMigrationOperation(((IIpsProject)selected)).isEmpty()) {
+                            manager.add(new MigrateProjectAction(getSite().getWorkbenchWindow(), selection));
+                        }
+                    }
+                    catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
                 }
             } else {
                 if (selected instanceof IProject) {

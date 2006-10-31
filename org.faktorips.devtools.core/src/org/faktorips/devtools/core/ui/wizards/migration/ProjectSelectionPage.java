@@ -42,12 +42,13 @@ import org.faktorips.devtools.core.model.IIpsProject;
  */
 public class ProjectSelectionPage extends WizardPage {
     private CheckboxTreeViewer treeViewer;
-    
+    private ArrayList preSelected;
     /**
      * @param pageName
      */
-    protected ProjectSelectionPage() {
+    protected ProjectSelectionPage(ArrayList preSelected) {
         super(Messages.ProjectSelectionPage_titleSelectProjects);
+        this.preSelected = preSelected;
     }
 
     /**
@@ -62,6 +63,8 @@ public class ProjectSelectionPage extends WizardPage {
         treeViewer.setLabelProvider(new TreeLabelProvider());
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         treeViewer.setInput(""); //$NON-NLS-1$
+        
+        treeViewer.setCheckedElements(preSelected.toArray());
         
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
         

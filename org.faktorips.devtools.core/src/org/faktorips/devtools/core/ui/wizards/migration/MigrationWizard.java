@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.wizards.migration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -36,15 +37,17 @@ import org.faktorips.devtools.core.model.IIpsProject;
  */
 public class MigrationWizard extends Wizard implements IWorkbenchWizard {
     private ProjectSelectionPage projectSelectionPage;
-
-    public MigrationWizard() {
+    private ArrayList preSelected;
+    
+    public MigrationWizard(ArrayList preSelected) {
         setWindowTitle(Messages.MigrationWizard_title);
         setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MigrationWizard.png")); //$NON-NLS-1$
+        this.preSelected = preSelected;
     }
     
     public void addPages() {
         super.addPages();
-        projectSelectionPage = new ProjectSelectionPage();
+        projectSelectionPage = new ProjectSelectionPage(preSelected);
         super.addPage(projectSelectionPage);
         super.addPage(new MigrationPage(projectSelectionPage));
     }

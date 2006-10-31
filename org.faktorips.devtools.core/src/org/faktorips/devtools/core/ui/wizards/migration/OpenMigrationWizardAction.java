@@ -17,6 +17,11 @@
 
 package org.faktorips.devtools.core.ui.wizards.migration;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,19 +31,23 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsContentMigrationOperation;
 
 
 /**
- * @author Joerg Ortmann
+ * @author Thorsten Guenther
  */
-public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate {
+public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
     private IWorkbenchWindow window;
-    
+    private ArrayList preSelected = new ArrayList();
     /**
      * {@inheritDoc}
      */
@@ -74,9 +83,9 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
             return;
         }
         
-        MigrationWizard wizard = new MigrationWizard();
+        MigrationWizard wizard = new MigrationWizard(preSelected);
         wizard.init(window.getWorkbench(), getCurrentSelection());
-        WizardDialog dialog = new WizardDialog(window.getShell(), new MigrationWizard());
+        WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
         dialog.open();
     }
 
@@ -84,6 +93,43 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
      * {@inheritDoc}
      */
     public void selectionChanged(IAction action, ISelection selection) {
+        if (selection.isEmpty()) {
+            action.setEnabled(false);
+            return;
+        }
+        
+        if (selection instanceof IStructuredSelection) {
+            preSelected = new ArrayList();
+            IStructuredSelection sel = (IStructuredSelection)selection;
+            for(Iterator iter = sel.iterator(); iter.hasNext();) {
+                Object selected = iter.next();
+                if (selected instanceof IJavaProject) {
+                    IIpsProject project = IpsPlugin.getDefault().getIpsModel().getIpsProject(((IJavaProject)selected).getProject());
+                    addPreselection(project);
+                }
+                else if (selected instanceof IIpsProject) {
+                    addPreselection((IIpsProject)selected);
+                }
+            }
+            action.setEnabled(preSelected.size() > 0);
+        }
+        else {
+            action.setEnabled(false);
+        }
+    }
+    
+    private void addPreselection(IIpsProject project) {
+        if (project.exists()) {
+            try {
+                AbstractIpsContentMigrationOperation operation = IpsPlugin.getDefault().getMigrationOperation(project);
+                if (!operation.isEmpty()) {
+                    preSelected.add(project);
+                }
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
     }
 
     private IStructuredSelection getCurrentSelection() {
@@ -101,5 +147,12 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
             }
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        window = targetPart.getSite().getWorkbenchWindow();
     }
 }
