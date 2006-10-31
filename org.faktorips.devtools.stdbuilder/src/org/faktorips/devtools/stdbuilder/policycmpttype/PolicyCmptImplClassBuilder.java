@@ -68,14 +68,6 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
-    private final static String VALIDATEDEPS_IMPLEMENTATION_JAVADOC = "VALIDATEDEPS_IMPLEMENTATION_JAVADOC";
-
-    private final static String VALIDATESELF_IMPLEMENTATION_JAVADOC = "VALIDATESELF_IMPLEMENTATION_JAVADOC";
-
-    private final static String CREATEMESSAGEFOR_POLICY_JAVADOC = "CREATEMESSAGEFOR_POLICY_JAVADOC";
-
-    private final static String EXECMESSAGE_POLICY_JAVADOC = "EXECMESSAGE_POLICY_JAVADOC";
-
     private PolicyCmptInterfaceBuilder interfaceBuilder;
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
@@ -1171,7 +1163,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
 
-        String javaDoc = getLocalizedText(getPcType(), VALIDATEDEPS_IMPLEMENTATION_JAVADOC, getPcType()
+        String javaDoc = getLocalizedText(getPcType(), "VALIDATE_DEPENDANTS_JAVADOC", getPcType()
                 .getName());
 
         builder.method(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
@@ -1186,7 +1178,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
          * public void validateSelf(MessageList ml, String businessFunction) { super.validateSelf(ml, businessFunction); }
          */
         String methodName = "validateSelf";
-        String javaDoc = getLocalizedText(getIpsObject(), VALIDATESELF_IMPLEMENTATION_JAVADOC, getPcType()
+        String javaDoc = getLocalizedText(getIpsObject(), "VALIDATE_SELF_JAVADOC", getPcType()
                 .getName());
 
         JavaCodeFragment body = new JavaCodeFragment();
@@ -1298,7 +1290,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             parameterTypes.add(ObjectProperty.class.getName() + "[]");
         }
         
-        String javaDoc = getLocalizedText(r, CREATEMESSAGEFOR_POLICY_JAVADOC, r.getName());
+        String javaDoc = getLocalizedText(r, "CREATE_MESSAGE_JAVADOC", r.getName());
         builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
                 "createMessageForRule" + StringUtils.capitalise(r.getName()), (String[])parameterNames.toArray(new String[parameterNames.size()]), 
                 (String[])parameterTypes.toArray(new String[parameterTypes.size()]), body, javaDoc, ANNOTATION_GENERATED);
@@ -1500,7 +1492,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodExecRule(IValidationRule r, JavaCodeFragmentBuilder builder) throws CoreException {
         String parameterBusinessFunction = "businessFunction";
-        String javaDoc = getLocalizedText(getIpsObject(), EXECMESSAGE_POLICY_JAVADOC, r.getName());
+        String javaDoc = getLocalizedText(getIpsObject(), "EXEC_RULE_JAVADOC", r.getName());
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln();
         String[] businessFunctions = r.getBusinessFunctions();
