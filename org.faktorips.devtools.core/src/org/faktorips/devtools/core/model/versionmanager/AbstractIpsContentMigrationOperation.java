@@ -21,6 +21,8 @@ import org.faktorips.util.message.MessageList;
  * Abstract class for operations migrating the content of an IpsProject created with an older
  * version of FaktorIps to match the needs of the current installed version of FaktorIps.
  * 
+ * This class is a container for implementations of <code>AbstractMigrationOperation</code>s.
+ * 
  * @author Thorsten Guenther
  */
 public abstract class AbstractIpsContentMigrationOperation extends WorkspaceModifyOperation {

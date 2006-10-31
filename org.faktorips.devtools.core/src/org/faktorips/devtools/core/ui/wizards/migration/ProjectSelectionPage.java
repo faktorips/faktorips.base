@@ -61,7 +61,7 @@ public class ProjectSelectionPage extends WizardPage {
         treeViewer.setContentProvider(new ContentProvider());
         treeViewer.setLabelProvider(new TreeLabelProvider());
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        treeViewer.setInput("");
+        treeViewer.setInput(""); //$NON-NLS-1$
         
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
         
@@ -136,10 +136,10 @@ public class ProjectSelectionPage extends WizardPage {
                 IpsPlugin.log(e);
             }
             if (result.size() == 0) {
-                setMessage("No projects available for migration.", DialogPage.INFORMATION);
+                setMessage(Messages.ProjectSelectionPage_msgNoProjects, DialogPage.INFORMATION);
             }
             else {
-                setMessage("Select projects to migrate.");
+                setMessage(Messages.ProjectSelectionPage_msgSelectProjects);
             }
             return (IIpsProject[])result.toArray(new IIpsProject[result.size()]);
         }

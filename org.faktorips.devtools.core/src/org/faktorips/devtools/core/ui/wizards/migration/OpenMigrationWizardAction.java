@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.ui.wizards.migration;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -25,9 +26,11 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
 
 /**
@@ -54,6 +57,23 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
      * {@inheritDoc}
      */
     public void run(IAction action) {
+        // check for open editors
+        boolean openEditor = false;
+        if (PlatformUI.isWorkbenchRunning()) {
+            IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
+            for (int i = 0; i < windows.length && !openEditor; i++) {
+                IWorkbenchPage[] pages = windows[i].getPages();
+                for (int j = 0; j < pages.length && !openEditor; j++) {
+                    openEditor = pages[j].getEditorReferences().length > 0;
+                }
+            }
+        }
+        
+        if (openEditor) {
+            MessageDialog.openError(window.getShell(), Messages.OpenMigrationWizardAction_titleCantMigrate, Messages.OpenMigrationWizardAction_msgCantMigrate);
+            return;
+        }
+        
         MigrationWizard wizard = new MigrationWizard();
         wizard.init(window.getWorkbench(), getCurrentSelection());
         WizardDialog dialog = new WizardDialog(window.getShell(), new MigrationWizard());

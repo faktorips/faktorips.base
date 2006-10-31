@@ -20,6 +20,7 @@ package org.faktorips.devtools.core.ui.wizards.migration;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -37,8 +38,8 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
     private ProjectSelectionPage projectSelectionPage;
 
     public MigrationWizard() {
-        setWindowTitle("Migrate projects");
-        setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MigrationWizard.png"));
+        setWindowTitle(Messages.MigrationWizard_title);
+        setDefaultPageImageDescriptor(IpsPlugin.getDefault().getImageDescriptor("wizards/MigrationWizard.png")); //$NON-NLS-1$
     }
     
     public void addPages() {
@@ -59,12 +60,19 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
             }
         }
         catch (InvocationTargetException e) {
+            MessageDialog.openError(getShell(), Messages.MigrationWizard_titleError, Messages.MigrationWizard_msgError);
             IpsPlugin.log(e);
         }
         catch (InterruptedException e) {
-            IpsPlugin.log(e);
+            // the user pressed "cancel", so ignore it.
+            MessageDialog.openInformation(getShell(), Messages.MigrationWizard_titleAbortion, Messages.MigrationWizard_msgAbortion);
         }
         catch (CoreException e) {
+            MessageDialog.openError(getShell(), Messages.MigrationWizard_titleError, Messages.MigrationWizard_msgError);
+            IpsPlugin.log(e);
+        }
+        catch (Exception e) {
+            MessageDialog.openError(getShell(), Messages.MigrationWizard_titleError, Messages.MigrationWizard_msgError);
             IpsPlugin.log(e);
         }
         return true;

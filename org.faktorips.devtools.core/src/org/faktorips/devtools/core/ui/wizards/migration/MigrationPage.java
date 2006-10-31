@@ -48,7 +48,7 @@ public class MigrationPage extends WizardPage {
     public MigrationPage(ProjectSelectionPage projectSelectionPage) {
         super(Messages.MigrationPage_titleMigrationOperations);
         this.projectSelectionPage = projectSelectionPage;
-        setMessage("Short descriptions for selected migrations.");
+        setMessage(Messages.MigrationPage_msgShortDescription);
         setPageComplete(false);
     }
 
@@ -58,7 +58,7 @@ public class MigrationPage extends WizardPage {
         StringBuffer desc = new StringBuffer();
         setPageComplete(true);
         for (int i = 0; i < projects.length; i++) {
-            desc.append("Project ").append(projects[i].getName()).append(":").append(SystemUtils.LINE_SEPARATOR).append(SystemUtils.LINE_SEPARATOR);
+            desc.append(Messages.MigrationPage_titleProject).append(projects[i].getName()).append(":").append(SystemUtils.LINE_SEPARATOR).append(SystemUtils.LINE_SEPARATOR); //$NON-NLS-2$
             try {
                 desc.append(IpsPlugin.getDefault().getMigrationOperation(projects[i]).getDescription());
                 desc.append(SystemUtils.LINE_SEPARATOR);

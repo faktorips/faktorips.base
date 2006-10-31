@@ -38,5 +38,16 @@ public class Messages extends NLS {
     public static String MigrationPage_labelHeader;
     public static String MigrationPage_labelError;
     public static String MigrationPage_labelMissingProjects;
+    public static String MigrationWizard_title;
+    public static String MigrationWizard_titleAbortion;
+    public static String MigrationWizard_msgAbortion;
+    public static String MigrationWizard_titleError;
+    public static String MigrationWizard_msgError;
+    public static String ProjectSelectionPage_msgNoProjects;
+    public static String ProjectSelectionPage_msgSelectProjects;
+    public static String OpenMigrationWizardAction_titleCantMigrate;
+    public static String OpenMigrationWizardAction_msgCantMigrate;
+    public static String MigrationPage_msgShortDescription;
+    public static String MigrationPage_titleProject;
 
 }
