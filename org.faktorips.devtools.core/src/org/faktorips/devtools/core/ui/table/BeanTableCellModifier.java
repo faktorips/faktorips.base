@@ -122,10 +122,12 @@ public class BeanTableCellModifier extends ValueCellModifier  {
             element = ((TableItem)element).getData();
             PropertyDescriptor pd = getPropertyDescriptor(element, property);
             ColumnIdentifier ci = (ColumnIdentifier) columnIdentifers.get(property);
-            if (pd != null && ci != null){
-                setPropertyValue(element, pd, value);
-                tableViewer.update(element, null);
-                notifyColumnChangeListener(ci, value);
+            if (pd != null && ci != null) {
+                if (value != null && !value.equals(getPropertyValue(element, pd))) {
+                    setPropertyValue(element, pd, value);
+                    tableViewer.update(element, null);
+                    notifyColumnChangeListener(ci, value);
+                }
                 return;
             }
         } catch (Exception e) {
