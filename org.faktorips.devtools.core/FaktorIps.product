@@ -6,12 +6,7 @@
    <aboutInfo>
       <image path="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
       <text>
-         Faktor IPS
-
-Version 1.0
-
-Copyright (c) 2005,2006 Faktor Zehn GmbH and others. All rights reserved.
-Visit http://www.faktorzehn.org or http://www.faktorips.org
+         %org.faktorips.aboutText
       </text>
    </aboutInfo>
 
