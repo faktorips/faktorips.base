@@ -289,7 +289,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
                 // only if the parameter have changes repack the table of input values
                 formulaDummyTestInputValuesControl.storeFormulaTestCase(formulaTestCase);
             }
-            formulaDummyTestInputValuesControl.calculateFormulaIfValid();
+            formulaDummyTestInputValuesControl.clearResult();
         } catch (Exception ex) {
             IpsPlugin.logAndShowErrorDialog(ex);
         }

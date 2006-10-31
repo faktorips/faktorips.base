@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.message.MessageList;
 
@@ -113,12 +114,15 @@ public class RenamePage extends WizardPage implements ModifyListener {
 
 		Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
-		if (renameObject instanceof IpsPackageFragment || renameObject instanceof ITableContents) {
+		if (renameObject instanceof IpsPackageFragment || renameObject instanceof ITableContents || renameObject instanceof ITestCase) {
 			createControlForObject(toolkit, inputRoot, (IIpsElement)renameObject);
 		}
 		else if (renameObject instanceof IProductCmpt){
 			createControlForProduct(toolkit, inputRoot, (IProductCmpt)renameObject);
 		}
+        else{
+            throw new RuntimeException("Rename not supported for object type " + renameObject.getClass().getName()); //$NON-NLS-1$
+        }
 		newName.addModifyListener(this);
 		setPageComplete();
 	}
@@ -259,7 +263,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 		
 		IIpsPackageFragment pack = null;
 		
-		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents) {
+		if (renameObject instanceof IProductCmpt || renameObject instanceof ITableContents || renameObject instanceof ITestCase) {
 			pack = ((IIpsObject)renameObject).getIpsPackageFragment();
 			IIpsSrcFile newFile = pack.getIpsSrcFile(((IIpsObject)renameObject).getIpsObjectType().getFileName(newName.getText()));
 			if (newFile.exists()) {
@@ -315,9 +319,10 @@ public class RenamePage extends WizardPage implements ModifyListener {
 	 */
 	public String getNewName() {
 		String name = ""; //$NON-NLS-1$
-		if (this.renameObject instanceof IProductCmpt || this.renameObject instanceof ITableContents) {
-			name = ((IIpsObject)this.renameObject).getIpsPackageFragment().getName();
-		}
+		if (this.renameObject instanceof IProductCmpt || this.renameObject instanceof ITableContents
+                || this.renameObject instanceof ITestCase) {
+            name = ((IIpsObject)this.renameObject).getIpsPackageFragment().getName();
+        }
 		else if (this.renameObject instanceof IIpsPackageFragment) {
 			IIpsPackageFragment parent = ((IIpsPackageFragment)this.renameObject).getParentIpsPackageFragment();
 			if (parent != null) {

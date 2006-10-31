@@ -163,7 +163,6 @@ public class TestCase extends IpsObject implements ITestCase {
         if (cmpt == null){
             return;
         }
-        
         if (StringUtils.isNotEmpty(cmpt.getProductCmpt())){
             qualifiedNameTypes.add(new QualifiedNameType(cmpt.getProductCmpt(), IpsObjectType.PRODUCT_CMPT));
         }
@@ -205,9 +204,9 @@ public class TestCase extends IpsObject implements ITestCase {
      * {@inheritDoc}
      */
     public ITestCaseTestCaseTypeDelta computeDeltaToTestCaseType() throws CoreException {
-        ITestCaseType testCaseType = findTestCaseType();
-        if (testCaseType != null) {
-            return new TestCaseTestCaseTypeDelta(this, testCaseType);
+        ITestCaseType testCaseTypeFound = findTestCaseType();
+        if (testCaseTypeFound != null) {
+            return new TestCaseTestCaseTypeDelta(this, testCaseTypeFound);
         }
         throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestCaseTypeNotFound, testCaseType)));
     }
@@ -553,8 +552,8 @@ public class TestCase extends IpsObject implements ITestCase {
         ArgumentCheck.isTrue(testPolicyCmptBase != null || relation != null);
         ArgumentCheck.isTrue(!(testPolicyCmptBase != null && relation != null));
 
-        ITestCaseType testCaseType = findTestCaseType();
-        if (testCaseType == null) {
+        ITestCaseType testCaseTypeFound = findTestCaseType();
+        if (testCaseTypeFound == null) {
             throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCase_Error_TestCaseTypeNotFound, testCaseType)));
         }
 
@@ -570,7 +569,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
         // find the root test policy component parameter type
         String testPolicyCmptTypeName = hierarchyPath.next();
-        ITestParameter testParam = testCaseType.getTestParameterByName(testPolicyCmptTypeName);
+        ITestParameter testParam = testCaseTypeFound.getTestParameterByName(testPolicyCmptTypeName);
         if (testParam == null) {
             return null;
         }
@@ -794,11 +793,11 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     boolean isTypeOrDefault(String testParameterName, TestParameterType type, TestParameterType defaultType) {
             try {
-                ITestCaseType testCaseType = findTestCaseType();
-                if (testCaseType == null)
+                ITestCaseType testCaseTypeFound = findTestCaseType();
+                if (testCaseTypeFound == null)
                     return type.equals(defaultType);
 
-                ITestParameter testParameter = testCaseType.getTestParameterByName(testParameterName);
+                ITestParameter testParameter = testCaseTypeFound.getTestParameterByName(testParameterName);
                 if (testParameter == null){
                     return type.equals(defaultType);
                 }
@@ -838,9 +837,9 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     protected void validateThis(MessageList messageList) throws CoreException {
         super.validateThis(messageList);
-        ITestCaseType testCaseType = findTestCaseType();
-        if (testCaseType == null) {
-            String text = NLS.bind(Messages.TestCase_ValidateError_TestCaseTypeNotFound, getTestCaseType());
+        ITestCaseType testCaseTypeFound = findTestCaseType();
+        if (testCaseTypeFound == null) {
+            String text = NLS.bind(Messages.TestCase_ValidateError_TestCaseTypeNotFound, testCaseType);
             Message msg = new Message(MSGCODE_TEST_CASE_TYPE_NOT_FOUND, text, Message.ERROR, this,
                     ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
             messageList.add(msg);

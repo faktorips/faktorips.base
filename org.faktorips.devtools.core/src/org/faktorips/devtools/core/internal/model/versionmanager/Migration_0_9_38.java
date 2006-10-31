@@ -91,7 +91,7 @@ public class Migration_0_9_38 extends AbstractMigrationOperation {
             IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt();
             if (productCmpt == null) {
                 // the previous version stored the runtime id instead of the qualified name of the product cmpt
-                productCmpt = getIpsProject().findProductCmpt(testPolicyCmpt.getProductCmpt());
+                productCmpt = getIpsProject().findProductCmptByRuntimeId(testPolicyCmpt.getProductCmpt());
             }
             if (productCmpt != null) {
                 // fix: store the qualified name

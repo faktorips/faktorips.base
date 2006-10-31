@@ -567,6 +567,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return new String[0];
         }
         
+//        ExprCompiler compiler = new ExprCompiler();
+//        CompilationResult compilationResult = compiler.compile(value);
+//        return compilationResult.getIdentifiersUsed();
+//        
+        // TODO Joerg remove
+        
         IAttribute attribute = findPcTypeAttribute();
         if (attribute == null){
             return new String[0];
@@ -599,7 +605,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 cleanedResult.add(identifier);
             }
         }
-        
         return (String[]) cleanedResult.toArray(new String[cleanedResult.size()]);
     }
 }

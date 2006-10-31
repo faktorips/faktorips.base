@@ -43,14 +43,12 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	 * {@inheritDoc}
 	 */
 	public Image getImage(Object element) {
-        if ((element instanceof ITestPolicyCmptRelation)) {
-        	return ((ITestPolicyCmptRelation)element).getImage();
-        } else if (element instanceof ITestPolicyCmpt) {
-        	return ((ITestPolicyCmpt) element).getImage();
-        } else if (element instanceof TestCaseTypeRelation){
+        if (element instanceof TestCaseTypeRelation){
 	    	return getImageFromRelationType((TestCaseTypeRelation)element);
 	    } else if (element instanceof IIpsObjectPart) {
             return ((IIpsObjectPart) element).getImage();
+        } else if (element instanceof TestCaseTypeRule) {
+            return ((TestCaseTypeRule) element).getImage();
         }
         return null; 
 	}
@@ -103,6 +101,8 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	    } else if (element instanceof IIpsObjectPart){
 	        // e.g. tree node element for test rule parameters
             return ((IIpsObjectPart) element).getName();
+        } else if (element instanceof TestCaseTypeRule) {
+            return ((TestCaseTypeRule) element).getName();
         }
 		return Messages.TestCaseLabelProvider_undefined;
 	}
@@ -179,7 +179,7 @@ public class TestCaseLabelProvider implements ILabelProvider {
 	 * {@inheritDoc}
 	 */
 	public boolean isLabelProperty(Object element, String property) {
-		return false;
+		return true;
 	}
 
 	/**

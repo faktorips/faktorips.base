@@ -146,7 +146,10 @@ public class IpsTestAction extends IpsAction {
                 if (element instanceof StructuredSelection){
                     for (Iterator iterator = ((StructuredSelection)element).iterator(); iterator.hasNext();) {
                         Object selStructObj = (Object)iterator.next();
-                        root = addPathElementFromObject(selectedPathElements, selStructObj);
+                        IIpsPackageFragmentRoot currRoot = addPathElementFromObject(selectedPathElements, selStructObj);
+                        if (currRoot != null){
+                            root = currRoot;
+                        }
                     }
                 } else {
                     root = addPathElementFromObject(selectedPathElements, element);
@@ -219,9 +222,10 @@ public class IpsTestAction extends IpsAction {
 	 */
 	private boolean assertSelectedElemsInSameProject(List selectedPathElements){
 		// assert that the selection is in the same project
-		if (!(selectedPathElements.size()>=0))
+		if (!(selectedPathElements.size()>=0)){
 			return true;
-		
+        }
+        
 		String previousElement = (String )selectedPathElements.get(0);
 		for (Iterator iter = selectedPathElements.iterator(); iter.hasNext();) {
 			String currElement = (String) iter.next();

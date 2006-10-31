@@ -209,10 +209,6 @@ public class FormulaTestInputValue extends IpsObjectPart implements IFormulaTest
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        if (StringUtils.isEmpty(value)){
-            String text = NLS.bind(Messages.FormulaTestInputValue_ValidationMessage_NoValueGivenForFormulaTestInputValue, identifier);
-            list.add(new Message(MSGCODE_NO_VALUE, text, Message.WARNING, this, PROPERTY_VALUE));
-        }
 
         Parameter param = findFormulaParameter();
         if (param == null) {

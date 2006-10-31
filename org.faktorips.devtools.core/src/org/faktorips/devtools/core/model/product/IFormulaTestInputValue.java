@@ -38,11 +38,6 @@ public interface IFormulaTestInputValue extends IIpsObjectPart {
     public final static String MSGCODE_PREFIX = "FORMULATESTINPUTVALUE-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the value is set.
-     */
-    public final static String MSGCODE_NO_VALUE = MSGCODE_PREFIX + "NoValue"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the formula parameter exists.
      */
     public final static String MSGCODE_FORMULA_PARAMETER_NOT_FOUND = MSGCODE_PREFIX + "FormulaParameterNotFound"; //$NON-NLS-1$

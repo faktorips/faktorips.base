@@ -2,6 +2,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.forms.editor.FormPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.editors.DescriptionPage;
@@ -32,6 +33,19 @@ public class TestCaseEditor extends IpsObjectEditor {
      */
     protected void addPages() {
         try {
+            if (getTestCase().findTestCaseType() == null) {
+                String msg = NLS.bind(
+                        "The previously set template ({0}) was not found - please select an existing one.",
+                        getTestCase().getTestCaseType());
+                org.faktorips.devtools.core.ui.editors.testcase.SetTemplateDialog dialog = new org.faktorips.devtools.core.ui.editors.testcase.SetTemplateDialog(
+                        getTestCase(), getSite().getShell(), msg);
+                int button = dialog.open();
+                if (button != SetTemplateDialog.OK) {
+                    addPage(new FormPage(this, "Empty", "")); //$NON-NLS-1$
+                    this.close(false);
+                    return;
+                }
+            }
             TestCaseContentProvider contentProviderInput = new TestCaseContentProvider(TestCaseContentProvider.COMBINED,
                     getTestCase());
 

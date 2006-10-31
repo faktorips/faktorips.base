@@ -87,7 +87,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
         if (StringUtils.isEmpty(testPolicyCmptTypeParameter)) {
             return null;
 		}
-		return getTestCase().findTestPolicyCmptTypeParameter(this);
+		return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this);
 	}
 
 	/**
@@ -315,39 +315,6 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
     			messageList.add(msg);		
     		}
         }
-		
-        // validate the min and max occurence defined in the test policy component type
-        // parameter
-        ITestPolicyCmpt parentTestPolicyCmpt = (ITestPolicyCmpt)getParent();
-        ITestPolicyCmptRelation[] parentRelations = parentTestPolicyCmpt.getTestPolicyCmptRelations();
-
-        int count = 0;
-        for (int i = 0; i < parentRelations.length; i++) {
-            ITestPolicyCmptRelation currRelation = parentRelations[i];
-            if (currRelation.getTestPolicyCmptTypeParameter().equals(getTestPolicyCmptTypeParameter())) {
-                count++;
-            }
-        }
-
-        if (messageList.getMessageByCode(MSGCODE_MIN_INSTANCES_NOT_REACHED) == null) {
-            if (count < testCaseTypeParam.getMinInstances()) {
-                String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached,
-                        "" + testCaseTypeParam.getMinInstances(), testPolicyCmptTypeParameter); //$NON-NLS-1$
-                Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this,
-                        ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
-                messageList.add(msg);
-            }
-        }
-
-        if (messageList.getMessageByCode(MSGCODE_MAX_INSTANCES_REACHED) == null) {
-            if (count > testCaseTypeParam.getMaxInstances()) {
-                String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MaximumReached,
-                        "" + testCaseTypeParam.getMaxInstances(), testPolicyCmptTypeParameter); //$NON-NLS-1$
-                Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this,
-                        ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
-                messageList.add(msg);
-            }
-        }
 	}
 	
 	/**
@@ -357,7 +324,7 @@ public class TestPolicyCmptRelation extends IpsObjectPart implements
 		// validate if the test case type param exists
 		ITestPolicyCmptTypeParameter param = null;
 		try {
-			param = getTestCase().findTestPolicyCmptTypeParameter(this);
+			param = findTestPolicyCmptTypeParameter();
 		} catch (CoreException e) {
 			//	ignore exception, the param will be used to indicate errors
 		}

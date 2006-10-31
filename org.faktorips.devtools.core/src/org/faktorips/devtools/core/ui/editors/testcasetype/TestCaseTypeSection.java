@@ -93,6 +93,7 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.UpdateUiJob;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsPartUIController;
 import org.faktorips.devtools.core.ui.controller.UIController;
@@ -169,8 +170,12 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
     //  show the correct validation result
     private List attributeControllers = new ArrayList();
 
+    // Object cache for the detail area
     private SectionDetailObjectCache objectCache;
     
+    // Ui job to update the user interface in parallel mode
+    private UpdateUiJob updateUiJob;
+
     /*
      * Object cache to store several object to render the ui
      */
@@ -625,7 +630,19 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
         this.form = form;
         
         initControls();
-        setText(title);    
+        setText(title);
+        
+        Runnable updateCommand = new Runnable() {
+            public void run() {
+                if (isDisposed()) {
+                    return;
+                }
+                // refresh all if the test case type changes, redraw section titles etc.
+                postRefreshAll();
+            }
+        };
+        
+        updateUiJob = new UpdateUiJob(getDisplay(), updateCommand);
     }
 
     /**
@@ -1916,9 +1933,8 @@ public class TestCaseTypeSection extends IpsSection implements ContentsChangeLis
      * {@inheritDoc}
      */
     public void contentsChanged(ContentChangeEvent event) {
-        // refresh all if the test case type changes, redraw section titles etc.
         if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())){
-            postRefreshAll();
+            updateUiJob.update("UpdateAll");
         }
     }
 }

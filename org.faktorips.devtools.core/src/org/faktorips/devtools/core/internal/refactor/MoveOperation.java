@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -241,6 +242,9 @@ public class MoveOperation implements IRunnableWithProgress {
 				else if (toMove instanceof ITableContents) {
 					moveTableContent((ITableContents)toMove, this.targetNames[i], monitor);
 				}
+                else if (toMove instanceof ITestCase) {
+                    moveTestCase((ITestCase)toMove, this.targetNames[i], monitor);
+                }
 			} catch (CoreException e) {
 				IpsPlugin.log(e);
 			}
@@ -308,6 +312,11 @@ public class MoveOperation implements IRunnableWithProgress {
 		move(content, file, monitor);
 	}
 
+    private void moveTestCase(ITestCase testCase, String newName, IProgressMonitor monitor) {
+        IIpsSrcFile file = createTarget(testCase, newName);
+        move(testCase, file, monitor);
+    }
+    
 	/**
 	 * Creates the IIpsSrcFile for the given target. The IpsObjectType associated with 
 	 * the new file is the one stored in the given source. The target is created in the 
@@ -431,6 +440,20 @@ public class MoveOperation implements IRunnableWithProgress {
 		}		
 	}
 	
+    /**
+     * Moves one test case to the given target file.
+     */
+    private void move(ITestCase source, IIpsSrcFile targetFile, IProgressMonitor monitor) {
+        try {
+            createCopy(source.getIpsSrcFile(), targetFile, monitor);
+            source.getEnclosingResource().delete(true, monitor);
+        } catch (CoreException e) {
+            Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+            MessageDialog.openError(shell, Messages.MoveOperation_titleAborted, Messages.MoveOperation_msgAborted);
+            IpsPlugin.log(e);
+        }
+    }
+    
 	private void createCopy(IIpsSrcFile source, IIpsSrcFile targetFile, IProgressMonitor monitor) throws CoreException {
 		IIpsPackageFragment pack = targetFile.getIpsPackageFragment();
 		if (!pack.exists()) {
@@ -562,6 +585,14 @@ public class MoveOperation implements IRunnableWithProgress {
 					throw new CoreException(status);
 				}
 			}
+            else if (toTest instanceof ITestCase) {
+                ITestCase testCase = (ITestCase)toTest;
+                if (!testCase.exists()) {
+                    String msg = NLS.bind("Test case {0} is missing", testCase.getName());
+                    IpsStatus status = new IpsStatus(msg); 
+                    throw new CoreException(status);
+                }
+            }            
 			else {
 				// localisation of the following messages is neccessary because
 				// the exception is excpected to be

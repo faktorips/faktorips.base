@@ -159,7 +159,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         if (StringUtils.isEmpty(testPolicyCmptType)) {
             return null;
         }
-        return getTestCase().findTestPolicyCmptTypeParameter(this);
+        return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this);
 	}
 
     /**
@@ -192,7 +192,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
         }
-		return getIpsProject().findProductCmpt(productCmpt);
+        IProductCmpt pc = getIpsProject().findProductCmpt(productCmpt);
+        return pc;
 	}
 	
 	/**
@@ -543,13 +544,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     protected void validateThis(MessageList list) throws CoreException {
 		super.validateThis(list);
 		// validate if the test case type param exists
-		ITestPolicyCmptTypeParameter param = null;
-		try {
-			param = getTestCase().findTestPolicyCmptTypeParameter(this);
-		} catch (CoreException e) {
-			//	ignore exception, the param will be used to indicate errors
-		}
-		
+		ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter();
+        IProductCmpt productCmptObj = findProductCmpt();
+        
 		if (param == null){
 			String text = NLS.bind(Messages.TestPolicyCmpt_ValidationError_TestCaseTypeNotFound, testPolicyCmptType);
 			Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_POLICYCMPTTYPE); //$NON-NLS-1$
@@ -567,23 +564,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 			    Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.WARNING, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 			    list.add(msg);
 			}
-            
-            // validate the minimum instances if no child exists
-            // if childs exists then the instances will be validated in each child
-            ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
-            for (int i = 0; i < childParams.length; i++) {
-                if(getTestPolicyCmptRelations(childParams[i].getName()).length == 0){
-                    if (childParams[i].getMinInstances()>0){
-                      String text =  NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached, "" + childParams[i].getMinInstances(), childParams[i].getName()); //$NON-NLS-1$
-                      Message msg = new Message(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
-                      list.add(msg);
-                    }
-                }
-            }
 		}
-        
+   
 		// check if the product component exists
-		if (StringUtils.isNotEmpty(productCmpt) && getIpsProject().findProductCmpt(productCmpt) == null){
+		if (StringUtils.isNotEmpty(productCmpt) &&  productCmptObj == null){
             String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_ProductComponentNotExists, productCmpt, testPolicyCmptType);
 		    Message msg = new Message(MSGCODE_PRODUCT_CMPT_NOT_EXISTS, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
 		    list.add(msg);

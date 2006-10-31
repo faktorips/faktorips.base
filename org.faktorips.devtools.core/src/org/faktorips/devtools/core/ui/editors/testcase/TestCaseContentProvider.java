@@ -66,6 +66,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	// Indicates if the structure should be displayed without relation layer
 	private boolean withoutRelations = false;
 	
+    // Cache containing the dummy objects, to display the relation and rules.
+    // This kind of objects are only used in the ui to adapt the model objects to the correct
+    // content in the tree view
+    private HashMap dummyObjects = new HashMap();
+    
 	public TestCaseContentProvider(int contentType, ITestCase testCase){
 		ArgumentCheck.notNull(testCase);
 		this.contentType = contentType;
@@ -188,8 +193,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 	    	return getChildsForTestPolicyCmptRelation((ITestPolicyCmptRelation) parentElement);
 	    }else if(parentElement instanceof TestCaseTypeRelation){
 	    	return getChildsForTestCaseTypeRelation((TestCaseTypeRelation) parentElement);
-	    }else if (parentElement instanceof ITestRuleParameter){
-            return testCase.getTestRule(((ITestRuleParameter)parentElement).getName());
+	    }else if (parentElement instanceof TestCaseTypeRule){
+            return testCase.getTestRule(((TestCaseTypeRule)parentElement).getName());
         }
 	    return EMPTY_ARRAY;
 	}
@@ -277,7 +282,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                 } else if (params[i] instanceof ITestRuleParameter) {
                     if (isCombined() || isExpectedResult()){
                         // test rule objects are not visible if the input filter is chosen
-                        orderedList.add(params[i]);
+                        orderedList.add(getDummyObject(params[i], null));
                     }
                 }
                 name2elements.remove(params[i].getName());
@@ -406,14 +411,13 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 			ArrayList childNames = new ArrayList();
 			try {
 				// get all childs from the test case type definition
-				ITestPolicyCmptTypeParameter typeParam = testCase.findTestPolicyCmptTypeParameter(testPolicyCmpt);
+				ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
 				if (typeParam != null){
 					ITestPolicyCmptTypeParameter[] children = typeParam.getTestPolicyCmptTypeParamChilds();
 					for (int i = 0; i < children.length; i++) {
 					    ITestPolicyCmptTypeParameter parameter = children[i];
 						if (parameterMatchesType(parameter)){
-						    TestCaseTypeRelation dummyRelation = getDummyRelation(parameter, testPolicyCmpt);
-						    childs.add(dummyRelation);
+						    childs.add(getDummyObject(parameter, testPolicyCmpt));
                         }
 						childNames.add(parameter.getName());
 					}
@@ -436,22 +440,30 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 		}
 	}
 
-    private HashMap dummyRelations = new HashMap();
-    
-    private TestCaseTypeRelation getDummyRelation(ITestPolicyCmptTypeParameter parameter, ITestPolicyCmpt testPolicyCmpt) {
-        String id = ""; //$NON-NLS-1$
-        if (testPolicyCmpt instanceof ITestPolicyCmpt){
-            id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testPolicyCmpt).toString(); //$NON-NLS-1$
+    /*
+     * Returns a chached dummy object. To adapt the model object to the corresponding object which 
+     * will be displayed in the ui.
+     */
+    private Object getDummyObject(ITestParameter parameter, ITestObject testObject) {
+        String id = "";
+        if (testObject instanceof ITestPolicyCmpt){
+            id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString();
         } else {
-            id = parameter.getName() + "#" + (testPolicyCmpt==null?"":testPolicyCmpt.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            id = parameter.getName() + "#" + (testObject==null?"":testObject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
-        TestCaseTypeRelation dummyRelation = (TestCaseTypeRelation) dummyRelations.get(id);
-        if (dummyRelation == null){
-            dummyRelation = new TestCaseTypeRelation(parameter, testPolicyCmpt);
-            dummyRelations.put(id, dummyRelation);
+        Object dummyObject = dummyObjects.get(id);
+        if (dummyObject == null) {
+            if (testObject instanceof ITestPolicyCmpt) {
+                dummyObject = new TestCaseTypeRelation((ITestPolicyCmptTypeParameter)parameter,
+                        (ITestPolicyCmpt)testObject);
+                dummyObjects.put(id, dummyObject);
+            } else if (parameter instanceof ITestRuleParameter) {
+                dummyObject = new TestCaseTypeRule(testCase, (ITestRuleParameter)parameter);
+                dummyObjects.put(id, dummyObject);
+            }
         }
-        return dummyRelation;
+        return dummyObject;
     }
 
     /*

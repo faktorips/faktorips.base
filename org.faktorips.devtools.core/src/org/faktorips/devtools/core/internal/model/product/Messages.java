@@ -100,8 +100,6 @@ public class Messages extends NLS {
 
     public static String FormulaTestInputValue_CoreException_AttributeOfParameterNotFound;
 
-    public static String FormulaTestInputValue_ValidationMessage_NoValueGivenForFormulaTestInputValue;
-
     public static String FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound;
 
     public static String FormulaTestInputValue_ValidationMessage_UnsupportedDatatype;

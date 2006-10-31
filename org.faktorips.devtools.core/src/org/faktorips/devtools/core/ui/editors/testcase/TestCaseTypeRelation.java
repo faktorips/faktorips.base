@@ -31,17 +31,18 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Helper class to represent a dummy relation depending on the test case type relation (test policy component type parameter)
- * and a concrete test policy component which will be the parent of all concrete relations inside the test case.
- * The concret relations are based on the test case type relation.<br>
+ * Helper class to represent a dummy relation depending on the test case type relation (test policy
+ * component type parameter) and a concrete test policy component which will be the parent of all
+ * concrete relations inside the test case. The concret relations are based on the test case type
+ * relation.<br>
  * The parent test policy component could be used to add new relations to this test policy component
  * inside the test case (based on the test case type relation).<br>
- * Example: this class R contains the relation type RT and the test policy component A1. By using this
- * class a new test relation RT1 of type RT could be added to the policy component A.
+ * Example: this class R contains the relation type RT and the test policy component A1. By using
+ * this class a new test relation RT1 of type RT could be added to the policy component A.
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeRelation implements Validatable{
+public class TestCaseTypeRelation implements Validatable {
 
 	/** Contains the type definition of the relation */
 	private ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
@@ -55,10 +56,11 @@ public class TestCaseTypeRelation implements Validatable{
     protected TestCaseTypeRelation() {
     }
     
-	public TestCaseTypeRelation(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter, ITestPolicyCmpt parentTestPolicyCmpt) {
-		this.testPolicyCmptTypeParameter = testPolicyCmptTypeParameter;
-		this.parentTestPolicyCmpt = parentTestPolicyCmpt;
-	}
+	public TestCaseTypeRelation(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter,
+            ITestPolicyCmpt parentTestPolicyCmpt) {
+        this.testPolicyCmptTypeParameter = testPolicyCmptTypeParameter;
+        this.parentTestPolicyCmpt = parentTestPolicyCmpt;
+    }
 	
 	/**
 	 * Returns the test relation type parameter.
@@ -169,10 +171,9 @@ public class TestCaseTypeRelation implements Validatable{
 	}
 
 	/**
-	 * Validate the test relation parameter.
-	 * Check if the relation which is related by this test relation exists 
-	 * and validate min and max instances of this type
-	 */
+     * Validate the test policy cmpt relation parameters. And validate the min and max instances of
+     * the test policy cmpt type param by validating the parent test policy cmpt
+     */
 	private void validate(MessageList list) throws CoreException {
 		if (parentTestPolicyCmpt == null){
 			return;
@@ -200,10 +201,11 @@ public class TestCaseTypeRelation implements Validatable{
             list.add((Message)iter.next());
         }
         
-		if (relations.length == 0) {
-            // no relations found, delegate the validation to the parent policy cmpt
-            MessageList msgList = parentTestPolicyCmpt.validate();
-            list.add(msgList.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES));
-        }
+        // get the validation messages of the number of instances from the parent test policy cmpt,
+        // thus it could be displayed
+        // on the relation symbol
+        MessageList msgList = parentTestPolicyCmpt.validate();
+        list.add(msgList.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES));
+        list.add(msgList.getMessagesFor(parentTestPolicyCmpt, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES));
 	}
 }

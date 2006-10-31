@@ -63,6 +63,25 @@ public interface ITestPolicyCmpt extends ITestObject {
         + "ProductComponentNotRequired"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the min instances aren't reached.
+     */
+    public final static String MSGCODE_MIN_INSTANCES_NOT_REACHED = MSGCODE_PREFIX
+        + "MinInstancesNotReached"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the max instances are reached.
+     */
+    public final static String MSGCODE_MAX_INSTANCES_REACHED = MSGCODE_PREFIX
+        + "MaxInstancesReached"; //$NON-NLS-1$
+    
+    // TODO Joerg validation test
+    /**
+     * Validation message code to indicate that the max instances are reached.
+     */
+    public final static String MSGCODE_PRODUCT_CMPT_NOT_IN_PRODUCT_RELATION_DEFINITION = MSGCODE_PREFIX
+        + "ProductCmptNotInProductRelationDefinition"; //$NON-NLS-1$
+    
+    /**
      * Returns the qualified name of the test policy component type parameter class.
      */
 	public String getTestPolicyCmptTypeParameter();

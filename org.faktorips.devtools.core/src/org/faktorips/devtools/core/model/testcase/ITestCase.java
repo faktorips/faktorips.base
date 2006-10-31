@@ -17,7 +17,6 @@ package org.faktorips.devtools.core.model.testcase;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**
  * Specification of a test case.
@@ -167,30 +166,7 @@ public interface ITestCase extends IIpsObject {
      * 
      */
     public ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath) throws CoreException ;
-    
-    /**
-     * Returns the corresponing test policy component type parameter of the given test policy
-     * component or <code>null</code> if not found.
-     * 
-     * @param testPolicyCmpt the test policy component for which the type parameter will be
-     *            returned.
-     * 
-     * @throws CoreException if an error occurs while searching for the object.
-     */
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmpt)
-            throws CoreException;
-    
-    /**
-     * Returns the corresponing test policy component type parameter of the given relation or
-     * <code>null</code> if not found.
-     * 
-     * @param relation the test policy component relation for which test relation will be returned.
-     * 
-     * @throws CoreException if an error occurs while searching for the object.
-     */
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmptRelation relation)
-            throws CoreException;
-
+ 
     /**
      * Evaluates and returns an unique name (inside this test case) for the given test policy
      * component.

@@ -25,26 +25,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.product.IConfigElement;
@@ -54,6 +49,9 @@ import org.faktorips.devtools.core.ui.ProblemImageDescriptor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
+import org.faktorips.devtools.core.ui.table.ColumnChangeListener;
+import org.faktorips.devtools.core.ui.table.ColumnIdentifier;
+import org.faktorips.devtools.core.ui.table.BeanTableCellModifier;
 import org.faktorips.fl.parser.ParseException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -64,7 +62,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Joerg Ortmann
  */
-public class FormulaTestInputValuesControl extends Composite {
+public class FormulaTestInputValuesControl extends Composite implements ColumnChangeListener {
     private static final int IDX_IDENTIFIER = 1;
     private static final int IDX_VALUE_COLUMN = 2;
     
@@ -78,7 +76,7 @@ public class FormulaTestInputValuesControl extends Composite {
     private TableViewer formulaInputTableViewer;;
     
     /* Label to display the result of the formula */
-    private Text formulaResult;
+    private Label formulaResult;
 
     private Button btnNewFormulaTestCase;
     
@@ -109,48 +107,8 @@ public class FormulaTestInputValuesControl extends Composite {
     /* Indicates if the control is in read only state */
     private boolean viewOnly;
     
-    /*
-     * Cell Modifier for the formula test input value
-     */
-    private class FormulaTestInputValueCellModifier implements ICellModifier {
-        /**
-         * {@inheritDoc}
-         */
-        public boolean canModify(Object element, String property) {
-            return true;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public Object getValue(Object element, String property) {
-            if (property.equals(IFormulaTestInputValue.PROPERTY_VALUE)) {
-                return getFormulaTestInputValueFromObject(element).getValue();
-            }
-            return null;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void modify(Object element, String property, Object value) {
-            TableItem tableItem = (TableItem)element;
-            if (property.equals(IFormulaTestInputValue.PROPERTY_VALUE)){
-                if (value != null && ! value.equals(getFormulaTestInputValueFromObject(tableItem.getData()).getValue())){
-                    getFormulaTestInputValueFromObject(tableItem.getData()).setValue((String)value);
-                    tableItem.setText(IDX_VALUE_COLUMN, (String) value);
-                    calculateFormulaIfValid();
-                    repackAndResfreshParamInputTable();
-                    uiController.updateUI();
-                }
-            }
-        }
-        
-        private IFormulaTestInputValue getFormulaTestInputValueFromObject(Object obj){
-            ArgumentCheck.isInstanceOf(obj, IFormulaTestInputValue.class);
-            return (IFormulaTestInputValue) obj;
-        }
-    }
+    /* indicates that the object is self updating */
+    private boolean isUpdatingSelf;
     
     /*
      * Label provider for the formula test input value.
@@ -177,11 +135,22 @@ public class FormulaTestInputValuesControl extends Composite {
                 if (columnIndex == IDX_IDENTIFIER){
                     return ((IFormulaTestInputValue)element).getIdentifier();
                 } else if (columnIndex == IDX_VALUE_COLUMN){
-                    return ((IFormulaTestInputValue)element).getValue();
+                    return (String)prepareObjectForSet(((IFormulaTestInputValue)element).getValue());
                 }
             }
             return null;
         }
+        
+        /*
+         * Returns the null-representation-string defined by the user (see IpsPreferences)
+         * if the given object is null, the unmodified object otherwise.
+         */
+        private Object prepareObjectForSet(Object object) {
+            if (object == null) {
+                return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            }
+            return object;
+        }          
     }
     
     public FormulaTestInputValuesControl(Composite parent, UIToolkit uiToolkit,
@@ -253,7 +222,7 @@ public class FormulaTestInputValuesControl extends Composite {
      */
     public void storeFormulaTestCase(IFormulaTestCase formulaTestCase) {
         this.formulaTestCase = formulaTestCase;
-        formulaResult.setText(""); //$NON-NLS-1$
+        clearResult();
         repackAndResfreshParamInputTable();
     }
 
@@ -276,6 +245,20 @@ public class FormulaTestInputValuesControl extends Composite {
         Composite btns = uiToolkit.createComposite(formulaTestArea);
         btns.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
         btns.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+        
+        Button btnCalculate = uiToolkit.createButton(btns, "Calculate");
+        btnCalculate.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true ));
+        btnCalculate.addSelectionListener(new SelectionListener() {
+            public void widgetSelected(SelectionEvent e) {
+                calculateFormulaIfValid();
+            }
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+        });
+        
+        uiToolkit.createVerticalSpacer(btns, 5);
+        uiToolkit.createHorizonzalLine(btns);
+        uiToolkit.createVerticalSpacer(btns, 5);
         
         if (canStoreFormulaTestCaseAsNewFormulaTestCase){
             btnNewFormulaTestCase = uiToolkit.createButton(btns, Messages.FormulaTestInputValuesControl_ButtonLabel_Store);
@@ -303,12 +286,13 @@ public class FormulaTestInputValuesControl extends Composite {
         // the clear btn is enabled is not view only or if this is the control which can store the input as
         // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
         btnClearInputValues.setEnabled(!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase);
-            
+        
         // create the label to display the formula result
-        formulaResult = uiToolkit.createText(formulaTestArea); //$NON-NLS-1$
-        formulaResult.setEditable(false);
+        Composite resultComposite = uiToolkit.createLabelEditColumnComposite(formulaTestArea);
+        Label labelResult = uiToolkit.createLabel(resultComposite, Messages.FormulaTestInputValuesControl_Label_Result);
+        formulaResult = uiToolkit.createLabel(resultComposite, ""); //$NON-NLS-1$
+        labelResult.setFont(JFaceResources.getBannerFont());
         formulaResult.setFont(JFaceResources.getBannerFont());
-        calculateFormulaIfValid();
     }
     
     /*
@@ -347,7 +331,7 @@ public class FormulaTestInputValuesControl extends Composite {
                 inputValues[i].setValue(""); //$NON-NLS-1$
                 uiController.updateUI();
                 repackAndResfreshParamInputTable();
-                formulaResult.setText(""); //$NON-NLS-1$
+                clearResult();
             }
         }
     }
@@ -375,6 +359,7 @@ public class FormulaTestInputValuesControl extends Composite {
         column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.FormulaTestInputValuesControl_TableFormulaTestInputValues_Column_Value);
 
+        
         // Create the viewer and connect it to the view
         formulaInputTableViewer = new TableViewer(table);
         formulaInputTableViewer.setContentProvider (new ArrayContentProvider());
@@ -382,29 +367,14 @@ public class FormulaTestInputValuesControl extends Composite {
         
         // create the cell editor
         if (!viewOnly || canStoreFormulaTestCaseAsNewFormulaTestCase){
-            // the table is modifiedable if not view only or if this is the control which can store the input as
+            // the table is modifiedable if not "view only"  is set or if this is the control which can store the input as
             // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
-            TextCellEditor textCellEditor = new TextCellEditor(table);
-            textCellEditor.getControl().addKeyListener(new KeyAdapter(){
-                public void keyPressed(KeyEvent e) {
-                    int selIdx = formulaInputTableViewer.getTable().getSelectionIndex();
-                    int keyCode = e.keyCode;
-                    keyCode = (keyCode == SWT.KEYPAD_CR || keyCode == SWT.CR) ? SWT.ARROW_DOWN:keyCode;
-                    if (keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_UP){
-                        selIdx = selIdx + (keyCode == SWT.ARROW_DOWN?1:-1);
-                        Object nextObject = formulaInputTableViewer.getElementAt(selIdx);
-                        e.doit= false;
-                        postEditFormulaTestInputValue((IFormulaTestInputValue)nextObject);
-                    }
-                }
-            });
-            
-            formulaInputTableViewer.setCellEditors(new CellEditor[] { null, null, textCellEditor });
-            formulaInputTableViewer.setCellModifier(new FormulaTestInputValueCellModifier());
-        }
-        formulaInputTableViewer.setColumnProperties(new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME, //$NON-NLS-1$
-                IFormulaTestInputValue.PROPERTY_VALUE });
 
+            BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
+            tableCellModifier.initModifier(new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME,
+                    IFormulaTestInputValue.PROPERTY_VALUE }, new ValueDatatype[] { null, null, ValueDatatype.STRING });
+            tableCellModifier.addListener(this);
+        }
         hookTableListener();     
 
         repackAndResfreshParamInputTable();
@@ -433,7 +403,7 @@ public class FormulaTestInputValuesControl extends Composite {
         } else {
             formulaInputTableViewer.setInput(new ArrayList());
             if (formulaResult != null){
-                formulaResult.setText(""); //$NON-NLS-1$
+                clearResult();
             }
         }
         
@@ -446,14 +416,14 @@ public class FormulaTestInputValuesControl extends Composite {
     /*
      * Exceute the formula and displays the result if the formula is valid and all values are given.
      */
-    public void calculateFormulaIfValid() {
+    public Object calculateFormulaIfValid() {
         if (!canCalculateResult){
-            return;
+            return null;
         }
         
         try {
             if (formulaTestCase == null){
-                return;
+                return null;
             }
             if (storeExpectedResult){
                 formulaTestCase.setExpectedResult(""); //$NON-NLS-1$
@@ -465,45 +435,58 @@ public class FormulaTestInputValuesControl extends Composite {
             //   - the current formula test case contains at least one validation message (e.g. no value given)
             MessageList ml = ((IConfigElement) formulaTestCase.getParent()).validate();
             if (ml.getFirstMessage(Message.ERROR) != null){
-                formulaResult.setText(""); //$NON-NLS-1$
-                return;
+                clearResult();
+                return null;
             }
-            
-            formulaResult.setText(""); //$NON-NLS-1$
 
             ml = formulaTestCase.validate();
             // don't calculate preview if there are messages, e.g. warnings because of missing values
             if (ml.getNoOfMessages() > 0) {
-                return;
+                showFormulaResult("Object is not not valid.");
+                return null;
             }
             Object result = formulaTestCase.execute();
             lastCalculatedResult = result;
-            formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Label_Result, result));
+            showFormulaResult(""+result);
             if (storeExpectedResult){
                 formulaTestCase.setExpectedResult(result==null?null:result.toString());
             }
+            return result;
         } catch (ParseException e){
-            formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Label_Result, ""+null)); //$NON-NLS-1$
-            formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula, e.getLocalizedMessage()));
+            showFormulaResult(NLS.bind(Messages.FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula, e.getLocalizedMessage()));
         } catch (Exception e) {
-            formulaResult.setText(NLS.bind(Messages.FormulaTestInputValuesControl_Label_Result, Messages.FormulaTestInputValuesControl_Error_ExecutingFormula));
+            showFormulaResult(Messages.FormulaTestInputValuesControl_Error_ExecutingFormula);
         }
+        return null;
+    }
+    
+    /**
+     * Clears the result of the formula
+     */
+    public void clearResult(){
+        formulaResult.setText(""); //$NON-NLS-1$
+        formulaResult.pack();
+    }
+    
+    private boolean updateBySelf(){
+        if (isUpdatingSelf){
+            return true;
+        }
+        isUpdatingSelf = true;
+        uiController.updateUI();
+        isUpdatingSelf = false;
+        return false;
     }
     
     /*
-     * Set the focus to the edit field for editing the value.
+     * Displays the result of the formula
      */
-    private void postEditFormulaTestInputValue(final IFormulaTestInputValue value){
-        if (value == null){
+    private void showFormulaResult(String result){
+        if (updateBySelf()){
             return;
         }
-        if (!getDisplay().isDisposed()){
-            getDisplay().asyncExec(new Runnable(){
-                public void run() {
-                    formulaInputTableViewer.editElement(value, IDX_VALUE_COLUMN);
-                }
-            });
-        }
+        formulaResult.setText(""+result); //$NON-NLS-1$
+        formulaResult.pack();
     }
     
     /*
@@ -540,5 +523,15 @@ public class FormulaTestInputValuesControl extends Composite {
             return null;
         }
         return image.hashCode() + "_" + severity; //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void valueChanged(ColumnIdentifier columnIdentifier, Object value) {
+        // the value in the table has changed
+        repackAndResfreshParamInputTable();
+        clearResult();
+        uiController.updateUI();  
     }
 }

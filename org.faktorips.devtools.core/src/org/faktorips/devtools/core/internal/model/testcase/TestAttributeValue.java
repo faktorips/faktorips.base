@@ -92,7 +92,7 @@ public class TestAttributeValue  extends IpsObjectPart implements ITestAttribute
             return null;
         }
         ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt) getParent();
-        ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.getTestCase().findTestPolicyCmptTypeParameter(testPolicyCmpt);
+        ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
         if (typeParam == null){
         	return null;
         }

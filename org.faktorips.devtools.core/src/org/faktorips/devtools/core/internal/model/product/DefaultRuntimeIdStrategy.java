@@ -42,7 +42,7 @@ public class DefaultRuntimeIdStrategy implements
 		String uniqueId = id;
 		
 		int i = 1;
-		while (project.findProductCmpt(uniqueId) != null) {
+		while (project.findProductCmptByRuntimeId(uniqueId) != null) {
 			uniqueId = id + i;
 			i++;
 		}
