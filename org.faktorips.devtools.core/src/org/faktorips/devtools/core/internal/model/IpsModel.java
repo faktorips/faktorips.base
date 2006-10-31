@@ -140,6 +140,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     // validation result cache
     private ValidationResultCache validationResultCache = new ValidationResultCache();
 
+    private Map lastIpsPropertyFileModifications = new HashMap();
+    
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
         if (TRACE_MODEL_MANAGEMENT) {
@@ -316,6 +318,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsProject ipsProject = getIpsProject(resource.getProject().getName());
         String[] segments = resource.getProjectRelativePath().segments();
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(segments[0]);
+        if (root == null){
+            return null;
+        }
+        
         if (segments.length == 1) {
             return root;
         }
@@ -334,6 +340,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return root.getIpsPackageFragment(folderName.toString());
         }
         IIpsPackageFragment ipsFolder = root.getIpsPackageFragment(folderName.toString());
+        if (ipsFolder == null){
+            return null;
+        }
         return ipsFolder.getIpsSrcFile(resource.getName());
     }
     
@@ -423,6 +432,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Adds the value datatypes defined for the IPS project to the set of datatypes.
      */
     public void getValueDatatypes(IIpsProject ipsProject, Set datatypes) {
+        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Set set = (Set)projectDatatypesMap.get(ipsProject.getName());
         if (set == null) {
             getDatatypes(ipsProject);
@@ -436,6 +446,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Adds the value datatypes defined for the IPS project to the set of datatypes.
      */
     public ValueDatatype getValueDatatype(IIpsProject ipsProject, String qName) {
+        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Set set = (Set)projectDatatypesMap.get(ipsProject.getName());
         if (set == null) {
             getDatatypes(ipsProject);
@@ -458,6 +469,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
         ArgumentCheck.notNull(project, this);
+        reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
         IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)projectToBuilderSetMap.get(project);
         if (builderSet == null) {
             return registerBuilderSet(project);
@@ -532,6 +544,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * is defined for the value datatype.
      */
     public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
+        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
         if (map == null) {
             getDatatypes(ipsProject);
@@ -541,33 +554,42 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Places the properties object in the cache. Should only be called by
-     * IpsProject.setProperties().
-     */
-    public void setIpsProjectProperties(IpsProject ipsProject, IIpsProjectProperties props) {
-        if (projectPropertiesMap == null) {
-            projectPropertiesMap = new HashMap();
-        }
-        projectPropertiesMap.put(ipsProject.getName(), props);
-    }
-
-    /**
      * Returns the properties (stored in the .ipsproject file) for the given ips project. If an
      * error occurs while accessing the .ipsproject file or the file does not exist an error is
      * logged and an empty ips project data instance is returned.
      */
     public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
+        
         if (projectPropertiesMap == null) {
             projectPropertiesMap = new HashMap();
         }
+        IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
+        Long lastIpsPropertyFileModification = (Long)lastIpsPropertyFileModifications.get(ipsProject.getName());
+        if (propertyFile.exists()
+                && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp())
+                        .equals(lastIpsPropertyFileModification)) {
+            clearIpsProjectPropertiesCache(ipsProject);
+        }
         IpsProjectProperties data = (IpsProjectProperties)projectPropertiesMap.get(ipsProject.getName());
+        
         if (data == null) {
             data = readProjectData(ipsProject);
             projectPropertiesMap.put(ipsProject.getName(), data);
         }
         return data;
     }
-
+    
+    private void reinitIpsProjectPropertiesIfNecessary(IpsProject ipsProject){
+        getIpsProjectProperties(ipsProject);
+    }
+    
+    private void clearIpsProjectPropertiesCache(IpsProject ipsProject){
+        projectDatatypesMap.remove(ipsProject.getName());
+        projectDatatypeHelpersMap.remove(ipsProject.getName());
+        projectPropertiesMap.remove(ipsProject.getName());
+        projectToBuilderSetMap.remove(ipsProject);
+    }
+    
     /**
      * Reads the project's data from the .ipsproject file.
      */
@@ -609,6 +631,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     + file, e));
             data.setCreatedFromParsableFileContents(false);
         }
+        lastIpsPropertyFileModifications.put(ipsProject.getName(), new Long(file.getModificationStamp()));
         return data;
     }
 
@@ -723,22 +746,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return;
         }
         projectToBuilderSetMap.put(project, set);
-    }
-
-    /*
-     * Checks if the project's properties file was changed. If yes, removes data from cache and
-     * returns true, otherwise false.
-     */
-    private boolean checkProjectPropertiesFileModification(IIpsProject ipsProject, IResource resource) {
-        if (resource.equals(((IpsProject)ipsProject).getIpsProjectPropertiesFile())) {
-            projectDatatypesMap.remove(ipsProject.getName());
-            projectDatatypeHelpersMap.remove(ipsProject.getName());
-            projectPropertiesMap.remove(ipsProject.getName());
-            projectToBuilderSetMap.remove(ipsProject);
-            validationResultCache.clear();
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -1237,7 +1244,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     return true;
                 }
                 IIpsProject ipsProject = getIpsProject(resource.getProject());
-                if (checkProjectPropertiesFileModification(ipsProject, resource)) {
+                if (resource.equals(((IpsProject)ipsProject).getIpsProjectPropertiesFile())) {
+                    validationResultCache.clear();
                     return false;
                 }
                 final IIpsElement element = getIpsElement(resource);
