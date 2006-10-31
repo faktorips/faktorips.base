@@ -305,7 +305,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param runtimeId The runtime-id to find the product component for.
      * @throws CoreException if an error occurs during search.
      */
-    public IProductCmpt findProductCmpt(String runtimeId) throws CoreException;
+    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException;
     
     /**
      * Returns the product component with the given qualified name or <code>null</code> if no such
@@ -315,7 +315,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param qualifiedName the name to find the product component for
      * @throws CoreException if an error occurs during search.
      */
-    public IProductCmpt findProductCmptByQualifiedName(String qualifiedName) throws CoreException;
+    public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
 
     /**
      * Returns all product component generation that refer to the product component identified by the
