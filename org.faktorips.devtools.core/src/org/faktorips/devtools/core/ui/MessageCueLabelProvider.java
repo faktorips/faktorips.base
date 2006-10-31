@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -93,8 +93,8 @@ public class MessageCueLabelProvider extends LabelProvider {
      * @throws CoreException if an error occurs during the creation of the message list.
      */
     protected MessageList getMessages(Object element) throws CoreException {
-        if (element instanceof IIpsObjectPart) {
-            return ((IIpsObjectPart)element).validate();    
+        if (element instanceof Validatable) {
+            return ((Validatable)element).validate();    
         } else {
             return new MessageList();
         }
