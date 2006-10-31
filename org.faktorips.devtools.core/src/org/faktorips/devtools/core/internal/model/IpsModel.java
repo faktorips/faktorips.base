@@ -741,6 +741,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     public synchronized void setIpsArtefactBuilderSet(IIpsProject project, IIpsArtefactBuilderSet set) {
         ArgumentCheck.notNull(project);
+        reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
         if (set == null) {
             projectToBuilderSetMap.remove(project);
             return;
