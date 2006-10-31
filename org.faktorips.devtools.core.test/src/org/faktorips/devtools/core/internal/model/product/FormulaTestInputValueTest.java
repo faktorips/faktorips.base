@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.product.IFormulaTestCase;
 import org.faktorips.devtools.core.model.product.IFormulaTestInputValue;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -133,20 +132,6 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         formulaTestInputValue.setIdentifier("policyInputX.attributeInput");
         formulaTestInputValue.setValue("10");
         assertEquals(Datatype.STRING, formulaTestInputValue.findDatatypeOfFormulaParameter());
-    }
-    
-    public void testValidate_noValue() throws CoreException{
-        formulaTestInputValue.setValue("");
-        MessageList ml = formulaTestInputValue.validate();
-        assertEquals(IFormulaTestInputValue.MSGCODE_NO_VALUE, ml.getFirstMessage(Message.WARNING).getCode());
-        
-        formulaTestInputValue.setValue(null);
-        ml = formulaTestInputValue.validate();
-        assertEquals(IFormulaTestInputValue.MSGCODE_NO_VALUE, ml.getFirstMessage(Message.WARNING).getCode());
-
-        formulaTestInputValue.setValue("42");
-        ml = formulaTestInputValue.validate();
-        assertNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_NO_VALUE));
     }
 
     public void testValidate_formulaParameterNotFound() throws CoreException{

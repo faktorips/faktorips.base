@@ -124,18 +124,19 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         assertEquals(1, ml.getNoOfMessages());
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
         
-        ITestPolicyCmptTypeParameter param = testCase.findTestPolicyCmptTypeParameter(pcr);
+        ITestPolicyCmptTypeParameter param = pcr.findTestPolicyCmptTypeParameter();
+        ITestPolicyCmpt pcParent = (ITestPolicyCmpt)pcr.getParent();
         param.setMinInstances(2);
         param.setMaxInstances(3);
-        ml = pcr.validate();
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        ml = pcParent.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
         
         ITestPolicyCmpt parent = (ITestPolicyCmpt) pcr.getParent();
         parent.addTestPcTypeRelation(param, "", "");
         parent.addTestPcTypeRelation(param, "", "");
         parent.addTestPcTypeRelation(param, "", "");
-        ml = pcr.validate();
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MAX_INSTANCES_REACHED));
+        ml = pcParent.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
         
         String prevRelation = param.getRelation();
         param.setRelation("none");

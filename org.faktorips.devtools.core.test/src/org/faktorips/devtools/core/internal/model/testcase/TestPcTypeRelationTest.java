@@ -115,38 +115,4 @@ public class TestPcTypeRelationTest extends AbstractIpsPluginTest {
         ml = testPcTypeRelation.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MODEL_RELATION_NOT_FOUND));
     }
-
-    public void testValidateMinInstancesNotReached() throws Exception{
-        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter();
-        paramChild.setMinInstances(1);
-        
-        MessageList ml = testPcTypeRelation.validate();
-        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
-
-        paramChild.setMinInstances(2);
-        ml = testPcTypeRelation.validate();
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
-        
-        ITestPolicyCmpt policyCmpt = (ITestPolicyCmpt)testPcTypeRelation.getParent();
-        policyCmpt.newTestPolicyCmptRelation().setTestPolicyCmptTypeParameter("childParam");
-        ml = testPcTypeRelation.validate();
-        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MIN_INSTANCES_NOT_REACHED));
-    }
-
-    public void testValidateMaxInstancesNotReached() throws Exception{
-        ITestPolicyCmptTypeParameter paramChild = testPcTypeRelation.findTestPolicyCmptTypeParameter();
-        paramChild.setMaxInstances(1);
-
-        MessageList ml = testPcTypeRelation.validate();
-        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MAX_INSTANCES_REACHED));
-
-        ITestPolicyCmpt policyCmpt = (ITestPolicyCmpt)testPcTypeRelation.getParent();
-        policyCmpt.newTestPolicyCmptRelation().setTestPolicyCmptTypeParameter("childParam");
-        ml = testPcTypeRelation.validate();
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MAX_INSTANCES_REACHED));
-
-        paramChild.setMaxInstances(2);
-        ml = testPcTypeRelation.validate();
-        assertNull(ml.getMessageByCode(ITestPolicyCmptRelation.MSGCODE_MAX_INSTANCES_REACHED));
-    }
 }
