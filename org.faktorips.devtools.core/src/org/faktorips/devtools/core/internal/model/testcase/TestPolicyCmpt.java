@@ -579,5 +579,34 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             Message msg = new Message(MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED, text, Message.ERROR, this, PROPERTY_PRODUCTCMPT); //$NON-NLS-1$
             list.add(msg);
         }
+        
+        // validate the min and max occurence defined in the test policy component type
+        // parameter, get all possible relation defined in the parameter and check the min and may
+        // instances
+        if (param != null) {
+            ITestPolicyCmptTypeParameter[] paramForRelations = param.getTestPolicyCmptTypeParamChilds();
+            for (int i = 0; i < paramForRelations.length; i++) {
+                int currNumberOfInstances = getTestPolicyCmptRelations(paramForRelations[i].getName()).length;
+
+                // check min and max instances
+                int minInstances = paramForRelations[i].getMinInstances();
+                int maxInstances = paramForRelations[i].getMaxInstances();
+                if (currNumberOfInstances < minInstances) {
+                    String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MinimumNotReached,
+                            "" + paramForRelations[i].getMinInstances(), paramForRelations[i].getName()); //$NON-NLS-1$
+                    Message msg = new Message(MSGCODE_MIN_INSTANCES_NOT_REACHED, text, Message.ERROR, this,
+                            ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
+                    list.add(msg);
+                }
+
+                if (currNumberOfInstances > maxInstances) {
+                    String text = NLS.bind(Messages.TestPolicyCmptRelation_ValidationError_MaximumReached,
+                            "" + maxInstances, paramForRelations[i].getName()); //$NON-NLS-1$
+                    Message msg = new Message(MSGCODE_MAX_INSTANCES_REACHED, text, Message.ERROR, this,
+                            ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
+                    list.add(msg);
+                }
+            }
+        }
 	}
 }

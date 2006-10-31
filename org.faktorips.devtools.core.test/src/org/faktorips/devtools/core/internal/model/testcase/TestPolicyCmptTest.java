@@ -199,55 +199,54 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
                 Message.WARNING).getCode());
     }    
     
-    // TODO Joerg: min max validation
-//    public void testValidateMinInstancesNotReached() throws Exception{
-//        ITestPolicyCmptTypeParameter param = testPolicyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
-//        param.setMinInstances(0);
-//        
-//        MessageList ml = testPolicyCmptTypeObjectInput.validate();
-//        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
-//
-//        // create mandatory instance child 1 on parameter side and validate
-//        ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
-//        paramChild.setName("child1");
-//        paramChild.setMinInstances(1);
-//        ml = testPolicyCmptTypeObjectInput.validate();
-//        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
-//        
-//        // create child and validate again
-//        ITestPolicyCmptRelation testRelation = testPolicyCmptTypeObjectInput.newTestPolicyCmptRelation();
-//        testRelation.setTestPolicyCmptTypeParameter("child1");
-//        testRelation.newTargetTestPolicyCmptChild();
-//        ml = testPolicyCmptTypeObjectInput.validate();
-//        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
-//    }
-//    
-//    public void testValidateMaxInstancesNotReached() throws Exception{
-//        ITestPolicyCmptTypeParameter param = testPolicyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
-//        
-//        MessageList ml = testPolicyCmptTypeObjectInput.validate();
-//        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
-//
-//        // create instance child 1 on parameter side and validate
-//        ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
-//        paramChild.setName("child1");
-//        paramChild.setMaxInstances(1);
-//        ml = testPolicyCmptTypeObjectInput.validate();
-//        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
-//        
-//        // create two child and validate again
-//        ITestPolicyCmptRelation testRelation = testPolicyCmptTypeObjectInput.newTestPolicyCmptRelation();
-//        testRelation.setTestPolicyCmptTypeParameter("child1");
-//        testRelation.newTargetTestPolicyCmptChild();
-//        ml = testPolicyCmptTypeObjectInput.validate();
-//        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
-//        testRelation = testPolicyCmptTypeObjectInput.newTestPolicyCmptRelation();
-//        testRelation.setTestPolicyCmptTypeParameter("child1");
-//        testRelation.newTargetTestPolicyCmptChild();
-//        ml = testPolicyCmptTypeObjectInput.validate();
-//        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));        
-//    }
-//    
+    public void testValidateMinInstancesNotReached() throws Exception{
+        ITestPolicyCmptTypeParameter param = testPolicyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
+        param.setMinInstances(0);
+        
+        MessageList ml = testPolicyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+
+        // create mandatory instance child 1 on parameter side and validate
+        ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
+        paramChild.setName("child1");
+        paramChild.setMinInstances(1);
+        ml = testPolicyCmptTypeObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        
+        // create child and validate again
+        ITestPolicyCmptRelation testRelation = testPolicyCmptTypeObjectInput.newTestPolicyCmptRelation();
+        testRelation.setTestPolicyCmptTypeParameter("child1");
+        testRelation.newTargetTestPolicyCmptChild();
+        ml = testPolicyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+    }
+    
+    public void testValidateMaxInstancesNotReached() throws Exception{
+        ITestPolicyCmptTypeParameter param = testPolicyCmptTypeObjectInput.findTestPolicyCmptTypeParameter();
+        
+        MessageList ml = testPolicyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+
+        // create instance child 1 on parameter side and validate
+        ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
+        paramChild.setName("child1");
+        paramChild.setMaxInstances(1);
+        ml = testPolicyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+        
+        // create two child and validate again
+        ITestPolicyCmptRelation testRelation = testPolicyCmptTypeObjectInput.newTestPolicyCmptRelation();
+        testRelation.setTestPolicyCmptTypeParameter("child1");
+        testRelation.newTargetTestPolicyCmptChild();
+        ml = testPolicyCmptTypeObjectInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+        testRelation = testPolicyCmptTypeObjectInput.newTestPolicyCmptRelation();
+        testRelation.setTestPolicyCmptTypeParameter("child1");
+        testRelation.newTargetTestPolicyCmptChild();
+        ml = testPolicyCmptTypeObjectInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));        
+    }
+    
     public void testValidateProductCmptNotExists() throws Exception{
         MessageList ml = testPolicyCmptTypeObjectInput.validate();
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
