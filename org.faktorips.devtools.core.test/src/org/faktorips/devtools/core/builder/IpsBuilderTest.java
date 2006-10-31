@@ -91,7 +91,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertEquals(msgList.getNoOfMessages(), markers.length);
     }
 
-    public void testRemoveResource() throws CoreException {
+    public void XtestRemoveResource() throws CoreException {
         TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -108,7 +108,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builder.deleteCalled);
     }
 
-    public void testClean() throws Exception {
+    public void XtestClean() throws Exception {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         ipsProject.setProperties(props);
@@ -123,7 +123,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     }
 
-    public void testDependencyGraphWithReferencingProjects() throws Exception {
+    public void XtestDependencyGraphWithReferencingProjects() throws Exception {
 
         IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
         IIpsProject projectB = createSubProject(ipsProject, "projectB");
@@ -199,7 +199,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         return builder;
     }
 
-    public void testDependencyGraph() throws CoreException {
+    public void XtestDependencyGraph() throws CoreException {
 
         IIpsPackageFragment frag = root.createPackageFragment("dependency", true, null);
 
