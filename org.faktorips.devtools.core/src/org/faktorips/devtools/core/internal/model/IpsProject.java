@@ -150,8 +150,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 	 * {@inheritDoc}
 	 */
 	public void setProperties(IIpsProjectProperties properties) throws CoreException {
-		IpsModel model = (IpsModel)getIpsModel();
-        model.setIpsProjectProperties(this, properties);
 		saveProjectProperties(new IpsProjectProperties(this, (IpsProjectProperties)properties));
 	}
 
@@ -889,14 +887,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * {@inheritDoc}
      */
-	public IProductCmpt findProductCmpt(String runtimeId) throws CoreException {
-		
+	public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException {
 		if(runtimeId == null){
 			return null;
 		}
-
 		IIpsObject[] all = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-		
 		for (int i = 0; i < all.length; i++) {
 			if (((IProductCmpt)all[i]).getRuntimeId().equals(runtimeId)) {
 				return (IProductCmpt)all[i];
@@ -905,14 +900,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
 		return null;
 	}
 
-	public IProductCmpt findProductCmptByQualifiedName(String qualifiedName) throws CoreException{
-	
+    /**
+     * {@inheritDoc}
+     */
+	public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException{
 		if(qualifiedName == null){
 			return null;
 		}
-		
 		IIpsObject[] all = findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-		
 		for (int i = 0; i < all.length; i++) {
 			if (((IProductCmpt)all[i]).getQualifiedName().equals(qualifiedName)) {
 				return (IProductCmpt)all[i];
