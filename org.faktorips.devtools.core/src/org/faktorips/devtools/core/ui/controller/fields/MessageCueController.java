@@ -280,6 +280,20 @@ public class MessageCueController {
 				fHover= new Hover(fControl);
 			fHover.setText(messageList.getText());
 			fHover.setLocation();
+            
+            // fix the position if hover couldn't be displayed completly on the display
+			Point controlPoint = fControl.toDisplay(0,0);
+            Point extent = fHover.getExtent();
+            Rectangle displayBounds = fControl.getDisplay().getBounds();
+            int correctedPos = displayBounds.width - controlPoint.x - extent.x;
+            if (correctedPos < 0){
+                fHover.setVisible(false);
+                fHover.dispose();
+                fHover = new Hover(fControl, -1 * correctedPos + fHover.getDefaultOffsetOfArrow() );
+                fHover.setText(messageList.getText());
+                fHover.setLocation();
+            }
+            
 			fHover.setVisible(true);
 		}
 		
@@ -443,6 +457,9 @@ public class MessageCueController {
 		 * Margin around info hover text.
 		 */
 		private int LABEL_MARGIN= 2;
+        
+        private int defaultOffsetOfArrow = HD+HW/2;
+        
 		/**
 		 * This info hover's shell.
 		 */
@@ -456,7 +473,16 @@ public class MessageCueController {
 		 */
 		String fText= ""; //$NON-NLS-1$
 		
-		Hover(Control control) {
+        Hover(Control control, int arrowOffset){
+            HD = arrowOffset;
+            createHover(control);
+        }
+        
+        Hover(Control control) {
+            createHover(control);
+        }
+        
+		private void createHover(Control control) {
 		    this.control = control;
 			final Display display= control.getDisplay();
 			fHoverShell= new Shell(control.getShell(), SWT.NO_TRIM | SWT.ON_TOP | SWT.NO_FOCUS);
@@ -518,7 +544,8 @@ public class MessageCueController {
 		void setLocation() {
 			if (control != null) {
 				int h= getExtent().y;
-				fHoverShell.setLocation(control.toDisplay(-HD+HW/2, -h-HH+1));
+                Point point = control.toDisplay(-HD+HW/2, -h-HH+1);
+				fHoverShell.setLocation(point.x, point.y);
 			}
 		}
 		
@@ -530,7 +557,12 @@ public class MessageCueController {
 			e.y+= LABEL_MARGIN*2;
 			return e;
 		}
-	}
-	
 
+        /**
+         * Returns the default offset of the arrow.
+         */
+        public int getDefaultOffsetOfArrow() {
+            return defaultOffsetOfArrow;
+        }
+	}
 }

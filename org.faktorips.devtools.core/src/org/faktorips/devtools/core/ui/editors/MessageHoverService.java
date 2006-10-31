@@ -115,8 +115,7 @@ public abstract class MessageHoverService {
             MessageList list;
             try {
                 list = getMessagesFor(element);
-            }
-            catch (CoreException coreE) {
+            } catch (CoreException coreE) {
                 IpsPlugin.log(coreE);
                 list = new MessageList();
             }
@@ -132,9 +131,26 @@ public abstract class MessageHoverService {
                 hover = new Hover(viewerControl.getShell());
             }
             Point hoverPos = viewerControl.toDisplay(itemBounds.x, itemBounds.y);
+
             hover.setText(text);
             hover.setLocation(hoverPos);
+
+            // fix the position if hover couldn't be displayed completly on the display
+            Point extent = hover.getExtent();
+            Rectangle displayBounds = viewerControl.getDisplay().getBounds();
+            int correctedPos = displayBounds.width - hoverPos.x - extent.x;
+            if (correctedPos < 0) {
+                hoverPos.x = hoverPos.x + correctedPos - hover.getDefaultOffsetOfArrow();
+                hover.setVisible(false);
+                hover.dispose();
+                hover = new Hover(viewerControl.getShell(), -1 * correctedPos + hover.getDefaultOffsetOfArrow()
+                        + hover.getDefaultOffsetOfArrow());
+                hover.setText(text);
+                hover.setLocation(hoverPos);
+            }
+
             hover.setVisible(true);
+
         }
 
         private void hideHover() {
@@ -167,6 +183,9 @@ public abstract class MessageHoverService {
          * Margin around info hover text.
          */
         private int LABEL_MARGIN = 2;
+        
+        private int defaultOffsetOfArrow = HD+HW/2;
+
         /**
          * This info hover's shell.
          */
@@ -176,8 +195,20 @@ public abstract class MessageHoverService {
          * The info hover text.
          */
         String fText = ""; //$NON-NLS-1$
+        
+        Shell parentShell;
 
-        Hover(final Shell shell) {
+        Hover(Shell shell, int arrowOffset) {
+            HD = arrowOffset;
+            createHover(shell);
+        }
+
+        Hover(Shell shell) {
+            createHover(shell);
+        }
+
+        private void createHover(final Shell shell) {
+            this.parentShell = shell;
             final Display display = shell.getDisplay();
             fHoverShell = new Shell(shell, SWT.NO_TRIM | SWT.ON_TOP | SWT.NO_FOCUS);
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
@@ -197,8 +228,7 @@ public abstract class MessageHoverService {
             if (border) {
                 return new int[] { 0, 0, e.x - 1, 0, e.x - 1, e.y - 1, HD + HW, e.y - 1, HD + HW / 2, e.y + HH - 1, HD,
                         e.y - 1, 0, e.y - 1, 0, 0 };
-            }
-            else {
+            } else {
                 return new int[] { 0, 0, e.x, 0, e.x, e.y, HD + HW, e.y, HD + HW / 2, e.y + HH, HD, e.y, 0, e.y, 0, 0 };
             }
         }
@@ -212,8 +242,7 @@ public abstract class MessageHoverService {
             if (visible) {
                 if (!fHoverShell.isVisible())
                     fHoverShell.setVisible(true);
-            }
-            else {
+            } else {
                 if (fHoverShell.isVisible())
                     fHoverShell.setVisible(false);
             }
@@ -241,7 +270,7 @@ public abstract class MessageHoverService {
 
         void setLocation(Point position) {
             int height = getExtent().y;
-            fHoverShell.setLocation(position.x + (HD + HW / 2), position.y - height - 5);
+            fHoverShell.setLocation(position.x + (10 + HW / 2), position.y - height - 5);
         }
 
         Point getExtent() {
@@ -252,6 +281,13 @@ public abstract class MessageHoverService {
             e.y += LABEL_MARGIN * 2;
             return e;
         }
+        
+        /**
+         * Returns the default offset of the arrow.
+         */
+        public int getDefaultOffsetOfArrow() {
+            return defaultOffsetOfArrow;
+        }        
     }
 
 }
