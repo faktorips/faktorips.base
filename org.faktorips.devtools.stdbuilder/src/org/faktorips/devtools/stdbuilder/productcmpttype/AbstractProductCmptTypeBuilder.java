@@ -19,7 +19,9 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -31,6 +33,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.builder.ProductCmptTypeHierarchyCodeGenerator;
 import org.faktorips.devtools.core.model.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -306,38 +309,8 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        generateCodeForContainerRelationImplementation(getProductCmptType(), containerRelations, fieldsBuilder, methodsBuilder);
-    }
-    
-    /**
-     * Generates code for container relation implementation for all container relations defined
-     * in the indicated type and it's supertypes.
-     */
-    private void generateCodeForContainerRelationImplementation(
-            IProductCmptType type,
-            HashMap containerImplMap, 
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        IProductCmptTypeRelation[] relations = type.getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].isAbstractContainer()) {
-                try {
-                    List implRelations = (List)containerImplMap.get(relations[i]);
-                    if (implRelations!=null) {
-                        generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
-                    }
-                } catch (Exception e) {
-                    addToBuildStatus(new IpsStatus("Error building container relation implementation. "
-                        + "ContainerRelation: " + relations[i]
-                        + "Implementing Type: " + getProductCmptType()));
-                }
-            }
-        }
-        IProductCmptType supertype = type.findSupertype();
-        if (supertype!=null) {
-            generateCodeForContainerRelationImplementation(supertype, containerImplMap, fieldsBuilder, methodsBuilder);
-        }
+        CodeGeneratorForContainerRelationImplementation generator = new CodeGeneratorForContainerRelationImplementation(containerRelations, fieldsBuilder, methodsBuilder);
+        generator.start(getProductCmptType());
     }
     
     /**
@@ -400,5 +373,41 @@ public abstract class AbstractProductCmptTypeBuilder extends DefaultJavaSourceFi
         IChangesOverTimeNamingConvention convention = element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
         String conceptName = convention.getEffectiveDateConceptName(element.getIpsProject().getGeneratedJavaSourcecodeDocumentationLanguage());
         return StringUtils.uncapitalise(conceptName);
+    }
+    
+    class CodeGeneratorForContainerRelationImplementation extends ProductCmptTypeHierarchyCodeGenerator {
+
+        private HashMap containerImplMap; 
+
+        public CodeGeneratorForContainerRelationImplementation(
+                HashMap containerImplMap,
+                JavaCodeFragmentBuilder fieldsBuilder, 
+                JavaCodeFragmentBuilder methodsBuilder) {
+            super(fieldsBuilder, methodsBuilder);
+            this.containerImplMap = containerImplMap;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IProductCmptType type) {
+            IProductCmptTypeRelation[] relations = type.getRelations();
+            for (int i = 0; i < relations.length; i++) {
+                if (relations[i].isAbstractContainer()) {
+                    try {
+                        List implRelations = (List)containerImplMap.get(relations[i]);
+                        if (implRelations!=null) {
+                            generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
+                        }
+                    } catch (Exception e) {
+                        addToBuildStatus(new IpsStatus("Error building container relation implementation. "
+                            + "ContainerRelation: " + relations[i]
+                            + "Implementing Type: " + getProductCmptType()));
+                    }
+                }
+            }
+            return true;
+        }
+        
     }
 }

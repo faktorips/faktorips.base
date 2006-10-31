@@ -251,38 +251,8 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
-        generateCodeForContainerRelationImplementation(getPcType(), containerRelations, fieldsBuilder, methodsBuilder);
-    }
-    
-    /*
-     * Generates the code for container relation implementation for all container relations defined
-     * in the indicated type and it's supertypes.
-     */
-    private void generateCodeForContainerRelationImplementation(
-            IPolicyCmptType type,
-            HashMap containerImplMap, 
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        
-        IRelation[] relations = type.getRelations();
-        for (int i = 0; i < relations.length; i++) {
-            if (relations[i].isReadOnlyContainer()) {
-                try {
-                    List implRelations = (List)containerImplMap.get(relations[i]);
-                    if (implRelations!=null) {
-                        generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
-                    }
-                } catch (Exception e) {
-                    addToBuildStatus(new IpsStatus("Error building container relation implementation. " //$NON-NLS-1$
-                        + "ContainerRelation: " + relations[i] //$NON-NLS-1$
-                        + "Implementing Type: " + getPcType())); //$NON-NLS-1$
-                }
-            }
-        }
-        IPolicyCmptType supertype = type.findSupertype();
-        if (supertype!=null) {
-            generateCodeForContainerRelationImplementation(supertype, containerImplMap, fieldsBuilder, methodsBuilder);
-        }
+        CodeGeneratorForContainerRelationImplementation generator = new CodeGeneratorForContainerRelationImplementation(containerRelations, fieldsBuilder, methodsBuilder);
+        generator.start(getPcType());
     }
     
     /**
@@ -360,4 +330,38 @@ public abstract class AbstractPcTypeBuilder extends DefaultJavaSourceFileBuilder
 			Datatype returnType,
 			Datatype[] paramTypes,
 			JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+    
+    
+    class CodeGeneratorForContainerRelationImplementation extends PolicyCmptTypeHierarchyCodeGenerator {
+
+        private HashMap containerImplMap;
+        
+        public CodeGeneratorForContainerRelationImplementation(HashMap containerImplMap, JavaCodeFragmentBuilder fieldsBuilder, JavaCodeFragmentBuilder methodsBuilder) {
+            super(fieldsBuilder, methodsBuilder);
+            this.containerImplMap = containerImplMap;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IPolicyCmptType currentType) {
+            IRelation[] relations = currentType.getRelations();
+            for (int i = 0; i < relations.length; i++) {
+                if (relations[i].isReadOnlyContainer()) {
+                    try {
+                        List implRelations = (List)containerImplMap.get(relations[i]);
+                        if (implRelations!=null) {
+                            generateCodeForContainerRelationImplementation(relations[i], implRelations, fieldsBuilder, methodsBuilder);
+                        }
+                    } catch (Exception e) {
+                        addToBuildStatus(new IpsStatus("Error building container relation implementation. " //$NON-NLS-1$
+                            + "ContainerRelation: " + relations[i] //$NON-NLS-1$
+                            + "Implementing Type: " + getPcType())); //$NON-NLS-1$
+                    }
+                }
+            }
+            return true;
+        }
+        
+    }
 }

@@ -20,9 +20,11 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -41,6 +43,8 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.pctype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
@@ -107,25 +111,11 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         if ((modifier & Modifier.ABSTRACT) > 0) {
             return modifier;
         }
-        return getClassModifier(getProductCmptType().findPolicyCmptyType(), modifier);
+        GetClassModifierFunction fct = new GetClassModifierFunction(modifier);
+        fct.start(getProductCmptType().findPolicyCmptyType());
+        return fct.getModifier();
     }
     
-    private int getClassModifier(IPolicyCmptType type, int modifier) throws CoreException {
-        IAttribute[] attributes = type.getAttributes();
-        for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].isDerivedOrComputed() && attributes[i].isProductRelevant()) {
-                // note: type can't be an instanceof ProductCmptType, as derived or computed policy cmpt type attributes
-                // aren't  not product cmpt attributes!
-                return modifier | Modifier.ABSTRACT;
-            }
-        }
-        IPolicyCmptType supertype = type.findSupertype();
-        if (supertype!=null) {
-            return getClassModifier(supertype, modifier);
-        }
-        return modifier;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -997,4 +987,34 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
         memberVarBuilder.varDeclaration(Modifier.PRIVATE, EnumValueSet.class, getFieldNameAllowedValuesFor(a)); 
     }
 
+    class GetClassModifierFunction extends PolicyCmptTypeHierarchyVisitor {
+
+        public GetClassModifierFunction(int modifier) {
+            super();
+            this.modifier = modifier;
+        }
+        
+        private int modifier;
+        
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IPolicyCmptType type) {
+            IAttribute[] attributes = type.getAttributes();
+            for (int i = 0; i < attributes.length; i++) {
+                if (attributes[i].isDerivedOrComputed() && attributes[i].isProductRelevant()) {
+                    // note: type can't be an instanceof ProductCmptType, as derived or computed policy cmpt type attributes
+                    // aren't  not product cmpt attributes!
+                    modifier = modifier | Modifier.ABSTRACT;
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        public int getModifier() {
+            return modifier;
+        }
+        
+    }
 }

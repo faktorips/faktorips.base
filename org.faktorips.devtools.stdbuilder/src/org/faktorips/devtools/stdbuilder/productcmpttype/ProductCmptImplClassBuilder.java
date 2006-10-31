@@ -18,8 +18,10 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -142,18 +144,22 @@ public class ProductCmptImplClassBuilder extends AbstractProductCmptTypeBuilder 
         
         generateGetGenerationMethod(methodsBuilder);
         if (!getProductCmptType().isAbstract()) {
-            generateFactoryMethodsForPolicyCmptType(getPolicyCmptType(), methodsBuilder);
+            generateFactoryMethodsForPolicyCmptType(getPolicyCmptType(), methodsBuilder, new HashSet());
             generateMethodCreatePolicyCmptBase(methodsBuilder);
         }
     }
     
-    private void generateFactoryMethodsForPolicyCmptType(IPolicyCmptType returnedTypeInSignature, JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateFactoryMethodsForPolicyCmptType(
+            IPolicyCmptType returnedTypeInSignature, 
+            JavaCodeFragmentBuilder methodsBuilder,
+            Set supertypesHandledSoFar) throws CoreException {
         if (!returnedTypeInSignature.isAbstract()) {
             generateMethodCreatePolicyCmpt(returnedTypeInSignature, methodsBuilder);
         }
         IPolicyCmptType supertype = returnedTypeInSignature.findSupertype();
-        if (supertype!=null) {
-            generateFactoryMethodsForPolicyCmptType(supertype, methodsBuilder);
+        if (supertype!=null && !supertypesHandledSoFar.contains(supertype)) {
+            supertypesHandledSoFar.add(supertype);
+            generateFactoryMethodsForPolicyCmptType(supertype, methodsBuilder, supertypesHandledSoFar);
         }
             
     }

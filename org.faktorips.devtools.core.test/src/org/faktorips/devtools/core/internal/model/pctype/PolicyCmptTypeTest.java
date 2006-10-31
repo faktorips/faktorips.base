@@ -303,6 +303,20 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         c.setSupertype(a.getQualifiedName());
         c.newRelation().setTarget(b.getQualifiedName());
         List dependsOnList = CollectionUtil.toArrayList(c.dependsOn());
+        assertEquals(2, dependsOnList.size());
+        assertTrue(dependsOnList.contains(a.getQualifiedNameType()));
+        assertTrue(dependsOnList.contains(b.getQualifiedNameType()));
+        
+        // test if a cicle in the type hierarchy does not lead to a stack overflow exception
+        c.setSupertype(c.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(c.dependsOn());
+        assertEquals(1, dependsOnList.size());
+        assertTrue(dependsOnList.contains(b.getQualifiedNameType()));
+        
+        c.setSupertype(a.getQualifiedName());
+        a.setSupertype(c.getQualifiedName());
+        dependsOnList = CollectionUtil.toArrayList(c.dependsOn());
+        assertEquals(2, dependsOnList.size());
         assertTrue(dependsOnList.contains(a.getQualifiedNameType()));
         assertTrue(dependsOnList.contains(b.getQualifiedNameType()));
     }
@@ -588,6 +602,10 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     	assertTrue(subtype.isAggregateRoot());
     	supertype.newRelation().setRelationType(RelationType.REVERSE_COMPOSITION);
     	assertFalse(subtype.isAggregateRoot());
+        
+        IPolicyCmptType invalidType = newPolicyCmptType(ipsProject, "InvalidType");
+        invalidType.setSupertype(invalidType.getQualifiedName());
+        assertTrue(invalidType.isAggregateRoot());
     }
     
     public void testValidate_SupertypeNotFound() throws Exception {
@@ -627,12 +645,17 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         supertype.setSupertype(supersupertype.getQualifiedName());
         
         MessageList ml = pcType.validate();
-    	assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
+    	Message msg = ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
+        assertNull(msg);
     	
     	supersupertype.setSupertype(pcType.getQualifiedName());
     	
     	ml = pcType.validate();
-    	assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
+        msg = ml.getMessageByCode(IPolicyCmptType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
+        assertNotNull(msg);
+        assertEquals(1, msg.getInvalidObjectProperties().length);
+        assertEquals(IPolicyCmptType.PROPERTY_SUPERTYPE, msg.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(pcType, msg.getInvalidObjectProperties()[0].getObject());
     }
 
 // deactivated because at the moment unimplemented container relations are valid...

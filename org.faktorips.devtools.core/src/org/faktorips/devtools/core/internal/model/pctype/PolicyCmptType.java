@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.Parameter;
+import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ListElementMover;
@@ -416,17 +417,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * @throws CoreException
      */
     public boolean isAggregateRoot() throws CoreException {
-        for (Iterator it = relations.iterator(); it.hasNext();) {
-            IRelation each = (IRelation)it.next();
-            if (each.getRelationType().isReverseComposition()) {
-                return false;
-            }
-        }
-        IPolicyCmptType supertype = findSupertype();
-        if (supertype != null) {
-            return supertype.isAggregateRoot();
-        }
-        return true;
+        IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor();
+        visitor.start(this);
+        return visitor.isRoot();
     }
 
     /**
@@ -700,7 +693,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                     msg.append(" --> "); //$NON-NLS-1$
                 }
             }
-            list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this));
+            list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this, IPolicyCmptType.PROPERTY_SUPERTYPE));
             return;
         }
 
@@ -970,7 +963,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public QualifiedNameType[] dependsOn(boolean excludeNonProductRelations) throws CoreException {
         Set qualifiedNameTypes = new HashSet();
-        addQualifiedNameTypesForSuperTypeHierarchy(qualifiedNameTypes, this);
+        new AddQNamesFromTypeHierarchyVisitor(qualifiedNameTypes).start(this);
         addQualifiedNameTypesForRelationTargets(qualifiedNameTypes, excludeNonProductRelations);
         addQualifiedNameTypesForFormulaParameters(qualifiedNameTypes);
 
@@ -1000,18 +993,6 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
                     }
                 }
             }
-        }
-    }
-
-    private void addQualifiedNameTypesForSuperTypeHierarchy(Set qualifiedNameTypes, IPolicyCmptType pcType)
-            throws CoreException {
-        if (StringUtils.isEmpty(pcType.getSupertype())) {
-            return;
-        }
-        qualifiedNameTypes.add(new QualifiedNameType(pcType.getSupertype(), IpsObjectType.POLICY_CMPT_TYPE));
-        IPolicyCmptType superPcType = pcType.findSupertype();
-        if (superPcType != null) {
-            addQualifiedNameTypesForSuperTypeHierarchy(qualifiedNameTypes, superPcType);
         }
     }
 
@@ -1160,6 +1141,56 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      */
     public boolean hasNullObject() {
         return false;
+    }
+    
+    class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        private boolean root = true;
+        
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IPolicyCmptType currentType) {
+            IRelation[] relations = currentType.getRelations();
+            for (int i=0; i<relations.length; i++) {
+                IRelation each = relations[i];
+                if (each.getRelationType().isReverseComposition()) {
+                    root = false;
+                    return false; // stop the visit, we have the result
+                }
+            }
+            return true;
+        }
+        
+        public boolean isRoot() {
+            return root;
+        }
+        
+    }
+    
+    class AddQNamesFromTypeHierarchyVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        private Set qNames;
+
+        public AddQNamesFromTypeHierarchyVisitor(Set names) {
+            super();
+            qNames = names;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected boolean visit(IPolicyCmptType currentType) {
+            if (!currentType.hasSupertype()) {
+                return false;
+            }
+            if (getQualifiedName().equals(currentType.getSupertype())) {
+                return false; // don't create a QNameType for this type
+            }
+            qNames.add(new QualifiedNameType(currentType.getSupertype(), IpsObjectType.POLICY_CMPT_TYPE));
+            return true;
+        }
+        
     }
 
 }

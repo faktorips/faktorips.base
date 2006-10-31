@@ -65,7 +65,7 @@ public class ProductCmptType implements IProductCmptType {
 	}
 
 	/**
-	 * Overridden.
+     * {@inheritDoc}
 	 */
 	public boolean isAbstract() {
 		return policyCmptType.isAbstract();
