@@ -189,7 +189,9 @@ public class FormulaTestBuilder extends AbstractArtefactBuilder {
                 formulaTestInputValueElem.setAttribute("datatype", datatype.getJavaClassName());
             }
             Parameter formulaParam = ftivs[i].findFormulaParameter();
-            formulaTestInputValueElem.setAttribute("parameterIndex", ""+formulaParam.getIndex());
+            if (formulaParam != null){
+                formulaTestInputValueElem.setAttribute("parameterIndex", ""+formulaParam.getIndex());
+            }
         }
     }
 

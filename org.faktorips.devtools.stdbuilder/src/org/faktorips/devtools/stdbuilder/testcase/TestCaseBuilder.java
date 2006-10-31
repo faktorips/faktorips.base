@@ -288,9 +288,6 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                         .getTestPolicyCmptTypeParameter());
                 testPolicyCmptElem.setAttribute("name", testPolicyCmpt[i].getName());
             }
-            testPolicyCmptElem.setAttribute("productCmpt", testPolicyCmpt[i].getProductCmpt());
-            addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestAttributeValues(), isInput);
-            addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput);
             
             IProductCmpt productCmpt = testPolicyCmpt[i].findProductCmpt();
             if (productCmpt != null){
@@ -299,6 +296,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     throw new CoreException(new IpsStatus(NLS.bind(
                             "The policy component type {0} was not found.", productCmpt.getPolicyCmptType())));
                 }
+                testPolicyCmptElem.setAttribute("productCmpt", productCmpt.getRuntimeId());
+                addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestAttributeValues(), isInput);
+                addRelations(doc, testPolicyCmptElem, testPolicyCmpt[i].getTestPolicyCmptRelations(), isInput);                
                 testPolicyCmptElem.setAttribute("class", javaSourceFileBuilder.getQualifiedClassName(pcType));
             }
         }
