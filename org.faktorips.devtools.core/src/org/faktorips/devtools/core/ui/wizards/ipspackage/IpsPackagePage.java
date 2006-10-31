@@ -370,11 +370,11 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         }
         IStatus status = JavaConventions.validatePackageName(name);
         if (status.getSeverity() == IStatus.ERROR) {
-            setErrorMessage( Messages.IpsPackagePage_InvalidPackageName);
+            setErrorMessage(NLS.bind(Messages.IpsPackagePage_InvalidPackageName, status.getMessage()));
             return;
         }
         if (status.getSeverity() == IStatus.WARNING) {
-            this.setMessage(Messages.IpsPackagePage_msgNameDiscouraged, IMessageProvider.WARNING);
+            this.setMessage(NLS.bind(Messages.IpsPackagePage_msgNameDiscouraged, status.getMessage()), IMessageProvider.WARNING);
             return;
         }
         IIpsPackageFragment pack = packageControl.getPdPackageFragment();
