@@ -82,8 +82,7 @@ public interface IIpsSrcFile extends IIpsElement {
     public boolean isContentParsable() throws CoreException;
     
     /**
-     * Indicates <code>org.faktorips.devtools.core.internal.model.IpsSrcFile</code>s that have been read 
-     * from the resource history. 
+     * Returns <code>true</code> if the file has been read from the resource history.
      */
     public boolean isHistoric();
     
