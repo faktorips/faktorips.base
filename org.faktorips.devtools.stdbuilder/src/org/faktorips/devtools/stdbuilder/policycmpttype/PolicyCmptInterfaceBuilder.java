@@ -944,7 +944,6 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
     public void generateSignatureGetMaxCardinalityFor(IRelation relation, JavaCodeFragmentBuilder methodsBuilder){
         String methodName = getMethodNameGetMaxCardinalityFor(relation);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IntegerRange.class.getName(), methodName, new String[0], new String[0]);
-        
     }
     
     public String getMethodNameGetMaxCardinalityFor(IRelation relation){
