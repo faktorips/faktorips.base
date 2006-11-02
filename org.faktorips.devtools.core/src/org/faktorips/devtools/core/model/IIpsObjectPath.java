@@ -18,6 +18,8 @@
 package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The IPS object path defines where IPS objects can be found. It is the same concept as the Java classpath.
@@ -133,4 +135,9 @@ public interface IIpsObjectPath {
      * Extension Java files are the files where the developer adds it's own code.
      */
     public void setBasePackageNameForExtensionJavaClasses(String name);
+    
+    /**
+     * Validates the object path and returns the result as list of messages.
+     */
+    public MessageList validate() throws CoreException;    
 }

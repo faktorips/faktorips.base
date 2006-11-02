@@ -17,12 +17,31 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.util.message.MessageList;
+
 /**
  * An entry in an IPS object path.
  * 
  * @author Jan Ortmann
  */
 public interface IIpsObjectPathEntry {
+    
+    
+    /**
+     * Prefix for all message codes of this class.
+     */
+    public final static String MSGCODE_PREFIX = "IIPSOBJECTPATHENTRY-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a related folder is missing.
+     */
+    public final static String MSGCODE_MISSING_FOLDER = MSGCODE_PREFIX + "MissingFolder"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the related project is missing.
+     */
+    public final static String MSGCODE_MISSING_PROJECT = MSGCODE_PREFIX + "MissingProject"; //$NON-NLS-1$
     
     /**
      * Type constant indicating a source folder entry.
@@ -49,4 +68,8 @@ public interface IIpsObjectPathEntry {
      */
     public String getType();
 
+    /**
+     * Validates the object path entry and returns the result as list of messages.
+     */
+    public MessageList validate() throws CoreException;
 }

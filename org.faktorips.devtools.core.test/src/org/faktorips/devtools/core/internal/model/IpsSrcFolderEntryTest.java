@@ -19,9 +19,13 @@ package org.faktorips.devtools.core.internal.model;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -137,8 +141,35 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertNull(entry.getSpecificOutputFolderForExtensionJavaFiles());
         assertEquals("", entry.getSpecificBasePackageNameForGeneratedJavaClasses());
         assertEquals("", entry.getSpecificBasePackageNameForExtensionJavaClasses());
-        
-        
     }
+    
+    public void testValidate() throws CoreException{
+        MessageList ml = ipsProject.validate();
+        assertEquals(0, ml.getNoOfMessages());
 
+        IIpsProjectProperties props = ipsProject.getProperties();
+        IIpsObjectPath path = props.getIpsObjectPath();
+        IIpsSrcFolderEntry[] srcEntries = path.getSourceFolderEntries();
+        assertEquals(1, srcEntries.length);
+
+        // validate missing outputFolderGenerated
+        IFolder folder1 = ipsProject.getProject().getFolder("none");
+        srcEntries[0].setSpecificOutputFolderForGeneratedJavaFiles(folder1);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_MISSING_FOLDER));
+
+        // validate missing outputFolderExtension
+        srcEntries[0].setSpecificOutputFolderForExtensionJavaFiles(folder1);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(2, ml.getNoOfMessages());
+
+        // validate missing source folder
+        path.newSourceFolderEntry(folder1);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(3, ml.getNoOfMessages());
+    }
 }

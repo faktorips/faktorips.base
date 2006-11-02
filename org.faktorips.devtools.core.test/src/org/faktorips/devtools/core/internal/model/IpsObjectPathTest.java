@@ -27,10 +27,12 @@ import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -259,5 +261,27 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertEquals(2, outFolders.length);
         assertEquals(out1, outFolders[0]);
         assertEquals(out2, outFolders[1]);
+    }
+    
+    public void testValidate() throws CoreException{
+        MessageList ml = ipsProject.validate();
+        assertEquals(0, ml.getNoOfMessages());
+        
+        IIpsProjectProperties props = ipsProject.getProperties();
+        IIpsObjectPath path = props.getIpsObjectPath();
+        
+        // validate missing outputFolderGenerated
+        IFolder folder1 = ipsProject.getProject().getFolder("none");
+        path.setOutputFolderForGeneratedJavaFiles(folder1);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_MISSING_FOLDER));
+
+        // validate missing outputFolderExtension
+        path.setOutputFolderForExtensionJavaFiles(folder1);
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(2, ml.getNoOfMessages());
     }
 }

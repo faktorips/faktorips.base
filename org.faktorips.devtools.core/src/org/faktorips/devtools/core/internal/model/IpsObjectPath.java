@@ -24,6 +24,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
@@ -32,6 +33,8 @@ import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -406,4 +409,36 @@ public class IpsObjectPath implements IIpsObjectPath {
         return path;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validate() throws CoreException {
+        MessageList list = new MessageList();
+        if (outputFolderGenerated != null) {
+            list.add(validateFolder(outputFolderGenerated));
+        }
+        if (outputFolderExtension != null) {
+            list.add(validateFolder(outputFolderExtension));
+        }
+        
+        IIpsObjectPathEntry[] objectPathEntries = getEntries();
+        for (int i = 0; i < objectPathEntries.length; i++) {
+            MessageList ml = objectPathEntries[i].validate();
+            list.add(ml);
+        }
+        return list;
+    }
+    
+    /*
+     * Validate that the given folder exists.
+     */
+    private MessageList validateFolder(IFolder folder) {
+        MessageList result = new MessageList();
+        if (!folder.exists()){
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
+            Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
+            result.add(msg);
+        }
+        return result;
+    }    
 }

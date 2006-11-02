@@ -17,9 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model;
 
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,4 +61,20 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertEquals(refProject, entry.getReferencedIpsProject());
     }
 
+    public void testValidate() throws CoreException{
+        IIpsProjectProperties props = ipsProject.getProperties();
+        IIpsObjectPath path = props.getIpsObjectPath();
+        ipsProject = this.newIpsProject("TestProject2");
+        path.newIpsProjectRefEntry(ipsProject);
+        
+        MessageList ml = ipsProject.validate();
+        assertEquals(0, ml.getNoOfMessages());
+        
+        // validate missing project reference
+        path.newIpsProjectRefEntry(IpsPlugin.getDefault().getIpsModel().getIpsProject("none"));
+        ipsProject.setProperties(props);
+        ml = ipsProject.validate();
+        assertEquals(1, ml.getNoOfMessages());
+        assertNotNull(ml.getMessageByCode(IIpsProjectRefEntry.MSGCODE_MISSING_PROJECT));
+    }
 }

@@ -109,13 +109,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		MessageList list = new MessageList();
 		validateBuilderSetId(ipsProject, list);
 		validateUsedPredefinedDatatype(ipsProject, list);
+        validateIpsObjectPath(ipsProject, list);
 		for (int i = 0; i < definedDatatypes.length; i++) {
 			list.add(definedDatatypes[i].validate());
 		}
 		return list;
 	}
 	
-	private void validateUsedPredefinedDatatype(IIpsProject ipsProject, MessageList list) {
+    private void validateUsedPredefinedDatatype(IIpsProject ipsProject, MessageList list) {
 		IIpsModel model = ipsProject.getIpsModel();
 		for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
 			if (!model.isPredefinedValueDatatype(predefinedDatatypesUsed[i])) {
@@ -136,6 +137,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 		list.add(msg);
 	}
 	
+    /*
+     * Validate the ips object path entry.
+     */
+    private void validateIpsObjectPath(IIpsProject ipsProject, MessageList list) throws CoreException {
+        list.add(path.validate());
+    }
+    
 	/**
 	 * Returns <code>true</code> if this property object was created by reading a  
 	 * .ipsproject file containg parsable xml data, otherwise <code>false</code>.

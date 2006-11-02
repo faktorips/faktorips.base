@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -29,6 +30,8 @@ import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -128,4 +131,17 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validate() throws CoreException {
+        MessageList result = new MessageList();
+        IIpsProject project = getReferencedIpsProject();
+        if(! project.exists()){
+            String text = NLS.bind(Messages.IpsProjectRefEntry_msgMissingReferencedProject, project.getName());
+            Message msg = new Message(MSGCODE_MISSING_PROJECT, text, Message.ERROR, this);
+            result.add(msg);
+        }
+        return result;
+    }
 }

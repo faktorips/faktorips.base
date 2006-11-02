@@ -76,4 +76,8 @@ public class Messages extends NLS {
 
     public static String IpsProject_msgInvalidMigrationInformation;
 
+    public static String IpsProjectRefEntry_msgMissingReferencedProject;
+
+    public static String IpsSrcFolderEntry_msgMissingFolder;
+
 }

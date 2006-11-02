@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -31,6 +32,8 @@ import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -263,4 +266,33 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         return element;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public MessageList validate() throws CoreException {
+        MessageList result = new MessageList();
+        // the sourceFolder will never be null (see this#initFromXml)
+        result.add(validateFolder(sourceFolder));
+
+        if (outputFolderGenerated != null) {
+            result.add(validateFolder(outputFolderGenerated));
+        }
+        if (outputFolderExtension != null) {
+            result.add(validateFolder(outputFolderExtension));
+        }
+        return result;
+    }
+    
+    /*
+     * Validate that the given folder exists.
+     */
+    private MessageList validateFolder(IFolder folder) {
+        MessageList result = new MessageList();
+        if (!folder.exists()){
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
+            Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
+            result.add(msg);
+        }
+        return result;
+    }    
 }
