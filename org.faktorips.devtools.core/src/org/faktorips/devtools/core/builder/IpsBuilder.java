@@ -320,9 +320,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             return;
         }
         try {
-            resource.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+            resource.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
             MessageList list = object.validate();
-            createMarkersFromMessageList(resource, list, IMarker.PROBLEM);
+            createMarkersFromMessageList(resource, list, IpsPlugin.PROBLEM_MARKER);
         } catch (Exception e) {
             buildStatus.add(new IpsStatus("An exception occured during marker updating", e));
         }

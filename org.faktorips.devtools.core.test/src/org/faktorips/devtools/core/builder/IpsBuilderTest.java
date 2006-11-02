@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilder;
@@ -75,7 +76,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(numOfMsg > 0);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         IResource resource = pcType.getEnclosingResource();
-        IMarker[] markers = resource.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+        IMarker[] markers = resource.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
         assertTrue(markers.length > 0);
         assertEquals(msgList.getMessage(0).getText(), (String)markers[0].getAttribute(IMarker.MESSAGE));
         assertEquals(IMarker.SEVERITY_ERROR, markers[0].getAttribute(IMarker.SEVERITY, -1));
@@ -87,7 +88,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(msgList.getNoOfMessages() < numOfMsg);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         resource = pcType.getEnclosingResource();
-        markers = resource.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+        markers = resource.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
         assertEquals(msgList.getNoOfMessages(), markers.length);
     }
 

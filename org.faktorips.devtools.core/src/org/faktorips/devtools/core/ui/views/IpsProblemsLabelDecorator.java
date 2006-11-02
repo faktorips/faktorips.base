@@ -99,9 +99,9 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                          * tree of subfolders. PackageFragmentRoots on the other hand should always be
                          * decorated with the problem markers of their packagefragments.
                          */
-                        markers = res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+                        markers = res.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ONE);
                     } else {
-                        markers = res.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+                        markers = res.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
                     }
                     for (int i = 0; i < markers.length && (flag != JavaElementImageDescriptor.ERROR); i++) {
                         if (markers[i].exists()) {
