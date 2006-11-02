@@ -1190,7 +1190,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>.
      */
-     IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
+    synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
         if (file == null) {
             return null;
         }
