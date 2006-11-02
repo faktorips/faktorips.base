@@ -57,7 +57,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 	/**
 	 * The page owning this section.
 	 */
-	private GenerationsPage page;
+	private ProductCmptPropertiesPage page;
 	
 	/**
 	 * Create a new Section to display generations.
@@ -66,10 +66,10 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 	 * @param toolkit The toolkit to help creating the ui
 	 */
     public GenerationsSection(
-            GenerationsPage page, 
+            ProductCmptPropertiesPage page, 
             Composite parent,
             UIToolkit toolkit) {
-        super(page.getProductCmpt(), parent, Section.TITLE_BAR | Section.DESCRIPTION, 
+        super(page.getProductCmpt(), parent, Section.TITLE_BAR, 
         		IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(), toolkit);
         this.page = page;
     }
@@ -114,6 +114,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 	    	}
 			if (select || automatic) {
 				page.getProductCmptEditor().setActiveGeneration(generation);
+                page.getProductCmptEditor().updateGenerationPropertiesPageTab();
 				if (!automatic) {
 					page.getProductCmptEditor().setActivePage(PropertiesPage.PAGE_ID);
 				}
@@ -122,11 +123,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
     }
     
     private IProductCmptGeneration getActiveGeneration() {
-    	
     	return (IProductCmptGeneration)page.getProductCmptEditor().getActiveGeneration();
     }
-
-    
     
     /**
      * A composite that shows a policy component's attributes in a viewer and 

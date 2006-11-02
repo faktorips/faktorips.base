@@ -17,14 +17,21 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.text.DateFormat;
+import java.util.GregorianCalendar;
+
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -44,7 +51,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 	public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
 
 	// Sections for different property-groups
-	private ProductAttributesSection productAttributesSection;
+	private GenerationAttributesSection productAttributesSection;
 
 	private FormulasSection formulasSection;
 
@@ -87,7 +94,16 @@ public class PropertiesPage extends IpsObjectEditorPage {
 						.isEditableGeneration(getActiveGeneration()));
 			}
 		});
-
+        
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(new ContentsChangeListener() {
+        
+            public void contentsChanged(ContentChangeEvent event) {
+                if (event.getIpsSrcFile().equals(((ProductCmptEditor)getEditor()).getIpsObject().getIpsSrcFile())) {
+                    updateTabname();
+                }
+            }
+        });
+        updateTabname();
 	}
 
 	/**
@@ -127,7 +143,7 @@ public class PropertiesPage extends IpsObjectEditorPage {
 
 		Composite left = createGridComposite(toolkit, root, 1, true,
 				GridData.FILL_BOTH);
-		productAttributesSection = new ProductAttributesSection(generation,
+		productAttributesSection = new GenerationAttributesSection(generation,
 				left, toolkit, (ProductCmptEditor)getEditor());
 		formulasSection = new FormulasSection(generation, left, toolkit);
 
@@ -185,4 +201,38 @@ public class PropertiesPage extends IpsObjectEditorPage {
 				.getActiveGeneration();
 	}
 
+    protected void updateTabname() {
+        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+        String validRange = format.format(getActiveGeneration().getValidFrom().getTime());
+
+        GregorianCalendar date = getActiveGeneration().getValidTo();
+        String validToString;
+        if (date == null) {
+            validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
+        }
+        else {
+            validToString = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().format(date.getTime());
+        }
+
+        validRange += " - " + validToString; //$NON-NLS-1$
+        String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
+        setPartName(generationConceptName + " " + validRange); //$NON-NLS-1$
+        updateTabText(getPartControl());
+        
+    }
+
+    /**
+     * @param partControl
+     */
+    private void updateTabText(Control partControl) {
+        if (partControl == null) {
+            return;
+        }
+        if (partControl instanceof CTabFolder) {
+            ((CTabFolder)partControl).getItem(0).setText(getPartName());
+            return;
+        }
+        updateTabText(partControl.getParent());
+    }
+    
 }

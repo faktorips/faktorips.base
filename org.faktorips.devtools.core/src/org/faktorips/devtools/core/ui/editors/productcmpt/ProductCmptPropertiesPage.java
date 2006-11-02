@@ -17,29 +17,24 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.Described;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.DescriptionSection;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
 
 /**
- * A page to display all rules aplied to one product component.
+ * A page to display the generations.
  */
-public class RulesPage extends IpsObjectEditorPage {
+public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
     
-    final static String PAGE_ID = "Rules"; //$NON-NLS-1$
+    final static String PAGE_ID = "PolicyCmpt"; //$NON-NLS-1$
 
-    public RulesPage(IpsObjectEditor editor) {
-        super(editor, PAGE_ID, Messages.RulesPage_title);
+    public ProductCmptPropertiesPage(IpsObjectEditor editor) {
+        super(editor, PAGE_ID, "Properties");
     }
 
     /**
@@ -60,33 +55,28 @@ public class RulesPage extends IpsObjectEditorPage {
      * {@inheritDoc}
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-		GridLayout layout = new GridLayout(2, true);
+		GridLayout layout = new GridLayout(1, true);
+        layout.verticalSpacing = VERTICAL_SECTION_SPACE;
+        layout.horizontalSpacing = HORIZONTAL_SECTION_SPACE;
 		formBody.setLayout(layout);
 		
-		final RulesSection rulesSection 
-			= new RulesSection(this, formBody, toolkit);
-		final DescriptionSection descSection = new DescriptionSection(null, formBody, toolkit);
-		rulesSection.addSelectionChangedListener(new ISelectionChangedListener() {
-			private final Described EMPTY = new Described() {
-			
-				public String getDescription() {
-					return ""; //$NON-NLS-1$
-				}
-			
-				public void setDescription(String newDescription) {
-					// dont do anything.
-				}
-			};
-            public void selectionChanged(SelectionChangedEvent event) {
-            	Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-            	if (selected instanceof IValidationRule) {
-            		descSection.setDescribedObject((IValidationRule)selected);
-            	}
-            	else {
-            		descSection.setDescribedObject(EMPTY);
-            	}
-            }
-		    
-		});
+        Composite top = createGridComposite(toolkit, formBody, 2, true,
+                GridData.FILL_BOTH);
+        new ProductAttributesSection(getProductCmpt(), top, toolkit, getProductCmptEditor());
+        new GenerationsSection(this, top, toolkit);
+        
+        Composite bottom = createGridComposite(toolkit, formBody, 1, true,
+                GridData.FILL_BOTH);
+        new RulesSection(this, bottom, toolkit);
+
+    }
+    
+    /**
+     * Made public to get refresh from editor.
+     * 
+     * {@inheritDoc}
+     */
+    public void refresh() {
+    	super.refresh();
     }
 }

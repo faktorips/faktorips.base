@@ -60,9 +60,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 
 	private PropertiesPage propertiesPage;
 
-	private GenerationsPage generationsPage;
-
-	private RulesPage rulesPage;
+	private ProductCmptPropertiesPage productCmptPropertiesPage;
 
 	private DescriptionPage descriptionPage;
 
@@ -143,13 +141,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				}
 				
 				propertiesPage = new PropertiesPage(this);
-				generationsPage = new GenerationsPage(this);
+                productCmptPropertiesPage = new ProductCmptPropertiesPage(this);
 				descriptionPage = new DescriptionPage(this);
-				rulesPage = new RulesPage(this);
 				
 				addPage(propertiesPage);
-				addPage(generationsPage);
-				addPage(rulesPage);
+				addPage(productCmptPropertiesPage);
 				addPage(descriptionPage);
 			}
 			else {
@@ -419,7 +415,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 				generationManuallySet = false;
 				browseOldGeneration = false;
 				checkGeneration();
-				generationsPage.refresh();
+                productCmptPropertiesPage.refresh();
 				refreshInternal(false);
 			} else if (property
 					.equals(IpsPreferences.EDIT_GENERATION_WITH_SUCCESSOR)
@@ -513,6 +509,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor {
 		}
 		setActiveGeneration(generation, false);
 	}
+    
+    /**
+     * Update the tab-content (text and image) for the tab of the generation properties page.
+     */
+    protected void updateGenerationPropertiesPageTab() {
+        propertiesPage.updateTabname();
+    }
 	
 	private void handleWorkingDateMissmatch(Shell shell) {
 		IProductCmpt cmpt = getProductCmpt();

@@ -21,12 +21,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -47,7 +56,7 @@ public class RulesSection extends SimpleIpsPartsSection {
 	/**
 	 * The page owning this section.
 	 */
-	private RulesPage page;
+	private ProductCmptPropertiesPage page;
 	
 	/**
 	 * Create a new Section to display rules.
@@ -56,10 +65,10 @@ public class RulesSection extends SimpleIpsPartsSection {
 	 * @param toolkit The toolkit to help creating the ui
 	 */
     public RulesSection(
-            RulesPage page, 
+            ProductCmptPropertiesPage page, 
             Composite parent,
             UIToolkit toolkit) {
-        super(page.getProductCmpt(), parent, Section.TITLE_BAR | Section.DESCRIPTION, Messages.RulesSection_title, toolkit);
+        super(page.getProductCmpt(), parent, Section.TITLE_BAR, Messages.RulesSection_title, toolkit);
         this.page = page;
     }
 
@@ -75,11 +84,50 @@ public class RulesSection extends SimpleIpsPartsSection {
      * allows to edit attributes in a dialog, create new attributes and delete attributes.
      */
     public class RulesComposite extends IpsPartsComposite {
-
+        private Text descriptionText;
+        
         public RulesComposite(IProductCmpt product, Composite parent, UIToolkit toolkit) {
             super(product, parent, false, false, false, false, false, toolkit);
         }
         
+        /**
+         * {@inheritDoc}
+         */
+        protected void initControls(UIToolkit toolkit) {
+            super.initControls(toolkit);
+            
+            // add another column to the layout created by the parent
+            GridLayout layout = (GridLayout)getLayout();
+            layout.numColumns += 1;
+            layout.makeColumnsEqualWidth = true;
+
+            // add the textfield to disply the description
+            descriptionText = toolkit.createText(this, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.FLAT);
+            descriptionText.setEditable(false);
+            
+            GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+            data.verticalIndent = 1;
+            descriptionText.setLayoutData(data);
+
+            // if the selection changes in the viewer, we have to update the description
+            super.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+            
+                public void selectionChanged(SelectionChangedEvent event) {
+                    ISelection selection = getViewer().getSelection();
+                    if (!(selection instanceof IStructuredSelection)) {
+                        descriptionText.setText(""); //$NON-NLS-1$
+                        return;
+                    }
+                    Object selected = ((IStructuredSelection)selection).getFirstElement();
+                    if (!(selected instanceof Described)) {
+                        descriptionText.setText(""); //$NON-NLS-1$
+                        return;
+                    }
+                    descriptionText.setText(((Described)selected).getDescription());
+                }
+            });
+        }
+
         /**
          * {@inheritDoc}
          */

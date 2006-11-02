@@ -221,9 +221,6 @@ public class DefaultsAndRangesSection extends IpsSection {
 	    		}
 	    		
 			}
-			toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
-			toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
-			toolkit.createVerticalSpacer(rootPane, 3).setBackground(rootPane.getBackground());
 		}
 		    	
 		rootPane.layout(true);
