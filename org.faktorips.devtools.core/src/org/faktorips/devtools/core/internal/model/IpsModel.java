@@ -108,20 +108,20 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * A map containing the data for each ips project. The name of the project is used as the key
      * and the value is an instance of IpsProjectData.
      */
-    private Map projectPropertiesMap = new HashMap();
+    private Map projectPropertiesMap = Collections.synchronizedMap(new HashMap());
 
     // a map containing a set of datatypes per ips project. The map's key is the
     // project name.
-    private Map projectDatatypesMap = new HashMap();
+    private Map projectDatatypesMap = Collections.synchronizedMap(new HashMap());
 
     // a map containing a map per ips project. The map's key is the project
     // name.
     // The maps contained in the map, contain the datatypes as keys and the
     // datatype helper as values.
-    private Map projectDatatypeHelpersMap = new HashMap();
+    private Map projectDatatypeHelpersMap = Collections.synchronizedMap(new HashMap());
 
-    private Map projectToBuilderSetMap = new HashMap();
-    
+    private Map projectToBuilderSetMap = Collections.synchronizedMap(new HashMap());
+
     private List builderSetInfoList = null;
 
     // extension properties (as list) per ips object (or part) type, e.g.
@@ -569,10 +569,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * logged and an empty ips project data instance is returned.
      */
     public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
-        
-        if (projectPropertiesMap == null) {
-            projectPropertiesMap = new HashMap();
-        }
         IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
         Long lastIpsPropertyFileModification = (Long)lastIpsPropertyFileModifications.get(ipsProject.getName());
         if (propertyFile.exists()
