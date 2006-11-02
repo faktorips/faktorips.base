@@ -87,19 +87,20 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 return getProject().getReferencedProjects();
             }
             monitor.subTask(Messages.IpsBuilder_preparingBuild);
-            applyBuildCommand(buildStatus, new BeforeBuildProcessCommand(kind), monitor);
+            IIpsArtefactBuilderSet ipsArtefactBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind), monitor);
             monitor.worked(100);
             if (kind == IncrementalProjectBuilder.FULL_BUILD || kind == IncrementalProjectBuilder.CLEAN_BUILD
                     || getDelta(getProject()) == null) {
                 // delta not available
                 monitor.subTask(Messages.IpsBuilder_startFullBuild);
-                fullBuild(buildStatus, new SubProgressMonitor(monitor, 99700));
+                fullBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
             } else {
                 monitor.subTask(Messages.IpsBuilder_startIncrementalBuild);
-                incrementalBuild(buildStatus, new SubProgressMonitor(monitor, 99700));
+                incrementalBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
             }
             monitor.subTask(Messages.IpsBuilder_finishBuild);
-            applyBuildCommand(buildStatus, new AfterBuildProcessCommand(kind), monitor);
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind), monitor);
             monitor.worked(100);
             if (buildStatus.getSeverity() == IStatus.OK) {
                 return getProject().getReferencedProjects();
@@ -126,7 +127,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     
-    private void applyBuildCommand(MultiStatus buildStatus, BuildCommand command, IProgressMonitor monitor) throws CoreException {
+    private void applyBuildCommand(IIpsArtefactBuilderSet currentBuilderSet, MultiStatus buildStatus, BuildCommand command, IProgressMonitor monitor) throws CoreException {
         // Despite the fact that generating is disabled in the faktor ips
         // preferences the
         // validation of the modell class instances and marker updating of the
@@ -134,7 +135,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         if (!IpsPlugin.getDefault().getIpsPreferences().getEnableGenerating()) {
             return;
         }
-        IIpsArtefactBuilderSet currentBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
+//        IIpsArtefactBuilderSet currentBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
         IIpsArtefactBuilder[] artefactBuilders = currentBuilderSet.getArtefactBuilders();
         for (int i = 0; i < artefactBuilders.length; i++) {
             try {
@@ -193,7 +194,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * Full build generates Java source files for all IPS objects.
      */
-    private MultiStatus fullBuild(MultiStatus buildStatus, IProgressMonitor monitor) {
+    private MultiStatus fullBuild(IIpsArtefactBuilderSet ipsArtefactBuilderSet, MultiStatus buildStatus, IProgressMonitor monitor) {
         System.out.println("Full build started."); //$NON-NLS-1$
         long begin = System.currentTimeMillis();
 
@@ -209,7 +210,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 try {
                     IIpsSrcFile ipsSrcFile = (IIpsSrcFile)it.next();
                     monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
-                    buildIpsSrcFile(ipsSrcFile, buildStatus, monitor);
+                    buildIpsSrcFile(ipsArtefactBuilderSet, ipsSrcFile, buildStatus, monitor);
                     monitor.worked(1);
                 } catch (Exception e) {
                     buildStatus.add(new IpsStatus(e));
@@ -260,7 +261,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * Incremental build generates Java source files for all PdObjects that have been changed.
      */
-    private void incrementalBuild(MultiStatus buildStatus, IProgressMonitor monitor) {
+    private void incrementalBuild(IIpsArtefactBuilderSet ipsArtefactBuilderSet, MultiStatus buildStatus, IProgressMonitor monitor) {
         System.out.println("Incremental build started."); //$NON-NLS-1$
         try {
             IResourceDelta delta = getDelta(getProject());
@@ -275,14 +276,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             for (Iterator it = visitor.removedIpsSrcFiles.iterator(); it.hasNext();) {
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
                 monitor.subTask(Messages.IpsBuilder_deleting + ipsSrcFile.getName());
-                applyBuildCommand(buildStatus, new DeleteArtefactBuildCommand(ipsSrcFile), monitor);
+                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new DeleteArtefactBuildCommand(ipsSrcFile), monitor);
                 monitor.worked(1);
             }
             
             for (Iterator it = visitor.changedAndAddedIpsSrcFiles.iterator(); it.hasNext();) {
                 IpsSrcFile ipsSrcFile = (IpsSrcFile)it.next();
                 monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
-                buildIpsSrcFile(ipsSrcFile, buildStatus, monitor);
+                buildIpsSrcFile(ipsArtefactBuilderSet, ipsSrcFile, buildStatus, monitor);
                 monitor.worked(1);
             }
             
@@ -298,7 +299,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                         continue;
                     }
                     monitor.subTask(Messages.IpsBuilder_building + nameType);
-                    buildIpsSrcFile(ipsObject.getIpsSrcFile(), buildStatus, monitor);
+                    buildIpsSrcFile(ipsArtefactBuilderSet, ipsObject.getIpsSrcFile(), buildStatus, monitor);
                     ((IpsModel)ipsModel).getDependencyGraph(ipsProject).update(nameType);
                     monitor.worked(1);
                 }
@@ -358,12 +359,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * Builds the indicated file and updates its markers.
      */
-    private IIpsObject buildIpsSrcFile(IIpsSrcFile file, MultiStatus buildStatus, IProgressMonitor monitor) throws CoreException {
+    private IIpsObject buildIpsSrcFile(IIpsArtefactBuilderSet ipsArtefactBuilderSet, IIpsSrcFile file, MultiStatus buildStatus, IProgressMonitor monitor) throws CoreException {
         if (!file.isContentParsable()) {
             return null;
         }
         IIpsObject ipsObject = file.getIpsObject();
-        applyBuildCommand(buildStatus, new BuildArtefactBuildCommand(file), monitor);
+        applyBuildCommand(ipsArtefactBuilderSet,buildStatus, new BuildArtefactBuildCommand(file), monitor);
         updateMarkers(buildStatus, ipsObject);
         return ipsObject;
     }

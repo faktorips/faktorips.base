@@ -121,6 +121,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map projectDatatypeHelpersMap = new HashMap();
 
     private Map projectToBuilderSetMap = new HashMap();
+    
+    private List builderSetInfoList = null;
 
     // extension properties (as list) per ips object (or part) type, e.g.
     // IAttribute.
@@ -216,6 +218,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IIpsProject ipsProject = getIpsProject(javaProject.getProject());
         Util.addNature(javaProject.getProject(), IIpsProject.NATURE_ID);
+        
+        IpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
+        if (infos.length > 0) {
+            IIpsProjectProperties props = ipsProject.getProperties();
+            props.setBuilderSetId(infos[0].getBuilderSetId());
+            ipsProject.setProperties(props);
+        }
+        
         return ipsProject;
     }
 
@@ -690,55 +700,28 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private IIpsArtefactBuilderSet createInstanceOfRegisteredArtefactBuilderSet(String builderSetId) {
         ArgumentCheck.notNull(builderSetId);
 
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
-        IExtension[] extensions = point.getExtensions();
-
-        for (int i = 0; i < extensions.length; i++) {
-
-            IExtension extension = extensions[i];
-            if (!extension.getUniqueIdentifier().equals(builderSetId)) {
-                continue;
-            }
-
-            IConfigurationElement[] configElements = extension.getConfigurationElements();
-            if (configElements.length > 0) {
-                IConfigurationElement element = configElements[0];
-                if (element.getName().equals("builderSet")) { //$NON-NLS-1$
-                    Object builderInstance = null;
-                    try {
-                        builderInstance = element.createExecutableExtension("class"); //$NON-NLS-1$
-                    } catch (Exception e) {
-                        IpsPlugin.log(new IpsStatus("Unable to create the artefact builder set: " //$NON-NLS-1$
-                                + element.getAttribute("class"), //$NON-NLS-1$
-                                e));
-                        continue;
-                    }
-                    if (!(builderInstance instanceof IIpsArtefactBuilderSet)) {
-                        IpsPlugin.log(new IpsStatus("The class that has been registered for the " //$NON-NLS-1$
-                                + "artefact builder set doesn't implement the " //$NON-NLS-1$
-                                + IIpsArtefactBuilderSet.class + " interface: " //$NON-NLS-1$
-                                + extension.getUniqueIdentifier()));
-                        continue;
-                    }
-
-                    IIpsArtefactBuilderSet arteFactBuilderSet = (IIpsArtefactBuilderSet)builderInstance;
-                    arteFactBuilderSet.setId(extension.getUniqueIdentifier());
-                    arteFactBuilderSet.setLabel(StringUtils.isEmpty(extension.getLabel()) ? extension
-                            .getUniqueIdentifier() : extension.getLabel());
-                    return arteFactBuilderSet;
-                }
+        IpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
+        for (int i = 0; i < infos.length; i++) {
+            try {
+                IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)infos[i].getBuilderSetClass().newInstance();
+                builderSet.setId(infos[i].getBuilderSetId());
+                builderSet.setLabel(infos[i].getBuilderSetLabel());
+                return builderSet;
+                
+            } catch(ClassCastException e){
+                IpsPlugin.log(new IpsStatus("The registered builder set " + infos[i].getBuilderSetClass() + 
+                        " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e));
+            } catch (InstantiationException e) {
+                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e));
+                
+            } catch (IllegalAccessException e) {
+                IpsPlugin.log(new IpsStatus("Unable to instantiate the builder set " + infos[i].getBuilderSetClass(), e));
             }
         }
-        if (!StringUtils.isEmpty(builderSetId)) {
-            IpsPlugin.log(new IpsStatus("Unable to find the selected " //$NON-NLS-1$
-                    + IIpsArtefactBuilderSet.class.getName() + ": " + builderSetId //$NON-NLS-1$
-                    + " in the set of registered builder sets.")); //$NON-NLS-1$
-        }
-
         return new EmptyBuilderSet();
     }
 
+    //TODO check if this method can be removed
     public void setIpsArtefactBuilderSet(IIpsProject project, IIpsArtefactBuilderSet set) {
         ArgumentCheck.notNull(project);
         reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
@@ -1286,6 +1269,57 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public void clearValidationCache() {
         getValidationResultCache().removeStaleData(null);
+    }
+
+    private void registerBuilderSetInfos(){
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
+        IExtension[] extensions = point.getExtensions();
+        builderSetInfoList = new ArrayList();
+
+        for (int i = 0; i < extensions.length; i++) {
+
+            IExtension extension = extensions[i];
+
+            IConfigurationElement[] configElements = extension.getConfigurationElements();
+            if (configElements.length > 0) {
+                IConfigurationElement element = configElements[0];
+                if (element.getName().equals("builderSet")) { //$NON-NLS-1$
+                    if(StringUtils.isEmpty(extension.getUniqueIdentifier())){
+                        IpsPlugin.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
+                        continue;
+                    }
+                    String builderSetClassName = element.getAttribute("class");
+                    if(StringUtils.isEmpty(builderSetClassName)){
+                        IpsPlugin.log(new IpsStatus("The class attribute of the IpsArtefactBuilderSet extension with the extension id " + //$NON-NLS-1$ 
+                                extension.getUniqueIdentifier() + " is not specified."));//$NON-NLS-1$
+                        continue;
+                    }
+                    Class builderSetClass = null;
+                    try {
+                        builderSetClass = Platform.getBundle(extension.getNamespace()).loadClass(builderSetClassName);
+                    } catch (ClassNotFoundException e) {
+                        IpsPlugin.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName + 
+                                " specified with the extension id " + extension.getUniqueIdentifier()));
+                        continue;
+                    }
+                    builderSetInfoList.add(new IpsArtefactBuilderSetInfo(builderSetClass, extension.getUniqueIdentifier(), extension.getLabel()));
+                }
+            }
+        }
+    }
+    
+    /**
+     * Returns an array of IpsArtefactBuilderSetInfo objects. Each IpsArtefactBuilderSetInfo object represents an 
+     * IpsArtefactBuilderSet that is a registered at the corresponding extension point.  
+     */
+    public IpsArtefactBuilderSetInfo[] getIpsArtefactBuilderSetInfos() {
+        
+        if(builderSetInfoList == null){
+            registerBuilderSetInfos();
+        }
+        return (IpsArtefactBuilderSetInfo[])builderSetInfoList.toArray(
+                new IpsArtefactBuilderSetInfo[builderSetInfoList.size()]);
     }
 
 }

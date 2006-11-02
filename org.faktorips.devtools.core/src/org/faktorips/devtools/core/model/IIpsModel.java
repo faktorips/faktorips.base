@@ -225,5 +225,5 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Clears the validation results for all elements in the workspace.
      */
-    public void clearValidationCache();
+    public void clearValidationCache();    
 }
