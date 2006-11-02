@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * An IPS package fragment is a portion of the workspace corresponding to an entire package,
  * or to a portion thereof. The distinction between a package fragment and a package
- * is that a package with some name is the union of all package fragments in the class path
+ * is that a package with some name is the union of all package fragments in the ips object path
  * which have the same name.
  */
 public interface IIpsPackageFragment extends IIpsElement {
@@ -69,7 +69,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     
     /**
      * Returns a handle to the IPS source file with the given name. If the provided 
-     * name doesn't have a file extension that fits to an IpsSrcFile null will 
+     * name doesn't have a file extension that fits to an IpsSrcFile <code>null</code> will 
      * be returned.  
      */
     public IIpsSrcFile getIpsSrcFile(String name);
