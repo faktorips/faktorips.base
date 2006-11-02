@@ -150,6 +150,23 @@ public class ExprCompiler {
      */
     public final static String NULL_NOT_ALLOWED = PREFIX + "NullNotAllowed"; //$NON-NLS-1$
 
+    /**
+     * Verifies if the provided string is a valid identifier according to the identifier definition
+     * of the Fl-Parser.
+     */
+    public final static boolean isValidIdentifier(String identifier) {
+        JavaCharStream s = new JavaCharStream(new StringReader(identifier));
+        FlParserTokenManager manager = new FlParserTokenManager(s);
+        Token token = manager.getNextToken();
+        if (token.kind == FlParserConstants.IDENTIFIER) {
+            if (manager.getNextToken().kind == 0) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
     final static LocalizedStringsSet localizedStrings = new LocalizedStringsSet(
             "org.faktorips.fl.Messages", ExprCompiler.class.getClassLoader()); //$NON-NLS-1$
 
@@ -558,20 +575,4 @@ public class ExprCompiler {
         return datatypeHelperProvider.getDatatypeHelper(type);
     }
 
-    /**
-     * Verifies if the provided string is a valid identifier according to the identifier definition
-     * of the Fl-Parser.
-     */
-    public final static boolean isValidIdentifier(String identifier) {
-        JavaCharStream s = new JavaCharStream(new StringReader(identifier));
-        FlParserTokenManager manager = new FlParserTokenManager(s);
-        Token token = manager.getNextToken();
-        if (token.kind == FlParserConstants.IDENTIFIER) {
-            if (manager.getNextToken().kind == 0) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
 }

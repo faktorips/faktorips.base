@@ -25,7 +25,6 @@ import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.CompilerAbstractTest;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
 /**
