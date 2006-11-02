@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.datatype.Datatype;
 
 
@@ -61,7 +62,7 @@ public abstract class CompilerAbstractTest extends TestCase {
         assertEquals(expectedDatatype, result.getDatatype());
         
         Object value = processor.evaluate(expression);
-        if (!value.equals(expectedValue)) {
+        if (!ObjectUtils.equals(value, expectedValue)) {
             System.out.println(result);
         }
         assertEquals(expectedValue, value);
