@@ -170,6 +170,8 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     public void testGetTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt() throws CoreException {
         ITestPolicyCmptTypeParameter param = testCaseType.newInputTestPolicyCmptTypeParameter();
         param.setName("TestPolicyCmptTypeParam1");
+        param.newInputTestAttribute().setName("TestAttribute1");
+        param.newInputTestAttribute().setName("TestAttribute2");
         testCaseType.newInputTestPolicyCmptTypeParameter().setName("TestPolicyCmptTypeParam2");
         
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("TestPolicyCmptTypeParam2");

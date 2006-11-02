@@ -184,7 +184,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             // create new child wrapper objects and return these children, the childs represents the
             // same content tree like the test case
             result.addAll(Arrays.asList(wrapperObject.getChildren(wrapperObject)));
-            // add additinal the test attributes or test attribute values if existing for the test policy cmpt
+            // add additional the test attributes or test attribute values if existing for the test policy cmpt
             addMissingTestAttributesOrTestAttributesValue(wrapperObject, result);
         }
 
@@ -338,6 +338,8 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                 return isTestAttributeInList(testPolicyCmpt);
             } else if (deltaType == TestCaseDeltaType.MISSING_TEST_ATTRIBUTE){
                 return isTestAttributeValueInList(testPolicyCmpt);
+            } else if (deltaType == TestCaseDeltaType.MISSING_TEST_PARAM){
+                return missingTestObjects.contains(testPolicyCmpt);
             }
             return false;
         }
