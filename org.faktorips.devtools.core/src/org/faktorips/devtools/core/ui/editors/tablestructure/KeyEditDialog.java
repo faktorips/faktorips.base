@@ -420,7 +420,6 @@ public class KeyEditDialog extends IpsPartEditDialog {
         
         public Image getImage(Object element) {
             String item = (String)element;
-            key.getTableStructure().getColumn(item);
             Image image;
             IColumnRange range = key.getTableStructure().getRange(item); 
             if (range!=null) {
@@ -438,11 +437,17 @@ public class KeyEditDialog extends IpsPartEditDialog {
             if (list.getSeverity()==Message.NONE) {
     		    return image;
     		}
+            
+            MessageList itemMsgList = list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName(item));
+            if(itemMsgList.getSeverity() == Message.NONE){
+                return image;
+            }
+            
             // get the cached problem descriptor for the base image
-            String key = getKey(image, list.getSeverity());
+            String key = getKey(image, itemMsgList.getSeverity());
             ProblemImageDescriptor descriptor = (ProblemImageDescriptor) cachedProblemImageDescriptors.get(key);
             if (descriptor == null && image != null){
-                descriptor = new ProblemImageDescriptor(image, list.getSeverity());
+                descriptor = new ProblemImageDescriptor(image, itemMsgList.getSeverity());
                 cachedProblemImageDescriptors.put(key, descriptor);
             }            
     		return IpsPlugin.getDefault().getImage(descriptor);

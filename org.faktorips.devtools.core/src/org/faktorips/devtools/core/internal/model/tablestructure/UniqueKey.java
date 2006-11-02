@@ -22,9 +22,12 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IKey;
+import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -80,6 +83,28 @@ public class UniqueKey extends Key implements IUniqueKey {
     	return deleted;
     }
 
+    private void validateItemSequence(MessageList msgList){
+        if(containsRanges() && containsColumns()){
+            IKeyItem[] keyItems = getKeyItems();
+            boolean rangeFound = false;
+            boolean wrongSequenceFound = false;
+            int potentiallyWrongKeyElement = -1;
+            for (int j = 0; j < keyItems.length; j++) {
+                if(getTableStructure().getRange(keyItems[j].getName()) != null){
+                    rangeFound = true;
+                    potentiallyWrongKeyElement = j;
+                }
+                else if(rangeFound){
+                    wrongSequenceFound = true;
+                    break;
+                }
+            }
+            if(wrongSequenceFound){
+                msgList.add(new Message("", Messages.UniqueKey_wrong_sequence,  //$NON-NLS-1$
+                        Message.ERROR, new ObjectProperty(this, IKey.PROPERTY_KEY_ITEMS, potentiallyWrongKeyElement)));
+            }
+        }
+    }
     /**
      * {@inheritDoc}
      */
@@ -91,11 +116,12 @@ public class UniqueKey extends Key implements IUniqueKey {
         }
         String[] items = getKeyItemNames();
         for (int i=0; i<items.length; i++) {
-            validateItem(items[i], list);
+            validateItem(items[i], i, list);
         }
+        validateItemSequence(list);
     }
     
-    private void validateItem(String item, MessageList list) {
+    private void validateItem(String item, int itemmIndex, MessageList list) {
         IColumn column = getTableStructure().getColumn(item);
         if (column!=null) {
             return;
@@ -105,7 +131,7 @@ public class UniqueKey extends Key implements IUniqueKey {
             return;
         }
         String text = NLS.bind(Messages.UniqueKey_msgKeyItemMismatch, item);
-        list.add(new Message("", text, Message.ERROR, item)); //$NON-NLS-1$
+        list.add(new Message("", text, Message.ERROR, new ObjectProperty(this, IKey.PROPERTY_KEY_ITEMS, itemmIndex))); //$NON-NLS-1$
         return;
     }
 

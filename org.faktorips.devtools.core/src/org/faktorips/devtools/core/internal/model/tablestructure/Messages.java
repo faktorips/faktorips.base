@@ -81,4 +81,6 @@ public class Messages extends NLS {
 	public static String ColumnRange_msgDatatypeInvalidForRange;
 
     public static String Column_msgInvalidName;
+
+    public static String UniqueKey_wrong_sequence;
 }

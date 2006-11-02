@@ -27,6 +27,11 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 public interface IKey extends IIpsObjectPart {
     
     /**
+     * Java beans property name for the property keyItems.
+     */
+    public final static String PROPERTY_KEY_ITEMS = "keyItems";
+    
+    /**
      * Returns the table structure the key belongs to.
      */
     public ITableStructure getTableStructure();
@@ -41,6 +46,32 @@ public interface IKey extends IIpsObjectPart {
      * by name are returned. 
      */
     public IKeyItem[] getKeyItems();
+    
+    /**
+     * Returns the key item at the indexed position.
+     * @throws IndexOutOfBoundsException ff the index is not within the bounds.
+     */
+    public IKeyItem getKeyItemAt(int index);
+    
+    /**
+     * Returns the index for the provided key item.
+     * @throws IllegalArgumentException if the item is not part of this key
+     */
+    public int getIndexForKeyItem(IKeyItem item);
+    
+    /**
+     * Returns the of the key item at the indexed position.
+     * 
+     * @throws IndexOutOfBoundsException ff the index is not within the bounds.
+     */
+    public String getNameOfKeyItemAt(int index);
+
+    /**
+     * Returns the index for the provided key item name.
+     * 
+     * @throws IllegalArgumentException if the item is not part of this key
+     */
+    public int getIndexForKeyItemName(String itemName);
     
     /**
      * Sets the items this key is made up of.

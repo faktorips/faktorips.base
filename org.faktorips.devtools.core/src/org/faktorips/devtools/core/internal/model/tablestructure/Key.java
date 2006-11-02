@@ -24,6 +24,7 @@ import java.util.List;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
@@ -198,4 +199,67 @@ public abstract class Key extends IpsObjectPart implements IKey {
         }
     }
 
+    /**
+     * Returns <code>null</code>
+     */
+    public IIpsObjectPart newPart(Class partType) {
+        return null;
+    }
+
+    /**
+     * Empty implementation
+     */
+    public void delete() {
+    }
+
+    /**
+     * Returns false
+     */
+    public boolean isDeleted() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getIndexForKeyItem(IKeyItem item) {
+        
+        IKeyItem[] keyItems = getKeyItems();
+        for (int i = 0; i < keyItems.length; i++) {
+            if(keyItems[i].equals(item)){
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("The provided item: " + item + " is not part of the list of items hold by this key.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getIndexForKeyItemName(String itemName) {
+        
+        for (int i = 0; i < items.size(); i++) {
+            if(items.get(i).equals(itemName)){
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("The provided item name: " + itemName + " doesn't match with one of the items" +
+                " in the itme list of this key.");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IKeyItem getKeyItemAt(int index) {
+        return getKeyItems()[index];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getNameOfKeyItemAt(int index) {
+        return (String)items.get(index);
+    }
+
+    
 }
