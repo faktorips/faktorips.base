@@ -806,14 +806,22 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             JavaCodeFragmentBuilder codeBuilder) throws JavaModelException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
 
-        for (int i = 0; i < parameterNames.length; i++) {
-            methodBody.appendln("if (" + parameterNames[i] + "==null) {");
-            methodBody.appendln("throw new ");
-            methodBody.appendClassName(NullPointerException.class);
-            methodBody.appendln("();");
-            methodBody.appendln("}");
-        }
+        if(parameterNames.length > 0){
+            methodBody.appendln("if (");
 
+            for (int i = 0; i < parameterNames.length; i++) {
+                methodBody.append(parameterNames[i]);
+                methodBody.append(" == null");
+                if(i < parameterNames.length - 1){
+                    methodBody.append(" || ");
+                }
+            }
+            methodBody.append(")");
+            methodBody.appendOpenBracket();
+            methodBody.appendln("return null;");
+            methodBody.appendCloseBracket();
+            
+        }
         String mapName = StringUtils.uncapitalise(combinedKeyName) + "Map";
         String treeName = StringUtils.uncapitalise(combinedKeyName) + "Tree";
         if (key.containsColumns()) {

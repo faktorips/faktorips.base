@@ -480,11 +480,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         interfaceBuilder.generateSignatureSetPropertyValue(a, datatypeHelper, methodsBuilder);
         methodsBuilder.openBracket();
-        methodsBuilder.appendln(MARKER_BEGIN_USER_CODE);
-        methodsBuilder.appendln(MARKER_END_USER_CODE);
         methodsBuilder.append("this.");
         methodsBuilder.append(getFieldNameForAttribute(a));
         methodsBuilder.appendln(" = " + interfaceBuilder.getParamNameForSetPropertyValue(a) + ";");
