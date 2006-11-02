@@ -431,7 +431,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Adds the value datatypes defined for the IPS project to the set of datatypes.
      */
-    public synchronized void getValueDatatypes(IIpsProject ipsProject, Set datatypes) {
+    public void getValueDatatypes(IIpsProject ipsProject, Set datatypes) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Set set = (Set)projectDatatypesMap.get(ipsProject.getName());
         if (set == null) {
@@ -445,7 +445,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Adds the value datatypes defined for the IPS project to the set of datatypes.
      */
-    public synchronized ValueDatatype getValueDatatype(IIpsProject ipsProject, String qName) {
+    public ValueDatatype getValueDatatype(IIpsProject ipsProject, String qName) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Set set = (Set)projectDatatypesMap.get(ipsProject.getName());
         if (set == null) {
@@ -467,7 +467,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * returned. If the builder set for the current builder set id is not found in the set of
      * registered builder sets a warning is logged and an EmptyBuilderSet will be returned.
      */
-    public synchronized IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
+    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
         ArgumentCheck.notNull(project, this);
         reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
         IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)projectToBuilderSetMap.get(project);
@@ -486,7 +486,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return builderSet;
     }
 
-    private synchronized IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
+    private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
         IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
         IIpsArtefactBuilderSet builderSet = createInstanceOfRegisteredArtefactBuilderSet(data.getBuilderSetId());
         if(!initBuilderSet(builderSet, data)){
@@ -543,7 +543,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the datatype helper for the given value datatype or <code>null</code> if no helper
      * is defined for the value datatype.
      */
-    public synchronized DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
+    public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map map = (Map)projectDatatypeHelpersMap.get(ipsProject.getName());
         if (map == null) {
@@ -558,7 +558,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * error occurs while accessing the .ipsproject file or the file does not exist an error is
      * logged and an empty ips project data instance is returned.
      */
-    public synchronized IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
+    public IpsProjectProperties getIpsProjectProperties(IpsProject ipsProject) {
         
         if (projectPropertiesMap == null) {
             projectPropertiesMap = new HashMap();
@@ -638,7 +638,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /*
      * Intializes the datatypes and their helpers for the project.
      */
-    private synchronized void getDatatypes(IIpsProject project) {
+    private void getDatatypes(IIpsProject project) {
         if (datatypes == null) {
             initDatatypeDefintionsFromConfiguration();
         }
@@ -739,7 +739,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return new EmptyBuilderSet();
     }
 
-    public synchronized void setIpsArtefactBuilderSet(IIpsProject project, IIpsArtefactBuilderSet set) {
+    public void setIpsArtefactBuilderSet(IIpsProject project, IIpsArtefactBuilderSet set) {
         ArgumentCheck.notNull(project);
         reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
         if (set == null) {
@@ -1190,7 +1190,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>.
      */
-    synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
+     IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
         if (file == null) {
             return null;
         }
