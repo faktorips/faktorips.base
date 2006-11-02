@@ -1071,6 +1071,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         
         validateRequiredFeatures(result, props);
         validateMigration(result, props);
+        validateDuplicateBasePackageNameForGeneratedClasses(result, props);
 		return result;
 	}
 
@@ -1113,6 +1114,34 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
+    /*
+     * Validates for duplicate base package generated entries inside the referenced project
+     */
+    private void validateDuplicateBasePackageNameForGeneratedClasses(MessageList result, IpsProjectProperties props)
+            throws CoreException {
+        IIpsObjectPath path = getIpsObjectPath();
+        if (path == null) {
+            return;
+        }
+        // check for same package name in referenced projects (only product definition projects)
+        IIpsProject[] referencedProjects = getReferencedIpsProjects();
+        for (int i = 0; i < referencedProjects.length; i++) {
+            if (! referencedProjects[i].isProductDefinitionProject()){
+                continue;
+            }
+            IIpsObjectPath pathRelProject = referencedProjects[i].getIpsObjectPath();
+            if (pathRelProject == null) {
+                continue;
+            }
+            if (pathRelProject.containsBasePackageNameForGeneratedClasses(path.getBasePackageNameForGeneratedJavaClasses())) {
+                String msg = NLS.bind(Messages.IpsProject_msgDuplicateBasePackageNameForGeneratedClasses,
+                        path.getBasePackageNameForGeneratedJavaClasses(), referencedProjects[i].getName());
+                result.add(new Message(MSGCODE_DUPLICATE_BASE_PACKAGE_NAME_FOR_GENERATED_CLASSES_IN_DIFFERENT_PROJECTS, msg,
+                        Message.WARNING, this));
+            }
+        }
+    }
+    
     /**
 	 * Returns the ClassLoaderProvider for the Java project that belongs to this ips project.
 	 */

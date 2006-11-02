@@ -80,4 +80,6 @@ public class Messages extends NLS {
 
     public static String IpsSrcFolderEntry_msgMissingFolder;
 
+    public static String IpsProject_msgDuplicateBasePackageNameForGeneratedClasses;
+
 }
