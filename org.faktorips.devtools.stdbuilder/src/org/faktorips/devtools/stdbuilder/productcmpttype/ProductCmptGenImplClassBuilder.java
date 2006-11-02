@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.internal.EnumValues;
 import org.faktorips.runtime.internal.MethodNames;
@@ -538,6 +539,8 @@ public class ProductCmptGenImplClassBuilder extends AbstractProductCmptTypeBuild
                 methodName, BuilderHelper.extractParameterNames(parameters),
                 StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, a.getIpsProject(), policyCmptTypeImplBuilder),
                 withFinalParameters);
+        methodsBuilder.append(" throws ");
+        methodsBuilder.appendClassName(FormulaExecutionException.class);
     }
     
     public String getMethodNameComputeValue(IAttribute a) {

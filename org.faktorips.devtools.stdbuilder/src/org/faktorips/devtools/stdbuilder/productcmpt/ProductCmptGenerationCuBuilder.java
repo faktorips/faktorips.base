@@ -26,12 +26,14 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.Parameter;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
@@ -40,6 +42,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClass
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
 
@@ -153,7 +156,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             return;   
         }
 
-        Datatype datatype = attribute.findDatatype();
+        ValueDatatype datatype = attribute.findDatatype();
         DatatypeHelper datatypeHelper = attribute.getIpsProject().getDatatypeHelper(datatype);
 
         String javaDoc = getLocalizedText(formulaElement, COMPUTE_METHOD_JAVADOC, StringUtils
@@ -161,9 +164,33 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         productCmptGenImplBuilder.generateSignatureComputeValue(attribute, datatypeHelper, Modifier.PUBLIC, true, builder);
         builder.openBracket();
+        builder.append("try {");
         builder.append("return ");
         builder.append(compileFormulaToJava(formulaElement, attribute));
         builder.appendln(";");
+        builder.append("} catch (Exception e) {");
+        builder.appendClassName(StringBuffer.class);
+        builder.append(" parameterValues=new StringBuffer();");
+        Parameter[] parameters = attribute.getFormulaParameters();
+        for (int i = 0; i < parameters.length; i++) {
+            if (i>0) {
+                builder.append("parameterValues.append(\", \");");
+            }
+            builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");");
+            ValueDatatype valuetype = attribute.getIpsProject().findValueDatatype(parameters[i].getDatatype());
+            if (valuetype!=null && valuetype.isPrimitive()) { // optimitation: we search for value types only as only those can be primitives!
+                builder.append("parameterValues.append(" + parameters[i].getName() + ");");
+            } else {
+                builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());");
+            }
+        }
+        builder.append("throw new ");
+        builder.appendClassName(FormulaExecutionException.class);
+        builder.append("(toString(), ");  
+        builder.appendQuoted(StringUtils.escape(formulaElement.getValue()));
+        builder.appendln(", parameterValues.toString(), e);");
+        builder.appendln("}");
+        
         builder.closeBracket();
     }
     
