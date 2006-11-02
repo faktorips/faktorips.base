@@ -150,7 +150,6 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         pcFromula.getIpsSrcFile().save(true, null);
         
         // now build
-        Thread.sleep(100);
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
