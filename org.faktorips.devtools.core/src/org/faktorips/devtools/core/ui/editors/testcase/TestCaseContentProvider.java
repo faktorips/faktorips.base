@@ -445,9 +445,9 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * will be displayed in the ui.
      */
     private Object getDummyObject(ITestParameter parameter, ITestObject testObject) {
-        String id = "";
+        String id = ""; //$NON-NLS-1$
         if (testObject instanceof ITestPolicyCmpt){
-            id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString();
+            id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString(); //$NON-NLS-1$
         } else {
             id = parameter.getName() + "#" + (testObject==null?"":testObject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }

@@ -83,4 +83,8 @@ public class Messages extends NLS {
     public static String TestCaseSection_SelectDialogValidationRule_Decription;
     public static String TestCaseDetailArea_Label_Violation;
     public static String TestCaseDetailArea_Label_Value;
+    public static String SetTemplateDialog_DialogTemplate_Title;
+    public static String SetTemplateDialog_DialogTemplate_LabelTemplate;
+    public static String SetTemplateDialog_DialogTemplate_Error_TemplateNotExists;
+    public static String TestCaseEditor_Information_TemplateNotFound;
 }

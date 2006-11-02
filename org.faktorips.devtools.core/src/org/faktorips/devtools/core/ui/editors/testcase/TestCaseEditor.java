@@ -34,14 +34,12 @@ public class TestCaseEditor extends IpsObjectEditor {
     protected void addPages() {
         try {
             if (getTestCase().findTestCaseType() == null) {
-                String msg = NLS.bind(
-                        "The previously set template ({0}) was not found - please select an existing one.",
-                        getTestCase().getTestCaseType());
-                org.faktorips.devtools.core.ui.editors.testcase.SetTemplateDialog dialog = new org.faktorips.devtools.core.ui.editors.testcase.SetTemplateDialog(
-                        getTestCase(), getSite().getShell(), msg);
+                String msg = NLS.bind(Messages.TestCaseEditor_Information_TemplateNotFound, getTestCase()
+                        .getTestCaseType());
+                SetTemplateDialog dialog = new SetTemplateDialog(getTestCase(), getSite().getShell(), msg);
                 int button = dialog.open();
                 if (button != SetTemplateDialog.OK) {
-                    addPage(new FormPage(this, "Empty", "")); //$NON-NLS-1$
+                    addPage(new FormPage(this, "Empty", "")); //$NON-NLS-1$ //$NON-NLS-2$
                     this.close(false);
                     return;
                 }

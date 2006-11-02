@@ -27,6 +27,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -50,7 +52,7 @@ public class SetTemplateDialog extends EditDialog {
      * @param message The message to be displayed to the user if no error message is set.
      */
     public SetTemplateDialog(ITestCase testCase, Shell parentShell, String message) {
-        super(parentShell, "Select new template", false);
+        super(parentShell, Messages.SetTemplateDialog_DialogTemplate_Title, false);
         this.message = message;
         this.testCase = testCase;
     }
@@ -62,21 +64,28 @@ public class SetTemplateDialog extends EditDialog {
         Composite workArea = uiToolkit.createLabelEditColumnComposite(parent);
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        uiToolkit.createFormLabel(workArea, "New template:");
+        uiToolkit.createFormLabel(workArea, Messages.SetTemplateDialog_DialogTemplate_LabelTemplate);
         template = new TestCaseTypeRefControl(testCase.getIpsProject(), workArea, uiToolkit);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if (StringUtils.isEmpty(getTestCaseType())) {
-					getButton(OK).setEnabled(false);
-					String msg = NLS.bind("The template {0} does not exist.", template.getText());
-					setMessage(msg, IMessageProvider.ERROR);
-				} else {
-					getButton(OK).setEnabled(true);
-					setMessage(message);
-				}
-			}
-		});
+            public void modifyText(ModifyEvent e) {
+                try {
+                    if (StringUtils.isEmpty(getTestCaseType())
+                            || null == testCase.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE,
+                                    getTestCaseType())) {
+                        getButton(OK).setEnabled(false);
+                        String msg = NLS.bind(Messages.SetTemplateDialog_DialogTemplate_Error_TemplateNotExists,
+                                template.getText());
+                        setMessage(msg, IMessageProvider.ERROR);
+                    } else {
+                        getButton(OK).setEnabled(true);
+                        setMessage(message);
+                    }
+                } catch (CoreException exception) {
+                    IpsPlugin.logAndShowErrorDialog(exception);
+                }
+            }
+        });
         super.setMessage(message);
         
         return workArea;
