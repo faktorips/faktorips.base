@@ -22,6 +22,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.w3c.dom.Element;
 
 /**
  * A dynamic enum datatype. See the super class for more detais.
@@ -118,5 +119,23 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
 			return id;
 		}
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public void writeToXml(Element element) {
+        super.writeToXml(element);
+        element.setAttribute("isEnumType", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (getAllValuesMethodName() != null) {
+            element.setAttribute("getAllValuesMethod", getAllValuesMethodName()); //$NON-NLS-1$
+        }
+        if (getGetNameMethodName() != null) {
+            element.setAttribute("getNameMethod", getGetNameMethodName()); //$NON-NLS-1$
+            
+        }
+        element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames()));
+        
+        
+    }
 
 }

@@ -240,4 +240,6 @@ public class Messages extends NLS {
 
     public static String FormulaTestCaseControl_ToolTip_BtnUpdate;
 
+    public static String ProductCmptPropertiesPage_pageTitle;
+
 }

@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
  * A configuration object for ips artefact builder sets. Provides string values for string keys.
  * An ips artefact builder set instance can be configured by means of the ips project properties. Therefor 
@@ -51,5 +54,18 @@ public interface IIpsArtefactBuilderSetConfig{
      * @see Boolean#valueOf(java.lang.String)
      */
     public Boolean getBooleanPropertyValue(String propertName);
-    
+
+    /**
+     * @param doc The document to create the element with.
+     * @return The element containing all configuration data which can be parsed back to a new configuration 
+     * using initFromXml().
+     */
+    public Element toXml(Document doc);
+
+    /**
+     * @param config The configuration to be parsed.
+     * @return The element containing all configuration data which can be parsed back to a new configuration 
+     * using initFromXml().
+     */
+    public void initFromXml(Element config);
 }

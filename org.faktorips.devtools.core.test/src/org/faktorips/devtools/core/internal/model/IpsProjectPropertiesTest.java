@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
@@ -78,6 +79,20 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		props.setPredefinedDatatypesUsed(new String[]{"Integer", "Boolean"});
         props.setMinRequiredVersionNumber("featureId", "versionNumber");
         
+        Document doc = newDocument();
+        Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
+        Element propEl = doc.createElement("Property");
+        propEl.setAttribute("name", "xxx");
+        propEl.setAttribute("value", "yyy");
+        configEl.appendChild(propEl);
+        
+        IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig();
+        config.initFromXml(configEl);
+        props.setBuilderSetConfig(config);
+        DynamicEnumDatatype datatype = new DynamicEnumDatatype(ipsProject);
+        datatype.setIsSupportingNames(true);
+        datatype.setGetNameMethodName("getMe");
+        props.addDefinedDatatype(datatype);
         
 		Element projectEl = props.toXml(newDocument());
 
@@ -105,6 +120,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertEquals("Integer", datatypes[0]);
 		assertEquals("Boolean", datatypes[1]);
         assertEquals("versionNumber", props.getMinRequiredVersionNumber("featureId"));
+        assertEquals("yyy", props.getBuilderSetConfig().getPropertyValue("xxx"));
+        
+        assertEquals(1, props.getDefinedDatatypes().length);
+        DynamicEnumDatatype newDatatype = (DynamicEnumDatatype)props.getDefinedDatatypes()[0];
+        assertEquals("getMe", newDatatype.getGetNameMethodName());
+        assertTrue(newDatatype.isSupportingNames());
 	}
 	
 	public void testAddDefinedDatatype() {
@@ -156,6 +177,8 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 		assertNotNull(path);
 		assertEquals(1, path.getEntries().length);
 		
+        assertEquals("propValue", props.getBuilderSetConfig().getPropertyValue("prop"));
+        
         // used predefined datatype
         String[] datatypes = props.getPredefinedDatatypesUsed();
 		assertNotNull(datatypes);

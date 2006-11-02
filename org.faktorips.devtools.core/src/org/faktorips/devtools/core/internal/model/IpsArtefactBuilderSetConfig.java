@@ -18,9 +18,12 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.faktorips.devtools.core.model.IIpsArtefactBuilderSetConfig;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -41,18 +44,10 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
     }
 
     /**
-     * Creates an ips artefact builder set configuration instance with the properties contained in the provided map. 
-     */
-    private IpsArtefactBuilderSetConfig(Map propertyValues) {
-        super();
-        this.properties = propertyValues;
-    }
-
-    /**
      * Creates and returns an ips artefact builder set configuration instance from the provided dom element.
      */
-    public final static IpsArtefactBuilderSetConfig createFromXml(Element el){
-        HashMap properties = new HashMap();
+    public final void initFromXml(Element el){
+        properties = new HashMap();
         NodeList nl = el.getElementsByTagName("Property");
         for (int i = 0; i < nl.getLength(); i++) {
             Element propertyEl = (Element)nl.item(i);
@@ -60,7 +55,6 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
             String value = propertyEl.getAttribute("value");
             properties.put(key, value);
         }
-        return new IpsArtefactBuilderSetConfig(properties);
     }
     
     /**
@@ -79,6 +73,20 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
             return null;
         }
         return Boolean.valueOf(value);
+    }
+    
+    public final Element toXml(Document doc) {
+        Element root = doc.createElement(XML_ELEMENT);
+        Set keys = properties.keySet();
+        for (Iterator iter = keys.iterator();iter.hasNext();) {
+            String key = (String)iter.next();
+            String value = (String)properties.get(key);
+            Element prop = doc.createElement("Property");
+            root.appendChild(prop);
+            prop.setAttribute("name", key);
+            prop.setAttribute("value", value);
+        }
+        return root;
     }
 
 }

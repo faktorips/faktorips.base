@@ -138,7 +138,7 @@ public class GenerationAttributesSection extends IpsSection {
 
         validRange += " - " + validToString; //$NON-NLS-1$
         String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(); 
-        setText(generationConceptName + ": " + validRange);
+        setText(generationConceptName + ": " + validRange); //$NON-NLS-1$
     }
     
 	/**

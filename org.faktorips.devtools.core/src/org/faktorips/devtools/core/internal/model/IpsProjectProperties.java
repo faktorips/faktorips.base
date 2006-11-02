@@ -326,9 +326,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         
         // artefact builder set
         createIpsArtefactBuilderSetDescriptionComment(projectEl);
+        
         Element builderSetEl = doc.createElement(IIpsArtefactBuilderSet.XML_ELEMENT);
         projectEl.appendChild(builderSetEl);
         builderSetEl.setAttribute("id", builderSetId); //$NON-NLS-1$
+        builderSetEl.appendChild(builderSetConfig.toXml(doc));
         
         // generated sourcecode
         createGeneratedSourcecodeDescriptionComment(projectEl);
@@ -385,7 +387,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
         Element artefactConfigEl = XmlUtil.getFirstElement(artefactEl, IIpsArtefactBuilderSetConfig.XML_ELEMENT);
         if(artefactConfigEl != null){
-            builderSetConfig = IpsArtefactBuilderSetConfig.createFromXml(artefactConfigEl);
+            builderSetConfig = new IpsArtefactBuilderSetConfig();
+            builderSetConfig.initFromXml(artefactConfigEl);
         }
         initProductCmptNamingStrategyFromXml(ipsProject, XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
         Element pathEl = XmlUtil.getFirstElement(element, IpsObjectPath.XML_TAG_NAME);

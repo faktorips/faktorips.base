@@ -10,7 +10,11 @@
         <RequiredIpsFeature id="required.id" minVersion="min.Version"/>
         <RequiredIpsFeature id="another.id" minVersion="min.Version.2"/>
     </RequiredIpsFeatures>
-	<IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset"/>	
+	<IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset">	
+	    <IpsArtefactBuilderSetConfig>
+	        <Property name="prop" value="propValue"/>
+	    </IpsArtefactBuilderSetConfig>
+	</IpsArtefactBuilderSet>
 	<GeneratedSourcecode docLanguage="it" changesInTimeNamingConvention="myConvention"/>
 	<ProductCmptNamingStrategy id="org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy">
 		<DateBasedProductCmptNamingStrategy versionIdSeparator=" " dateFormatPattern="yyyy-MM" postfixAllowed="true"/>
