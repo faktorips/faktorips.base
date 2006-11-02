@@ -30,6 +30,11 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * Combines the qualified name and ips object type.
+ * 
+ * @author Jan Ortmann
+ */
 public class QualifiedNameType {
 
     private String qualifiedName;
@@ -73,20 +78,43 @@ public class QualifiedNameType {
         calculateHashCode();
     }
 
+    /**
+     * Returns the qualified name.
+     */
     public String getName() {
     	return qualifiedName;
     }
-    
-    public boolean equals(Object obj) {
-        if(obj instanceof QualifiedNameType){
-            QualifiedNameType other = (QualifiedNameType)obj;
-            return type.equals(other.type) && qualifiedName.equals(other.qualifiedName);
-        }
-        return false;
-    }
-    
+
+    /**
+     * Returns the ips object type.
+     */
     public IpsObjectType getIpsObjectType(){
         return type;
+    }
+
+    /**
+     * Returns the package name part of the qualified name.
+     */
+    public String getPackageName() {
+        int index = qualifiedName.lastIndexOf('.');
+        if (index==-1) {
+            return "";
+        }
+        return qualifiedName.substring(0, index);
+    }
+
+    /**
+     * Returns the unqualified name.
+     */
+    public String getUnqualifiedName() {
+        int index = qualifiedName.lastIndexOf('.');
+        if (index==-1) {
+            return qualifiedName;
+        }
+        if (index==qualifiedName.length()-1) {
+            return "";
+        }
+        return qualifiedName.substring(index+1);
     }
     
     public IIpsObject findIpsObject(IIpsPackageFragmentRoot root) throws CoreException{
@@ -136,6 +164,14 @@ public class QualifiedNameType {
     
     public int hashCode() {
         return hashCode;
+    }
+    
+    public boolean equals(Object obj) {
+        if(obj instanceof QualifiedNameType){
+            QualifiedNameType other = (QualifiedNameType)obj;
+            return type.equals(other.type) && qualifiedName.equals(other.qualifiedName);
+        }
+        return false;
     }
     
     public String toString() {

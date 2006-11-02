@@ -49,10 +49,28 @@ public class QualifiedNameTypeTest extends TestCase {
             fail();
         } catch (CoreException e) {
         }
-        
-        
     }
     
+    public void testGetPackageName() {
+        QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals("", qnt.getPackageName());
+        
+        qnt = new QualifiedNameType("motor.Policy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals("motor", qnt.getPackageName());
+    }
+    
+    public void testGetUnqualifiedName() {
+        QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals("Policy", qnt.getUnqualifiedName());
+        
+        qnt = new QualifiedNameType("motor.Policy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals("Policy", qnt.getUnqualifiedName());
+        
+        qnt = new QualifiedNameType("motor.", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals("", qnt.getUnqualifiedName());
+        
+    }
+
     /*
      * Test method for 'org.faktorips.plugin.model.QualifiedNameType.hashCode()'
      */
