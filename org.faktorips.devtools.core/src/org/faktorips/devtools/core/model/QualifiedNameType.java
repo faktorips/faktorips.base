@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -33,6 +35,30 @@ public class QualifiedNameType {
     private String qualifiedName;
     private IpsObjectType type;
     private int hashCode;
+    
+    /**
+     * Returns the qualified name type for he given path. 
+     * 
+     * @param pathToFile a relative to an ips src file, e.g. base/motor/MotorPolicy.ipspct
+     * @return The qualified name type
+     * 
+     * @throws CoreException if the path can't be parsed to a qualified name type
+     */
+    public final static QualifiedNameType newQualifedNameType(String pathToFile) throws CoreException {
+        int index = pathToFile.lastIndexOf('.');
+        if (index==-1 || index==pathToFile.length()-1) {
+            throw new CoreException(new IpsStatus("Path " + pathToFile + " can't be parsed to a qualified name type."));
+        }
+        IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index+1));
+        if (type==null) {
+            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy an ips object type."));
+        }
+        String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IpsPackageFragment.SEPARATOR);
+        if (qName.equals("")) {
+            throw new CoreException(new IpsStatus("Path " + pathToFile + " does not specifiy a qualified name."));
+        }
+        return new QualifiedNameType(qName, type);
+    }
     
     /**
      * @param name

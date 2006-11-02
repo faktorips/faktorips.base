@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 /**
  *
  */
-public class PdObjectTypeTest extends TestCase {
+public class IpsObjectTypeTest extends TestCase {
 
     public void testNewObject() {
         IpsObjectType[] types = IpsObjectType.ALL_TYPES;

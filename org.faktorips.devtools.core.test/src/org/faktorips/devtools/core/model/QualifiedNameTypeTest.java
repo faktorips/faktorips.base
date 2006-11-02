@@ -17,11 +17,39 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.eclipse.core.runtime.CoreException;
+
 import junit.framework.TestCase;
 
 public class QualifiedNameTypeTest extends TestCase {
 
     public void setUp(){
+        
+    }
+    
+    public void testNewQualifiedNameType() throws CoreException {
+        QualifiedNameType qNameType = QualifiedNameType.newQualifedNameType("base/motor/Motorpolicy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+        assertEquals("base.motor.Motorpolicy", qNameType.getName());
+        assertEquals(IpsObjectType.POLICY_CMPT_TYPE, qNameType.getIpsObjectType());
+        
+        try {
+            QualifiedNameType.newQualifedNameType("Motorpolicy");
+            fail();
+        } catch (CoreException e) {
+        }
+        
+        try {
+            QualifiedNameType.newQualifedNameType("Motorpolicy.");
+            fail();
+        } catch (CoreException e) {
+        }
+        
+        try {
+            QualifiedNameType.newQualifedNameType("Motorpolicy.invalidextension");
+            fail();
+        } catch (CoreException e) {
+        }
+        
         
     }
     
