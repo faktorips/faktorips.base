@@ -197,12 +197,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
     
     protected void generateMethodGetEffectiveFromAsCalendar(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_RESTRAINED_MODIFIABLE);
+        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
         methodsBuilder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Calendar.class, MethodNames.GET_EFFECTIVE_FROM_AS_CALENDAR, new String[0], new Class[0]);
         String todoText = getLocalizedText(getPcType(), "METHOD_GET_EFFECTIVE_FROM_TODO");
-        methodsBuilder.appendln(JavaSourceFileBuilder.MARKER_BEGIN_USER_CODE);
         methodsBuilder.appendln("return null; // " + getJavaNamingConvention().getToDoMarker() + " " + todoText);
-        methodsBuilder.appendln(JavaSourceFileBuilder.MARKER_END_USER_CODE);
         methodsBuilder.methodEnd();
     }
     
