@@ -43,6 +43,10 @@ import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 /**
  * A control to define the type of value set and edit a value set. 
  */
+
+//FIXME pk: strange things happen when this object is instantiated with an attribut of an enum datatype that
+//has an empty valueset. Multiple events cause multiple creation of the EnumValueSetChooser. In the gui
+//you suddently see a valueset that had been empty before filled with all values of the datatype.
 public class ValueSetEditControl extends ControlComposite {
 
     private Combo validTypesCombo;
