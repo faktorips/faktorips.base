@@ -171,7 +171,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
     /**
      * {@inheritDoc}
      */
-    public String getContentFromCorrespondingFile() throws CoreException {
+    public String getContentFromEnclosingResource() throws CoreException {
     	InputStream is = getCorrespondingFile().getContents(true);
         try {
             return StringUtil.readFromInputStream(is, getEncoding());

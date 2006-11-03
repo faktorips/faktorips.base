@@ -170,7 +170,7 @@ public class IpsSrcFileContent {
                 System.out.println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" +  file
                         + ", Thead: " + Thread.currentThread().getName());
             }
-            String fileContent = file.getContentFromCorrespondingFile();
+            String fileContent = file.getContentFromEnclosingResource();
             String encoding = file.getIpsProject().getXmlFileCharset();
             ByteArrayInputStream is = new ByteArrayInputStream(fileContent.getBytes(encoding)); 
             DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();

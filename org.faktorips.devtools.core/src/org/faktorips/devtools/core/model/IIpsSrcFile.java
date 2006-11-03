@@ -110,14 +110,16 @@ public interface IIpsSrcFile extends IIpsElement {
     public boolean isMutable();
     
     /**
-     * Reads the content from the corresponding file and returns it as string 
+     * Reads the content from the enclosing resource and returns it as string 
      * The bytes read from disk are transformed into a string with the encoding
      * defined in the ips project.
+     * If this is a source file from an archive, the data is read from the archive,
+     * otherwise it is read from the correspondig file.
      * 
      * @throws CoreException if an error occurs while reading the contents.
      * 
      * @see org.faktorips.devtools.core.model.IIpsProject#getXmlFileCharset()
      */
-    public String getContentFromCorrespondingFile() throws CoreException;
+    public String getContentFromEnclosingResource() throws CoreException;
     
 }
