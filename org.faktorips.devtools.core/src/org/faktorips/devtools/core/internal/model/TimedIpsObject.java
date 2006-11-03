@@ -18,7 +18,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -263,8 +262,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
-    public GregorianCalendar getValidToAsGregorianCalendar() throws ParseException {
-        Date date = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM).parse(validTo);
+    public GregorianCalendar getValidToAsGregorianCalendar() throws ParseException {        
+        Date date = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat().parse(validTo);
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(date);
         return gc;
