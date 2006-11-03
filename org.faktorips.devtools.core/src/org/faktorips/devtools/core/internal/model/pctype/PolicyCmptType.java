@@ -81,6 +81,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
 
     private List rules = new ArrayList(0);
 
+    private List tableStuctureUsages = new ArrayList(0);
+    
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
     }
@@ -274,13 +276,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public IIpsElement[] getChildren() {
-        int numOfChildren = getNumOfAttributes() + getNumOfMethods() + getNumOfRelations() + getNumOfRules();
+        int numOfChildren = getNumOfAttributes() + getNumOfMethods() + getNumOfRelations() + getNumOfRules()
+                + getNumOfTableStructureUsage();
         IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
         List childrenList = new ArrayList(numOfChildren);
         childrenList.addAll(attributes);
         childrenList.addAll(methods);
         childrenList.addAll(relations);
         childrenList.addAll(rules);
+        childrenList.addAll(tableStuctureUsages);
         childrenList.toArray(childrenArray);
         return childrenArray;
     }
@@ -502,7 +506,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     }
 
     /**
-     * Removes the attribute from the type.
+     * Removes the relation from the type.
      */
     void removeRelation(Relation relation) {
         relations.remove(relation);
@@ -626,6 +630,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         methods.clear();
         rules.clear();
         relations.clear();
+        tableStuctureUsages.clear();
     }
 
     /**
@@ -644,6 +649,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         } else if (part instanceof IValidationRule) {
             rules.add(part);
             return;
+        } else if (part instanceof ITableStructureUsage){
+            tableStuctureUsages.add(part);
+            return;
         }
         throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
     }
@@ -661,6 +669,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return newMethodInternal(id);
         } else if (xmlTagName.equals(ValidationRule.TAG_NAME)) {
             return newRuleInternal(id);
+        } else if (xmlTagName.equals(TableStructureUsage.TAG_NAME)){
+            return newTableStructureUsageInternal(id);
         }
         throw new RuntimeException("Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
     }
@@ -1147,11 +1157,43 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
-    public ITableStructureUsage[] getTableStructureUsages() {
-        // TODO Joerg
-        return null;
+    public ITableStructureUsage newTableStructureUsage() {
+        TableStructureUsage tsu = newTableStructureUsageInternal(getNextPartId());
+        objectHasChanged();
+        return tsu;
     }
 
+    /*
+     * Creates a new table structure usage without updating the src file.
+     */
+    private TableStructureUsage newTableStructureUsageInternal(int id) {
+        TableStructureUsage tsu = new TableStructureUsage(this, id);
+        tableStuctureUsages.add(tsu);
+        return tsu;
+    }
+    
+    /**
+     * Removes the table structure from the type.
+     */
+    void removeTableStructureUsage(TableStructureUsage tableStructureUsage) {
+        tableStuctureUsages.remove(tableStructureUsage);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITableStructureUsage[] getTableStructureUsages() {
+        return (ITableStructureUsage[])tableStuctureUsages
+                .toArray(new ITableStructureUsage[tableStuctureUsages.size()]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumOfTableStructureUsage() {
+        return tableStuctureUsages.size();
+    }
+    
     class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
 
         private boolean root = true;
@@ -1201,5 +1243,4 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         }
         
     }
-
 }

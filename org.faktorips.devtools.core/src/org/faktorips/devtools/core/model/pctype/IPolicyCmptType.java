@@ -469,10 +469,20 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public IRelation[] findRelationsImplementingContainerRelation(IRelation containerRelation, boolean searchSupertypeHierarchy) throws CoreException;
     
     /**
+     * Creates a new table usage and returns it.
+     */
+    public ITableStructureUsage newTableStructureUsage();
+    
+    /**
      * Returns the type's table structure usages or an empty list if the type does not
      * contain any.
      */
     public ITableStructureUsage[] getTableStructureUsages();
+    
+    /**
+     * Returns the number of table structure usages.
+     */
+    public int getNumOfTableStructureUsage();
 
     /**
      * Creates a new supertype hierarchy for the type and returns it.
@@ -483,5 +493,4 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * Creates a new subtype hierarchy for the type and returns it.
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
-    
 }

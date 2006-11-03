@@ -17,13 +17,21 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.model.IIpsObjectPart;
+
 
 /**
+ * Specification of table structure usage object.<br>
+ * Specifies a usage of several table structure for a product cmpt type.
  * 
  * @author Jan Ortmann
  */
-public interface ITableStructureUsage {
+public interface ITableStructureUsage extends IIpsObjectPart {
 
+    public final static String PROPERTY_ROLENAME = "roleName";
+    
+    public final static String PROPERTY_TABLESTRUCTURE = "tableStructure";
+    
     public final static String MSGCODE_PREFIX = "TableStructureUsage-";
     
     /**
@@ -47,9 +55,29 @@ public interface ITableStructureUsage {
      */ 
     public final static String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName";
 
+    /**
+     * Returns the role name.
+     */
     public String getRoleName();
 
+    /**
+     * Sets the role name.
+     */
     public void setRoleName(String s);
 
+    /**
+     * Returns all table structures this usage belongs to.<br>
+     * Returns an empty array if no table structures are related by this usage object.
+     */
     public String[] getTableStructures();
+    
+    /**
+     * Adds the given table structure to the list of table structure this usage object specifies.
+     */
+    public void addTableStructure(String tableStructure);
+    
+    /**
+     * Removes the given table structure from the list of table structures.
+     */
+    public void removeTableStructure(String tableStructure);
 }
