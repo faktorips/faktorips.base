@@ -108,6 +108,11 @@ public class QualifiedNameTypeTest extends TestCase {
         }
         catch(Exception e){}
     }
+    
+    public void testGetFilename() {
+        QualifiedNameType qnt = new QualifiedNameType("test.Motorpolicy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals("Motorpolicy.ipspct", qnt.getFilename());
+    }
 
     /*
      * Test method for 'org.faktorips.plugin.model.QualifiedNameType.equals(Object)'

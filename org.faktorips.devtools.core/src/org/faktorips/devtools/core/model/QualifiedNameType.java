@@ -118,6 +118,23 @@ public class QualifiedNameType {
         return qualifiedName.substring(index+1);
     }
     
+    /**
+     * Transforms this qualified name part into an IPath.
+     * E.g.: mycompany.motor.MotorPolicy of type PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
+     */
+    public IPath toPath() {
+        return new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
+            + '.' + type.getFileExtension());
+    }
+    
+    /**
+     * Returns the name for files in that an ips object with this qualified name type is stored.
+     * E.g.: for "mycompany.motor.MotorPolicy" of type PolicyCmptType the method returns "MotorPolicy.ipspct"
+     */
+    public String getFilename() {
+        return getUnqualifiedName() + "." + type.getFileExtension();
+    }
+    
     public IIpsObject findIpsObject(IIpsPackageFragmentRoot root) throws CoreException{
         if(root == null || !root.exists()){
             return null;
@@ -142,15 +159,6 @@ public class QualifiedNameType {
             return null;
         }
         return file.getIpsObject();
-    }
-    
-    /**
-     * Transforms this qualified name part into an IPath.
-     * E.g.: mycompany.motor.MotorPolicy of type PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
-     */
-    public IPath toPath() {
-        return new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
-            + '.' + type.getFileExtension());
     }
     
     private IProductCmptType findProductCmptType(IpsPackageFragment pack, String productCmptTypeName) throws CoreException {
