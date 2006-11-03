@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
@@ -165,7 +166,14 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 	public GregorianCalendar getValidTo() {
 		IIpsObjectGeneration[] generations = this.getTimedIpsObject().getGenerations();
 
-        GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
+        GregorianCalendar parentValidTo = null;
+        try {
+            parentValidTo = getTimedIpsObject().getValidToAsGregorianCalendar();
+        }
+        catch (ParseException e) {
+            // if the parent valid-to-date is not valid, we assume that no valid-to was set. 
+        }
+        
         GregorianCalendar validTo = null;
         
 		for (int i = 0; i < generations.length && validTo == null; i++) {
@@ -231,7 +239,14 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
+        GregorianCalendar parentValidTo = null;
+        
+        try {
+            parentValidTo = getTimedIpsObject().getValidToAsGregorianCalendar();
+        }
+        catch (ParseException e) {
+            // if the parent valid-to-date is not valid, we assume that no valid-to was set. 
+        }
         
         if (parentValidTo != null && getValidFrom().after(parentValidTo)) {
             IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences(); 

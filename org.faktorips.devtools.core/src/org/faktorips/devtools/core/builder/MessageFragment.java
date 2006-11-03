@@ -163,8 +163,8 @@ public class MessageFragment{
 	public final static MessageFragment createMessageFragment(String messageText, int parameterNameType){
         
         if(parameterNameType != DEFAULT_PARAMETER_NAMES && parameterNameType != VALUES_AS_PARAMETER_NAMES){
-            throw new IllegalArgumentException("The value of the parameter parameterNameType must be one of the constant values" +
-                    "DEFAULT_PARAMETER_NAMES, VALUES_AS_PARAMETER_NAMES");
+            throw new IllegalArgumentException("The value of the parameter parameterNameType must be one of the constant values" + //$NON-NLS-1$
+                    "DEFAULT_PARAMETER_NAMES, VALUES_AS_PARAMETER_NAMES"); //$NON-NLS-1$
         }
 		
 		messageText = StringUtils.escape(messageText);
@@ -192,7 +192,7 @@ public class MessageFragment{
             if(parameterNameType == VALUES_AS_PARAMETER_NAMES){
                 int parameterAsIndex = considerParameterAsIndex(pValue);
                 if(parameterAsIndex != -1){
-                    paraName = "p" + String.valueOf(parameterAsIndex);
+                    paraName = "p" + String.valueOf(parameterAsIndex); //$NON-NLS-1$
                 }
                 else{
                     paraName = pValue;

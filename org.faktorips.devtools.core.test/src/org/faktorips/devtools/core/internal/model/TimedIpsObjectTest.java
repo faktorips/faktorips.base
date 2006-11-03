@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -175,6 +176,16 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         gen2.delete();
         timedObject.initFromXml(element);
         assertEquals(2, timedObject.getNumOfGenerations());
+    }
+    
+    public void testValidateValidTo() throws Exception {
+        timedObject.setValidTo("01.01.2000");
+        MessageList ml = timedObject.validate();
+        assertNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
+        
+        timedObject.setValidTo("abc");
+        ml = timedObject.validate();
+        assertNotNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
     }
 
 }

@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
@@ -131,24 +132,16 @@ public class ProductAttributesSection extends IpsSection {
 		editControls.add(runtimeId);
 
         // create label and text control for the valid-to date of the displayed product component
-//       pk: disabled for version 0.9.35        
-//        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
-//        Text validTo = toolkit.createText(rootPane);
-//        editControls.add(validTo);
+        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
+        Text validTo = toolkit.createText(rootPane);
+        editControls.add(validTo);
 
 		IpsObjectUIController controller = new IpsObjectUIController(product);
 		controller.add(field, product, IProductCmpt.PROPERTY_POLICY_CMPT_TYPE);
 		controller.add(runtimeId, product, IProductCmpt.PROPERTY_RUNTIME_ID);
-//       pk: disabled for version 0.9.35        
-//        GregorianCalendarField validToField = new GregorianCalendarField(validTo);
-//        controller.add(validToField, generation.getProductCmpt(), IProductCmpt.PROPERTY_VALID_TO);
-//
-//        validToField.addChangeListener(new ValueChangeListener() {
-//            public void valueChanged(FieldValueChangedEvent e) {
-//                updateGenerationText();
-//            }
-//        });
-//        
+        GregorianCalendarField validToField = new GregorianCalendarField(validTo);
+        controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
+
         uiMasterController = new CompositeUIController();
 		uiMasterController.add(controller);
 		uiMasterController.updateUI();

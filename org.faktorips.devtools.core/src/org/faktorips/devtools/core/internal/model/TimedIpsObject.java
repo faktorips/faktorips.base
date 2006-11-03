@@ -17,9 +17,12 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +36,6 @@ import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -45,7 +47,7 @@ import org.w3c.dom.Element;
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
     
     private List generations = new ArrayList(0);
-    private GregorianCalendar validTo = null; //$NON-NLS-1$
+    private String validTo = ""; //$NON-NLS-1$ 
 
     public TimedIpsObject(IIpsSrcFile file) {
         super(file);
@@ -210,7 +212,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
-        validTo = XmlUtil.parseXmlDateStringToGregorianCalendar(element.getAttribute(PROPERTY_VALID_TO));
+        validTo = element.getAttribute(PROPERTY_VALID_TO);
     }
     
     /**
@@ -230,7 +232,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_VALID_TO, XmlUtil.gregorianCalendarToXmlDateString(validTo));
+        element.setAttribute(PROPERTY_VALID_TO, validTo);
     }
     
     /**
@@ -254,15 +256,25 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     /**
      * {@inheritDoc}
      */
-    public GregorianCalendar getValidTo() {
+    public String getValidTo() {
         return validTo;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setValidTo(GregorianCalendar validTo) {
-        GregorianCalendar oldId = this.validTo;
+    public GregorianCalendar getValidToAsGregorianCalendar() throws ParseException {
+        Date date = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM).parse(validTo);
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(date);
+        return gc;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setValidTo(String validTo) {
+        String oldId = this.validTo;
         this.validTo = validTo;
         valueChanged(oldId, validTo);
     }
@@ -272,20 +284,33 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
      */
     protected void validateThis(MessageList list) throws CoreException {
         super.validateThis(list);
-        GregorianCalendar validTo = getValidTo();
-        if (validTo != null) {
-            IIpsObjectGeneration[] generations = getGenerations();
-            for (int i = 0; i < generations.length; i++) {
-                if (generations[i].getValidFrom().after(validTo)) {
-                    IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-                    String params[] = new String[4];
-                    params[0] = prefs.getValidFromFormat().format(validTo.getTime());
-                    params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-                    params[2] = "" + generations[i].getGenerationNo(); //$NON-NLS-1$
-                    params[3] = prefs.getValidFromFormat().format(generations[i].getValidFrom().getTime());
-                    String msg = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgIvalidValidToDate, params);
-                    list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
-                }
+        String validTo = getValidTo();
+        
+        GregorianCalendar gc = null;
+        try {
+            gc = getValidToAsGregorianCalendar();
+        }
+        catch (ParseException e) {
+            // unparsable - reported as message
+        }
+        
+        if (gc == null) {
+            String text = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgValidToNoDate, validTo);
+            list.add(new Message(MSGCODE_VALID_TO_NO_DATE, text, Message.ERROR, this, PROPERTY_VALID_TO));
+            return;
+        }
+        
+        IIpsObjectGeneration[] generations = getGenerations();
+        for (int i = 0; i < generations.length; i++) {
+            if (generations[i].getValidFrom().after(validTo)) {
+                IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+                String params[] = new String[4];
+                params[0] = prefs.getValidFromFormat().format(gc.getTime());
+                params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+                params[2] = "" + generations[i].getGenerationNo(); //$NON-NLS-1$
+                params[3] = prefs.getValidFromFormat().format(generations[i].getValidFrom().getTime());
+                String msg = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgIvalidValidToDate, params);
+                list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
             }
         }
     }

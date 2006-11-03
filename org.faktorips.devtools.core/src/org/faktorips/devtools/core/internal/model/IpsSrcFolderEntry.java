@@ -48,18 +48,18 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * Returns a description of the xml format.
      */
     public final static String getXmlFormatDescription() {
-        return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR
-             + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR 
-             + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR
-             + "    sourceFolder=\"model\"             Folder in the project that contains the FaktorIPS model and product definition files." + SystemUtils.LINE_SEPARATOR
-             + "    outputFolderGenerated=\"src\"      Folder in the project where the Generator puts the Java source files." + SystemUtils.LINE_SEPARATOR
-             + "    basePackageGenerated=\"org.foo\"   The package prefix for all generated classes." + SystemUtils.LINE_SEPARATOR
-             + "    outputFolderExtension=\"\"         The FaktorIPS standard builder merges developer changes to the generated files while generating" + SystemUtils.LINE_SEPARATOR
-             + "                                     Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR
-             + "                                     If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR 
-             + "    basePackageExtension=\"\">         Package prefix for Java classes in the output folder for extenions. See above." + SystemUtils.LINE_SEPARATOR
-             + "                                     If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR
-             + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; 
+        return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+             + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "    sourceFolder=\"model\"             Folder in the project that contains the FaktorIPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "    outputFolderGenerated=\"src\"      Folder in the project where the Generator puts the Java source files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "    basePackageGenerated=\"org.foo\"   The package prefix for all generated classes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "    outputFolderExtension=\"\"         The FaktorIPS standard builder merges developer changes to the generated files while generating" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "                                     Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "                                     If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+             + "    basePackageExtension=\"\">         Package prefix for Java classes in the output folder for extenions. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + "                                     If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+             + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR;  //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     // the folder containg the ips objects

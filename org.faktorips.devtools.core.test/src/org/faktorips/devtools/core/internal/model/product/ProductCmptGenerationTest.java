@@ -20,8 +20,8 @@ package org.faktorips.devtools.core.internal.model.product;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.DefaultTestContent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -355,7 +355,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testValidateValidFrom() throws Exception {
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "type");
         generation.getProductCmpt().setPolicyCmptType(type.getQualifiedName());
-        generation.getProductCmpt().setValidTo(new GregorianCalendar(2000, 10, 1));
+        generation.getProductCmpt().setValidTo("01.10.2000");
         generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
         
         MessageList ml = generation.validate();

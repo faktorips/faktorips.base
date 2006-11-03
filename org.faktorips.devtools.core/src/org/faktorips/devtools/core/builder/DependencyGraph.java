@@ -42,7 +42,7 @@ public class DependencyGraph {
     public final static boolean TRACE_DEPENDENCY_GRAPH_MANAGEMENT;
     
     static {
-        TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")).booleanValue();
+        TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")).booleanValue(); //$NON-NLS-1$
     }
 
     private Map dependantsForMap;
@@ -75,7 +75,7 @@ public class DependencyGraph {
         List allIpsObjects = new ArrayList();
         ipsProject.findAllIpsObjects(allIpsObjects);
         if(TRACE_DEPENDENCY_GRAPH_MANAGEMENT){
-            System.out.println("all: " + allIpsObjects);
+            System.out.println("all: " + allIpsObjects); //$NON-NLS-1$
         }
         for (Iterator it = allIpsObjects.iterator(); it.hasNext();) {
             IIpsObject ipsObject = (IIpsObject)it.next();

@@ -629,7 +629,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             javaFileContents = javaFile.getContents(true);
             return StringUtil.readFromInputStream(javaFileContents, charset);
         } catch(IOException e){
-            throw new CoreException(new IpsStatus("An exception ocurred while trying to read the contents of the java file " +
+            throw new CoreException(new IpsStatus("An exception ocurred while trying to read the contents of the java file " + //$NON-NLS-1$
                     javaFile, e));
         }
         finally {

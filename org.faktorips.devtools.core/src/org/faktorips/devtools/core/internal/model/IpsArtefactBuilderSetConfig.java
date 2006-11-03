@@ -48,11 +48,11 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
      */
     public final void initFromXml(Element el){
         properties = new HashMap();
-        NodeList nl = el.getElementsByTagName("Property");
+        NodeList nl = el.getElementsByTagName("Property"); //$NON-NLS-1$
         for (int i = 0; i < nl.getLength(); i++) {
             Element propertyEl = (Element)nl.item(i);
-            String key = propertyEl.getAttribute("name");
-            String value = propertyEl.getAttribute("value");
+            String key = propertyEl.getAttribute("name"); //$NON-NLS-1$
+            String value = propertyEl.getAttribute("value"); //$NON-NLS-1$
             properties.put(key, value);
         }
     }
@@ -81,10 +81,10 @@ public class IpsArtefactBuilderSetConfig implements IIpsArtefactBuilderSetConfig
         for (Iterator iter = keys.iterator();iter.hasNext();) {
             String key = (String)iter.next();
             String value = (String)properties.get(key);
-            Element prop = doc.createElement("Property");
+            Element prop = doc.createElement("Property"); //$NON-NLS-1$
             root.appendChild(prop);
-            prop.setAttribute("name", key);
-            prop.setAttribute("value", value);
+            prop.setAttribute("name", key); //$NON-NLS-1$
+            prop.setAttribute("value", value); //$NON-NLS-1$
         }
         return root;
     }

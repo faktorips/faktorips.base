@@ -51,14 +51,14 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns a description of the xml format.
      */
     public final static String getXmlFormatDescription() {
-        return "IpsObjectPath" + SystemUtils.LINE_SEPARATOR 
-            + " " + SystemUtils.LINE_SEPARATOR
-            + "The IpsObjectPath defines where FaktorIPS searches for model and product definition files/objects for this project." + SystemUtils.LINE_SEPARATOR
-            + "Basically it is the same concept as the Java classpath.  The IpsObjectPath is defined through one or more entries." + SystemUtils.LINE_SEPARATOR
-            + "Currently the following entry types are supported:" + SystemUtils.LINE_SEPARATOR
-            + " " + SystemUtils.LINE_SEPARATOR
+        return "IpsObjectPath" + SystemUtils.LINE_SEPARATOR  //$NON-NLS-1$
+            + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            + "The IpsObjectPath defines where FaktorIPS searches for model and product definition files/objects for this project." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            + "Basically it is the same concept as the Java classpath.  The IpsObjectPath is defined through one or more entries." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            + "Currently the following entry types are supported:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+            + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             + IpsSrcFolderEntry.getXmlFormatDescription() + SystemUtils.LINE_SEPARATOR
-            + " "+ SystemUtils.LINE_SEPARATOR
+            + " "+ SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
             + IpsProjectRefEntry.getXmlFormatDescription();
     }
     

@@ -136,7 +136,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
      * @return the string <i>emptyBuilderSet</i>
      */
     public String getId() {
-        return "emptyBuilderSet";
+        return "emptyBuilderSet"; //$NON-NLS-1$
     }
 
     /**

@@ -133,7 +133,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements
             element.setAttribute("getNameMethod", getGetNameMethodName()); //$NON-NLS-1$
             
         }
-        element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames()));
+        element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames())); //$NON-NLS-1$
         
         
     }

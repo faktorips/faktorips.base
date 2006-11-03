@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.text.ParseException;
 import java.util.Hashtable;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -97,7 +98,17 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
 		Composite selectPane = new Composite(workArea, SWT.None);
 		selectPane.setLayout(new GridLayout(2, false));
 		
-        if (cmpt.getValidTo() == null || cmpt.getValidTo().after(prefs.getWorkingDate())) {            
+        boolean createAllowed = false;
+        
+        try {
+            createAllowed = cmpt.getValidTo() == null || cmpt.getValidToAsGregorianCalendar().after(prefs.getWorkingDate());
+        }
+        catch (ParseException e1) {
+            // createion of new generations is not allowed until the valid-to-date is valid.
+            createAllowed = false;
+        }
+        
+        if (createAllowed) {            
             createButton = new Button(selectPane, SWT.RADIO);
             Label l1 = new Label(selectPane, SWT.NONE);
             l1.setText(Messages.bind(Messages.GenerationSelectionDialog_labelCreate, generationConceptName, prefs.getFormattedWorkingDate()));

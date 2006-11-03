@@ -138,7 +138,7 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      */
     public void save(boolean force, IProgressMonitor monitor) throws CoreException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("File does not exist " + this));
+            throw new CoreException(new IpsStatus("File does not exist " + this)); //$NON-NLS-1$
         }
         getContent().save(force, monitor);
     }
@@ -159,11 +159,11 @@ public class IpsSrcFile extends IpsElement implements IIpsSrcFile {
      */
     public IIpsObject getIpsObject() throws CoreException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this));
+            throw new CoreException(new IpsStatus("Can't get ips object because file does not exist." + this)); //$NON-NLS-1$
         }
         IpsSrcFileContent content = getContent();
         if (!content.isParsable()) {
-            throw new CoreException(new IpsStatus("Can't get ips object because file content is not parsable." + this));
+            throw new CoreException(new IpsStatus("Can't get ips object because file content is not parsable." + this)); //$NON-NLS-1$
         }
         return content.getIpsObject();
     }
