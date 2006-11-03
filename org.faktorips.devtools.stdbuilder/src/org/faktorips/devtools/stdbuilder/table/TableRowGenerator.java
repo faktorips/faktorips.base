@@ -71,6 +71,15 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(getJavaSourceFileBuilder().getPackage(ipsSrcFile));
     stringBuffer.append(TEXT_2);
     ITableStructure tableStructure = (ITableStructure)ipsSrcFile.getIpsObject();
+    IColumn[] columns = tableStructure.getColumns();
+    boolean validationStatus = true;
+    for (int i = 0; i < columns.length; i++) {
+        if(!columns[i].validate().isEmpty()){
+            validationStatus = false;
+            break;
+        }
+    }
+
     stringBuffer.append(TEXT_3);
     markImportLocation(stringBuffer);
 
@@ -83,8 +92,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(TEXT_5);
     stringBuffer.append(getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile));
     stringBuffer.append(TEXT_6);
-    			IColumn[] columns = tableStructure.getColumns();
-        for (int i = 0; i < columns.length; i++) {
+    			for (int i = 0; validationStatus && i < columns.length; i++) {
             String columnName = columns[i].getName();
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 
@@ -100,7 +108,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     stringBuffer.append(getJavaSourceFileBuilder().getUnqualifiedClassName(ipsSrcFile));
     stringBuffer.append(TEXT_12);
     
-    for (int i = 0; i < columns.length; i++) {
+    for (int i = 0; validationStatus && i < columns.length; i++) {
 	    String columnName = StringUtils.uncapitalise(columns[i].getName());
 	    String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 	    if(i > 0){
@@ -113,7 +121,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
 	   }
     stringBuffer.append(TEXT_14);
     
-        for (int i = 0; i < columns.length; i++) {
+        for (int i = 0; validationStatus && i < columns.length; i++) {
 					String columnName = StringUtils.uncapitalise(columns[i].getName());
     stringBuffer.append(TEXT_15);
     stringBuffer.append(columnName);
@@ -123,7 +131,7 @@ public class TableRowGenerator extends JetJavaContentGenerator
     }
 	  
     stringBuffer.append(TEXT_18);
-          for (int i = 0; i < columns.length; i++) {
+          for (int i = 0; validationStatus && i < columns.length; i++) {
             String columnName = StringUtils.uncapitalise(columns[i].getName());
             String qualifiedDatatypeName = tableStructure.getIpsProject().findDatatype(columns[i].getDatatype()).getJavaClassName();
 

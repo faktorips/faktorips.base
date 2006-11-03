@@ -338,9 +338,21 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 getLocalizedText(getIpsObject(), GET_INSTANCE_JAVADOC));
     }
 
+    private boolean checkColumns(IColumn[] columns) throws CoreException{
+        for (int i = 0; i < columns.length; i++) {
+            if(!columns[i].validate().isEmpty()){
+                return false;
+            }
+        }
+        return true;
+    }
+    
     private void createAddRowMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         IColumn[] columns = getTableStructure().getColumns();
+        if(!checkColumns(columns)){
+            return;
+        }
         String textVariableName = createAddRowMethodTextVariableName(columns);
         for (int i = 0; i < columns.length; i++) {
             IColumn column = columns[i];
