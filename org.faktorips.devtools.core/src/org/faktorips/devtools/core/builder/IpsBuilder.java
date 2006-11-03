@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
@@ -60,6 +61,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      */
     public final static String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder"; //$NON-NLS-1$
 
+    public final static boolean TRACE_BUILDER_TRACE;
+
+    static {
+        TRACE_BUILDER_TRACE = Boolean.valueOf(
+                Platform.getDebugOption("org.faktorips.devtools.core/trace/builder")).booleanValue();
+    }
+    
+    
     public IpsBuilder() {
         super();
     }
@@ -135,7 +144,6 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         if (!IpsPlugin.getDefault().getIpsPreferences().getEnableGenerating()) {
             return;
         }
-//        IIpsArtefactBuilderSet currentBuilderSet = getIpsProject().getIpsArtefactBuilderSet();
         IIpsArtefactBuilder[] artefactBuilders = currentBuilderSet.getArtefactBuilders();
         for (int i = 0; i < artefactBuilders.length; i++) {
             try {
@@ -195,7 +203,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * Full build generates Java source files for all IPS objects.
      */
     private MultiStatus fullBuild(IIpsArtefactBuilderSet ipsArtefactBuilderSet, MultiStatus buildStatus, IProgressMonitor monitor) {
-        System.out.println("Full build started."); //$NON-NLS-1$
+        if(TRACE_BUILDER_TRACE){
+            System.out.println("Full build started."); //$NON-NLS-1$
+        }
         long begin = System.currentTimeMillis();
 
         try {
@@ -222,7 +232,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             monitor.done();
         }
         long end = System.currentTimeMillis();
-        System.out.println("Full build finished. Duration: " + (end - begin)); //$NON-NLS-1$
+        if(TRACE_BUILDER_TRACE){
+            System.out.println("Full build finished. Duration: " + (end - begin)); //$NON-NLS-1$
+        }
         return buildStatus;
     }
 
@@ -262,7 +274,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * Incremental build generates Java source files for all PdObjects that have been changed.
      */
     private void incrementalBuild(IIpsArtefactBuilderSet ipsArtefactBuilderSet, MultiStatus buildStatus, IProgressMonitor monitor) {
-        System.out.println("Incremental build started."); //$NON-NLS-1$
+        if(TRACE_BUILDER_TRACE){
+            System.out.println("Incremental build started."); //$NON-NLS-1$
+        }
+
         try {
             IResourceDelta delta = getDelta(getProject());
             IncBuildVisitor visitor = new IncBuildVisitor();
@@ -308,7 +323,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             buildStatus.add(new IpsStatus(e));
         } finally {
             monitor.done();
-            System.out.println("Incremental build finished."); //$NON-NLS-1$
+            if(TRACE_BUILDER_TRACE){
+                System.out.println("Incremental build finished."); //$NON-NLS-1$
+            }
         }
     }
 
@@ -561,10 +578,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreException {
             if (builder.isBuilderFor(ipsSrcFile)) {
                 try {
+                    if(TRACE_BUILDER_TRACE){
+                        System.out.println("Start building " + ipsSrcFile);
+                    }
                     builder.beforeBuild(ipsSrcFile, status);
                     builder.build(ipsSrcFile);
                 } finally {
                     builder.afterBuild(ipsSrcFile);
+                    if(TRACE_BUILDER_TRACE){
+                        System.out.println("Finished building " + ipsSrcFile);
+                    }
                 }
             }
         }

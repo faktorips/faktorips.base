@@ -2,3 +2,5 @@
 org.faktorips.devtools.core/trace/modelmanagement=false
 org.faktorips.devtools.core/trace/dependencygraphmanagement=false
 org.faktorips.devtools.core/trace/validation=false
+# tracing options for ips builder
+org.faktorips.devtools.core/trace/builder=false
