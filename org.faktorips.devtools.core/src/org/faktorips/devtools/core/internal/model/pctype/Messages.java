@@ -169,4 +169,12 @@ public class Messages extends NLS {
 	public static String Relation_msgRelationCanOnlyProdRelIfTargetTypeIsConfByProduct;
 
     public static String ValidationRule_msgNoNewlineAllowed;
+
+    public static String TableStructureUsage_msgTableStructureNotExists;
+
+    public static String TableStructureUsage_msgInvalidRoleName;
+
+    public static String TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
+
+    public static String TableStructureUsage_msgSameRoleName;
 }

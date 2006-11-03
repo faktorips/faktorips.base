@@ -17,11 +17,14 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsProject;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -41,6 +44,8 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         pcType = newPolicyCmptType(project, "test.policyCmptType");
         tableStructureUsage = pcType.newTableStructureUsage();
         pcType.getIpsSrcFile().save(true, null);
+        
+        newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
     }
     
     public void testRemove() {
@@ -111,11 +116,63 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         assertEquals(0, tableStructureUsage.getTableStructures().length);
     }
     
-    /* TODO Joerg: add validation test
-    MSGCODE_TABLE_STRUCTURE_NOT_FOUND
-    MSGCODE_INVALID_ROLE_NAME
-    MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE
-    MSGCODE_SAME_ROLENAME
-    */
+    public void testValidate_TableStructureNotFound() throws CoreException{
+        MessageList ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        
+        tableStructureUsage.addTableStructure("test.TableStructureX");
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        
+        tableStructureUsage.removeTableStructure("test.TableStructureX");
+        tableStructureUsage.addTableStructure("test.TableStructure1");
+        ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+    }
     
+    public void testValidate_InvalidRoleName() throws CoreException{
+        tableStructureUsage.setRoleName("role1");
+        MessageList ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        
+        tableStructureUsage.setRoleName("1role");
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        
+        tableStructureUsage.setRoleName("role 1");
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+    }
+    
+    public void testValidate_MustReferenceAtLeast1TableStructure() throws CoreException{
+        MessageList ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
+        
+        tableStructureUsage.addTableStructure("tableStructure1");
+        ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
+        
+    }
+    
+    public void testValidate_SameRolename() throws CoreException{
+        tableStructureUsage.setRoleName("role1");
+        MessageList ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        
+        pcType.newTableStructureUsage().setRoleName("role1");
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        
+        tableStructureUsage.setRoleName("roleA");
+        ml = tableStructureUsage.validate();
+        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        
+        // check for same role names in one of the supertype of the policy cmpt
+        IPolicyCmptType pcTypeSuper = newPolicyCmptType(project, "test.policyCmptTypeSuper");
+        pcType.setSupertype(pcTypeSuper.getQualifiedName());
+        pcTypeSuper.newTableStructureUsage().setRoleName("roleA");
+        
+        ml = tableStructureUsage.validate();
+        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+    }
 }

@@ -1190,8 +1190,37 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     /**
      * {@inheritDoc}
      */
+    public int[] moveTableStructureUsage(int[] indexes, boolean up) {
+        ListElementMover mover = new ListElementMover(tableStuctureUsages);
+        return mover.move(indexes, up);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public int getNumOfTableStructureUsage() {
         return tableStuctureUsages.size();
+    }
+    
+    /*
+     * Returns the list holding the table structure usaged as a reference. Package private for use in
+     * TypeHierarchy.
+     */
+    List getTableStructureUsageList() {
+        return tableStuctureUsages;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITableStructureUsage getTableStructureUsage(String roleName) {
+        for (Iterator it = tableStuctureUsages.iterator(); it.hasNext();) {
+            ITableStructureUsage tsu = (ITableStructureUsage)it.next();
+            if (tsu.getName().equals(roleName)) {
+                return tsu;
+            }
+        }
+        return null;
     }
     
     class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {

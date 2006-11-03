@@ -45,7 +45,7 @@ public interface ITableStructureUsage extends IIpsObjectPart {
     public final static String MSGCODE_INVALID_ROLE_NAME = MSGCODE_PREFIX + "InvalidRoleName";
 
     /**
-     * Validation message code to indicate that the the usgae does not reference at least one structure
+     * Validation message code to indicate that the the usage does not reference at least one structure
      */
     public final static String MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE = MSGCODE_PREFIX + "MustReferenceAtLeast1Structure";
     
@@ -80,4 +80,22 @@ public interface ITableStructureUsage extends IIpsObjectPart {
      * Removes the given table structure from the list of table structures.
      */
     public void removeTableStructure(String tableStructure);
+    
+    /**
+     * Moves the table structures identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first object), no object is moved up. 
+     * If one of the indexes is the number of objects - 1 (the last object)
+     * no object is moved down. 
+     * 
+     * @param indexes   The indexes identifying the table structures.
+     * @param up        <code>true</code>, to move the table structures up, 
+     * <false> to move them down.
+     * 
+     * @return The new indexes of the moved table structures.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * a table structure.
+     */
+    public int[] moveTableStructure(int[] indexes, boolean up);
 }

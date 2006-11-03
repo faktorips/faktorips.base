@@ -485,6 +485,32 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     public int getNumOfTableStructureUsage();
 
     /**
+     * Returns the table structure usage with the given role name. If more than one table structure
+     * usages with the role name exist, the first table structure usage with the role name is
+     * returned. Returns <code>null</code> if no table structure usage with the given role name
+     * exists.
+     */
+    public ITableStructureUsage getTableStructureUsage(String roleName);
+    
+    /**
+     * Moves the table structure usages identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first object), no object is moved up. 
+     * If one of the indexes is the number of objects - 1 (the last object)
+     * no object is moved down. 
+     * 
+     * @param indexes   The indexes identifying the table structure usages.
+     * @param up        <code>true</code>, to move the table structure usages up, 
+     * <false> to move them down.
+     * 
+     * @return The new indexes of the moved table structure usages.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * a table structure usage.
+     */
+    public int[] moveTableStructureUsage(int[] indexes, boolean up);
+    
+    /**
      * Creates a new supertype hierarchy for the type and returns it.
      */
     public ITypeHierarchy getSupertypeHierarchy() throws CoreException;

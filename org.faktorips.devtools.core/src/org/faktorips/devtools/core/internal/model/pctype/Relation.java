@@ -502,7 +502,7 @@ public class Relation extends IpsObjectPart implements IRelation {
      * {@inheritDoc}
      */
     public Image getImage() {
-    	String baseImageName = "";
+    	String baseImageName = ""; //$NON-NLS-1$
         if (this.type==RelationType.COMPOSITION) {
         	baseImageName = "Composition.gif"; //$NON-NLS-1$
         } else if (this.type==RelationType.REVERSE_COMPOSITION) {

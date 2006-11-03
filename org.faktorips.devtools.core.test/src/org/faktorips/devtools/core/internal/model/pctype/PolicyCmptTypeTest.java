@@ -907,8 +907,13 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertEquals(0, pcType.getTableStructureUsages().length);
         ITableStructureUsage tsu1 = pcType.newTableStructureUsage();
         ITableStructureUsage tsu2 = pcType.newTableStructureUsage();
+        tsu1.setRoleName("role1");
+        tsu2.setRoleName("role2");
         assertSame(tsu1, pcType.getTableStructureUsages()[0]);
         assertSame(tsu2, pcType.getTableStructureUsages()[1]);
+        assertSame(tsu2, pcType.getTableStructureUsage("role2"));
+        assertSame(tsu1, pcType.getTableStructureUsage("role1"));
+        assertNull(pcType.getTableStructureUsage("role12"));
         
         // make sure a defensive copy is returned.
         pcType.getTableStructureUsages()[0] = null;

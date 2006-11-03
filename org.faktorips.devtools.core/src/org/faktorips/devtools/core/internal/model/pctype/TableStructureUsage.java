@@ -21,13 +21,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.core.JavaConventions;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
+import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,8 +54,9 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     
     private boolean deleted = false;
     
-    private String roleName = "";
+    private String roleName = ""; //$NON-NLS-1$
     
+    // Contains the related table structures identified by the full qualified name
     private List tableStructures = new ArrayList();
     
     public TableStructureUsage(IPolicyCmptType pcType, int id) {
@@ -94,7 +104,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
      * {@inheritDoc}
      */
     public Image getImage() {
-        return IpsPlugin.getDefault().getImage("TableStructure.gif");
+        return IpsPlugin.getDefault().getImage("TableStructure.gif"); //$NON-NLS-1$
     }
     
     /**
@@ -123,6 +133,13 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         }
     }
 
+    /** 
+     * Overridden.
+     */
+    public String getName() {
+        return roleName;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -163,6 +180,59 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     public void removeTableStructure(String tableStructure) {
         if (tableStructures.remove(tableStructure)) {
             objectHasChanged();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveTableStructure(int[] indexes, boolean up) {
+        ListElementMover mover = new ListElementMover(tableStructures);
+        return mover.move(indexes, up);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected void validateThis(MessageList list) throws CoreException {
+        super.validateThis(list);
+        
+        // check that each referenced table structure exists
+        for (Iterator iter = tableStructures.iterator(); iter.hasNext();) {
+            String tblStructure = (String)iter.next();
+            if (getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, tblStructure) == null){
+                String text = NLS.bind(Messages.TableStructureUsage_msgTableStructureNotExists, tblStructure);
+                Message msg = new Message(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND, text, Message.ERROR, this);
+                list.add(msg);
+            }
+        }
+        
+        // check the correct name format
+        IStatus status = JavaConventions.validateFieldName(roleName);
+        if (!status.isOK()){
+            String text = NLS.bind(Messages.TableStructureUsage_msgInvalidRoleName, roleName);
+            Message msg = new Message(MSGCODE_INVALID_ROLE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
+            list.add(msg);
+        }
+        
+        // check that at least one table structure is referenced
+        if (tableStructures.size() == 0){
+            String text = Messages.TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
+            Message msg = new Message(MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE, text, Message.ERROR, this, PROPERTY_NAME);
+            list.add(msg);
+        }
+        
+        // check that the role name is not in use by another usage within the supertype hierarchy
+        IPolicyCmptType pcType = (IPolicyCmptType)getIpsObject();
+        ITypeHierarchy hierarchy = pcType.getSupertypeHierarchy();
+        ITableStructureUsage[] tblUsages = hierarchy.getAllTableStructureUsages(pcType);
+        for (int i = 0; i < tblUsages.length; i++) {
+            if (tblUsages[i] != this && roleName.equals(tblUsages[i].getRoleName())){
+                String text = NLS.bind(Messages.TableStructureUsage_msgSameRoleName, roleName);
+                Message msg = new Message(MSGCODE_SAME_ROLENAME, text, Message.ERROR, this, PROPERTY_NAME);
+                list.add(msg);
+                break;
+            }
         }
     }
 }
