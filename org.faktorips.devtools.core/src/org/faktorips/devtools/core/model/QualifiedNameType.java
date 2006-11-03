@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
@@ -122,14 +123,14 @@ public class QualifiedNameType {
             return null;
         }
 
-        String folderName = ""; //$NON-NLS-1$
+        String packName = ""; //$NON-NLS-1$
         String unqualifiedName = qualifiedName;
         int index = qualifiedName.lastIndexOf(IIpsPackageFragment.SEPARATOR);
         if (index>0) {
-            folderName = qualifiedName.substring(0, index);
+            packName = qualifiedName.substring(0, index);
             unqualifiedName = qualifiedName.substring(index+1);
         }
-        IIpsPackageFragment pack = root.getIpsPackageFragment(folderName);
+        IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
         if (!pack.exists()) {
         	return null;
         }
@@ -141,6 +142,15 @@ public class QualifiedNameType {
             return null;
         }
         return file.getIpsObject();
+    }
+    
+    /**
+     * Transforms this qualified name part into an IPath.
+     * E.g.: mycompany.motor.MotorPolicy of type PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
+     */
+    public IPath toPath() {
+        return new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
+            + '.' + type.getFileExtension());
     }
     
     private IProductCmptType findProductCmptType(IpsPackageFragment pack, String productCmptTypeName) throws CoreException {

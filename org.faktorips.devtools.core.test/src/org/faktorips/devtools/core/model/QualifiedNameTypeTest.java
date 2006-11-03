@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 
 import junit.framework.TestCase;
 
@@ -69,6 +70,14 @@ public class QualifiedNameTypeTest extends TestCase {
         qnt = new QualifiedNameType("motor.", IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals("", qnt.getUnqualifiedName());
         
+    }
+    
+    public void testToPath() {
+        QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals(new Path("Policy.ipspct"), qnt.toPath());
+        
+        qnt = new QualifiedNameType("mycompany.motor.Policy", IpsObjectType.POLICY_CMPT_TYPE);
+        assertEquals(new Path("mycompany/motor/Policy.ipspct"), qnt.toPath());
     }
 
     /*
