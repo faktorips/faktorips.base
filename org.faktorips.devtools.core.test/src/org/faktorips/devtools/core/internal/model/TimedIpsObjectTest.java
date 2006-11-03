@@ -186,6 +186,10 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         timedObject.setValidTo("abc");
         ml = timedObject.validate();
         assertNotNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
+        
+        timedObject.setValidTo("");
+        ml = timedObject.validate();
+        assertNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
     }
 
 }

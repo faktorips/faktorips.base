@@ -286,17 +286,22 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         super.validateThis(list);
         String validTo = getValidTo();
         
+        if (validTo.trim().length() == 0) {
+            // empty validTo - valid forever.
+            return;
+        }
+        
         GregorianCalendar gc = null;
         try {
             gc = getValidToAsGregorianCalendar();
         }
         catch (ParseException e) {
-            // unparsable - reported as message
+            String text = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgValidToNoDate, validTo);
+            list.add(new Message(MSGCODE_VALID_TO_NO_DATE, text, Message.ERROR, this, PROPERTY_VALID_TO));
+            return;
         }
         
         if (gc == null) {
-            String text = Messages.bind(org.faktorips.devtools.core.internal.model.Messages.TimedIpsObject_msgValidToNoDate, validTo);
-            list.add(new Message(MSGCODE_VALID_TO_NO_DATE, text, Message.ERROR, this, PROPERTY_VALID_TO));
             return;
         }
         
