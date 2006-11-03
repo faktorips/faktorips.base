@@ -17,12 +17,13 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.table.TableCellEditor;
 
 /**
  * A factory to create controls and edit fields that allow to edit values for one or more
@@ -73,5 +74,6 @@ public abstract class ValueDatatypeControlFactory {
      * @param valueSet An optional valueset.  
      * @param columnIndex The index of the column.  
      */
-    public abstract CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex);
+    public abstract TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex);
+
 }
