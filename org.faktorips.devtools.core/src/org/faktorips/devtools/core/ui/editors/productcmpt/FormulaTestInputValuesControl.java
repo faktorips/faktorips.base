@@ -371,7 +371,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             // new formula test case (e.g. preview formula on the first page of the formula edit dialog)
 
             BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaInputTableViewer);
-            tableCellModifier.initModifier(new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME,
+            tableCellModifier.initModifier(uiToolkit, new String[] { "image", IFormulaTestInputValue.PROPERTY_NAME,
                     IFormulaTestInputValue.PROPERTY_VALUE }, new ValueDatatype[] { null, null, ValueDatatype.STRING });
             tableCellModifier.addListener(this);
         }

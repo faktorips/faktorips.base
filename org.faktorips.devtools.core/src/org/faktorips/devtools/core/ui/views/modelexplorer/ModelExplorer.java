@@ -390,6 +390,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 return;
             }
             Object selected = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+            IStructuredSelection structuredSelection = (IStructuredSelection)treeViewer.getSelection();
             if (selected == null) {
                 return;
             }
@@ -405,7 +406,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             manager.add(new Separator());
             createTestCaseAction(manager, selected);
             createRefactorMenu(manager, selected);
-            createAdditionalActions(manager, selected);
+            createAdditionalActions(manager, structuredSelection);
             manager.add(new Separator());
             createPropertiesActions(manager, selected);
         }
@@ -524,7 +525,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
             }
         }
 
-        protected void createAdditionalActions(IMenuManager manager, Object selected) {
+        protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
             manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$
         }

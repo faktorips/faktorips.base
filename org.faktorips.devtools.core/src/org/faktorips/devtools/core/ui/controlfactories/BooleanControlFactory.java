@@ -17,8 +17,7 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,6 +28,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.table.ComboCellEditor;
+import org.faktorips.devtools.core.ui.table.TableCellEditor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -63,13 +64,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 	public Control createControl(UIToolkit toolkit, Composite parent, ValueDatatype datatype, ValueSet valueSet) {
 		return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), "Yes", "No");
 	}
-
-    /**
-     * {@inheritDoc}
-     */
-    public CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex) {
-        return new ComboBoxCellEditor(parent, new String[]{"Yes", "No"});
-    }
     
 	/**
 	 * Inner class of the enhanced combo field control.
@@ -123,4 +117,10 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 			}
 		}	
 	}
+
+    public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
+        Combo comboControl= (Combo) createControl(toolkit, tableViewer.getTable(), dataType, valueSet);
+        return new ComboCellEditor(tableViewer, columnIndex, comboControl);
+    }
+
 }

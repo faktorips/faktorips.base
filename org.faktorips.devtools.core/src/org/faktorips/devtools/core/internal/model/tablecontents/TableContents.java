@@ -27,8 +27,14 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -161,6 +167,94 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         	String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
         	list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLE_STRUCTURE));
         }
+        
+
+        // Ranges
+        
+        // unique keys: in this row all columns each unique key comprises of contain values (are not empty) 
+        IUniqueKey[] uniqueKeys= structure.getUniqueKeys();
+        for (int i = 0; i < uniqueKeys.length; i++) {
+            IUniqueKey uniqueKey= uniqueKeys[i];
+            // FIXME reicht getKeyItems, oder muss getCandidates verwendet werden?
+            IKeyItem[] keyItems= uniqueKey.getKeyItems();
+            for (int j = 0; j < keyItems.length; j++) {
+                IKeyItem keyItem= keyItems[j];
+                if(keyItem instanceof IColumn){
+                    IColumn column= (IColumn) keyItem;
+                    int columnIndex= findIndexForColumn(column);
+                    if(columnIndex != -1){
+                        IRow[] rows= ((ITableContentsGeneration) getFirstGeneration()).getRows();
+                        for (int k = 0; k < rows.length; k++) {
+                            IRow row= rows[k];
+                            String value= row.getValue(columnIndex);
+                            // FIXME ist null ein gueltiger Wert?
+                            if(value!=null && value.trim().equals("")){
+                                String text = "Missing value for uniquekey-item";
+                                list.add(new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR, row, new String[]{column.getName()}));
+                            }
+                        }
+                    }else{
+                        // column not found in structure
+                    }
+                }else if(keyItem instanceof IColumnRange){
+                    IColumnRange range= (IColumnRange) keyItem;
+                    int fromColumnIndex= findIndexForColumn(structure.getColumn(range.getFromColumn()));
+                    int toColumnIndex= findIndexForColumn(structure.getColumn(range.getToColumn()));
+                    IRow[] rows= ((ITableContentsGeneration) getFirstGeneration()).getRows();
+                    if(fromColumnIndex!=-1){
+                        for (int k = 0; k < rows.length; k++) {
+                            IRow row= rows[i];
+                            String value= row.getValue(fromColumnIndex);
+                            // FIXME ist null ein gueltiger Wert?
+                            if(value!=null && value.trim().equals("")){
+                                String text = "Missing value for uniquekey-item";
+                                list.add(new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR, row));
+                            }
+                        }
+                    }
+                    if(toColumnIndex!=-1){
+                        for (int k = 0; k < rows.length; k++) {
+                            IRow row= rows[i];
+                            String value= row.getValue(toColumnIndex);
+                            // FIXME ist null ein gueltiger Wert?
+                            if(value!=null && value.trim().equals("")){
+                                String text = "Missing value for uniquekey-item";
+                                list.add(new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR, row));
+                            }
+                        }
+                    }
+                }
+                
+                
+                
+//                IColumn[] columns= keyItem.getColumns();
+//                for (int k = 0; k < columns.length; k++) {
+//                    IColumn column= columns[k];
+//                    int columnIndex= structure.getColumnIndex(column);
+//                    String value= this.getValue(columnIndex);
+//                    if(value!=null && value.trim().equals("")){
+//                        list.add(new Message());
+//                    }
+//                }
+            }
+        }
+        
+        // foreign keys
+        
+    }
+
+    private int findIndexForColumn(IColumn column) throws CoreException{
+        if(column==null){
+            return -1;
+        }
+        ITableStructure tableStructure= findTableStructure();
+        IColumn[] columns= tableStructure.getColumns();
+        for (int i = 0; i < columns.length; i++) {
+            if(columns[i].getName().equals(column.getName())){
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**

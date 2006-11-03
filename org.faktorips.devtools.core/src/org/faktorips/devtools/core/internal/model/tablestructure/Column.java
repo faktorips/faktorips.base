@@ -23,7 +23,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
@@ -175,5 +177,13 @@ public class Column extends IpsObjectPart implements IColumn {
 	public IIpsObjectPart newPart(Class partType) {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public ValueDatatype findValueDatatype() {
+        // FIXME direkte abhaengigkeit zu IpsModel
+        return ((IpsModel)IpsPlugin.getDefault().getIpsModel()).getValueDatatype(getIpsProject(), datatype); 
+    }
     
 }

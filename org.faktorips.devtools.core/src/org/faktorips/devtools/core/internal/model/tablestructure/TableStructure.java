@@ -113,7 +113,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         columns.toArray(c);
         return c;
     }
-    
+
     /**
      * Overridden method.
      * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getColumn(java.lang.String)
@@ -126,6 +126,14 @@ public class TableStructure extends IpsObject implements ITableStructure {
             }
         }
         return null;
+    }
+    
+    /**
+     * Overridden method.
+     * @see org.faktorips.devtools.core.model.tablestructure.ITableStructure#getColumn(int)
+     */
+    public IColumn getColumn(int index) {
+        return (IColumn) columns.get(index);
     }
     
     /** 

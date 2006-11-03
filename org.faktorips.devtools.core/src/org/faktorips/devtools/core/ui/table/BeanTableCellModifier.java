@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.util.ArgumentCheck;
 
@@ -46,12 +47,14 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     
     private HashMap columnIdentifers = new HashMap(4);
     
+    
+    
     public BeanTableCellModifier(TableViewer tableViewer) {
         ArgumentCheck.notNull(tableViewer);
         this.tableViewer = tableViewer;
     }
     
-    public void initModifier(String[] properties, ValueDatatype[] datatypes) {
+    public void initModifier(UIToolkit uiToolkit, String[] properties, ValueDatatype[] datatypes) {
         ArgumentCheck.isTrue(properties.length == datatypes.length);
         ArrayList cellEditors = new ArrayList(datatypes.length);
         
@@ -63,7 +66,7 @@ public class BeanTableCellModifier extends ValueCellModifier  {
             columnIdentifers.put(properties[i], ci);
             // create cell modifier if enabled
             if (datatypes[i] != null){
-                CellEditor cellEditor = createCellEditor(datatypes[i], i);
+                CellEditor cellEditor = createCellEditor(uiToolkit, datatypes[i], i);
                 cellEditors.add(cellEditor);
             } else {
                 cellEditors.add(null);
@@ -79,9 +82,9 @@ public class BeanTableCellModifier extends ValueCellModifier  {
     /**
      * Returns a new cell editor for the given datatype.
      */
-    public CellEditor createCellEditor(ValueDatatype valueDatatype, int columnIndex) {
+    public CellEditor createCellEditor(UIToolkit uiToolkit, ValueDatatype valueDatatype, int columnIndex) {
         ValueDatatypeControlFactory factory = IpsPlugin.getDefault().getValueDatatypeControlFactory(valueDatatype);
-        return factory.createCellEditor(tableViewer.getTable(), null, columnIndex);
+        return factory.createCellEditor(uiToolkit, valueDatatype, null, tableViewer, columnIndex);
     }
     
     /**

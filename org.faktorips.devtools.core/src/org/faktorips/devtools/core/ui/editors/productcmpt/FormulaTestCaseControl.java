@@ -381,7 +381,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         formulaTestCaseArea.setLayout(uiToolkit.createNoMarginGridLayout(2, false));
         formulaTestCaseArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
-        createFormulaTestCaseTable(formulaTestCaseArea);
+        createFormulaTestCaseTable(formulaTestCaseArea, uiToolkit);
 
         // create buttons
         Composite btns = uiToolkit.createComposite(formulaTestCaseArea);
@@ -674,7 +674,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
     /*
      * Creates the table to dipsplay and editing the formula test case.
      */
-    private void createFormulaTestCaseTable(Composite c) {
+    private void createFormulaTestCaseTable(Composite c, UIToolkit uiToolkit) {
         Table table = new Table(c, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION);
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
         table.setHeaderVisible (true);
@@ -698,7 +698,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         if (!viewOnly){
             // create the cell editor
             BeanTableCellModifier tableCellModifier = new BeanTableCellModifier(formulaTestCaseTableViewer);
-            tableCellModifier.initModifier(new String[] { null, IFormulaTestCase.PROPERTY_NAME,
+            tableCellModifier.initModifier(uiToolkit, new String[] { null, IFormulaTestCase.PROPERTY_NAME,
                     IFormulaTestCase.PROPERTY_EXPECTED_RESULT, PROPERTY_ACTUAL_RESULT }, new ValueDatatype[] { null,
                     ValueDatatype.STRING, ValueDatatype.STRING, null });
             tableCellModifier.addListener(this);

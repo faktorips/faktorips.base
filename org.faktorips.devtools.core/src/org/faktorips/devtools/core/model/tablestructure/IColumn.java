@@ -9,6 +9,7 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 
 /**
@@ -48,5 +49,7 @@ public interface IColumn extends IIpsObjectPart, IKeyItem {
      * @throws IllegalArgumentException if newDatatype is <code>null</code>.
      */
     public void setDatatype(String newDatatype);
+
+    public ValueDatatype findValueDatatype();
 
 }

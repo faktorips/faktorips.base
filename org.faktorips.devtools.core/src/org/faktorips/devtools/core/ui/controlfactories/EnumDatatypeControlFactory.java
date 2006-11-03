@@ -17,8 +17,7 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -31,6 +30,8 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
+import org.faktorips.devtools.core.ui.table.ComboCellEditor;
+import org.faktorips.devtools.core.ui.table.TableCellEditor;
 
 /**
  * A control factory for the datytpes enumeration.
@@ -74,12 +75,20 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
 	}
 
     /**
-     * {@inheritDoc}
+     * Creates a <code>ComboCellEditor</code> if the given valueset is an
+     * <code>EnumValueSet</code>. The CellEditor contains a <code>Combo</code> control, that is
+     * filled with the corresponding values from the given <code>ValueSet</code>. If the given
+     * valueset is null a <code>ComboCellEditor</code> is created with a <code>Combo</code>
+     * control for the given <code>DataType</code>. {@inheritDoc}
      */
-    public CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex) {
+    public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
+        Combo comboControl;
         if (valueSet instanceof IEnumValueSet) {
-            return new ComboBoxCellEditor(parent, ((IEnumValueSet)valueSet).getValues());
+            comboControl= toolkit.createCombo(tableViewer.getTable(), (IEnumValueSet)valueSet, (EnumDatatype)dataType);
+        }else{
+            comboControl= toolkit.createCombo(tableViewer.getTable(), (EnumDatatype)dataType);
         }
-        throw new RuntimeException("Not supported values set " + valueSet.getClass().getName());
+        return new ComboCellEditor(tableViewer, columnIndex, comboControl);
     }
+
 }

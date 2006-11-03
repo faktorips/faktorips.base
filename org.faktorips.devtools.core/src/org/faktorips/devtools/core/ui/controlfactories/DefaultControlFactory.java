@@ -17,11 +17,12 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValueSet;
 import org.faktorips.devtools.core.model.IEnumValueSet;
@@ -30,6 +31,8 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.table.TableCellEditor;
+import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 /**
  * A default factory that creates a simple text control for any value datatype if 
@@ -74,9 +77,13 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 	}
 
     /**
+     * Creates a <code>TextCellEditor</code> with the given <code>TableViewer</code>, the given 
+     * columnIndex and a <code>Text</code> control. 
      * {@inheritDoc}
      */
-    public CellEditor createCellEditor(Composite parent, ValueSet valueSet, int columnIndex) {
-        return new TextCellEditor(parent);
+    public TableCellEditor createCellEditor(UIToolkit toolkit, ValueDatatype dataType, ValueSet valueSet, TableViewer tableViewer, int columnIndex) {
+        Text textControl= toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
+        return new TextCellEditor(tableViewer, columnIndex, textControl);
     }
+    
 }

@@ -25,11 +25,21 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 public interface IRow extends IIpsObjectPart {
     
     /**
+     * Value-Property.
+     */
+    public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    
+    /**
      * Returns the row number as string.
      *  
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()
      */
     public String getName();
+    
+    /**
+     * Returns the table contents this row belongs to.
+     */
+    public ITableContents getTableContents();
     
     /**
      * Returns the number of the row in the table. First row has number 0. 

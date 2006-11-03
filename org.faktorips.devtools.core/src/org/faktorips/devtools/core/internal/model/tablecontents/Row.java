@@ -21,12 +21,14 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -52,6 +54,14 @@ public class Row extends IpsObjectPart implements IRow {
         initValues();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public ITableContents getTableContents() {
+        return (ITableContents)getParent().getParent();
+    }
+
+
     private int getNumOfColumns() {
         return ((ITableContents)getParent().getParent()).getNumOfColumns();
     }
@@ -139,6 +149,27 @@ public class Row extends IpsObjectPart implements IRow {
     	values.remove(column);
     }
     
+    // FIXME testfall
+    IColumn findColumn(int column) throws CoreException {
+        ITableStructure structure = getTableContents().findTableStructure();
+        if (structure==null) {
+            return null;
+        }
+        if (column>=structure.getNumOfColumns()) {
+            // FIXME null oder Exception werfen?
+            return null;
+        }
+        return structure.getColumn(column); // FIXME ins published interface von ITableStructure aufnehmen
+    }
+    
+    ValueDatatype findValueDatatype(int column) throws CoreException {
+        IColumn col = findColumn(column);
+        if (col==null) {
+            return null;
+        }
+        return col.findValueDatatype(); // FIXME ins published interface IColumn aufnehmen.
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -166,12 +197,14 @@ public class Row extends IpsObjectPart implements IRow {
         super.validateThis(list);
         String structureName = ((ITableContents)getParent().getParent()).getTableStructure();
         ITableStructure structure = (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structureName);
+
         for (int i=0; i<getNumOfColumns(); i++) {
             validateValue(i, (String)values.get(i), structure, list);
         }
     }
     
-    private void validateValue(int column, String value, ITableStructure structure, MessageList list) throws CoreException {
+    private void validateValue(int columnIndex, String value, ITableStructure structure, MessageList list) throws CoreException {
+        
 //        if (datatypeObject==null) {
 //            if (!StringUtils.isEmpty(defaultValue)) {
 //                String text = "The default value can't be parsed because the datatype is unkown!";
