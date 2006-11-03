@@ -17,11 +17,13 @@
 
 package org.faktorips.devtools.core.internal.model.product;
 
+import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.DefaultTestContent;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -355,7 +357,9 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testValidateValidFrom() throws Exception {
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "type");
         generation.getProductCmpt().setPolicyCmptType(type.getQualifiedName());
-        generation.getProductCmpt().setValidTo("01.10.2000");
+        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+        String date = format.format(new GregorianCalendar(2000, 10, 1).getTime());
+        generation.getProductCmpt().setValidTo(date);
         generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
         
         MessageList ml = generation.validate();

@@ -17,10 +17,12 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsProject;
@@ -179,7 +181,9 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     }
     
     public void testValidateValidTo() throws Exception {
-        timedObject.setValidTo("01.01.2000");
+        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getValidFromFormat();
+        String date = format.format(new GregorianCalendar(2000, 1, 1).getTime());
+        timedObject.setValidTo(date);
         MessageList ml = timedObject.validate();
         assertNull(ml.getMessageByCode(ITimedIpsObject.MSGCODE_VALID_TO_NO_DATE));
         
