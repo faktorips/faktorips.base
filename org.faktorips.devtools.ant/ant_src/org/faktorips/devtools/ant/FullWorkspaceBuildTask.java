@@ -59,6 +59,8 @@ public class FullWorkspaceBuildTask extends Task {
                     
                     int severity = marker.getAttribute(IMarker.SEVERITY,IMarker.SEVERITY_INFO);
                     
+                    System.out.println("severity:" + severity);
+                    
                     if( severity == IMarker.SEVERITY_WARNING){
                         System.out.println("Warning: "+ marker.getAttribute(IMarker.MESSAGE));
                     }else if (severity == IMarker.SEVERITY_ERROR){
