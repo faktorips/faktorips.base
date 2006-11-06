@@ -16,6 +16,9 @@ package org.faktorips.devtools.ant;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -42,6 +45,29 @@ public class FullWorkspaceBuildTask extends Task {
 
         try {
             workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+            
+            //Iterate over Projects in Workspace to find Warning and Errormarkers
+            IProject projects[] = workspace.getRoot().getProjects();
+            
+            for (int i = 0; i < projects.length; i++) {
+                IProject curProject = projects[i];
+                IMarker markers[] = curProject.findMarkers(IMarker.PROBLEM,true ,IResource.DEPTH_INFINITE);
+                
+                for (int j = 0; j < markers.length; j++) {
+                    IMarker marker = markers[i];
+                    
+                    
+                    int severity = marker.getAttribute(IMarker.SEVERITY,IMarker.SEVERITY_INFO);
+                    
+                    if( severity == IMarker.SEVERITY_WARNING){
+                        System.out.println("Warning: "+ marker.getAttribute(IMarker.MESSAGE));
+                    }else if (severity == IMarker.SEVERITY_ERROR){
+                        System.out.println("Error: " + marker.getAttribute(IMarker.MESSAGE));
+                    }
+                    
+                }
+                
+            }
         }
         catch (Exception e) {
             throw new BuildException(e);
