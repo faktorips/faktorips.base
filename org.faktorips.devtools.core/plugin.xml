@@ -109,10 +109,10 @@
                definitionId="org.faktorips.devtools.core.openIpsObject"
                icon="icons/OpenIpsObject.gif"
                id="org.faktorips.devtools.core.openIpsObject"
-               label="Open IPS Object"
+               label="%org.faktorips.devtools.core.openIpsObject.label"
                menubarPath="navigate/open.ext2"
                toolbarPath="org.eclipse.search.searchActionSet/Search"
-               tooltip="Open IPS Object">
+               tooltip="%org.faktorips.devtools.core.openIpsObject.tooltip">
          </action>
       </actionSet>
       <actionSet
@@ -132,23 +132,23 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            name="Open IPS Object"
-            description="Open a IPS object in the editor"
+            name="%org.faktorips.devtools.core.openIpsObject.label"
+            description="%org.faktorips.devtools.core.openIpsObject.tooltip"
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
             id="org.faktorips.devtools.core.openIpsObject">
       </command>
       <category
             id="org.faktorips.devtools.core.ui.category.navigate"
-            name="IPS Navigation"/>
+            name="%org.faktorips.devtools.core.ui.category.navigate"/>
       <command
-            name="Run Ips Test"
-            description="Run Ips Test"
+            name="%org.faktorips.devtools.core.launchIpsTest.run"
+            description="%org.faktorips.devtools.core.launchIpsTest.run.description"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.faktorips.devtools.core.launchIpsTest.run">
       </command>
       <command
-            name="Debug Ips Test"
-            description="Debug Ips Test"
+            name="%org.faktorips.devtools.core.launchIpsTest.debug"
+            description="%org.faktorips.devtools.core.launchIpsTest.debug.description"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.faktorips.devtools.core.launchIpsTest.debug">
       </command>
@@ -220,7 +220,7 @@
             enablesFor="*"
             icon="icons/AddIpsNature.gif"
             id="addIpsNatureAction"
-            label="Add IPS-Nature"
+            label="%addIpsNatureAction"
             menubarPath="additions"/>
       		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
     	</objectContribution>
@@ -309,7 +309,7 @@
             extensions="ipspct"
             icon="icons/PolicyCmptType.gif"
             id="policyCmptTypeEditor"
-            name="Policy Class Editor">
+            name="%policyCmptTypeEditor">
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
@@ -318,7 +318,7 @@
             extensions="ipsproduct"
             icon="icons/ProductCmpt.gif"
             id="productCmptEditor"
-            name="Product Component Editor">
+            name="%productCmptEditor">
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.tablestructure.TableStructureEditor"
@@ -326,7 +326,7 @@
             extensions="ipstablestructure"
             icon="icons/TableStructure.gif"
             id="tableStructureEditor"
-            name="Table Structure Editor">
+            name="%tableStructureEditor">
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.tablecontents.TableContentsEditor"
@@ -334,7 +334,7 @@
             extensions="ipstablecontents"
             icon="icons/TableContents.gif"
             id="tableContentsEditor"
-            name="Table Contents Editor">
+            name="%tableContentsEditor">
       </editor>
       <editor
             class="org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor"
@@ -342,14 +342,14 @@
             extensions="ipstestcase"
             icon="icons/TestCase.gif"
             id="testCaseEditor"
-            name="Test Case Editor"/>
+            name="%testCaseEditor"/>
       <editor
       		class="org.faktorips.devtools.core.ui.editors.testcasetype.TestCaseTypeEditor"
             default="true"
             extensions="ipstestcasetype"
             icon="icons/TestCaseType.gif"
             id="testCaseTypeEditor"
-            name="Test Case Type Editor"/>      
+            name="%testCaseTypeEditor"/>      
    </extension>
 
 <!-- 
@@ -359,11 +359,11 @@
         point = "org.eclipse.ui.newWizards">
 	    <category
 	        id = "org.faktorips.devtools"
-    	    name="FaktorIPS">
+    	    name="%org.faktorips.devtools.newWizard.category">
 	    </category>
      	<wizard
 	       id = "newPcTypeWizard"
-           name = "New Policy Class"
+           name = "%newPcTypeWizard"
     	   class="org.faktorips.devtools.core.ui.wizards.policycmpttype.NewPcTypeWizard"
     	   category="org.faktorips.devtools"
     	   icon="icons/NewPolicyCmptTypeWizard.gif">
@@ -375,7 +375,7 @@
             class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
             icon="icons/NewProductCmptWizard.gif"
             id="newProductCmptWizard"
-            name="New Product Component">
+            name="%newProductCmptWizard">
     	   <description>Creates a new Product Component</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
@@ -384,7 +384,7 @@
             class="org.faktorips.devtools.core.ui.wizards.tablestructure.NewTableStructureWizard"
             icon="icons/NewTableStructureWizard.gif"
             id="newTableStructureWizard"
-            name="New Tablestructure">
+            name="%newTableStructureWizard">
     	   <description>Creates a new Product Component</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
@@ -393,7 +393,7 @@
             class="org.faktorips.devtools.core.ui.wizards.tablecontents.NewTableContentsWizard"
             icon="icons/NewTableContentsWizard.gif"
             id="newTableContentsWizard"
-            name="New Table Contents">
+            name="%newTableContentsWizard">
     	   <description>Creates a new Product Component</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
@@ -402,7 +402,7 @@
             class="org.faktorips.devtools.core.ui.wizards.testcase.NewTestCaseWizard"
             icon="icons/NewTestCase.gif"
             id="newTestCaseWizard"
-            name="New Test Case">
+            name="%newTestCaseWizard">
     	   <description>Creates a new Test Case</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
@@ -411,7 +411,7 @@
             class="org.faktorips.devtools.core.ui.wizards.testcasetype.NewTestCaseTypeWizard"
             icon="icons/NewTestCaseType.gif"
             id="newTestCaseTypeWizard"
-            name="New Test Case Type">
+            name="%newTestCaseTypeWizard">
     	   <description>Creates a new Test Case Type</description>
     	   <selection class="org.eclipse.core.resources.IResource"/>
 	    </wizard>
@@ -420,7 +420,7 @@
             class="org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard"
             icon="icons/NewIpsPackageFragment.gif"
             id="newIpsPackageWizard"
-            name="New IPS Package">
+            name="%newIpsPackageWizard">
          <description/>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
@@ -430,7 +430,7 @@
         point = "org.eclipse.ui.exportWizards">
      	<wizard
 	       id = "tableExportWizard"
-           name = "FaktorIPS table contents"
+           name = "%tableExportWizard"
     	   class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
     	   icon="icons/ExportTableContents.gif">
     	   <description>Exports table contents</description>
@@ -442,7 +442,7 @@
         point = "org.eclipse.ui.importWizards">
      	<wizard
 	       id = "tableImportWizard"
-           name = "FaktorIPS table contents"
+           name = "%tableImportWizard"
     	   class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
     	   icon="icons/ImportTableContents.gif">
     	   <description>Imports table contents</description>
@@ -463,7 +463,7 @@
     <extension
         point = "org.eclipse.ui.preferencePages">
         <page id="FaktorIpsPage"
-        	  name="FaktorIPS"
+        	  name="%FaktorIpsPage"
         	  class="org.faktorips.devtools.core.ui.FaktorIpsPreferencePage">
         </page>
     </extension>
@@ -480,29 +480,32 @@
               class="org.faktorips.plugin.ui.IpsProjectPropertyPage"
               icon="icons/IpsSrcFile.gif"
               id="org.faktorips.projectpropertypage"
-              name="FaktorIPS"
+              name="%org.faktorips.projectpropertypage"
               objectClass="org.eclipse.core.resources.IProject"> 
          <filter
                name="nature"
                value="org.faktorips.plugin.productdefinitionnature">
          </filter>
         </page> 
-    </extension> 
-    
-   <extension point="org.eclipse.ui.propertyPages"> 
         <page
               class="org.faktorips.plugin.ui.IpsProjectPropertyPage"
               icon="icons/IpsSrcFile.gif"
               id="org.faktorips.projectpropertypage"
-              name="FaktorIPS"
+              name="%org.faktorips.projectpropertypage"
               objectClass="org.eclipse.jdt.core.IJavaProject"> 
          <filter
                name="nature"
                value="org.faktorips.plugin.productdefinitionnature">
          </filter>
         </page> 
+      <page
+            class="org.faktorips.devtools.core.ui.FolderPropertiesPage"
+            icon="icons/IpsSrcFile.gif"
+            id="org.faktorips.devtools.core.folderProperties"
+            name="%org.faktorips.devtools.core.folderProperties"
+            objectClass="org.eclipse.core.resources.IFolder"/>
     </extension> 
-
+    
 <!-- 
     Default Datatypes
   -->
@@ -545,7 +548,7 @@
 <!-- 
   Markers
 -->
-   <extension point="org.eclipse.core.resources.markers" id="problemmarker" name="FaktorIPS-Problemmarker"> 
+   <extension point="org.eclipse.core.resources.markers" id="problemmarker" name="%problemmarker.name"> 
       <persistent value="true"/> 
       <super type="org.eclipse.core.resources.problemmarker"/> 
    </extension> 
@@ -600,15 +603,6 @@
             class="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
             id="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
             searchResultClass="org.faktorips.devtools.core.ui.search.ReferenceSearchResult"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            class="org.faktorips.devtools.core.ui.FolderPropertiesPage"
-            icon="icons/IpsSrcFile.gif"
-            id="org.faktorips.devtools.core.folderProperties"
-            name="%org.faktorips.devtools.core.folderProperties"
-            objectClass="org.eclipse.core.resources.IFolder"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.contentTypes">
@@ -809,13 +803,13 @@
             name="FaktorIPS">
          <property
                name="aboutText"
-               value="Faktor IPS&#x0A;&#x0A;Version 1.0&#x0A;&#x0A;Copyright (c) 2005,2006 Faktor Zehn GmbH and others. All rights reserved.&#x0A;Visit http://www.faktorzehn.org or http://www.faktorips.org"/>
+               value="%org.faktorips.aboutText"/>
          <property
                name="aboutImage"
                value="icons/FaktorIpsIcon128.gif"/>
          <property
                name="windowImages"
-               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif,icons/FaktorIpsIcon48.gif,icons/FaktorIpsIcon64.gif,icons/FaktorIpsIcon128.gif"/>
+               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif"/>
       </product>
    </extension>
    <extension
