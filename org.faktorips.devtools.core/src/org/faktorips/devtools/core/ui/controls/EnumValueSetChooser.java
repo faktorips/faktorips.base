@@ -59,23 +59,23 @@ public class EnumValueSetChooser extends ListChooser {
 	private Map id2name = new HashMap();
 	
 	/**
-	 * @param parent The parent control
-	 * @param toolkit The toolkit to make creation of UI easier.
-	 * @param source The source-valueser
-	 * @param target The target-valueset (the one to add the values to).
-	 * @param uiController The controller to notify upon change
-	 */
-	public EnumValueSetChooser(Composite parent, UIToolkit toolkit,
-			IEnumValueSet source, IEnumValueSet target,
-			EnumDatatype type,
-			DefaultUIController uiController) {
-		super(parent, toolkit);
-		this.target = target;
+     * @param parent The parent control
+     * @param toolkit The toolkit to make creation of UI easier.
+     * @param source The source-valueset. Can be <code>null</code> if no restriction is applied to
+     *            the items of the enum datatype.
+     * @param target The target-valueset (the one to add the values to).
+     * @param type The EnumDatatype
+     * @param uiController The controller to notify upon change
+     */
+    public EnumValueSetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target,
+            EnumDatatype type, DefaultUIController uiController) {
+        super(parent, toolkit);
+        this.target = target;
         this.source = source;
-		this.uiController = uiController;
+        this.uiController = uiController;
         super.setTargetContent(getTargetValues(target, type));
         super.setSourceContent(getSourceValues(source, target, type));
-	}
+    }
 
 	/**
 	 * {@inheritDoc}

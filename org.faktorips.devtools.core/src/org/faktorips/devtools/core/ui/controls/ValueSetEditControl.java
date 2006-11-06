@@ -43,10 +43,6 @@ import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 /**
  * A control to define the type of value set and edit a value set. 
  */
-
-//FIXME pk: strange things happen when this object is instantiated with an attribut of an enum datatype that
-//has an empty valueset. Multiple events cause multiple creation of the EnumValueSetChooser. In the gui
-//you suddently see a valueset that had been empty before filled with all values of the datatype.
 public class ValueSetEditControl extends ControlComposite {
 
     private Combo validTypesCombo;
@@ -96,7 +92,7 @@ public class ValueSetEditControl extends ControlComposite {
             toolkit.getFormToolkit().adapt(this); // has to be done after the text control is created!
         }
     }
-
+    
     private Composite getControlForValueSet(IValueSet valueSet) {
     	Composite retValue;
     	if (valueSet.getValueSetType() == ValueSetType.ENUM) {
@@ -111,9 +107,13 @@ public class ValueSetEditControl extends ControlComposite {
 			}
 			
 			if (enumType != null) {
-				enumControl = new EnumValueSetChooser(valueSetArea, toolkit, null, (IEnumValueSet)valueSet, enumType, uiController);
+                if (!(enumControl instanceof EnumValueSetChooser)) {
+                    enumControl = new EnumValueSetChooser(valueSetArea, toolkit, null, (IEnumValueSet)valueSet, enumType, uiController);
+                }
 			} else {
-				enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, valueSetArea, tableElementValidator);
+                if (!(enumControl instanceof EnumValueSetEditControl)) { 
+                    enumControl = new EnumValueSetEditControl((IEnumValueSet)valueSet, valueSetArea, tableElementValidator);
+                }
 			}
 			
     		retValue = enumControl;
@@ -220,10 +220,6 @@ public class ValueSetEditControl extends ControlComposite {
         		IEnumValueSet valueSet = (IEnumValueSet)attribute.getValueSet();
             	if (oldValueSet.getValueSetType() == ValueSetType.ENUM) {
             		valueSet.setValuesOf(oldValueSet);
-            	}
-            	if (datatype instanceof EnumDatatype && valueSet.size() == 0) {
-            		valueSet.addValuesFromDatatype((EnumDatatype)datatype);
-            		enumControl = (EnumValueSetChooser)getControlForValueSet(valueSet);
             	}
             } else if (selectedText.equals(ValueSetType.ALL_VALUES.getName())) {
             	attribute.setValueSetType(ValueSetType.ALL_VALUES);
