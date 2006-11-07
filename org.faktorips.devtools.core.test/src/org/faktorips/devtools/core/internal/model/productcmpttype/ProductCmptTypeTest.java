@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 public class ProductCmptTypeTest extends AbstractIpsPluginTest {
 
@@ -278,5 +279,16 @@ public class ProductCmptTypeTest extends AbstractIpsPluginTest {
 		} catch (IllegalArgumentException e) {
 			//nothing to do :-)
 		}
+    }
+    
+    public void testNewGetTableStructureUsage(){
+        assertEquals(0, productCmptType.getTableStructureUsages().length);
+        ITableStructureUsage tableStructureUsage1 = productCmptType.newTableStructureUsage();
+        tableStructureUsage1.setRoleName("Test1");
+        ITableStructureUsage tableStructureUsage2 = productCmptType.newTableStructureUsage();
+        tableStructureUsage2.setRoleName("Test2");
+        assertEquals(2, productCmptType.getTableStructureUsages().length);
+        assertEquals(tableStructureUsage1, productCmptType.getTableStructureUsage("Test1"));
+        assertEquals(tableStructureUsage2, productCmptType.getTableStructureUsage("Test2"));
     }
 }

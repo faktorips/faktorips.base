@@ -163,6 +163,8 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             return newRelation();
         } else if (partType.equals(IValidationRule.class)) {
             return newRule();
+        } else if (partType.equals(ITableStructureUsage.class)) {
+            return newTableStructureUsage();
         }
         throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
     }

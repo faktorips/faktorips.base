@@ -453,8 +453,8 @@ public abstract class ChangeParametersControl extends Composite {
 			addSpacer(buttonComposite);
 
 		if (fCanMoveParameters) {
-			fUpButton= createButton(buttonComposite, "Move up", true); //$NON-NLS-1$
-			fDownButton= createButton(buttonComposite, "Move down", false); //$NON-NLS-1$
+			fUpButton= createButton(buttonComposite, Messages.ChangeParametersControl_ButtonLabel_Up, true);
+			fDownButton= createButton(buttonComposite, Messages.ChangeParametersControl_ButtonLabel_Down, false);
 		}
 		updateButtonsEnabledState();
 		if (buttonComposite.getChildren().length==0) {
@@ -504,7 +504,7 @@ public abstract class ChangeParametersControl extends Composite {
 	
 	private Button createAddButton(Composite buttonComposite) {
 		Button button= new Button(buttonComposite, SWT.PUSH);
-		button.setText("Add"); //$NON-NLS-1$
+		button.setText(Messages.ChangeParametersControl_ButtonLabel_Add);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -524,7 +524,7 @@ public abstract class ChangeParametersControl extends Composite {
 
 	private Button createRemoveButton(Composite buttonComposite) {
 		final Button button= new Button(buttonComposite, SWT.PUSH);
-		button.setText("Remove"); //$NON-NLS-1$
+		button.setText(Messages.ChangeParametersControl_ButtonLabel_Remove);
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {

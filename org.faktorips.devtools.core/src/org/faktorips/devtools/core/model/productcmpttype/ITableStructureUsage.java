@@ -17,10 +17,63 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
-/**
- * 
- * @author Jan Ortmann
- */
-public interface ITableStructureUsage {
+import org.faktorips.devtools.core.model.IIpsObjectPart;
 
+/**
+ * View for the table structure usage.
+ * 
+ * @author JOerg Ortmann
+ */
+public interface ITableStructureUsage extends IIpsObjectPart {
+    
+    public final static String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
+    
+    /**
+     * Returns the parent product cmpt type.
+     */
+    public IProductCmptType getProductCmptType();
+    
+    /**
+     * Sets the role name.
+     */
+    public void setRoleName(String s);
+    
+    /**
+     * Returns the role name.
+     */
+    public String getRoleName();  
+    
+    /**
+     * Returns all table structures this usage belongs to.<br>
+     * Returns an empty array if no table structures are related by this usage object.
+     */
+    public String[] getTableStructures();
+    
+    /**
+     * Moves the table structures identified by the indexes up or down by one position.
+     * If one of the indexes is 0 (the first object), no object is moved up. 
+     * If one of the indexes is the number of objects - 1 (the last object)
+     * no object is moved down. 
+     * 
+     * @param indexes   The indexes identifying the table structures.
+     * @param up        <code>true</code>, to move the table structures up, 
+     * <false> to move them down.
+     * 
+     * @return The new indexes of the moved table structures.
+     * 
+     * @throws NullPointerException if indexes is null.
+     * @throws IndexOutOfBoundsException if one of the indexes does not identify
+     * a table structure.
+     */
+    public int[] moveTableStructure(int[] indexes, boolean up);
+    
+    /**
+     * Adds the given table structure to the list of table structure this usage object specifies.
+     */
+    public void addTableStructure(String tableStructure);
+    
+    /**
+     * Removes the given table structure from the list of table structures.
+     */
+    public void removeTableStructure(String tableStructure);
 }

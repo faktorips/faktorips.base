@@ -109,4 +109,12 @@ public class Messages extends NLS {
 	public static String TestCaseTypeRefControl_title;
 	
 	public static String TestCaseTypeRefControl_description;
+
+    public static String ChangeParametersControl_ButtonLabel_Up;
+
+    public static String ChangeParametersControl_ButtonLabel_Down;
+
+    public static String ChangeParametersControl_ButtonLabel_Add;
+
+    public static String ChangeParametersControl_ButtonLabel_Remove;
 }

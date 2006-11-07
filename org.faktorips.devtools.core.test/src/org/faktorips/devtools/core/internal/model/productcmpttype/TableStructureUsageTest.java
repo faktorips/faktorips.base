@@ -15,17 +15,17 @@
  *
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.pctype;
+package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
-import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Element;
 
 /**
  * 
@@ -33,7 +33,8 @@ import org.w3c.dom.Element;
  */
 public class TableStructureUsageTest extends AbstractIpsPluginTest {
     private IIpsProject project;
-    private IPolicyCmptType pcType;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptType productCmptType;
     private ITableStructureUsage tableStructureUsage;
     
     protected void setUp() throws Exception {
@@ -41,59 +42,34 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         
         project = this.newIpsProject("TestProject");
         
-        pcType = newPolicyCmptType(project, "test.policyCmptType");
-        tableStructureUsage = pcType.newTableStructureUsage();
-        pcType.getIpsSrcFile().save(true, null);
+        policyCmptType = (IPolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "motor.MotorPolicy");
+        productCmptType = new ProductCmptType((PolicyCmptType)policyCmptType);
         
+        tableStructureUsage = productCmptType.newTableStructureUsage();
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
     }
-    
-    public void testRemove() {
-        tableStructureUsage.delete();
-        assertEquals(0, pcType.getTableStructureUsages().length);
-        assertTrue(pcType.getIpsSrcFile().isDirty());
-    }
-    
-    public void testInitFromXml() {
-        Element docEl = getTestDocument().getDocumentElement();
-        Element paramEl = XmlUtil.getElement(docEl, "TableStructureUsage", 0);
-        tableStructureUsage.initFromXml(paramEl);
-        assertEquals("role1", tableStructureUsage.getRoleName());
-        assertEquals(3, tableStructureUsage.getTableStructures().length);
-        for (int i = 0; i < 3; i++) {
-            assertEquals("tableStructure"+(i+1), tableStructureUsage.getTableStructures()[i]);
-        }
-    }
-    
-    public void testToXml(){
-        tableStructureUsage.setRoleName("roleA");
-        tableStructureUsage.addTableStructure("tableStructureA");
-        tableStructureUsage.addTableStructure("tableStructureB");
-        Element element = tableStructureUsage.toXml(this.newDocument());
-        
-        ITableStructureUsage copy = new TableStructureUsage();
-        copy.initFromXml(element);
-        
-        assertEquals("roleA", copy.getRoleName());
-        assertEquals(2, copy.getTableStructures().length);
-        assertEquals("tableStructureA", copy.getTableStructures()[0]);
-        assertEquals("tableStructureB", copy.getTableStructures()[1]);
-    }
-    
+  
     public void testSetRoleName() {
         tableStructureUsage.setRoleName("role100");
         assertEquals("role100", tableStructureUsage.getRoleName());
-        assertTrue(pcType.getIpsSrcFile().isDirty());
+    }
+    
+    public void testDelete(){
+        ITableStructureUsage tableStructureUsageNew = productCmptType.newTableStructureUsage();
+        assertEquals(2, productCmptType.getTableStructureUsages().length);
+        tableStructureUsageNew.delete();
+        assertEquals(1, productCmptType.getTableStructureUsages().length);
+        assertEquals(tableStructureUsage, productCmptType.getTableStructureUsages()[0]);
+        tableStructureUsage.delete();
+        assertEquals(0, productCmptType.getTableStructureUsages().length);
     }
     
     public void testAddRemoveTableStructure(){
         assertEquals(0, tableStructureUsage.getTableStructures().length);
         tableStructureUsage.removeTableStructure("tableStructureA");
-        assertFalse(pcType.getIpsSrcFile().isDirty());
 
         tableStructureUsage.addTableStructure("tableStructureA");
         tableStructureUsage.addTableStructure("tableStructureB");
-        assertTrue(pcType.getIpsSrcFile().isDirty());
         assertEquals(2, tableStructureUsage.getTableStructures().length);
         tableStructureUsage.removeTableStructure("tableStructureC");
         assertEquals(2, tableStructureUsage.getTableStructures().length);
@@ -106,61 +82,61 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     
     public void testValidate_TableStructureNotFound() throws CoreException{
         MessageList ml = tableStructureUsage.validate();
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
         
         tableStructureUsage.addTableStructure("test.TableStructureX");
         ml = tableStructureUsage.validate();
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
         
         tableStructureUsage.removeTableStructure("test.TableStructureX");
         tableStructureUsage.addTableStructure("test.TableStructure1");
         ml = tableStructureUsage.validate();
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
     }
     
     public void testValidate_InvalidRoleName() throws CoreException{
         tableStructureUsage.setRoleName("role1");
         MessageList ml = tableStructureUsage.validate();
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
         
         tableStructureUsage.setRoleName("1role");
         ml = tableStructureUsage.validate();
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
         
         tableStructureUsage.setRoleName("role 1");
         ml = tableStructureUsage.validate();
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
     }
     
     public void testValidate_MustReferenceAtLeast1TableStructure() throws CoreException{
         MessageList ml = tableStructureUsage.validate();
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
         
         tableStructureUsage.addTableStructure("tableStructure1");
         ml = tableStructureUsage.validate();
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
         
     }
     
     public void testValidate_SameRolename() throws CoreException{
         tableStructureUsage.setRoleName("role1");
         MessageList ml = tableStructureUsage.validate();
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
         
-        pcType.newTableStructureUsage().setRoleName("role1");
+        productCmptType.newTableStructureUsage().setRoleName("role1");
         ml = tableStructureUsage.validate();
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
         
         tableStructureUsage.setRoleName("roleA");
         ml = tableStructureUsage.validate();
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        assertNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
         
         // check for same role names in one of the supertype of the policy cmpt
         IPolicyCmptType pcTypeSuper = newPolicyCmptType(project, "test.policyCmptTypeSuper");
-        pcType.setSupertype(pcTypeSuper.getQualifiedName());
+        policyCmptType.setSupertype(pcTypeSuper.getQualifiedName());
         pcTypeSuper.newTableStructureUsage().setRoleName("roleA");
         
         ml = tableStructureUsage.validate();
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
+        assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
     }
 }

@@ -18,6 +18,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,6 +58,10 @@ public class ProductCmptType implements IProductCmptType {
 
 	private PolicyCmptType policyCmptType;
 	
+    // Cached list of table structure usages objetcs, by using a cached list the usage objects
+    //   could be identified correctly in the ui, e.g. reselecting the entries in the table controls
+    private HashMap tableStructureUsages = new HashMap(0);
+    
 	/**
 	 * 
 	 */
@@ -387,13 +392,61 @@ public class ProductCmptType implements IProductCmptType {
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
 
+    private TableStructureUsage getCachedTableStructureUsage(org.faktorips.devtools.core.model.pctype.ITableStructureUsage tableStructureUsagePcType) {
+        TableStructureUsage tableStructureUsage = (TableStructureUsage)tableStructureUsages
+                .get(new Integer(tableStructureUsagePcType.hashCode()));
+        if (tableStructureUsage == null) {
+            tableStructureUsage = new TableStructureUsage(tableStructureUsagePcType);
+            tableStructureUsages.put(new Integer(tableStructureUsagePcType.hashCode()), tableStructureUsage);
+        }
+        return tableStructureUsage;
+    }
+    
     /**
      * {@inheritDoc}
      */
     public ITableStructureUsage[] getTableStructureUsages() {
-        // TODO Joerg
-        return null;
+        org.faktorips.devtools.core.model.pctype.ITableStructureUsage[] tblStructureUsagesPcType = policyCmptType.getTableStructureUsages();
+        ITableStructureUsage[] tblStructureUsages = new ITableStructureUsage[tblStructureUsagesPcType.length];
+        for (int i = 0; i < tblStructureUsagesPcType.length; i++) {
+            tblStructureUsages[i] = getCachedTableStructureUsage(tblStructureUsagesPcType[i]);
+        }
+        return tblStructureUsages;
     }
-	
-	
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITableStructureUsage getTableStructureUsage(String roleName) {
+        org.faktorips.devtools.core.model.pctype.ITableStructureUsage tableStructureUsage = policyCmptType.getTableStructureUsage(roleName);
+        if (tableStructureUsage == null){
+            return null;
+        }
+        return getCachedTableStructureUsage(tableStructureUsage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITableStructureUsage newTableStructureUsage() {
+        return new TableStructureUsage(policyCmptType.newTableStructureUsage());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int[] moveTableStructureUsage(int[] indexes, boolean up) {
+        return policyCmptType.moveTableStructureUsage(indexes, up);
+    }
+    
+    /**
+     * Removes the given table structure usage
+     *
+     */
+    void removeTableStructureUsage(TableStructureUsage tableStructureUsage){
+        tableStructureUsage.getTableStructureUsage().delete();
+        // remove the cached object
+        tableStructureUsages.remove(tableStructureUsage);
+    }
 }

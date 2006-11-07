@@ -400,7 +400,7 @@ public class ParametersEditControl extends Composite {
 		button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				paramContainer.newParameter("", "newParam");
+				paramContainer.newParameter("", "newParam"); //$NON-NLS-1$ //$NON-NLS-2$
 				fTableViewer.refresh();
 				fTableViewer.getControl().setFocus();
 				int row= getTableItemCount() - 1;

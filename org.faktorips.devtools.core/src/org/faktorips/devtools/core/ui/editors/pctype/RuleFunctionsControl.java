@@ -54,8 +54,8 @@ import org.faktorips.util.message.MessageList;
  */
 public class RuleFunctionsControl extends EditTableControl {
 
-    private final static String IMAGE_COLUMN_VIEWER_PROPERTY = "imageColumn";
-    private final static String VALUE_COLUMN_VIEWER_PROPERTY = "valueColumn";
+    private final static String IMAGE_COLUMN_VIEWER_PROPERTY = "imageColumn"; //$NON-NLS-1$
+    private final static String VALUE_COLUMN_VIEWER_PROPERTY = "valueColumn"; //$NON-NLS-1$
     
     private IValidationRule rule;
 

@@ -28,32 +28,32 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
  */
 public interface ITableStructureUsage extends IIpsObjectPart {
 
-    public final static String PROPERTY_ROLENAME = "roleName";
+    public final static String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
     
-    public final static String PROPERTY_TABLESTRUCTURE = "tableStructure";
+    public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
     
-    public final static String MSGCODE_PREFIX = "TableStructureUsage-";
+    public final static String MSGCODE_PREFIX = "TableStructureUsage-"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the referenced table structure hasn't been found.
      */
-    public final static String MSGCODE_TABLE_STRUCTURE_NOT_FOUND = MSGCODE_PREFIX + "TableStructureNotFound";
+    public final static String MSGCODE_TABLE_STRUCTURE_NOT_FOUND = MSGCODE_PREFIX + "TableStructureNotFound"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the role name is invalid.
      */
-    public final static String MSGCODE_INVALID_ROLE_NAME = MSGCODE_PREFIX + "InvalidRoleName";
+    public final static String MSGCODE_INVALID_ROLE_NAME = MSGCODE_PREFIX + "InvalidRoleName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the the usage does not reference at least one structure
      */
-    public final static String MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE = MSGCODE_PREFIX + "MustReferenceAtLeast1Structure";
+    public final static String MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE = MSGCODE_PREFIX + "MustReferenceAtLeast1Structure"; //$NON-NLS-1$
     
     /**
      * Validation message code to indicate that the table structure usage has the same rolename as at least one other
      * usage in the supertype hierarchy.
      */ 
-    public final static String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName";
+    public final static String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName"; //$NON-NLS-1$
 
     /**
      * Returns the role name.
@@ -72,7 +72,8 @@ public interface ITableStructureUsage extends IIpsObjectPart {
     public String[] getTableStructures();
     
     /**
-     * Adds the given table structure to the list of table structure this usage object specifies.
+     * Adds the given table structure to the list of table structure this usage object specifies.<br>
+     * If the table structure is already assigned then do nothing.
      */
     public void addTableStructure(String tableStructure);
     

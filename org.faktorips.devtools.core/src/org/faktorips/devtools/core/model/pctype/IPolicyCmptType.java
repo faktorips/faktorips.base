@@ -22,8 +22,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
-
-
 /**
  * The policy component type represents a Java class that is part of a policy class model.
  */
@@ -121,7 +119,7 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
      * relevant.
      */ 
     public final static String MSGCODE_TABLE_STRUCTURES_CAN_ONLY_BE_USED_IF_THE_TYPE_IS_PRODUCT_RELEVANT =
-        MSGCODE_PREFIX + "TableStructuresCanOnlyBeUsedIfTheTypeIsProductRelevant";
+        MSGCODE_PREFIX + "TableStructuresCanOnlyBeUsedIfTheTypeIsProductRelevant"; //$NON-NLS-1$
     
     /**
      * Returns <code>true</code> if this class has a corresponding product component type,

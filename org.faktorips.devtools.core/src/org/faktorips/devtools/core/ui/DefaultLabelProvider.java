@@ -88,7 +88,7 @@ public class DefaultLabelProvider extends LabelProvider {
         if (element instanceof IAttribute) {
             IAttribute a = (IAttribute)element;
             if (a.isDerivedOrComputed()) {
-                return "/" + a.getName();
+                return "/" + a.getName(); //$NON-NLS-1$
             }
             return a.getName();
         }

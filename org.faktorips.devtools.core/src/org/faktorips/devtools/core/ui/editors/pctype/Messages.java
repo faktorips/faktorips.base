@@ -119,4 +119,16 @@ public class Messages extends NLS {
     public static String OverrideAttributeDialog_title;
     public static String OverrideAttributeDialog_labelNoAttributes;
     public static String OverrideAttributeDialog_labelSelectAttribute;
+    public static String TblStructureUsageSection_Title;
+    public static String TblsStructureUsageEditDialog_Title;
+    public static String TblsStructureUsageEditDialog_TabTitle_General;
+    public static String TblsStructureUsageEditDialog_TabTitle_TableStructure;
+    public static String TblsStructureUsageEditDialog_TableColumn_TableStructure;
+    public static String TblsStructureUsageEditDialog_Button_Add;
+    public static String TblsStructureUsageEditDialog_Button_Remove;
+    public static String TblsStructureUsageEditDialog_Button_Up;
+    public static String TblsStructureUsageEditDialog_Button_Down;
+    public static String TblsStructureUsageEditDialog_Label_RoleName;
+    public static String TblsStructureUsageEditDialog_SelectTableStructureDialog_Title;
+    public static String TblsStructureUsageEditDialog_SelectTableStructureDialog_Description;
 }
