@@ -46,9 +46,13 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
      * allows to edit, create, move and delete.
      */
     private class TblsStructureUsageComposite extends IpsPartsComposite{
+        private final Object[] EMPTY_ARRAY = new Object[0];
         
         private class TblsStructureUsageContentProvider implements IStructuredContentProvider {
             public Object[] getElements(Object inputElement) {
+                if (productCmptType == null){
+                    return EMPTY_ARRAY;
+                }
                  return productCmptType.getTableStructureUsages();
             }
             public void dispose() {
