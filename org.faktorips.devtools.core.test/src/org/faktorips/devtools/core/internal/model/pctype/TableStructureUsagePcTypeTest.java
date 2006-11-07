@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
  * 
  * @author Joerg Ortmann
  */
-public class TableStructureUsageTest extends AbstractIpsPluginTest {
+public class TableStructureUsagePcTypeTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IPolicyCmptType pcType;
     private ITableStructureUsage tableStructureUsage;
