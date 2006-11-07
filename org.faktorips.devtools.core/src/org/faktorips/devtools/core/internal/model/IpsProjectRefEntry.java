@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -68,29 +69,28 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsProject getReferencedIpsProject() {
         return referencedIpsProject;
     }
 
     /**
-     * Overridden
+     * {@inheritDoc}
      */
     public String getType() {
         return TYPE_PROJECT_REFERENCE;
     }
 
     /**
-     * Overridden
+     * {@inheritDoc}
      */
-    public IIpsObject findIpsObject(IIpsProject project, IpsObjectType type, String qualifiedName)
-            throws CoreException {
-        return referencedIpsProject.findIpsObject(type, qualifiedName);
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject project) throws CoreException {
+        return null;
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsObject findIpsObject(IIpsProject project, QualifiedNameType nameType)
             throws CoreException {
@@ -98,7 +98,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void findIpsObjects(IIpsProject project, IpsObjectType type, List result)
             throws CoreException {
@@ -106,7 +106,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void findIpsObjectsStartingWith(IIpsProject project, IpsObjectType type, String prefix, boolean ignoreCase, List result)
             throws CoreException {
@@ -114,7 +114,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     }
     
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public void initFromXml(Element element, IProject project) {
         String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
@@ -122,7 +122,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements
     }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);

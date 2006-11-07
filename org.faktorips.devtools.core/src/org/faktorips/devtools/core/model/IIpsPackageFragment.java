@@ -182,6 +182,8 @@ public interface IIpsPackageFragment extends IIpsElement {
     
     /**
      * Returns the (unqualified) name of the corresponding folder in the file system.
+     * 
+     * @deprecated use getCorrespondingResource().getName(). Note that packs from an archive don't have a corresponding ressource!
      */
 	public String getFolderName();
 	
@@ -190,4 +192,6 @@ public interface IIpsPackageFragment extends IIpsElement {
 	 * The default-package is the one with an empty String as name ("").
 	 */
 	public boolean isDefaultPackage();
+    
+    
 }

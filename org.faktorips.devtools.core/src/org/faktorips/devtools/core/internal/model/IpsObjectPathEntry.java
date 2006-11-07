@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     
     // name of xml elements representing path entries.
-    final static String XML_ELEMENT = "Entry"; //$NON-NLS-1$
+    public final static String XML_ELEMENT = "Entry"; //$NON-NLS-1$
 
     private IpsObjectPath path;
     
@@ -56,11 +56,6 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     }
     
     /**
-     * Returns the first object with the indicated type and qualified name found in the path entry.
-     */
-    public abstract IIpsObject findIpsObject(IIpsProject ipsProject, IpsObjectType type, String qualifiedName) throws CoreException;    
-
-    /**
      * Returns the first object with the indicated qualified name type found in the path entry.
      */
     public abstract IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException;    
@@ -68,7 +63,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     /**
      * Adds all objects of the given type found in the path entry to the result list. 
      */
-    public abstract void findIpsObjects(IIpsProject IIpsProject, IpsObjectType type, List result) throws CoreException;
+    public abstract void findIpsObjects(IIpsProject ipsProject, IpsObjectType type, List result) throws CoreException;
     
     /**
      * Returns all objects of the given type starting with the given prefix found on the path.
@@ -78,7 +73,7 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
      * @throws CoreException if an error occurs while searching for the objects. 
      */
     protected abstract void findIpsObjectsStartingWith(
-    		IIpsProject IIpsProject, 
+    		IIpsProject ipsProject, 
     		IpsObjectType type, 
     		String prefix, 
     		boolean ignoreCase, 
@@ -108,6 +103,11 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
         }
         if (type.equals(TYPE_PROJECT_REFERENCE)) {
             entry = new IpsProjectRefEntry(path);
+            entry.initFromXml(element, project);
+            return entry;
+        }
+        if (type.equals(TYPE_ARCHIVE)) {
+            entry = new IpsArchiveEntry(path);
             entry.initFromXml(element, project);
             return entry;
         }

@@ -17,9 +17,12 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.IpsArchive;
 
 /**
  * 
@@ -35,13 +38,25 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         newPolicyCmptType(project, "mycompany.motor.MotorPolicy");
         newPolicyCmptType(project, "mycompany.motor.MotorCoverage");
-        newPolicyCmptType(project, "mycompany.home.HomeCoverage");
+        newPolicyCmptType(project, "mycompany.home.HomePolicy");
         
-        IFile archive = project.getProject().getFile("test.ipsar");
-        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), archive);
+        IFile archiveFile = project.getProject().getFile("test.ipsar");
+        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), archiveFile);
         operation.run(null);
         
-        assertTrue(archive.exists());
+        assertTrue(archiveFile.exists());
+        IIpsArchive archive = new IpsArchive(archiveFile);
+        String[] packs = archive.getNoneEmptyPackages();
+        assertEquals(2, packs.length);
+        assertEquals("mycompany.motor", packs[0]);
+        assertEquals("mycompany.home", packs[1]);
+        
+        Set qnt = archive.getQNameTypes();
+        assertEquals(3, qnt.size());
+        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(qnt.contains(new QualifiedNameType("mycompany.home.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE)));
     }
+    
 
 }

@@ -32,12 +32,6 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     public IFolder getSourceFolder();
     
     /**
-     * Returns the package fragment root this source folder entry defines. Note that is not guaranteed
-     * that the returned package fragment root exists.
-     */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject project);
-    
-    /**
      * Returns the output folder where the Java source files are generated into. If a specific output folder is set 
      * for this entry, the specific output folder is returned, otherwise the ouput folder defined in the object path
      * is returned.

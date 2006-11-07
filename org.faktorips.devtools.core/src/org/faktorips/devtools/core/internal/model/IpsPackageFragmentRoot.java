@@ -15,7 +15,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -29,27 +28,22 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.QualifiedNameType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * Implementation of IpsPackageFragmentRoot.
  */
-public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFragmentRoot {
+public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot implements IIpsPackageFragmentRoot {
 
     /**
      * Creates a new ips package fragment root with the indicated parent and name.
      */
-    IpsPackageFragmentRoot(IIpsElement parent, String name) {
+    IpsPackageFragmentRoot(IpsProject parent, String name) {
         super(parent, name);
     }
 
@@ -85,14 +79,7 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
                 }
             }
         }
-        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment " + this)); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsProject getIpsProject() {
-        return (IIpsProject)parent;
+        throw new CoreException(new IpsStatus("No IpsObjectPathEntry found for package fragment root " + this)); //$NON-NLS-1$
     }
 
     /**
@@ -155,8 +142,8 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     }
 
     /**
-     * Returns true if the given IResource is a folder that corresponds to an IpsPackageFragment
-     * contained in this IpsPackageFragmentRoot, false otherwise.
+     * Returns <code>true</code> if the given IResource is a folder that corresponds to an IpsPackageFragment
+     * contained in this IpsPackageFragmentRoot, <code>false</code> otherwise.
      */
     private boolean isPackageFragment(IResource res) throws CoreException {
         IIpsPackageFragment[] frags = getIpsPackageFragments();
@@ -167,19 +154,9 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         }
         return false;
     }
-
-    /**
-     * A valid IPS package fragment name is either the empty String for the default package fragment or a valid
-     * package package fragment name according to <code>JavaConventions.validatePackageName</code>.
-     */
-    private boolean isValidIpsPackageFragmentName(String name){
-        try {
-            return !getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg();
-        }
-        catch (CoreException e) {
-            // nothing to do, will return false
-        }
-        return false;
+    
+    protected IIpsPackageFragment newIpsPackageFragment(String name) {
+        return new IpsPackageFragment(this, name);
     }
 
     /*
@@ -200,23 +177,6 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsPackageFragment getIpsPackageFragment(String name) {
-        if (isValidIpsPackageFragmentName(name)) {
-            return new IpsPackageFragment(this, name);
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsPackageFragment getDefaultIpsPackageFragment() {
-        return this.getIpsPackageFragment(""); //$NON-NLS-1$
     }
 
     /**
@@ -259,23 +219,9 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
     public Image getImage() {
         return IpsPlugin.getDefault().getImage("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
     }
-
+    
     /**
      * {@inheritDoc}
-     */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
-        return new QualifiedNameType(qualifiedName, type).findIpsObject(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException {
-        return nameType.findIpsObject(this);
-    }
-
-    /**
-     * Searches all objects of the given type in the root folder and adds them to the result.
      */
     void findIpsObjects(IpsObjectType type, List result) throws CoreException {
         if (!exists()) {
@@ -308,36 +254,4 @@ public class IpsPackageFragmentRoot extends IpsElement implements IIpsPackageFra
         }
     }
 
-    /**
-     * Searches all product components that are based on the given policy component type (either
-     * directly or because they are based on a subtype of the given type) and adds them to the
-     * result. If pcTypeName is <code>null</code>, returns all product components found in the
-     * fragment root.
-     * 
-     * @param pcTypeName The qualified name of the policy component type, product components are
-     *            searched for.
-     * @param includeSubtypes If <code>true</code> is passed also product component that are based
-     *            on subtypes of the given policy component are returned, otherwise only product
-     *            components that are directly based on the given type are returned.
-     * @param result List in which the product components being found are stored in.
-     */
-    public void findProductCmpts(String pcTypeName, boolean includeSubtypes, List result) throws CoreException {
-        List allCmpts = new ArrayList(100);
-        IPolicyCmptType pcType = null;
-        if (includeSubtypes && pcTypeName != null) {
-            pcType = getIpsProject().findPolicyCmptType(pcTypeName);
-        }
-        findIpsObjects(IpsObjectType.PRODUCT_CMPT, allCmpts);
-        for (Iterator it = allCmpts.iterator(); it.hasNext();) {
-            IProductCmpt each = (IProductCmpt)it.next();
-            if (pcTypeName == null || pcTypeName.equals(each.getPolicyCmptType())) {
-                result.add(each);
-            } else {
-                IPolicyCmptType eachPcType = getIpsProject().findPolicyCmptType(each.getPolicyCmptType());
-                if (eachPcType.isSubtypeOf(pcType)) {
-                    result.add(each);
-                }
-            }
-        }
-    }
 }

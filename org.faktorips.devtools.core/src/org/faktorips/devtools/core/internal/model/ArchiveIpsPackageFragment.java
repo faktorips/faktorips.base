@@ -1,0 +1,200 @@
+/*******************************************************************************
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
+ *
+ * Alle Rechte vorbehalten.
+ *
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele,
+ * Konfigurationen, etc.) dürfen nur unter den Bedingungen der 
+ * Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung Community) 
+ * genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ *   http://www.faktorips.org/legal/cl-v01.html
+ * eingesehen werden kann.
+ *
+ * Mitwirkende:
+ *   Faktor Zehn GmbH - initial API and implementation 
+ *
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.internal.model;
+
+import java.io.InputStream;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsArchive;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
+import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.QualifiedNameType;
+
+/**
+ * 
+ * @author Jan Ortmann
+ */
+public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implements IIpsPackageFragment {
+
+    public ArchiveIpsPackageFragment(ArchiveIpsPackageFragmentRoot root, String name) {
+        super(root, name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean exists() {
+        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getRoot();
+        if (!root.exists()) {
+            return false;
+        }
+        try {
+            IIpsArchive archive = root.getIpsArchive();
+            if (archive==null) {
+                return false;
+            }
+            return archive.containsPackage(getName());
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
+        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
+        Set packNames = root.getIpsArchive().getNoneEmptySubpackages(getName());
+        IIpsPackageFragment[] childPacks = new IIpsPackageFragment[packNames.size()];
+        int i=0;
+        for (Iterator it=packNames.iterator(); it.hasNext(); i++) {
+            String subpackName = (String)it.next();
+            childPacks[i] = new ArchiveIpsPackageFragment(root, subpackName);
+        }
+        return childPacks;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsElement[] getChildren() throws CoreException {
+        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
+        IIpsArchive archive = root.getIpsArchive();
+        if (archive==null) {
+            return new IIpsElement[0];
+        }
+        Set set = archive.getQNameTypes(getName());
+        IIpsElement[] children = new IIpsElement[set.size()];
+        int i = 0;
+        for (Iterator it = set.iterator(); it.hasNext(); i++) {
+            QualifiedNameType qnt = (QualifiedNameType)it.next();
+            children[i] = new ArchiveIpsSrcFile(this, qnt.getFileName());
+        }
+        return children;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IResource[] getNonIpsResources() throws CoreException {
+        return new IResource[0];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile getIpsSrcFile(String name) {
+        return new ArchiveIpsSrcFile(this, name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
+            throws CoreException {
+
+        throw newCantModifyPackageStoredInArchive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
+            throws CoreException {
+
+        throw newCantModifyPackageStoredInArchive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
+            throws CoreException {
+
+        throw newCantModifyPackageStoredInArchive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsSrcFile createIpsFileFromTemplate(String name,
+            IIpsObject template,
+            GregorianCalendar date,
+            boolean force,
+            IProgressMonitor monitor) throws CoreException {
+
+        throw newCantModifyPackageStoredInArchive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
+            throws CoreException {
+        throw new CoreException(new IpsStatus("Can't modifiy package stored in an archive."));
+    }
+    
+    private CoreException newCantModifyPackageStoredInArchive() {
+        return new CoreException(new IpsStatus("Can't modifiy package stored in an archive."));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getFolderName() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IResource getCorrespondingResource() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+        ArchiveIpsPackageFragmentRoot root = (ArchiveIpsPackageFragmentRoot)getParent();
+        IIpsArchive archive = root.getIpsArchive();
+        if (archive==null) {
+            return;
+        }
+        Set set = archive.getQNameTypes(getName());
+        for (Iterator it = set.iterator(); it.hasNext();) {
+            QualifiedNameType qnt = (QualifiedNameType)it.next();
+            if (qnt.getIpsObjectType()==type) {
+                result.add(getIpsSrcFile(qnt.getFileName()).getIpsObject());
+            }
+        }
+    }
+    
+}

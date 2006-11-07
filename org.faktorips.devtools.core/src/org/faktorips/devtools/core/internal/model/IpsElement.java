@@ -37,7 +37,7 @@ public abstract class IpsElement implements IIpsElement, IAdaptable {
     
     final static IIpsElement[] NO_CHILDREN = new IIpsElement[0];
     
-    IpsElement(IIpsElement parent, String name) {
+    public IpsElement(IIpsElement parent, String name) {
         this.parent = parent;
         this.name = name;
     }

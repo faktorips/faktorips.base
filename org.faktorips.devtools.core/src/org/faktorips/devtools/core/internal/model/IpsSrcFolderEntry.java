@@ -207,13 +207,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * {@inheritDoc}
      */
-    public IIpsObject findIpsObject(IIpsProject ipsProject, IpsObjectType type, String qualifiedName) throws CoreException {
-        return getIpsPackageFragmentRoot(ipsProject).findIpsObject(type, qualifiedName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IIpsObject findIpsObject(IIpsProject ipsProject, QualifiedNameType nameType) throws CoreException {
         return getIpsPackageFragmentRoot(ipsProject).findIpsObject(nameType);
     }

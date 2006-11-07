@@ -274,7 +274,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         for (int i = 0, size = files.length; i < size; i++) {
             if (files[i] instanceof IIpsSrcFile) {
                 IFile file = ((IIpsSrcFile)files[i]).getCorrespondingFile();
-                if (!file.isSynchronized(IResource.DEPTH_ZERO)) {
+                if (file!=null && !file.isSynchronized(IResource.DEPTH_ZERO)) {
                     file.getParent().refreshLocal(IResource.DEPTH_ONE, null);
                 }
                 pcts.add(((IIpsSrcFile)files[i]).getIpsObject());

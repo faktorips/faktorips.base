@@ -38,6 +38,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.ArchiveIpsSrcFile;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.ProductRelevantIcon;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
@@ -54,6 +55,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.extsystems.AbstractExternalTableFormat;
 import org.faktorips.devtools.extsystems.IValueConverter;
 import org.faktorips.util.ArgumentCheck;
@@ -478,6 +480,16 @@ public class IpsPlugin extends AbstractUIPlugin {
     public void openEditor(IIpsSrcFile srcFile) {
         if (srcFile == null) {
             return;
+        }
+        if (srcFile instanceof ArchiveIpsSrcFile) {
+            IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
+            IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(srcFile.getName());
+            IpsArchiveEditorInput input = new IpsArchiveEditorInput(srcFile);
+            try {
+                IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), input, editor.getId());
+            } catch (PartInitException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
         }
         openEditor(srcFile.getCorrespondingFile());
     }

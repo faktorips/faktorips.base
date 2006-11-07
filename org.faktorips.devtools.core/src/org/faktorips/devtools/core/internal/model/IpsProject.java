@@ -68,7 +68,6 @@ import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.ValueSetType;
@@ -340,8 +339,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List roots = new ArrayList();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
         for (int i = 0; i < entries.length; i++) {
-            if (entries[i] instanceof IIpsSrcFolderEntry) {
-                roots.add(((IIpsSrcFolderEntry)entries[i]).getIpsPackageFragmentRoot(this));
+            IIpsPackageFragmentRoot root = entries[i].getIpsPackageFragmentRoot(this);
+            if (root!=null) {
+                roots.add(root);
             }
         }
         return (IIpsPackageFragmentRoot[])roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);

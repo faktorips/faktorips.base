@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsObjectPathEntry;
@@ -139,7 +141,6 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Overridden.
      */
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
-    	
        IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length+1];
        System.arraycopy(entries, 0, newEntries, 0, entries.length);
@@ -147,9 +148,22 @@ public class IpsObjectPath implements IIpsObjectPath {
        entries = newEntries;
        return newEntry;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IIpsArchiveEntry newArchiveEntry(IFile archiveFile) throws CoreException {
+        IIpsArchiveEntry newEntry = new IpsArchiveEntry(this);
+        newEntry.setArchiveFile(archiveFile);
+        IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length+1];
+        System.arraycopy(entries, 0, newEntries, 0, entries.length);
+        newEntries[newEntries.length-1] = newEntry;
+        entries = newEntries;
+        return newEntry;
+    }
 
     /**
-     * Overridden.
+     * {@inheritDoc}
      */
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject referencedIpsProject) {
     	if(containsProjectRefEntry(referencedIpsProject)){
@@ -302,13 +316,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * on the path. Returns <code>null</code> if no such object is found.
      */
     public IIpsObject findIpsObject(IIpsProject project, IpsObjectType type, String qualifiedName) throws CoreException {
-        for (int i=0; i<entries.length; i++) {
-            IIpsObject object = ((IpsObjectPathEntry)entries[i]).findIpsObject(project, type, qualifiedName);
-            if (object!=null) {
-                return object;
-            }
-        }
-        return null;
+        return findIpsObject(project, new QualifiedNameType(qualifiedName, type));
     }
 
     /**

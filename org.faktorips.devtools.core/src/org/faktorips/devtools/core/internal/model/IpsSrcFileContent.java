@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -92,8 +93,8 @@ public class IpsSrcFileContent {
         }
     }
             
-    public IpsSrcFile getIpsSrcFile() {
-        return (IpsSrcFile)ipsObject.getIpsSrcFile();
+    public IIpsSrcFile getIpsSrcFile() {
+        return ipsObject.getIpsSrcFile();
     }
 
     /**
@@ -164,7 +165,7 @@ public class IpsSrcFileContent {
     }
     
     public void initContentFromFile() {
-        IpsSrcFile file = getIpsSrcFile();
+        IIpsSrcFile file = getIpsSrcFile();
         try {
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" +  file
@@ -176,7 +177,7 @@ public class IpsSrcFileContent {
             DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
             Document doc = builder.parse(is);
             is.close();
-            modificationStamp = file.getCorrespondingFile().getModificationStamp();
+            modificationStamp = file.getEnclosingResource().getModificationStamp();
             getIpsObject().initFromXml(doc.getDocumentElement());
             modified = false;
             parsable = true;

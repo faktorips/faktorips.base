@@ -101,6 +101,9 @@ public abstract class IpsObjectEditor extends FormEditor
         	IFile file = ((IFileEditorInput)input).getFile();
             ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
             setPartName(ipsSrcFile.getName());
+        } else if (input instanceof IpsArchiveEditorInput) {
+            ipsSrcFile = ((IpsArchiveEditorInput)input).getIpsSrcFile();
+            setPartName(ipsSrcFile.getName());
         } else if (input instanceof IStorageEditorInput) {
         	initFromStorageEditorInput((IStorageEditorInput)input);
         	setPartName(((IStorageEditorInput)input).getName());
@@ -286,8 +289,7 @@ public abstract class IpsObjectEditor extends FormEditor
     	if (ipsSrcFile instanceof IpsSrcFileImmutable) {
     		return;
     	}
-    	
-    	if (!ipsSrcFile.getCorrespondingFile().isSynchronized(IResource.DEPTH_ONE)) {
+    	if (!ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ONE)) {
     		String msg = NLS.bind(Messages.IpsObjectEditor_msgResourceOutOfSync, ipsSrcFile.getName());
     		if (isDirty()) {
     			msg += Messages.IpsObjectEditor_msgOutOfSyncOptions;	

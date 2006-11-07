@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.internal.model.IpsProject;
 import org.faktorips.devtools.core.internal.model.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.product.ProductCmpt;
+import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
@@ -110,6 +111,16 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 				null);
         
 	}
+    
+    protected void createArchive(IIpsProject projectToArchive, IFile archiveFile) throws CoreException {
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(projectToArchive, archiveFile);
+        ResourcesPlugin.getWorkspace().run(op, null);
+    }
+
+    protected void createArchive(IIpsPackageFragmentRoot rootToArchive, IFile archiveFile) throws CoreException {
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(rootToArchive, archiveFile);
+        ResourcesPlugin.getWorkspace().run(op, null);
+    }
     
     /**
      * Creates a new IpsProject.

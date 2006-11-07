@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.model;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.util.message.MessageList;
@@ -57,6 +58,11 @@ public interface IIpsObjectPath {
      * Factory method that creates a new source folder entry and adds it to the list of entries.
      */
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder);
+    
+    /**
+     * Factory method that creates a new archiv entry and adds it to the list of entries.
+     */
+    public IIpsArchiveEntry newArchiveEntry(IFile archiveFile) throws CoreException;
     
     /**
      * Factory method that creates a new project reference entry and adds it to the list of entries.

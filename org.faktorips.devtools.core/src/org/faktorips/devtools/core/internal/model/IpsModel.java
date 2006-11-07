@@ -1169,16 +1169,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the content for the given ips src file. If the ips source file's corresponding
      * resource does not exist, the method returns <code>null</code>.
      */
-    synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
+    synchronized public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
         if (file == null) {
             return null;
         }
-        IFile corrFile = file.getCorrespondingFile();
-        if (corrFile == null || !corrFile.exists()) {
+        IResource enclResource = file.getEnclosingResource();
+        if (enclResource == null || !enclResource.exists()) {
             return null;
         }
         IpsSrcFileContent content = (IpsSrcFileContent)ipsObjectsMap.get(file);
-        long resourceModStamp = file.getCorrespondingResource().getModificationStamp();
+        long resourceModStamp = enclResource.getModificationStamp();
         if (content == null) {
             content = new IpsSrcFileContent((IpsObject)file.getIpsObjectType().newObject(file));
             ipsObjectsMap.put(file, content);
@@ -1199,7 +1199,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return content;
     }
 
-    public void ipsSrcFileHasChanged(IpsSrcFile file) {
+    public void ipsSrcFileHasChanged(IIpsSrcFile file) {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.ipsSrcFileHasChanged(): About to broadcast change notifications, file=" + file
                     + ", Thead: " + Thread.currentThread().getName());

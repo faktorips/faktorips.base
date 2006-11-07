@@ -17,18 +17,11 @@
 
 package org.faktorips.devtools.core.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsPackageFragment;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -71,10 +64,9 @@ public class QualifiedNameType {
      * @param type
      */
     public QualifiedNameType(String name, IpsObjectType type) {
-        super();
         ArgumentCheck.notNull(name, this);
         ArgumentCheck.notNull(type, this);
-        qualifiedName = name;
+        this.qualifiedName = name;
         this.type = type;
         calculateHashCode();
     }
@@ -131,47 +123,16 @@ public class QualifiedNameType {
      * Returns the name for files in that an ips object with this qualified name type is stored.
      * E.g.: for "mycompany.motor.MotorPolicy" of type PolicyCmptType the method returns "MotorPolicy.ipspct"
      */
-    public String getFilename() {
-        return getUnqualifiedName() + "." + type.getFileExtension();
+    public String getFileName() {
+        return type.getFileName(getUnqualifiedName());
     }
     
     public IIpsObject findIpsObject(IIpsPackageFragmentRoot root) throws CoreException{
-        if(root == null || !root.exists()){
+        if(root == null) {
             return null;
         }
-
-        String packName = ""; //$NON-NLS-1$
-        String unqualifiedName = qualifiedName;
-        int index = qualifiedName.lastIndexOf(IIpsPackageFragment.SEPARATOR);
-        if (index>0) {
-            packName = qualifiedName.substring(0, index);
-            unqualifiedName = qualifiedName.substring(index+1);
-        }
-        IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
-        if (!pack.exists()) {
-        	return null;
-        }
-        if (type==IpsObjectType.PRODUCT_CMPT_TYPE) {
-        	return findProductCmptType((IpsPackageFragment)pack, unqualifiedName);
-        }
-        IIpsSrcFile file = pack.getIpsSrcFile(type.getFileName(unqualifiedName));
-        if (!file.exists()) {
-            return null;
-        }
-        return file.getIpsObject();
+        return root.findIpsObject(type, qualifiedName);
     }
-    
-    private IProductCmptType findProductCmptType(IpsPackageFragment pack, String productCmptTypeName) throws CoreException {
-		List result = new ArrayList();
-		pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
-		for (Iterator it = result.iterator(); it.hasNext();) {
-			PolicyCmptType policyCmptType = (PolicyCmptType) it.next();
-			if (policyCmptType.getUnqualifiedProductCmptType().equals(productCmptTypeName)) {
-				return new ProductCmptType(policyCmptType);
-			}
-		}
-		return null;
-	}
     
     private void calculateHashCode(){
         int result = 17;

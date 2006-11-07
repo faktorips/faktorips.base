@@ -45,6 +45,10 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         this.archive = archive;
     }
 
+    public CreateIpsArchiveOperation(IIpsPackageFragmentRoot rootToArchive, IFile archive) throws CoreException {
+        this(new IIpsPackageFragmentRoot[]{rootToArchive}, archive);
+    }
+
     public CreateIpsArchiveOperation(IIpsPackageFragmentRoot[] rootsToArchive, IFile archive) {
         this.roots = rootsToArchive;
         this.archive = archive;

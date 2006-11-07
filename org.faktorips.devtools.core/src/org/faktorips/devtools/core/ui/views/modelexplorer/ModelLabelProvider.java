@@ -60,10 +60,15 @@ public class ModelLabelProvider implements ILabelProvider {
 				if(fragment.isDefaultPackage()){
 					return Messages.ModelExplorer_defaultPackageLabel;
 				}
-				if (!isFlatLayout) {
-					return fragment.getFolderName();
+				if (isFlatLayout) {
+                    return fragment.getName();
 				} else {
-					return fragment.getName();
+                    String name = fragment.getName();
+                    int index = name.lastIndexOf('.');
+                    if (index==-1) {
+                        return name;
+                    }
+                    return name.substring(index+1);
 				}
 				
 			} else if (element instanceof IAttribute) {

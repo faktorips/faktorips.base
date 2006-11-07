@@ -33,14 +33,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.IpsObjectType;
@@ -49,24 +47,16 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * Implementation of <code>IpsPackageFragment<code>.
  */
-public class IpsPackageFragment extends IpsElement implements IIpsPackageFragment {
+public class IpsPackageFragment extends AbstractIpsPackageFragment implements IIpsPackageFragment {
 
     IpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsPackageFragmentRoot getRoot() {
-        return (IIpsPackageFragmentRoot)getParent();
     }
 
     /**
@@ -120,7 +110,7 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
 
     /**
-     * Returns true if the given IResource is a file or folder that corresponds to an IpsObject or
+     * Returns <code>true</code> if the given IResource is a file or folder that corresponds to an IpsObject or
      * IpsPackageFragment contained in this IpsPackageFragment, false otherwise.
      */
     private boolean isIpsContent(IResource res) throws CoreException {
@@ -137,25 +127,6 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
             }
         }
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsPackageFragment getParentIpsPackageFragment() {
-        int lastIndex = getName().lastIndexOf("."); //$NON-NLS-1$
-        if (lastIndex < 0) {
-            if (isDefaultPackage()) {
-                return null;
-            }
-            else {
-                return getRoot().getDefaultIpsPackageFragment();
-            }
-        }
-        else {
-            String parentPath = getName().substring(0, lastIndex);
-            return new IpsPackageFragment(this.getParent(), parentPath);
-        }
     }
 
     /**
@@ -181,33 +152,6 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
         IIpsElement[] shrinked = new IIpsElement[counter];
         System.arraycopy(children, 0, shrinked, 0, counter);
         return shrinked;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Image getImage() {
-        try {
-            IIpsElement[] children = getChildren();
-            if (children != null && children.length > 0) {
-                return IpsPlugin.getDefault().getImage("IpsPackageFragment.gif"); //$NON-NLS-1$
-            }
-        }
-        catch (CoreException e) {
-            // nothing to do. If we can't get the content, we consider the package empty.
-        }
-        return IpsPlugin.getDefault().getImage("IpsPackageFragmentEmpty.gif"); //$NON-NLS-1$
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public IIpsSrcFile getIpsSrcFile(String name) {
-        IpsObjectType type = IpsObjectType.getTypeForExtension(StringUtil.getFileExtension(name));
-        if (type != null) {
-            return new IpsSrcFile(this, name);
-        }
-        return null;
     }
 
     /**
@@ -344,9 +288,12 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     }
 
     /**
-     * Searches all objects of the given type and adds them to the result.
+     * {@inheritDoc}
      */
     public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+        if (!exists()) {
+            return;
+        }
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] members = folder.members();
         for (int i = 0; i < members.length; i++) {
@@ -379,7 +326,6 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
      * 
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws CoreException if an error occurs while searching.
-     * 
      */
     public void findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase, List result)
             throws CoreException {
@@ -411,22 +357,8 @@ public class IpsPackageFragment extends IpsElement implements IIpsPackageFragmen
     /**
      * {@inheritDoc}
      */
-    public IPath getRelativePath() {
-        return new Path(getName().replace('.', '/'));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String getFolderName() {
         return this.getCorrespondingResource().getName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isDefaultPackage() {
-        return this.name.equals(""); //$NON-NLS-1$
     }
 
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)

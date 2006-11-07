@@ -54,9 +54,9 @@ public interface IIpsObjectPathEntry {
     public final static String TYPE_PROJECT_REFERENCE = "project"; //$NON-NLS-1$
     
     /**
-     * Type constant indicating a jar file containing the model files.
+     * Type constant indicating a archive (library) containing the model files.
      */
-    public final static String TYPE_JAR = "jar";  //$NON-NLS-1$
+    public final static String TYPE_ARCHIVE = "archive";  //$NON-NLS-1$
 
     /**
      * Returns the object path this is an entry of.
@@ -68,6 +68,12 @@ public interface IIpsObjectPathEntry {
      */
     public String getType();
 
+    /**
+     * Returns the package fragment root this source folder entry defines or <code>null</code> if
+     * this is a project reference entry. Note that is not guaranteed that the returned package fragment root exists.
+     */
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(IIpsProject project) throws CoreException;
+    
     /**
      * Validates the object path entry and returns the result as list of messages.
      */

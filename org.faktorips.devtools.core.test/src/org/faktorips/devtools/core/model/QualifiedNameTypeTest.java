@@ -111,7 +111,7 @@ public class QualifiedNameTypeTest extends TestCase {
     
     public void testGetFilename() {
         QualifiedNameType qnt = new QualifiedNameType("test.Motorpolicy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertEquals("Motorpolicy.ipspct", qnt.getFilename());
+        assertEquals("Motorpolicy.ipspct", qnt.getFileName());
     }
 
     /*
