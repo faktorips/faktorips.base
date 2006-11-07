@@ -267,7 +267,10 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
     }
     
     public void testGetTableStructureUsages() throws Exception {
-        // create the supetype 
+        // create the supertype 
+        pcType.setConfigurableByProductCmptType(true);
+        supertype.setConfigurableByProductCmptType(true);
+        supersupertype.setConfigurableByProductCmptType(true);
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
@@ -322,6 +325,9 @@ public class TypeHierarchyTest extends AbstractIpsPluginTest {
     
     public void testFindTableStructureUsage() throws Exception {
         // create the supertype
+        pcType.setConfigurableByProductCmptType(true);
+        supertype.setConfigurableByProductCmptType(true);
+        supersupertype.setConfigurableByProductCmptType(true);
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 

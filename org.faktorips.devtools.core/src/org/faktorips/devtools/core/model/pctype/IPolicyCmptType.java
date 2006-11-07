@@ -468,6 +468,7 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
     
     /**
      * Creates a new table usage and returns it.
+     * Returns <code>null</code> if the policy cmpt type is not configurable by product cmpt type.
      */
     public ITableStructureUsage newTableStructureUsage();
     

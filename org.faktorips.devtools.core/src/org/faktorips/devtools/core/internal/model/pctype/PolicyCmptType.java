@@ -118,6 +118,10 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
     public void setConfigurableByProductCmptType(boolean newValue) {
         boolean oldValue = configurableByProductCmptType;
         configurableByProductCmptType = newValue;
+        // remove table structure usages if there is no longer a product cmpt
+        if (!newValue){
+            tableStuctureUsages.clear();
+        }
         valueChanged(oldValue, newValue);
     }
 
@@ -1160,6 +1164,9 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
      * {@inheritDoc}
      */
     public ITableStructureUsage newTableStructureUsage() {
+        if (!configurableByProductCmptType){
+            return null;
+        }
         TableStructureUsage tsu = newTableStructureUsageInternal(getNextPartId());
         objectHasChanged();
         return tsu;

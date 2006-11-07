@@ -146,6 +146,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         IMethod m1 = pcType.newMethod();
         IRelation r1 = pcType.newRelation();
         IValidationRule rule1 = pcType.newRule();
+        pcType.setConfigurableByProductCmptType(true);
         ITableStructureUsage tsu = pcType.newTableStructureUsage();
         
         IIpsElement[] elements = pcType.getChildren();
@@ -891,6 +892,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testNewTableStructure(){
+        pcType.setConfigurableByProductCmptType(true);
         sourceFile.getIpsModel().addChangeListener(this);
         ITableStructureUsage tsu = pcType.newTableStructureUsage();
         assertEquals(0, tsu.getId());
@@ -904,6 +906,7 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
     }
     
     public void testGetTableStructureUsage(){
+        pcType.setConfigurableByProductCmptType(true);
         assertEquals(0, pcType.getTableStructureUsages().length);
         ITableStructureUsage tsu1 = pcType.newTableStructureUsage();
         ITableStructureUsage tsu2 = pcType.newTableStructureUsage();
@@ -918,5 +921,21 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         // make sure a defensive copy is returned.
         pcType.getTableStructureUsages()[0] = null;
         assertNotNull(pcType.getTableStructureUsages()[0]);
+    }
+    
+    /**
+     * Test if the table structure usages will be deleted if the policy cmpt type is no longer
+     * configured by a product cmpt.
+     */
+    public void testRemoveTableStructureUsagesIfNotConfByProduct(){
+        pcType.setConfigurableByProductCmptType(false);
+        assertNull(pcType.newTableStructureUsage());
+        
+        pcType.setConfigurableByProductCmptType(true);
+        assertNotNull(pcType.newTableStructureUsage());
+        assertEquals(1, pcType.getNumOfTableStructureUsage());
+        
+        pcType.setConfigurableByProductCmptType(false);
+        assertEquals(0, pcType.getNumOfTableStructureUsage());
     }
 }

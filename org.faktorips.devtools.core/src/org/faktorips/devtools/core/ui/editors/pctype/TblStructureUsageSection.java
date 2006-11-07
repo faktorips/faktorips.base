@@ -23,6 +23,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -37,23 +40,24 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A section to display and edit a product component type's used table structures.
  */
-public class TblStructureUsageSection extends SimpleIpsPartsSection {
+public class TblStructureUsageSection extends SimpleIpsPartsSection  implements ContentsChangeListener{
 
     private IProductCmptType productCmptType;
+
+    private TblsStructureUsageComposite tblsStructureUsageComposite;
 
     /**
      * A composite that shows the used table structures for a product component type in a viewer and 
      * allows to edit, create, move and delete.
      */
-    private class TblsStructureUsageComposite extends IpsPartsComposite{
-        private final Object[] EMPTY_ARRAY = new Object[0];
-        
+    private class TblsStructureUsageComposite extends IpsPartsComposite {
         private class TblsStructureUsageContentProvider implements IStructuredContentProvider {
+            private Object[] EMPTY_ARRAY = new Object[0];
             public Object[] getElements(Object inputElement) {
-                if (productCmptType == null){
+                if (productCmptType == null) {
                     return EMPTY_ARRAY;
                 }
-                 return productCmptType.getTableStructureUsages();
+                return productCmptType.getTableStructureUsages();
             }
             public void dispose() {
                 // nothing todo
@@ -107,6 +111,19 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
             ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
             return tsu;
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void updateButtonEnabledStates() {
+            super.updateButtonEnabledStates();
+            if (productCmptType == null){
+                newButton.setEnabled(false);
+                editButton.setEnabled(false);
+                upButton.setEnabled(false);
+                downButton.setEnabled(false);
+            }
+        }
     }
     
     public TblStructureUsageSection(
@@ -116,12 +133,35 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection {
             UIToolkit toolkit) {
         super(pcType, parent, Messages.TblStructureUsageSection_Title, toolkit);
         this.productCmptType = productCmptType;
+        pcType.getIpsModel().addChangeListener(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void contentsChanged(ContentChangeEvent event) {
+        if (!event.getIpsSrcFile().equals(getIpsObject().getIpsSrcFile())){
+            return;
+        }
+        try {
+            IProductCmptType productCmptTypeNew = ((IPolicyCmptType)getIpsObject()).findProductCmptType();
+            // check if configured by product cmpt has changed, e.g. product cmpt was null before but now not null
+            if ((productCmptType != null && productCmptTypeNew == null)
+                    || (productCmptType == null && productCmptTypeNew != null)) {
+                productCmptType = productCmptTypeNew;
+                tblsStructureUsageComposite.refresh();
+            }
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        return new TblsStructureUsageComposite((IPolicyCmptType)getIpsObject(), parent, toolkit);
+        tblsStructureUsageComposite = new TblsStructureUsageComposite(
+                (IPolicyCmptType)getIpsObject(), parent, toolkit);
+        return tblsStructureUsageComposite;
     }
 }
