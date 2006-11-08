@@ -17,6 +17,9 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -49,6 +52,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         type = newPolicyCmptType(archiveProject, "motor.Policy");
         type.getIpsSrcFile().save(true, null);
         newPolicyCmptType(archiveProject, "motor.collision.CollisionCoverage").getIpsSrcFile().save(true, null);
+        newProductCmpt(archiveProject, "motor.MotorProduct").getIpsSrcFile().save(true, null);
         
         project = newIpsProject();
         archiveFile = project.getProject().getFile("test.ipsar");
@@ -59,10 +63,6 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile);
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
-    }
-    
-    public void testFindIpsObjects_ProductCmptType() throws Throwable {
-        assertNotNull(root.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, type.getProductCmptType()));
     }
     
     public void testGetIpsObjectPathEntry() throws CoreException {
@@ -93,7 +93,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(archiveFile, root.getEnclosingResource());
     }
 
-    public void testFindIpsObjects() throws Throwable {
+    public void testFindIpsObject() throws Throwable {
         IIpsObject type = root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy");
         assertNotNull(type);
 
@@ -104,4 +104,15 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertNull(root.findIpsObject(IpsObjectType.PRODUCT_CMPT, "motor.Policy"));
     }
 
+    public void testFindIpsObject_ProductCmptType() throws Throwable {
+        assertNotNull(root.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, type.getProductCmptType()));
+    }
+
+    public void testFindIpsObjects() throws CoreException {
+        List result = new ArrayList();
+        root.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
+        assertEquals(2, result.size());
+        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.Policy")));
+        assertTrue(result.contains(root.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "motor.collision.CollisionCoverage")));
+    }
 }

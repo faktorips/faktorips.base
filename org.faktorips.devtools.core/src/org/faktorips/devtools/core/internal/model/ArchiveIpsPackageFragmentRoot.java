@@ -148,7 +148,10 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      */
-    void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+    public void findIpsObjects(IpsObjectType type, List result) throws CoreException {
+        if (type==null) {
+            return;
+        }
         IIpsArchive archive = getIpsArchive();
         if (archive==null) {
             return;
@@ -156,9 +159,11 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         Set qntSet = archive.getQNameTypes();
         for (Iterator it = qntSet.iterator(); it.hasNext();) {
             QualifiedNameType qnt = (QualifiedNameType)it.next();
-            IIpsObject object = findIpsObject(qnt);
-            if (object!=null) {
-                result.add(object);
+            if (type.equals(qnt.getIpsObjectType())) {
+                IIpsObject object = findIpsObject(qnt);
+                if (object!=null) {
+                    result.add(object);
+                }
             }
         }
     }
