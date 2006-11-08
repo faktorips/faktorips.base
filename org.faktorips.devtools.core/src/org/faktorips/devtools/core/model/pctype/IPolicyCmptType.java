@@ -122,6 +122,12 @@ public interface IPolicyCmptType extends IIpsObject, Datatype {
         MSGCODE_PREFIX + "TableStructuresCanOnlyBeUsedIfTheTypeIsProductRelevant"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the product relevant flag is set but the supertype is not product relevant.
+     */
+    public final static String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = 
+        MSGCODE_PREFIX + "SupertypeNotProductRelevantIfTheTypeIsProductRelevant"; //$NON-NLS-1$
+    
+    /**
      * Returns <code>true</code> if this class has a corresponding product component type,
      * otherwise <code>false</code>.
      */

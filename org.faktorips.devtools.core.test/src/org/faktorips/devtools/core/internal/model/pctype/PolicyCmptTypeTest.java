@@ -844,6 +844,23 @@ public class PolicyCmptTypeTest extends AbstractIpsPluginTest implements Content
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_MUST_IMPLEMENT_CONTAINER_RELATION));
     }
     
+    public void testSupertypeNotProductRelevantIfTheTypeIsProductRelevant() throws Exception{
+        IPolicyCmptType superPcType = newPolicyCmptType(ipsProject, "Super");
+        pcType.setSupertype(superPcType.getQualifiedName());
+        
+        superPcType.setConfigurableByProductCmptType(false);
+        pcType.setConfigurableByProductCmptType(true);
+        
+        MessageList ml = superPcType.validate();
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
+        
+        ml = pcType.validate();
+        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
+        
+        superPcType.setConfigurableByProductCmptType(true);
+        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
+    }
+    
     public void testFindRelationsImplementingContainerRelation() throws CoreException {
         assertEquals(0, pcType.findRelationsImplementingContainerRelation(null, true).length);
         

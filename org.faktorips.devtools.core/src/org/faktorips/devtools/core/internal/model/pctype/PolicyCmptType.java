@@ -745,7 +745,7 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
         }
     }
 
-    private void validateProductSide(MessageList list) {
+    private void validateProductSide(MessageList list) throws CoreException {
         if (!isConfigurableByProductCmptType()) {
             return;
         }
@@ -766,6 +766,15 @@ public class PolicyCmptType extends IpsObject implements IPolicyCmptType {
             String msg = Messages.PolicyCmptType_msgNameMissmatch;
             list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH, msg, Message.ERROR, this,
                     IPolicyCmptType.PROPERTY_UNQUALIFIED_PRODUCT_CMPT_TYPE));
+        }
+        
+        IPolicyCmptType superPolicyCmptType = findSupertype();
+        if (superPolicyCmptType != null){
+            if (! superPolicyCmptType.isConfigurableByProductCmptType()){
+                String msg = Messages.PolicyCmptType_msgSuperTypeNotProdRelevantIfProductRelevant;
+                list.add(new Message(MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT, msg, Message.ERROR, this,
+                        IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
+            }
         }
     }
 
