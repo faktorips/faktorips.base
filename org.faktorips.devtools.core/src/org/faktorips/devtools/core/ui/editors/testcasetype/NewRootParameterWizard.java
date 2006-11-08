@@ -203,8 +203,10 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      */
     public IWizardPage getNextPage(IWizardPage page) {
         if (isTestPolicyCmptTypeParam && page.equals(rootParamSelectWizardPage)){
+            rootParamDetailWizardPage.getControl().setFocus();
             return rootParamDetailWizardPage;
         } else if (page.equals(rootParamFirstWizardPage)){
+            rootParamSelectWizardPage.getControl().setFocus();
             return rootParamSelectWizardPage;
         }
         return null;
