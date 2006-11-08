@@ -791,7 +791,7 @@ public class TestCase extends IpsObject implements ITestCase {
             if (tpc == null){
                 continue;
             }
-            getValidationRules(testPolicyCmpt, validationRules);
+            getValidationRules(tpc, validationRules);
         }
         ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
         if (typeParam == null){
