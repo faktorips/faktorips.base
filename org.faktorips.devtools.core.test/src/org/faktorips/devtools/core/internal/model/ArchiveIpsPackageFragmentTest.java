@@ -24,12 +24,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsObject;
 import org.faktorips.devtools.core.model.IIpsObjectPath;
 import org.faktorips.devtools.core.model.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
-import org.faktorips.devtools.core.model.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
 /**
@@ -83,10 +83,10 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         List result = new ArrayList();
         pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
         assertEquals(2, result.size());
-        QualifiedNameType qnt = new QualifiedNameType("mycompany.motor.Policy", IpsObjectType.POLICY_CMPT_TYPE);
-        assertTrue(result.contains(qnt));
-        qnt = new QualifiedNameType("mycompany.motor.Coverage", IpsObjectType.POLICY_CMPT_TYPE);
-        assertTrue(result.contains(qnt));
+        IIpsObject obj = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "mycompany.motor.Policy");
+        assertTrue(result.contains(obj));
+        obj = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "mycompany.motor.Coverage");
+        assertTrue(result.contains(obj));
     }
 
     public void testGetChildIpsPackageFragments() throws CoreException {
