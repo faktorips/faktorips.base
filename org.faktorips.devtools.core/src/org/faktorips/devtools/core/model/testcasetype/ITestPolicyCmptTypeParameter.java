@@ -81,6 +81,14 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public final static String MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_RELATION = MSGCODE_PREFIX + "WrongPolicyCmptTypeOfRelation"; //$NON-NLS-1$
     
     /**
+     * Validation message code to indicate that the policy cmpt type must have the required product
+     * cmpt flag if the parameter is root and abstract, otherwise the derived class couldn't be
+     * determined in the test case.
+     */
+    public final static String MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT = MSGCODE_PREFIX
+            + "MustRequireProdIfRootAndAbstract"; //$NON-NLS-1$
+    
+    /**
      * Returns the qualified name of policy component class.
      */
 	public String getPolicyCmptType();

@@ -577,5 +577,18 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements
                 }
             }
         } // check relation end
-    }    
+        
+        // check if this is a root parameter and the related policy cmpt is abstract, that the required product cmpt flag
+        // is true, otherwise it is not possible to select a derived class of the abstract policy cmpt.
+        // for none root parameters this check is not necessary, because in this case a dialog will be displayed to select
+        // the target of a relation (childs are always defined by using a relation)
+        if (isRoot() && policyCmptTypeFound != null){
+            if (!isRequiresProductCmpt() && policyCmptTypeFound.isAbstract()){
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MustRequireProdCmptIfRootAndAbstract, policyCmptType);
+                Message msg = new Message(MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT, text, Message.ERROR, this,
+                        PROPERTY_REQUIRES_PRODUCTCMT); //$NON-NLS-1$
+                list.add(msg);
+            }
+        }
+    }
 }

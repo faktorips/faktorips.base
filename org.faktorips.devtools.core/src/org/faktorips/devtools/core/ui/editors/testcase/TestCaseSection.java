@@ -456,9 +456,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         // refresh and check for delta to the test case type 
         //   if the test case type changed
         try {
-            if (event.getIpsSrcFile().equals(testCase.findTestCaseType().getIpsSrcFile())) {
-                postResetTestRunStatus();
-                refreshTreeAndDetailArea();
+            ITestCaseType testCaseType = testCase.findTestCaseType();
+            if (testCaseType == null){
+                return;
+            }
+            if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())) {
                 testCaseTypeChanged = true;
             }
         } catch (Exception e) {
@@ -473,13 +475,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         super.refresh();
         // if in the meanwhile the test case type changed check for inconsistence between test case
         // and test case type
-        try {
-            if (testCaseTypeChanged &&  ! (testCase.findTestCaseType().getIpsSrcFile().isDirty())) {
-                testCaseTypeChanged = false;
-                checkForInconsistenciesBetweenTestCaseAndTestCaseType();
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        if (testCaseTypeChanged) {
+            testCaseTypeChanged = false;
+            postResetTestRunStatus();
+            refreshTreeAndDetailArea();
+            checkForInconsistenciesBetweenTestCaseAndTestCaseType();
         }
     }
     
@@ -1605,11 +1605,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener, 
         selectDialog.setMessage(Messages.TestCaseSection_SelectDialogValidationRule_Decription);
         
         try {
-            ITestCaseType testCaseType = testCase.findTestCaseType();
-            if (testCaseType == null) {
-                return null;
-            }
-            IValidationRule[] rules = testCaseType.getTestRuleCandidates();
+            IValidationRule[] rules = testCase.getTestRuleCandidates();
             selectDialog.setElements(rules);
             if (selectDialog.open() == Window.OK) {
                 if (selectDialog.getResult().length > 0) {

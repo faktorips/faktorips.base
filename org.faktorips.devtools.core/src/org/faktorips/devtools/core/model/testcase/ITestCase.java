@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.testcase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsObject;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 
 /**
@@ -186,4 +187,23 @@ public interface ITestCase extends IIpsObject {
      * @throws CoreException if an error occurs while sorting the objects.
      */
     public void sortTestObjects() throws CoreException;
+    
+    /**
+     * Returns all validation rules from the test policy cmpts which are related by the test policy
+     * cmpt type parameters inside this test case. And additional all validation rules which
+     * are related by the policy cmpt's inside this test case, e.g. if the test case type specifies
+     * an abstract policy cmpt type (A) and the test case includes a concrete instance of this
+     * abstract policy cmpt type (B) then the validation rules af A and B will be returned.
+     * 
+     * @throws CoreException if an error occurs
+     */
+    public IValidationRule[] getTestRuleCandidates() throws CoreException;
+    
+    /**
+     * Searchs and returns the validation rule with the given name which is inside the test case.
+     * The rule will be searched in all policy cmpt which are related by test test policy cmpt's.
+     * 
+     * @see ITestCase#getTestRuleCandidates()
+     */
+    public IValidationRule findValidationRule(String validationRuleName) throws CoreException;    
 }

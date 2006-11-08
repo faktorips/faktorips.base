@@ -76,7 +76,8 @@ public interface ITestPolicyCmpt extends ITestObject {
     
     // TODO Joerg validation test
     /**
-     * Validation message code to indicate that the max instances are reached.
+     * Validation message code to indicate that the product cmpt is not specified in the
+     * corresponding relation.
      */
     public final static String MSGCODE_PRODUCT_CMPT_NOT_IN_PRODUCT_RELATION_DEFINITION = MSGCODE_PREFIX
         + "ProductCmptNotInProductRelationDefinition"; //$NON-NLS-1$
@@ -87,9 +88,9 @@ public interface ITestPolicyCmpt extends ITestObject {
 	public String getTestPolicyCmptTypeParameter();
 	
     /**
-     * Sets the qualified name of the test policy component type parameter class.
+     * Sets the name of the test policy component type parameter.
      */	
-	public void setTestPolicyCmptTypeParameter(String pcType);
+	public void setTestPolicyCmptTypeParameter(String testPolicyCmptTypeParameter);
 	
     /**
      * Returns the test policy component type parameter or <code>null</code> if the test policy

@@ -339,4 +339,26 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         ml = policyCmptTypeParameterInput.validate();
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_TARGET_OF_RELATION_NOT_EXISTS));
     }
+    
+    public void testValidateMustRequireProdIfRootAndAbstract() throws Exception {
+        MessageList ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));
+
+        IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmpt");
+        policyCmptTypeParameterInput.setPolicyCmptType(policyCmptType.getQualifiedName());
+        
+        policyCmptType.setAbstract(false);
+        policyCmptTypeParameterInput.setRequiresProductCmpt(true);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));  
+        
+        policyCmptType.setAbstract(true);
+        policyCmptTypeParameterInput.setRequiresProductCmpt(false);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));
+        
+        policyCmptTypeParameterInput.setRequiresProductCmpt(true);
+        ml = policyCmptTypeParameterInput.validate();
+        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT));
+    }    
 }

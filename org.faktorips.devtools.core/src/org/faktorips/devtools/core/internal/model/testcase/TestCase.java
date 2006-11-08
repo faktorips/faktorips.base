@@ -15,6 +15,8 @@
 package org.faktorips.devtools.core.internal.model.testcase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +33,9 @@ import org.faktorips.devtools.core.model.IIpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsSrcFile;
 import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.QualifiedNameType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestCaseTestCaseTypeDelta;
@@ -732,6 +737,84 @@ public class TestCase extends IpsObject implements ITestCase {
         return newUniqueLabel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public IValidationRule[] getTestRuleCandidates() throws CoreException {
+        Set result = new HashSet();
+        ITestCaseType testCaseTypeFound = findTestCaseType();
+        result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates()));
+        result.addAll(getTestCaseTestRuleCandidates());
+        return (IValidationRule[]) result.toArray(new IValidationRule[result.size()]);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public IValidationRule findValidationRule(String validationRuleName) throws CoreException {
+        IValidationRule[] validationRules = getTestRuleCandidates();
+        for (int i = 0; i < validationRules.length; i++) {
+            if (validationRules[i].getName().equals(validationRuleName)){
+                return validationRules[i];
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Returns all validation rules of the policy cmpt types of the product cmpt inside this test
+     * case.
+     */
+    private Collection getTestCaseTestRuleCandidates() throws CoreException {
+        List result = new ArrayList();
+        getValidationRules(getTestPolicyCmpts(), result);
+        return result;
+    }
+
+    /*
+     * Adds all validation rules - of policy cmpts related by the given test policy cmpts - to the given list
+     */
+    private void getValidationRules(ITestPolicyCmpt[] testPolicyCmpts, List validationRules) throws CoreException {
+        for (int i = 0; i < testPolicyCmpts.length; i++) {
+            getValidationRules(testPolicyCmpts[i], validationRules);
+        }
+    }
+
+    /*
+     * Add all validaton rules of the corresponding policy cmpt and childs
+     */
+    private void getValidationRules(ITestPolicyCmpt testPolicyCmpt, List validationRules) throws CoreException {
+        // add rules of childs, ignore if the corresponding objects are not found (validation errors)
+        ITestPolicyCmptRelation[] rs = testPolicyCmpt.getTestPolicyCmptRelations();
+        for (int i = 0; i < rs.length; i++) {
+            ITestPolicyCmpt tpc = rs[i].findTarget();
+            if (tpc == null){
+                continue;
+            }
+            getValidationRules(testPolicyCmpt, validationRules);
+        }
+        ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter();
+        if (typeParam == null){
+            return;
+        }
+        IPolicyCmptType pct = typeParam.findPolicyCmptType();
+        if (pct == null){
+            return;
+        }
+        validationRules.addAll(Arrays.asList(pct.getRules()));
+        IProductCmpt pc = testPolicyCmpt.findProductCmpt();
+        if (pc == null){
+            return;
+        }
+        IPolicyCmptType pctOfPc = pc.findPolicyCmptType();
+        if (pctOfPc == null){
+            return;
+        }
+        if (!pctOfPc.equals(pct)){
+            validationRules.addAll(Arrays.asList(pctOfPc.getRules()));
+        }
+    }
+    
     /*
      * Creates a new test policy component without updating the src file.
      */
@@ -837,7 +920,7 @@ public class TestCase extends IpsObject implements ITestCase {
         }
         return false;
     }
-    
+
     /**
      * {@inheritDoc}
      */

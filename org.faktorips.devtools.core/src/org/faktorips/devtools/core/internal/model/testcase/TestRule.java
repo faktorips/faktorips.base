@@ -170,11 +170,8 @@ public class TestRule extends TestObject implements ITestRule {
      * {@inheritDoc}
      */
     public IValidationRule findValidationRule() throws CoreException {
-        ITestCaseType testCaseType = ((ITestCase)getParent()).findTestCaseType();
-        if (testCaseType == null){
-            return null;
-        }
-        return testCaseType.findValidationRule(validationRule);
+        ITestCase testCase = (ITestCase) getParent();
+       return testCase.findValidationRule(validationRule);
     }
 
     /**

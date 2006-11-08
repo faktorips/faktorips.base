@@ -17,6 +17,7 @@
 
 package org.faktorips.devtools.core.internal.model.testcase;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,6 +25,8 @@ import org.faktorips.devtools.core.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsProject;
 import org.faktorips.devtools.core.model.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
@@ -31,6 +34,7 @@ import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptRelation;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
@@ -324,4 +328,53 @@ public class TestCaseTest extends AbstractIpsPluginTest {
         ml = testCase.validate();
         assertNotNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
     }
+    
+    public void testGetTestRuleCandidates() throws CoreException{
+        // create policy cmpts with validation rules 
+        IPolicyCmptType policyCmptTypeA = newPolicyCmptType(root, "PolicyCmptA");
+        policyCmptTypeA.setAbstract(true);
+        IPolicyCmptType policyCmptTypeB = newPolicyCmptType(root, "PolicyCmptB");
+        policyCmptTypeB.setSupertype(policyCmptTypeA.getQualifiedName());
+        IPolicyCmptType policyCmptTypeC = newPolicyCmptType(root, "PolicyCmptC");
+        policyCmptTypeC.setSupertype(policyCmptTypeA.getQualifiedName());
+        
+        // create product cmpts for B and C (will be added in the test case)
+        IProductCmpt productCmptB = newProductCmpt(root, "ProductCmptB");
+        productCmptB.setPolicyCmptType(policyCmptTypeB.getQualifiedName());
+        IProductCmpt productCmptC = newProductCmpt(root, "ProductCmptC");
+        productCmptC.setPolicyCmptType(policyCmptTypeC.getQualifiedName());
+        
+        IValidationRule ruleA = policyCmptTypeA.newRule();
+        ruleA.setName("RuleA");
+        ruleA.setMessageCode("RuleA");
+        IValidationRule ruleB = policyCmptTypeB.newRule();
+        ruleB.setName("RuleB");
+        ruleB.setMessageCode("RuleB");
+        IValidationRule ruleC = policyCmptTypeC.newRule();
+        ruleC.setName("RuleC");
+        ruleC.setMessageCode("RuleC");
+        
+        // create parameter for the abstract policy cmpt
+        ITestPolicyCmptTypeParameter paramA1 = testCaseType.newInputTestPolicyCmptTypeParameter();
+        paramA1.setPolicyCmptType(policyCmptTypeA.getQualifiedName());
+        paramA1.setName("PolicyCmptA1");
+        ITestPolicyCmptTypeParameter paramA2 = testCaseType.newInputTestPolicyCmptTypeParameter();
+        paramA2.setPolicyCmptType(policyCmptTypeA.getQualifiedName());
+        paramA2.setName("PolicyCmptA2");
+
+        ITestPolicyCmpt tpcB = testCase.newTestPolicyCmpt();
+        tpcB.setTestPolicyCmptTypeParameter(paramA1.getName());
+        tpcB.setProductCmpt(productCmptB.getQualifiedName());
+        
+        ITestPolicyCmpt tpcC = testCase.newTestPolicyCmpt();
+        tpcC.setTestPolicyCmptTypeParameter(paramA2.getName());
+        tpcC.setProductCmpt(productCmptC.getQualifiedName());
+        
+        IValidationRule[] testRuleParameters = testCase.getTestRuleCandidates();
+        assertEquals(3, testRuleParameters.length);
+        List testRuleParametersList = Arrays.asList(testRuleParameters);
+        assertTrue(testRuleParametersList.contains(ruleA));
+        assertTrue(testRuleParametersList.contains(ruleB));
+        assertTrue(testRuleParametersList.contains(ruleC));
+    }    
 }

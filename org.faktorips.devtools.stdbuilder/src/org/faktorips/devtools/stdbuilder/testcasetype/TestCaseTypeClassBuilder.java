@@ -444,14 +444,30 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Example:
      * <p>
      * <pre>
-    *        [PolicyCmptTypeParameter.name] = new [PolicyCmptTypeParameter.name]();
+     *       try {
+     *           String className = childElement.getAttribute("class");
+     *           inputTcPolicyA_1 =([PolicyCmptTypeParameter.name]) Class.forName(className, true, [PolicyCmptTypeParameter.name].class.getClassLoader()).newInstance();
+     *           inputTcPolicyA_1.initFromXml(childElement, true, getRepository(), null);
+     *       }
+     *       catch (Exception e) {
+     *           throw new RuntimeException(e);
+     *       }
      * </pre>
      */    
     protected void buildConstrutorForTestPolicyCmptParameter(JavaCodeFragment body, ITestPolicyCmptTypeParameter policyTypeParam, String variablePrefix) throws CoreException{
         String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam); 
-        body.append(variablePrefix + policyTypeParam.getName() + " = new ");
+        String variableName = variablePrefix + policyTypeParam.getName();
+        body.appendln("try {");
+        body.appendln("String className = childElement.getAttribute(\"class\");");
+        body.append(variableName);
+        body.append(" =(");
         body.appendClassName(qualifiedPolicyCmptName);
-        body.appendln("();");
+        body.append(") Class.forName(className, true, ");
+        body.appendClassName(qualifiedPolicyCmptName);
+        body.appendln(".class.getClassLoader()).newInstance();");
+        body.append(variableName);
+        body.appendln(".initFromXml(childElement, true, getRepository(), null);");
+        body.appendln("} catch (Exception e) {throw new RuntimeException(e);}");
     }
     
     /*

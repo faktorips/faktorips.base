@@ -234,6 +234,7 @@ public class TestCaseTypeTest extends AbstractIpsPluginTest {
         rule2.setName("Rule2");
         rule2.setMessageCode("Rule2");
         
+        type.newInputTestPolicyCmptTypeParameter(); // dummy with no rules
         ITestPolicyCmptTypeParameter param1 = type.newInputTestPolicyCmptTypeParameter();
         param1.setPolicyCmptType(policyCmptType1.getQualifiedName());
         param1.setName("PolicyCmpt1");

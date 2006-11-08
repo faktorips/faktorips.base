@@ -146,10 +146,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setTestPolicyCmptTypeParameter(String newPolicyCmptType) {
+	public void setTestPolicyCmptTypeParameter(String testPolicyCmptTypeParameter) {
 		String oldPolicyCmptType = this.testPolicyCmptType;
-		this.testPolicyCmptType = newPolicyCmptType;
-		valueChanged(oldPolicyCmptType, newPolicyCmptType);
+		this.testPolicyCmptType = testPolicyCmptTypeParameter;
+		valueChanged(oldPolicyCmptType, testPolicyCmptTypeParameter);
 	}
 
 	/**
