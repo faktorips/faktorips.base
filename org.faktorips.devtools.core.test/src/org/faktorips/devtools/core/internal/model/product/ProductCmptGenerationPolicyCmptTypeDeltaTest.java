@@ -32,11 +32,13 @@ import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 
 /**
@@ -314,4 +316,38 @@ public class ProductCmptGenerationPolicyCmptTypeDeltaTest extends AbstractIpsPlu
         assertEquals(0, relations.length);
     }
     
+    public void testGetTableStructureUsagesWithMissingContentUsages() throws Exception {
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);  
+        assertEquals(0, delta.getTableStructureUsagesWithMissingContentUsages().length);
+        
+        ITableStructureUsage tsu = pcType.newTableStructureUsage();
+        tsu.setRoleName("Egon");
+        
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType); 
+        ITableStructureUsage[] missing = delta.getTableStructureUsagesWithMissingContentUsages();
+        assertEquals(1, missing.length);
+        assertSame(tsu, missing[0]);
+        
+        ITableContentUsage tcu = generation.newTableContentUsage();
+        tcu.setStructureUsage("Egon");
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType); 
+        assertEquals(0, delta.getTableStructureUsagesWithMissingContentUsages().length);
+    }
+    
+    public void testGetTableContentUsagesWithMissingStructureUsages() throws Exception {
+        IProductCmptGenerationPolicyCmptTypeDelta delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType);  
+        assertEquals(0, delta.getTableContentUsagesWithMissingStructureUsages().length);
+        
+        ITableContentUsage tcu = generation.newTableContentUsage();
+        tcu.setStructureUsage("Egon");
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType); 
+        ITableContentUsage[] missing = delta.getTableContentUsagesWithMissingStructureUsages();
+        assertEquals(1, missing.length);
+        assertSame(tcu, missing[0]);
+        
+        ITableStructureUsage tsu = pcType.newTableStructureUsage();
+        tsu.setRoleName("Egon");
+        delta = new ProductCmptGenerationPolicyCmptTypeDelta(generation, pcType); 
+        assertEquals(0, delta.getTableContentUsagesWithMissingStructureUsages().length);
+    }
 }
