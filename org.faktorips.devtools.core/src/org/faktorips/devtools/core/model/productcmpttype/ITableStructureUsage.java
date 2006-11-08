@@ -28,6 +28,8 @@ public interface ITableStructureUsage extends IIpsObjectPart {
     
     public final static String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
     
+    public final static String PROPERTY_MANDATORY_TABLE_CONTENT = "mandatoryTableContent"; //$NON-NLS-1$
+    
     /**
      * Returns the parent product cmpt type.
      */
@@ -42,6 +44,17 @@ public interface ITableStructureUsage extends IIpsObjectPart {
      * Returns the role name.
      */
     public String getRoleName();  
+    
+    /**
+     * Sets if the table content is mandatory for this table structure usage.
+     */
+    public void setMandatoryTableContent(boolean mandatoryTableContent);
+    
+    /**
+     * Returns <code>true</code> if the table content is mandatory for this table structure usage,
+     * otherwise <code>false</code>.
+     */
+    public boolean isMandatoryTableContent();
     
     /**
      * Returns all table structures this usage belongs to.<br>

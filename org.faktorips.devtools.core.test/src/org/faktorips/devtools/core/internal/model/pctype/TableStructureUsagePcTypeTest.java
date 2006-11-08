@@ -59,14 +59,19 @@ public class TableStructureUsagePcTypeTest extends AbstractIpsPluginTest {
         Element paramEl = XmlUtil.getElement(docEl, "TableStructureUsage", 0);
         tableStructureUsage.initFromXml(paramEl);
         assertEquals("role1", tableStructureUsage.getRoleName());
+        assertTrue(tableStructureUsage.isMandatoryTableContent());
         assertEquals(3, tableStructureUsage.getTableStructures().length);
         for (int i = 0; i < 3; i++) {
             assertEquals("tableStructure"+(i+1), tableStructureUsage.getTableStructures()[i]);
         }
+        paramEl = XmlUtil.getElement(docEl, "TableStructureUsage", 1);
+        tableStructureUsage.initFromXml(paramEl);
+        assertFalse(tableStructureUsage.isMandatoryTableContent());
     }
     
     public void testToXml(){
         tableStructureUsage.setRoleName("roleA");
+        tableStructureUsage.setMandatoryTableContent(true);
         tableStructureUsage.addTableStructure("tableStructureA");
         tableStructureUsage.addTableStructure("tableStructureB");
         Element element = tableStructureUsage.toXml(this.newDocument());
@@ -75,6 +80,7 @@ public class TableStructureUsagePcTypeTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         
         assertEquals("roleA", copy.getRoleName());
+        assertTrue(copy.isMandatoryTableContent());
         assertEquals(2, copy.getTableStructures().length);
         assertEquals("tableStructureA", copy.getTableStructures()[0]);
         assertEquals("tableStructureB", copy.getTableStructures()[1]);
@@ -83,6 +89,15 @@ public class TableStructureUsagePcTypeTest extends AbstractIpsPluginTest {
     public void testSetRoleName() {
         tableStructureUsage.setRoleName("role100");
         assertEquals("role100", tableStructureUsage.getRoleName());
+        assertTrue(pcType.getIpsSrcFile().isDirty());
+    }
+    
+    public void testSetIsMandatoryTableContent() {
+        tableStructureUsage.setMandatoryTableContent(false);
+        assertFalse(tableStructureUsage.isMandatoryTableContent());
+        assertFalse(pcType.getIpsSrcFile().isDirty());
+        tableStructureUsage.setMandatoryTableContent(true);
+        assertTrue(tableStructureUsage.isMandatoryTableContent());
         assertTrue(pcType.getIpsSrcFile().isDirty());
     }
     

@@ -47,6 +47,31 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection  implements 
     private TblsStructureUsageComposite tblsStructureUsageComposite;
 
     /**
+     * Label provider for the table structure usages. Adds the first related table structure and ... if 
+     * more than one table structure is related.
+     */
+    private class TblStructureLabelProvider extends DefaultLabelProvider{
+        /**
+         * {@inheritDoc}
+         */
+        public String getText(Object element) {
+            StringBuffer sb = new StringBuffer(super.getText(element));
+            if (element instanceof ITableStructureUsage){
+                String[] tableStructures = ((ITableStructureUsage)element).getTableStructures();
+                if (tableStructures.length > 0){
+                    sb.append(" : "); //$NON-NLS-1$
+                    sb.append(tableStructures[0]);
+                    if (tableStructures.length > 1){
+                        sb.append(", ..."); //$NON-NLS-1$
+                    }
+                }
+                    
+            }
+            return sb.toString();
+        }
+    }
+
+    /**
      * A composite that shows the used table structures for a product component type in a viewer and 
      * allows to edit, create, move and delete.
      */
@@ -79,7 +104,7 @@ public class TblStructureUsageSection extends SimpleIpsPartsSection  implements 
          * {@inheritDoc}
          */
         protected ILabelProvider createLabelProvider() {
-            return new DefaultLabelProvider();
+            return new TblStructureLabelProvider();
         }
 
         /**

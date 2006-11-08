@@ -32,6 +32,8 @@ public interface ITableStructureUsage extends IIpsObjectPart {
     
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
     
+    public final static String PROPERTY_MANDATORY_TABLE_CONTENT = "mandatoryTableContent"; //$NON-NLS-1$
+    
     public final static String MSGCODE_PREFIX = "TableStructureUsage-"; //$NON-NLS-1$
     
     /**
@@ -99,4 +101,15 @@ public interface ITableStructureUsage extends IIpsObjectPart {
      * a table structure.
      */
     public int[] moveTableStructure(int[] indexes, boolean up);
+    
+    /**
+     * Sets if the table content is mandatory for this table structure usage.
+     */
+    public void setMandatoryTableContent(boolean mandatoryTableContent);
+    
+    /**
+     * Returns <code>true</code> if the table content is mandatory for this table structure usage,
+     * otherwise <code>false</code>.
+     */
+    public boolean isMandatoryTableContent();
 }

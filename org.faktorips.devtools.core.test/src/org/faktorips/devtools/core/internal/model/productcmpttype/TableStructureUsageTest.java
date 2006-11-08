@@ -144,4 +144,11 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         ITableStructureUsage tcu2 = productCmptType.newTableStructureUsage();
         assertFalse(tableStructureUsage.getId() == tcu2.getId());
     }
+    
+    public void testSetIsMandatoryTableContent() {
+        tableStructureUsage.setMandatoryTableContent(false);
+        assertFalse(tableStructureUsage.isMandatoryTableContent());
+        tableStructureUsage.setMandatoryTableContent(true);
+        assertTrue(tableStructureUsage.isMandatoryTableContent());
+    }    
 }

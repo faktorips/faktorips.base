@@ -117,6 +117,20 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     /**
      * {@inheritDoc}
      */
+    public boolean isMandatoryTableContent() {
+        return tableStructureUsage.isMandatoryTableContent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setMandatoryTableContent(boolean mandatoryTableContent) {
+        tableStructureUsage.setMandatoryTableContent(mandatoryTableContent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String[] getTableStructures() {
         return tableStructureUsage.getTableStructures();
     }

@@ -56,6 +56,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     
     private String roleName = ""; //$NON-NLS-1$
     
+    private boolean mandatoryTableContent = false;
+    
     // Contains the related table structures identified by the full qualified name
     private List tableStructures = new ArrayList();
     
@@ -234,6 +236,14 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     protected void initPropertiesFromXml(Element element, Integer id) {
         super.initPropertiesFromXml(element, id);
         roleName = element.getAttribute(PROPERTY_ROLENAME);
+        String madatoryTableContentString = element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT);
+        if (StringUtils.isNotEmpty(madatoryTableContentString)) {
+            mandatoryTableContent = madatoryTableContentString.equalsIgnoreCase("yes") ? true : //$NON-NLS-1$
+                                    madatoryTableContentString.equalsIgnoreCase("true") ? true : //$NON-NLS-1$
+                                    madatoryTableContentString.equalsIgnoreCase("1") ? true : false; //$NON-NLS-1$
+        } else {
+            mandatoryTableContent = false;
+        }        
     }
 
     /**
@@ -242,6 +252,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ROLENAME, roleName);
+        element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, mandatoryTableContent ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /** 
@@ -267,6 +278,22 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         valueChanged(oldRoleName, newRoleName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isMandatoryTableContent() {
+        return mandatoryTableContent;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setMandatoryTableContent(boolean mandatoryTableContent) {
+        boolean oldIsMandatory = this.mandatoryTableContent;
+        this.mandatoryTableContent = mandatoryTableContent;
+        valueChanged(oldIsMandatory, mandatoryTableContent);
+    }
+    
     /**
      * {@inheritDoc}
      */

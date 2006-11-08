@@ -4,9 +4,11 @@
  Test data for TableStructureUsageTest.java
 -->
 <testcases>
-    <TableStructureUsage roleName="role1">
+    <TableStructureUsage roleName="role1" mandatoryTableContent="yes">
     	<TableStructure tableStructure="tableStructure1" />
     	<TableStructure tableStructure="tableStructure2" />
     	<TableStructure tableStructure="tableStructure3" />
     </TableStructureUsage>
+    <TableStructureUsage roleName="role2" mandatoryTableContent="no">
+    </TableStructureUsage>    
 </testcases>

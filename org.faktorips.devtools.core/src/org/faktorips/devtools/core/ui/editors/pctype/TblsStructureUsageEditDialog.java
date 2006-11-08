@@ -49,9 +49,11 @@ import org.faktorips.devtools.core.model.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -62,6 +64,7 @@ import org.faktorips.util.message.MessageList;
  */
 public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
     private TextField nameField;
+    private CheckboxField mandatoryTableContentField;
     
     private ITableStructureUsage tblStructureUsage;
     
@@ -163,6 +166,7 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
     
     private void createButtons(Composite composite) {
         Composite buttonComposite = uiToolkit.createGridComposite(composite, 1, true, false);
+        buttonComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         btnAdd = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_Button_Add);
         btnRemove = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_Button_Remove);
         btnUp = uiToolkit.createButton(buttonComposite, Messages.TblsStructureUsageEditDialog_Button_Up);
@@ -279,14 +283,19 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog{
         uiToolkit.createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_Label_RoleName);
         Text nameText = uiToolkit.createText(workArea);            
         
+        uiToolkit.createFormLabel(workArea, Messages.TblsStructureUsageEditDialog_Label_MandatoryTableContent);
+        Checkbox mandatoryTableContent = uiToolkit.createCheckbox(workArea);     
+        
         nameField = new TextField(nameText);
+        mandatoryTableContentField = new CheckboxField(mandatoryTableContent);
         
         return c;
     }
 
     protected void connectToModel() {
         super.connectToModel();
-        uiController.add(nameField, ITableStructureUsage.PROPERTY_ROLENAME);            
+        uiController.add(nameField, ITableStructureUsage.PROPERTY_ROLENAME);
+        uiController.add(mandatoryTableContentField, ITableStructureUsage.PROPERTY_MANDATORY_TABLE_CONTENT);
     }
     
     /*

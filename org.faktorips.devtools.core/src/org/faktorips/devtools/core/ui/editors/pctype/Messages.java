@@ -131,4 +131,5 @@ public class Messages extends NLS {
     public static String TblsStructureUsageEditDialog_Label_RoleName;
     public static String TblsStructureUsageEditDialog_SelectTableStructureDialog_Title;
     public static String TblsStructureUsageEditDialog_SelectTableStructureDialog_Description;
+    public static String TblsStructureUsageEditDialog_Label_MandatoryTableContent;
 }
