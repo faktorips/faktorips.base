@@ -113,6 +113,19 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public String getLastSegmentName() {
+        int index = name.lastIndexOf('.');
+        if (index == -1) {
+            return name;
+        }
+        else {
+            return name.substring(index + 1);
+        }
+    }
+
+    /**
      * Searches all objects of the given type and adds them to the result.
      * 
      * @throws CoreException if an error occurs while searching

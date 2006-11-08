@@ -181,11 +181,9 @@ public interface IIpsPackageFragment extends IIpsElement {
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) throws CoreException;
     
     /**
-     * Returns the (unqualified) name of the corresponding folder in the file system.
-     * 
-     * @deprecated use getCorrespondingResource().getName(). Note that packs from an archive don't have a corresponding ressource!
+     * @return The the last segment of the package name.
      */
-	public String getFolderName();
+	public String getLastSegmentName();
 	
 	/**
 	 * Returns <code>true</code> if this IIpsPackageFragement is the default-package. 

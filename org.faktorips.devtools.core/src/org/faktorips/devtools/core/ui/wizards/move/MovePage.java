@@ -122,7 +122,7 @@ public class MovePage extends WizardPage implements ModifyListener {
 				.getFirstElement();
 		IIpsPackageFragment pack = (IIpsPackageFragment) selected;
 
-		String name = pack.getFolderName();
+		String name = pack.getLastSegmentName();
 
 		IStatus val = JavaConventions.validatePackageName(name);
 		if (val.getSeverity() == IStatus.ERROR) {
@@ -183,7 +183,7 @@ public class MovePage extends WizardPage implements ModifyListener {
 				if (((IIpsPackageFragment) element).isDefaultPackage()) {
 					return Messages.MovePage_labelDefaultPackage;
 				}
-				text = ((IIpsPackageFragment) element).getFolderName();
+				text = ((IIpsPackageFragment) element).getLastSegmentName();
 			} else if (element instanceof IIpsElement) {
 				text = ((IIpsElement) element).getName();
 			}

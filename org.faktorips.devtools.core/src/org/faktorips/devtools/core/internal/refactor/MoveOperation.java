@@ -138,7 +138,14 @@ public class MoveOperation implements IRunnableWithProgress {
 		}
 		for (int i = 0; i < sources.length; i++) {
 			if (sources[i] instanceof IIpsPackageFragment) {
-				result[i] = prefix + ((IIpsPackageFragment)sources[i]).getFolderName();
+                String name = ((IIpsPackageFragment)sources[i]).getName();
+                int index = name.lastIndexOf('.');
+                if (index == -1) {
+                    result[i] = prefix + name;
+                }
+                else {
+                    result[i] = prefix + name.substring(index + 1);
+                }
 			}
 			else {
 				result[i] = prefix + sources[i].getName();

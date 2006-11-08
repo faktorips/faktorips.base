@@ -354,13 +354,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment implements II
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public String getFolderName() {
-        return this.getCorrespondingResource().getName();
-    }
-
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
             throws CoreException {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {

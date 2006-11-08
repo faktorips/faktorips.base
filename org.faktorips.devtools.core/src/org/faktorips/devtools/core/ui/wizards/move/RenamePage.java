@@ -134,7 +134,7 @@ public class RenamePage extends WizardPage implements ModifyListener {
 		toolkit.createLabel(parent, Messages.RenamePage_newName);
 		newName = toolkit.createText(parent);
 		if (obj instanceof IpsPackageFragment) {
-			newName.setText(((IIpsPackageFragment)obj).getFolderName());
+			newName.setText(((IIpsPackageFragment)obj).getLastSegmentName());
 		} else {
 			newName.setText(obj.getName());
 		}

@@ -168,13 +168,6 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * {@inheritDoc}
      */
-    public String getFolderName() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public IResource getCorrespondingResource() {
         return null;
     }
