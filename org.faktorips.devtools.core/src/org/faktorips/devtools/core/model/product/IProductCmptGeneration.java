@@ -154,5 +154,20 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * Moves the first given relation in front of the second one.
      */
     public void moveRelation(IProductCmptRelation toMove, IProductCmptRelation moveBefore);
+    
+    /**
+     * @return A new table content usage. 
+     */
+    public ITableContentUsage newTableContentUsage();
 
+    /**
+     * @param rolename The rolename for the required content usage.
+     * @return The table content usage for the table structure usage with the given rolename.
+     */
+    public ITableContentUsage getTableContentUsage(String rolename);
+    
+    /**
+     * @return All table content usages defined by this generation.
+     */
+    public ITableContentUsage[] getTableContentUsages();
 }

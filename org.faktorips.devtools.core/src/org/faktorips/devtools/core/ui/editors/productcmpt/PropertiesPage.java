@@ -99,6 +99,10 @@ public class PropertiesPage extends IpsObjectEditorPage {
         
             public void contentsChanged(ContentChangeEvent event) {
                 if (event.getIpsSrcFile().equals(((ProductCmptEditor)getEditor()).getIpsObject().getIpsSrcFile())) {
+                    if (getPartControl().isDisposed()) {
+                        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+                        return;
+                    }
                     updateTabname();
                 }
             }

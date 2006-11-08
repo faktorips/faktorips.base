@@ -27,9 +27,11 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IValueSet;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 
 /**
  * Content provider to represent differnces between product components and policy component types.
@@ -81,6 +83,12 @@ final class ProductCmptDeltaContentProvider implements ITreeContentProvider {
 		if (in.getTypeMismatchElements().length > 0) {
 			result.add(ProductCmptDeltaType.CFGELEMENT_TYPE_MISMATCH);
 		}
+        if (in.getTableStructureUsagesWithMissingContentUsages().length > 0) {
+            result.add(ProductCmptDeltaType.MISSING_CONTENTUSAGE);
+        }
+        if (in.getTableContentUsagesWithMissingStructureUsages().length > 0) {
+            result.add(ProductCmptDeltaType.MISSING_STRUCTUREUSAGE);
+        }
 		return result.toArray();
 	}
 
@@ -171,8 +179,23 @@ final class ProductCmptDeltaContentProvider implements ITreeContentProvider {
 				}
 			}
 		}
-		
-		
+        else if (parentElement == ProductCmptDeltaType.MISSING_CONTENTUSAGE) {
+            ITableStructureUsage[] tsus = in.getTableStructureUsagesWithMissingContentUsages();
+            String text = Messages.ProductCmptDeltaContentProvider_msgMissingContentUsage;
+            for (int i = 0; i < tsus.length; i++) {
+                result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.MISSING_CONTENTUSAGE, NLS.bind(text, tsus[i]
+                        .getRoleName())));
+            }
+        }
+        else if (parentElement == ProductCmptDeltaType.MISSING_STRUCTUREUSAGE) {
+            ITableContentUsage[] tcus = in.getTableContentUsagesWithMissingStructureUsages();
+            String text = Messages.ProductCmptDeltaContentProvider_msgMissingStructureUsage;
+            for (int i = 0; i < tcus.length; i++) {
+                result.add(new ProductCmptDeltaDetail(ProductCmptDeltaType.MISSING_STRUCTUREUSAGE, NLS.bind(text,
+                        tcus[i].getStructureUsage(), tcus[i].getTableContentName())));
+            }
+        }
+				
 		return result.toArray();
 	}
 }

@@ -19,6 +19,7 @@ package org.faktorips.devtools.core.model.product;
 
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 
 /**
  * A product component generation /policy component type delta describes the difference
@@ -73,4 +74,15 @@ public interface IProductCmptGenerationPolicyCmptTypeDelta {
      */
     public IProductCmptRelation[] getRelationsWithMissingPcTypeRelations();
     
+    /**
+     * @return All table structures of the policy component type where no corresponding
+     * table content usages in the product component was found. 
+     */
+    public ITableStructureUsage[] getTableStructureUsagesWithMissingContentUsages();
+    
+    /**
+     * @return All table content usages of the product component where no corresponding
+     * table structure usages in the policy component type was found. 
+     */
+    public ITableContentUsage[] getTableContentUsagesWithMissingStructureUsages();
 }

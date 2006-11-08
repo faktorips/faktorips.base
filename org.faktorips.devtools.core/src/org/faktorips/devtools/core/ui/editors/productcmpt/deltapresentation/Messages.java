@@ -69,4 +69,12 @@ public class Messages extends NLS {
 	public static String ProductCmptDeltaDialog_fix;
 
 	public static String ProductCmptDeltaDialog_ignore;
+
+    public static String ProductCmptDeltaContentProvider_msgMissingContentUsage;
+
+    public static String ProductCmptDeltaContentProvider_msgMissingStructureUsage;
+
+    public static String ProductCmptDeltaType_missingTableStructureUsage;
+
+    public static String ProductCmptDeltaType_missingTableContentUsage;
 }

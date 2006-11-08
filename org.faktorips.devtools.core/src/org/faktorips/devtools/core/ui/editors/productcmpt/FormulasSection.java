@@ -38,12 +38,17 @@ import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
+import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -110,10 +115,8 @@ public class FormulasSection extends IpsSection {
 		workAreaLayout.marginWidth = 5;
 		this.toolkit = toolkit;
 
-		// following line forces the paint listener to draw a light grey border
-		// around
-		// the text control. Can only be understood by looking at the
-		// FormToolkit.PaintBorder class.
+		// following line forces the paint listener to draw a light grey border around
+        // the text control. Can only be understood by looking at the FormToolkit.PaintBorder class.
 		rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 		toolkit.getFormToolkit().paintBordersFor(rootPane);
 		createEditControls();
@@ -137,41 +140,55 @@ public class FormulasSection extends IpsSection {
 	
 		IConfigElement[] elements = generation.getConfigElements(ConfigElementType.FORMULA);
 		Arrays.sort(elements, new ConfigElementComparator());
-	
+
+        // handle the "no formulas defined" label
 		if (elements.length == 0 && noFormulasLabel == null) {
-			noFormulasLabel = toolkit.createLabel(rootPane,
-					Messages.FormulasSection_noFormulasDefined);
-		} else if (elements.length > 0 && noFormulasLabel != null) {
-			noFormulasLabel.dispose();
-			noFormulasLabel = null;
-		}
+            noFormulasLabel = toolkit.createLabel(rootPane, Messages.FormulasSection_noFormulasDefined);
+        }
+        else if (elements.length > 0 && noFormulasLabel != null) {
+            noFormulasLabel.dispose();
+            noFormulasLabel = null;
+        }
 	
 		for (int i = 0; i < elements.length; i++) {
 	
-			toolkit.createFormLabel(rootPane, StringUtils
-					.capitalise(elements[i].getName()));
-			FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit,
-					elements[i], this.getShell(), this);
-			ctrl.add(new TextField(evc.getTextControl()), elements[i],
-					ConfigElement.PROPERTY_VALUE);
-			addFocusControl(evc.getTextControl());
+			toolkit.createFormLabel(rootPane, StringUtils.capitalise(elements[i].getName()));
+            FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, elements[i], this.getShell(), this);
+            ctrl.add(new TextField(evc.getTextControl()), elements[i], ConfigElement.PROPERTY_VALUE);
+            addFocusControl(evc.getTextControl());
 			this.editControls.add(evc);
 	
 			try {
 				IAttribute attr = elements[i].findPcTypeAttribute();
-				if (attr != null) { 
-					FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(
-							attr, elements[i]
-							               .getIpsProject(), elements[i].getExprCompiler());
-					ContentAssistHandler.createHandlerForText(evc.getTextControl(),
-							CompletionUtil
-							.createContentAssistant(completionProcessor));
-				}
+                if (attr != null) {
+                    FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(attr, elements[i]
+                            .getIpsProject(), elements[i].getExprCompiler());
+                    ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil
+                            .createContentAssistant(completionProcessor));
+                }
 			} catch (CoreException e) {
 				IpsPlugin.logAndShowErrorDialog(e);
 			}
 		}
-	
+
+        ITableContentUsage usages[] = generation.getTableContentUsages();
+        for (int i = 0; i < usages.length; i++) {
+            try {
+                IProductCmptType type = generation.getProductCmpt().findProductCmptType();
+                ITableStructureUsage tsu = type.getTableStructureUsage(usages[i].getStructureUsage());
+                
+                // create label here to avoid lost label in case of exception
+                toolkit.createFormLabel(rootPane, StringUtils.capitalise(usages[i].getStructureUsage()));
+                
+                TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(), rootPane, toolkit, tsu);
+                ctrl.add(new TextButtonField(tcuControl), usages[i], ITableContentUsage.PROPERTY_TABLE_CONTENT);
+                addFocusControl(tcuControl.getTextControl());
+                this.editControls.add(tcuControl);
+            }
+            catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
 		rootPane.layout(true);
 		rootPane.redraw();
 	}

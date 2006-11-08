@@ -112,4 +112,12 @@ public class Messages extends NLS {
 
     public static String FormulaTestCase_ValidationMessage_MismatchBetweenFormulaInputValuesAndIdentifierInFormula;
 
+    public static String TableContentUsage_msgNoType;
+
+    public static String TableContentUsage_msgUnknownStructureUsage;
+
+    public static String TableContentUsage_msgUnknownTableContent;
+
+    public static String TableContentUsage_msgInvalidTableContent;
+
 }

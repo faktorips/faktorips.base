@@ -54,10 +54,10 @@ final class ProductCmptDeltaDetail {
             return DeltaCompositeIcon.createModifyImage(ConfigElementType.PRODUCT_ATTRIBUTE.getImage());
         }
         if (type == ProductCmptDeltaType.RELATION_MISMATCH) {
-            return DeltaCompositeIcon.createDeleteImage(IpsPlugin.getDefault().getImage("Relation.gif"));
+            return DeltaCompositeIcon.createDeleteImage(IpsPlugin.getDefault().getImage("Relation.gif")); //$NON-NLS-1$
         }
         if (type == ProductCmptDeltaType.VALUESET_MISMATCH) {
-            return DeltaCompositeIcon.createModifyImage(IpsPlugin.getDefault().getImage("ValueSet.gif"));
+            return DeltaCompositeIcon.createModifyImage(IpsPlugin.getDefault().getImage("ValueSet.gif")); //$NON-NLS-1$
         }
         
         return null;

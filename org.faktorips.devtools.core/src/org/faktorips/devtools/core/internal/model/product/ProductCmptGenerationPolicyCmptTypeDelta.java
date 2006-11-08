@@ -24,11 +24,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ValueSetType;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.util.ArgumentCheck;
 
 
@@ -45,6 +47,8 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
     private IConfigElement[] elementsWithTypeMismatch;
     private IConfigElement[] elementsWithValueSetMismatch; 
     private IProductCmptRelation[] relationsWithMissingPcTypeRelations;
+    private ITableStructureUsage[] tableStructureUsagesWithMissingTableContentUsages;
+    private ITableContentUsage[] tableContentUsagesWithMissingTableStructureUsages;
     
     public ProductCmptGenerationPolicyCmptTypeDelta(
             IProductCmptGeneration generation, 
@@ -58,8 +62,38 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         computeElementsWithMissingAttributes(hierarchy);
         computeElementsWithTypeOrValueSetMismatch(hierarchy);
         computeRelationsWithMissingPcTypeRelations(hierarchy);
+        computeStructureUsagesWithMissingContentUsages(hierarchy);
+        computeContentUsagesWithMissingStructureUsages(hierarchy);
     }
     
+    /**
+     * @param hierarchy
+     */
+    private void computeContentUsagesWithMissingStructureUsages(ITypeHierarchy hierarchy) {
+        List missing = new ArrayList();
+        
+        ITableContentUsage[] usages = generation.getTableContentUsages();
+        for (int i = 0; i < usages.length; i++) {
+            if (hierarchy.findTableStructureUsage(pcType, usages[i].getStructureUsage()) == null) {
+                missing.add(usages[i]);
+            }
+        }
+        tableContentUsagesWithMissingTableStructureUsages = (ITableContentUsage[])missing
+                .toArray(new ITableContentUsage[missing.size()]);
+    }
+
+    private void computeStructureUsagesWithMissingContentUsages(ITypeHierarchy hierarchy) {
+        List missing = new ArrayList();
+        ITableStructureUsage[] usages = hierarchy.getAllTableStructureUsages(pcType);
+        for (int i = 0; i < usages.length; i++) {
+            if (generation.getTableContentUsage(usages[i].getRoleName()) == null) {
+                missing.add(usages[i]);
+            }
+        }
+        tableStructureUsagesWithMissingTableContentUsages = (ITableStructureUsage[])missing
+                .toArray(new ITableStructureUsage[missing.size()]);
+    }
+
     private void computeAttributesWithMissingConfigElements(ITypeHierarchy hierarchy) throws CoreException {
         List missing = new ArrayList();
         IAttribute[] attributes = hierarchy.getAllAttributesRespectingOverride(pcType);
@@ -154,7 +188,10 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         	&& elementsWithMissingAttributes.length == 0
         	&& elementsWithTypeMismatch.length == 0
         	&& elementsWithValueSetMismatch.length == 0
-        	&& relationsWithMissingPcTypeRelations.length == 0;
+        	&& relationsWithMissingPcTypeRelations.length == 0
+            && tableContentUsagesWithMissingTableStructureUsages.length == 0
+            && tableStructureUsagesWithMissingTableContentUsages.length == 0
+            ;
     }
 
     /** 
@@ -198,4 +235,17 @@ public class ProductCmptGenerationPolicyCmptTypeDelta implements
         return elementsWithValueSetMismatch;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public ITableStructureUsage[] getTableStructureUsagesWithMissingContentUsages() {
+        return tableStructureUsagesWithMissingTableContentUsages;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public ITableContentUsage[] getTableContentUsagesWithMissingStructureUsages() {
+        return tableContentUsagesWithMissingTableStructureUsages;
+    }
 }

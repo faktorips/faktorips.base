@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ITimedIpsObject;
 import org.faktorips.devtools.core.model.pctype.IAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IRelation;
+import org.faktorips.devtools.core.model.pctype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.product.ConfigElementType;
 import org.faktorips.devtools.core.model.product.IConfigElement;
 import org.faktorips.devtools.core.model.product.IFormulaTestCase;
@@ -39,6 +40,7 @@ import org.faktorips.devtools.core.model.product.IProductCmpt;
 import org.faktorips.devtools.core.model.product.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.product.IProductCmptGenerationPolicyCmptTypeDelta;
 import org.faktorips.devtools.core.model.product.IProductCmptRelation;
+import org.faktorips.devtools.core.model.product.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeRelation;
 import org.faktorips.util.message.Message;
@@ -55,6 +57,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	private List configElements = new ArrayList(0);
 
 	private ArrayList relations = new ArrayList(0);
+    
+    private List tableContentUsages = new ArrayList(0);
 
 	public ProductCmptGeneration(ITimedIpsObject ipsObject, int id) {
 		super(ipsObject, id);
@@ -74,11 +78,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	 * {@inheritDoc}
 	 */
 	public IIpsElement[] getChildren() {
-		int numOfChildren = getNumOfConfigElements() + getNumOfRelations();
+		int numOfChildren = getNumOfConfigElements() + getNumOfRelations() + getTableContentUsages().length;
 		IIpsElement[] childrenArray = new IIpsElement[numOfChildren];
 		List childrenList = new ArrayList(numOfChildren);
 		childrenList.addAll(configElements);
 		childrenList.addAll(relations);
+        childrenList.addAll(tableContentUsages);
 		childrenList.toArray(childrenArray);
 		return childrenArray;
 	}
@@ -133,15 +138,26 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 			elements[i].setType(a.getConfigElementType());
 		}
 		elements = delta.getElementsWithValueSetMismatch();
-		for (int i = 0; i < elements.length; i++) {
-			IAttribute a = elements[i].findPcTypeAttribute();
-			elements[i].setValueSetCopy(a.getValueSet());
-		}
-		IProductCmptRelation[] relations = delta
-				.getRelationsWithMissingPcTypeRelations();
-		for (int i = 0; i < relations.length; i++) {
-			relations[i].delete();
-		}
+        for (int i = 0; i < elements.length; i++) {
+            IAttribute a = elements[i].findPcTypeAttribute();
+            elements[i].setValueSetCopy(a.getValueSet());
+        }
+
+        IProductCmptRelation[] relations = delta.getRelationsWithMissingPcTypeRelations();
+        for (int i = 0; i < relations.length; i++) {
+            relations[i].delete();
+        }
+        
+        ITableStructureUsage[] tsus = delta.getTableStructureUsagesWithMissingContentUsages();
+        for (int i = 0; i < tsus.length; i++) {
+            ITableContentUsage tcu = newTableContentUsage();
+            tcu.setStructureUsage(tsus[i].getRoleName());
+        }
+        
+        ITableContentUsage[] tcus = delta.getTableContentUsagesWithMissingStructureUsages();
+        for (int i = 0; i < tcus.length; i++) {
+            tcus[i].delete();
+        }
 	}
 
 	/**
@@ -328,6 +344,31 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		objectHasChanged();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public ITableContentUsage newTableContentUsage() {
+        ITableContentUsage retValue = newTableContentUsageInternal(getNextPartId());
+        objectHasChanged();
+        return retValue;
+    }
+
+    public ITableContentUsage[] getTableContentUsages() {
+        return (ITableContentUsage[])tableContentUsages.toArray(new ITableContentUsage[tableContentUsages.size()]);
+    }
+    
+    private ITableContentUsage newTableContentUsageInternal(int id) {
+        ITableContentUsage retValue =  new TableContentUsage(this, id);
+        tableContentUsages.add(retValue);
+        return retValue;
+    }
+    
+    void removeTableContentUsage(ITableContentUsage usage) {
+        tableContentUsages.remove(usage);
+        objectHasChanged();
+    }
+    
+    
 	/*
 	 * Returns true if the generation contains a formula config element, otherwise false.
 	 */
@@ -348,9 +389,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		String xmlTagName = xmlTag.getNodeName();
 		if (xmlTagName.equals(ConfigElement.TAG_NAME)) {
 			return newConfigElementInternal(id);
-		} else if (xmlTagName.equals(ProductCmptRelation.TAG_NAME)) {
+		} 
+        else if (xmlTagName.equals(ProductCmptRelation.TAG_NAME)) {
 			return newRelationInternal(id);
 		}
+        else if (xmlTagName.equals(ITableContentUsage.TAG_NAME)) {
+            return newTableContentUsageInternal(id);
+        }
 		throw new RuntimeException(
 				"Could not create part for tag name" + xmlTagName); //$NON-NLS-1$
 	}
@@ -362,10 +407,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 		if (part instanceof IConfigElement) {
 			configElements.add(part);
 			return;
-		} else if (part instanceof IProductCmptRelation) {
+		}
+        else if (part instanceof IProductCmptRelation) {
 			relations.add(part);
 			return;
 		}
+        else if (part instanceof ITableContentUsage) {
+            tableContentUsages.add(part);
+            return;
+        }
 		throw new RuntimeException("Unknown part type" + part.getClass()); //$NON-NLS-1$
 	}
 
@@ -375,6 +425,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	protected void reinitPartCollections() {
 		configElements.clear();
 		relations.clear();
+        tableContentUsages.clear();
 	}
 
 	/**
@@ -459,11 +510,28 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements
 	public IIpsObjectPart newPart(Class partType) {
 		if (partType.equals(IConfigElement.class)) {
 			return newConfigElement();
-		} else if (partType.equals(IRelation.class)) {
+		} 
+        else if (partType.equals(IRelation.class)) {
 			return newRelation();
 		}
+        else if (partType.equals(ITableContentUsage.class)) {
+            return newTableContentUsage();
+        }
 
 		throw new IllegalArgumentException("Unknown part type" + partType); //$NON-NLS-1$
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public ITableContentUsage getTableContentUsage(String rolename) {
+        for (Iterator iter = this.tableContentUsages.iterator(); iter.hasNext();) {
+            ITableContentUsage element = (ITableContentUsage)iter.next();
+            if (element.getStructureUsage().equals(rolename)) {
+                return element;
+            }
+        }
+        return null;
+    }
 
 }
