@@ -139,4 +139,9 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         ml = tableStructureUsage.validate();
         assertNotNull(ml.getMessageByCode(org.faktorips.devtools.core.model.pctype.ITableStructureUsage.MSGCODE_SAME_ROLENAME));
     }
+    
+    public void testGetId(){
+        ITableStructureUsage tcu2 = productCmptType.newTableStructureUsage();
+        assertFalse(tableStructureUsage.getId() == tcu2.getId());
+    }
 }

@@ -64,6 +64,14 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return tableStructureUsage.isDeleted();
     }
 
+    
+    /**
+     * {@inheritDoc}
+     */
+    public int getId() {
+        return tableStructureUsage.getId();
+    }
+
     /**
      * {@inheritDoc}
      */
