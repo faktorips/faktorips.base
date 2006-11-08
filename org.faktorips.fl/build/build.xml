@@ -22,7 +22,7 @@
 
 		
 		<!-- fl depends on org.faktorips.valuetypes -->
-		<fileset dir="../../org.faktorips.valuetypes/" >
+		<fileset dir="../../org.faktorips.valuetypes/" > 
 		    <patternset> 
 		    		<include name="build/results/*.jar" />
 		    </patternset>
