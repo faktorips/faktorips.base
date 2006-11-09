@@ -12,15 +12,17 @@
  * 
  **************************************************************************************************/
 
-package org.faktorips.devtools.ant.util;
+package org.faktorips.devtools.ant;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.faktorips.devtools.ant.RecursiveCopy;
+
 import junit.framework.TestCase;
 
-public class CopyTest extends TestCase {
+public class RecursiveCopyTest extends TestCase {
 
     private File tmpFile = null;
     private File tmpFile2 = null;

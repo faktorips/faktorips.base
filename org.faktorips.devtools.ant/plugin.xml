@@ -10,7 +10,14 @@
         name="importProject"/>
 	</extension>
 	
-
+	<extension point="org.eclipse.ant.core.antTasks">
+		<antTask
+        class="org.faktorips.devtools.ant.FullWorkspaceBuildTask"
+        eclipseRuntime="true"
+        headless="true"
+        library="ant_tasks/ant-tasks.jar"
+        name="fullBuild"/>
+	</extension>
 
 	<extension point="org.eclipse.ant.core.extraClasspathEntries">
 		<extraClasspathEntry

@@ -1,4 +1,4 @@
-package org.faktorips.devtools.ant.projectimporter;
+package org.faktorips.devtools.ant;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.apache.tools.ant.BuildException;
 import org.faktorips.devtools.ant.ProjectImportTask;
 
-public class ProjectImporterTest extends TestCase {
+public class ProjectImportTaskTest extends TestCase {
 
     public void testNullAttribute() {
 

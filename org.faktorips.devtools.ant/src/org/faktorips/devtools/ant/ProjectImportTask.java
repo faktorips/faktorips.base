@@ -1,15 +1,10 @@
 /***************************************************************************************************
- * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere.
- * 
- * Alle Rechte vorbehalten.
- * 
- * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
- * etc.) dürfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1
- * (vor Gründung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann.
- * 
- * Mitwirkende: Faktor Zehn GmbH - initial API and implementation
- * 
+ * Copyright (c) 2005,2006 Faktor Zehn GmbH und andere. Alle Rechte vorbehalten. Dieses Programm und
+ * alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen, etc.) dürfen nur unter
+ * den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung – Version 0.1 (vor Gründung
+ * Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorips.org/legal/cl-v01.html eingesehen werden kann. Mitwirkende: Faktor Zehn GmbH -
+ * initial API and implementation
  **************************************************************************************************/
 
 package org.faktorips.devtools.ant;
@@ -21,11 +16,12 @@ import java.io.InputStream;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.ant.util.RecursiveCopy;
 
 /**
  * Implements a custom Ant-Task, which imports a given Directory to a running Eclipse Workspace as
@@ -75,6 +71,7 @@ public class ProjectImportTask extends org.apache.tools.ant.Task {
      */
     public void execute() throws BuildException {
 
+        System.out.println("ProjectImportTask execution started");
         // Check Dir-Attribute
         this.checkDir();
 
@@ -91,11 +88,7 @@ public class ProjectImportTask extends org.apache.tools.ant.Task {
 
             try {
                 description = workspace.loadProjectDescription(inputStream);
-            }
-            catch (Exception e) {
-                throw new BuildException(e);
-            }
-            finally {
+            } finally {
                 if (inputStream != null) {
                     inputStream.close();
                 }
@@ -116,11 +109,15 @@ public class ProjectImportTask extends org.apache.tools.ant.Task {
             copyUtil.copyDir(this.getDir(), project.getLocation().toString());
 
             project.open(monitor);
-            
-            //build is done via FullBuild-Target seperately
-     }
-        catch (Exception e) {
+            project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+            // build is done via FullBuild-Target seperately
+        }catch(CoreException e){
+            throw new BuildException(e.getStatus().toString());
+        } catch (Exception e) {
             throw new BuildException(e);
+        }
+        finally{
+            System.out.println("ProjectImportTask execution finished");
         }
 
     }
